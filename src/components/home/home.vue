@@ -183,8 +183,8 @@ export default {
   },
   created() {
     this.url = window.location.href;
-    // this._getUserInfo();
-    // this._getJssdkInfo();
+    this._getUserInfo();
+    this._getJssdkInfo();
   },
   computed: {},
   mounted() {
