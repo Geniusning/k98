@@ -193,11 +193,11 @@ export default {
   },
   computed: {},
   mounted() {
-    var mySwiper = new swiper(".swiper-container", {
-      // pagination: ".swiper-pagination",
-      paginationClickable: true,
-      autoplay: 3000
-    });
+    // var mySwiper = new swiper(".swiper-container", {
+    //   // pagination: ".swiper-pagination",
+    //   paginationClickable: true,
+    //   autoplay: 3000
+    // });
   },
   methods: {
     // 获取用户信息
@@ -288,19 +288,20 @@ export default {
         type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
         success: function(res) {
           var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+          alert(latitude)
           var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
           let position = {
             latitude: latitude,
             longitude: longitude
           };
           // _this.getPosition(position);
-          _this.$router.push({
-            name: "friend",
-            params: {
-              latitude: latitude,
-              longitude: longitude
-            }
-          });
+          // _this.$router.push({
+          //   name: "friend",
+          //   params: {
+          //     latitude: latitude,
+          //     longitude: longitude
+          //   }
+          // });
           var speed = res.speed; // 速度，以米/每秒计
           var accuracy = res.accuracy; // 位置精度
         },
