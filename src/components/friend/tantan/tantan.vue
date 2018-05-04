@@ -25,8 +25,10 @@
           <div class="userInfo_wrapper">
             <div class="userBox clearfix">
               <!-- <h3 class="username">{{item.name}}</h3> -->
+              <!-- <span class="sex">男</span> -->
+              <img src="../../../assets/image/male.png" alt="" class="sex" v-if="item.sex=='男'">
+              <img src="../../../assets/image/female.png" alt="" class="sex" v-else>
               <span class="online" :style="{background:item.online==='好友'?'red':'gray'}">{{item.online}}</span>
-              <span class="sex">男</span>
               <span class="constellation">水瓶座</span>
             </div>
             <div class="sex_wrapper clearfix">
@@ -576,7 +578,15 @@ export default {
         margin-right: 0.2333rem;
       }
       .sex {
-        .userInfo(#89b8f0);
+        // .userInfo(#89b8f0);
+        width: 0.4rem;
+        height: 0.4rem;
+        float: left;
+        display: inline-block;
+        text-align: center;
+        border-radius: 2px;
+        color: #fff;
+        margin-top: 0.04rem;
         margin-right: 0.2333rem;
       }
       .constellation {

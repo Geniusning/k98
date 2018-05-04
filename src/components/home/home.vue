@@ -3,7 +3,7 @@
       <div class="top_wrapper">
             <div class="barLogo_wrapper">
               <div class="logo_wrapper">
-                <!-- <img class="logo" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524204213993&di=5f93ef923bb06785474b70621b7a9e42&imgtype=0&src=http%3A%2F%2Fimg.brandcn.com%2FEditor%2FImages%2F201309%2F2013091309383713424223871.jpg" alt=""> -->
+                <img class="logo" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524204213993&di=5f93ef923bb06785474b70621b7a9e42&imgtype=0&src=http%3A%2F%2Fimg.brandcn.com%2FEditor%2FImages%2F201309%2F2013091309383713424223871.jpg" alt="">
                 <p class="bar_name">Lose Demon吧(迷失的恶魔魅力四射)</p>
               </div>
             </div>
@@ -17,7 +17,7 @@
                     <div class="swiper-pagination"></div>
                 </div>  
             </div> -->
-            <swiper :list="demo01_list" v-model="demo01_index" @click="show_introduce"></swiper>
+            <swiper :auto="true" :loop="true" :list="demo01_list" v-model="demo01_index" @click="show_introduce"></swiper>
       </div>
       <div class="wrapper" ref="wrapper">
         <div class="content">
@@ -73,11 +73,11 @@
                 <div class="pic_content">
                     <ul class="pic_list">
                         <li @click="intoFriend" class="inner_fri">
-                            <img src="../../assets/image/online.png" class="online">
-                            <img src="../../assets/image/inner_fri.png" alt="" class="friend_avatar">
+                            <img src="../../assets/image/online.png" class="online" onclick="return false">
+                            <img src="../../assets/image/inner_fri.png" alt="" class="friend_avatar" onclick="return false">
                         </li>
                         <li @click="intoFriend">
-                            <img src="../../assets/image/out_fri.png" alt="" class="friend_avatar">
+                            <img src="../../assets/image/out_fri.png" alt="" class="friend_avatar" onclick="return false">
                         </li>
                          <!-- <li>
                             <img src="../../assets/image/meinv3.png" alt="" class="friend_avatar">
@@ -126,24 +126,24 @@ import { mapMutations } from "vuex";
 const baseList = [
   {
     url: "javascript:",
-    img: "https://ww1.sinaimg.cn/large/663d3650gy1fq66vvsr72j20p00gogo2.jpg",
-    title: "送你一朵fua"
+    img: "http://i4.bvimg.com/643118/60c7428075eee73e.jpg",
+    title: ""
   },
   {
     url: "javascript:",
-    img: "https://ww1.sinaimg.cn/large/663d3650gy1fq66vw1k2wj20p00goq7n.jpg",
-    title: "送你一辆车"
+    img: "http://i4.bvimg.com/643118/35a44a2e7debfb1c.jpg",
+    title: ""
   },
   {
     url: "javascript:",
-    img: "https://static.vux.li/demo/5.jpg", // 404
-    title: "送你一次旅行",
+    img: "http://i4.bvimg.com/643118/b468123c905b0039.jpg", // 404
+    title: "",
     fallbackImg:
       "https://ww1.sinaimg.cn/large/663d3650gy1fq66vw50iwj20ff0aaaci.jpg"
   }
 ];
 export default {
-  // name: "home",
+  name: "home",
   directives: {
     TransferDom
   },
@@ -151,29 +151,29 @@ export default {
     return {
       demo01_list: baseList,
       test1: "123",
-      demo01_index:0,
+      demo01_index: 0,
       data: [1, 2, 3],
       url: "",
       distance: "",
       picList: [
         {
-            src:
-              "http://img0.imgtn.bdimg.com/it/u=25212031,1948986029&fm=27&gp=0.jpg",
+          src:
+            "http://img0.imgtn.bdimg.com/it/u=25212031,1948986029&fm=27&gp=0.jpg",
           originPrice: "388",
           price: "188",
           desc: "超值优惠，值得拥有"
         },
         {
-            src:
-              "http://img4.imgtn.bdimg.com/it/u=3119219281,1268764189&fm=200&gp=0.jpg",
+          src:
+            "http://img4.imgtn.bdimg.com/it/u=3119219281,1268764189&fm=200&gp=0.jpg",
 
           originPrice: "488",
           price: "388",
           desc: "朋友聚会，超级实惠的哦"
         },
         {
-            src:
-              "http://img2.imgtn.bdimg.com/it/u=474850801,2154558511&fm=27&gp=0.jpg",
+          src:
+            "http://img2.imgtn.bdimg.com/it/u=474850801,2154558511&fm=27&gp=0.jpg",
           originPrice: "888",
           price: "388",
           desc: "特价宣传，超值优惠，谁用谁知道"
@@ -185,14 +185,19 @@ export default {
     this.url = window.location.href;
     this._getUserInfo();
     this._getJssdkInfo();
-  },
-  computed: {},
-  mounted() {
-    // var mySwiper = new swiper(".swiper-container", {
+    //   var mySwiper = new swiper(".swiper-container", {
     //   // pagination: ".swiper-pagination",
     //   paginationClickable: true,
     //   autoplay: 3000
     // });
+  },
+  computed: {},
+  mounted() {
+    var mySwiper = new swiper(".swiper-container", {
+      // pagination: ".swiper-pagination",
+      paginationClickable: true,
+      autoplay: 3000
+    });
   },
   methods: {
     // 获取用户信息
@@ -222,6 +227,7 @@ export default {
             jsApiList: [
               // "scanQRCode",
               // "onMenuShareTimeline",
+              "getLocation",
               "onMenuShareAppMessage"
             ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
           });
@@ -241,6 +247,19 @@ export default {
               },
               cancel: () => {
                 // 用户取消分享后执行的回调函数
+              }
+            });
+            //获取地理位置
+            wx.getLocation({
+              // type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+              type: "gcj02", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+              success: function(res) {
+                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                console.log("纬度");
+                console.log(latitude);
+                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                var speed = res.speed; // 速度，以米/每秒计
+                var accuracy = res.accuracy; // 位置精度
               }
             });
           });
@@ -263,18 +282,59 @@ export default {
     },
     //进入交友界面
     intoFriend() {
-      this.$router.push({
-        name: "friend",
-        params: { userId: 123 }
+      var _this = this;
+      // this.getLocation();
+      wx.getLocation({
+        type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+        success: function(res) {
+          var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+          var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+          let position = {
+            latitude: latitude,
+            longitude: longitude
+          };
+          // _this.getPosition(position);
+          _this.$router.push({
+            name: "friend",
+            params: {
+              latitude: latitude,
+              longitude: longitude
+            }
+          });
+          var speed = res.speed; // 速度，以米/每秒计
+          var accuracy = res.accuracy; // 位置精度
+        },
+        cancel: () => {
+          alert("用户拒绝获取地理位置");
+        }
       });
     },
     //获取地理位置
     getLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(this.showPosition);
+        navigator.geolocation.getCurrentPosition(
+          this.showPosition,
+          this.showError
+        );
       } else {
         this.$refs.navigator.innerHTML =
           "Geolocation is not supported by this browser.";
+      }
+    },
+    showPosition(position) {
+      alert(position.coords.latitude, position.coords.longitude);
+    },
+    showError(error) {
+      switch (error.code) {
+        case error.PERMISSION_DENIED: //用户不允许地理定位
+          alert("用户拒绝地理位置上报");
+          break;
+        case error.POSITION_UNAVAILABLE: //无法获取当前位置
+          break;
+        case error.TIMEOUT: //操作超时
+          break;
+        case error.UNKNOWN_ERROR:
+          break;
       }
     },
     //查看玩家部落
@@ -292,7 +352,8 @@ export default {
     //获取用户信息
     ...mapMutations({
       getuserInfo: "GET_USERINFO",
-      testmodel: "TEST"
+      testmodel: "TEST",
+      getPosition: "GET_POSITION"
     })
   },
   components: {
@@ -336,21 +397,21 @@ export default {
 .top_wrapper {
   position: relative;
   .barLogo_wrapper {
-    // width: 100%;
+    width: 100%;
     position: absolute;
     z-index: 999;
     top: 0.16rem;
     left: -0.0933rem;
     .logo_wrapper {
-      max-width: 10rem;
+      display: inline-block;
       height: 0.5rem;
       background-color: rgba(255, 255, 255, 0.1);
-      line-height: 20px;
+      line-height: 0.5rem;
       margin: 0 0.5rem;
       border-radius: 10px;
       .logo {
-        width: 28px;
-        height: 28px;
+        width: 0.6733rem;
+        height: 0.6733rem;
         float: left;
         margin-top: -2px;
         border-radius: 50%;
@@ -375,7 +436,7 @@ export default {
 }
 .pic {
   width: 100%;
-  height: 150%;
+  height: 100%;
 }
 // 地址
 .adr_wrapper {
@@ -471,8 +532,6 @@ export default {
       .friend_avatar {
         width: 4.4rem;
         height: 1.6533rem;
-        // border-radius: 50%;
-        // border: 1px solid $bgcolorEnd;
       }
     }
   }

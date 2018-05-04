@@ -69,11 +69,12 @@ export default {
 
 <style lang="less">
 @import "~vux/src/styles/reset.less";
+@import "~vux/src/styles/1px.less";
 
 body,
 html {
   height: 100%;
-  background-color: #f4f4f4;
+  // background-color: red;
 }
 #app {
   height: 100%;
@@ -95,7 +96,7 @@ html {
 }
 .top_wrapper {
   overflow-y: auto;
-  background-color: #f4f4f4;
+  // background-color: yellow;
   -webkit-flex: 1;
   -moz-flex: 1;
   -ms-flex: 1;

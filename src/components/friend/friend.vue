@@ -281,7 +281,7 @@ export default {
           thumb: "99",
           gift: "10",
           tag: ["二楞", "逗比"],
-          avatar: "http://i2.bvimg.com/643118/b8606abaa26af8ee.jpg",
+          avatar: "http://i2.bvimg.com/643118/d5d1e033cb3c9348.jpg",
           online:"好友"
         },
         {
@@ -292,7 +292,7 @@ export default {
           thumb: "99",
           gift: "10",
           tag: ["二楞", "逗比"],
-          avatar: "http://i2.bvimg.com/643118/77cd614ea815e184.jpg",
+          avatar: "http://i2.bvimg.com/643118/60b095b43cc319b1.png",
           online:"陌生人"
         },
         {
@@ -303,7 +303,7 @@ export default {
           thumb: "99",
           gift: "10",
           tag: ["二楞", "逗比"],
-          avatar: "http://i2.bvimg.com/643118/e07e68563443cf64.jpg",
+          avatar: "http://i2.bvimg.com/643118/9f04cf2f74ee24a9.jpg",
           online:"好友"
         },
         {
@@ -314,7 +314,7 @@ export default {
           thumb: "99",
           gift: "10",
           tag: ["二楞", "逗比"],
-          avatar: "http://i2.bvimg.com/643118/77a43d13036a742f.jpg",
+          avatar: "http://i2.bvimg.com/643118/55e876f663012fe5.jpg",
           online:"陌生人"
         },
         {
@@ -325,7 +325,7 @@ export default {
           thumb: "99",
           gift: "10",
           tag: ["二楞", "逗比"],
-          avatar: "http://i2.bvimg.com/643118/41984abc294fc3a9.jpg",
+          avatar: "http://i2.bvimg.com/643118/a8d4a576d96a4924.jpg",
           online:"好友"
         }
       ];
@@ -368,6 +368,11 @@ export default {
       this.$refs.stack.$emit("next");
     }
   },
+  watch: {
+    $route(newValue, oldValue) {
+      console.log(newValue);
+    }
+  },
   components: {
     stack,
     Popup,
@@ -390,9 +395,9 @@ export default {
 .friend {
   height: 100%;
   background-color: #f4f4f4;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   .nav {
     display: flex;
     justify-content: space-between;
@@ -422,24 +427,21 @@ export default {
     }
     .thumbs {
       .action;
-      p{
-        font-size: 0.4rem
+      p {
+        font-size: 0.4rem;
       }
-
     }
     .gifts {
       .action;
-      p{
-        font-size: 0.4rem
+      p {
+        font-size: 0.4rem;
       }
- 
     }
     .playGame {
       .action;
-      p{
-        font-size: 0.4rem
+      p {
+        font-size: 0.4rem;
       }
-     
     }
   }
   .stack-wrapper {
@@ -551,7 +553,7 @@ export default {
     text-align: center;
     color: #ff7900;
     font-size: 14px;
-    font-family: 'PingFang-SC-Bold';
+    font-family: "PingFang-SC-Bold";
   }
   .cancel_btn {
     margin-right: 0.875rem;

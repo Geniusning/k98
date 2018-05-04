@@ -331,7 +331,7 @@ export default {
   flex-direction: column;
   .chat_wrapper {
     flex: 1;
-    padding: 0.625rem;
+    padding: 0 0.625rem;
     overflow-y: auto;
     .chat_list {
       width: 100%;

@@ -1,7 +1,8 @@
 const state = {
     isShow: false,
     userInfo: {},
-    test:""
+    test: "",
+    position: {}
 }
 
 export default state

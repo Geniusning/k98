@@ -12,6 +12,7 @@ import Welfare from 'components/welfare/welfare'
 import Mine from 'components/mine/mine'
 import Card from 'components/card/card'
 import Chat from 'components/chat_room/chat_room'
+import Individual from 'components/individual/individual'
 
 Vue.use(VueRouter)
 
@@ -55,6 +56,11 @@ const routes = [
     path: "/chat",
     name: "chat",
     component: Chat
+  },
+  {
+    path: "/individual",
+    name: "individual",
+    component: Individual
   },
 ]
 
