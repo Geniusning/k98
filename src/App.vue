@@ -68,9 +68,12 @@ export default {
 </script>
 
 <style lang="less">
-@import "~vux/src/styles/reset.less";
+@import "./assets/reset.css";
+// @import "~vux/src/styles/reset.less";
 @import "~vux/src/styles/1px.less";
-
+a:hover{
+  text-decoration: none !important;
+}
 body,
 html {
   height: 100%;

@@ -457,7 +457,7 @@ export default {
       width: 0.3067rem;
       height: 0.4133rem;
       float: left;
-      margin-right: 0.08rem;
+      margin-right: 0.1333rem;
       margin-top: -0.0667rem;
     }
     .adr_desc {

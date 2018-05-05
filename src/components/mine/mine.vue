@@ -4,7 +4,7 @@
      <div class="personInfo_wrapper">
          <div class="person_info">
              <img :src="userInfo.headimgurl" alt="" class="avatar">
-             <p class="name">{{userInfo.nickname}}</p>
+             <p class="name">{{userInfo.nickname||'小龙女'}}</p>
              <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->
              <span class="bindTel" @click="showTelBind">绑定手机</span>
          </div>
@@ -36,11 +36,11 @@
         <!-- 我的卡券 -->
         <div class="discount_wrapper">
           <ul class="discount_list">
-            <li class="item">
+            <li class="item vux-1px-r">
               <img src="../../assets/image/discount.png" alt=""  class="pic_discount">
               <p class="discount_name">我的卡券</p>
             </li>
-            <li class="item">
+            <li class="item vux-1px-r">
               <img src="../../assets/image/game_mine.png" alt="" class="pic_discount">
               <p class="discount_name">游戏明细</p>
              </li>
@@ -148,12 +148,12 @@ export default {
     closeTag() {
       this.showTag = false;
     },
-    showTelBind(){
-      this.changeValidate(true)
+    showTelBind() {
+      this.changeValidate(true);
     },
     cancel() {
       // this.showToast = false;
-      this.changeValidate(false)
+      this.changeValidate(false);
     },
     ...mapMutations({
       changeValidate: "CHANGE_VALIDATE"
@@ -190,9 +190,11 @@ export default {
 .mine {
   height: 100%;
   background: #f4f4f4;
+  display: flex;
+  flex-direction: column;
   .personInfo_wrapper {
     width: 100%;
-    height: 3.375rem;
+    height: 4.1333rem;
     position: relative;
     background: url("../../assets/image/mine_bg.png") no-repeat;
     text-align: center;
@@ -209,22 +211,28 @@ export default {
       top: 50%;
       transform: translate(-50%, -50%);
       .avatar {
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 2rem;
+        height: 2rem;
         border-radius: 50%;
       }
       .name {
         color: #fff;
-        margin-top: 0.2rem;
+        margin-top: 0.2133rem;
+        // width: 94px;
+        height: 0.4133rem;
+        font-size: 0.4267rem;
+        font-family: 'PingFang-SC-Bold';
+        color: rgba(255, 255, 255, 1);
+        line-height: 0.3733rem;
       }
       .bindTel {
-        margin-top: 0.2rem;
+        margin-top: 0.2667rem;
         display: inline-block;
         width: 2.1867rem;
         height: 0.6133rem;
         line-height: 0.6133rem;
         background-color: #fff;
-        border-radius: 10px;
+        border-radius: 0.3067rem;
         font-weight: 700;
         font-family: serif;
         color: #ff7800;
@@ -233,27 +241,33 @@ export default {
     }
   }
   .content {
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: flex-start;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     .userInfo_wrapper {
       height: 1.8667rem;
       background: #fff;
       .user_list {
         display: flex;
         justify-content: space-around;
-        padding-top: 0.48rem;
+        padding-top: 0.3067rem;
+        box-sizing: border-box;
         .item {
+          box-sizing: border-box;
           .score {
             color: #ff7800;
             font-size: 0.3467rem;
             text-align: center;
-            margin-bottom: 0.22rem;
+            margin-bottom: 0.3333rem;
+            font-weight: bold;
+            font-family:'PingFang-SC-Bold';
           }
           .score_name {
+            box-sizing: border-box;
             font-size: 0.3733rem;
             color: #333;
             text-align: center;
+            margin-bottom: 0.4rem;
           }
         }
       }
@@ -267,6 +281,7 @@ export default {
         display: flex;
         justify-content: space-around;
         .item {
+          flex: 1;
           text-align: center;
           .pic_discount {
             width: 1.2rem;
@@ -279,6 +294,7 @@ export default {
       }
     }
     .tag_wrapper {
+      flex: 1;
       margin-top: 0.1333rem;
       padding-left: 0.4rem;
       height: 4rem;
@@ -287,6 +303,7 @@ export default {
         color: #333;
         font-size: 0.4rem;
         font-weight: bold;
+        margin-top: 0.2933rem;
         .star {
           color: #ff7800;
         }
@@ -299,9 +316,10 @@ export default {
           height: 0.64rem;
           line-height: 0.64rem;
           border: 1px solid #ff7800;
-          border-radius: 6px;
-          padding: 0 0.08rem;
+          border-radius: 0.32rem;
+          padding: 0 0.4rem;
           margin-right: 0.2667rem;
+          font-size: 0.3733rem;
         }
       }
     }

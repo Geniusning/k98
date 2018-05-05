@@ -11,11 +11,12 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "jsonp": "0.2.1",
     "better-scroll": "^1.10.2",
     "fastclick": "^1.0.6",
+    "jsonp": "0.2.1",
     "swiper": "^4.2.6",
     "vue": "^2.5.2",
+    "vue-cropper": "^0.2.9",
     "vue-picture-preview": "^1.2.0",
     "vue-router": "^3.0.1",
     "vuex": "^2.1.1",

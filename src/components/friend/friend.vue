@@ -427,21 +427,14 @@ export default {
     }
     .thumbs {
       .action;
-      p {
-        font-size: 0.4rem;
-      }
+     
     }
     .gifts {
       .action;
-      p {
-        font-size: 0.4rem;
-      }
+    
     }
     .playGame {
       .action;
-      p {
-        font-size: 0.4rem;
-      }
     }
   }
   .stack-wrapper {
@@ -474,7 +467,9 @@ export default {
 .select_wrapper {
   width: 7.8rem;
   height: 7.8rem;
-  background: url("../../assets/image/bg.png") no-repeat 100%/100%;
+  background-image: url("../../assets/image/bg.png"); 
+  background-repeat:  no-repeat;
+  background-size:  contain;
   position: relative;
   // padding: 0.625rem;
   .close {

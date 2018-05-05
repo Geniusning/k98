@@ -8,14 +8,17 @@
            <span class="changeAvatar">更换头像</span> 
            <input type="file" name="image" accept="image/*" class="input_file" @change="Onchange">
            <!-- <cropper :headerImage="headerImage"  @getHeaderImage="newHeaderImage"></cropper>　 -->
-        <!-- <vueCropper
-          ref="cropper"
-          :img="option.img"
-          :outputSize="option.size"
-          :outputType="option.outputType"
-        ></vueCropper> -->
-        <!-- <p>更换头像</p> -->
        </div>
+   </div>
+   <div class="tailor_wrapper" v-if="showTailor">
+    <vueCropper
+        ref="cropper"
+        :img="option.img" 
+        :canMove="false"
+        class="cropper"
+    ></vueCropper>
+      <p @click="stop" style="position:absolute;z-index:9999;color:#fff;">停止截图</p>
+      <p @click="clip" style="position:absolute;top:50px;z-index:9999;color:#fff;">更换头像1</p>
    </div>
    <!-- 头像选择 -->
    <div class="select_list_wrapper">
@@ -50,11 +53,12 @@
 
 <script type='text/ecmascript-6'>
 import { XButton, XHeader, Previewer } from "vux";
-// import VueCropper from "vue-cropper";
+import VueCropper from "vue-cropper";
 import axios from "axios";
 export default {
   data() {
     return {
+      showTailor: false,
       headerImage: "",
       path: "",
       resText: "",
@@ -65,6 +69,18 @@ export default {
   },
   created() {},
   methods: {
+    clip() {
+      this.$refs.cropper.startCrop();
+      console.log(111)
+    },
+    stop() {
+      this.$refs.cropper.getCropData(data => {
+        // do something
+        this.$refs.avatar.src = data;
+        this.showTailor = false;
+        console.log(data);
+      });
+    },
     //测试
     getUserInfo() {
       let _this = this;
@@ -85,7 +101,7 @@ export default {
       if (!this.files.length) return;
       var files = Array.prototype.slice.call(this.files); //转化成数组
       console.log(files);
-      if (files.length > 2) {
+      if (files.length > 1) {
         // console.log("最多同时只可上传2张图片");
         return;
       }
@@ -99,18 +115,19 @@ export default {
           var result = this.result;
           var img = new Image();
           img.src = result;
-          _this.$refs.avatar.src = result;
+          _this.showTailor = true;
+          _this.option.img = result;
         };
-        if (result.length <= maxsize) {
-          img = null;
-          return;
-        }
+        // if (result.length <= maxsize) {
+        //   img = null;
+        //   return;
+        // }
         //图片加载完毕之后进行压缩，然后上传
-        if (img.complete) {
-          callback();
-        } else {
-          img.onload = callback;
-        }
+        // if (img.complete) {
+        //   callback();
+        // } else {
+        //   img.onload = callback;
+        // }
       });
     },
     // 使用canvas对大图片进行压缩
@@ -188,13 +205,14 @@ export default {
     XHeader,
     Previewer,
     XButton,
-    // VueCropper
+    VueCropper
   }
 };
 </script>
 
 <style scoped lang='less'>
 .individual {
+  height: 100%;
   .avatar_wrapper {
     background: #fff;
     display: flex;
@@ -223,9 +241,25 @@ export default {
         position: absolute;
         overflow: hidden;
         right: 0;
-        top: 1.25rem;
+        top: 0.48rem;
         opacity: 0;
       }
+    }
+  }
+  .tailor_wrapper {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    .cropper{
+      position: absolute;
+      // top: 50%;
+      // left: 50%;
+      // transform: translateX(-50%);
+      // transform: translateY(-50%)
     }
   }
   .select_list_wrapper {

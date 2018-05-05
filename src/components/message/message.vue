@@ -13,7 +13,7 @@
        <li class="item border-1px" @click="chat">
          <div class="info_message">
            <div class="avatar">
-             <img src="../../assets/image/avatar.jpg" alt="">
+             <img src="../../assets/image/avatar2.jpg" alt="">
            </div>
            <div class="name_and_message">
              <p class="name">小番茄</p>
@@ -21,10 +21,24 @@
            </div>
          </div>
          <div class="info_time">
-           <p>11:11</p>
+           <p>下午  11:11</p>
          </div>
        </li>
        <li class="item border-1px">
+         <div class="info_message">
+           <div class="avatar">
+             <img src="../../assets/image/avatar3.jpg" alt="">
+           </div>
+           <div class="name_and_message">
+            <p class="name">小番茄</p>
+             <p class="message">今天天气很好</p>
+           </div>
+         </div>
+         <div class="info_time">
+           <p>下午  18:11</p>
+         </div>
+       </li>
+        <li class="item border-1px">
          <div class="info_message">
            <div class="avatar">
              <img src="../../assets/image/avatar.jpg" alt="">
@@ -35,21 +49,7 @@
            </div>
          </div>
          <div class="info_time">
-           <p>18:11</p>
-         </div>
-       </li>
-        <li class="item border-1px">
-         <div class="info_message">
-           <div class="avatar">
-             <img src="../../assets/image/avatar2.jpg" alt="">
-           </div>
-           <div class="name_and_message">
-            <p class="name">小番茄</p>
-             <p class="message">今天天气很好</p>
-           </div>
-         </div>
-         <div class="info_time">
-           <p>13:11</p>
+           <p>下午  13:11</p>
          </div>
        </li>
      </ul>
@@ -160,7 +160,8 @@ export default {
       }
       .info_time {
         padding-top: 0.3333rem;
-        font-size: 12px;
+        font-size: 0.3733rem;
+        color: #999;
       }
     }
   }
