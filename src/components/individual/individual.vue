@@ -15,10 +15,13 @@
         ref="cropper"
         :img="option.img" 
         :canMove="false"
+        :autoCrop="option.autoCrop"
+        :autoCropWidth="option.width"
+        :autoCropHeight="option.height"
         class="cropper"
     ></vueCropper>
-      <p @click="stop" style="position:absolute;z-index:9999;color:#fff;">停止截图</p>
-      <p @click="clip" style="position:absolute;top:50px;z-index:9999;color:#fff;">更换头像1</p>
+      <p @click="stop" class="confirm">确定</p>
+      <!-- <p @click="clip" class="clip">点击开始滑动截图</p> -->
    </div>
    <!-- 头像选择 -->
    <div class="select_list_wrapper">
@@ -63,7 +66,10 @@ export default {
       path: "",
       resText: "",
       option: {
-        img: "http://i1.bvimg.com/643118/dad8867b08eb2933.jpg"
+        img: "",
+        width:300,
+        height:250,
+        autoCrop:true
       }
     };
   },
@@ -71,7 +77,7 @@ export default {
   methods: {
     clip() {
       this.$refs.cropper.startCrop();
-      console.log(111)
+      console.log(111);
     },
     stop() {
       this.$refs.cropper.getCropData(data => {
@@ -254,12 +260,26 @@ export default {
     left: 0;
     background: rgba(0, 0, 0, 0.4);
     z-index: 999;
-    .cropper{
+    .cropper {
       position: absolute;
       // top: 50%;
       // left: 50%;
       // transform: translateX(-50%);
       // transform: translateY(-50%)
+    }
+    .clip {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 9999;
+      color: #fff;
+    }
+    .confirm {
+      position: absolute;
+      z-index: 9999;
+      color: #fff;
+      top: 20px;
+      right: 20px;
     }
   }
   .select_list_wrapper {

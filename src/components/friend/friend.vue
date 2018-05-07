@@ -7,7 +7,7 @@
         <img src="../../assets/image/select.png" alt=""  @click="showToast=true">
       </div>
       <div class="stack-wrapper">
-        <stack ref="stack" :pages="someList" :stackinit="stackinit"></stack>
+        <stack ref="stack" :pages="someList" :stackinit="stackinit" @firstData='listenFirstdata'></stack>
       </div>
       <!-- <div class="controls">
         <button @click="prev" class="button"><i class="prev"></i><span class="text-hidden">prev</span></button>
@@ -87,8 +87,6 @@
                     </ul>
                   </div>
                   <p class="confirm" @click="cancel">确定</p>
-                <!-- <x-button @click.native="cancel" type="primary" :mini="true" class="cancel_btn">取消</x-button> -->
-                <!-- <x-button @click.native="doShowToast" type="primary" :mini="true">保存</x-button>  -->
               </div>
             </x-dialog>
       </div>
@@ -332,6 +330,10 @@ export default {
     // }, 17);
   },
   methods: {
+    listenFirstdata(data){
+      console.log('下面是传回父级的数据')
+      console.log(data)
+    },
     //点赞
     showPosition(position) {
       this.position = position;
@@ -359,14 +361,12 @@ export default {
     cancel() {
       this.showToast = false;
     },
-    doShowToast() {},
-    iosScrollBug() {},
-    prev() {
-      this.$refs.stack.$emit("prev");
-    },
-    next() {
-      this.$refs.stack.$emit("next");
-    }
+    // prev() {
+    //   this.$refs.stack.$emit("prev");
+    // },
+    // next() {
+    //   this.$refs.stack.$emit("next");
+    // }
   },
   watch: {
     $route(newValue, oldValue) {
@@ -392,6 +392,7 @@ export default {
 <style scoped lang="less">
 @import "../../assets/less/variable.less";
 @import "../../assets/less/friend_common.less";
+@import "../../assets/less/mixin.less";
 .friend {
   height: 100%;
   background-color: #f4f4f4;
@@ -402,7 +403,8 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-direction: row-reverse;
-    padding: 0.07rem 0.2rem 0.1rem;
+    padding: 0.09rem 0.3rem 0.1rem;
+    box-sizing: border-box;
     .select {
       font-size: 13px;
       color: #ff7900;
@@ -465,11 +467,9 @@ export default {
 }
 //弹框选择
 .select_wrapper {
-  width: 7.8rem;
+  width: 8rem;
   height: 7.8rem;
-  background-image: url("../../assets/image/bg.png"); 
-  background-repeat:  no-repeat;
-  background-size:  contain;
+  .bg("../../assets/image/bg.png");
   position: relative;
   // padding: 0.625rem;
   .close {

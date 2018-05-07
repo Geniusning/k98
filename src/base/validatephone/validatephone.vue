@@ -50,12 +50,11 @@ export default {
 </script>
 
 <style scoped lang='less'>
+@import "../../assets/less/mixin.less";
 .bindTel_wrapper {
   width: 8rem;
   height: 7.8rem;
-  background-image: url("../../assets/image/bg.png");
-  background-repeat:  no-repeat;
-  background-size:  cover;
+  .bg("../../assets/image/bg.png");
   position: relative;
   .title {
     padding-top: 0.72rem;

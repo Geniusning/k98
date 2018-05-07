@@ -13,6 +13,8 @@ import Mine from 'components/mine/mine'
 import Card from 'components/card/card'
 import Chat from 'components/chat_room/chat_room'
 import Individual from 'components/individual/individual'
+import vuePicturePreview from 'vue-picture-preview'
+Vue.use(vuePicturePreview)
 
 Vue.use(VueRouter)
 

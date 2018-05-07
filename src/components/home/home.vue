@@ -98,7 +98,7 @@
                 </div>
                 <ul class="welfare_list">
                     <li v-for="(item, index) in picList" :key="index"> 
-                      <img class="pic_welfare" :src="item.src">
+                      <img class="pic_welfare" v-preview="item.src" :src="item.src" >
                       <div class="Onsale">
                         <p class="money"><span class="origin_price">特价￥{{item.price}}</span><del>原价￥{{item.originPrice}}</del></p>
                         <p class="desc">{{item.desc}}</p>
@@ -126,17 +126,18 @@ import { mapMutations } from "vuex";
 const baseList = [
   {
     url: "javascript:",
-    img: "http://i4.bvimg.com/643118/60c7428075eee73e.jpg",
-    title: ""
-  },
-  {
-    url: "javascript:",
-    img: "http://i4.bvimg.com/643118/35a44a2e7debfb1c.jpg",
-    title: ""
-  },
-  {
-    url: "javascript:",
     img: "http://i4.bvimg.com/643118/b468123c905b0039.jpg", // 404
+
+    title: ""
+  },
+  {
+    url: "javascript:",
+    img: "http://i2.bvimg.com/643118/69278a1e38cb4574.png",
+    title: ""
+  },
+  {
+    url: "javascript:",
+    img: "http://i2.bvimg.com/643118/68e0d5bc3b55fee4.png",
     title: "",
     fallbackImg:
       "https://ww1.sinaimg.cn/large/663d3650gy1fq66vw50iwj20ff0aaaci.jpg"
@@ -157,26 +158,30 @@ export default {
       distance: "",
       picList: [
         {
-          src:
-            "http://img0.imgtn.bdimg.com/it/u=25212031,1948986029&fm=27&gp=0.jpg",
+          src: "http://i2.bvimg.com/643118/547e062360e36336.png",
           originPrice: "388",
           price: "188",
           desc: "超值优惠，值得拥有"
         },
         {
-          src:
-            "http://img4.imgtn.bdimg.com/it/u=3119219281,1268764189&fm=200&gp=0.jpg",
+          src: "http://i2.bvimg.com/643118/5f04d9b63ac4eeb0.png",
 
           originPrice: "488",
           price: "388",
           desc: "朋友聚会，超级实惠的哦"
         },
         {
-          src:
-            "http://img2.imgtn.bdimg.com/it/u=474850801,2154558511&fm=27&gp=0.jpg",
+          src: "http://i2.bvimg.com/643118/83f7e6c0ef2053aa.png",
           originPrice: "888",
           price: "388",
           desc: "特价宣传，超值优惠，谁用谁知道"
+        },
+        {
+          src: "http://i2.bvimg.com/643118/5f04d9b63ac4eeb0.png",
+
+          originPrice: "488",
+          price: "388",
+          desc: "朋友聚会，超级实惠的哦"
         }
       ]
     };
@@ -397,6 +402,7 @@ export default {
 }
 .top_wrapper {
   position: relative;
+  height: 3.84rem;
   .barLogo_wrapper {
     width: 100%;
     position: absolute;
@@ -419,7 +425,7 @@ export default {
         margin-right: 0.1367rem;
       }
       .bar_name {
-        color: #fff;
+        color: #f4f4f4;
         float: left;
         font-family: "PingFang-SC-Regular";
         font-size: 14px;
@@ -498,6 +504,8 @@ export default {
 .friend_wrapper {
   .titleWrapper;
   .title {
+    padding-bottom: 0.4rem;
+    padding-top: 0.32rem;
     .title;
     .friend_title {
       .homeTitle;
@@ -511,7 +519,7 @@ export default {
       padding: 0 0.4rem;
       display: flex;
       justify-content: space-between;
-      padding-bottom: 0.1rem;
+      padding-bottom: 0.2667rem;
       .inner_fri {
         position: relative;
         .online {
@@ -541,6 +549,8 @@ export default {
 .game_wrapper {
   .titleWrapper;
   .title {
+    padding-bottom: 0.4rem;
+    padding-top: 0.32rem;
     .title;
     .dice_title {
       .homeTitle;
@@ -552,10 +562,11 @@ export default {
   .game_list {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 0.1rem;
+    padding: 0 0.2667rem;
+    padding-bottom: 0.2667rem;
     .pic_game {
-      width: 3.2533rem;
-      height: 2.4533rem;
+      width: 3.0667rem;
+      height: 2.2667rem;
       // border-radius: 0.625rem;
     }
   }
@@ -564,6 +575,8 @@ export default {
 .welfare_wrapper {
   .titleWrapper;
   .title {
+    padding-bottom: 0.4rem;
+    padding-top: 0.32rem;
     .title;
     .shop_title {
       .homeTitle;
@@ -574,7 +587,7 @@ export default {
   }
 
   .welfare_list {
-    padding: 0 0.1rem;
+    padding: 0 0.2667rem;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -584,14 +597,14 @@ export default {
       .pic_welfare {
         width: 100%;
         height: 3.5467rem;
-        border-radius: 10px;
+        // border-radius: 10px;
       }
       .Onsale {
         .money {
           display: flex;
           justify-content: space-between;
           .origin_price {
-            color: red;
+            color: #ff3320;
             font-size: 14px;
           }
           del {

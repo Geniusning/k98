@@ -83,7 +83,7 @@ acronym {
 }
 
 del {
-    text-decoration: none;
+    /* text-decoration: none; */
 }
 
 address,

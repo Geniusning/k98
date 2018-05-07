@@ -2,15 +2,16 @@
     <ul class="stack">
       <li class="stack-item" v-for="(item, index) in pages"
       :style="[transformIndex(index),transform(index)]"
-      @touchmove.stop.capture.prevent="touchmove"
-      @touchstart.stop.capture.prevent="touchstart"
-      @touchend.stop.capture.prevent="touchend"
-       @mousedown.stop.capture.prevent="touchstart"
-      @mouseup.stop.capture.prevent="touchend"
-      @mousemove.stop.capture.prevent="touchmove"
-      @mouseout.stop.capture.prevent="touchend"
+      @touchmove.prevent="touchmove"
+      @touchstart.prevent="touchstart"
+      @touchend.prevent="touchend"
+       @mousedown.prevent="touchstart"
+      @mouseup.prevent="touchend"
+      @mousemove.prevent="touchmove"
+      @mouseout.prevent="touchend"
       @webkit-transition-end="onTransitionEnd(index)"
-      @transitionend="onTransitionEnd(index)">
+      @transitionend="onTransitionEnd(index)"
+      @click="transferId(item)">
         <div style="height:100%" class="stack_content">
           <div class="img_content">
             <img src="../../../assets/image/icon_changnei.png" alt="" class="icon" v-if="item.sex=='男'">
@@ -93,25 +94,16 @@ export default {
     },
     pages: {
       type: Array,
-      default: {}
+      default: []
     }
   },
   data() {
     return {
+      propData: this.pages,
       basicdata: {
         start: {},
         end: {}
       },
-      startX: 0,
-      endX: 0,
-      distant: 0,
-      // temporaryData: {
-      //   // prefixes: detectPrefixes(),
-      //   // startX: 0,
-      //   // endX: 0,
-      //   // distant: 0,
-      //   // currentPage: this.stackinit.currentPage || 0
-      // },
       temporaryData: {
         prefixes: detectPrefixes(),
         offsetY: "",
@@ -133,8 +125,12 @@ export default {
       }
     };
   },
-  created() {
-    // console.log(this.pages);
+  created() {},
+  watch: {
+    pages(newValue) {
+      let data = newValue[0];
+      this.$emit("firstData", data);
+    }
   },
   computed: {
     // 划出面积比例
@@ -155,32 +151,16 @@ export default {
     }
   },
   mounted() {
-    // 绑定事件
-    this.$on("next", () => {
-      this.next();
-    });
-    this.$on("prev", () => {
-      this.prev();
-    });
     document.addEventListener("touchmove", e => {
       // e.preventDefault();
     });
   },
   methods: {
-    // touchstart(e) {
-    //   if (e.type == "touchstart") {
-    //     this.temporaryData.startX = e.touches[0].clientX;
-    //   }
-    // },
-    // touchmove(e) {
-    //   if (e.type == "touchmove") {
-    //     this.temporaryData.endX = e.touches[0].clientX;
-    //   }
-    // },
-    // touchend(e) {
-    //   console.log(this.temporaryData.endX - this.temporaryData.startX);
-    // },
-    // 测试·········
+    //传递好友ID
+    transferId(item) {
+      console.log(item);
+      console.log(11);
+    },
     touchstart(e) {
       if (this.temporaryData.tracking) {
         return;
@@ -218,7 +198,7 @@ export default {
       // 记录滑动位置
       this.endX = e.touches[0].clientX;
       this.distant = this.endX - this.startX;
-      console.log(this.distant);
+      // console.log(this.distant);
       if (this.temporaryData.tracking && !this.temporaryData.animation) {
         if (e.type === "touchmove") {
           // e.preventDefault();
@@ -240,12 +220,12 @@ export default {
           rotateDirection * this.offsetWidthRatio * 15 * angleRatio;
       }
     },
-    touchend(e) {
+    touchend(e, item) {
       this.temporaryData.tracking = false;
       this.temporaryData.animation = true;
       // 滑动结束，触发判断
-      // 判断划出面积是否大于0.4
-      if (this.offsetRatio >= 0.4) {
+      // 判断划出面积是否大于0.01
+      if (this.offsetRatio >= 0.05) {
         // 计算划出后最终位置
         let ratio = Math.abs(
           this.temporaryData.posheight / this.temporaryData.poswidth
@@ -260,9 +240,7 @@ export default {
             : -Math.abs(this.temporaryData.poswidth * ratio);
         this.temporaryData.opacity = 0;
         this.temporaryData.swipe = true;
-        // if (this.distant > 0) {
         this.nextTick();
-        // }
         // 不满足条件则滑入
       } else {
         this.temporaryData.poswidth = 0;
@@ -280,23 +258,23 @@ export default {
       this.temporaryData.lastZindex = 20;
       // 循环currentPage
       console.log(this.temporaryData.currentPage);
+      let index = this.temporaryData.currentPage;
       if (this.distant > 0) {
-        // if (this.temporaryData.currentPage == this.pages.length - 1) {
-        //   // this.temporaryData.currentPage = 0
-        //   return;
-        // }
-        // this.temporaryData.currentPage = this.temporaryData.currentPage + 1;
         this.temporaryData.currentPage =
-          this.temporaryData.currentPage === this.pages.length - 1
+          this.temporaryData.currentPage === this.pages.length - 1 
             ? 0
             : this.temporaryData.currentPage + 1;
-        // this.temporaryData.currentPage + 1
+        let friendData_right = this.pages[this.temporaryData.currentPage];
+        this.$emit("firstData",friendData_right)
         // currentPage切换，整体dom进行变化，把第一层滑动置最低
       } else {
+        console.log(this.pages[index - 1]);
         this.temporaryData.currentPage =
           this.temporaryData.currentPage === 0
             ? this.pages.length - 1
             : this.temporaryData.currentPage - 1;
+        let friendData_left = this.pages[this.temporaryData.currentPage];
+        this.$emit("firstData",friendData_left) 
       }
       this.$nextTick(() => {
         this.temporaryData.poswidth = 0;

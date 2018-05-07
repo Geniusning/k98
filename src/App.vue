@@ -2,6 +2,7 @@
   <div id="app">
     <div class="top_wrapper">
       <router-view></router-view>
+      <lg-preview></lg-preview>
     </div>
     <div class="bottom_wrapper" v-if="flag">
         <tab :selected="selected"></tab>
@@ -73,6 +74,10 @@ export default {
 @import "~vux/src/styles/1px.less";
 a:hover{
   text-decoration: none !important;
+}
+del {
+  // text-decoration: unset
+  // text-decoration: line-through;
 }
 body,
 html {

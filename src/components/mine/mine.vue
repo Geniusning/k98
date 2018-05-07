@@ -171,6 +171,7 @@ export default {
 </script>
 
 <style scoped lang="less">
+@import "../../assets/less/mixin.less";
 // 吐司
 .tag_box {
   position: relative;
@@ -196,7 +197,7 @@ export default {
     width: 100%;
     height: 4.1333rem;
     position: relative;
-    background: url("../../assets/image/mine_bg.png") no-repeat;
+    .bg("../../assets/image/mine_bg.png");
     text-align: center;
     .edit {
       position: absolute;
@@ -221,7 +222,7 @@ export default {
         // width: 94px;
         height: 0.4133rem;
         font-size: 0.4267rem;
-        font-family: 'PingFang-SC-Bold';
+        font-family: "PingFang-SC-Bold";
         color: rgba(255, 255, 255, 1);
         line-height: 0.3733rem;
       }
@@ -229,8 +230,9 @@ export default {
         margin-top: 0.2667rem;
         display: inline-block;
         width: 2.1867rem;
-        height: 0.6133rem;
-        line-height: 0.6133rem;
+        // height: 0.6133rem;
+        line-height: normal;
+        padding: 0.1333rem 0;
         background-color: #fff;
         border-radius: 0.3067rem;
         font-weight: 700;
@@ -260,7 +262,7 @@ export default {
             text-align: center;
             margin-bottom: 0.3333rem;
             font-weight: bold;
-            font-family:'PingFang-SC-Bold';
+            font-family: "PingFang-SC-Bold";
           }
           .score_name {
             box-sizing: border-box;

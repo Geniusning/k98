@@ -2,13 +2,13 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-05-04 16:03:21
+ * @Last Modified time: 2018-05-07 11:31:46
  */
 
 import axios from 'axios'
 import Url from './url'
-import jsonp from './jsonp'
-import { options } from './config'
+// import jsonp from './jsonp'
+// import { options } from './config'
 
 let api = {};
 
