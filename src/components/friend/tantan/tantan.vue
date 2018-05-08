@@ -156,11 +156,6 @@ export default {
     });
   },
   methods: {
-    //传递好友ID
-    transferId(item) {
-      console.log(item);
-      console.log(11);
-    },
     touchstart(e) {
       if (this.temporaryData.tracking) {
         return;
@@ -257,24 +252,24 @@ export default {
       this.temporaryData.lastRotate = this.temporaryData.rotate;
       this.temporaryData.lastZindex = 20;
       // 循环currentPage
+      //this.temporaryData.currentPage = this.temporaryData.currentPage === this.pages.length - 1 ? 0 : this.temporaryData.currentPage + 1
       console.log(this.temporaryData.currentPage);
       let index = this.temporaryData.currentPage;
       if (this.distant > 0) {
-        this.temporaryData.currentPage =
-          this.temporaryData.currentPage === this.pages.length - 1 
-            ? 0
-            : this.temporaryData.currentPage + 1;
-        let friendData_right = this.pages[this.temporaryData.currentPage];
-        this.$emit("firstData",friendData_right)
-        // currentPage切换，整体dom进行变化，把第一层滑动置最低
-      } else {
-        console.log(this.pages[index - 1]);
         this.temporaryData.currentPage =
           this.temporaryData.currentPage === 0
             ? this.pages.length - 1
             : this.temporaryData.currentPage - 1;
         let friendData_left = this.pages[this.temporaryData.currentPage];
-        this.$emit("firstData",friendData_left) 
+        this.$emit("firstData", friendData_left);
+      } else {
+        this.temporaryData.currentPage =
+          this.temporaryData.currentPage === this.pages.length - 1
+            ? 0
+            : this.temporaryData.currentPage + 1;
+        let friendData_right = this.pages[this.temporaryData.currentPage];
+        this.$emit("firstData", friendData_right);
+        // currentPage切x 换，整体dom进行变化，把第一层滑动置最低
       }
       this.$nextTick(() => {
         this.temporaryData.poswidth = 0;
@@ -303,30 +298,30 @@ export default {
         this.temporaryData.rotate = 0;
       });
     },
-    prev() {
-      this.temporaryData.tracking = false;
-      this.temporaryData.animation = true;
-      // 计算划出后最终位置
-      let width = this.$el.offsetWidth;
-      this.temporaryData.poswidth = -width;
-      this.temporaryData.posheight = 0;
-      this.temporaryData.opacity = 0;
-      this.temporaryData.rotate = "-3";
-      this.temporaryData.swipe = true;
-      this.nextTick();
-    },
-    next() {
-      this.temporaryData.tracking = false;
-      this.temporaryData.animation = true;
-      // 计算划出后最终位置
-      let width = this.$el.offsetWidth;
-      this.temporaryData.poswidth = width;
-      this.temporaryData.posheight = 0;
-      this.temporaryData.opacity = 0;
-      this.temporaryData.rotate = "3";
-      this.temporaryData.swipe = true;
-      this.nextTick();
-    },
+    // prev() {
+    //   this.temporaryData.tracking = false;
+    //   this.temporaryData.animation = true;
+    //   // 计算划出后最终位置
+    //   let width = this.$el.offsetWidth;
+    //   this.temporaryData.poswidth = -width;
+    //   this.temporaryData.posheight = 0;
+    //   this.temporaryData.opacity = 0;
+    //   this.temporaryData.rotate = "-3";
+    //   this.temporaryData.swipe = true;
+    //   this.nextTick();
+    // },
+    // next() {
+    //   this.temporaryData.tracking = false;
+    //   this.temporaryData.animation = true;
+    //   // 计算划出后最终位置
+    //   let width = this.$el.offsetWidth;
+    //   this.temporaryData.poswidth = width;
+    //   this.temporaryData.posheight = 0;
+    //   this.temporaryData.opacity = 0;
+    //   this.temporaryData.rotate = "3";
+    //   this.temporaryData.swipe = true;
+    //   this.nextTick();
+    // },
     onTransitionEnd(index) {
       let lastPage =
         this.temporaryData.currentPage === 0

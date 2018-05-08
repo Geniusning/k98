@@ -38,7 +38,7 @@
                     <h2 class="dice_title">大话骰</h2>
                     <span class="desc">最烧脑的酒吧游戏</span>
                 </div>
-                <ul class="game_list">
+                <ul class="game_list clearfix">
                     <li @click.prevent="playGame(1)">
                         <!-- <a href=""> -->
                             <img src="../../assets/image/game1.png" alt="" class="pic_game">
@@ -547,6 +547,7 @@ export default {
 }
 // 游戏
 .game_wrapper {
+  // width: 100%;
   .titleWrapper;
   .title {
     padding-bottom: 0.4rem;
@@ -560,13 +561,17 @@ export default {
     }
   }
   .game_list {
-    display: flex;
-    justify-content: space-between;
+    // width: 100%;
+    overflow: auto;
+    height: 2.5333rem;
+    // display: flex;
+    // justify-content: space-between;
     padding: 0 0.2667rem;
     padding-bottom: 0.2667rem;
     .pic_game {
-      width: 3.0667rem;
-      height: 2.2667rem;
+      float: left;
+      width: 4.1333rem;
+      height: 2.5333rem;
       // border-radius: 0.625rem;
     }
   }
