@@ -38,24 +38,28 @@
                     <h2 class="dice_title">大话骰</h2>
                     <span class="desc">最烧脑的酒吧游戏</span>
                 </div>
+                <!-- <div class="swiper-container game_list">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                           <img src="../../assets/image/game1.png" alt="" class="pic_game">
+                        </div>
+                        <div class="swiper-slide">
+                           <img src="../../assets/image/game2.png" alt="" class="pic_game">
+                        </div>
+                        <div class="swiper-slide">
+                           <img src="../../assets/image/game3.png" alt="" class="pic_game">
+                        </div>
+                    </div>
+                </div> -->
                 <ul class="game_list clearfix">
                     <li @click.prevent="playGame(1)">
-                        <!-- <a href=""> -->
                             <img src="../../assets/image/game1.png" alt="" class="pic_game">
-                            <!-- <p class="game_desc">同场匹配</p> -->
-                        <!-- </a> -->
                     </li>
                     <li @click.prevent="playGame(3)">
-                        <!-- <a href=""> -->
-                            <img src="../../assets/image/game2.png" alt="" class="pic_game">
-                            <!-- <p class="game_desc">部落争霸</p> -->
-                        <!-- </a> -->
+                        <img src="../../assets/image/game2.png" alt="" class="pic_game">
                     </li>
                     <li @click.prevent="playGame(2)">
-                        <!-- <a href=""> -->
-                            <img src="../../assets/image/game3.png" alt="" class="pic_game">
-                            <!-- <p class="game_desc">开放组局</p> -->
-                        <!-- </a> -->
+                        <img src="../../assets/image/game3.png" alt="" class="pic_game">     
                     </li>
                 </ul>
             </div>
@@ -198,10 +202,12 @@ export default {
   },
   computed: {},
   mounted() {
-    // var mySwiper = new swiper(".swiper-container", {
-    //   // pagination: ".swiper-pagination",
+    // var swiper = new Swiper(".swiper-container", {
+    //   pagination: ".swiper-pagination",
+    //   slidesPerView: 3,
     //   paginationClickable: true,
-    //   autoplay: 3000
+    //   spaceBetween: 30,
+    //   freeMode: true
     // });
   },
   methods: {
@@ -561,18 +567,19 @@ export default {
     }
   }
   .game_list {
-    // width: 100%;
-    overflow: auto;
+    overflow-x: auto;
     height: 2.5333rem;
-    // display: flex;
-    // justify-content: space-between;
-    padding: 0 0.2667rem;
+    margin: 0 0.2667rem;
     padding-bottom: 0.2667rem;
-    .pic_game {
-      float: left;
-      width: 4.1333rem;
-      height: 2.5333rem;
-      // border-radius: 0.625rem;
+    li {
+      display: table-cell;
+      box-sizing: border-box;
+      .pic_game {
+        float: left;
+        width: 4.1333rem;
+        height: 2.5333rem;
+        // border-radius: 0.625rem;
+      }
     }
   }
 }
