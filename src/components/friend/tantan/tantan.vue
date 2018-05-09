@@ -438,7 +438,7 @@ export default {
           style[this.temporaryData.prefixes.transition + "TimingFunction"] =
             "ease";
           style[this.temporaryData.prefixes.transition + "Duration"] =
-            (this.temporaryData.animation ? 300 : 0) + "ms";
+            (this.temporaryData.animation ? 100 : 0) + "ms";
         }
         return style;
       }

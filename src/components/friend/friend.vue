@@ -91,29 +91,6 @@
             </x-dialog>
       </div>
 
-      <!-- 好友列表 -->
-      <div v-transfer-dom>
-        <popup v-model="showFriendList" position="right" show-mask>
-            <!-- <Scroller :lock-x='true'> -->
-            <div :style="{width:'200px',height:height+'px'}" class="friendBox bg" >
-              <h3>好友列表</h3>
-                <!-- <scroll :data="friendList" class="friend_content" :style="{height:height+'px'}"> -->
-                    <ul class="friend_list" ref="friend_list">
-                      <li class="item" v-for="(item,index) in friendList" :key="index">
-                        <div class="avater_wrapper">
-                          <img src="../../assets/image/avatar3.jpg" alt="">
-                        </div>
-                        <div class="friendInfo_wrapper">
-                          <p class="name">{{item.name}}</p>
-                          <p class="tag"><span>标签:</span>{{item.tag}}</p>
-                        </div>
-                      </li>
-                    </ul>
-                <!-- </scroll> -->
-            </div>
-            <!-- </Scroller> -->
-        </popup>
-    </div>
 
     <!-- 点赞 -->
     <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask text="赞过去了哦" :position="position"></toast>
@@ -159,68 +136,6 @@ export default {
       showToast_gift: false,
       position: "default",
       showPositionValue: false,
-      friendList: [
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        },
-        {
-          name: "小红",
-          tag: "逗比、二愣子"
-        }
-      ],
       personShow: false,
       showFriendList: false,
       showToast: false,

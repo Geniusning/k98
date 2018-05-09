@@ -17,7 +17,7 @@
                     <div class="swiper-pagination"></div>
                 </div>  
             </div> -->
-            <swiper :auto="true" :loop="true" :list="demo01_list" v-model="demo01_index" @click="show_introduce"></swiper>
+            <swiper  :loop="true" :list="demo01_list" v-model="demo01_index" @click="show_introduce"></swiper>
       </div>
       <div class="wrapper" ref="wrapper">
         <div class="content">
@@ -38,19 +38,6 @@
                     <h2 class="dice_title">大话骰</h2>
                     <span class="desc">最烧脑的酒吧游戏</span>
                 </div>
-                <!-- <div class="swiper-container game_list">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                           <img src="../../assets/image/game1.png" alt="" class="pic_game">
-                        </div>
-                        <div class="swiper-slide">
-                           <img src="../../assets/image/game2.png" alt="" class="pic_game">
-                        </div>
-                        <div class="swiper-slide">
-                           <img src="../../assets/image/game3.png" alt="" class="pic_game">
-                        </div>
-                    </div>
-                </div> -->
                 <ul class="game_list clearfix">
                     <li @click.prevent="playGame(1)">
                             <img src="../../assets/image/game1.png" alt="" class="pic_game">
@@ -65,23 +52,32 @@
             </div>
             <!-- 好友 -->
             <div class="friend_wrapper">
-                <div class="title_content_fri">
+                <div class="title_content_fri clearfix">
                     <div class="title clearfix">
                         <h2 class="friend_title">缘来同场</h2>
                         <span class="desc">找呀找呀找朋友</span>
                     </div>
                     <div class="more">
-                        <!-- <span @click="showMoreFriend">更多>></span> -->
+                        <ul class="fri_list">
+                          <li class="item" v-for="(item,index) in friList" :key="index">
+                            <img :src="item.src" alt="暂无图片" class="min_avatar">
+                          </li>
+                          <li class="item dotItem">
+                              <span class="dot">...</span>
+                          </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="pic_content">
                     <ul class="pic_list">
                         <li @click="intoFriend" class="inner_fri">
-                            <img src="../../assets/image/online.png" class="online" onclick="return false">
-                            <img src="../../assets/image/inner_fri.png" alt="" class="friend_avatar" onclick="return false">
+                            <!-- <img src="../../assets/image/online.png" class="online" onclick="return false"> -->
+                            <span class="inner_onlinePerson">88人在线</span>
+                            <img src="../../assets/image/inner_fri.png" alt="" class="friend_avatar_inner" onclick="return false">
                         </li>
-                        <li @click="intoFriend">
-                            <img src="../../assets/image/out_fri.png" alt="" class="friend_avatar" onclick="return false">
+                        <li @click="intoFriend" class="out_fri">
+                            <span class="out_onlinePerson">188人在线</span>
+                            <img src="../../assets/image/out_fri.png" alt="" class="friend_avatar_out" onclick="return false">
                         </li>
                          <!-- <li>
                             <img src="../../assets/image/meinv3.png" alt="" class="friend_avatar">
@@ -100,7 +96,31 @@
                         <!-- <span @click="showMoreWelfare">更多>></span> -->
                     </div>
                 </div>
-                <ul class="welfare_list">
+                <div class="welfare_content">
+                  <ul class="welfare_list">
+                    <li class="item clearfix" v-for="(item,index) in picList" :key="index">
+                      <div class="left">
+                        <img :src="item.src" alt="" class="shopPic">
+                      </div>
+                      <div class="center">
+                        <p class="title">{{item.title}}</p>
+                        <p class="desc">{{item.desc}}</p>
+                        <p class="price">
+                          <span class="discount_p">特惠￥{{item.price}}</span><del class="origin_p">原价￥{{item.originPrice}}</del>
+                        </p>
+                      </div>
+                      <div class="right">
+                        <div class="thunb_box clearfix" @click="thumb">
+                          <img src="../../assets/image/thumb1.png" alt="" class="thumb"><span class="count">{{item.count}}</span>
+                        </div>
+                        <div class="show_detail" @click="showDetail">
+                          查看详情
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <!-- <ul class="welfare_list">
                     <li v-for="(item, index) in picList" :key="index"> 
                       <img class="pic_welfare" v-preview="item.src" :src="item.src" >
                       <div class="Onsale">
@@ -108,13 +128,42 @@
                         <p class="desc">{{item.desc}}</p>
                       </div>
                     </li>
-                </ul>
+                </ul> -->
             </div>
         </div>
       </div>
        <div class="fuli" @click="toWelfare">
          <img src="../../assets/image/fuli.png" alt="" class="pic_fuli">
        </div>
+
+       <!-- 弹框 -->
+       <div v-transfer-dom>
+          <x-dialog v-model="showDialogStyle" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', height: '50%', 'background-color': 'transparent'}">
+            <p style="color:#fff;text-align:center;" @click="showDialogStyle = false">
+              <div class="dialog_wrapper">
+                <div class="banner_content">
+                  <img src="../../assets/image/banner.png" alt="" class="picBanner">
+                </div>
+                <div class="info_content">
+                  <h2>超级优惠四人套餐￥199</h2>
+                  <div class="introduce_box">
+                    <h3 class="title">说明:</h3>
+                    <p>用户到店可直接享受特惠价，无需团购预约</p>
+                  </div>
+                  <div class="endTime_box">
+                    <h3 class="title">截止日期：</h3>
+                    <p>2018.08.01-2018.09.01</p>
+                  </div>
+                  <div class="consume_box">
+                    <h3 class="title">消费时间段：</h3>
+                    <p>18:00-24:00</p>
+                  </div>
+                </div>
+              </div>
+              <x-icon type="ios-close-outline" style="fill:#fff;margin-top:20px;" @click="closeDialog"></x-icon>
+            </p>
+          </x-dialog>
+      </div>
  </div>
 </template>
 
@@ -123,28 +172,21 @@
 // import "swiper/dist/css/swiper.min.css";
 import util from "common/util";
 import api from "common/api";
-import { Previewer, TransferDom, Scroller, Swiper, Toast } from "vux";
+import { TransferDom, Swiper, Toast, XDialog } from "vux";
 import axios from "axios";
 import url from "common/url";
 import { mapMutations } from "vuex";
 const baseList = [
   {
     url: "javascript:",
-    img: "http://i4.bvimg.com/643118/b468123c905b0039.jpg", // 404
+    img: "http://i2.bvimg.com/643118/cbe37fbdd3e49bbb.png", // 404
 
     title: ""
   },
   {
     url: "javascript:",
-    img: "http://i2.bvimg.com/643118/69278a1e38cb4574.png",
+    img: "http://i4.bvimg.com/643118/b468123c905b0039.jpg",
     title: ""
-  },
-  {
-    url: "javascript:",
-    img: "http://i2.bvimg.com/643118/68e0d5bc3b55fee4.png",
-    title: "",
-    fallbackImg:
-      "https://ww1.sinaimg.cn/large/663d3650gy1fq66vw50iwj20ff0aaaci.jpg"
   }
 ];
 export default {
@@ -154,6 +196,18 @@ export default {
   },
   data() {
     return {
+      showDialogStyle: false,
+      friList: [
+        {
+          src: "http://i2.bvimg.com/643118/47aaa8265e29874c.jpg"
+        },
+        {
+          src: "http://i1.bvimg.com/643118/2d4cdb6b943a3175.jpg"
+        },
+        {
+          src: "http://i1.bvimg.com/643118/96545237381246c7.jpg"
+        }
+      ],
       demo01_list: baseList,
       test1: "123",
       demo01_index: 0,
@@ -162,30 +216,21 @@ export default {
       distance: "",
       picList: [
         {
-          src: "http://i2.bvimg.com/643118/547e062360e36336.png",
+          src: "http://i2.bvimg.com/643118/5f04d9b63ac4eeb0.png",
+
+          originPrice: "488",
+          price: "388",
+          desc: "朋友聚会，超级实惠的哦",
+          title: "超值四人水果拼盘",
+          count: 88
+        },
+        {
+          src: "http://i4.bvimg.com/643118/babb965c057db27f.png",
           originPrice: "388",
           price: "188",
-          desc: "超值优惠，值得拥有"
-        },
-        {
-          src: "http://i2.bvimg.com/643118/5f04d9b63ac4eeb0.png",
-
-          originPrice: "488",
-          price: "388",
-          desc: "朋友聚会，超级实惠的哦"
-        },
-        {
-          src: "http://i2.bvimg.com/643118/83f7e6c0ef2053aa.png",
-          originPrice: "888",
-          price: "388",
-          desc: "特价宣传，超值优惠，谁用谁知道"
-        },
-        {
-          src: "http://i2.bvimg.com/643118/5f04d9b63ac4eeb0.png",
-
-          originPrice: "488",
-          price: "388",
-          desc: "朋友聚会，超级实惠的哦"
+          desc: "超值优惠，值得拥有",
+          title: "聚会二楼包厢特惠",
+          count: 8
         }
       ]
     };
@@ -194,23 +239,22 @@ export default {
     this.url = window.location.href;
     this._getUserInfo();
     this._getJssdkInfo();
-    //   var mySwiper = new swiper(".swiper-container", {
-    //   // pagination: ".swiper-pagination",
-    //   paginationClickable: true,
-    //   autoplay: 3000
-    // });
   },
   computed: {},
-  mounted() {
-    // var swiper = new Swiper(".swiper-container", {
-    //   pagination: ".swiper-pagination",
-    //   slidesPerView: 3,
-    //   paginationClickable: true,
-    //   spaceBetween: 30,
-    //   freeMode: true
-    // });
-  },
+  mounted() {},
   methods: {
+    //点赞
+    thumb() {
+      // this.count++;
+    },
+    //查看详情
+    showDetail() {
+      this.showDialogStyle = true;
+    },
+    //关闭详情
+    closeDialog(){
+      this.showDialogStyle = false;
+    },
     // 获取用户信息
     _getUserInfo() {
       api
@@ -369,10 +413,9 @@ export default {
     })
   },
   components: {
-    Previewer,
-    Scroller,
     Swiper,
-    Toast
+    Toast,
+    XDialog
   }
 };
 </script>
@@ -380,6 +423,7 @@ export default {
 <style scoped lang='less'>
 @import "../../assets/less/variable.less";
 @import "../../assets/less/home_common.less";
+// @import "../../assets/image/dialog_bg.png";
 .home {
   background: rgba(242, 242, 242, 1);
   .fuli {
@@ -401,6 +445,66 @@ export default {
     .pic_fuli {
       width: 60px;
       height: 73px;
+    }
+  }
+}
+.dialog_wrapper {
+  width: 7.8667rem;
+  height: 10.3467rem;
+  background: #ffd700;
+  margin: 0 auto;
+  border-radius: 10px;
+  .banner_content {
+    width: 100%;
+    height: 3.4933rem;
+    margin-bottom: 0.2667rem;
+    .picBanner {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .info_content {
+    width: 7.0667rem;
+    height: 6.2933rem;
+    margin: 0 auto;
+    background-image: url('../../assets/image/dialog_bg.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    padding-top: 0.5867rem;
+    box-sizing: border-box;
+    h2{
+      font-size: 0.4rem;
+      color:#FF3131; 
+      font-weight: bold;
+      text-align: center;
+      font-family: "PingFang SC"
+    }
+    .introduce_box {
+      margin-top: 0.56rem;
+      .title {
+        .dialogTitle;
+      }
+      p {
+        .dialogP;
+      }
+    }
+    .endTime_box {
+        margin-top: 0.3333rem;
+      .title {
+        .dialogTitle;
+      }
+      p {
+        .dialogP;
+      }
+    }
+    .consume_box {
+        margin-top: 0.2933rem;
+      .title {
+        .dialogTitle;
+      }
+      p {
+        .dialogP;
+      }
     }
   }
 }
@@ -435,6 +539,7 @@ export default {
         float: left;
         font-family: "PingFang-SC-Regular";
         font-size: 14px;
+        font-weight: bold;
       }
     }
   }
@@ -502,7 +607,7 @@ export default {
       height: 0.88rem;
       margin-top: -0.26rem;
       position: relative;
-      z-index: 9999;
+      z-index: 10;
     }
   }
 }
@@ -510,8 +615,9 @@ export default {
 .friend_wrapper {
   .titleWrapper;
   .title {
-    padding-bottom: 0.4rem;
-    padding-top: 0.32rem;
+    padding-bottom: 0.2933rem;
+    padding-top: 0.4267rem;
+    float: left;
     .title;
     .friend_title {
       .homeTitle;
@@ -520,34 +626,75 @@ export default {
       .titleDesc;
     }
   }
+  .more {
+    padding: 0.1333rem 0.1333rem;
+    padding-top: 0.2rem;
+    float: right;
+    .fri_list {
+      .item {
+        float: left;
+        margin-left: -0.2rem;
+        .dot {
+          font-size: 0.5533rem;
+          display: inline-block;
+          line-height: 0.3rem;
+          color: #d1d1d1;
+        }
+        .min_avatar {
+          width: 0.6667rem;
+          height: 0.6667rem;
+          border-radius: 50%;
+        }
+      }
+      .dotItem {
+        margin-left: 0.1rem;
+      }
+    }
+  }
   .pic_content {
     .pic_list {
-      padding: 0 0.4rem;
+      padding: 0 0.2667rem;
       display: flex;
       justify-content: space-between;
       padding-bottom: 0.2667rem;
-      .inner_fri {
+      li {
+        &.out_fri {
+          padding-top: 0.1633rem;
+        }
         position: relative;
-        .online {
-          position: absolute;
-          width: 0.6133rem;
-          height: 0.6133rem;
-          line-height: 0.6133rem;
-          font-size: 0.19rem;
-          border-radius: 50%;
-          text-align: center;
-          background: red;
-          color: #fff;
-          left: 0;
-          top: 0;
-          font-family: "PingFang-SC-Bold";
-          font-weight: 700;
+        .inner_onlinePerson {
+          .online;
+        }
+        .out_onlinePerson {
+          .online;
+        }
+        .friend_avatar_inner {
+          width: 4.6933rem;
+          height: 2.7333rem;
+        }
+        .friend_avatar_out {
+          width: 4.6933rem;
+          height: 2.56rem;
         }
       }
-      .friend_avatar {
-        width: 4.4rem;
-        height: 1.6533rem;
-      }
+      // .inner_fri {
+      //   position: relative;
+      //   .online {
+      //     position: absolute;
+      //     width: 0.6133rem;
+      //     height: 0.6133rem;
+      //     line-height: 0.6133rem;
+      //     font-size: 0.19rem;
+      //     border-radius: 50%;
+      //     text-align: center;
+      //     background: red;
+      //     color: #fff;
+      //     left: 0;
+      //     top: 0;
+      //     font-family: "PingFang-SC-Bold";
+      //     font-weight: 700;
+      //   }
+      // }
     }
   }
 }
@@ -556,8 +703,8 @@ export default {
   // width: 100%;
   .titleWrapper;
   .title {
-    padding-bottom: 0.4rem;
-    padding-top: 0.32rem;
+    padding-bottom: 0.2933rem;
+    padding-top: 0.4267rem;
     .title;
     .dice_title {
       .homeTitle;
@@ -586,53 +733,128 @@ export default {
 // 福利
 .welfare_wrapper {
   .titleWrapper;
-  .title {
-    padding-bottom: 0.4rem;
-    padding-top: 0.32rem;
-    .title;
-    .shop_title {
-      .homeTitle;
+  .title_content_wel {
+    .title {
+      padding-bottom: 0.2933rem;
+      padding-top: 0.4267rem;
+      .title;
+      .shop_title {
+        .homeTitle;
+      }
+      .desc {
+        .titleDesc;
+      }
     }
-    .desc {
-      .titleDesc;
+  }
+  .welfare_content {
+    margin-top: 0.1rem;
+    .welfare_list {
+      padding: 0 0.2667rem;
+      .item {
+        height: 2.6667rem;
+        .left {
+          float: left;
+          width: 2.8533rem;
+          height: 2.1333rem;
+          .shopPic {
+            width: 100%;
+            height: 100%;
+          }
+        }
+        .center {
+          float: left;
+          margin-left: 0.2667rem;
+          .title {
+            font-size: 0.3733rem;
+            color: #333;
+            font-weight: bold;
+          }
+          .desc {
+            margin-top: 0.24rem;
+            color: #8f8f8f;
+            font-size: 0.32rem;
+          }
+          .price {
+            margin-top: 0.3933rem;
+            .discount_p {
+              color: #ff3131;
+              font-size: 0.3467rem;
+              margin-right: 0.4267rem;
+            }
+            .origin_p {
+              color: #8f8f8f;
+              font-size: 0.3467rem;
+            }
+          }
+        }
+        .right {
+          float: right;
+          // margin-top: 0.4rem;
+          .thunb_box {
+            padding-left: 0.1833rem;
+            .thumb {
+              width: 0.4rem;
+              height: 0.4rem;
+              float: left;
+              margin-right: 0.1333rem;
+            }
+            .count {
+              float: left;
+              color: #8f8f8f;
+              font-size: 0.3467rem;
+            }
+          }
+          .show_detail {
+            margin-top: 1.1rem;
+            width: 1.4667rem;
+            // height: 0.5067rem;
+            padding: 0.1067rem 0;
+            text-align: center;
+            line-height: 0.5067rem;
+            background: @baseColor;
+            color: #fff;
+            border-radius: 0.08rem;
+          }
+        }
+      }
     }
   }
 
-  .welfare_list {
-    padding: 0 0.2667rem;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    li {
-      width: 4.6667rem;
-      margin-bottom: 0.375rem;
-      .pic_welfare {
-        width: 100%;
-        height: 3.5467rem;
-        // border-radius: 10px;
-      }
-      .Onsale {
-        .money {
-          display: flex;
-          justify-content: space-between;
-          .origin_price {
-            color: #ff3320;
-            font-size: 14px;
-          }
-          del {
-            color: gray;
-            font-size: 14px;
-          }
-        }
-        .desc {
-          color: gray;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 14px;
-        }
-      }
-    }
-  }
+  // .welfare_list {
+  //   padding: 0 0.2667rem;
+  //   display: flex;
+  //   justify-content: space-between;
+  //   flex-wrap: wrap;
+  //   li {
+  //     width: 4.6667rem;
+  //     margin-bottom: 0.375rem;
+  //     .pic_welfare {
+  //       width: 100%;
+  //       height: 3.5467rem;
+  //       // border-radius: 10px;
+  //     }
+  //     .Onsale {
+  //       .money {
+  //         display: flex;
+  //         justify-content: space-between;
+  //         .origin_price {
+  //           color: #ff3320;
+  //           font-size: 14px;
+  //         }
+  //         del {
+  //           color: gray;
+  //           font-size: 14px;
+  //         }
+  //       }
+  //       .desc {
+  //         color: gray;
+  //         overflow: hidden;
+  //         text-overflow: ellipsis;
+  //         white-space: nowrap;
+  //         font-size: 14px;
+  //       }
+  //     }
+  //   }
+  // }
 }
 </style>
