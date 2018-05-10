@@ -9,7 +9,7 @@
         <tabbar-item :selected="selected==1" link="/friend">
           <img v-if="selected!==1" slot="icon" src="../../assets/image/friend.png">
           <img v-else slot="icon" src="../../assets/image/active_friend.png">
-          <span slot="label">交友</span>
+          <span slot="label">好友</span>
         </tabbar-item>
         <tabbar-item :selected="selected==2" badge="2" link="/message">
           <img v-if="selected!==2" slot="icon" src="../../assets/image/message.png">
@@ -19,7 +19,7 @@
         <tabbar-item :selected="selected==3"  link="/welfare">
           <img v-if="selected!==3" slot="icon" src="../../assets/image/welfare.png">
           <img v-else slot="icon" src="../../assets/image/active_welfare.png">
-          <span slot="label">福利</span>
+          <span slot="label">活动</span>
         </tabbar-item>
         <tabbar-item :selected="selected==4"  link="/mine">
           <img v-if="selected!==4" slot="icon" src="../../assets/image/mine.png">

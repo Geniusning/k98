@@ -7,17 +7,13 @@
                 <p class="bar_name">Lose Demon吧(迷失的恶魔魅力四射)</p>
               </div>
             </div>
-            <!-- <div class="slider_wrapper">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide" @click="show_introduce"><img src="../../assets/image/1.jpg" alt="" class="pic"></div>
-                        <div class="swiper-slide" @click="show_introduce"><img src="../../assets/image/2.jpg" alt="" class="pic"></div>
-                        <div class="swiper-slide" @click="show_introduce"><img src="../../assets/image/3.jpg" alt="" class="pic"></div>
-                    </div>
-                    <div class="swiper-pagination"></div>
-                </div>  
-            </div> -->
-            <swiper  :loop="true" :list="demo01_list" v-model="demo01_index" @click="show_introduce"></swiper>
+            <div class="bg"></div>
+            <swiper class="slider":loop="true" :list="demo01_list" v-model="demo01_index" @click="show_introduce"></swiper>
+             <!-- <carousel-3d :perspective="10" :display="5" :width="300" :height="140">
+              <slide :index="index" v-for="(item,index) in demo01_list" :key="index">
+               <img :src="item.img" alt="" style="height:100%">
+              </slide>
+            </carousel-3d> -->
       </div>
       <div class="wrapper" ref="wrapper">
         <div class="content">
@@ -35,8 +31,9 @@
             <!-- 游戏 -->
             <div class="game_wrapper">
                 <div class="title clearfix">
+                    <img src="../../assets/image/game_icon.png" alt="" class="icon fl">
                     <h2 class="dice_title">大话骰</h2>
-                    <span class="desc">最烧脑的酒吧游戏</span>
+                    <span class="desc">最烧脑游戏,够胆你就来</span>
                 </div>
                 <ul class="game_list clearfix">
                     <li @click.prevent="playGame(1)">
@@ -54,8 +51,9 @@
             <div class="friend_wrapper">
                 <div class="title_content_fri clearfix">
                     <div class="title clearfix">
-                        <h2 class="friend_title">缘来同场</h2>
-                        <span class="desc">找呀找呀找朋友</span>
+                      <img src="../../assets/image/footPrint.png" alt="" class="icon fl">
+                        <h2 class="friend_title">好友足迹</h2>
+                        <span class="desc">部落社员一块玩</span>
                     </div>
                     <div class="more">
                         <ul class="fri_list">
@@ -89,12 +87,17 @@
             <div class="welfare_wrapper">
                 <div class="title_content_wel">
                     <div class="title clearfix">
+                      <img src="../../assets/image/recomment.png" alt="" class="icon fl">
                         <h2 class="shop_title">店长推荐</h2>
-                        <span class="desc">多优惠,更省钱</span>
+                        <span class="desc">更贴心、更优惠</span>
                     </div>
                     <div class="more">
                         <!-- <span @click="showMoreWelfare">更多>></span> -->
                     </div>
+                </div>
+                <div class="advertise_wrapper" v-if="show_advertise">
+                  <img src="../../assets/image/advertise.png" alt="" class="advertise">
+                  <img src="../../assets/image/close_ad.png" alt="" class="close" @click="close_adtise" >
                 </div>
                 <div class="welfare_content">
                   <ul class="welfare_list">
@@ -110,7 +113,7 @@
                         </p>
                       </div>
                       <div class="right">
-                        <div class="thunb_box clearfix" @click="thumb">
+                        <div class="thunb_box clearfix" @click="thumb(index)">
                           <img src="../../assets/image/thumb1.png" alt="" class="thumb"><span class="count">{{item.count}}</span>
                         </div>
                         <div class="show_detail" @click="showDetail">
@@ -120,15 +123,6 @@
                     </li>
                   </ul>
                 </div>
-                <!-- <ul class="welfare_list">
-                    <li v-for="(item, index) in picList" :key="index"> 
-                      <img class="pic_welfare" v-preview="item.src" :src="item.src" >
-                      <div class="Onsale">
-                        <p class="money"><span class="origin_price">特价￥{{item.price}}</span><del>原价￥{{item.originPrice}}</del></p>
-                        <p class="desc">{{item.desc}}</p>
-                      </div>
-                    </li>
-                </ul> -->
             </div>
         </div>
       </div>
@@ -176,6 +170,7 @@ import { TransferDom, Swiper, Toast, XDialog } from "vux";
 import axios from "axios";
 import url from "common/url";
 import { mapMutations } from "vuex";
+import { Carousel3d, Slide } from "vue-carousel-3d";
 const baseList = [
   {
     url: "javascript:",
@@ -187,6 +182,11 @@ const baseList = [
     url: "javascript:",
     img: "http://i4.bvimg.com/643118/b468123c905b0039.jpg",
     title: ""
+  },
+  {
+    url: "javascript:",
+    img: "http://i2.bvimg.com/643118/69278a1e38cb4574.png",
+    title: ""
   }
 ];
 export default {
@@ -197,6 +197,7 @@ export default {
   data() {
     return {
       showDialogStyle: false,
+      show_advertise:true,
       friList: [
         {
           src: "http://i2.bvimg.com/643118/47aaa8265e29874c.jpg"
@@ -206,7 +207,7 @@ export default {
         },
         {
           src: "http://i1.bvimg.com/643118/96545237381246c7.jpg"
-        }
+        },
       ],
       demo01_list: baseList,
       test1: "123",
@@ -243,8 +244,13 @@ export default {
   computed: {},
   mounted() {},
   methods: {
+    //关闭广告
+    close_adtise(){
+      this.show_advertise = false;
+    },
     //点赞
-    thumb() {
+    thumb(index) {
+      this.picList[index].count++;
       // this.count++;
     },
     //查看详情
@@ -252,7 +258,7 @@ export default {
       this.showDialogStyle = true;
     },
     //关闭详情
-    closeDialog(){
+    closeDialog() {
       this.showDialogStyle = false;
     },
     // 获取用户信息
@@ -415,7 +421,9 @@ export default {
   components: {
     Swiper,
     Toast,
-    XDialog
+    XDialog,
+    Carousel3d,
+    Slide
   }
 };
 </script>
@@ -467,17 +475,17 @@ export default {
     width: 7.0667rem;
     height: 6.2933rem;
     margin: 0 auto;
-    background-image: url('../../assets/image/dialog_bg.png');
+    background-image: url("../../assets/image/dialog_bg.png");
     background-repeat: no-repeat;
     background-size: 100%;
     padding-top: 0.5867rem;
     box-sizing: border-box;
-    h2{
+    h2 {
       font-size: 0.4rem;
-      color:#FF3131; 
+      color: #ff3131;
       font-weight: bold;
       text-align: center;
-      font-family: "PingFang SC"
+      font-family: "PingFang SC";
     }
     .introduce_box {
       margin-top: 0.56rem;
@@ -489,7 +497,7 @@ export default {
       }
     }
     .endTime_box {
-        margin-top: 0.3333rem;
+      margin-top: 0.3333rem;
       .title {
         .dialogTitle;
       }
@@ -498,7 +506,7 @@ export default {
       }
     }
     .consume_box {
-        margin-top: 0.2933rem;
+      margin-top: 0.2933rem;
       .title {
         .dialogTitle;
       }
@@ -512,7 +520,14 @@ export default {
 }
 .top_wrapper {
   position: relative;
-  height: 3.84rem;
+  height: 4.2667rem;
+  // background: #ffe200;
+  .bg {
+    position: absolute;
+    height: 50%;
+    width: 100%;
+    background: #ffe200;
+  }
   .barLogo_wrapper {
     width: 100%;
     position: absolute;
@@ -543,14 +558,17 @@ export default {
       }
     }
   }
-  .slider_wrapper {
-    height: 3.84rem;
-    // position: relative;
-    .swiper-container {
-      width: 100%;
-      height: 100%;
-    }
+  .slider {
+    height: 100%;
   }
+  // .slider_wrapper {
+  //   height: 3.84rem;
+  //   // position: relative;
+  //   .swiper-container {
+  //     width: 100%;
+  //     height: 100%;
+  //   }
+  // }
 }
 .pic {
   width: 100%;
@@ -578,10 +596,10 @@ export default {
       margin-top: -0.0667rem;
     }
     .adr_desc {
-      font-size: 13px;
+      font-size: 0.3467rem;
       font-family: "PingFang-SC-Regular";
       float: left;
-      color: #888888;
+      color: #414141;
     }
   }
   .navigator {
@@ -613,27 +631,35 @@ export default {
 }
 // 好友
 .friend_wrapper {
+  .icon {
+    width: 0.7733rem;
+    height: 0.88rem;
+    margin-right: 0.16rem;
+  }
   .titleWrapper;
   .title {
-    padding-bottom: 0.2933rem;
-    padding-top: 0.4267rem;
+    padding-bottom: 0.2333rem;
+    padding-top: 0.2667rem;
     float: left;
+    display: inline-block;
     .title;
     .friend_title {
       .homeTitle;
+      padding-top: 0.25rem;
     }
     .desc {
       .titleDesc;
+      padding-top: 0.22rem;
     }
   }
   .more {
     padding: 0.1333rem 0.1333rem;
-    padding-top: 0.2rem;
+    padding-top: 0.4rem;
     float: right;
     .fri_list {
       .item {
         float: left;
-        margin-left: -0.2rem;
+        margin-left: -0.25rem;
         .dot {
           font-size: 0.5533rem;
           display: inline-block;
@@ -656,7 +682,7 @@ export default {
       padding: 0 0.2667rem;
       display: flex;
       justify-content: space-between;
-      padding-bottom: 0.2667rem;
+      padding-bottom: 0.2167rem;
       li {
         &.out_fri {
           padding-top: 0.1633rem;
@@ -677,47 +703,36 @@ export default {
           height: 2.56rem;
         }
       }
-      // .inner_fri {
-      //   position: relative;
-      //   .online {
-      //     position: absolute;
-      //     width: 0.6133rem;
-      //     height: 0.6133rem;
-      //     line-height: 0.6133rem;
-      //     font-size: 0.19rem;
-      //     border-radius: 50%;
-      //     text-align: center;
-      //     background: red;
-      //     color: #fff;
-      //     left: 0;
-      //     top: 0;
-      //     font-family: "PingFang-SC-Bold";
-      //     font-weight: 700;
-      //   }
-      // }
     }
   }
 }
 // 游戏
 .game_wrapper {
   // width: 100%;
+  .icon {
+    width: 1.1067rem;
+    height: 0.6133rem;
+    margin-right: 0.16rem;
+  }
   .titleWrapper;
   .title {
-    padding-bottom: 0.2933rem;
-    padding-top: 0.4267rem;
+    padding-bottom: 0.2333rem;
+    padding-top: 0.2667rem;
     .title;
     .dice_title {
       .homeTitle;
+      padding-top: 0.0967rem;
     }
     .desc {
       .titleDesc;
+      padding-top: 0.0967rem;
     }
   }
   .game_list {
     overflow-x: auto;
     height: 2.5333rem;
     margin: 0 0.2667rem;
-    padding-bottom: 0.2667rem;
+    padding-bottom: 0.2167rem;
     li {
       display: table-cell;
       box-sizing: border-box;
@@ -735,15 +750,35 @@ export default {
   .titleWrapper;
   .title_content_wel {
     .title {
-      padding-bottom: 0.2933rem;
-      padding-top: 0.4267rem;
+      padding-bottom: 0.2333rem;
+      padding-top: 0.2667rem;
+      .icon {
+        width: 0.9333rem;
+        height: 0.9333rem;
+        margin-right: 0.16rem;
+      }
       .title;
       .shop_title {
         .homeTitle;
+        padding-top: 0.25rem;
       }
       .desc {
         .titleDesc;
+        padding-top: 0.22rem;
       }
+    }
+  }
+  .advertise_wrapper {
+    position: relative;
+    .close {
+      width: 0.32rem;
+      height: 0.3467rem;
+      position: absolute;
+      top: 1.4667rem;
+      right: 0.4267rem;
+    }
+    .advertise {
+      height: 3.1467rem;
     }
   }
   .welfare_content {
@@ -807,7 +842,6 @@ export default {
           .show_detail {
             margin-top: 1.1rem;
             width: 1.4667rem;
-            // height: 0.5067rem;
             padding: 0.1067rem 0;
             text-align: center;
             line-height: 0.5067rem;
@@ -819,42 +853,5 @@ export default {
       }
     }
   }
-
-  // .welfare_list {
-  //   padding: 0 0.2667rem;
-  //   display: flex;
-  //   justify-content: space-between;
-  //   flex-wrap: wrap;
-  //   li {
-  //     width: 4.6667rem;
-  //     margin-bottom: 0.375rem;
-  //     .pic_welfare {
-  //       width: 100%;
-  //       height: 3.5467rem;
-  //       // border-radius: 10px;
-  //     }
-  //     .Onsale {
-  //       .money {
-  //         display: flex;
-  //         justify-content: space-between;
-  //         .origin_price {
-  //           color: #ff3320;
-  //           font-size: 14px;
-  //         }
-  //         del {
-  //           color: gray;
-  //           font-size: 14px;
-  //         }
-  //       }
-  //       .desc {
-  //         color: gray;
-  //         overflow: hidden;
-  //         text-overflow: ellipsis;
-  //         white-space: nowrap;
-  //         font-size: 14px;
-  //       }
-  //     }
-  //   }
-  // }
 }
 </style>

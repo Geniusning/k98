@@ -14,6 +14,9 @@ import Card from 'components/card/card'
 import Chat from 'components/chat_room/chat_room'
 import Individual from 'components/individual/individual'
 import vuePicturePreview from 'vue-picture-preview'
+import Carousel3d from 'vue-carousel-3d';
+
+Vue.use(Carousel3d);
 Vue.use(vuePicturePreview)
 
 Vue.use(VueRouter)
