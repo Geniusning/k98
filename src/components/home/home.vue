@@ -33,16 +33,16 @@
                 <div class="title clearfix">
                     <img src="../../assets/image/game_icon.png" alt="" class="icon fl">
                     <h2 class="dice_title">大话骰</h2>
-                    <span class="desc">最烧脑游戏,够胆你就来</span>
+                    <span class="desc">最烧脑游戏</span>
                 </div>
                 <ul class="game_list clearfix">
-                    <li @click.prevent="playGame(1)">
+                    <li>
                             <img src="../../assets/image/game1.png" alt="" class="pic_game">
                     </li>
-                    <li @click.prevent="playGame(3)">
+                    <li>
                         <img src="../../assets/image/game2.png" alt="" class="pic_game">
                     </li>
-                    <li @click.prevent="playGame(2)">
+                    <li>
                         <img src="../../assets/image/game3.png" alt="" class="pic_game">     
                     </li>
                 </ul>
@@ -53,7 +53,7 @@
                     <div class="title clearfix">
                       <img src="../../assets/image/footPrint.png" alt="" class="icon fl">
                         <h2 class="friend_title">好友足迹</h2>
-                        <span class="desc">部落社员一块玩</span>
+                        <span class="desc">部落社员热聊中...</span>
                     </div>
                     <div class="more">
                         <ul class="fri_list">

@@ -11,22 +11,19 @@
       @mouseout.prevent="touchend"
       @webkit-transition-end="onTransitionEnd(index)"
       @transitionend="onTransitionEnd(index)"
-      @click="transferId(item)">
+      >
         <div style="height:100%" class="stack_content">
           <div class="img_content">
             <img src="../../../assets/image/icon_changnei.png" alt="" class="icon" v-if="item.sex=='男'">
             <img src="../../../assets/image/icon_changwai1.png" alt="" class="icon" v-else-if="item.sex=='女'">
             <img src="../../../assets/image/icon_changwai2.png" alt="" class="icon" v-else>
-            <img :src="item.avatar" alt="" class="blur_avatar">
+            <!-- <img :src="item.avatar" alt="" class="blur_avatar"> -->
             <img class="avatar" :src="item.avatar">
             <p class="name">{{item.name}}</p>
-            <!-- <p class="loginTime">最近登录时间:2018-1-20 19:00:88</p> -->
           </div>
           <!-- 个人信息 -->
           <div class="userInfo_wrapper">
             <div class="userBox clearfix">
-              <!-- <h3 class="username">{{item.name}}</h3> -->
-              <!-- <span class="sex">男</span> -->
               <img src="../../../assets/image/male.png" alt="" class="sex" v-if="item.sex=='男'">
               <img src="../../../assets/image/female.png" alt="" class="sex" v-else>
               <span class="online" :style="{background:item.online==='好友'?'red':'gray'}">{{item.online}}</span>
@@ -46,40 +43,13 @@
                 <span class="gift">收礼数: </span>
                 <span>30</span>
               </div>
-              <!-- <span class="sex">男</span>
-              <span class="constellation">水瓶座</span> -->
-              <!-- <span class="degree">学徒</span>
-              <span class="thumbs"><img src="../../assets/image/thumb_small.png" alt="">300</span>
-              <span class="gifts"><img src="../../assets/image/gifts_small.png" alt="">200</span> -->
             </div>
-            <!-- <div class="effect_wrapper">
-              <span>影响力:</span><span class="effect_num">800</span>
-            </div> -->
             <div class="tag_wrapper">
               <span>搞笑</span>
               <span>幽默</span>
               <span>逗比</span>
             </div>
           </div>
-          <!-- 基本信息 -->
-          <!-- <div class="baseInfo_wrapper">
-            <div class="baseInfo_one">
-              <div class="baseInfo_one_left">
-                <span>影响力:</span><span>3000</span>
-              </div>
-              <div class="baseInfo_one_right">
-                 <span>等级:</span><span>掌门</span>
-              </div>
-            </div>
-            <div class="baseInfo_two">
-               <div class="baseInfo_two_left">
-                <span>获赞数:</span><span>30</span>
-              </div>
-              <div class="baseInfo_two_right">
-                 <span>收礼数:</span><span>8</span>
-              </div>
-            </div>
-          </div> -->
         </div>
       </li>
     </ul>
@@ -509,7 +479,7 @@ export default {
       width: 1.8133rem;
       height: 0.6133rem;
       top: 6rem;
-      left: 3.4167rem;
+      left: 3.6167rem;
       z-index: 100000;
       font-size: 0.4rem;
       font-weight: 700;
@@ -518,7 +488,9 @@ export default {
     .blur_avatar {
       width: 100%;
       height: 100%;
-      filter: blur(0.9rem);
+      // filter: blur(0.9rem);
+      background: rgba(255, 255, 255, 0.5);
+      -webkit-backdrop-filter: blur(0.9rem)
     }
     .avatar {
       display: block;

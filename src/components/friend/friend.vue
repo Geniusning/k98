@@ -133,7 +133,7 @@ export default {
   },
   data() {
     return {
-      showToast_gift: false,
+      showToast_gift: false, 
       position: "default",
       showPositionValue: false,
       personShow: false,
@@ -194,7 +194,7 @@ export default {
           thumb: "99",
           gift: "10",
           tag: ["二楞", "逗比"],
-          avatar: "http://i2.bvimg.com/643118/d5d1e033cb3c9348.jpg",
+          avatar: "http://i1.bvimg.com/643118/795ecd968a430f39.png",
           online:"好友"
         },
         {
@@ -205,7 +205,7 @@ export default {
           thumb: "99",
           gift: "10",
           tag: ["二楞", "逗比"],
-          avatar: "http://i2.bvimg.com/643118/60b095b43cc319b1.png",
+          avatar: "http://i1.bvimg.com/643118/66f258704c27edca.png",
           online:"陌生人"
         },
         {
@@ -216,7 +216,7 @@ export default {
           thumb: "99",
           gift: "10",
           tag: ["二楞", "逗比"],
-          avatar: "http://i2.bvimg.com/643118/9f04cf2f74ee24a9.jpg",
+          avatar: "http://i1.bvimg.com/643118/c8fbfc37236ea2c7.png",
           online:"好友"
         },
         {
@@ -227,7 +227,7 @@ export default {
           thumb: "99",
           gift: "10",
           tag: ["二楞", "逗比"],
-          avatar: "http://i2.bvimg.com/643118/55e876f663012fe5.jpg",
+          avatar: "http://i1.bvimg.com/643118/e8156b29c3381636.png",
           online:"陌生人"
         },
         {
@@ -238,7 +238,7 @@ export default {
           thumb: "99",
           gift: "10",
           tag: ["二楞", "逗比"],
-          avatar: "http://i2.bvimg.com/643118/a8d4a576d96a4924.jpg",
+          avatar: "http://i1.bvimg.com/643118/dc9bba536bec851d.jpg",
           online:"好友"
         }
       ];

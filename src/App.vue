@@ -85,6 +85,7 @@ html {
   // background-color: red;
 }
 #app {
+  max-width: 10rem;
   height: 100%;
   -webkit-display: flex;
   -moz-display: flex;
