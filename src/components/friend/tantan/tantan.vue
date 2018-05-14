@@ -13,41 +13,44 @@
       @transitionend="onTransitionEnd(index)"
       >
         <div style="height:100%" class="stack_content">
-          <div class="img_content">
-            <img src="../../../assets/image/icon_changnei.png" alt="" class="icon" v-if="item.sex=='男'">
-            <img src="../../../assets/image/icon_changwai1.png" alt="" class="icon" v-else-if="item.sex=='女'">
-            <img src="../../../assets/image/icon_changwai2.png" alt="" class="icon" v-else>
-            <!-- <img :src="item.avatar" alt="" class="blur_avatar"> -->
-            <img class="avatar" :src="item.avatar">
-            <p class="name">{{item.name}}</p>
-          </div>
-          <!-- 个人信息 -->
-          <div class="userInfo_wrapper">
-            <div class="userBox clearfix">
-              <img src="../../../assets/image/male.png" alt="" class="sex" v-if="item.sex=='男'">
-              <img src="../../../assets/image/female.png" alt="" class="sex" v-else>
-              <span class="online" :style="{background:item.online==='好友'?'red':'gray'}">{{item.online}}</span>
-              <span class="constellation">水瓶座</span>
+          <div class="big_box">
+            <div class="img_content">
+              <div class="icon_box" v-if="item.sex=='男'">
+                <img src="../../../assets/image/online.png" alt="" class="icon" >
+                <img src="../../../assets/image/dot_green.png" alt="" class="dot">
+                <span class="line_word">在线</span>
+              </div>
+              <div class="icon_box" v-else="item.sex=='女'">
+                <img src="../../../assets/image/outline.png" alt="" class="icon" >
+                <img src="../../../assets/image/dot_red.png" alt="" class="dot">
+                <span class="line_word">离线</span>
+              </div>
+              <span class="time_desc">20分钟前登陆</span>
+              <!-- <img src="../../../assets/image/icon_changwai2.png" alt="" class="icon" v-else> -->
+              <!-- <img :src="item.avatar" alt="" class="blur_avatar"> -->
+              <div class="avatar_box">
+                <img class="avatar" :src="item.avatar">
+              </div>
+              <p class="name">{{item.name}}</p>
             </div>
-            <div class="sex_wrapper clearfix">
-              <div class="one">
-                <span class="effect">影响力:</span>
-                <span>3000</span>
-                <span class="degrees">阶级:</span>
-                <span>长老</span>
+            <!-- 个人信息 -->
+            <div class="userInfo_wrapper">
+              <div class="userBox clearfix">
+                <img src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.sex=='男'">
+                <img src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
+                <!-- <span class="online" :style="{background:item.online==='好友'?'red':'gray'}">{{item.online}}</span> -->
+                <span class="constellation">水瓶座</span>
+                <span class="thumb"><img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">200</span>
+                <span class="gift"><img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">100</span>
               </div>
-              <div class="one">
-                <span class="thumb">点赞数: </span><span>30</span>
+              <div class="tag_wrapper">
+                <span>搞笑</span>
+                <span>招人爱</span>
+                <span>大胃王</span>
               </div>
-              <div class="one">
-                <span class="gift">收礼数: </span>
-                <span>30</span>
+              <div class="signature_wrapper">
+                <p class="word">生活不止眼前的苟且，还有诗和远方的田野</p>
               </div>
-            </div>
-            <div class="tag_wrapper">
-              <span>搞笑</span>
-              <span>幽默</span>
-              <span>逗比</span>
             </div>
           </div>
         </div>
@@ -222,25 +225,25 @@ export default {
       this.temporaryData.lastRotate = this.temporaryData.rotate;
       this.temporaryData.lastZindex = 20;
       // 循环currentPage
-      //this.temporaryData.currentPage = this.temporaryData.currentPage === this.pages.length - 1 ? 0 : this.temporaryData.currentPage + 1
-      console.log(this.temporaryData.currentPage);
-      let index = this.temporaryData.currentPage;
-      if (this.distant > 0) {
-        this.temporaryData.currentPage =
-          this.temporaryData.currentPage === 0
-            ? this.pages.length - 1
-            : this.temporaryData.currentPage - 1;
-        let friendData_left = this.pages[this.temporaryData.currentPage];
-        this.$emit("firstData", friendData_left);
-      } else {
-        this.temporaryData.currentPage =
-          this.temporaryData.currentPage === this.pages.length - 1
-            ? 0
-            : this.temporaryData.currentPage + 1;
-        let friendData_right = this.pages[this.temporaryData.currentPage];
-        this.$emit("firstData", friendData_right);
-        // currentPage切x 换，整体dom进行变化，把第一层滑动置最低
-      }
+      this.temporaryData.currentPage = this.temporaryData.currentPage === this.pages.length - 1 ? 0 : this.temporaryData.currentPage + 1
+      // console.log(this.temporaryData.currentPage);
+      // let index = this.temporaryData.currentPage;
+      // if (this.distant > 0) {
+      //   this.temporaryData.currentPage =
+      //     this.temporaryData.currentPage === this.pages.length - 1
+      //       ? 0
+      //       : this.temporaryData.currentPage + 1;
+      //   let friendData_right = this.pages[this.temporaryData.currentPage];
+      //   this.$emit("firstData", friendData_right);
+      // } else {
+      //   // currentPage切x 换，整体dom进行变化，把第一层滑动置最低
+      //   this.temporaryData.currentPage =
+      //     this.temporaryData.currentPage === 0
+      //       ? this.pages.length - 1
+      //       : this.temporaryData.currentPage - 1;
+      //   let friendData_left = this.pages[this.temporaryData.currentPage];
+      //   this.$emit("firstData", friendData_left);
+      // }
       this.$nextTick(() => {
         this.temporaryData.poswidth = 0;
         this.temporaryData.posheight = 0;
@@ -441,7 +444,7 @@ export default {
   opacity: 0;
   display: -webkit-flex;
   display: flex;
-  box-shadow: 0px 0px 10px 1px #ccc;
+  box-shadow: 0px 0px 0.4667rem 1px #c1c1c1;
   -webkit-flex-direction: column;
   flex-direction: column;
   -webkit-touch-callout: none;
@@ -453,62 +456,101 @@ export default {
   pointer-events: auto;
 }
 .stack_content {
-  // padding: 0 1.25rem;
+  // padding: 0 1rem;
+
+  .big_box {
+    background: #fff;
+  }
   .img_content {
     width: 100%;
     height: 7.1733rem;
     position: relative;
     text-align: center;
-    .loginTime {
+    .time_desc {
       position: absolute;
-      top: 0;
-      left: 0;
-      color: #ffa811;
+      top: 0.4rem;
+      left: 1.7rem;
+      color: #a8a8a8;
+      font-size: 0.32rem;
+      padding: 0.1rem;
+      border-radius: 0.3067rem;
+      border: 1px solid #d9d9d9;
+      box-sizing: border-box;
+      padding: 0.1rem;
       z-index: 999999;
     }
-    .icon {
+    .icon_box {
       position: absolute;
-      width: 1.8133rem;
-      height: 0.6133rem;
+      width: 1.6933rem;
+      height: 0.9067rem;
       top: 0.4033rem;
-      right: 0.2667rem;
+      left: -0.2rem;
       z-index: 100000;
+      .icon {
+        width: 100%;
+        height: 100%;
+      }
+      .dot {
+        width: 0.3467rem;
+        height: 0.3467rem;
+        position: absolute;
+        top: 0.2333rem;
+        left: 0.3rem;
+      }
+      .line_word {
+        font-size: 0.3467rem;
+        color: #fff;
+        position: absolute;
+        left: 0.7rem;
+        top: 0.13rem;
+      }
     }
     .name {
       position: absolute;
       width: 1.8133rem;
       height: 0.6133rem;
-      top: 6rem;
-      left: 3.6167rem;
+      top: 6.7rem;
+      left: 3.4167rem;
       z-index: 100000;
-      font-size: 0.4rem;
+      font-size: 0.4533rem;
       font-weight: 700;
-      color: #ff7900;
+      color: #232323;
     }
     .blur_avatar {
       width: 100%;
       height: 100%;
       // filter: blur(0.9rem);
       background: rgba(255, 255, 255, 0.5);
-      -webkit-backdrop-filter: blur(0.9rem)
+      -webkit-backdrop-filter: blur(0.9rem);
     }
-    .avatar {
-      display: block;
-      margin: 0.625rem auto 0.5rem;
-      width: 4.9067rem;
-      height: 4.9067rem;
+    .avatar_box {
+      box-sizing: border-box;
+      width: 5rem;
+      height: 5rem;
       border-radius: 50%;
+      // padding: 0.1rem;
+      border: 0.1067rem solid #f1f1f1;
       position: absolute;
+      margin: 1.4rem auto 0.5rem;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
+      .avatar {
+        display: block;
+        position: absolute;
+        top: 0.15rem;
+        left: 0.15rem;
+        width: 4.5333rem;
+        height: 4.5333rem;
+        border-radius: 50%;
+      }
     }
   }
   .userInfo_wrapper {
-    margin-top: 0.4133rem;
+    margin-top: 0.7133rem;
+    padding-left: 0.4533rem;
     .userBox {
-      padding-left: 0.32rem;
       .username {
         text-align: left;
         text-indent: 0.375rem;
@@ -518,14 +560,7 @@ export default {
         color: #ff7900;
         margin-right: 0.2rem;
       }
-      .online {
-        .userInfo(red);
-        margin-right: 0.2333rem;
-      }
       .sex {
-        // .userInfo(#89b8f0);
-        width: 0.4rem;
-        height: 0.4rem;
         float: left;
         display: inline-block;
         text-align: center;
@@ -534,84 +569,60 @@ export default {
         margin-top: 0.04rem;
         margin-right: 0.2333rem;
       }
+      .sex_male {
+        width: 0.5333rem;
+        height: 0.5333rem;
+        margin-top: 0.12rem;
+      }
+      .sex_female {
+        width: 0.3467rem;
+        height: 0.5333rem;
+      }
       .constellation {
-        .userInfo(#fc9d15);
+        .userInfo(#C579FF);
       }
-    }
-    .sex_wrapper {
-      text-align: left;
-      padding-left: 0.32rem;
-      margin: 0.2667rem 0;
-      div {
-        float: left;
-        &.one {
-          margin-right: 0.18rem;
-        }
-        .effect {
-          .baseInfo(#de79e2);
-        }
-        .thumb {
-          .baseInfo(#fc9d15);
-        }
-        .gift {
-          .baseInfo(#ff7900);
-        }
-        .degrees {
-          .baseInfo(#eec400);
+      .thumb {
+        .userInfo(#FF7272);
+        text-indent: 0.4rem;
+        .thumb_samll {
+          width: 0.2933rem;
+          height: 0.2933rem;
+          position: absolute;
+          top: 0.13rem;
+          left: 0.15rem;
         }
       }
-      // .sex {
-      //   .originBaseInfo(#89b8f0)
-      // }
-      // .constellation {
-
-      // }
-      // .degree {
-
-      // }
-      // .thumbs {
-      //   img {
-      //     position: absolute;
-      //     width: 0.2533rem;
-      //     height: 0.2533rem;
-      //     top: 0.08rem;
-      //     left: 0.04rem;
-      //   }
-      // }
-      // .gifts {
-      //   img {
-      //     position: absolute;
-      //     width: 0.2533rem;
-      //     height: 0.2533rem;
-      //     top: 0.08rem;
-      //     left: 0.04rem;
-      //   }
-      // }
-    }
-    .effect_wrapper {
-      margin-left: 0.32rem;
-      margin-top: 0.1367rem;
-      margin-bottom: 0.1367rem;
-      text-align: left;
-      font-size: 13px;
-      color: #666;
-      font-family: "PingFang-SC-Medium";
-      .effect_num {
-        color: #ff7900;
+      .gift {
+        .userInfo(#FFB83D);
+        text-indent: 0.4rem;
+        .gift_small {
+          width: 0.2833rem;
+          height: 0.2833rem;
+          position: absolute;
+          top: 0.15rem;
+          left: 0.2rem;
+        }
       }
     }
     .tag_wrapper {
       text-align: left;
-      padding-left: 0.32rem;
       color: #666;
       font-family: "PingFang-SC-Medium";
-      // margin: 0.2333rem 0 0;
+      margin-top: 0.24rem;
       span {
         display: inline-block;
-        padding: 0.0233rem;
-        background: #ffa811;
-        border-radius: 3px;
-        color: #fff;
+        padding: 0.0533rem 0.09rem;
+        border: 1px solid #bebebe;
+        border-radius: 0.0533rem;
+        color: #a5a5a5;
+        font-size: 0.32rem;
+      }
+    }
+    .signature_wrapper {
+      margin-top: 0.3233rem;
+      .word {
+        color: #808080;
+        text-align: left;
         font-size: 0.3467rem;
       }
     }

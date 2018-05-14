@@ -37,10 +37,10 @@
                 </div>
                 <ul class="game_list clearfix">
                     <li>
-                            <img src="../../assets/image/game1.png" alt="" class="pic_game">
+                        <img src="../../assets/image/game1.jpg" alt="" class="pic_game">
                     </li>
                     <li>
-                        <img src="../../assets/image/game2.png" alt="" class="pic_game">
+                        <img src="../../assets/image/game2.jpg" alt="" class="pic_game">
                     </li>
                     <li>
                         <img src="../../assets/image/game3.png" alt="" class="pic_game">     
@@ -71,11 +71,11 @@
                         <li @click="intoFriend" class="inner_fri">
                             <!-- <img src="../../assets/image/online.png" class="online" onclick="return false"> -->
                             <span class="inner_onlinePerson">88人在线</span>
-                            <img src="../../assets/image/inner_fri.png" alt="" class="friend_avatar_inner" onclick="return false">
+                            <img src="../../assets/image/inner_fri.jpg" alt="" class="friend_avatar_inner" onclick="return false">
                         </li>
                         <li @click="intoFriend" class="out_fri">
                             <span class="out_onlinePerson">188人在线</span>
-                            <img src="../../assets/image/out_fri.png" alt="" class="friend_avatar_out" onclick="return false">
+                            <img src="../../assets/image/out_fri.jpg" alt="" class="friend_avatar_out" onclick="return false">
                         </li>
                          <!-- <li>
                             <img src="../../assets/image/meinv3.png" alt="" class="friend_avatar">
@@ -87,7 +87,7 @@
             <div class="welfare_wrapper">
                 <div class="title_content_wel">
                     <div class="title clearfix">
-                      <img src="../../assets/image/recomment.png" alt="" class="icon fl">
+                      <img src="../../assets/image/recomment.png" onclick="return false" alt="" class="icon fl">
                         <h2 class="shop_title">店长推荐</h2>
                         <span class="desc">更贴心、更优惠</span>
                     </div>
@@ -96,7 +96,7 @@
                     </div>
                 </div>
                 <div class="advertise_wrapper" v-if="show_advertise">
-                  <img src="../../assets/image/advertise.png" alt="" class="advertise">
+                  <img src="../../assets/image/advertise.png" alt="" class="advertise" onclick="return false">
                   <img src="../../assets/image/close_ad.png" alt="" class="close" @click="close_adtise" >
                 </div>
                 <div class="welfare_content">
@@ -197,7 +197,7 @@ export default {
   data() {
     return {
       showDialogStyle: false,
-      show_advertise:true,
+      show_advertise: true,
       friList: [
         {
           src: "http://i2.bvimg.com/643118/47aaa8265e29874c.jpg"
@@ -207,7 +207,7 @@ export default {
         },
         {
           src: "http://i1.bvimg.com/643118/96545237381246c7.jpg"
-        },
+        }
       ],
       demo01_list: baseList,
       test1: "123",
@@ -245,7 +245,7 @@ export default {
   mounted() {},
   methods: {
     //关闭广告
-    close_adtise(){
+    close_adtise() {
       this.show_advertise = false;
     },
     //点赞
@@ -344,32 +344,8 @@ export default {
     //进入交友界面
     intoFriend() {
       var _this = this;
-      // this.getLocation();
-      wx.getLocation({
-        type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-        success: function(res) {
-          var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-          // alert(latitude)
-          var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-          let position = {
-            latitude: latitude,
-            longitude: longitude
-          };
-          // _this.getPosition(position);
-          // _this.$router.push({
-          //   name: "friend",
-          //   params: {
-          //     latitude: latitude,
-          //     longitude: longitude
-          //   }
-          // });
-          var speed = res.speed; // 速度，以米/每秒计
-          var accuracy = res.accuracy; // 位置精度
-        },
-        cancel: () => {
-          alert("用户拒绝获取地理位置");
-        }
-      });
+      let cursor = 0;
+      this.getFriendList(cursor);
     },
     //获取地理位置
     getLocation() {
@@ -415,7 +391,8 @@ export default {
     ...mapMutations({
       getuserInfo: "GET_USERINFO",
       testmodel: "TEST",
-      getPosition: "GET_POSITION"
+      getPosition: "GET_POSITION",
+      getFriendList: "GET_FRIENDlIST"
     })
   },
   components: {

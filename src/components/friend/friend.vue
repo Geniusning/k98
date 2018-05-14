@@ -14,17 +14,17 @@
         <button @click="next" class="button"><i class="next"></i><span class="text-hidden">next</span></button>
       </div> -->
       <div class="control_wrapper">
-        <div class="thumbs" @click="showPosition('middle')">
-          <img src="../../assets/image/thumbs-o-up.png" alt="">
-          <p>赞一个</p>
-        </div>
         <div class="gifts" @click="showToast_gift=true">
            <img src="../../assets/image/gift.png" alt="">
-           <p>见面礼</p>
+           <!-- <p>见面礼</p> -->
+        </div>
+         <div class="thumbs" @click="showPosition('middle')">
+          <img src="../../assets/image/thumbs-o-up.png" alt="">
+          <!-- <p>赞一个</p> -->
         </div>
         <div class="playGame">
            <img src="../../assets/image/game.png" alt="">
-           <p>玩一把</p>
+           <!-- <p>玩一把</p> -->
         </div>
       </div>
     <!-- 个人资料 -->
@@ -133,7 +133,7 @@ export default {
   },
   data() {
     return {
-      showToast_gift: false, 
+      showToast_gift: false,
       position: "default",
       showPositionValue: false,
       personShow: false,
@@ -185,69 +185,69 @@ export default {
   mounted() {
     let that = this;
     // setTimeout(() => {
-      that.someList = [
-        {
-          name: "安以轩",
-          sex: "女",
-          core: "3000",
-          degree: "长老",
-          thumb: "99",
-          gift: "10",
-          tag: ["二楞", "逗比"],
-          avatar: "http://i1.bvimg.com/643118/795ecd968a430f39.png",
-          online:"好友"
-        },
-        {
-          name: "二毛",
-          sex: "男",
-          core: "3000",
-          degree: "长老",
-          thumb: "99",
-          gift: "10",
-          tag: ["二楞", "逗比"],
-          avatar: "http://i1.bvimg.com/643118/66f258704c27edca.png",
-          online:"陌生人"
-        },
-        {
-          name: "凯特丝",
-          sex: "女",
-          core: "3000",
-          degree: "长老",
-          thumb: "99",
-          gift: "10",
-          tag: ["二楞", "逗比"],
-          avatar: "http://i1.bvimg.com/643118/c8fbfc37236ea2c7.png",
-          online:"好友"
-        },
-        {
-          name: "六皇子",
-          sex: "男",
-          core: "3000",
-          degree: "长老",
-          thumb: "99",
-          gift: "10",
-          tag: ["二楞", "逗比"],
-          avatar: "http://i1.bvimg.com/643118/e8156b29c3381636.png",
-          online:"陌生人"
-        },
-        {
-          name: "五阿哥",
-          sex: "女",
-          core: "3000",
-          degree: "长老",
-          thumb: "99",
-          gift: "10",
-          tag: ["二楞", "逗比"],
-          avatar: "http://i1.bvimg.com/643118/dc9bba536bec851d.jpg",
-          online:"好友"
-        }
-      ];
+    that.someList = [
+      {
+        name: "安以轩",
+        sex: "女",
+        core: "3000",
+        degree: "长老",
+        thumb: "99",
+        gift: "10",
+        tag: ["二楞", "逗比"],
+        avatar: "http://i1.bvimg.com/643118/795ecd968a430f39.png",
+        online: "好友"
+      },
+      {
+        name: "二毛",
+        sex: "男",
+        core: "3000",
+        degree: "长老",
+        thumb: "99",
+        gift: "10",
+        tag: ["二楞", "逗比"],
+        avatar: "http://i1.bvimg.com/643118/66f258704c27edca.png",
+        online: "陌生人"
+      },
+      {
+        name: "凯特丝",
+        sex: "女",
+        core: "3000",
+        degree: "长老",
+        thumb: "99",
+        gift: "10",
+        tag: ["二楞", "逗比"],
+        avatar: "http://i1.bvimg.com/643118/c8fbfc37236ea2c7.png",
+        online: "好友"
+      },
+      {
+        name: "六皇子",
+        sex: "男",
+        core: "3000",
+        degree: "长老",
+        thumb: "99",
+        gift: "10",
+        tag: ["二楞", "逗比"],
+        avatar: "http://i1.bvimg.com/643118/e8156b29c3381636.png",
+        online: "陌生人"
+      },
+      {
+        name: "五阿哥",
+        sex: "女",
+        core: "3000",
+        degree: "长老",
+        thumb: "99",
+        gift: "10",
+        tag: ["二楞", "逗比"],
+        avatar: "http://i1.bvimg.com/643118/dc9bba536bec851d.jpg",
+        online: "好友"
+      }
+    ];
     // }, 17);
   },
   methods: {
-    listenFirstdata(data){
-      console.log('下面是传回父级的数据')
-      console.log(data)
+    listenFirstdata(data) {
+      console.log("下面是传回父级的数据");
+      console.log(data);
     },
     //点赞
     showPosition(position) {
@@ -275,7 +275,7 @@ export default {
     },
     cancel() {
       this.showToast = false;
-    },
+    }
     // prev() {
     //   this.$refs.stack.$emit("prev");
     // },
@@ -294,7 +294,7 @@ export default {
     Toast,
     XDialog,
     XButton,
-    Scroller,
+    Scroller
     // Scroll
   },
   watch: {
@@ -310,7 +310,10 @@ export default {
 @import "../../assets/less/mixin.less";
 .friend {
   height: 100%;
-  background-color: #f4f4f4;
+  background-color: #fff;
+  background-image: url("../../assets/image/friend_bg.png");
+  background-repeat: no-repeat;
+  background-size: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -326,8 +329,8 @@ export default {
       font-weight: 700;
     }
     img {
-      width: 0.5333rem;
-      height: 0.5333rem;
+      width: 0.6667rem;
+      height: 0.6667rem;
       margin-bottom: 0.08rem;
     }
   }
@@ -335,7 +338,7 @@ export default {
     // height: 5.625rem;
     display: flex;
     justify-content: space-between;
-    padding: 0 1.0667rem;
+    padding: 0 1.6rem;
     // margin-top: -0.2667rem;
     box-sizing: border-box;
     img {
@@ -344,11 +347,9 @@ export default {
     }
     .thumbs {
       .action;
-     
     }
     .gifts {
       .action;
-    
     }
     .playGame {
       .action;
@@ -356,10 +357,12 @@ export default {
   }
   .stack-wrapper {
     margin: 0.09rem auto 0;
+    // padding:0 0.5rem;
     position: relative;
     z-index: 1000;
     width: 8.9rem;
-    height: 10rem;
+    // width: 100%;
+    height: 10.5333rem;
     list-style: none;
     pointer-events: none;
   }

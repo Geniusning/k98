@@ -10,12 +10,17 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      "/api": {
+        target: "http://llwant.test.qianz.com",
+        changeOrigin: true,
+      },
+    },
 
     // Various Dev Server settings
-    host: '172.18.10.209',
+    //host: '172.18.10.209',
     //  host: '192.168.1.116',
-    // host: 'localhost', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

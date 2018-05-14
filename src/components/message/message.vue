@@ -3,8 +3,8 @@
    <div class="title">
      <!-- <span :class="{active:isShow}" @click="changeMessage">消息</span><span :class="{active:!isShow}" @click="changeMessage">联系人</span> -->
       <button-tab v-model="selected_num">
-        <button-tab-item class="button_tab" @on-item-click="isShow=true">消息</button-tab-item>
-        <button-tab-item class="button_tab" @on-item-click="isShow=false">联系人</button-tab-item>
+        <button-tab-item class="button_tab" @on-item-click="isShow=true">好友的消息</button-tab-item>
+        <button-tab-item class="button_tab" @on-item-click="isShow=false">新朋友招呼</button-tab-item>
       </button-tab>
       
    </div>
@@ -53,18 +53,23 @@
          </div>
        </li>
      </ul>
-     <ul class="message_list" v-else>
-       <li class="item"></li>
-     </ul>
+     <div class="message_list" v-else>
+       <tab bar-active-color="#ffd800">
+        <tab-item selected >点赞</tab-item>
+        <tab-item >送礼</tab-item>
+        <tab-item >约战</tab-item>
+      </tab>
+     </div>
    </div>
  </div>
 </template>
 
 <script type='text/ecmascript-6'>
-import { ButtonTab, ButtonTabItem, Divider } from "vux";
+import { Tab, TabItem, ButtonTab, ButtonTabItem, Divider } from "vux";
 export default {
   data() {
     return {
+      color:"#ffd800",
       isShow: true,
       selected_num: 0
     };
@@ -85,14 +90,16 @@ export default {
   },
   components: {
     ButtonTab,
-    ButtonTabItem
+    ButtonTabItem,
+    Tab,
+    TabItem
   }
 };
 </script>
 
 <style scoped lang='less'>
-@import '../../assets/less/base.less';
-@import '../../assets/less/mixin.less';
+@import "../../assets/less/base.less";
+@import "../../assets/less/mixin.less";
 .message {
   height: 100%;
   overflow-y: auto;
@@ -100,10 +107,6 @@ export default {
 .title {
   text-align: center;
   padding: 0.11rem 0.9125rem;
-  .button_tab {
-    // background-color: powderblue;
-    // border: 1px solid #ccc;
-  }
   span {
     display: inline-block;
     width: 4rem;
@@ -149,7 +152,7 @@ export default {
           .name {
             color: #333333;
             font-size: 0.4267rem;
-            font-weight: 800
+            font-weight: 800;
           }
           .message {
             color: #666;

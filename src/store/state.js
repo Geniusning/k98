@@ -2,7 +2,8 @@ const state = {
     isShow: false,
     userInfo: {},
     test: "",
-    position: {}
+    position: {},
+    friendList:[]
 }
 
 export default state
