@@ -11,7 +11,7 @@
           <img v-else slot="icon" src="../../assets/image/active_friend.png" class="friend">
           <span slot="label">好友</span>
         </tabbar-item>
-        <tabbar-item :selected="selected==2" badge="2" link="/message">
+        <tabbar-item :selected="selected==2" :badge="count" link="/message">
           <img v-if="selected!==2" slot="icon" src="../../assets/image/message.png" class="message">
           <img v-else slot="icon" src="../../assets/image/active_message.png" class="message">
           <span slot="label">消息</span>
@@ -32,13 +32,14 @@
 
 <script type='text/ecmascript-6'>
 import { mapState, mapMutations } from "vuex";
-import {Tabbar, TabbarItem} from "vux";
+import { Tabbar, TabbarItem } from "vux";
 export default {
   name: "tab",
   data() {
     return {
       active: false,
-      index: 0
+      index: 0,
+      count: ""
     };
   },
   props: {
@@ -48,13 +49,22 @@ export default {
     }
   },
   created() {},
-  computed: {},
+  computed: {
+    ...mapState(["badgeCount"])
+  },
+  mounted() {
+    
+  },
   methods: {
     onIndexChange(param) {
       this.index = param;
     }
   },
-  watch: {},
+  watch: {
+    badgeCount(newValue){
+      this.count = (newValue > 0 ? newValue : "").toString();
+    }
+  },
   components: {
     Tabbar,
     TabbarItem
@@ -63,16 +73,18 @@ export default {
 </script>
 
 <style scoped lang='less'>
-.tab{
+.tab {
   height: 100%;
 }
-.home,.message,.welfare {
+.home,
+.message,
+.welfare {
   width: 0.56rem;
   height: 0.56rem;
 }
-.friend{
+.friend {
   width: 0.6667rem;
-  height:0.56rem;
+  height: 0.56rem;
 }
 .mine {
   width: 0.48rem;

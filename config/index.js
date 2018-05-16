@@ -4,6 +4,13 @@
 
 const path = require('path')
 
+// ------------------------------
+const myStupidToken1 = "FgSTtdHNuntFL5n0u-ucW9Z2i3oEKlW4WWlWGMNR2NT1HnMR2uPOPxxkoeGXyJXEjB8H-Q=="
+const myStupidToken2 = "v-_4AjjXwB6P-oKNj63bNbSF3dVqjdxuZt1dvePe4Z9O3nJAHznqfePBRrgj1_Wkr8JRzg=="
+
+const myStupidToken = myStupidToken1
+// ------------------------------
+
 module.exports = {
   dev: {
 
@@ -14,13 +21,14 @@ module.exports = {
       "/api": {
         target: "http://llwant.test.qianz.com",
         changeOrigin: true,
+        pathRewrite: function (path, req) { return path+"&tk="+myStupidToken }
       },
     },
 
     // Various Dev Server settings
-    //host: '172.18.10.209',
+    host: '172.18.10.209',
     //  host: '192.168.1.116',
-    host: 'localhost', // can be overwritten by process.env.HOST
+    //host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
@@ -68,7 +76,7 @@ module.exports = {
      * Source Maps
      */
 
-    productionSourceMap: true,
+    productionSourceMap: false,
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',
 

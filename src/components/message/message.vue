@@ -3,20 +3,21 @@
    <div class="title">
      <!-- <span :class="{active:isShow}" @click="changeMessage">消息</span><span :class="{active:!isShow}" @click="changeMessage">联系人</span> -->
       <button-tab v-model="selected_num">
-        <button-tab-item class="button_tab" @on-item-click="isShow=true">好友的消息</button-tab-item>
+        <button-tab-item class="button_tab" @on-item-click="isShow=true">好友的列表</button-tab-item>
         <button-tab-item class="button_tab" @on-item-click="isShow=false">新朋友招呼</button-tab-item>
       </button-tab>
       
    </div>
    <div class="message_wrapper">
-     <ul class="message_list" v-if="isShow">
-       <li class="item border-1px" @click="chat">
+     <ul class="message_list" style="margin-top:0.4rem" v-if="isShow">
+       <li class="item vux-1px-b" @click="chat" v-for="(item,index) in friendList">
          <div class="info_message">
            <div class="avatar">
-             <img src="../../assets/image/avatar2.jpg" alt="">
+             <img :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/795ecd968a430f39.png'" alt="">
+             <!-- <i class="dot"></i> -->
            </div>
            <div class="name_and_message">
-             <p class="name">小番茄</p>
+             <p class="name">{{item.info.nickname}}</p>
              <p class="message">今天天气很好</p>
            </div>
          </div>
@@ -24,7 +25,7 @@
            <p>下午  11:11</p>
          </div>
        </li>
-       <li class="item border-1px">
+       <!-- <li class="item border-1px">
          <div class="info_message">
            <div class="avatar">
              <img src="../../assets/image/avatar3.jpg" alt="">
@@ -51,30 +52,142 @@
          <div class="info_time">
            <p>下午  13:11</p>
          </div>
-       </li>
+       </li> -->
      </ul>
      <div class="message_list" v-else>
-       <tab bar-active-color="#ffd800">
-        <tab-item selected >点赞</tab-item>
-        <tab-item >送礼</tab-item>
-        <tab-item >约战</tab-item>
+       <tab bar-active-color="#ffd800" default-color="#999">
+        <tab-item selected @on-item-click="onItemClick">点赞</tab-item>
+        <tab-item @on-item-click="onItemClick">送礼</tab-item>
+        <tab-item @on-item-click="onItemClick">约战</tab-item>
       </tab>
+      <div class="newFriend_wrapper">
+        <!-- 点赞 -->
+        <ul class="newMessage_list" v-if="greeting_flag===0">
+          <li class="item vux-1px-b" v-for="(item,index) in messageList" :key="index">
+            <div class="info_message">
+              <div class="avatar">
+                <img :src="item.from.headimgurl" alt="">
+                <i class="dot"></i>
+              </div>
+              <div class="name_and_message">
+                <p class="name">{{item.from.nickname}}</p>
+                <p class="message">/thumb给我一个赞</p>
+              </div>
+            </div>
+            <div class="thumb_wrapper clearfix" v-show="thumb_flag">
+              <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">回赞</p>
+              <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">飘过</p>
+            </div>
+          </li>
+        </ul>
+        <!-- 送礼 -->
+        <ul class="newMessage_list" v-if="greeting_flag===1">
+          <li class="item vux-1px-b">
+            <div class="info_message">
+              <div class="avatar">
+                <img src="../../assets/image/avater1.jpg" alt="">
+                <i class="dot"></i>
+              </div>
+              <div class="name_and_message">
+                <p class="name">小包包</p>
+                <p class="message">/gift小包包送了一个飞机给我</p>
+              </div>
+            </div>
+            <div class="thumb_wrapper">
+              <p class="back_thumb vux-1px">收到</p>
+            </div>
+          </li>
+        </ul>
+        <!-- 游戏 -->
+        <ul class="newMessage_list" v-if="greeting_flag===2">
+          <li class="item vux-1px-b">
+            <div class="info_message">
+              <div class="avatar">
+                <img src="../../assets/image/avatar3.jpg" alt="">
+                <i class="dot"></i>
+              </div>
+              <div class="name_and_message">
+                <p class="name">小灭霸</p>
+                <p class="message">/game小灭霸邀请我玩一把</p>
+              </div>
+            </div>
+            <div class="thumb_wrapper">
+              <p class="time">11:00</p>
+            </div>
+          </li>
+        </ul>
+      </div>
      </div>
    </div>
+   <!-- 回赞 -->
+    <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask :text="text" :position="position"></toast>
  </div>
 </template>
 
 <script type='text/ecmascript-6'>
-import { Tab, TabItem, ButtonTab, ButtonTabItem, Divider } from "vux";
+import api from "common/api";
+import { mapMutations } from "vuex";
+import { Tab, TabItem, ButtonTab, ButtonTabItem, Toast } from "vux";
 export default {
   data() {
     return {
-      color:"#ffd800",
-      isShow: true,
-      selected_num: 0
+      color: "#ffd800",
+      isShow: true, //最上面tab切换
+      selected_num: 0,
+      greeting_flag: 0,
+      messageList: [],
+      friendList: [],
+      text: "",
+      position: "default",
+      thumb_flag: true, //回赞的box的flag
+      showPositionValue: false //回赞的toast的flag
     };
   },
+  mounted() {
+    this._loadFriendEvts();
+    this._loadFriends();
+  },
   methods: {
+    //拉取好友事件
+    _loadFriendEvts() {
+      let cursor = 0;
+      let that = this;
+      api.loadFriendEvts(cursor).then(res => {
+        console.log(res);
+        // that.addBadgeCount(res.events.length);
+        this.messageList = res.events;
+      });
+    },
+    //回赞事件
+    backThumbClick(type, flag) {
+      let that = this;
+      api.giveBackThumb(type, flag).then(res => {
+        console.log(res);
+        if (res.errcode === 0) {
+          that._loadFriendEvts();
+          if (flag == "yes") {
+            that.text = "已回赞";
+          } else {
+            that.text = "已拒绝";
+          }
+          that.showPositionValue = true;
+        }
+      });
+    },
+    //拉取好友列表
+    _loadFriends() {
+      let cursor = 0;
+      let that = this;
+      api.loadFriends(cursor).then(res => {
+        console.log(res);
+        that.friendList = res.friends;
+      });
+    },
+    // tab事件
+    onItemClick(index) {
+      this.greeting_flag = index;
+      console.log(index);
+    },
     changeMessage() {
       this.isShow = !this.isShow;
     },
@@ -86,13 +199,17 @@ export default {
       this.$router.push({
         name: "chat"
       });
-    }
+    },
+    ...mapMutations({
+      addBadgeCount: "ADD_BADGE"
+    })
   },
   components: {
     ButtonTab,
     ButtonTabItem,
     Tab,
-    TabItem
+    TabItem,
+    Toast
   }
 };
 </script>
@@ -100,6 +217,7 @@ export default {
 <style scoped lang='less'>
 @import "../../assets/less/base.less";
 @import "../../assets/less/mixin.less";
+@import "../../assets/less/variable.less";
 .message {
   height: 100%;
   overflow-y: auto;
@@ -107,6 +225,7 @@ export default {
 .title {
   text-align: center;
   padding: 0.11rem 0.9125rem;
+  margin-top: 0.1333rem;
   span {
     display: inline-block;
     width: 4rem;
@@ -120,16 +239,24 @@ export default {
       color: #fff;
     }
   }
+  .vux-button-group > a {
+    color: #666;
+  }
+  .vux-button-group > a.vux-button-group-current {
+    color: #fff;
+  }
 }
 .message_wrapper {
   width: 100%;
   .message_list {
-    margin-top: 10px;
+    // margin-top: 10px;
     padding: 0 0.2667rem;
     .item {
       display: flex;
       justify-content: space-between;
-      .border-1px(#ccc);
+      box-sizing: border-box;
+      height: 1.8133rem;
+      // .border-1px(#ccc);
       padding-bottom: 6px;
       margin-bottom: 8px;
       .info_message {
@@ -139,13 +266,26 @@ export default {
           margin-right: 6px;
           width: 1.4133rem;
           height: 1.4133rem;
+          position: relative;
           img {
             width: 1.4133rem;
             height: 1.4133rem;
             border-radius: 50%;
           }
+          .dot {
+            display: inline-block;
+            width: 0.3333rem;
+            height: 0.3333rem;
+            background: #ff3b30;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
         }
         .name_and_message {
+          box-sizing: border-box;
+          padding-left: 0.3233rem;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
@@ -158,15 +298,103 @@ export default {
             color: #666;
             height: 0.6667rem;
             font-size: 0.3467rem;
+            margin-top: 0.4rem;
           }
         }
       }
       .info_time {
-        padding-top: 0.3333rem;
+        // padding-top: 0.3333rem;
         font-size: 0.3733rem;
         color: #999;
       }
     }
   }
+  .newFriend_wrapper {
+    margin-top: 0.35rem;
+    .newMessage_list {
+      .item {
+        display: flex;
+        justify-content: space-between;
+        box-sizing: border-box;
+        // height: 1.8133rem;
+        box-sizing: border-box;
+        padding-top: 0.1867rem;
+        // .border-1px(#ccc);
+        padding-bottom: 6px;
+        margin-bottom: 8px;
+        .info_message {
+          display: flex;
+          font-size: 12px;
+          .avatar {
+            margin-right: 6px;
+            width: 1.4133rem;
+            height: 1.4133rem;
+            position: relative;
+            img {
+              width: 1.4133rem;
+              height: 1.4133rem;
+              border-radius: 50%;
+            }
+            .dot {
+              display: inline-block;
+              width: 0.3333rem;
+              height: 0.3333rem;
+              background: #ff3b30;
+              border-radius: 50%;
+              position: absolute;
+              top: 0;
+              right: 0;
+            }
+          }
+          .name_and_message {
+            box-sizing: border-box;
+            padding-left: 0.3233rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            .name {
+              color: #333333;
+              font-size: 0.4267rem;
+              font-weight: 800;
+            }
+            .message {
+              color: #666;
+              height: 0.6667rem;
+              font-size: 0.3467rem;
+              margin-top: 0.4rem;
+            }
+          }
+        }
+        .thumb_wrapper {
+          .back_thumb {
+            box-sizing: border-box;
+            width: 1.3333rem;
+            padding: 0.0567rem 0;
+            text-align: center;
+            // .border-1px(@baseColor);
+            font-size: 0.3467rem;
+            color: #999;
+            border-radius: 0.2667rem;
+            margin-right: 0.1333rem;
+          }
+          .reject {
+            // margin-top: 0.2333rem;
+          }
+          .time {
+            font-size: 0.3733rem;
+            color: #999;
+            padding-right: 0.2667rem;
+          }
+        }
+      }
+    }
+  }
+}
+.vux-1px:before {
+  border-radius: 0.2667rem;
+  border: 1px solid @baseColor;
+}
+.vux-tab .vux-tab-item.vux-tab-selected {
+  color: #333;
 }
 </style>

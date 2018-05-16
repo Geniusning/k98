@@ -9,4 +9,8 @@ export const GET_POSITION = "GET_POSITION"
 
 //获取好友信息
 export const GET_FRIENDlIST = "GET_FRIENDlIST"
+
+//badge自增
+export const ADD_BADGE = "ADD_BADGE"
+
 export const TEST = "TEST"

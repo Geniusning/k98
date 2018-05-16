@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-05-14 17:10:55
+ * @Last Modified time: 2018-05-16 15:36:56
  */
 
 import axios from 'axios'
@@ -40,6 +40,58 @@ api.getJssdkInfo = function (path) {
 api.getFriendList = function (cursor) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + '/api/searchCandidates?cursor=' + cursor).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//请求加好友
+api.makeFriend = function (xid) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + "/api/makeFriend?xid=" + xid).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//拉取好友事件
+api.loadFriendEvts = function (cursor) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + "/api/loadFriendEvts?cursor=" + cursor).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//回赞事件
+api.giveBackThumb = function (type, flag) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + `/api/auditFriend?evtID=${type}&agree=${flag}`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//获取好友列表事件
+api.loadFriends = function (cursor) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + `/api/loadFriends?cursor=${cursor}`).then(res => {
       if (res.status == 200) {
         resolve(res.data)
       }

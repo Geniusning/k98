@@ -3,7 +3,9 @@ const state = {
     userInfo: {},
     test: "",
     position: {},
-    friendList:[]
+    friendList: [],
+    cursor: 0,
+    badgeCount: 0,
 }
 
 export default state

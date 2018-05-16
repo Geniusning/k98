@@ -5,7 +5,7 @@
       @touchmove.prevent="touchmove"
       @touchstart.prevent="touchstart"
       @touchend.prevent="touchend"
-       @mousedown.prevent="touchstart"
+      @mousedown.prevent="touchstart"
       @mouseup.prevent="touchend"
       @mousemove.prevent="touchmove"
       @mouseout.prevent="touchend"
@@ -15,41 +15,42 @@
         <div style="height:100%" class="stack_content">
           <div class="big_box">
             <div class="img_content">
-              <div class="icon_box" v-if="item.sex=='男'">
+              <div class="icon_box" v-if="item.info.sex=='男'">
                 <img src="../../../assets/image/online.png" alt="" class="icon" >
                 <img src="../../../assets/image/dot_green.png" alt="" class="dot">
-                <span class="line_word">在线</span>
+                <span class="line_word">场内</span>
               </div>
-              <div class="icon_box" v-else="item.sex=='女'">
+              <div class="icon_box" v-else="item.info.sex=='女'">
                 <img src="../../../assets/image/outline.png" alt="" class="icon" >
                 <img src="../../../assets/image/dot_red.png" alt="" class="dot">
-                <span class="line_word">离线</span>
+                <span class="line_word">场外</span>
               </div>
               <span class="time_desc">20分钟前登陆</span>
               <!-- <img src="../../../assets/image/icon_changwai2.png" alt="" class="icon" v-else> -->
-              <!-- <img :src="item.avatar" alt="" class="blur_avatar"> -->
+              <!-- <img :src="item.info.avatar" alt="" class="blur_avatar"> -->
               <div class="avatar_box">
-                <img class="avatar" :src="item.avatar">
+                <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/795ecd968a430f39.png'" alt="暂无头像" >
               </div>
-              <p class="name">{{item.name}}</p>
+              <p class="name">{{item.info.nickname}}</p>
             </div>
             <!-- 个人信息 -->
             <div class="userInfo_wrapper">
               <div class="userBox clearfix">
-                <img src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.sex=='男'">
+                <img src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex=='男'">
                 <img src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
-                <!-- <span class="online" :style="{background:item.online==='好友'?'red':'gray'}">{{item.online}}</span> -->
-                <span class="constellation">水瓶座</span>
-                <span class="thumb"><img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">200</span>
-                <span class="gift"><img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">100</span>
+                <!-- <span class="online" :style="{background:item.info.online==='好友'?'red':'gray'}">{{item.info.online}}</span> -->
+                <span class="constellation">{{item.info.constellation}}</span>
+                <span class="gift"><img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">{{item.info.gift}}</span>
+                <span class="thumb"><img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">{{item.info.thumb}}</span>
               </div>
               <div class="tag_wrapper">
-                <span>搞笑</span>
-                <span>招人爱</span>
-                <span>大胃王</span>
+                <span v-for="(item,index) in item.info.tags" :key="index">{{item}}</span>
+                <!-- <span>招人爱</span>
+                <span>大胃王</span> -->
               </div>
               <div class="signature_wrapper">
-                <p class="word">生活不止眼前的苟且，还有诗和远方的田野</p>
+                <!-- <p class="word">生活不止眼前的苟且，还有诗和远方的田野</p> -->
+                <p class="word">{{item.info.signature}}</p>
               </div>
             </div>
           </div>
@@ -59,6 +60,7 @@
 </template>
 <script>
 import detectPrefixes from "./tantan.js";
+import { mapGetters } from "vuex";
 export default {
   props: {
     stackinit: {
@@ -72,7 +74,7 @@ export default {
   },
   data() {
     return {
-      propData: this.pages,
+      // propData: this.pages,
       basicdata: {
         start: {},
         end: {}
@@ -98,7 +100,9 @@ export default {
       }
     };
   },
-  created() {},
+  created() {
+    console.log(this.pages);
+  },
   watch: {
     pages(newValue) {
       let data = newValue[0];
@@ -106,6 +110,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["friendList"]),
     // 划出面积比例
     offsetRatio() {
       let width = this.$el.offsetWidth;
@@ -124,9 +129,11 @@ export default {
     }
   },
   mounted() {
-    document.addEventListener("touchmove", e => {
-      // e.preventDefault();
-    });
+    // this.pages = this.friendList;
+    console.log(this.pages);
+    // document.addEventListener("touchmove", e => {
+    //   // e.preventDefault();
+    // });
   },
   methods: {
     touchstart(e) {
@@ -193,7 +200,7 @@ export default {
       this.temporaryData.animation = true;
       // 滑动结束，触发判断
       // 判断划出面积是否大于0.01
-      if (this.offsetRatio >= 0.05) {
+      if (this.offsetRatio >= 0.15) {
         // 计算划出后最终位置
         let ratio = Math.abs(
           this.temporaryData.posheight / this.temporaryData.poswidth
@@ -225,7 +232,12 @@ export default {
       this.temporaryData.lastRotate = this.temporaryData.rotate;
       this.temporaryData.lastZindex = 20;
       // 循环currentPage
-      this.temporaryData.currentPage = this.temporaryData.currentPage === this.pages.length - 1 ? 0 : this.temporaryData.currentPage + 1
+      this.temporaryData.currentPage =
+        this.temporaryData.currentPage === this.pages.length - 1
+          ? 0
+          : this.temporaryData.currentPage + 1;
+      let friendData = this.pages[this.temporaryData.currentPage];
+      this.$emit("firstData", friendData);
       // console.log(this.temporaryData.currentPage);
       // let index = this.temporaryData.currentPage;
       // if (this.distant > 0) {
@@ -439,7 +451,7 @@ export default {
   width: 100%;
   border-radius: 8px;
   text-align: center;
-  overflow: hidden;
+  // overflow: hidden;
   position: absolute;
   opacity: 0;
   display: -webkit-flex;
@@ -456,8 +468,6 @@ export default {
   pointer-events: auto;
 }
 .stack_content {
-  // padding: 0 1rem;
-
   .big_box {
     background: #fff;
   }
@@ -484,7 +494,7 @@ export default {
       width: 1.6933rem;
       height: 0.9067rem;
       top: 0.4033rem;
-      left: -0.2rem;
+      left: -0.15rem;
       z-index: 100000;
       .icon {
         width: 100%;
@@ -507,10 +517,11 @@ export default {
     }
     .name {
       position: absolute;
-      width: 1.8133rem;
+      width: 100%;
+      text-align: center;
       height: 0.6133rem;
       top: 6.7rem;
-      left: 3.4167rem;
+      // left: 3.4167rem;
       z-index: 100000;
       font-size: 0.4533rem;
       font-weight: 700;
@@ -570,36 +581,40 @@ export default {
         margin-right: 0.2333rem;
       }
       .sex_male {
-        width: 0.5333rem;
-        height: 0.5333rem;
+        width: 0.5233rem;
+        height: 0.5033rem;
         margin-top: 0.12rem;
       }
       .sex_female {
-        width: 0.3467rem;
+        width: 0.5333rem;
         height: 0.5333rem;
       }
       .constellation {
         .userInfo(#C579FF);
       }
       .thumb {
+        box-sizing: border-box;
+        padding-top: 0.03rem;
         .userInfo(#FF7272);
-        text-indent: 0.4rem;
+        text-indent: 0.2rem;
         .thumb_samll {
           width: 0.2933rem;
           height: 0.2933rem;
           position: absolute;
-          top: 0.13rem;
+          top: 0.12rem;
           left: 0.15rem;
         }
       }
       .gift {
-        .userInfo(#FFB83D);
+        box-sizing: border-box;
+        padding-top: 0.04rem;
+        .userInfo(#75bdfa);
         text-indent: 0.4rem;
         .gift_small {
           width: 0.2833rem;
           height: 0.2833rem;
           position: absolute;
-          top: 0.15rem;
+          top: 0.12rem;
           left: 0.2rem;
         }
       }
@@ -616,6 +631,7 @@ export default {
         border-radius: 0.0533rem;
         color: #a5a5a5;
         font-size: 0.32rem;
+        margin-right: 0.1333rem;
       }
     }
     .signature_wrapper {
@@ -628,11 +644,7 @@ export default {
     }
   }
 }
-// .stack-item img {
-//   width: 100%;
-//   display: block;
-//   pointer-events: none;
-// }
+
 .stack-container li.move-back {
   /* http://matthewlein.com/ceaser/ */
   -webkit-transition-timing-function: cubic-bezier(

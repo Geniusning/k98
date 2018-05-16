@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <div class="top_wrapper">
-      <router-view></router-view>
+      <keep-alive>
+       <router-view></router-view>
+      </keep-alive>
       <lg-preview></lg-preview>
     </div>
     <div class="bottom_wrapper" v-if="flag">
@@ -72,17 +74,12 @@ export default {
 @import "./assets/reset.css";
 // @import "~vux/src/styles/reset.less";
 @import "~vux/src/styles/1px.less";
-a:hover{
+a:hover {
   text-decoration: none !important;
-}
-del {
-  // text-decoration: unset
-  // text-decoration: line-through;
 }
 body,
 html {
   height: 100%;
-  // background-color: red;
 }
 #app {
   max-width: 10rem;
@@ -114,6 +111,6 @@ html {
 }
 .bottom_wrapper {
   height: 1.18rem;
-  background-color: #f4f4f4;
+  // background-color: #f4f4f4;
 }
 </style>

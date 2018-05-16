@@ -169,7 +169,7 @@ import api from "common/api";
 import { TransferDom, Swiper, Toast, XDialog } from "vux";
 import axios from "axios";
 import url from "common/url";
-import { mapMutations } from "vuex";
+import { mapMutations, mapActions, mapState } from "vuex";
 import { Carousel3d, Slide } from "vue-carousel-3d";
 const baseList = [
   {
@@ -180,12 +180,12 @@ const baseList = [
   },
   {
     url: "javascript:",
-    img: "http://i4.bvimg.com/643118/b468123c905b0039.jpg",
+    img: "http://i2.bvimg.com/643118/68e0d5bc3b55fee4.png",
     title: ""
   },
   {
     url: "javascript:",
-    img: "http://i2.bvimg.com/643118/69278a1e38cb4574.png",
+    img: "http://i2.bvimg.com/643118/cbe37fbdd3e49bbb.png",
     title: ""
   }
 ];
@@ -217,7 +217,7 @@ export default {
       distance: "",
       picList: [
         {
-          src: "http://i2.bvimg.com/643118/5f04d9b63ac4eeb0.png",
+          src: "http://i4.bvimg.com/643118/d3ed6dbc589609a1.png",
 
           originPrice: "488",
           price: "388",
@@ -241,9 +241,22 @@ export default {
     this._getUserInfo();
     this._getJssdkInfo();
   },
-  computed: {},
-  mounted() {},
+  computed: {
+    ...mapState(["friendList"])
+  },
+  mounted() {
+    this._loadFriendEvts();
+  },
   methods: {
+    _loadFriendEvts() {
+      let cursor = 0;
+      let that = this;
+      api.loadFriendEvts(cursor).then(res => {
+        console.log(res);
+        that.addBadgeCount(res.events.length);
+        this.messageList = res.events;
+      });
+    },
     //关闭广告
     close_adtise() {
       this.show_advertise = false;
@@ -277,8 +290,8 @@ export default {
       api
         .getJssdkInfo("/api/loadJSSDKParams?url=" + this.url)
         .then(res => {
-          console.log(res);
-          console.log(res.data);
+          // console.log(res);
+          // console.log(res.data);
           wx.config({
             //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
             appId: "wxb2fa3c446063ec19", // 必填，公众号的唯一标识
@@ -343,9 +356,13 @@ export default {
     },
     //进入交友界面
     intoFriend() {
-      var _this = this;
-      let cursor = 0;
-      this.getFriendList(cursor);
+      // let cursor = 0;
+      // let paramsData = {
+      //   $router:this.$router,
+      //   cursor:cursor
+      // }
+      // this.getFriendList(paramsData)
+      util.routerTo("friend", this);
     },
     //获取地理位置
     getLocation() {
@@ -392,7 +409,11 @@ export default {
       getuserInfo: "GET_USERINFO",
       testmodel: "TEST",
       getPosition: "GET_POSITION",
-      getFriendList: "GET_FRIENDlIST"
+      // getFriendList:"GET_FRIENDlIST"
+      addBadgeCount: "ADD_BADGE"
+    }),
+    ...mapActions({
+      getFriendList: "get_Friendlist"
     })
   },
   components: {
@@ -831,4 +852,6 @@ export default {
     }
   }
 }
+
+// vux
 </style>

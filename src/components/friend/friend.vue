@@ -7,12 +7,8 @@
         <img src="../../assets/image/select.png" alt=""  @click="showToast=true">
       </div>
       <div class="stack-wrapper">
-        <stack ref="stack" :pages="someList" :stackinit="stackinit" @firstData='listenFirstdata'></stack>
+        <stack  ref="stack" :pages="someList" :stackinit="stackinit" @firstData="listenFirstdata"></stack>
       </div>
-      <!-- <div class="controls">
-        <button @click="prev" class="button"><i class="prev"></i><span class="text-hidden">prev</span></button>
-        <button @click="next" class="button"><i class="next"></i><span class="text-hidden">next</span></button>
-      </div> -->
       <div class="control_wrapper">
         <div class="gifts" @click="showToast_gift=true">
            <img src="../../assets/image/gift.png" alt="">
@@ -28,7 +24,7 @@
         </div>
       </div>
     <!-- 个人资料 -->
-      <div v-transfer-dom class="horizontal" :show-mask='show_mask'>
+      <!-- <div v-transfer-dom class="horizontal" :show-mask='show_mask'>
           <popup v-model="personShow" position="left"  :show-mask='show_mask'>
             <div :style="{width:'300px',height:height+'px'}" class="bg">
               <ul class="personList">
@@ -65,7 +61,7 @@
               </ul>
             </div>
           </popup>
-      </div>
+      </div> -->
       <!-- 筛选好友信息 -->
       <div v-transfer-dom>
             <x-dialog v-model="showToast" class="dialog-demo">
@@ -93,7 +89,7 @@
 
 
     <!-- 点赞 -->
-    <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask text="赞过去了哦" :position="position"></toast>
+    <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask width="10em"  :text="text" :position="position"></toast>
 
     <!-- 见面礼 -->
       <div v-transfer-dom>
@@ -123,8 +119,8 @@
 <script>
 import stack from "./tantan/tantan.vue";
 import util from "common/util";
-// import Scroll from "../../base/scroll/scroll";
-
+import api from "common/api";
+import { mapGetters, mapActions } from "vuex";
 import { Toast, TransferDom, Popup, XDialog, XButton, Scroller } from "vux";
 export default {
   // el: "#stack",
@@ -134,6 +130,7 @@ export default {
   data() {
     return {
       showToast_gift: false,
+      text: "",
       position: "default",
       showPositionValue: false,
       personShow: false,
@@ -175,84 +172,45 @@ export default {
       stackinit: {
         visible: 3,
         currentPage: 0
-      }
+      },
+      xid: ""
     };
   },
   created() {
     this.height = document.body.clientHeight;
-    console.log(this.height);
+    // this.someList = this.friendList;
+  },
+  computed: {
+    ...mapGetters(["friendList"])
   },
   mounted() {
-    let that = this;
-    // setTimeout(() => {
-    that.someList = [
-      {
-        name: "安以轩",
-        sex: "女",
-        core: "3000",
-        degree: "长老",
-        thumb: "99",
-        gift: "10",
-        tag: ["二楞", "逗比"],
-        avatar: "http://i1.bvimg.com/643118/795ecd968a430f39.png",
-        online: "好友"
-      },
-      {
-        name: "二毛",
-        sex: "男",
-        core: "3000",
-        degree: "长老",
-        thumb: "99",
-        gift: "10",
-        tag: ["二楞", "逗比"],
-        avatar: "http://i1.bvimg.com/643118/66f258704c27edca.png",
-        online: "陌生人"
-      },
-      {
-        name: "凯特丝",
-        sex: "女",
-        core: "3000",
-        degree: "长老",
-        thumb: "99",
-        gift: "10",
-        tag: ["二楞", "逗比"],
-        avatar: "http://i1.bvimg.com/643118/c8fbfc37236ea2c7.png",
-        online: "好友"
-      },
-      {
-        name: "六皇子",
-        sex: "男",
-        core: "3000",
-        degree: "长老",
-        thumb: "99",
-        gift: "10",
-        tag: ["二楞", "逗比"],
-        avatar: "http://i1.bvimg.com/643118/e8156b29c3381636.png",
-        online: "陌生人"
-      },
-      {
-        name: "五阿哥",
-        sex: "女",
-        core: "3000",
-        degree: "长老",
-        thumb: "99",
-        gift: "10",
-        tag: ["二楞", "逗比"],
-        avatar: "http://i1.bvimg.com/643118/dc9bba536bec851d.jpg",
-        online: "好友"
-      }
-    ];
-    // }, 17);
+    let cursor = 0;
+    this.getFriendList(cursor).then(() => {
+      setTimeout(() => {
+        this.someList = this.friendList;
+      }, 100);
+    });
   },
   methods: {
     listenFirstdata(data) {
       console.log("下面是传回父级的数据");
       console.log(data);
+      this.xid = data.xid;
     },
     //点赞
     showPosition(position) {
       this.position = position;
-      this.showPositionValue = true;
+      let that = this;
+      api.makeFriend(this.xid).then(res => {
+        console.log(res);
+        if (res.errcode === 0) {
+          that.text = "飞奔个赞过去";
+          this.showPositionValue = true;
+        } else {
+          that.text = "您已点赞了哦";
+          this.showPositionValue = true;
+        }
+      });
     },
     //跳转个人修改信息
     changePersonInfo() {
@@ -275,13 +233,10 @@ export default {
     },
     cancel() {
       this.showToast = false;
-    }
-    // prev() {
-    //   this.$refs.stack.$emit("prev");
-    // },
-    // next() {
-    //   this.$refs.stack.$emit("next");
-    // }
+    },
+    ...mapActions({
+      getFriendList: "get_Friendlist"
+    })
   },
   watch: {
     $route(newValue, oldValue) {
@@ -295,12 +250,6 @@ export default {
     XDialog,
     XButton,
     Scroller
-    // Scroll
-  },
-  watch: {
-    // someList(newValue,oldValue){
-    //   this.scroll.refresh()
-    // }
   }
 };
 </script>
@@ -428,7 +377,7 @@ export default {
         // padding: 0.1875rem;
         font-size: 12px;
         &.active {
-          background-color: #ff7900;
+          background-color: @baseColor;
           color: #fff;
         }
       }
@@ -456,7 +405,7 @@ export default {
         border: 1px solid #ccc;
         border-radius: 0.1333rem;
         &.active {
-          background-color: #ff7900;
+          background-color: @baseColor;
           color: #fff;
         }
       }
@@ -464,8 +413,8 @@ export default {
   }
   .confirm {
     text-align: center;
-    color: #ff7900;
-    font-size: 14px;
+    color: @baseColor;
+    font-size: 0.4267rem;
     font-family: "PingFang-SC-Bold";
   }
   .cancel_btn {
