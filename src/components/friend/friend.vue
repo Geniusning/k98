@@ -92,7 +92,7 @@
     <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask width="10em"  :text="text" :position="position"></toast>
 
     <!-- 见面礼 -->
-      <div v-transfer-dom>
+      <!-- <div v-transfer-dom>
       <x-dialog v-model="showToast_gift" class="dialog-demo" :hide-on-blur="true">
         <div style="padding:15px;">
           <div class="friend_gift_wrapper">
@@ -113,6 +113,39 @@
           </div>
         </div>
       </x-dialog>
+    </div> -->
+    <div v-transfer-dom>
+      <popup v-model="showToast_gift" position="bottom">
+        <div class="position-vertical-demo">
+          <div class="title vux-1px-b">
+            手指抖一抖，就是好朋友
+          </div>
+          <div class="gift_list">
+            <ul class="list clearfix">
+              <li class="item">
+                <img src="../../assets/image/beer.png" alt="" class="beer">
+                <p class="gift_name">啤酒</p>
+                <p class="gift_price">￥0.99</p>
+              </li>
+                <li class="item">
+                <img src="../../assets/image/flower.png" alt="" class="flower">
+                <p class="gift_name">鲜花</p>
+                <p class="gift_price">￥1.88</p>
+              </li>
+                <li class="item">
+                <img src="../../assets/image/house.png" alt="" class="house">
+                <p class="gift_name">别墅</p>
+                <p class="gift_price">￥5.20</p>
+              </li>
+                <li class="item">
+                <img src="../../assets/image/car.png" alt="" class="car">
+                <p class="gift_name">跑车</p>
+                <p class="gift_price">￥16.8</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </popup>
     </div>
   </div>
 </template>
@@ -308,7 +341,7 @@ export default {
     margin: 0.09rem auto 0;
     // padding:0 0.5rem;
     position: relative;
-    z-index: 1000;
+    // z-index: 1000;
     width: 8.9rem;
     // width: 100%;
     height: 10.5333rem;
@@ -317,21 +350,21 @@ export default {
   }
 }
 // 弹框礼物
-.friend_gift_wrapper {
-  .gift_list {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 0.4rem;
-    .item {
-      img {
-        width: 1.5rem;
-        height: 1.5rem;
-      }
-      p {
-      }
-    }
-  }
-}
+// .friend_gift_wrapper {
+//   .gift_list {
+//     display: flex;
+//     justify-content: space-between;
+//     padding: 0 0.4rem;
+//     .item {
+//       img {
+//         width: 1.5rem;
+//         height: 1.5rem;
+//       }
+//       p {
+//       }
+//     }
+//   }
+// }
 //弹框选择
 .select_wrapper {
   width: 8rem;
@@ -419,6 +452,63 @@ export default {
   }
   .cancel_btn {
     margin-right: 0.875rem;
+  }
+  // 送礼弹框
+}
+.position-vertical-demo {
+  height: 3.76rem;
+  background: #fff;
+  .title {
+    color: #4b4b4b;
+    font-size: 0.3733rem;
+    padding: 0.2667rem;
+    text-align: left;
+  }
+  .gift_list {
+    margin-top: 0.36rem;
+    .list {
+      display: flex;
+      justify-content: space-around;
+      margin-left: 0.4rem;
+      .item {
+        float: left;
+        // margin-right: 1rem;
+        width: 1.7067rem;
+        height: 1.9467rem;
+        box-sizing: border-box;
+        text-align: center;
+        img {
+          width: 1.1333rem;
+          height: 1.1333rem;
+          &.flower {
+            width: 1.0933rem;
+            height: 1.16rem;
+          }
+          &.house {
+            margin-top: 0.3667rem;
+            width: 0.96rem;
+            height: 0.8267rem;
+          }
+          &.car {
+            margin-top: 0.3167rem;
+            width: 1.3067rem;
+            height: 0.8667rem;
+          }
+        }
+        .gift_name {
+          width: 100%;
+          text-align: center;
+          font-size: 0.2667rem;
+          color: #666;
+        }
+        .gift_price {
+          width: 100%;
+          text-align: center;
+          font-size: 0.2933rem;
+          color: #f13c19;
+        }
+      }
+    }
   }
 }
 </style>

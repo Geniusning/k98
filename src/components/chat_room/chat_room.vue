@@ -1,140 +1,56 @@
 <template>
  <div id="chat" class="chatRoom">
-      <x-header>小红帽<a slot="right"></a></x-header>
+      <div class="chat_nav">
+        <div class="back_box">
+          <img src="../../assets/image/back_chat.png" alt="" class="back_arrow" @click="goBack">
+        </div>
+        <div class="name">
+          夏美
+        </div>
+        <div class="backHome_box">
+          <img src="../../assets/image/chat_home.png" alt="" class="home" @click="goHome">
+        </div>
+      </div>
       <div class="chat_wrapper" ref="chatWrapper" @click="actionShow=false">
-        <scroller :lock-x="true" height="-112">
+        <scroll class="chat_content" :data="chatList2">
           <ul class="chat_list">
-              <li class="left clearfix">
+              <li class="clearfix" :class="{'friend':index<5,'mine':index>=5}" v-for="(item,index) in chatList">
                   <div class="person_box">
                       <h2 class="name">19:20:10</h2>
                       <img src="../../assets/image/avatar3.jpg" alt="" class="avatar">
                   </div>
                   <div class="message_box">
-                    <p  class="message">您好</p>
-                  </div>
-              </li>
-               <li class="left clearfix">
-                  <div class="person_box">
-                      <h2 class="name">19:20:10</h2>
-                      <img src="../../assets/image/avatar3.jpg" alt="" class="avatar">
-                  </div>
-                  <div class="message_box">
-                    <p  class="message">你是我的眼</p>
-                  </div>
-              </li>
-               <li class="left clearfix">
-                  <div class="person_box">
-                      <h2 class="name">19:20:10</h2>
-                      <img src="../../assets/image/avatar3.jpg" alt="" class="avatar">
-                  </div>
-                  <div class="message_box">
-                    <p class="message">你是我的眼</p>
-                  </div>
-              </li>
-               <li class="left clearfix">
-                  <div class="person_box">
-                      <h2 class="name">19:20:10</h2>
-                      <img src="../../assets/image/avatar3.jpg" alt="" class="avatar">
-                  </div>
-                  <div class="message_box">
-                    <p class="message">你是我的眼</p>
-                  </div>
-              </li>
-               <li class="left clearfix">
-                  <div class="person_box">
-                      <h2 class="name">19:20:10</h2>
-                      <img src="../../assets/image/avatar3.jpg" alt="" class="avatar">
-                  </div>
-                  <div class="message_box">
-                    <p class="message">你是我的眼</p>
-                  </div>
-              </li>
-              <li class="right clearfix">
-                   <div class="person_box2">
-                      <h2 class="name2">19:20:10</h2>
-                      <img src="../../assets/image/avatar2.jpg" alt="" class="avatar2">
-                  </div>
-                  <div class="message_box2">
-                    <p class="message2">你衣是我的眼</p>
-                  </div>
-              </li>
-                 <li class="right clearfix">
-                   <div class="person_box2">
-                      <h2 class="name2">19:20:10</h2>
-                      <img src="../../assets/image/avatar2.jpg" alt="" class="avatar2">
-                  </div>
-                  <div class="message_box2">
-                    <p class="message2">你衣是我的眼</p>
-                  </div>
-              </li>
-                 <li class="right clearfix">
-                   <div class="person_box2">
-                      <h2 class="name2">19:20:10</h2>
-                      <img src="../../assets/image/avatar2.jpg" alt="" class="avatar2">
-                  </div>
-                  <div class="message_box2">
-                    <p class="message2">你衣是我的眼</p>
-                  </div>
-              </li>
-                 <li class="right clearfix">
-                   <div class="person_box2">
-                      <h2 class="name2">19:20:10</h2>
-                      <img src="../../assets/image/avatar2.jpg" alt="" class="avatar2">
-                  </div>
-                  <div class="message_box2">
-                    <p class="message2">你衣是我的眼</p>
-                  </div>
-              </li>
-                 <li class="right clearfix">
-                   <div class="person_box2">
-                      <h2 class="name2">19:20:10</h2>
-                      <img src="../../assets/image/avatar2.jpg" alt="" class="avatar2">
-                  </div>
-                  <div class="message_box2">
-                    <p class="message2">你衣是我的眼</p>
-                  </div>
-              </li>
-                 <li class="right clearfix">
-                   <div class="person_box2">
-                      <h2 class="name2">19:20:10</h2>
-                      <img src="../../assets/image/avatar2.jpg" alt="" class="avatar2">
-                  </div>
-                  <div class="message_box2">
-                    <p class="message2">你衣是我的眼</p>
-                  </div>
-              </li>
-                 <li class="right clearfix">
-                   <div class="person_box2">
-                      <h2 class="name2">19:20:10</h2>
-                      <img src="../../assets/image/avatar2.jpg" alt="" class="avatar2">
-                  </div>
-                  <div class="message_box2">
-                    <p class="message2">你衣是我的眼</p>
-                  </div>
-              </li>
-                 <li class="right clearfix">
-                   <div class="person_box2">
-                      <h2 class="name2">19:20:10</h2>
-                      <img src="../../assets/image/avatar2.jpg" alt="" class="avatar2">
-                  </div>
-                  <div class="message_box2">
-                    <p class="message2">你衣是我的眼</p>
+                    <span class="arrow"></span>
+                    <p  class="message">{{item.message}}</p>
                   </div>
               </li>
           </ul>
-        </scroller>
+         </scroll>
       </div>
       <div class="input_wrapper">
         <div class="input_area clearfix">
           <input type="text" id="send_message" class="send_message" @focus.prevent="focus" v-model="input_value">
-          <div class="action_box">
-            <img src="../../assets/image/emotion.png" alt="" id="emotion" class="emotion" @click="show_emotion">
-            <span v-if="show" class="sendBtn">发送</span>
-            <img v-else src="../../assets/image/plus.png" alt="" class="other_action" @click="toggle_emotion">
+          <div class="action_box clearfix">
+              <img src="../../assets/image/plane.png" alt="" class="icon_plane fl">
+              <span class="send fl">发送</span>
           </div>
         </div>
+        <div class="select_area">
+          <ul class="selectList clearfix">
+            <li class="item fl">
+              <img src="../../assets/image/chat_pic.png" alt="">
+              <input type="file" class="file">
+            </li>
+             <li class="item fl">
+              <img src="../../assets/image/chat_emotion.png" alt="" @click="show_emotion">
+            </li>
+             <li class="item fl">
+              <img src="../../assets/image/chat_gift.png" alt="">
+            </li>
+          </ul>
+        </div>
         <div class="emotion_area" v-if="emotionShow">
-           <swiper :auto="false" height="150px" dots-position="center">
+           <swiper :auto="false" height="130px" dots-position="center">
             <swiper-item class="black">
                 <grid :show-vertical-dividers="true"  :cols="8">
                   <grid-item v-for="(item,index) in emoj1" :key="index">
@@ -151,40 +67,6 @@
             </swiper-item>
           </swiper>
         </div>
-        <div class="action_area" v-if="actionShow">
-          <tab :scroll-threshold="5" :line-width="1">
-            <tab-item v-for="(item,index) in list" :key="index" :selected="index===0" @on-item-click="onItemClick">{{ item }}</tab-item>
-          </tab>
-          <div class="content_system" v-show="showTab">
-            <ul class="systemList">
-              <li>
-                <img src="../../assets/image/pic.png" alt="">
-                <p>图片</p>
-              </li>
-              <li></li>
-              <li></li>
-            </ul>
-          </div>
-          <div class="content_gift" v-show="!showTab">
-            <ul class="giftList">
-              <li>
-                <img src="../../assets/image/gift (1).png" alt="">
-                <p>￥1.99</p>
-                <p>小飞机</p>
-              </li>
-              <li>
-                 <img src="../../assets/image/gift.png" alt="">
-                <p>￥8.88</p>
-                <p>小花朵</p>
-              </li>
-              <li>  
-                 <img src="../../assets/image/018-gift.png" alt="">
-                <p>￥10</p>
-                <p>大炮</p>
-              </li>
-            </ul>
-          </div>
-        </div>
       </div>
  </div>
 </template>
@@ -198,9 +80,9 @@ import {
   Swiper,
   SwiperItem,
   Grid,
-  GridItem,
+  GridItem
 } from "vux";
-import BScroll from "better-scroll";
+import Scroll from "../../base/scroll/scroll.vue";
 export default {
   data() {
     return {
@@ -209,6 +91,95 @@ export default {
       emotionShow: false,
       actionShow: false,
       input_value: "",
+      chatList: [
+        {
+          message:
+            "哈哈，很高兴认识你哦1我们这里是全深圳全好的kTV,音响质量超级好"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        }
+      ],
+      chatList2: [
+        {
+          message: "哈哈，很高兴认识你哦1"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        },
+        {
+          message: "哈哈，很高兴认识你哦"
+        }
+      ],
       list: ["操作", "礼物"],
       emoj1: [
         "😄",
@@ -263,15 +234,18 @@ export default {
   created() {
     console.log(document.body.clientHeight);
   },
-  mounted() {
-    // this.Slider = new BScroll(this.$refs.chatWrapper, {
-    //   scrollY: true,
-    //   click: false,
-    //   tap: true,
-    //   autoBlur: true
-    // });
-  },
+  mounted() {},
   methods: {
+    //返回
+    goBack() {
+      this.$router.go(-1);
+    },
+    //返回主页
+    goHome() {
+      this.$router.push({
+        name: "home"
+      });
+    },
     //选择表情
     select_emotion(item) {
       console.log(item);
@@ -319,183 +293,150 @@ export default {
     SwiperItem,
     Grid,
     GridItem,
+    Scroll
   }
 };
 </script>
 
 <style scoped lang='less'>
 @import "../../assets/less/variable.less";
+@import "../../assets/less/chat.less";
 .chatRoom {
   height: 100%;
   display: flex;
   flex-direction: column;
+  .chat_nav {
+    height: 1.1733rem;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.32rem 0.4rem;
+    background: #ddd;
+    .back_box {
+      .back_arrow {
+        width: 0.32rem;
+        height: 0.5333rem;
+      }
+    }
+    .name {
+      color: #333;
+      font-size: 0.4267rem;
+    }
+    .backHome_box {
+      .home {
+        width: 0.64rem;
+        height: 0.5867rem;
+      }
+    }
+  }
   .chat_wrapper {
     flex: 1;
-    padding: 0 0.625rem;
+    padding: 0.1333rem 0.3733rem 0.1333rem;
+    background: #eee;
     overflow-y: auto;
-    .chat_list {
-      width: 100%;
-      //   padding: 0.625rem;
-      .left {
-        width: 100%;
-        // display: flex;
-        // justify-content: flex-start;
-        .person_box {
-          float: left;
-          text-align: center;
-
-          .name {
-            font-size: 12px;
-          }
-          .avatar {
-            width: 0.875rem;
-            height: 0.875rem;
-            border-radius: 0.875rem;
+    .chat_content {
+      height: 100%;
+      .chat_list {
+        .friend {
+          margin-bottom: 0.4667rem;
+          .chatList(left,#fff);
+          .arrow {
+            .arrowDot(#fff);
+            left: -0.05rem;
           }
         }
-        .message_box {
-          padding: 0.225rem 0px;
-          float: left;
-          .message {
-            background-color: #fff;
-            text-align: left;
-            padding: 0.375rem;
-            border-radius: 6px;
-            max-width: 10rem;
-            font-size: 0.3567rem;
+        .mine {
+          width: 100%;
+          margin-bottom: 0.4667rem;
+          .chatList(right,#FFD800);
+          .arrow {
+            .arrowDot(#FFD800);
+            right: -0.05rem;
           }
-        }
-      }
-      .right {
-        width: 100%;
-        .person_box2 {
-          float: right;
-          text-align: center;
-          .name2 {
-            // width: 100px;
-            // float: left;
-          }
-          .avatar2 {
-            width: 0.875rem;
-            height: 0.875rem;
-            border-radius: 0.875rem;
-          }
-        }
-        .message_box2 {
-          padding: 0.225rem 0px;
-          float: right;
-          margin-right: 0.375rem;
-          .message2 {
-            background-color: #fff;
-            text-align: left;
-            padding: 0.375rem;
-            border-radius: 6px;
-            max-width: 10rem;
+          .message_box {
+            margin-right: 0.2667rem;
           }
         }
       }
     }
   }
   .input_wrapper {
-    // height: 3.5rem;
     border-top: 1px solid #ccc;
-    background: #fff;
+    background: #eee;
+    padding: 0 0.4rem;
+    //输入区域
     .input_area {
-      padding-left: 0.125rem;
-      margin-bottom: 0.08rem;
+      padding: 0.2133rem 0;
+      height: 1.44rem;
+      box-sizing: border-box;
       .send_message {
         float: left;
-        margin-right: 10px;
-        margin-top: 0px;
-        border: none;
-        border-bottom: 1px solid #ccc;
-        width: 75%;
-        height: 0.9rem;
+        width: 6.9333rem;
+        height: 0.9867rem;
+        text-indent: 0.2667rem;
+        border: 1px solid #999;
       }
       .action_box {
-        // padding: 10px;
+        margin-left: 0.1667rem;
         float: left;
-        padding-top: 0.08rem;
-        .emotion {
-          width: 0.875rem;
-          height: 0.875rem;
-          // vertical-align: -12px;
-          float: left;
-
+        // width: 2rem;
+        background: #ffd800;
+        border-radius: 0.1067rem;
+        padding: 0.27rem 0.2333rem;
+        box-sizing: border-box;
+        .icon_plane {
+          width: 0.5867rem;
+          height: 0.48rem;
         }
-        .sendBtn {
-          display: inline-block;
-          width: 1rem;
-          text-align: center;
-          height: 0.775rem;
-          line-height: 0.775rem;
-          background-color: #FF7800;
-          border-radius: 0.08rem;
-          color: #fff;
-           float: left;
+        .send {
+          color: #4b4b4b;
+          font-size: 0.4rem;
         }
-        .other_action {
-          width: 0.8rem;
-          height: 0.8rem;
-          // vertical-align: -9px;
-          margin-left: 0.25rem;
-           float: left;
+      }
+    }
+    //选择区域
+    .select_area {
+      height: 1.1rem;
+      box-sizing: border-box;
+      .selectList {
+        .item {
+          width: 0.9067rem;
+          height: 0.9067rem;
+          margin-right: 0.4rem;
+          background: #fff;
+          box-sizing: border-box;
+          padding: 0.1867rem;
+          border-radius: 0.1067rem;
+          position: relative;
+          .file {
+            position: absolute;
+            width: 0.9067rem;
+            height: 0.9067rem;
+            left: 0;
+            top: 0;
+            opacity: 0;
+          }
+          img {
+            width: 0.5333rem;
+            height: 0.5333rem;
+          }
         }
       }
     }
     // 表情区域
     .emotion_area {
+      overflow: hidden;
       .grid-center {
         display: block;
         text-align: center;
         padding: 4px;
       }
     }
-    .action_area {
-      width: 100%;
-      height: 3rem;
-      .content_system {
-        width: 100%;
-        height: 100%;
-        .systemList {
-          width: 100%;
-          padding-top: 0.4rem;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-around;
-          li {
-            img {
-              width: 30px;
-              height: 30px;
-            }
-            p {
-               font-size: 0.3467rem;;
-              text-align: center;
-            }
-          }
-        }
-      }
-      .content_gift {
-        .giftList {
-          width: 100%;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-around;
-          li {
-            text-align: center;
-            img {
-              width: 30px;
-              height: 30px;
-            }
-            p {
-              font-size: 12px;
-              text-align: center;
-            }
-          }
-        }
-      }
-    }
     // background: green;
   }
+}
+
+.weui-grid {
+  padding: 0.1333rem;
 }
 </style>

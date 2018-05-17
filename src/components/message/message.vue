@@ -397,4 +397,7 @@ export default {
 .vux-tab .vux-tab-item.vux-tab-selected {
   color: #333;
 }
+.vux-button-group > a {
+  height: 0.8533rem;
+}
 </style>

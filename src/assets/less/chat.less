@@ -1,0 +1,41 @@
+.chatList(@direct, @color) {
+    .person_box {
+        float: @direct;
+        text-align: center;
+        .name {
+            font-size: 0.2667rem;
+            color: #999;
+            margin-bottom: 0.1333rem;
+        }
+        .avatar {
+            width: 1.3067rem;
+            height: 1.3067rem;
+            border-radius: 50%;
+        }
+    }
+    .message_box {
+        box-sizing: border-box; // padding: 0.225rem 0px;
+        padding-top: 0.78rem;
+        float: @direct;
+        position: relative;
+        margin-left: 0.2667rem;
+        .message {
+            background-color: @color;
+            text-align: left;
+            color: #333;
+            padding: 0.275rem;
+            border-radius: 6px;
+            max-width: 5rem;
+            font-size: 0.4rem;
+        }
+    }
+}
+
+.arrowDot(@color) {
+    position: absolute;
+    width: 0.1333rem;
+    height: 0.1333rem;
+    background: @color;
+    top: 1.2rem;
+    transform: rotate(45deg);
+}

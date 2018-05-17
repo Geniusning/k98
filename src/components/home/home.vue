@@ -37,13 +37,13 @@
                 </div>
                 <ul class="game_list clearfix">
                     <li>
-                        <img src="../../assets/image/game1.jpg" alt="" class="pic_game">
+                        <img src="../../assets/image/game1.jpg" alt="" class="pic_game" onclick="return false">
                     </li>
                     <li>
-                        <img src="../../assets/image/game2.jpg" alt="" class="pic_game">
+                        <img src="../../assets/image/game2.jpg" alt="" class="pic_game" onclick="return false">
                     </li>
                     <li>
-                        <img src="../../assets/image/game3.png" alt="" class="pic_game">     
+                        <img src="../../assets/image/game3.png" alt="" class="pic_game" onclick="return false">     
                     </li>
                 </ul>
             </div>
@@ -51,14 +51,14 @@
             <div class="friend_wrapper">
                 <div class="title_content_fri clearfix">
                     <div class="title clearfix">
-                      <img src="../../assets/image/footPrint.png" alt="" class="icon fl">
+                      <img src="../../assets/image/footPrint.png" alt="" class="icon fl" onclick="return false">
                         <h2 class="friend_title">好友足迹</h2>
                         <span class="desc">部落社员热聊中...</span>
                     </div>
                     <div class="more">
                         <ul class="fri_list">
                           <li class="item" v-for="(item,index) in friList" :key="index">
-                            <img :src="item.src" alt="暂无图片" class="min_avatar">
+                            <img :src="item.src" alt="暂无图片" class="min_avatar" onclick="return false">
                           </li>
                           <li class="item dotItem">
                               <span class="dot">...</span>
