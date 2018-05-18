@@ -253,7 +253,9 @@ export default {
       let that = this;
       api.loadFriendEvts(cursor).then(res => {
         console.log(res);
-        that.addBadgeCount(res.events.length);
+        if (res.events.length) {
+          that.addBadgeCount(res.events.length);
+        }
         this.messageList = res.events;
       });
     },
@@ -356,12 +358,6 @@ export default {
     },
     //进入交友界面
     intoFriend() {
-      // let cursor = 0;
-      // let paramsData = {
-      //   $router:this.$router,
-      //   cursor:cursor
-      // }
-      // this.getFriendList(paramsData)
       util.routerTo("friend", this);
     },
     //获取地理位置

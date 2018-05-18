@@ -1,12 +1,18 @@
 <template>
  <div id="individual" class="individual">
-   <x-header @on-click-back="onClickBack"  class="user_head">个人中心</x-header>
+   <!-- <x-header @on-click-back="onClickBack"  class="user_head">个人中心</x-header> -->
+   <div class="header_box clearfix">
+     <img src="../../assets/image/back_chat.png" alt="" class="back_arrow fl" @click="goBack">
+     <h3 class="title fl">编辑资料</h3>
+   </div>
    <!-- 上传头像 -->
-   <div class="avatar_wrapper">
-       <img src="../../assets/image/avatar.jpg" alt="" class="pic_avatar" ref="avatar">
-       <div class="upload">
+   <div class="avatar_wrapper clearfix">
+       <span class="avatar_name fl">头像</span>
+       <img src="../../assets/image/avatar.jpg" alt="" class="pic_avatar fl" ref="avatar">
+       <div class="upload fl">
            <span class="changeAvatar">更换头像</span> 
            <input type="file" name="image" accept="image/*" class="input_file" @change="Onchange">
+           <img src="../../assets/image/arrow_right.png" alt="" class="arrow_right">
            <!-- <cropper :headerImage="headerImage"  @getHeaderImage="newHeaderImage"></cropper>　 -->
        </div>
    </div>
@@ -25,56 +31,127 @@
    </div>
    <!-- 头像选择 -->
    <div class="select_list_wrapper">
+     <h3>候选头像</h3>
        <ul class="avatar_lsit">
            <li><img src="../../assets/image/avatar3.jpg" alt=""></li>
            <li><img src="../../assets/image/avatar2.jpg" alt=""></li>
            <li><img src="../../assets/image/avatar.jpg" alt=""></li>
            <li><img src="../../assets/image/avatar.jpg" alt=""></li>
            <li><img src="../../assets/image/avatar2.jpg" alt=""></li>
-           <li><img src="../../assets/image/avatar3.jpg" alt=""></li>
        </ul>
    </div>
-   <!-- 修改名称 -->
-   <div class="name_wrapper">
-       <div class="nickname">
-           <span>昵称</span>
-       </div>
-       <div class="inputArea"> 
-           <input type="text" @click="changeName" ref="inputArea">
-       </div>
+   <!-- 修改信息 -->
+   <div class="userInfo_wrapper">
+      <ul class="userInfo_list">
+        <li class="item vux-1px-b">
+          <span class="item_name">昵称</span>
+          <input type="text" class="input_name">
+        </li>
+        <li class="item vux-1px-b" @click="showPopupPickerSex=true">
+          <span class="item_name">性别</span>
+          <input type="text" class="input_name" v-model="gender" disabled>
+          <img src="../../assets/image/arrow_right.png" alt="" class="arrow_right">
+        </li>
+        <li class="item vux-1px-b" @click="showPopupPickerC=true">
+          <span class="item_name">星座</span>
+          <input type="text" class="input_name" v-model="constellation" disabled>
+          <img src="../../assets/image/arrow_right.png" alt="" class="arrow_right">
+        </li>
+         <li class="item vux-1px-b">
+          <span class="item_name">标签</span>
+          <input type="text" class="input_name" value="逗比、小呆萌、二愣子">
+          <img src="../../assets/image/add.png" alt="" class="add">
+        </li>
+        <li class="item vux-1px-b">
+          <span class="item_name">手机</span>
+          <input type="text" class="input_name" value="15764271456">
+        </li>
+         <li class="item_last vux-1px-b">
+          <span class="item_name signature">个性签名</span>
+          <input type="text" class="signature_area" v-model="signature" placeholder="最多输入15个汉字" maxlength="15" >
+          <div class="count">{{length}}/15</div>
+        </li>
+      </ul>
    </div>
    <!-- 保存按钮 -->
    <div class="btn_wrapper">
-       <x-button type="primary">保存</x-button>
+       <div class="btn">保存</div>
    </div>
-  <input type="text" v-model="path">
-  <button @click="getUserInfo">发起请求</button>
-  <textarea name="" id="" cols="30" rows="10" v-model="resText" style="margin-top:10px;"></textarea>
+
+
+  <!-- 星座选择 -->
+  <popup-picker :show="showPopupPickerC" :data="constellationList" v-model="constellationArr"  @on-hide="onHide_C" @on-change="onChange_C"></popup-picker>
+   <!-- 性别选择 -->
+   <popup-picker :show="showPopupPickerSex" :data="sexList" v-model="sex"  @on-hide="onHide" @on-change="onChange_S"></popup-picker>
  </div>
 
 </template>
 
 <script type='text/ecmascript-6'>
-import { XButton, XHeader, Previewer } from "vux";
+import { XButton, XHeader, Previewer, PopupPicker } from "vux";
 import VueCropper from "vue-cropper";
 import axios from "axios";
 export default {
   data() {
     return {
       showTailor: false,
+      showPopupPickerSex: false,
+      showPopupPickerC: false,
+      gender: "男",
+      constellation: "水瓶座",
+      sex: ["男"],
+      constellationArr: ["白羊座"],
+      signature: "",
       headerImage: "",
       path: "",
       resText: "",
+      length: "0",
+      sexList: [["男", "女"]],
+      constellationList: [
+        [
+          "白羊座",
+          "金牛座",
+          "双子座",
+          "巨蟹座",
+          "狮子座",
+          "处女座",
+          "天秤座",
+          "天蝎座",
+          "射手座",
+          "摩羯座",
+          "水瓶座",
+          "双鱼座"
+        ]
+      ],
       option: {
         img: "",
-        width:300,
-        height:250,
-        autoCrop:true
+        width: 300,
+        height: 250,
+        autoCrop: true
       }
     };
   },
   created() {},
   methods: {
+    //性别选择
+    onHide() {
+      this.showPopupPickerSex = false;
+    },
+    onChange_S(val1) {
+      console.log(val1);
+      this.gender = val1[0];
+    },
+    //星座选择
+    onHide_C() {
+      this.showPopupPickerC = false;
+    },
+    onChange_C(val) {
+      this.constellation = val[0];
+    },
+    //back
+    goBack() {
+      this.$router.go(-1);
+    },
     clip() {
       this.$refs.cropper.startCrop();
       console.log(111);
@@ -207,34 +284,60 @@ export default {
       }, 200);
     }
   },
+  watch: {
+    signature(newValue) {
+      this.length = newValue.length;
+    }
+  },
   components: {
     XHeader,
     Previewer,
     XButton,
-    VueCropper
+    VueCropper,
+    PopupPicker
   }
 };
 </script>
 
 <style scoped lang='less'>
+@import "../../assets/less/variable.less";
+@import "../../assets/less/mine.less";
 .individual {
   height: 100%;
+  .header_box {
+    padding: 0.32rem 0.4rem;
+    background: #ddd;
+    .back_arrow {
+      width: 0.32rem;
+      height: 0.5333rem;
+    }
+    .title {
+      margin-left: 3.4133rem;
+      color: #333;
+      font-size: 0.4267rem;
+    }
+  }
   .avatar_wrapper {
     background: #fff;
-    display: flex;
-    justify-content: space-between;
-    padding: 0.2667rem;
-    height: 1.75rem;
+    margin: 0.2667rem 0.4rem;
+    height: 1.7333rem;
+    .avatar_name {
+      color: #666;
+      font-size: 0.3733rem;
+      box-sizing: border-box;
+      padding-top: 0.5rem;
+    }
     .pic_avatar {
-      width: 1.75rem;
-      height: 1.75rem;
+      width: 1.7333rem;
+      height: 1.7333rem;
+      border-radius: 50%;
+      margin-left: 2.8933rem;
+      margin-right: 1.76rem;
     }
     .upload {
-      // padding: 1.25rem 0.625rem;
-      padding-right: 0.4rem;
       padding-top: 0.5333rem;
+      box-sizing: border-box;
       height: 1rem;
-      width: 2rem;
       line-height: 1rem;
       line-height: 20px;
       position: relative;
@@ -242,13 +345,20 @@ export default {
       color: #666;
       .changeAvatar {
         margin-top: -0.4rem;
+        font-size: 0.3733rem;
+        color: #666;
+        padding-right: 0.2rem;
       }
       .input_file {
         position: absolute;
         overflow: hidden;
+        width: 1.4667rem;
         right: 0;
         top: 0.48rem;
         opacity: 0;
+      }
+      .arrow_right {
+        .arrow(-0.3rem);
       }
     }
   }
@@ -284,7 +394,13 @@ export default {
   }
   .select_list_wrapper {
     //   margin: 0 2.5rem;
+    padding: 0 0.4rem;
     background: #fff;
+    font-size: 0.3733rem;
+    color: #666;
+    h3 {
+      margin-bottom: 0.4rem;
+    }
     .avatar_lsit {
       display: flex;
       justify-content: space-around;
@@ -292,32 +408,94 @@ export default {
       //   width: 25rem;
       li {
         img {
-          width: 1.125rem;
-          height: 1.125rem;
+          width: 1.6267rem;
+          height: 1.6267rem;
+          border-radius: 50%;
         }
       }
     }
   }
-  .name_wrapper {
-    display: flex;
-    margin-top: 0.1333rem;
-    padding: 0.25rem 0.25rem;
-    // border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    background: #fff;
-    .nickname {
-      margin-right: 10px;
-    }
-    .inputArea {
-      // padding-top: 0.1875rem;
-      input {
-        border: none;
+  .userInfo_wrapper {
+    .userInfo_list {
+      padding: 0.1333rem 0 0.1333rem 0.4rem;
+      .item {
+        padding: 0.28rem 0;
+        box-sizing: border-box;
+        position: relative;
+        .add {
+          .arrow(0.45rem);
+          width: 0.4rem;
+          height: 0.4rem;
+          // padding-right: 0.2rem;
+        }
+        .item_name {
+          margin-right: 0.6867rem;
+          color: #666;
+          font-size: 0.3733rem;
+          font-weight: 500;
+        }
+        .signature {
+          display: block;
+        }
+        .input_name {
+          padding: 0.2667rem;
+          width: 6.6667rem;
+          font-size: 0.4rem;
+          color: #333;
+          border: none;
+        }
+
+        .arrow_right {
+          .arrow(0.5rem);
+        }
+      }
+      .item_last {
+        padding-top: 0.4rem;
+        position: relative;
+        .item_name {
+          margin-right: 0.6867rem;
+          color: #666;
+          font-size: 0.3733rem;
+          font-weight: 500;
+        }
+        .signature_area {
+          padding-top: 0.5rem;
+          padding-bottom: 0.2rem;
+          width: 95%;
+          height: 100%;
+          box-sizing: border-box;
+          font-size: 0.3733rem;
+          border: none;
+          text-indent: 0.1333rem;
+        }
+        .count {
+          position: absolute;
+          right: 0.5rem;
+          bottom: 0.1rem;
+          font-size: 0.32rem;
+          color: #666;
+        }
       }
     }
   }
   .btn_wrapper {
-    margin-top: 1.25rem;
-    padding: 0 1.6rem;
+    .btn {
+      width: 9.2rem;
+      text-align: center;
+      padding: 0.4rem 0;
+      font-size: 0.4267rem;
+      color: #4b4b4b;
+      border-radius: 0.6133rem;
+      background: @baseColor;
+      margin: 0.8rem auto 0.7467rem;
+    }
   }
+  input:disabled {
+    background: #fff;
+  }
+}
+.vux-cell-box{
+  visibility:hidden;
+  width: 1.3333rem;
 }
 </style>

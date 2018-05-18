@@ -93,11 +93,11 @@ export default {
     .validate_code {
       position: absolute;
       width: 2.6667rem;
-      height: 0.8867rem;
-      line-height: 0.8867rem;
+      height: 1.1rem;
+      line-height: 1.1rem;
       right: 0.4267rem;
-      top: 2.998rem;
-      background: #ff7800;
+      top: 2.89rem;
+      background: #ffd800;
       color: #fff;
       border-radius: 0.4933rem;
     }
@@ -108,7 +108,7 @@ export default {
     height: 1.0667rem;
     line-height: 1.0667rem;
     border-radius: 0.5067rem;
-    background: #ff7800;
+    background: #ffd800;
     color: #fff;
     text-align: center;
   }

@@ -6,7 +6,8 @@
              <img :src="userInfo.headimgurl" alt="" class="avatar">
              <p class="name">{{userInfo.nickname||'小龙女'}}</p>
              <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->
-             <span class="bindTel" @click="showTelBind">绑定手机</span>
+             <span class="bindTel" @click="showTelBind" v-if="showTel">绑定手机</span>
+             <span class="bindTel1" @click="showTelBind" v-else>15764271126</span>
          </div>
          <img @click="edit_individual" src="../../assets/image/setting.png" alt="" class="edit">
      </div>
@@ -15,8 +16,8 @@
         <div class="userInfo_wrapper">
           <ul class="user_list">
             <li class="item">
-              <p class="score">888分</p>
-              <p class="score_name">影响力</p>
+              <p class="score">水瓶座</p>
+              <p class="score_name">星座</p>
             </li>
             <li class="item">
               <p class="score">大地主</p>
@@ -32,7 +33,6 @@
             </li>
           </ul>
         </div>
-
         <!-- 我的卡券 -->
         <div class="discount_wrapper">
           <ul class="discount_list">
@@ -46,19 +46,25 @@
              </li>
              <li class="item">
               <img src="../../assets/image/yingxiangli.png" alt="" class="pic_discount">
-              <p class="discount_name">影响力明细</p>
+              <p class="discount_name">收礼明细</p>
              </li>
           </ul>
         </div>
-
         <!-- 我的标签 -->
         <div class="tag_wrapper">
           <h2 class="tag_title">我的标签<span class="star">#</span></h2>
-          <ul class="tag_list" >
+          <ul class="tag_list" v-if="tags_show">
             <li v-for="(item,index) in tagList" :key="index" class="item">
               {{item}}
             </li>
           </ul>
+          <p v-else class="no_tags"><span class="star">#</span>请在个人编辑里面设置标签，让朋友更了解你哦<span class="star">#</span></p>
+        </div>
+        <!-- 个性签名 -->
+        <div class="signature_wrapper">
+          <h2 class="signature_title">个性签名<span class="star">#</span></h2>
+          <p class="signature" v-if="showTag">我就是我，是不一样的烟火</p>
+          <p v-else class="no_signature"><span class="star">#</span>请在个人编辑里面设置签名<span class="star">#</span></p>
         </div>
      </div>
     <!-- 绑定手机弹框 -->
@@ -95,6 +101,8 @@ export default {
   },
   data() {
     return {
+      showTel: true,
+      tags_show: false,
       show1: false,
       showToast: false,
       showTag: false,
@@ -172,6 +180,8 @@ export default {
 
 <style scoped lang="less">
 @import "../../assets/less/mixin.less";
+@import "../../assets/less/variable.less";
+@import "../../assets/less/mine.less";
 // 吐司
 .tag_box {
   position: relative;
@@ -197,14 +207,14 @@ export default {
     width: 100%;
     height: 4.1333rem;
     position: relative;
-    .bg("../../assets/image/mine_bg.png");
+    .bg("../../assets/image/mine_bg.jpg");
     text-align: center;
     .edit {
       position: absolute;
       width: 0.6rem;
       height: 0.56rem;
-      top: 0.2rem;
-      right: 0.3133rem;
+      top: 0.4rem;
+      right: 0.4133rem;
     }
     .person_info {
       position: absolute;
@@ -219,7 +229,6 @@ export default {
       .name {
         color: #fff;
         margin-top: 0.2133rem;
-        // width: 94px;
         height: 0.4133rem;
         font-size: 0.4267rem;
         font-family: "PingFang-SC-Bold";
@@ -230,14 +239,26 @@ export default {
         margin-top: 0.2667rem;
         display: inline-block;
         width: 2.1867rem;
-        // height: 0.6133rem;
         line-height: normal;
         padding: 0.1333rem 0;
         background-color: #fff;
         border-radius: 0.3067rem;
         font-weight: 700;
         font-family: serif;
-        color: #ff7800;
+        color: #999999;
+        font-size: 0.3733rem;
+      }
+      .bindTel1 {
+        margin-top: 0.2667rem;
+        display: inline-block;
+        width: 2.1867rem;
+        line-height: normal;
+        padding: 0.1333rem 0;
+        // background-color: #fff;
+        border-radius: 0.3067rem;
+        font-weight: 700;
+        font-family: serif;
+        color: #fff;
         font-size: 0.3733rem;
       }
     }
@@ -257,7 +278,7 @@ export default {
         .item {
           box-sizing: border-box;
           .score {
-            color: #ff7800;
+            color: #ff3131;
             font-size: 0.3467rem;
             text-align: center;
             margin-bottom: 0.3333rem;
@@ -296,18 +317,19 @@ export default {
       }
     }
     .tag_wrapper {
-      flex: 1;
+      height: 2rem;
       margin-top: 0.1333rem;
       padding-left: 0.4rem;
-      height: 4rem;
       background: #fff;
       .tag_title {
-        color: #333;
-        font-size: 0.4rem;
-        font-weight: bold;
-        margin-top: 0.2933rem;
+        .title();
+      }
+      .no_tags {
+        margin-top: 0.2667rem;
+        color: #666;
+        font-size: 0.3733rem;
         .star {
-          color: #ff7800;
+          color: @baseColor;
         }
       }
       .tag_list {
@@ -317,11 +339,33 @@ export default {
         .item {
           height: 0.64rem;
           line-height: 0.64rem;
-          border: 1px solid #ff7800;
+          border: 1px solid @baseColor;
           border-radius: 0.32rem;
           padding: 0 0.4rem;
           margin-right: 0.2667rem;
           font-size: 0.3733rem;
+        }
+      }
+    }
+    .signature_wrapper {
+      flex: 1;
+      margin-top: 0.1333rem;
+      padding-left: 0.4rem;
+      background: #fff;
+      .signature_title {
+        .title();
+      }
+      .signature {
+        margin-top: 0.2667rem;
+        color: #666;
+        font-size: 0.3733rem;
+      }
+      .no_signature {
+        margin-top: 0.2667rem;
+        color: #666;
+        font-size: 0.3733rem;
+        .star {
+          color: @baseColor;
         }
       }
     }

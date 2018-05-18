@@ -6,7 +6,7 @@
         <button-tab-item class="button_tab" @on-item-click="isShow=true">好友的列表</button-tab-item>
         <button-tab-item class="button_tab" @on-item-click="isShow=false">新朋友招呼</button-tab-item>
       </button-tab>
-      
+      <div class="dot" v-if="hello"></div>
    </div>
    <div class="message_wrapper">
      <ul class="message_list" style="margin-top:0.4rem" v-if="isShow">
@@ -75,8 +75,8 @@
               </div>
             </div>
             <div class="thumb_wrapper clearfix" v-show="thumb_flag">
-              <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">回赞</p>
               <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">飘过</p>
+              <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">回赞</p>
             </div>
           </li>
         </ul>
@@ -132,6 +132,7 @@ export default {
   data() {
     return {
       color: "#ffd800",
+      hello:false,
       isShow: true, //最上面tab切换
       selected_num: 0,
       greeting_flag: 0,
@@ -154,7 +155,7 @@ export default {
       let that = this;
       api.loadFriendEvts(cursor).then(res => {
         console.log(res);
-        // that.addBadgeCount(res.events.length);
+        that.addBadgeCount(res.events.length);
         this.messageList = res.events;
       });
     },
@@ -162,9 +163,10 @@ export default {
     backThumbClick(type, flag) {
       let that = this;
       api.giveBackThumb(type, flag).then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.errcode === 0) {
           that._loadFriendEvts();
+          that._loadFriends();
           if (flag == "yes") {
             that.text = "已回赞";
           } else {
@@ -179,7 +181,7 @@ export default {
       let cursor = 0;
       let that = this;
       api.loadFriends(cursor).then(res => {
-        console.log(res);
+        // console.log(res);
         that.friendList = res.friends;
       });
     },
@@ -218,6 +220,7 @@ export default {
 @import "../../assets/less/base.less";
 @import "../../assets/less/mixin.less";
 @import "../../assets/less/variable.less";
+@import "../../assets/less/message_common.less";
 .message {
   height: 100%;
   overflow-y: auto;
@@ -226,6 +229,9 @@ export default {
   text-align: center;
   padding: 0.11rem 0.9125rem;
   margin-top: 0.1333rem;
+  .dot {
+    .dot(0.2rem,0.8rem)
+  }
   span {
     display: inline-block;
     width: 4rem;
@@ -234,10 +240,6 @@ export default {
     text-align: center;
     border: 1px solid #ccc;
     border-radius: 10px;
-    &.active {
-      background-color: red;
-      color: #fff;
-    }
   }
   .vux-button-group > a {
     color: #666;
@@ -273,14 +275,7 @@ export default {
             border-radius: 50%;
           }
           .dot {
-            display: inline-block;
-            width: 0.3333rem;
-            height: 0.3333rem;
-            background: #ff3b30;
-            border-radius: 50%;
-            position: absolute;
-            top: 0;
-            right: 0;
+            .dot(0,0);
           }
         }
         .name_and_message {
@@ -336,14 +331,15 @@ export default {
               border-radius: 50%;
             }
             .dot {
-              display: inline-block;
-              width: 0.3333rem;
-              height: 0.3333rem;
-              background: #ff3b30;
-              border-radius: 50%;
-              position: absolute;
-              top: 0;
-              right: 0;
+              // display: inline-block;
+              // width: 0.3333rem;
+              // height: 0.3333rem;
+              // background: #ff3b30;
+              // border-radius: 50%;
+              // position: absolute;
+              // top: 0;
+              // right: 0;
+              .dot(0,0);
             }
           }
           .name_and_message {
@@ -378,7 +374,7 @@ export default {
             margin-right: 0.1333rem;
           }
           .reject {
-            // margin-top: 0.2333rem;
+            margin-right: 0.2rem;
           }
           .time {
             font-size: 0.3733rem;

@@ -34,6 +34,7 @@ const mutations = {
     },
     //badge自增
     [types.ADD_BADGE](state, count) {
+        count = count === 0 ? -1 : count;
         state.badgeCount += count
     },
     //测试

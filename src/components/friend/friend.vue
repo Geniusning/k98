@@ -92,33 +92,12 @@
     <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask width="10em"  :text="text" :position="position"></toast>
 
     <!-- 见面礼 -->
-      <!-- <div v-transfer-dom>
-      <x-dialog v-model="showToast_gift" class="dialog-demo" :hide-on-blur="true">
-        <div style="padding:15px;">
-          <div class="friend_gift_wrapper">
-            <ul class="gift_list">
-              <li class="item">
-                <img src="../../assets/image/gift (1).png" alt="">
-                <p>￥1.68</p>
-              </li>
-              <li class="item">
-                 <img src="../../assets/image/018-gift.png" alt="">
-                <p>￥5.20</p>
-              </li>
-              <li class="item">
-                 <img src="../../assets/image/3 gift bag present b.png" alt="">
-                <p>￥6.66</p>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </x-dialog>
-    </div> -->
     <div v-transfer-dom>
       <popup v-model="showToast_gift" position="bottom">
         <div class="position-vertical-demo">
           <div class="title vux-1px-b">
-            手指抖一抖，就是好朋友
+            <span>手指抖一抖，就是好朋友</span>
+            <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
           </div>
           <div class="gift_list">
             <ul class="list clearfix">
@@ -218,11 +197,7 @@ export default {
   },
   mounted() {
     let cursor = 0;
-    this.getFriendList(cursor).then(() => {
-      setTimeout(() => {
-        this.someList = this.friendList;
-      }, 100);
-    });
+    this.getFriendList(cursor)
   },
   methods: {
     listenFirstdata(data) {
@@ -244,6 +219,10 @@ export default {
           this.showPositionValue = true;
         }
       });
+    },
+    //关闭礼物
+    close_gift() {
+      this.showToast_gift = false;
     },
     //跳转个人修改信息
     changePersonInfo() {
@@ -274,6 +253,9 @@ export default {
   watch: {
     $route(newValue, oldValue) {
       console.log(newValue);
+    },
+    friendList(newValue) {
+      this.someList = newValue;
     }
   },
   components: {
@@ -459,10 +441,19 @@ export default {
   height: 3.76rem;
   background: #fff;
   .title {
-    color: #4b4b4b;
+    color: @baseColor;
     font-size: 0.3733rem;
     padding: 0.2667rem;
     text-align: left;
+    position: relative;
+    .close {
+      width: 0.4rem;
+      height: 0.4rem;
+      position: absolute;
+      top: 0.3rem;
+      right: 0.4rem;
+      // z-index: 999;
+    }
   }
   .gift_list {
     margin-top: 0.36rem;
