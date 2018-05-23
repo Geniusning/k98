@@ -30,7 +30,7 @@
       <div class="input_wrapper">
         <div class="input_area clearfix">
           <input type="text" id="send_message" class="send_message" @focus.prevent="focus" v-model="input_value">
-          <div class="action_box clearfix">
+          <div class="action_box clearfix" :class="{active:flag}">
               <img src="../../assets/image/plane.png" alt="" class="icon_plane fl">
               <span class="send fl">发送</span>
           </div>
@@ -38,14 +38,17 @@
         <div class="select_area">
           <ul class="selectList clearfix">
             <li class="item fl">
-              <img src="../../assets/image/chat_pic.png" alt="">
-              <input type="file" class="file">
-            </li>
-             <li class="item fl">
               <img src="../../assets/image/chat_emotion.png" alt="" @click="show_emotion">
             </li>
              <li class="item fl">
-              <img src="../../assets/image/chat_gift.png" alt="">
+              <img src="../../assets/image/message_chat.png" alt="" @click="show_expression">
+            </li>
+            <li class="item fl">
+              <img src="../../assets/image/chat_gift.png" alt="" @click="showToastGift">
+            </li>
+            <li class="item fl">
+              <img src="../../assets/image/chat_pic.png" alt="">
+              <input type="file" class="file">
             </li>
           </ul>
         </div>
@@ -67,7 +70,49 @@
             </swiper-item>
           </swiper>
         </div>
+        <!-- 常用语 -->
+        <div class="expression_wrapper" v-if="expressionShow">
+          <ul class="expressList">
+            <li class="item vux-1px-b" v-for="(item,index) in expressionList" :key="index" @click="addExpress(item)">{{item}}</li>
+          </ul>
+        </div>
       </div>
+
+      <!-- 送礼 -->
+      <div v-transfer-dom>
+        <popup v-model="showToast_gift" position="bottom">
+          <div class="position-vertical-demo">
+            <div class="title vux-1px-b">
+              <span>送个小礼，就是好朋友</span>
+              <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
+            </div>
+            <div class="gift_list">
+              <ul class="list clearfix">
+                <li class="item">
+                  <img src="../../assets/image/beer.png" alt="" class="beer">
+                  <p class="gift_name">啤酒</p>
+                  <p class="gift_price">￥0.99</p>
+                </li>
+                  <li class="item">
+                  <img src="../../assets/image/flower.png" alt="" class="flower">
+                  <p class="gift_name">鲜花</p>
+                  <p class="gift_price">￥1.88</p>
+                </li>
+                  <li class="item">
+                  <img src="../../assets/image/house.png" alt="" class="house">
+                  <p class="gift_name">别墅</p>
+                  <p class="gift_price">￥5.20</p>
+                </li>
+                  <li class="item">
+                  <img src="../../assets/image/car.png" alt="" class="car">
+                  <p class="gift_name">跑车</p>
+                  <p class="gift_price">￥16.8</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </popup>
+    </div>
  </div>
 </template>
 <script type='text/ecmascript-6'>
@@ -80,16 +125,29 @@ import {
   Swiper,
   SwiperItem,
   Grid,
-  GridItem
+  GridItem,
+  Popup
 } from "vux";
 import Scroll from "../../base/scroll/scroll.vue";
 export default {
+  directives: {
+    TransferDom
+  },
   data() {
     return {
+      expressionShow:false,
+      expressionList:[
+        '您好，很高兴可以成为好朋友',
+        '好久不见，有空过来坐坐',
+        '约定好了，准时见面，不见不散',
+        '您好，有什么可以为您服务'
+      ],
+      showToast_gift: false,
       show: false,
       showTab: true,
       emotionShow: false,
       actionShow: false,
+      flag: false,
       input_value: "",
       chatList: [
         {
@@ -236,6 +294,10 @@ export default {
   },
   mounted() {},
   methods: {
+    //关闭送礼
+    close_gift() {
+      this.showToast_gift = false;
+    },
     //返回
     goBack() {
       this.$router.go(-1);
@@ -251,15 +313,26 @@ export default {
       console.log(item);
       this.input_value += item;
     },
+    //选择常用语
+    addExpress(item){
+      this.input_value = item;
+    },
+    //展示送礼面板
+    showToastGift(){
+      this.showToast_gift = true;
+      this.expressionShow = false;
+      this.emotionShow = false;
+    },
     //展示表情面板
     show_emotion() {
       this.emotionShow = !this.emotionShow;
       this.actionShow = false;
+      this.expressionShow = false;
     },
-    // 切换表情面板
-    toggle_emotion() {
-      this.actionShow = !this.actionShow;
-      this.emotionShow = false;
+    //切换常用语
+    show_expression(){
+      this.expressionShow = !this.expressionShow;
+      this.emotionShow = false; 
     },
     onItemClick(index) {
       console.log(index);
@@ -278,8 +351,10 @@ export default {
     input_value(newValue, oldValue) {
       if (newValue.length > 0 || oldValue > 0) {
         this.show = true;
+        this.flag = true;
       } else {
         this.show = false;
+        this.flag = false;
       }
     }
   },
@@ -293,7 +368,8 @@ export default {
     SwiperItem,
     Grid,
     GridItem,
-    Scroll
+    Scroll,
+    Popup
   }
 };
 </script>
@@ -363,7 +439,7 @@ export default {
   .input_wrapper {
     border-top: 1px solid #ccc;
     background: #eee;
-    padding: 0 0.4rem;
+    padding: 0 0 0 0.4rem;
     //输入区域
     .input_area {
       padding: 0.2133rem 0;
@@ -377,13 +453,18 @@ export default {
         border: 1px solid #999;
       }
       .action_box {
-        margin-left: 0.1667rem;
+        margin-left: 0.2767rem;
         float: left;
-        // width: 2rem;
-        background: #ffd800;
+        width: 2rem;
+        height: 1.06rem;
+        // line-height: 0.9867rem;
+        background: #999;
         border-radius: 0.1067rem;
-        padding: 0.27rem 0.2333rem;
+        padding: 0.2533rem 0.2933rem;
         box-sizing: border-box;
+        &.active {
+          background: #ffd800;
+        }
         .icon_plane {
           width: 0.5867rem;
           height: 0.48rem;
@@ -402,7 +483,7 @@ export default {
         .item {
           width: 0.9067rem;
           height: 0.9067rem;
-          margin-right: 0.4rem;
+          margin-right: 0.46rem;
           background: #fff;
           box-sizing: border-box;
           padding: 0.1867rem;
@@ -430,13 +511,108 @@ export default {
         display: block;
         text-align: center;
         padding: 4px;
+        font-size: 0.5333rem;
       }
     }
-    // background: green;
+    .expression_wrapper {
+      // width: 100%;
+      margin-left: -0.4667rem;
+      .expressList {
+        width: 100%;
+        .item {
+          height: 0.8rem;
+          box-sizing: border-box;
+          line-height: 0.8rem;
+          font-size: 0.3467rem;
+          color: #333;
+          background: #eee;
+          text-indent: 0.4667rem;
+        }
+      }
+    }
   }
 }
-
+.position-vertical-demo {
+  height: 3.76rem;
+  background: #fff;
+  .title {
+    color: @baseColor;
+    font-size: 0.3733rem;
+    padding: 0.2667rem;
+    text-align: left;
+    position: relative;
+    .close {
+      width: 0.4rem;
+      height: 0.4rem;
+      position: absolute;
+      top: 0.3rem;
+      right: 0.4rem;
+      // z-index: 999;
+    }
+  }
+  .gift_list {
+    margin-top: 0.36rem;
+    .list {
+      display: flex;
+      justify-content: space-around;
+      margin-left: 0.4rem;
+      .item {
+        float: left;
+        // margin-right: 1rem;
+        width: 1.7067rem;
+        height: 1.9467rem;
+        box-sizing: border-box;
+        text-align: center;
+        img {
+          width: 1.1333rem;
+          height: 1.1333rem;
+          &.flower {
+            width: 1.0933rem;
+            height: 1.16rem;
+          }
+          &.house {
+            margin-top: 0.3667rem;
+            width: 0.96rem;
+            height: 0.8267rem;
+          }
+          &.car {
+            margin-top: 0.3167rem;
+            width: 1.3067rem;
+            height: 0.8667rem;
+          }
+        }
+        .gift_name {
+          width: 100%;
+          text-align: center;
+          font-size: 0.2667rem;
+          color: #666;
+        }
+        .gift_price {
+          width: 100%;
+          text-align: center;
+          font-size: 0.2933rem;
+          color: #f13c19;
+        }
+      }
+    }
+  }
+}
 .weui-grid {
   padding: 0.1333rem;
+}
+.weui-grids:before {
+  border-left: none;
+}
+.weui-grids:after {
+  border-left: none;
+}
+.weui-grids:before {
+  border-top: none;
+}
+.weui-grid:before {
+  border-right: none;
+}
+.weui-grid:after {
+  border-bottom: none;
 }
 </style>

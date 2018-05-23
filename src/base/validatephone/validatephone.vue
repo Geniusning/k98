@@ -76,6 +76,9 @@ export default {
       height: 1.0667rem;
       line-height: 1.0667rem;
       border-radius: 0.4933rem;
+      outline: none;
+      -webkit-appearance: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       border: 1px solid #ccc;
       text-indent: 0.4rem;
       font-size: 0.4rem;
@@ -86,6 +89,8 @@ export default {
       line-height: 1.0667rem;
       border-radius: 0.4933rem;
       border: 1px solid #ccc;
+      outline: none;
+      -webkit-appearance: none;
       text-indent: 0.4rem;
       font-size: 0.4rem;
       margin-top: 0.2667rem;
@@ -100,6 +105,7 @@ export default {
       background: #ffd800;
       color: #fff;
       border-radius: 0.4933rem;
+      font-size: 0.3467rem;
     }
   }
   .btn {
@@ -111,6 +117,7 @@ export default {
     background: #ffd800;
     color: #fff;
     text-align: center;
+    font-size: 0.4267rem;
   }
 }
 </style>

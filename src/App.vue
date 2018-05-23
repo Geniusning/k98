@@ -36,7 +36,9 @@ export default {
       if (
         newValue.name == "interview" ||
         newValue.name == "individual" ||
-        newValue.name == "chat"
+        newValue.name == "chat" ||
+        newValue.name == "gameDetail" ||
+        newValue.name == "giftDetail"
       ) {
         this.flag = false;
       } else {
@@ -102,6 +104,7 @@ html {
 }
 .top_wrapper {
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   // background-color: yellow;
   -webkit-flex: 1;
   -moz-flex: 1;

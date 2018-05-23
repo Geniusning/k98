@@ -18,8 +18,8 @@
       <div class="wrapper" ref="wrapper">
         <div class="content">
             <div class="adr_wrapper">
-                <div class="adr clearfix">
-                  <img src="../../assets/image/position.png" alt="" class="position">
+                <div class="adr clearfix" @click="getMapPosition">
+                  <img src="../../assets/image/position.png" alt="" class="position" >
                   <p class="adr_desc">龙华新区观澜街道大河路商业大厦B座4楼</p> 
                 </div>
                 <div class="tel">
@@ -174,7 +174,7 @@ import { Carousel3d, Slide } from "vue-carousel-3d";
 const baseList = [
   {
     url: "javascript:",
-    img: "http://i2.bvimg.com/643118/cbe37fbdd3e49bbb.png", // 404
+    img: "http://i1.bvimg.com/643118/cbe37fbdd3e49bbb.png", // 404
 
     title: ""
   },
@@ -185,7 +185,7 @@ const baseList = [
   },
   {
     url: "javascript:",
-    img: "http://i2.bvimg.com/643118/cbe37fbdd3e49bbb.png",
+    img: "http://i1.bvimg.com/643118/cbe37fbdd3e49bbb.png",
     title: ""
   }
 ];
@@ -200,13 +200,13 @@ export default {
       show_advertise: true,
       friList: [
         {
-          src: "http://i2.bvimg.com/643118/47aaa8265e29874c.jpg"
+          src: "http://i1.bvimg.com/643118/e8156b29c3381636.png"
         },
         {
-          src: "http://i1.bvimg.com/643118/2d4cdb6b943a3175.jpg"
+          src: "http://i2.bvimg.com/643118/2d4cdb6b943a3175.jpg"
         },
         {
-          src: "http://i1.bvimg.com/643118/96545237381246c7.jpg"
+          src: "http://i2.bvimg.com/643118/96545237381246c7.jpg"
         }
       ],
       demo01_list: baseList,
@@ -226,7 +226,7 @@ export default {
           count: 88
         },
         {
-          src: "http://i4.bvimg.com/643118/babb965c057db27f.png",
+          src: "http://i2.bvimg.com/643118/0c7ed06ec325ad1d.png",
           originPrice: "388",
           price: "188",
           desc: "超值优惠，值得拥有",
@@ -237,7 +237,7 @@ export default {
     };
   },
   created() {
-    this.url = window.location.href;
+    this.url = window.location.href.split("#")[0];
     this._getUserInfo();
     this._getJssdkInfo();
   },
@@ -276,11 +276,29 @@ export default {
     closeDialog() {
       this.showDialogStyle = false;
     },
+    //获取地图位置
+    getMapPosition() {
+      //获取地理位置
+      wx.getLocation({
+        // type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+        type: "gcj02", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+        success: function(res) {
+          var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+          var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+          // alert(longitude)
+          var speed = res.speed; // 速度，以米/每秒计
+          var accuracy = res.accuracy; // 位置精度
+          window.location.href =
+            `http://apis.map.qq.com/uri/v1/routeplan?type=bus&from=我的位置&fromcoord=${latitude},${longitude}&to=欢乐谷&tocoord=22.547986,113.988039&policy=1&referer=myapp`;
+        }
+      });
+    },
     // 获取用户信息
     _getUserInfo() {
       api
         .getUserInfo("/api/loadUserInfo")
         .then(res => {
+          console.log(res);
           this.getuserInfo(res);
         })
         .catch(err => {
@@ -289,10 +307,13 @@ export default {
     },
     //获取jssdk
     _getJssdkInfo() {
+      // console.log(this.url);
       api
-        .getJssdkInfo("/api/loadJSSDKParams?url=" + this.url)
+        .getJssdkInfo(
+          "/api/loadJSSDKParams?url=" + encodeURIComponent(this.url)
+        )
         .then(res => {
-          // console.log(res);
+          console.log(res);
           // console.log(res.data);
           wx.config({
             //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -301,7 +322,7 @@ export default {
             nonceStr: res.nonceStr, // 必填，生成签名的随机串
             signature: res.signature, // 必填，签名，见附录1
             jsApiList: [
-              // "scanQRCode",
+              "openLocation",
               // "onMenuShareTimeline",
               "getLocation",
               "onMenuShareAppMessage"
@@ -323,19 +344,6 @@ export default {
               },
               cancel: () => {
                 // 用户取消分享后执行的回调函数
-              }
-            });
-            //获取地理位置
-            wx.getLocation({
-              // type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-              type: "gcj02", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-              success: function(res) {
-                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                console.log("纬度");
-                console.log(latitude);
-                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                var speed = res.speed; // 速度，以米/每秒计
-                var accuracy = res.accuracy; // 位置精度
               }
             });
           });
@@ -520,7 +528,7 @@ export default {
     position: absolute;
     height: 50%;
     width: 100%;
-    background: #ffe200;
+    // background: #ffe200;
   }
   .barLogo_wrapper {
     width: 100%;

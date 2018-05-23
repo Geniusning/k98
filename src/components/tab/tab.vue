@@ -9,7 +9,7 @@
         <tabbar-item :selected="selected==1" link="/friend">
           <img v-if="selected!==1" slot="icon" src="../../assets/image/friend.png" class="friend">
           <img v-else slot="icon" src="../../assets/image/active_friend.png" class="friend">
-          <span slot="label">好友</span>
+          <span slot="label">交友</span>
         </tabbar-item>
         <tabbar-item :selected="selected==2" :badge="count" link="/message">
           <img v-if="selected!==2" slot="icon" src="../../assets/image/message.png" class="message">

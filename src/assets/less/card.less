@@ -1,0 +1,30 @@
+.card(@url, @right) {
+    .item {
+        width: 9.5467rem;
+        height: 2.32rem; // background-image: url();
+        background-image: url(@url);
+        background-repeat: no-repeat;
+        background-size: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.2133rem;
+        .left1 {
+            margin-left: 0.8533rem;
+            margin-top: 0.4667rem;
+            .name {
+                font-size: 0.4267rem;
+                color: #4b4b4b;
+                margin-bottom: 0.3067rem;
+            }
+            .time {
+                font-size: 0.3467rem;
+                color: #999;
+            }
+        }
+        .right1 {
+            padding: 0.8333rem @right 0.9333rem 0;
+            font-size: 0.48rem;
+            color: #fff;
+        }
+    }
+}

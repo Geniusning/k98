@@ -13,10 +13,14 @@ import Mine from 'components/mine/mine'
 import Card from 'components/card/card'
 import Chat from 'components/chat_room/chat_room'
 import Individual from 'components/individual/individual'
+import GameDetail from 'components/game_detail/game_detail'
+import GiftDetail from 'components/gift_detail/gift_detail'
 import vuePicturePreview from 'vue-picture-preview'
-import Carousel3d from 'vue-carousel-3d';
+// import Carousel3d from 'vue-carousel-3d';
+import { ToastPlugin } from 'vux'
+Vue.use(ToastPlugin)
 
-Vue.use(Carousel3d);
+// Vue.use(Carousel3d);
 Vue.use(vuePicturePreview)
 
 Vue.use(VueRouter)
@@ -50,7 +54,7 @@ const routes = [
   {
     path: '/mine',
     name: 'mine',
-    component: Mine
+    component: Mine,
   },
   {
     path: '/card',
@@ -67,6 +71,16 @@ const routes = [
     name: "individual",
     component: Individual
   },
+  {
+    path: "/game_detail",
+    name: "gameDetail",
+    component: GameDetail
+  },
+  {
+    path: '/gift_detail',
+    name: 'giftDetail',
+    component: GiftDetail,
+  }
 ]
 
 const router = new VueRouter({

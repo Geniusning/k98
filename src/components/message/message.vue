@@ -2,14 +2,20 @@
  <div id="message" class="message">
    <div class="title">
      <!-- <span :class="{active:isShow}" @click="changeMessage">消息</span><span :class="{active:!isShow}" @click="changeMessage">联系人</span> -->
-      <button-tab v-model="selected_num">
-        <button-tab-item class="button_tab" @on-item-click="isShow=true">好友的列表</button-tab-item>
-        <button-tab-item class="button_tab" @on-item-click="isShow=false">新朋友招呼</button-tab-item>
-      </button-tab>
+      <!-- <button-tab v-model="selected_num">
+        <button-tab-item class="button_tab" @on-item-click="onItemClick_tab">好友的列表</button-tab-item>
+        <button-tab-item class="button_tab" @on-item-click="onItemClick_tab">新朋友招呼</button-tab-item>
+        <button-tab-item class="button_tab" @on-item-click="onItemClick_tab">系统消息</button-tab-item>
+      </button-tab> -->
+      <div class="btn_box clearfix">
+        <div :class="{active:isShow==0}" class="fri_btn fl" @click="btn_fri">好友</div>
+        <div :class="{active:isShow==1}" class="hello_btn fl" @click="btn_hello">新朋友招呼</div>
+        <div :class="{active:isShow==2}" class="system_btn fl" @click="btn_sys">系统消息</div>
+      </div>
       <div class="dot" v-if="hello"></div>
    </div>
    <div class="message_wrapper">
-     <ul class="message_list" style="margin-top:0.4rem" v-if="isShow">
+     <ul class="message_list" style="margin-top:0.4rem" v-if="isShow==0">
        <li class="item vux-1px-b" @click="chat" v-for="(item,index) in friendList">
          <div class="info_message">
            <div class="avatar">
@@ -25,36 +31,8 @@
            <p>下午  11:11</p>
          </div>
        </li>
-       <!-- <li class="item border-1px">
-         <div class="info_message">
-           <div class="avatar">
-             <img src="../../assets/image/avatar3.jpg" alt="">
-           </div>
-           <div class="name_and_message">
-            <p class="name">小番茄</p>
-             <p class="message">今天天气很好</p>
-           </div>
-         </div>
-         <div class="info_time">
-           <p>下午  18:11</p>
-         </div>
-       </li>
-        <li class="item border-1px">
-         <div class="info_message">
-           <div class="avatar">
-             <img src="../../assets/image/avatar.jpg" alt="">
-           </div>
-           <div class="name_and_message">
-            <p class="name">小番茄</p>
-             <p class="message">今天天气很好</p>
-           </div>
-         </div>
-         <div class="info_time">
-           <p>下午  13:11</p>
-         </div>
-       </li> -->
      </ul>
-     <div class="message_list" v-else>
+     <div class="message_list" v-else-if="isShow==1">
        <tab bar-active-color="#ffd800" default-color="#999">
         <tab-item selected @on-item-click="onItemClick">点赞</tab-item>
         <tab-item @on-item-click="onItemClick">送礼</tab-item>
@@ -94,7 +72,7 @@
               </div>
             </div>
             <div class="thumb_wrapper">
-              <p class="back_thumb vux-1px">收到</p>
+              <p class="back_thumb vux-1px">答谢</p>
             </div>
           </li>
         </ul>
@@ -118,6 +96,23 @@
         </ul>
       </div>
      </div>
+     <ul class="message_list" style="margin-top:0.4rem" v-else>
+        <li class="item vux-1px-b" @click="chat" v-for="(item,index) in friendList">
+         <div class="info_message">
+           <div class="avatar">
+             <img :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/795ecd968a430f39.png'" alt="">
+             <!-- <i class="dot"></i> -->
+           </div>
+           <div class="name_and_message">
+             <p class="name">{{item.info.nickname}}</p>
+             <p class="message">今天天气很好</p>
+           </div>
+         </div>
+         <div class="info_time">
+           <p>下午  11:11</p>
+         </div>
+       </li>
+     </ul>
    </div>
    <!-- 回赞 -->
     <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask :text="text" :position="position"></toast>
@@ -132,8 +127,8 @@ export default {
   data() {
     return {
       color: "#ffd800",
-      hello:false,
-      isShow: true, //最上面tab切换
+      hello: false,
+      isShow: 0, //最上面tab切换
       selected_num: 0,
       greeting_flag: 0,
       messageList: [],
@@ -149,6 +144,15 @@ export default {
     this._loadFriends();
   },
   methods: {
+    btn_fri() {
+      this.isShow = 0;
+    },
+    btn_hello() {
+      this.isShow = 1;
+    },
+    btn_sys() {
+      this.isShow = 2;
+    },
     //拉取好友事件
     _loadFriendEvts() {
       let cursor = 0;
@@ -190,6 +194,9 @@ export default {
       this.greeting_flag = index;
       console.log(index);
     },
+    onItemClick_tab(index) {
+      this.isShow = index;
+    },
     changeMessage() {
       this.isShow = !this.isShow;
     },
@@ -229,8 +236,59 @@ export default {
   text-align: center;
   padding: 0.11rem 0.9125rem;
   margin-top: 0.1333rem;
+  .btn_box {
+    .fri_btn {
+      width: 2.71rem;
+      text-align: center;
+      height: 0.8533rem;
+      line-height: 0.8533rem;
+      border: 1px solid #eee;
+      box-sizing: border-box;
+      border-top-left-radius: 0.4267rem;
+      border-bottom-left-radius: 0.4267rem;
+      font-size: 0.4rem;
+      &.active {
+        background: #ffd800;
+        color: #fff;
+        border: 1px solid #ffd800;
+      }
+    }
+    .hello_btn {
+      width: 2.71rem;
+      text-align: center;
+      height: 0.8533rem;
+      line-height: 0.8533rem;
+      box-sizing: border-box;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      box-sizing: border-box;
+      font-size: 0.4rem;
+      &.active {
+        background: #ffd800;
+        color: #fff;
+        border-top: 1px solid #ffd800;
+        border-bottom: 1px solid #ffd800;
+      }
+    }
+    .system_btn {
+      width: 2.71rem;
+      text-align: center;
+      height: 0.8533rem;
+      line-height: 0.8533rem;
+      box-sizing: border-box;
+      border: 1px solid #eee;
+      border-top-right-radius: 0.4267rem;
+      border-bottom-right-radius: 0.4267rem;
+      font-size: 0.4rem;
+      &.active {
+        background: #ffd800;
+        color: #fff;
+        border: 1px solid #ffd800;
+      }
+    }
+  }
   .dot {
-    .dot(0.2rem,0.8rem)
+    .dot(0.2rem,0.8rem);
   }
   span {
     display: inline-block;
@@ -396,4 +454,9 @@ export default {
 .vux-button-group > a {
   height: 0.8533rem;
 }
+// .vux-button-group > a.vux-button-tab-item-middle:after {
+//   // border-right: 1px solid #666;
+//   // border-top: 1px solid #666;
+//   // border-bottom: 1px solid #666;
+// }
 </style>

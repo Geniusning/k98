@@ -71,7 +71,6 @@
                   <div class="sex_wrapper">
                     <h3>性别:</h3>
                     <ul class="sex_list">
-                   
                       <li @click="chooseSex(index)" :class="{active:currentIndex1 == index}" v-for="(item,index) in sexArr" :key="index"><span>{{item.name}}</span></li>
                     </ul>
                   </div>
@@ -190,7 +189,6 @@ export default {
   },
   created() {
     this.height = document.body.clientHeight;
-    // this.someList = this.friendList;
   },
   computed: {
     ...mapGetters(["friendList"])
@@ -387,10 +385,10 @@ export default {
         width: 1.7067rem;
         height: 0.6667rem;
         line-height: 0.6667rem;
-        border: 1px solid #ccc;
-        border-radius: 0.1333rem;
+        border-radius: 0.08rem;
+        background: #eee;
         // padding: 0.1875rem;
-        font-size: 12px;
+        font-size: 0.3467rem;
         &.active {
           background-color: @baseColor;
           color: #fff;
@@ -417,8 +415,9 @@ export default {
         width: 1.7067rem;
         height: 0.6667rem;
         line-height: 0.6667rem;
-        border: 1px solid #ccc;
-        border-radius: 0.1333rem;
+        border-radius: 0.08rem;
+        background: #eee;
+        font-size: 0.3467rem;
         &.active {
           background-color: @baseColor;
           color: #fff;

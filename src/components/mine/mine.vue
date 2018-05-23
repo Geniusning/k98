@@ -16,35 +16,35 @@
         <div class="userInfo_wrapper">
           <ul class="user_list">
             <li class="item">
-              <p class="score">水瓶座</p>
               <p class="score_name">星座</p>
+              <p class="score">水瓶座</p>
             </li>
             <li class="item">
-              <p class="score">大地主</p>
               <p class="score_name">阶级</p>
+              <p class="score">大地主</p>
             </li>
              <li class="item">
-              <p class="score">88个</p>
               <p class="score_name">获赞数</p>
+              <p class="score">88个</p>
             </li>
              <li class="item">
-              <p class="score">8个</p>
               <p class="score_name">收礼数</p>
+              <p class="score">8个</p>
             </li>
           </ul>
         </div>
         <!-- 我的卡券 -->
         <div class="discount_wrapper">
           <ul class="discount_list">
-            <li class="item vux-1px-r">
+            <li class="item vux-1px-r" @click="checkDiscout">
               <img src="../../assets/image/discount.png" alt=""  class="pic_discount">
               <p class="discount_name">我的卡券</p>
             </li>
-            <li class="item vux-1px-r">
+            <li class="item vux-1px-r" @click="gameDetal">
               <img src="../../assets/image/game_mine.png" alt="" class="pic_discount">
               <p class="discount_name">游戏明细</p>
              </li>
-             <li class="item">
+             <li class="item" @click="giftDetal">
               <img src="../../assets/image/yingxiangli.png" alt="" class="pic_discount">
               <p class="discount_name">收礼明细</p>
              </li>
@@ -94,6 +94,7 @@ import {
   Toast
 } from "vux";
 import { mapGetters, mapMutations } from "vuex";
+import util from "common/util";
 import Validate from "../../base/validatephone/validatephone";
 export default {
   directives: {
@@ -115,9 +116,15 @@ export default {
   methods: {
     //查看优惠券
     checkDiscout() {
-      this.$router.push({
-        name: "card"
-      });
+      util.routerTo("card", this);
+    },
+    //查看游戏明细
+    gameDetal() {
+      util.routerTo("gameDetail", this);
+    },
+    //查看收礼明细
+    giftDetal(){
+      util.routerTo("giftDetail", this);
     },
     //编辑个人信息
     edit_individual() {

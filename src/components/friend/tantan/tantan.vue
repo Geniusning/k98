@@ -29,7 +29,7 @@
               <!-- <img src="../../../assets/image/icon_changwai2.png" alt="" class="icon" v-else> -->
               <!-- <img :src="item.info.avatar" alt="" class="blur_avatar"> -->
               <div class="avatar_box">
-                <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/795ecd968a430f39.png'" alt="暂无头像" >
+                <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/e8156b29c3381636.png'" alt="暂无头像" >
               </div>
               <p class="name">{{item.info.nickname}}</p>
             </div>
