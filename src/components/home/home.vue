@@ -91,8 +91,8 @@
                         <h2 class="shop_title">店长推荐</h2>
                         <span class="desc">更贴心、更优惠</span>
                     </div>
-                    <div class="more">
-                        <!-- <span @click="showMoreWelfare">更多>></span> -->
+                    <div class="more fr">
+                        <img src="../../assets/image/letter.gif" alt="" class="letter" @click="inToLetter">
                     </div>
                 </div>
                 <div class="advertise_wrapper" v-if="show_advertise">
@@ -174,18 +174,18 @@ import { Carousel3d, Slide } from "vue-carousel-3d";
 const baseList = [
   {
     url: "javascript:",
-    img: "http://i1.bvimg.com/643118/cbe37fbdd3e49bbb.png", // 404
+    img: "http://i4.bvimg.com/643118/cbe37fbdd3e49bbb.png", // 404
 
     title: ""
   },
   {
     url: "javascript:",
-    img: "http://i2.bvimg.com/643118/68e0d5bc3b55fee4.png",
+    img: "http://i4.bvimg.com/643118/68e0d5bc3b55fee4.png",
     title: ""
   },
   {
     url: "javascript:",
-    img: "http://i1.bvimg.com/643118/cbe37fbdd3e49bbb.png",
+    img: "http://i4.bvimg.com/643118/cbe37fbdd3e49bbb.png",
     title: ""
   }
 ];
@@ -200,10 +200,10 @@ export default {
       show_advertise: true,
       friList: [
         {
-          src: "http://i1.bvimg.com/643118/e8156b29c3381636.png"
+          src: "http://i2.bvimg.com/643118/47aaa8265e29874c.jpg"
         },
         {
-          src: "http://i2.bvimg.com/643118/2d4cdb6b943a3175.jpg"
+          src: "http://i2.bvimg.com/643118/cd7b5471885e117f.jpg"
         },
         {
           src: "http://i2.bvimg.com/643118/96545237381246c7.jpg"
@@ -217,7 +217,7 @@ export default {
       distance: "",
       picList: [
         {
-          src: "http://i4.bvimg.com/643118/d3ed6dbc589609a1.png",
+          src: "http://i4.bvimg.com/643118/547e062360e36336.png",
 
           originPrice: "488",
           price: "388",
@@ -226,7 +226,7 @@ export default {
           count: 88
         },
         {
-          src: "http://i2.bvimg.com/643118/0c7ed06ec325ad1d.png",
+          src: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png ",
           originPrice: "388",
           price: "188",
           desc: "超值优惠，值得拥有",
@@ -248,16 +248,11 @@ export default {
     this._loadFriendEvts();
   },
   methods: {
+    //获取好友事件
     _loadFriendEvts() {
       let cursor = 0;
       let that = this;
-      api.loadFriendEvts(cursor).then(res => {
-        console.log(res);
-        if (res.events.length) {
-          that.addBadgeCount(res.events.length);
-        }
-        this.messageList = res.events;
-      });
+      this.getFriendEvt(cursor);
     },
     //关闭广告
     close_adtise() {
@@ -288,8 +283,8 @@ export default {
           // alert(longitude)
           var speed = res.speed; // 速度，以米/每秒计
           var accuracy = res.accuracy; // 位置精度
-          window.location.href =
-            `http://apis.map.qq.com/uri/v1/routeplan?type=bus&from=我的位置&fromcoord=${latitude},${longitude}&to=欢乐谷&tocoord=22.547986,113.988039&policy=1&referer=myapp`;
+          //window.location.href="http://apis.map.qq.com/uri/v1/marker?marker=coord:22.547986,113.988039;title:深圳魅力四射酒吧;addr:好吃好玩的地方&referer=myapp"
+          window.location.href = `http://apis.map.qq.com/uri/v1/routeplan?type=bus&from=我的位置&fromcoord=${latitude},${longitude}&to=欢乐谷&tocoord=22.547986,113.988039&policy=1&referer=myapp`;
         }
       });
     },
@@ -298,7 +293,7 @@ export default {
       api
         .getUserInfo("/api/loadUserInfo")
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.getuserInfo(res);
         })
         .catch(err => {
@@ -313,8 +308,7 @@ export default {
           "/api/loadJSSDKParams?url=" + encodeURIComponent(this.url)
         )
         .then(res => {
-          console.log(res);
-          // console.log(res.data);
+          // console.log(res);
           wx.config({
             //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
             appId: "wxb2fa3c446063ec19", // 必填，公众号的唯一标识
@@ -360,41 +354,18 @@ export default {
     //进入福利页面
     toWelfare() {
       this.$router.push({
-        name: "welfare",
-        params: { userId: 123 }
+        name: "welfare"
       });
     },
     //进入交友界面
     intoFriend() {
       util.routerTo("friend", this);
     },
-    //获取地理位置
-    getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          this.showPosition,
-          this.showError
-        );
-      } else {
-        this.$refs.navigator.innerHTML =
-          "Geolocation is not supported by this browser.";
-      }
-    },
-    showPosition(position) {
-      alert(position.coords.latitude, position.coords.longitude);
-    },
-    showError(error) {
-      switch (error.code) {
-        case error.PERMISSION_DENIED: //用户不允许地理定位
-          alert("用户拒绝地理位置上报");
-          break;
-        case error.POSITION_UNAVAILABLE: //无法获取当前位置
-          break;
-        case error.TIMEOUT: //操作超时
-          break;
-        case error.UNKNOWN_ERROR:
-          break;
-      }
+    //进入店长信箱
+    inToLetter() {
+      util.routerTo("message", this, {
+        num: 2
+      });
     },
     //查看玩家部落
     show_introduce() {
@@ -413,11 +384,10 @@ export default {
       getuserInfo: "GET_USERINFO",
       testmodel: "TEST",
       getPosition: "GET_POSITION",
-      // getFriendList:"GET_FRIENDlIST"
-      addBadgeCount: "ADD_BADGE"
+      // addBadgeCount: "ADD_BADGE"
     }),
     ...mapActions({
-      getFriendList: "get_Friendlist"
+      getFriendEvt: "get_FriendEvt"
     })
   },
   components: {
@@ -633,6 +603,7 @@ export default {
 }
 // 好友
 .friend_wrapper {
+  overflow: hidden;
   .icon {
     width: 0.7733rem;
     height: 0.88rem;
@@ -711,6 +682,7 @@ export default {
 // 游戏
 .game_wrapper {
   // width: 100%;
+  overflow-y: hidden;
   .icon {
     width: 1.1067rem;
     height: 0.6133rem;
@@ -732,6 +704,7 @@ export default {
   }
   .game_list {
     overflow-x: auto;
+    overflow-y: hidden;
     height: 2.5333rem;
     margin: 0 0.2667rem;
     padding-bottom: 0.2167rem;
@@ -751,6 +724,8 @@ export default {
 .welfare_wrapper {
   .titleWrapper;
   .title_content_wel {
+    display: flex;
+    justify-content: space-between;
     .title {
       padding-bottom: 0.2333rem;
       padding-top: 0.2667rem;
@@ -759,7 +734,7 @@ export default {
         height: 0.9333rem;
         margin-right: 0.16rem;
       }
-      .title;
+      .title();
       .shop_title {
         .homeTitle;
         padding-top: 0.25rem;
@@ -767,6 +742,14 @@ export default {
       .desc {
         .titleDesc;
         padding-top: 0.22rem;
+      }
+    }
+    .more {
+      .letter {
+        margin-right: 0.45rem;
+        margin-top: 0.3rem;
+        width: 0.8333rem;
+        height: 0.6667rem;
       }
     }
   }

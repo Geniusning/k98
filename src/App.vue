@@ -1,9 +1,11 @@
 <template>
   <div id="app">
     <div class="top_wrapper">
-      <keep-alive>
-       <router-view></router-view>
-      </keep-alive>
+      <!-- <transition name="slider"> -->
+        <!-- <keep-alive> -->
+        <router-view></router-view>
+        <!-- </keep-alive> -->
+      <!-- </transition> -->
       <lg-preview></lg-preview>
     </div>
     <div class="bottom_wrapper" v-if="flag">
@@ -25,10 +27,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["isShow"])
-  },
-  components: {
-    Tab
+    // ...mapGetters(["isShow"])
   },
   watch: {
     $route: function(newValue) {
@@ -79,11 +78,20 @@ export default {
 a:hover {
   text-decoration: none !important;
 }
+.slider-enter-active,
+.slider-leave-active {
+  transition: all 0.5s linear;
+}
+.slider-enter,
+.slider-leave-to {
+  transform: translate3d(-100%, 0, 0);
+}
 body,
 html {
   height: 100%;
 }
 #app {
+  overflow-x: hidden;
   max-width: 10rem;
   height: 100%;
   -webkit-display: flex;
@@ -105,7 +113,6 @@ html {
 .top_wrapper {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  // background-color: yellow;
   -webkit-flex: 1;
   -moz-flex: 1;
   -ms-flex: 1;
@@ -114,6 +121,6 @@ html {
 }
 .bottom_wrapper {
   height: 1.18rem;
-  // background-color: #f4f4f4;
+  max-width: 10rem;
 }
 </style>

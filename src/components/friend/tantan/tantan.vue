@@ -30,6 +30,7 @@
               <!-- <img :src="item.info.avatar" alt="" class="blur_avatar"> -->
               <div class="avatar_box">
                 <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/e8156b29c3381636.png'" alt="暂无头像" >
+                <img src="../../../assets/image/friend_icon.png" alt="" class="friend_icon" v-show="item.isAlreadyFriend">
               </div>
               <p class="name">{{item.info.nickname}}</p>
             </div>
@@ -42,6 +43,7 @@
                 <span class="constellation">{{item.info.constellation}}</span>
                 <span class="gift"><img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">{{item.info.gift}}</span>
                 <span class="thumb"><img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">{{item.info.thumb}}</span>
+                <span class="friend"><img src="../../../assets/image/friend_tantan.png" alt="" class="friend_samll">{{item.info.thumb}}</span>
               </div>
               <div class="tag_wrapper">
                 <span v-for="(item,index) in item.info.tags" :key="index">{{item}}</span>
@@ -75,6 +77,7 @@ export default {
   data() {
     return {
       // propData: this.pages,
+      // isFriend:false,
       basicdata: {
         start: {},
         end: {}
@@ -128,12 +131,8 @@ export default {
       return ratio;
     }
   },
-  mounted() {
-    // this.pages = this.friendList;
+  mounted() { 
     console.log(this.pages);
-    // document.addEventListener("touchmove", e => {
-    //   // e.preventDefault();
-    // });
   },
   methods: {
     touchstart(e) {
@@ -556,6 +555,13 @@ export default {
         height: 4.5333rem;
         border-radius: 50%;
       }
+      .friend_icon{
+        width: 0.84rem;
+        height: 0.84rem;
+        position:absolute;
+        bottom: 0;
+        right: 0.8rem;
+      }
     }
   }
   .userInfo_wrapper {
@@ -602,6 +608,19 @@ export default {
           height: 0.2933rem;
           position: absolute;
           top: 0.12rem;
+          left: 0.15rem;
+        }
+      }
+      .friend {
+        box-sizing: border-box;
+        padding-top: 0.03rem;
+        .userInfo(#ffd800); 
+        text-indent: 0.2rem;
+        .friend_samll {
+          width: 0.3333rem;
+          height: 0.3333rem;
+          position: absolute;
+          top: 0.11rem;
           left: 0.15rem;
         }
       }

@@ -9,27 +9,18 @@
       </tab>
      </div>
     <!-- 温馨提示 -->
-    <!-- <div class="warm_tips">
+    <div class="warm_tips">
         <p class="tips">温馨提示：绑定手机，方便您到店核销</p>
         <span class="bingTel" @click="bindTel">绑定手机</span>
-    </div> -->
+    </div>
     <!-- 优惠券列表 -->
     <div class="discount_wrapper">
       <!-- 未使用 -->
       <ul class="no_user_list" v-show="tagIndex==0">
-        <li class="item">
+        <li class="item" v-for="(item,index) in unusedList" @click="selectDiscout">
           <div class="left1">
-            <p class="name">啤酒8折优惠券</p>
-            <p class="time">过期时间:2018-01-25</p>
-          </div>
-          <div class="right1">
-            立即使用
-          </div>
-        </li>
-         <li class="item">
-          <div class="left1">
-            <p class="name">啤酒8折优惠券</p>
-            <p class="time">过期时间:2018-01-25</p>
+            <p class="name">{{item.content}}</p>
+            <p class="time">{{item.time}}</p>
           </div>
           <div class="right1">
             立即使用
@@ -38,19 +29,10 @@
       </ul>
       <!-- 已使用 -->
       <ul class="usered_list" v-show="tagIndex==1">
-        <li class="item">
+        <li class="item" v-for="(item,index) in usedList" :key="index">
           <div class="left1">
-            <p class="name">啤酒9折优惠券</p>
-            <p class="time">过期时间:2018-01-25</p>
-          </div>
-          <div class="right1">
-            已使用
-          </div>
-        </li>
-        <li class="item">
-          <div class="left1">
-            <p class="name">啤酒9折优惠券</p>
-            <p class="time">过期时间:2018-01-25</p>
+            <p class="name">{{item.content}}</p>
+            <p class="time">{{item.time}}</p>
           </div>
           <div class="right1">
             已使用
@@ -59,19 +41,10 @@
       </ul>
       <!-- 已过期 -->
        <ul class="past_list" v-show="tagIndex==2">
-        <li class="item">
+        <li class="item" v-for="(item,index) in timeOutList" :key="index">
           <div class="left1">
-            <p class="name">啤酒9折优惠券</p>
-            <p class="time">过期时间:2018-01-25</p>
-          </div>
-          <div class="right1">
-            已过期
-          </div>
-        </li>
-        <li class="item">
-          <div class="left1">
-            <p class="name">啤酒9折优惠券</p>
-            <p class="time">过期时间:2018-01-25</p>
+            <p class="name">{{item.content}}</p>
+            <p class="time">{{item.time}}</p>
           </div>
           <div class="right1">
             已过期
@@ -99,10 +72,11 @@
                   </div>
               </div>
             </li>
-
         </ul>
     </div> -->
     <validate v-show="isShow"></validate>
+    <router-view></router-view>
+ 
  </div>
 </template>
 
@@ -115,7 +89,61 @@ export default {
   data() {
     return {
       flag: false,
-      tagIndex: 0
+      tagIndex: 0,
+      unusedList: [
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        }
+      ],
+      usedList: [
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        }
+      ],
+      timeOutList: [
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        }
+      ]
     };
   },
   computed: {
@@ -130,6 +158,13 @@ export default {
     select_discount() {
       this.$router.push({
         name: "chat_detail"
+      });
+    },
+    //进入优惠券详情
+    selectDiscout() {
+      let id = 0;
+      this.$router.push({
+        path: `/card/${id}`
       });
     },
     //绑定手机
@@ -175,23 +210,28 @@ export default {
     .border-1px(#ddd);
   }
   .warm_tips {
-    padding: 0.375rem 0.25rem;
+    padding: 0.175rem 0.25rem;
     display: flex;
     justify-content: space-between;
     .tips {
       // line-height: 1.8125rem;
+      padding-top: 0.15rem;
+      box-sizing: border-box;
+      font-size: 0.4rem;
     }
     .bingTel {
       display: inline-block;
       width: 1.8rem;
+      padding: 0.2rem 0;
       border: 1px solid #ccc;
       text-align: center;
       border-radius: 6px;
       background-color: #ccc;
+      color: #fff;
     }
   }
   .discount_wrapper {
-    margin-top: 0.2133rem;
+    // margin-top: 0.2133rem;
     padding: 0 0.1867rem;
     .no_user_list {
       .card("../../assets/image/discount_bg.png",0.5333rem);

@@ -11,13 +11,14 @@
           <img src="../../assets/image/chat_home.png" alt="" class="home" @click="goHome">
         </div>
       </div>
-      <div class="chat_wrapper" ref="chatWrapper" @click="actionShow=false">
-        <scroll class="chat_content" :data="chatList2">
-          <ul class="chat_list">
-              <li class="clearfix" :class="{'friend':index<5,'mine':index>=5}" v-for="(item,index) in chatList">
+      <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
+        <scroll ref="listView" class="chat_content" :scrollHeight='scrollHeight' :data="chatList" @getIndex="getIndex" @scroll="myscroll" :listen-scroll="listenScroll">
+          <ul class="chat_list" ref="chatList">
+              <li class="clearfix" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" v-for="(item,index) in chatList">
                   <div class="person_box">
                       <h2 class="name">19:20:10</h2>
-                      <img src="../../assets/image/avatar3.jpg" alt="" class="avatar">
+                      <img src="../../assets/image/avatar3.jpg" alt="" class="avatar" v-if="item.friend">
+                      <img src="../../assets/image/avatar2.jpg" alt="" class="avatar" v-else>
                   </div>
                   <div class="message_box">
                     <span class="arrow"></span>
@@ -29,10 +30,10 @@
       </div>
       <div class="input_wrapper">
         <div class="input_area clearfix">
-          <input type="text" id="send_message" class="send_message" @focus.prevent="focus" v-model="input_value">
-          <div class="action_box clearfix" :class="{active:flag}">
+          <input type="text" ref="sendWrapper" id="send_message" class="send_message" :autofocus="autofocus" @focus.prevent="myfocus" v-model="input_value">
+          <div @click="send" class="action_box clearfix" :class="{active:flag}">
               <img src="../../assets/image/plane.png" alt="" class="icon_plane fl">
-              <span class="send fl">发送</span>
+              <span class="send fl"  ref="send">发送</span>
           </div>
         </div>
         <div class="select_area">
@@ -49,6 +50,9 @@
             <li class="item fl">
               <img src="../../assets/image/chat_pic.png" alt="">
               <input type="file" class="file">
+            </li>
+            <li class="item fl">
+              <img src="../../assets/image/game_chat.png" alt="" class="game">
             </li>
           </ul>
         </div>
@@ -131,16 +135,20 @@ import {
 import Scroll from "../../base/scroll/scroll.vue";
 export default {
   directives: {
-    TransferDom
+    TransferDom,
+    focus: function(el) {
+      el.focus();
+    }
   },
   data() {
     return {
-      expressionShow:false,
-      expressionList:[
-        '您好，很高兴可以成为好朋友',
-        '好久不见，有空过来坐坐',
-        '约定好了，准时见面，不见不散',
-        '您好，有什么可以为您服务'
+      scrollHeight: 0,
+      expressionShow: false,
+      expressionList: [
+        "您好，很高兴可以成为好朋友",
+        "过来喝一杯？",
+        "约定好了，准时见面，不见不散",
+        "玩一把游戏？"
       ],
       showToast_gift: false,
       show: false,
@@ -149,93 +157,58 @@ export default {
       actionShow: false,
       flag: false,
       input_value: "",
+      autofocus: false,
       chatList: [
         {
           message:
-            "哈哈，很高兴认识你哦1我们这里是全深圳全好的kTV,音响质量超级好"
+            "哈哈，很高兴认识你哦1我们这里是全深圳全好的kTV,音响质量超级好",
+          friend: 1,
+          mine: 0
         },
         {
-          message: "哈哈，很高兴认识你哦"
+          message: "哈哈，很高兴认识你哦",
+          friend: 1,
+          mine: 0
         },
         {
-          message: "哈哈，很高兴认识你哦"
+          message: "哈哈，很高兴认识你哦",
+          friend: 1,
+          mine: 0
         },
         {
-          message: "哈哈，很高兴认识你哦"
+          message: "哈哈，很高兴认识你哦",
+          friend: 0,
+          mine: 1
         },
         {
-          message: "哈哈，很高兴认识你哦"
+          message: "哈哈，很高兴认识你哦",
+          friend: 1,
+          mine: 0
         },
         {
-          message: "哈哈，很高兴认识你哦"
+          message: "哈哈，很高兴认识你哦",
+          friend: 0,
+          mine: 1
         },
         {
-          message: "哈哈，很高兴认识你哦"
+          message: "哈哈，很高兴认识你哦",
+          friend: 1,
+          mine: 0
         },
         {
-          message: "哈哈，很高兴认识你哦"
+          message: "哈哈，很高兴认识你哦",
+          friend: 0,
+          mine: 1
         },
         {
-          message: "哈哈，很高兴认识你哦"
+          message: "哈哈，很高兴认识你哦",
+          friend: 1,
+          mine: 0
         },
         {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        }
-      ],
-      chatList2: [
-        {
-          message: "哈哈，很高兴认识你哦1"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
-        },
-        {
-          message: "哈哈，很高兴认识你哦"
+          message: "哈哈，很高兴认识你哦",
+          friend: 0,
+          mine: 1
         }
       ],
       list: ["操作", "礼物"],
@@ -286,14 +259,67 @@ export default {
         "🙉",
         "💀",
         "👻"
-      ]
+      ],
+      index: 0
     };
   },
   created() {
-    console.log(document.body.clientHeight);
+    this.listenScroll = true;
   },
-  mounted() {},
+  activated() {
+    setTimeout(() => {
+      this.chatList = [
+        {
+          message:
+            "哈哈，很高兴认识你哦1我们这里是全深圳全好的kTV,音响质量超级好",
+          friend: 1,
+          mine: 0
+        },
+        {
+          message: "哈哈，很高兴认识你哦",
+          friend: 0,
+          mine: 1
+        },
+        {
+          message: "哈哈，很高兴认识你哦",
+          friend: 1,
+          mine: 0
+        },
+        {
+          message: "哈哈，很高兴认识你哦",
+          friend: 0,
+          mine: 1
+        },
+        {
+          message: "哈哈，很高兴认识你哦",
+          friend: 1,
+          mine: 0
+        },
+        {
+          message: "哈哈，很高兴认识你哦",
+          friend: 0,
+          mine: 1
+        }
+      ];
+    }, 100);
+    // this.$nextTick(function() {
+    //   this.scrollHeight = this.$refs.chatList.clientHeight;
+    // });
+  },
+  
   methods: {
+    getIndex(val) {
+      this.index = val;
+    },
+    //监听滚动
+    myscroll(pos) {
+      // console.log(pos);
+    },
+    tagScroll() {
+      this.expressionShow = false;
+      this.emotionShow = false;
+      document.getElementById("send_message").blur();
+    },
     //关闭送礼
     close_gift() {
       this.showToast_gift = false;
@@ -314,11 +340,11 @@ export default {
       this.input_value += item;
     },
     //选择常用语
-    addExpress(item){
+    addExpress(item) {
       this.input_value = item;
     },
     //展示送礼面板
-    showToastGift(){
+    showToastGift() {
       this.showToast_gift = true;
       this.expressionShow = false;
       this.emotionShow = false;
@@ -326,13 +352,25 @@ export default {
     //展示表情面板
     show_emotion() {
       this.emotionShow = !this.emotionShow;
-      this.actionShow = false;
       this.expressionShow = false;
     },
     //切换常用语
-    show_expression(){
+    show_expression() {
       this.expressionShow = !this.expressionShow;
-      this.emotionShow = false; 
+      this.emotionShow = false;
+    },
+    //发送事件
+    send() {
+      if (!this.input_value) {
+        return;
+      }
+      this.chatList.push({
+        message: this.input_value,
+        friend: 0
+      });
+      this.$refs.listView.refresh();
+      this.input_value = "";
+      document.getElementById("send_message").focus();
     },
     onItemClick(index) {
       console.log(index);
@@ -342,25 +380,32 @@ export default {
         this.showTab = false;
       }
     },
-    focus() {
-      this.actionShow = false;
+    myfocus() {
       this.emotionShow = false;
+      this.expressionShow = false;
+      setTimeout(() => {
+        let panel = this.$refs.sendWrapper;
+        panel.scrollIntoView(true);
+      }, 200);
     }
   },
   watch: {
-    input_value(newValue, oldValue) {
+    input_value: function(newValue, oldValue) {
       if (newValue.length > 0 || oldValue > 0) {
-        this.show = true;
         this.flag = true;
       } else {
-        this.show = false;
         this.flag = false;
       }
-    }
+    },
+    index: function(newValue) {
+      this.$nextTick(function() {
+        this.scrollHeight = this.$refs.chatList.clientHeight;
+      });
+    },
+    chatList: function() {}
   },
   components: {
     XHeader,
-    Scroller,
     TransferDom,
     Tab,
     TabItem,
@@ -446,6 +491,9 @@ export default {
       height: 1.44rem;
       box-sizing: border-box;
       .send_message {
+        outline: none;
+        -webkit-appearance: none;
+        font-size: 0.3733rem;
         float: left;
         width: 6.9333rem;
         height: 0.9867rem;
@@ -563,6 +611,10 @@ export default {
         height: 1.9467rem;
         box-sizing: border-box;
         text-align: center;
+        .game {
+          width: 0.6933rem;
+          height: 0.48rem;
+        }
         img {
           width: 1.1333rem;
           height: 1.1333rem;

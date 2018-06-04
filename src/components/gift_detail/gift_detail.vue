@@ -3,13 +3,15 @@
         <my-header title="收礼明细" ref="header"></my-header>
         <div class="gift_wrapper vux-1px-t">
             <div class="title_content vux-1px-b">
-                <h3 class="title">收礼总金额数</h3>
+                <h3 class="title">收礼总金额数：</h3>
                 <span class="money">￥888</span>
             </div>
             <scroll class="scroll" :data="giftList">
                 <ul class="gift_list">
                     <li class="item vux-1px" v-for="(item,index) in giftList" :key="index">
                         <span class="name">{{item.name}}</span>
+                        <img src="../../assets/image/small_flower (2).png" class="gift_icon" v-if="index<5"/>
+                        <img src="../../assets/image/small_beer.png" class="gift_icon" v-if="index>=5"/>
                         <span class="sum">￥1.68</span>
                         <span class="time">2018-05-09</span>
                     </li>
@@ -98,9 +100,10 @@ export default {
       }
     }
     .scroll {
-      height: 8.3333rem;
+      height: 9.3333rem;
       overflow: hidden;
-      // border-bottom: 1px solid #999;
+      padding-bottom: 0.1333rem;
+      border-bottom: 1px solid #ccc;
       .gift_list {
         padding-bottom: 0.1333rem;
         .item {
@@ -112,6 +115,10 @@ export default {
           box-shadow: 1px 1px 1px 1px #eee;
           .name {
             font-size: 0.4rem;
+          }
+          .gift_icon{
+            width: 0.5rem;
+            height: 0.5rem;
           }
           .sum {
             font-size: 0.4rem;
@@ -126,13 +133,14 @@ export default {
     }
     .btn_content {
       text-align: center;
-      height: 1rem;
       line-height: 1rem;
-      margin: 0.6667rem 0.5333rem 0;
-    border-radius: 0.2667rem;
+      margin: 0.8667rem 0.5333rem 0;
+      border-radius: 0.2667rem;
       background: @baseColor;
       .btn {
-        display: inline-block;
+        display: table;
+        margin: 0 auto;
+        height: 0.6667rem;
         font-size: 0.4267rem;
         color: #fff;
       }

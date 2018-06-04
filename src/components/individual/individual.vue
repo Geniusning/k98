@@ -163,18 +163,18 @@ export default {
       sexList: [["男", "女"]],
       constellationList: [
         [
-          "白羊座",
-          "金牛座",
-          "双子座",
-          "巨蟹座",
-          "狮子座",
-          "处女座",
-          "天秤座",
-          "天蝎座",
-          "射手座",
-          "摩羯座",
-          "水瓶座",
-          "双鱼座"
+          "白羊座(3.21-4.19)",
+          "金牛座(4.20-5.20)",
+          "双子座(5.21-6.21)",
+          "巨蟹座(6.22-7.22)",
+          "狮子座(7.23-8.22)",
+          "处女座(8.23-9.22)",
+          "天秤座(9.23-10.23)",
+          "天蝎座(10.24-11.22)",
+          "射手座(11.23-12.21)",
+          "摩羯座(12.22-1.19)",
+          "水瓶座(1.20-2.18)",
+          "双鱼座(2.19-3.20)"
         ]
       ],
       tagList: [
@@ -441,7 +441,7 @@ export default {
 @import "../../assets/less/variable.less";
 @import "../../assets/less/mine.less";
 .individual {
-  height: 100%;
+  // height: 100%;
   .header_box {
     padding: 0.32rem 0.4rem;
     background: #ddd;
@@ -456,8 +456,8 @@ export default {
     }
   }
   .scrollBox {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    // overflow-y: auto;
+    // -webkit-overflow-scrolling: touch;
     .avatar_wrapper {
       background: #fff;
       padding: 0.2667rem 0.4rem;

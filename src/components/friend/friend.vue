@@ -199,8 +199,8 @@ export default {
   },
   methods: {
     listenFirstdata(data) {
-      console.log("下面是传回父级的数据");
-      console.log(data);
+      // console.log("下面是传回父级的数据");
+      // console.log(data);
       this.xid = data.xid;
     },
     //点赞
@@ -249,9 +249,6 @@ export default {
     })
   },
   watch: {
-    $route(newValue, oldValue) {
-      console.log(newValue);
-    },
     friendList(newValue) {
       this.someList = newValue;
     }

@@ -15,9 +15,10 @@ const mutations = {
     [types.GET_POSITION](state, position) {
         state.position = position
     },
-    //获取好友列表
+    //获取候选人好友列表
     [types.GET_FRIENDlIST](state, { data }) {
         state.friendList = data.candidates;
+        console.log(data.candidates)
         state.friendList.forEach(item => {
             item.info.thumb = "99";
             item.info.gift = "100";
@@ -31,12 +32,25 @@ const mutations = {
                 item.info.sex = "女";
             }
         });
+        console.log(state.friendList)
     },
-    //badge自增
-    [types.ADD_BADGE](state, count) {
+    //获取已经成为好友列表
+    [types.GET_ALREADYFRIENDEVTLIST](state, { data }) {
+        // console.log(data)
+        state.alreadyFriendList = data;
+    },
+    //获取好友事件
+    [types.GET_FRIENDEVTLIST](state, { data }) {
+        let count = data.events.length
         count = count === 0 ? -1 : count;
         state.badgeCount += count
+        state.friendEvtList = data.events
     },
+    //badge自增
+    // [types.ADD_BADGE](state, count) {
+    //     count = count === 0 ? -1 : count;
+    //     state.badgeCount += count
+    // },
     //测试
     [types.TEST](state, test) {
         state.test = test

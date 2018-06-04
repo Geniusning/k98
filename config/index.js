@@ -5,7 +5,7 @@
 const path = require('path')
 
 // ------------------------------
-const myStupidToken1 = "lUFPkZQbIK_8_2FyxJwTsabXcbhW2GPydh-JomxWBgs6uzpS91PBqzmH_cyhrcLK5mVx_w=="
+const myStupidToken1 = "z2jcwBZtUrICuWZNhdb3kWa2cAco9WF3TjnF9aeLnixWPch4XKUTl4unxAKT7Vcnjn4VVg=="
 const myStupidToken2 = "9xHsEDxkKIqIVWqwFSaob-gIBqLcSqgPoC0V46lGwUF6waLzyc_48yGoe0HG-3hbMbydiA=="
 
 const myStupidToken = myStupidToken1
@@ -29,7 +29,7 @@ module.exports = {
     host: '172.18.10.73',
     //  host: '192.168.1.116',
     //host: 'localhost', // can be overwritten by process.env.HOST
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 8089, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,

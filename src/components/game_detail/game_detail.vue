@@ -1,9 +1,9 @@
 <template>
- <divdiv id="game_detail" class="game_detail">
+ <div id="game_detail" class="game_detail">
      <my-header title="游戏明细"></my-header>
          <div class="list_wrapper vux-1px-t">
              <div class="title_content vux-1px-b">
-                 <h3 class="title">游戏获胜率</h3>
+                 <h3 class="title">游戏获胜率：</h3>
                  <p class="ratio">56%</p>
              </div>
              <scroll class="scroll">
@@ -19,7 +19,7 @@
                 </ul>
              </scroll>
          </div>
- </divdiv>
+ </div>
 </template>
 
 <script type='text/ecmascript-6'>
@@ -29,29 +29,37 @@ export default {
   data() {
     return {
       win: true,
-      resultList:[
-          {
-              win:"胜利"
-          },
-           {
-              win:"胜利"
-          }, {
-              win:"胜利"
-          }, {
-              win:"胜利"
-          }, {
-              win:"胜利"
-          }, {
-              win:"胜利"
-          }, {
-              win:"胜利"
-          }, {
-              win:"胜利"
-          }, {
-              win:"胜利"
-          }, {
-              win:"胜利"
-          }
+      resultList: [
+        {
+          win: "胜利"
+        },
+        {
+          win: "胜利"
+        },
+        {
+          win: "胜利"
+        },
+        {
+          win: "胜利"
+        },
+        {
+          win: "胜利"
+        },
+        {
+          win: "胜利"
+        },
+        {
+          win: "胜利"
+        },
+        {
+          win: "胜利"
+        },
+        {
+          win: "胜利"
+        },
+        {
+          win: "胜利"
+        }
       ]
     };
   },
@@ -69,12 +77,11 @@ export default {
   .list_wrapper {
     padding-top: 0.1333rem;
     .title_content {
-    //   margin: 0.1333rem;
+      //   margin: 0.1333rem;
       display: flex;
       justify-content: space-between;
       padding: 0.4rem 0.4rem;
       box-sizing: border-box;
-    //   box-shadow: 1px 1px 1px 1px #eee;
       .title {
         font-size: 0.4rem;
         color: #333;
@@ -85,10 +92,12 @@ export default {
       }
     }
     .scroll {
-      height: 8.3333rem;
+      height: 10.3333rem;
       overflow: hidden;
+      padding-bottom: 0.1333rem;
+      border-bottom: 1px solid #ccc;
       .record_list {
-          padding-bottom: 0.1333rem;
+        padding-bottom: 0.1333rem;
         .item {
           padding: 0.4rem 0.4rem;
           margin: 0.1333rem;

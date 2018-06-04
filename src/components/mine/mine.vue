@@ -81,6 +81,7 @@
             </div>
           </x-dialog>
     </div>
+    <router-view></router-view>
  </div>
 </template>
 
@@ -123,7 +124,7 @@ export default {
       util.routerTo("gameDetail", this);
     },
     //查看收礼明细
-    giftDetal(){
+    giftDetal() {
       util.routerTo("giftDetail", this);
     },
     //编辑个人信息

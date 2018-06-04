@@ -8,9 +8,13 @@
 import BScroll from "better-scroll";
 export default {
   props: {
+    scrollHeight: {
+      type: Number,
+      default: 0
+    },
     probeType: {
       type: Number,
-      default: 1
+      default: 2
     },
     click: {
       type: Boolean,
@@ -31,18 +35,20 @@ export default {
     beforeScroll: {
       type: Boolean,
       default: false
+    },
+    isScroll: {
+      type: Boolean,
+      default: false
     }
   },
   created() {
-    // setTimeout(() => {
-    //   this._initScroll();
-    // }, 20);
+    
   },
   mounted() {
-    setTimeout(() => {
-      console.log(this.data)
-      this._initScroll()
-    }, 20)
+    // setTimeout(() => {
+      console.log(this.data);
+      this._initScroll();
+    // }, 17);
   },
   methods: {
     _initScroll() {
@@ -71,6 +77,14 @@ export default {
           this.$emit("beforeScroll");
         });
       }
+      if (this.listenScroll) {
+        let that = this;
+        console.log(this.listenScroll);
+        this.scroll.on("scroll", pos => {
+          console.log(pos);
+          that.$emit("scroll", pos);
+        });
+      }
     },
     enable() {
       this.scroll && this.scroll.enable();
@@ -89,7 +103,13 @@ export default {
     }
   },
   watch: {
-    data() {
+    scrollHeight: function(newValue) {
+      // console.log(newValue);
+      this.scroll.scrollTo(0, -newValue, 1000);
+    },
+    data(newValue) {
+      let len = newValue.length - 1;
+      this.$emit("getIndex", len);
       setTimeout(() => {
         this.refresh();
       }, 20);

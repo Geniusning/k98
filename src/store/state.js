@@ -4,6 +4,8 @@ const state = {
     test: "",
     position: {},
     friendList: [],
+    alreadyFriendList:[],
+    friendEvtList:[],
     cursor: 0,
     badgeCount: 0,
 }
