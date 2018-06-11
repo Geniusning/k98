@@ -40,19 +40,19 @@
                 <img src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex=='男'">
                 <img src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
                 <!-- <span class="online" :style="{background:item.info.online==='好友'?'red':'gray'}">{{item.info.online}}</span> -->
-                <span class="constellation">{{item.info.constellation}}</span>
-                <span class="gift"><img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">{{item.info.gift}}</span>
-                <span class="thumb"><img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">{{item.info.thumb}}</span>
-                <span class="friend"><img src="../../../assets/image/friend_tantan.png" alt="" class="friend_samll">{{item.info.thumb}}</span>
+                <span class="constellation">{{item.info.constellation?item.info.constellation:"水瓶座"}}</span>
+                <span class="gift"><img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">{{item.info.gift?item.info.gift:56}}</span>
+                <span class="thumb"><img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">{{item.info.thumb?item.info.thumb:99}}</span>
+                <span class="friend"><img src="../../../assets/image/friend_tantan.png" alt="" class="friend_samll">{{item.info.thumb?item.info.thumb:10}}</span>
               </div>
               <div class="tag_wrapper">
-                <span v-for="(item,index) in item.info.tags" :key="index">{{item}}</span>
+                <span v-for="(item,index) in item.info.tags?item.info.tags:tempArr" :key="index">{{item}}</span>
                 <!-- <span>招人爱</span>
                 <span>大胃王</span> -->
               </div>
               <div class="signature_wrapper">
                 <!-- <p class="word">生活不止眼前的苟且，还有诗和远方的田野</p> -->
-                <p class="word">{{item.info.signature}}</p>
+                <p class="word">{{item.info.signature?item.info.signature:sign}}</p>
               </div>
             </div>
           </div>
@@ -78,6 +78,8 @@ export default {
     return {
       // propData: this.pages,
       // isFriend:false,
+      tempArr: ["二傻子", "聪明", "有远见"],
+      sign: "生活不止眼前的苟且，还有诗和远方的田野",
       basicdata: {
         start: {},
         end: {}
@@ -131,7 +133,7 @@ export default {
       return ratio;
     }
   },
-  mounted() { 
+  mounted() {
     console.log(this.pages);
   },
   methods: {
@@ -237,6 +239,14 @@ export default {
           : this.temporaryData.currentPage + 1;
       let friendData = this.pages[this.temporaryData.currentPage];
       this.$emit("firstData", friendData);
+      let signList = [
+        "努力吧,别把自己的青春铺张在爱情上",
+        "兄弟虽然我们是在网络中相遇",
+        "多年后你和她情深似海，会不会想到欠我一个未来",
+        "生活不止眼前的苟且，还有诗和远方的田野"
+      ];
+      let index = Math.floor(Math.random() * 4);
+      this.sign = signList[index];
       // console.log(this.temporaryData.currentPage);
       // let index = this.temporaryData.currentPage;
       // if (this.distant > 0) {
@@ -555,10 +565,10 @@ export default {
         height: 4.5333rem;
         border-radius: 50%;
       }
-      .friend_icon{
+      .friend_icon {
         width: 0.84rem;
         height: 0.84rem;
-        position:absolute;
+        position: absolute;
         bottom: 0;
         right: 0.8rem;
       }
@@ -614,13 +624,13 @@ export default {
       .friend {
         box-sizing: border-box;
         padding-top: 0.03rem;
-        .userInfo(#ffd800); 
-        text-indent: 0.2rem;
+        .userInfo(#ffd800);
+        text-indent: 0.3rem;
         .friend_samll {
-          width: 0.3333rem;
-          height: 0.3333rem;
+          width: 0.3733rem;
+          height: 0.3733rem;
           position: absolute;
-          top: 0.11rem;
+          top: 0.09rem;
           left: 0.15rem;
         }
       }

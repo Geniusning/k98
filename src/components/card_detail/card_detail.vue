@@ -34,12 +34,14 @@
 
 <script type='text/ecmascript-6'>
     import myHeader from "../../base/myheader/myheader";
+
     export default {
     data() {
         return {};
     },
     components: {
-        myHeader
+        myHeader,
+
     }
     };
 </script>
@@ -57,6 +59,7 @@
   background-color: #eee;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
   .discount_pic{
       padding: 0.2667rem;
       background: #fff;
@@ -113,6 +116,7 @@
       background: #fff;
       margin-top: 0.2667rem;
       flex: 1;
+      padding-bottom: 0.6667rem;
       .infoList{
           width: 100%;
           padding-left: 0.5667rem;
@@ -127,6 +131,7 @@
               .desc{
                   font-size: 0.3733rem;
                   color:#666;
+                  margin-top: 0.1333rem
               }
           }
       }

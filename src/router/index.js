@@ -24,7 +24,8 @@ export default new Router({
     {
       path: '/home',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: { keepAlive: true }
     },
     {
       path: '/friend',
@@ -36,6 +37,14 @@ export default new Router({
       name: 'message',
       component: Message,
       props: true,
+      meta: { keepAlive: true },
+      children:[
+        {
+          path: ":id",
+          component: Chat,
+          // meta: { keepAlive: true }
+        },
+      ]
     },
     {
       path: '/welfare',
@@ -57,11 +66,6 @@ export default new Router({
           component: cardDetail
         }
       ]
-    },
-    {
-      path: "/chat",
-      name: "chat",
-      component: Chat
     },
     {
       path: "/individual",

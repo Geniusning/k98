@@ -16,19 +16,19 @@
    </div>
    <div class="message_wrapper">
      <ul class="message_list" style="margin-top:0.4rem" v-if="isShow==0">
-       <li class="item vux-1px-b" @click="chat" v-for="(item,index) in alreadyFriendList">
+       <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList">
          <div class="info_message">
            <div class="avatar">
              <img :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/795ecd968a430f39.png'" alt="">
-             <!-- <i class="dot"></i> -->
+             <i class="dot" v-cloak v-show="item.info.unReadMsgCount>0"></i>
            </div>
            <div class="name_and_message">
              <p class="name">{{item.info.nickname}}</p>
-             <p class="message">今天天气很好</p>
+             <p class="message" v-if>{{item.info.lastMsg?item.info.lastMsg.content:""}}</p>
            </div>
          </div>
          <div class="info_time">
-           <p>下午  11:11</p>
+           <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,9)==today.toString()?item.info.lastMsg.stime.slice(10,15):item.info.lastMsg.stime.slice(5,9):""}}</p>
          </div>
        </li>
      </ul>
@@ -118,6 +118,9 @@
    </div>
    <!-- 回赞 -->
     <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask :text="text" :position="position"></toast>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
  </div>
 </template>
 
@@ -154,13 +157,22 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters(["friendList"]),
-    ...mapState(["friendEvtList", "alreadyFriendList"])
+    ...mapState([
+      "friendEvtList",
+      "alreadyFriendList",
+      "staticChatFriendObj",
+      "LastChatMsg"
+    ])
+  },
+  created() {
+    this.today = new Date().getDate();
   },
   mounted() {
-    // this._loadFriendEvts();
-    // console.log(this.friendList)
+    // this._loadFriends();
+  },
+   activated(){
     this._loadFriends();
+    // console.log('message')
   },
   methods: {
     btn_fri() {
@@ -175,14 +187,14 @@ export default {
     //回赞事件
     backThumbClick(type, flag) {
       // let that = this;
-      var cursor = 0
+      var cursor = 0;
       api.giveBackThumb(type, flag).then(res => {
         // console.log(res);
         if (res.errcode === 0) {
           //重新拉取已经成为好友列表
           this._loadFriends();
           //重新拉取好友事件
-          this.getFriendEvt(cursor)
+          this.getFriendEvt(cursor);
           if (flag == "yes") {
             this.text = "已回赞";
           } else {
@@ -213,18 +225,30 @@ export default {
       console.log(this.selected_num);
     },
     //发起聊天
-    chat() {
+    chat(item) {
+      // console.log(item)
+      this.setChatFriend(item);
+      let openid = this.staticChatFriendObj.openid;
+      console.log(openid);
       this.$router.push({
-        name: "chat"
+        path: `/message/${openid}`
       });
     },
     ...mapMutations({
-      addBadgeCount: "ADD_BADGE"
+      addBadgeCount: "ADD_BADGE",
+      setChatFriend: "SET_CHAT_FRIEND",
+      compareLastMsg:"COMPARE_LASTMESS"
     }),
     ...mapActions({
       getAlreadyFriendList: "get_alreadyFriendList",
-      getFriendEvt:"get_FriendEvt",
+      getFriendEvt: "get_FriendEvt"
     })
+  },
+  watch: {
+    LastChatMsg: function(newValue) {
+      // console.log(newValue);
+      this.compareLastMsg(newValue)
+    }
   },
   components: {
     ButtonTab,
@@ -382,6 +406,8 @@ export default {
       }
       .info_time {
         // padding-top: 0.3333rem;
+        margin-right: 0.4rem;
+        margin-top: 0.1rem;
         font-size: 0.3733rem;
         color: #999;
       }

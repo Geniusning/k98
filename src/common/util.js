@@ -2,11 +2,11 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-04-26 15:48:09
+ * @Last Modified time: 2018-06-09 17:39:49
  */
 let util = {};
 //路由跳转
-util.routerTo = function (route, vm,param) {
+util.routerTo = function (route, vm, param) {
     vm.$router.push({
         name: route,
         params: param
@@ -59,5 +59,16 @@ util.GetOpenIdByCode = function (code) {
     xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
     var data = "code=" + code + "&appId=wx2684abab04c7017d";
     xhr.send(data);
+}
+//时间戳转化成地址
+util.timestampToTime = function (timestamp) {
+    var date = new Date(timestamp*1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    var Y = date.getFullYear() + '-';
+    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+    var D = date.getDate() + ' ';
+    var h = date.getHours() + ':';
+    var m = (date.getMinutes() < 10) ? '0' + date.getMinutes()+":" : date.getMinutes() + ':';
+    var s = date.getSeconds();
+    return Y + M + D + h + m + s;
 }
 export default util

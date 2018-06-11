@@ -174,18 +174,18 @@ import { Carousel3d, Slide } from "vue-carousel-3d";
 const baseList = [
   {
     url: "javascript:",
-    img: "http://i4.bvimg.com/643118/cbe37fbdd3e49bbb.png", // 404
+    img: "http://i2.bvimg.com/643118/cbe37fbdd3e49bbb.png", // 404
 
     title: ""
   },
   {
     url: "javascript:",
-    img: "http://i4.bvimg.com/643118/68e0d5bc3b55fee4.png",
+    img: "http://i2.bvimg.com/643118/cbe37fbdd3e49bbb.png",
     title: ""
   },
   {
     url: "javascript:",
-    img: "http://i4.bvimg.com/643118/cbe37fbdd3e49bbb.png",
+    img: "http://i2.bvimg.com/643118/cbe37fbdd3e49bbb.png",
     title: ""
   }
 ];
@@ -203,7 +203,7 @@ export default {
           src: "http://i2.bvimg.com/643118/47aaa8265e29874c.jpg"
         },
         {
-          src: "http://i2.bvimg.com/643118/cd7b5471885e117f.jpg"
+          src: "http://i2.bvimg.com/643118/47aaa8265e29874c.jpg"
         },
         {
           src: "http://i2.bvimg.com/643118/96545237381246c7.jpg"
@@ -217,7 +217,7 @@ export default {
       distance: "",
       picList: [
         {
-          src: "http://i4.bvimg.com/643118/547e062360e36336.png",
+          src: "http://i2.bvimg.com/643118/d3ed6dbc589609a1.png",
 
           originPrice: "488",
           price: "388",
@@ -226,7 +226,7 @@ export default {
           count: 88
         },
         {
-          src: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png ",
+          src: "http://i2.bvimg.com/643118/0c7ed06ec325ad1d.png",
           originPrice: "388",
           price: "188",
           desc: "超值优惠，值得拥有",
@@ -293,7 +293,7 @@ export default {
       api
         .getUserInfo("/api/loadUserInfo")
         .then(res => {
-          // console.log(res);
+          console.log(res);
           this.getuserInfo(res);
         })
         .catch(err => {

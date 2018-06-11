@@ -14,9 +14,11 @@
            <img src="../../assets/image/gift.png" alt="">
            <!-- <p>见面礼</p> -->
         </div>
-         <div class="thumbs" @click="showPosition('middle')">
+         <div class="thumbs" @click="showPosition('middle')" v-if="!isFriend">
           <img src="../../assets/image/thumbs-o-up.png" alt="">
-          <!-- <p>赞一个</p> -->
+        </div>
+         <div class="hello" v-else @click="chat">
+          <img src="../../assets/image/sayhi.png" alt="">
         </div>
         <div class="playGame">
            <img src="../../assets/image/game.png" alt="">
@@ -131,7 +133,7 @@
 import stack from "./tantan/tantan.vue";
 import util from "common/util";
 import api from "common/api";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Toast, TransferDom, Popup, XDialog, XButton, Scroller } from "vux";
 export default {
   // el: "#stack",
@@ -142,6 +144,7 @@ export default {
     return {
       showToast_gift: false,
       text: "",
+      isFriend: null,
       position: "default",
       showPositionValue: false,
       personShow: false,
@@ -195,12 +198,14 @@ export default {
   },
   mounted() {
     let cursor = 0;
-    this.getFriendList(cursor)
+    this.getFriendList(cursor);
   },
   methods: {
     listenFirstdata(data) {
       // console.log("下面是传回父级的数据");
-      // console.log(data);
+      console.log(data);
+      this.setChatFriend(data)
+      this.isFriend = data.isAlreadyFriend;
       this.xid = data.xid;
     },
     //点赞
@@ -246,6 +251,9 @@ export default {
     },
     ...mapActions({
       getFriendList: "get_Friendlist"
+    }),
+    ...mapMutations({
+      setChatFriend: "SET_CHAT_FRIEND"
     })
   },
   watch: {
@@ -305,13 +313,16 @@ export default {
       height: 1.6rem;
     }
     .thumbs {
-      .action;
+      .action();
+    }
+    .hello {
+      .action();
     }
     .gifts {
-      .action;
+      .action();
     }
     .playGame {
-      .action;
+      .action();
     }
   }
   .stack-wrapper {

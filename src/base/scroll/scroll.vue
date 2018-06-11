@@ -46,7 +46,7 @@ export default {
   },
   mounted() {
     // setTimeout(() => {
-      console.log(this.data);
+      // console.log(this.data);
       this._initScroll();
     // }, 17);
   },
@@ -79,9 +79,9 @@ export default {
       }
       if (this.listenScroll) {
         let that = this;
-        console.log(this.listenScroll);
+        // console.log(this.listenScroll);
         this.scroll.on("scroll", pos => {
-          console.log(pos);
+          // console.log(pos);
           that.$emit("scroll", pos);
         });
       }

@@ -81,6 +81,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
+import scroll from "../../base/scroll/scroll.vue";
 import { Tab, TabItem, XHeader, XButton } from "vux";
 import Validate from "../../base/validatephone/validatephone";
 import { mapGetters, mapMutations } from "vuex";
@@ -91,6 +92,18 @@ export default {
       flag: false,
       tagIndex: 0,
       unusedList: [
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
+        {
+          content: "啤酒9折优惠券",
+          time: "过期时间:2018-01-25"
+        },
         {
           content: "啤酒9折优惠券",
           time: "过期时间:2018-01-25"
@@ -154,12 +167,6 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
-    // 显示优惠券详情
-    select_discount() {
-      this.$router.push({
-        name: "chat_detail"
-      });
-    },
     //进入优惠券详情
     selectDiscout() {
       let id = 0;
@@ -187,7 +194,8 @@ export default {
     XHeader,
     XButton,
     Validate,
-    myHeader
+    myHeader,
+    scroll
   }
 };
 </script>
@@ -232,14 +240,18 @@ export default {
   }
   .discount_wrapper {
     // margin-top: 0.2133rem;
+    background: #eee;
     padding: 0 0.1867rem;
     .no_user_list {
+      overflow-y: auto;
       .card("../../assets/image/discount_bg.png",0.5333rem);
     }
     .usered_list {
+      overflow-y: auto;
       .card("../../assets/image/used.png",0.7333rem);
     }
     .past_list {
+      overflow-y: auto;
       .card("../../assets/image/past.png",0.7333rem);
     }
   }

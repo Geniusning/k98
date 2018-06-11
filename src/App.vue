@@ -1,14 +1,26 @@
 <template>
   <div id="app">
     <div class="top_wrapper">
-      <!-- <transition name="slider"> -->
-        <!-- <keep-alive> -->
-        <router-view></router-view>
-        <!-- </keep-alive> -->
-      <!-- </transition> -->
+        <keep-alive>
+           <router-view v-if="$route.meta.keepAlive"></router-view>
+        </keep-alive>
+        <router-view v-if="!$route.meta.keepAlive"></router-view>
+
       <lg-preview></lg-preview>
     </div>
     <div class="bottom_wrapper" v-if="flag">
+      <transition name="messageDisplay">
+          <div class="message_box" v-if="dialog">
+            <img src="./assets/image/close.png" alt="" class="close">
+            <div class="avatar">
+              <img src="./assets/image/avatar3.jpg" alt=""  class="pic">
+            </div>
+            <div class="userInfo">
+              <p class="name">小美女</p>
+              <p class="mess">给你点了一个赞!</p>
+            </div>
+          </div>
+      </transition>
         <tab :selected="selected"></tab>
     </div>
   </div>
@@ -16,22 +28,32 @@
 
 <script>
 import Tab from "./components/tab/tab.vue";
-import { mapGetters } from "vuex";
+import { mapState, mapGetters, mapMutations } from "vuex";
 import util from "common/util";
+
 export default {
   name: "app",
   data() {
     return {
       flag: true,
-      selected: 0
+      selected: 0,
+      dialog: false
     };
   },
   computed: {
-    // ...mapGetters(["isShow"])
+    ...mapState(["inputValue"])
+
+  },
+  created() {
+  },
+  methods: {
+
+    ...mapMutations({
+      updateChatList: "UPDATE_CHATLIST"
+    })
   },
   watch: {
     $route: function(newValue) {
-      // console.log(newValue);
       if (
         newValue.name == "interview" ||
         newValue.name == "individual" ||
@@ -53,6 +75,10 @@ export default {
           break;
         case "message":
           this.selected = 2;
+          // this.dialog = true;
+          setTimeout(() => {
+            this.dialog = false;
+          }, 1500);
           break;
         case "welfare":
           this.selected = 3;
@@ -78,13 +104,13 @@ export default {
 a:hover {
   text-decoration: none !important;
 }
-.slider-enter-active,
-.slider-leave-active {
-  transition: all 0.5s linear;
+.messageDisplay-enter-active,
+.messageDisplay-leave-active {
+  transition: all 0.3s linear;
 }
-.slider-enter,
-.slider-leave-to {
-  transform: translate3d(-100%, 0, 0);
+.messageDisplay-enter,
+.messageDisplay-leave-to {
+  opacity: 0;
 }
 body,
 html {
@@ -122,5 +148,45 @@ html {
 .bottom_wrapper {
   height: 1.18rem;
   max-width: 10rem;
+  position: relative;
+  .message_box {
+    position: absolute;
+    top: -1.85rem;
+    width: 100%;
+    height: 1.8667rem;
+    display: flex;
+    background: -webkit-linear-gradient(left, #ffba00, #ffd800);
+    .close {
+      position: absolute;
+      top: 0.4rem;
+      right: 0.4rem;
+      width: 0.4rem;
+      height: 0.4rem;
+    }
+    .avatar {
+      margin: 0.2933rem 0.2933rem 0 0.5333rem;
+      width: 1.3333rem;
+      height: 1.3333rem;
+      .pic {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+      }
+    }
+    .userInfo {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      padding: 0.3rem 0;
+      .name {
+        font-size: 0.4rem;
+        color: #fff;
+      }
+      .mess {
+        font-size: 0.3733rem;
+        color: #fff;
+      }
+    }
+  }
 }
 </style>
