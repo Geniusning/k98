@@ -9,19 +9,19 @@
       <lg-preview></lg-preview>
     </div>
     <div class="bottom_wrapper" v-if="flag">
+      <tab :selected="selected"></tab>
       <transition name="messageDisplay">
           <div class="message_box" v-if="dialog">
-            <img src="./assets/image/close.png" alt="" class="close">
+            <img src="./assets/image/close.png" alt="" class="close" @click="close">
             <div class="avatar">
-              <img src="./assets/image/avatar3.jpg" alt=""  class="pic">
+              <img :src="dynamicFriendEvt.headimgurl" alt=""  class="pic">
             </div>
             <div class="userInfo">
-              <p class="name">小美女</p>
-              <p class="mess">给你点了一个赞!</p>
+              <p class="name">{{dynamicFriendEvt.nickname}}</p>
+              <p class="mess">{{dynamicFriendEvt.msg}}</p>
             </div>
           </div>
       </transition>
-        <tab :selected="selected"></tab>
     </div>
   </div>
 </template>
@@ -41,25 +41,36 @@ export default {
     };
   },
   computed: {
-    ...mapState(["inputValue"])
-
+    ...mapState(["inputValue", "dynamicFriendEvt"])
   },
-  created() {
-  },
+  created() {},
   methods: {
-
+    close() {
+      this.dialog = false;
+    },
     ...mapMutations({
       updateChatList: "UPDATE_CHATLIST"
     })
   },
   watch: {
+    dynamicFriendEvt: function() {
+      this.dialog = true;
+      setTimeout(() => {
+        this.dialog = false;
+      }, 3000);
+    },
     $route: function(newValue) {
+      //隐藏导航
       if (
         newValue.name == "interview" ||
         newValue.name == "individual" ||
         newValue.name == "chat" ||
         newValue.name == "gameDetail" ||
-        newValue.name == "giftDetail"
+        newValue.name == "giftDetail" ||
+        newValue.name == "gift_detail" ||
+        newValue.name == "card" ||
+        newValue.name == "updateAvatar" ||
+        newValue.name == "cardDetail"
       ) {
         this.flag = false;
       } else {

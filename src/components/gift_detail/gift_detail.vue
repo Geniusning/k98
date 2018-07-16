@@ -3,23 +3,32 @@
         <my-header title="收礼明细" ref="header"></my-header>
         <div class="gift_wrapper vux-1px-t">
             <div class="title_content vux-1px-b">
-                <h3 class="title">收礼总金额数：</h3>
+                <h3 class="title"><strong>我的积分余额：</strong></h3>
+                <span class="money">688分</span>
+            </div>
+             <!-- <div class="title_content vux-1px-b">
+                <h3 class="title"><strong>收礼总金额：</strong></h3>
                 <span class="money">￥888</span>
             </div>
+             <div class="title_content vux-1px-b">
+                <h3 class="title"><strong>送礼总金额：</strong></h3>
+                <span class="money">￥988</span>
+            </div> -->
             <scroll class="scroll" :data="giftList">
                 <ul class="gift_list">
                     <li class="item vux-1px" v-for="(item,index) in giftList" :key="index">
                         <span class="name">{{item.name}}</span>
-                        <img src="../../assets/image/small_flower (2).png" class="gift_icon" v-if="index<5"/>
-                        <img src="../../assets/image/small_beer.png" class="gift_icon" v-if="index>=5"/>
-                        <span class="sum">￥1.68</span>
+                        <!-- <img src="../../assets/image/small_flower (2).png" class="gift_icon" v-if="index<5"/>
+                        <img src="../../assets/image/small_beer.png" class="gift_icon" v-if="index>=5"/> -->
+                        <span class="sum" :class="{plus:item.plus}" v-if="item.plus">+3积分</span>
+                        <span class="sum"  v-else>-3积分</span>
                         <span class="time">2018-05-09</span>
                     </li>
                 </ul>
             </scroll>
 
             <div class="btn_content">
-                <span class="btn">取现</span>
+                <span class="btn">充值</span>
             </div>
         </div>
  </div>
@@ -33,41 +42,45 @@ export default {
     return {
       giftList: [
         {
-          name: "小二"
+          name: "打赏",
+          plus:true,
         },
         {
-          name: "小二"
+          name: "大话骰房费",
+          plus:false,
         },
         {
-          name: "小二"
+          name: "每日签到",
+          plus:true,
         },
         {
-          name: "小二"
+          name: "打赏",
+          plus:true,
         },
         {
-          name: "小二"
+          name: "大话骰房费",
+          plus:false,
         },
         {
-          name: "小二"
+          name: "分享有礼",
+          plus:true,
         },
         {
-          name: "小二"
+          name: "打赏",
+          plus:false,
         },
         {
-          name: "小二"
+          name: "大话骰房费",
+          plus:true,
         },
         {
-          name: "小二"
+          name: "每日签到",
+          plus:true,
         },
         {
-          name: "小二"
+          name: "打赏",
+          plus:false,
         },
-        {
-          name: "小二"
-        },
-        {
-          name: "小二"
-        }
       ]
     };
   },
@@ -115,14 +128,20 @@ export default {
           box-shadow: 1px 1px 1px 1px #eee;
           .name {
             font-size: 0.4rem;
+            width: 2.6667rem;
           }
-          .gift_icon{
+          .gift_icon {
             width: 0.5rem;
             height: 0.5rem;
           }
           .sum {
             font-size: 0.4rem;
-            color: #ff4646;
+            color: red;
+            font-weight: 700;
+            width: 1.8333rem
+          }
+          .plus {
+            color: green;
           }
           .time {
             font-size: 0.4rem;
@@ -134,7 +153,7 @@ export default {
     .btn_content {
       text-align: center;
       line-height: 1rem;
-      margin: 0.8667rem 0.5333rem 0;
+      margin: 0.8667rem 0.5333rem 0.5rem;
       border-radius: 0.2667rem;
       background: @baseColor;
       .btn {

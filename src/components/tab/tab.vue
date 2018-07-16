@@ -6,7 +6,7 @@
           <img v-else slot="icon" src="../../assets/image/active_home.png" class="home">
           <span slot="label"> 首页</span>
         </tabbar-item>
-        <tabbar-item :selected="selected==1" link="/friend">
+        <tabbar-item :selected="selected==1" :link="friendUlr">
           <img v-if="selected!==1" slot="icon" src="../../assets/image/friend.png" class="friend">
           <img v-else slot="icon" src="../../assets/image/active_friend.png" class="friend">
           <span slot="label">交友</span>
@@ -39,7 +39,8 @@ export default {
     return {
       active: false,
       index: 0,
-      count: ""
+      count: "",
+      friendUlr: "/friend?id=0"
     };
   },
   props: {
@@ -52,16 +53,15 @@ export default {
   computed: {
     ...mapState(["badgeCount"])
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     onIndexChange(param) {
       this.index = param;
     }
   },
   watch: {
-    badgeCount(newValue){
+    badgeCount(newValue) {
+      // console.log(newValue);
       this.count = (newValue > 0 ? newValue : "").toString();
     }
   },

@@ -1,12 +1,6 @@
 <template>
  <div id="message" class="message">
    <div class="title">
-     <!-- <span :class="{active:isShow}" @click="changeMessage">消息</span><span :class="{active:!isShow}" @click="changeMessage">联系人</span> -->
-      <!-- <button-tab v-model="selected_num">
-        <button-tab-item class="button_tab" @on-item-click="onItemClick_tab">好友的列表</button-tab-item>
-        <button-tab-item class="button_tab" @on-item-click="onItemClick_tab">新朋友招呼</button-tab-item>
-        <button-tab-item class="button_tab" @on-item-click="onItemClick_tab">系统消息</button-tab-item>
-      </button-tab> -->
       <div class="btn_box clearfix">
         <div :class="{active:isShow==0}" class="fri_btn fl" @click="btn_fri">好友</div>
         <div :class="{active:isShow==1}" class="hello_btn fl" @click="btn_hello">新朋友招呼<i class="dot" v-show="friendEvtList.length"></i></div>
@@ -21,14 +15,18 @@
            <div class="avatar">
              <img :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/795ecd968a430f39.png'" alt="">
              <i class="dot" v-cloak v-show="item.info.unReadMsgCount>0"></i>
+             <!-- <i class="dot" v-cloak v-show="item.info.unReadMsgCount">{{item.info.unReadMsgCount}}</i> -->
            </div>
            <div class="name_and_message">
              <p class="name">{{item.info.nickname}}</p>
-             <p class="message" v-if>{{item.info.lastMsg?item.info.lastMsg.content:""}}</p>
+             <p class="message" v-if="item.info.lastMsg?item.info.lastMsg.type===1:''" v-html='item.info.lastMsg?item.info.lastMsg.content:""'></p>
+             <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===2:''">[图片]</p>
+             <p class="message" v-else></p>
            </div>
          </div>
          <div class="info_time">
-           <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,9)==today.toString()?item.info.lastMsg.stime.slice(10,15):item.info.lastMsg.stime.slice(5,9):""}}</p>
+           <!-- {{item.info.lastMsg.stime.slice(8,10)}} -->
+           <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,10)==today?item.info.lastMsg.stime.slice(10,16):item.info.lastMsg.stime.slice(5,10):""}}</p>
          </div>
        </li>
      </ul>
@@ -111,16 +109,16 @@
            </div>
          </div>
          <div class="info_time">
-           <p>下午  11:11</p>
+           <p>下午11:11</p>
          </div>
        </li>
      </ul>
    </div>
    <!-- 回赞 -->
     <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask :text="text" :position="position"></toast>
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
+          <keep-alive>
+              <router-view></router-view> 
+          </keep-alive>
  </div>
 </template>
 
@@ -136,8 +134,7 @@ export default {
       isShow: 0, //最上面tab切换
       selected_num: 0,
       greeting_flag: 0,
-      messageList: [],
-      text: "",
+      text: "", //回赞和拒绝文案
       // friendList:[],
       position: "default",
       thumb_flag: true, //回赞的box的flag
@@ -166,13 +163,19 @@ export default {
   },
   created() {
     this.today = new Date().getDate();
+    // console.log(this.today);
+    if (this.today < 10) {
+      this.today = "0" + this.today;
+    } else {
+      this.today = this.today.toString();
+    }
   },
   mounted() {
-    // this._loadFriends();
-  },
-   activated(){
     this._loadFriends();
-    // console.log('message')
+    // console.log(this.alreadyFriendList);
+  },
+  destroyed() {
+    // console.log("组件销毁");
   },
   methods: {
     btn_fri() {
@@ -204,50 +207,56 @@ export default {
         }
       });
     },
-
     _loadFriends() {
       let cursor = 0;
-      let that = this;
       this.getAlreadyFriendList(cursor);
+      // console.log("重新加载已经成为好友列表");
     },
     // tab事件
     onItemClick(index) {
       this.greeting_flag = index;
       console.log(index);
     },
-    onItemClick_tab(index) {
-      this.isShow = index;
-    },
-    changeMessage() {
-      this.isShow = !this.isShow;
-    },
-    consoleIndex() {
-      console.log(this.selected_num);
-    },
     //发起聊天
     chat(item) {
-      // console.log(item)
       this.setChatFriend(item);
-      let openid = this.staticChatFriendObj.openid;
-      console.log(openid);
       this.$router.push({
-        path: `/message/${openid}`
+        path: `/message/${this.staticChatFriendObj.openid}`
       });
     },
     ...mapMutations({
-      addBadgeCount: "ADD_BADGE",
-      setChatFriend: "SET_CHAT_FRIEND",
-      compareLastMsg:"COMPARE_LASTMESS"
+      addBadgeCount: "ADD_BADGE", //动态变化未读消息数量
+      setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
+      compareLastMsg: "COMPARE_LASTMESS", //推送最后的一个消息跟已有好友消息列表对比
+      toTopFriend:"TO_TOP_MESSAGE"//把最新消息的置顶
     }),
     ...mapActions({
-      getAlreadyFriendList: "get_alreadyFriendList",
-      getFriendEvt: "get_FriendEvt"
+      getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
+      getFriendEvt: "get_FriendEvt" //加载好友事件类型
     })
   },
   watch: {
+    //监听最新的一条消息
     LastChatMsg: function(newValue) {
-      // console.log(newValue);
-      this.compareLastMsg(newValue)
+      this.compareLastMsg(newValue);
+      //把最新的一条消息放到最顶部
+      console.log(newValue);
+      let tempAlreadyFriendList = [];
+      this.alreadyFriendList.forEach((element, index) => {
+        // console.log(element);
+        if (newValue.lastMsg.from == element.info.openid) {
+          tempAlreadyFriendList.unshift(element);
+        } else {
+          tempAlreadyFriendList.push(element);
+        }
+      });
+      this.toTopFriend(tempAlreadyFriendList)
+      // console.log(tempAlreadyFriendList)
+    },
+    $route: function(newRoute) {
+      if (newRoute.name == "message") {
+        this._loadFriends();
+      }
     }
   },
   components: {
@@ -383,6 +392,25 @@ export default {
           }
           .dot {
             .dot(0,0);
+            // position: absolute;
+            // top: 0;
+            // right: -0.1333rem;
+            // display: inline-block;
+            // text-align: center;
+            // background: #ff3b30;
+            // color: #fff;
+            // font-size: 14px;
+            // height: 16px;
+            // line-height: 16px;
+            // border-radius: 8px;
+            // padding: 0 4px;
+            // font-family: 'Courier New', Courier, monospace;
+            // background-clip: padding-box;
+            // vertical-align: middle;
+            // &.dot_singer {
+            //   width: 16px;
+            //   padding: 0;
+            // }
           }
         }
         .name_and_message {
@@ -398,9 +426,14 @@ export default {
           }
           .message {
             color: #666;
+            width: 4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             height: 0.6667rem;
             font-size: 0.3467rem;
             margin-top: 0.4rem;
+            text-align: left;
           }
         }
       }
@@ -495,9 +528,4 @@ export default {
 .vux-button-group > a {
   height: 0.8533rem;
 }
-// .vux-button-group > a.vux-button-tab-item-middle:after {
-//   // border-right: 1px solid #666;
-//   // border-top: 1px solid #666;
-//   // border-bottom: 1px solid #666;
-// }
 </style>

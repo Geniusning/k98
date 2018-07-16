@@ -39,25 +39,28 @@ export default {
     isScroll: {
       type: Boolean,
       default: false
+    },
+    pullDownRefresh: {
+      type: null,
+      default: false
     }
   },
-  created() {
-    
-  },
+  created() {},
   mounted() {
     // setTimeout(() => {
-      // console.log(this.data);
-      this._initScroll();
+    // console.log(this.data);
+    this._initScroll();
     // }, 17);
   },
   methods: {
     _initScroll() {
-      // if (!this.$refs.wrapper) {
-      //   return;
-      // }
+      if (!this.$refs.wrapper) {
+        return;
+      }
       this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
-        click: this.click
+        click: this.click,
+        pullDownRefresh: this.pullDownRefresh
       });
       if (this.listenScroll) {
         let me = this;
@@ -85,12 +88,27 @@ export default {
           that.$emit("scroll", pos);
         });
       }
+      //监听下拉刷新
+      if (this.pullDownRefresh) {
+        this._initPullDownRefresh();
+      }
+    },
+    //下拉刷新
+    _initPullDownRefresh() {
+      this.scroll.on("touchEnd", pos => {
+        if (pos.y > 50) {
+          this.$emit("pullingDown");
+        }
+      });
     },
     enable() {
       this.scroll && this.scroll.enable();
     },
     disable() {
       this.scroll && this.scroll.disable();
+    },
+    finishPullDown() {
+      this.finishPullDown && this.scroll.finishPullDown();
     },
     refresh() {
       this.scroll && this.scroll.refresh();
@@ -104,8 +122,8 @@ export default {
   },
   watch: {
     scrollHeight: function(newValue) {
-      // console.log(newValue);
-      this.scroll.scrollTo(0, -newValue, 1000);
+      console.log("scrollNewvalue:", newValue);
+      this.scroll.scrollTo(0, -newValue-300, 1000);
     },
     data(newValue) {
       let len = newValue.length - 1;

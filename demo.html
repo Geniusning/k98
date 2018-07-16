@@ -21,10 +21,13 @@
     </ul>
 </body>
 <script>
-    console.log(Math.random())
-    document.write(Math.floor(Math.random() * (10 - 0 + 1) + 0))
-    var str  = "2018-06-9 11:56:49"
-    console.log(str.slice(8,9))
+    var testArr = [{ name: 'liu', age: 12 }, { name: "gao", age: 15 }];
+    // var testArr1 = [1, 2, 3]
+    let result = testArr.every((item) => {
+        return item.age > 15
+    })
+    console.log(testArr)
+    console.log(result)
 </script>
 
 </html>

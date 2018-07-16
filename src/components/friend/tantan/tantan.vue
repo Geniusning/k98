@@ -1,5 +1,5 @@
 <template>
-    <ul class="stack">
+    <ul class="stack" v-show="pages.length">
       <li class="stack-item" v-for="(item, index) in pages"
       :style="[transformIndex(index),transform(index)]"
       @touchmove.prevent="touchmove"
@@ -46,7 +46,7 @@
                 <span class="friend"><img src="../../../assets/image/friend_tantan.png" alt="" class="friend_samll">{{item.info.thumb?item.info.thumb:10}}</span>
               </div>
               <div class="tag_wrapper">
-                <span v-for="(item,index) in item.info.tags?item.info.tags:tempArr" :key="index">{{item}}</span>
+                <span v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')" :key="index">{{item}}</span>
                 <!-- <span>招人爱</span>
                 <span>大胃王</span> -->
               </div>
@@ -78,7 +78,7 @@ export default {
     return {
       // propData: this.pages,
       // isFriend:false,
-      tempArr: ["二傻子", "聪明", "有远见"],
+      tempArr: "二傻子、聪明、有远见",
       sign: "生活不止眼前的苟且，还有诗和远方的田野",
       basicdata: {
         start: {},
@@ -94,7 +94,7 @@ export default {
         lastZindex: "",
         rotate: 0,
         lastRotate: 0,
-        visible: 3 || this.stackinit.visible,
+        visible: this.stackinit.visible,
         tracking: false,
         animation: false,
         currentPage: this.stackinit.currentPage || 0,
@@ -106,10 +106,11 @@ export default {
     };
   },
   created() {
-    console.log(this.pages);
+    // console.log(this.pages);
   },
   watch: {
     pages(newValue) {
+      console.log(newValue)
       let data = newValue[0];
       this.$emit("firstData", data);
     }
@@ -119,6 +120,7 @@ export default {
     // 划出面积比例
     offsetRatio() {
       let width = this.$el.offsetWidth;
+      // console.log(width)
       let height = this.$el.offsetHeight;
       let offsetWidth = width - Math.abs(this.temporaryData.poswidth);
       let offsetHeight = height - Math.abs(this.temporaryData.posheight);
@@ -134,7 +136,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.pages);
+    // console.log(this.pages);
   },
   methods: {
     touchstart(e) {

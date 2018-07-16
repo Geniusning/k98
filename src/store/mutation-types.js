@@ -34,14 +34,23 @@ export const CHANGE_CURSOR = "CHANGE_CURSOR"
 //推送最后一个消息跟已有好友消息列表对比
 export const COMPARE_LASTMESS = "COMPARE_LASTMESS"
 
-//发送消息
-// export const SEND_MESSAGE = "SEND_MESSAGE"
+//新增推送好友事件列表
+export const ADD_FRIENDEVTLIST = "ADD_FRIENDEVTLIST"
+
+//发送好友事件消息框
+export const UPDATE_DYNAMICMESSAGE = "UPDATE_DYNAMICMESSAGE"
+
+//更改场内场外好友的游标
+export const UPDATE_INANDOUT_FRIEND_CURSOR = "UPDATE_INANDOUT_FRIEND_CURSOR"
+
+//获取新消息时重新排列消息列表，把最新的一项放到顶部
+export const TO_TOP_MESSAGE = "TO_TOP_MESSAGE"
 
 //动态获取聊天对象
 // export const GET_DYNAMICFRIENDOBJ = "GET_DYNAMICFRIENDOBJ"
 
 
-//badge自增
+//所有未读消息badge自增
 export const ADD_BADGE = "ADD_BADGE"
 
 export const TEST = "TEST"

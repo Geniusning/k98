@@ -11,6 +11,7 @@ import Chat from 'components/chat_room/chat_room'
 import Individual from 'components/individual/individual'
 import GameDetail from 'components/game_detail/game_detail'
 import GiftDetail from 'components/gift_detail/gift_detail'
+import updateAvatar from 'components/individual/updateAvatar'
 
 Vue.use(Router)
 
@@ -30,17 +31,19 @@ export default new Router({
     {
       path: '/friend',
       name: 'friend',
-      component: Friend
+      component: Friend,
+      // meta: { keepAlive: true }
     },
     {
       path: '/message',
       name: 'message',
       component: Message,
+      // meta: { keepAlive: true },
       props: true,
-      meta: { keepAlive: true },
-      children:[
+      children: [
         {
           path: ":id",
+          name: "chat",
           component: Chat,
           // meta: { keepAlive: true }
         },
@@ -63,6 +66,7 @@ export default new Router({
       children: [
         {
           path: ":id",
+          name:"cardDetail",
           component: cardDetail
         }
       ]
@@ -70,7 +74,14 @@ export default new Router({
     {
       path: "/individual",
       name: "individual",
-      component: Individual
+      component: Individual,
+      children: [
+        {
+          path: ':id',
+          component: updateAvatar,
+          name:"updateAvatar"
+        }
+      ]
     },
     {
       path: "/game_detail",

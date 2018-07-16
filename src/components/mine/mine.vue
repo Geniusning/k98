@@ -16,11 +16,11 @@
         <div class="userInfo_wrapper">
           <ul class="user_list">
             <li class="item">
-              <p class="score_name">星座</p>
-              <p class="score">水瓶座</p>
+              <p class="score_name">好友数</p>
+              <p class="score">8个</p>
             </li>
             <li class="item">
-              <p class="score_name">阶级</p>
+              <p class="score_name">等级</p>
               <p class="score">大地主</p>
             </li>
              <li class="item">
@@ -28,8 +28,8 @@
               <p class="score">88个</p>
             </li>
              <li class="item">
-              <p class="score_name">收礼数</p>
-              <p class="score">8个</p>
+              <p class="score_name">大话排名</p>
+              <p class="score">第2名</p>
             </li>
           </ul>
         </div>
@@ -46,7 +46,7 @@
              </li>
              <li class="item" @click="giftDetal">
               <img src="../../assets/image/yingxiangli.png" alt="" class="pic_discount">
-              <p class="discount_name">收礼明细</p>
+              <p class="discount_name">积分明细</p>
              </li>
           </ul>
         </div>

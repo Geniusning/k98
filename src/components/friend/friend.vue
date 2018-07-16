@@ -1,13 +1,13 @@
 <template>
   <div id="friend" class="friend">
       <div class="nav">
-        <!-- <img src="../../assets/image/Category.png" alt="" @click="personShow=true"> -->
-        <!-- <span class="select" @click="showToast=true">筛选</span> -->
-        <!-- <img src="../../assets/image/friends.png" alt="" @click="showFriendList = true"> -->
         <img src="../../assets/image/select.png" alt=""  @click="showToast=true">
       </div>
       <div class="stack-wrapper">
-        <stack  ref="stack" :pages="someList" :stackinit="stackinit" @firstData="listenFirstdata"></stack>
+        <stack  ref="stack" :pages="someList" :stackinit="stackinit" @firstData="listenFirstdata">暂时没有好友</stack>
+        <div class="loading-container" v-show="!someList.length">
+          <loading></loading>
+        </div>
       </div>
       <div class="control_wrapper">
         <div class="gifts" @click="showToast_gift=true">
@@ -20,50 +20,11 @@
          <div class="hello" v-else @click="chat">
           <img src="../../assets/image/sayhi.png" alt="">
         </div>
-        <div class="playGame">
+        <div class="playGame" @click="playGame">
            <img src="../../assets/image/game.png" alt="">
            <!-- <p>玩一把</p> -->
         </div>
       </div>
-    <!-- 个人资料 -->
-      <!-- <div v-transfer-dom class="horizontal" :show-mask='show_mask'>
-          <popup v-model="personShow" position="left"  :show-mask='show_mask'>
-            <div :style="{width:'300px',height:height+'px'}" class="bg">
-              <ul class="personList">
-                <h3 class="title">个人信息</h3>
-                <li>
-                  <div class="left_box">
-                    昵称
-                  </div>
-                  <div class="right_box" @click="changePersonInfo">
-                    <span class="name">希公主</span>
-                    <img src="../../assets/image/more.png" alt="" class="arrow">
-                  </div>
-                </li>
-                <li>
-                  <div class="left_box">
-                    头像
-                  </div>
-                  <div class="right_box" @click="changePersonInfo">
-                    <img src="../../assets/image/avatar.jpg" alt="" class="avatar">
-                    <img src="../../assets/image/more.png" alt="" class="arrow">
-                  </div>
-                </li>
-                <li>
-                  <div class="left_box">
-                    个人标签
-                  </div>
-                  <div class="right_box" @click="changeTagInfo">
-                    <span class="tag">幽默</span>
-                    <span class="tag">搞笑</span>
-                    <span class="tag">逗比</span>
-                    <img src="../../assets/image/more.png" alt="" class="arrow">
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </popup>
-      </div> -->
       <!-- 筛选好友信息 -->
       <div v-transfer-dom>
             <x-dialog v-model="showToast" class="dialog-demo">
@@ -114,12 +75,12 @@
               </li>
                 <li class="item">
                 <img src="../../assets/image/house.png" alt="" class="house">
-                <p class="gift_name">别墅</p>
+                <p class="gift_name gift_name_houseAndCar">别墅</p>
                 <p class="gift_price">￥5.20</p>
               </li>
                 <li class="item">
                 <img src="../../assets/image/car.png" alt="" class="car">
-                <p class="gift_name">跑车</p>
+                <p class="gift_name gift_name_houseAndCar">跑车</p>
                 <p class="gift_price">￥16.8</p>
               </li>
             </ul>
@@ -131,9 +92,10 @@
 </template>
 <script>
 import stack from "./tantan/tantan.vue";
+import loading from "../../base/loading/loading";
 import util from "common/util";
 import api from "common/api";
-import { mapGetters, mapActions, mapMutations } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import { Toast, TransferDom, Popup, XDialog, XButton, Scroller } from "vux";
 export default {
   // el: "#stack",
@@ -153,7 +115,7 @@ export default {
       show_mask: true,
       currentIndex1: 0,
       currentIndex2: 0,
-      height: 0,
+      // height: 0,
       sexArr: [
         {
           num: 0,
@@ -191,20 +153,50 @@ export default {
     };
   },
   created() {
-    this.height = document.body.clientHeight;
+    // this.height = document.body.clientHeight;
+  },
+  //路由判断，判断是场内还是场外1场内2场外
+  beforeRouteEnter(to, from, next) {
+    console.log(to);
+    if (to.params.num === 1) {
+      next(vm => {
+        console.log("请求场内好友");
+        api.getLoadInsideCandidates(vm.inAndOutFriendCursor).then(res => {
+          console.log(res);
+          vm.getFriend(res);
+        });
+      });
+    } else if (to.query.id === "0") {
+      next(vm => {
+        let cursor = 0;
+        vm.getFriendList(cursor);
+      });
+    } else {
+      next(vm => {
+        console.log("请求场外好友");
+        api.getLoadOutsideCandidates(vm.inAndOutFriendCursor).then(res => {
+          vm.getFriend(res);
+        });
+      });
+    }
   },
   computed: {
-    ...mapGetters(["friendList"])
+    ...mapState(["friendList", "inAndOutFriendCursor"])
   },
-  mounted() {
-    let cursor = 0;
-    this.getFriendList(cursor);
+  mounted() {},
+  destroyed() {
+    this.updateFriendCursor(0);
+  },
+  activated() {},
+  deactivated() {
+    this.updateFriendCursor(0);
   },
   methods: {
     listenFirstdata(data) {
       // console.log("下面是传回父级的数据");
       console.log(data);
-      this.setChatFriend(data)
+      this.friendId = data.info.openid;
+      this.setChatFriend(data);
       this.isFriend = data.isAlreadyFriend;
       this.xid = data.xid;
     },
@@ -237,7 +229,14 @@ export default {
     },
     //发起聊天
     chat() {
-      util.routerTo("chat", this);
+      // util.routerTo("chat", this);
+      this.$router.push({
+        path: `/message/${this.friendId}`
+      });
+    },
+    //玩游戏
+    playGame() {
+      window.location.href = "http://llwant.test.qianz.com:8081/";
     },
     // 性别选择
     chooseSex(index) {
@@ -253,13 +252,20 @@ export default {
       getFriendList: "get_Friendlist"
     }),
     ...mapMutations({
-      setChatFriend: "SET_CHAT_FRIEND"
+      setChatFriend: "SET_CHAT_FRIEND",
+      getFriend: "GET_FRIENDlIST", //获取候选好友
+      updateFriendCursor: "UPDATE_INANDOUT_FRIEND_CURSOR" //更新场内场外游标
     })
   },
   watch: {
     friendList(newValue) {
+      console.log(newValue);
       this.someList = newValue;
     }
+    // $route: function(newValue, oldValue) {
+    //   console.log(oldValue);
+    //   console.log(newValue);
+    // }
   },
   components: {
     stack,
@@ -267,7 +273,8 @@ export default {
     Toast,
     XDialog,
     XButton,
-    Scroller
+    Scroller,
+    loading
   }
 };
 </script>
@@ -335,6 +342,12 @@ export default {
     height: 10.5333rem;
     list-style: none;
     pointer-events: none;
+    .loading-container {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      // transform: translateY(-50%);
+    }
   }
 }
 // 弹框礼物
@@ -483,12 +496,12 @@ export default {
             height: 1.16rem;
           }
           &.house {
-            margin-top: 0.3667rem;
+            margin-top: 0.1667rem;
             width: 0.96rem;
             height: 0.8267rem;
           }
           &.car {
-            margin-top: 0.3167rem;
+            margin-top: 0.1167rem;
             width: 1.3067rem;
             height: 0.8667rem;
           }
@@ -498,6 +511,9 @@ export default {
           text-align: center;
           font-size: 0.2667rem;
           color: #666;
+        }
+        .gift_name_houseAndCar{
+          margin-top: 0.2267rem;
         }
         .gift_price {
           width: 100%;

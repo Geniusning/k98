@@ -36,7 +36,7 @@
                     <span class="desc">最烧脑游戏</span>
                 </div>
                 <ul class="game_list clearfix">
-                    <li>
+                    <li @click="playGame">
                         <img src="../../assets/image/game1.jpg" alt="" class="pic_game" onclick="return false">
                     </li>
                     <li>
@@ -70,11 +70,11 @@
                     <ul class="pic_list">
                         <li @click="intoFriend" class="inner_fri">
                             <!-- <img src="../../assets/image/online.png" class="online" onclick="return false"> -->
-                            <span class="inner_onlinePerson">88人在线</span>
+                            <span class="inner_onlinePerson">{{inFriendNum}}人在线</span>
                             <img src="../../assets/image/inner_fri.jpg" alt="" class="friend_avatar_inner" onclick="return false">
                         </li>
-                        <li @click="intoFriend" class="out_fri">
-                            <span class="out_onlinePerson">188人在线</span>
+                        <li @click="outFriend" class="out_fri">
+                            <span class="out_onlinePerson">{{outFriendNum}}人在线</span>
                             <img src="../../assets/image/out_fri.jpg" alt="" class="friend_avatar_out" onclick="return false">
                         </li>
                          <!-- <li>
@@ -97,6 +97,7 @@
                 </div>
                 <div class="advertise_wrapper" v-if="show_advertise">
                   <img src="../../assets/image/advertise.png" alt="" class="advertise" onclick="return false">
+                  <!-- <img src="http://llwant.test.qianz.com/download/file/5007c55f109d0ad7f840d3b2e4c5263c.png" alt="" class="advertise" > -->
                   <img src="../../assets/image/close_ad.png" alt="" class="close" @click="close_adtise" >
                 </div>
                 <div class="welfare_content">
@@ -152,40 +153,69 @@
                     <h3 class="title">消费时间段：</h3>
                     <p>18:00-24:00</p>
                   </div>
+                  <div class="btn_box">
+                    <button class="btn">立即预订</button>
+                  </div>
                 </div>
               </div>
               <x-icon type="ios-close-outline" style="fill:#fff;margin-top:20px;" @click="closeDialog"></x-icon>
             </p>
           </x-dialog>
       </div>
+
+      <!-- 优惠券弹框 -->
+      <div v-transfer-dom>
+        <x-dialog v-model="discountShow" class="dialog-discount">
+          <div class="discount-box">
+            <scroll ref="discountScroll" class="discountScroll" :data="dicountList" >
+              <ul class="discountList">
+                <li class="item" v-for="(item,index) in dicountList" @click="intoCard">
+                  <div class="itemLeft">
+                    <p class="itemName">{{item.name}}</p>
+                    <p class="itemTime">{{item.type}}  有效期至：{{item.effectiveTime}}</p>
+                  </div>
+                  <div class="itemRight">
+                    立即查看
+                  </div>
+                </li>
+              </ul>
+            </scroll>
+          </div>
+          <div @click="discountShow=false">
+            <span class="vux-close"></span>
+          </div>
+        </x-dialog>
+    </div>
+
  </div>
 </template>
 
 <script type='text/ecmascript-6'>
 // import swiper from "swiper";
 // import "swiper/dist/css/swiper.min.css";
+import Scroll from "../../base/scroll/scroll";
 import util from "common/util";
 import api from "common/api";
 import { TransferDom, Swiper, Toast, XDialog } from "vux";
 import axios from "axios";
 import url from "common/url";
 import { mapMutations, mapActions, mapState } from "vuex";
-import { Carousel3d, Slide } from "vue-carousel-3d";
+// import { Carousel3d, Slide } from "vue-carousel-3d";
 const baseList = [
   {
     url: "javascript:",
-    img: "http://i2.bvimg.com/643118/cbe37fbdd3e49bbb.png", // 404
+    img: "http://i4.bvimg.com/643118/73f6f52ef0786f48.png", // 404
 
     title: ""
   },
   {
     url: "javascript:",
-    img: "http://i2.bvimg.com/643118/cbe37fbdd3e49bbb.png",
+    img: "http://i4.bvimg.com/643118/73f6f52ef0786f48.png",
     title: ""
   },
   {
     url: "javascript:",
-    img: "http://i2.bvimg.com/643118/cbe37fbdd3e49bbb.png",
+    img: "http://i4.bvimg.com/643118/73f6f52ef0786f48.png",
     title: ""
   }
 ];
@@ -196,17 +226,35 @@ export default {
   },
   data() {
     return {
+      dicountList: [
+        {
+          name: "获得啤酒一打",
+          type: "实物券",
+          effectiveTime: "2018-12-30"
+        },
+        {
+          name: "获得5元代金券",
+          type: "现金券",
+          effectiveTime: "2018-12-30"
+        },
+        // {
+        //   name: "获得水果一盘",
+        //   type: "实物券",
+        //   effectiveTime: "2018-12-30"
+        // }
+      ],
+      discountShow: false, //AI优惠券
       showDialogStyle: false,
       show_advertise: true,
       friList: [
         {
-          src: "http://i2.bvimg.com/643118/47aaa8265e29874c.jpg"
+          src: "http://i4.bvimg.com/643118/66f258704c27edca.png"
         },
         {
-          src: "http://i2.bvimg.com/643118/47aaa8265e29874c.jpg"
+          src: "http://i4.bvimg.com/643118/66f258704c27edca.png"
         },
         {
-          src: "http://i2.bvimg.com/643118/96545237381246c7.jpg"
+          src: "http://i4.bvimg.com/643118/e8156b29c3381636.png "
         }
       ],
       demo01_list: baseList,
@@ -217,7 +265,7 @@ export default {
       distance: "",
       picList: [
         {
-          src: "http://i2.bvimg.com/643118/d3ed6dbc589609a1.png",
+          src: "http://i4.bvimg.com/643118/d3ed6dbc589609a1.png",
 
           originPrice: "488",
           price: "388",
@@ -226,14 +274,16 @@ export default {
           count: 88
         },
         {
-          src: "http://i2.bvimg.com/643118/0c7ed06ec325ad1d.png",
+          src: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png",
           originPrice: "388",
           price: "188",
           desc: "超值优惠，值得拥有",
           title: "聚会二楼包厢特惠",
           count: 8
         }
-      ]
+      ],
+      inFriendNum: 0,
+      outFriendNum: 0
     };
   },
   created() {
@@ -242,16 +292,37 @@ export default {
     this._getJssdkInfo();
   },
   computed: {
-    ...mapState(["friendList"])
+    ...mapState(["friendList", "inAndOutFriendCursor"])
   },
   mounted() {
-    this._loadFriendEvts();
+    setTimeout(() => {
+      this.discountShow = true;
+    }, 1000);
+    this._loadFriendEvts(); //获取好友事件列表
+    this.getAlreadyFriend(); //获取已经成为好友列表
+    this._getInOutNum();
+    //this.addBadgeCount(); //未读消息数
+  },
+  deactivated() {
+    // console.log("离开首页了");
   },
   methods: {
+    //进入优惠券
+    intoCard() {
+      this.$router.push({
+        name: "card"
+      });
+       this.discountShow = false;
+    },
+    playGame() {
+      window.location.href = "http://llwant.test.qianz.com:8081/";
+      // api.loadAllQrcode().then(res => {
+      //   console.log(res);
+      // });
+    },
     //获取好友事件
     _loadFriendEvts() {
       let cursor = 0;
-      let that = this;
       this.getFriendEvt(cursor);
     },
     //关闭广告
@@ -302,13 +373,8 @@ export default {
     },
     //获取jssdk
     _getJssdkInfo() {
-      // console.log(this.url);
-      api
-        .getJssdkInfo(
-          "/api/loadJSSDKParams?url=" + encodeURIComponent(this.url)
-        )
-        .then(res => {
-          // console.log(res);
+      console.log(this.url);
+      api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(this.url)).then(res => {
           wx.config({
             //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
             appId: "wxb2fa3c446063ec19", // 必填，公众号的唯一标识
@@ -326,7 +392,7 @@ export default {
             wx.onMenuShareAppMessage({
               title: "深圳魅力四射酒吧", // 分享标题
               desc: "这是一个超级好玩的的地方哦", // 分享描述
-              link: "http://llwant.test.qianz.com", // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+              link: "", // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
               imgUrl: "http://i2.bvimg.com/643118/b1ced24a0ebcda22.png", // 分享图标
               type: "", // 分享类型,music、video或link，不填默认为link
               dataUrl: "", // 如果type是music或video，则要提供数据链接，默认为空
@@ -347,9 +413,13 @@ export default {
         })
         .catch(err => {});
     },
-    //进入游戏
-    playGame(num) {
-      util.routerTo("game1", this, { type: num });
+    //获取场内场外人数
+    _getInOutNum() {
+      api.getInOutNum().then(res => {
+        // console.log(res);
+        this.inFriendNum = res.inFieldNumber;
+        this.outFriendNum = res.outFiledNumber;
+      });
     },
     //进入福利页面
     toWelfare() {
@@ -357,9 +427,25 @@ export default {
         name: "welfare"
       });
     },
-    //进入交友界面
+    //进入场内交友界面
     intoFriend() {
-      util.routerTo("friend", this);
+      if (this.inFriendNum === 0) {
+        this.$vux.toast.show({
+          type: "text",
+          text: "场内暂时没有朋友",
+          width: "12em"
+        });
+        return;
+      }
+      util.routerTo("friend", this, {
+        num: 1
+      });
+    },
+    //进入场内交友界面
+    outFriend() {
+      util.routerTo("friend", this, {
+        num: 2
+      });
     },
     //进入店长信箱
     inToLetter() {
@@ -384,18 +470,25 @@ export default {
       getuserInfo: "GET_USERINFO",
       testmodel: "TEST",
       getPosition: "GET_POSITION",
+      getFriend: "GET_FRIENDlIST"
       // addBadgeCount: "ADD_BADGE"
     }),
     ...mapActions({
-      getFriendEvt: "get_FriendEvt"
+      getFriendEvt: "get_FriendEvt", //获取好友事件
+      getAlreadyFriend: "get_alreadyFriendList", //获取已经成为好友事件
+      getFriendList: "get_Friendlist"
     })
+  },
+  watch: {
+    $route: function(newValue, oldValue) {}
   },
   components: {
     Swiper,
     Toast,
     XDialog,
-    Carousel3d,
-    Slide
+    // Carousel3d,
+    // Slide,
+    Scroll
   }
 };
 </script>
@@ -403,7 +496,67 @@ export default {
 <style scoped lang='less'>
 @import "../../assets/less/variable.less";
 @import "../../assets/less/home_common.less";
+@import "../../assets/less/mixin.less";
+@import "~vux/src/styles/close";
 // @import "../../assets/image/dialog_bg.png";
+// 优惠券开始
+.weui-dialog {
+  background: none;
+}
+.dialog-discount {
+  .discount-box {
+    width: 7.9467rem;
+    // height: 9.6533rem;
+    background-color: none;
+    .bg("../../assets/image/youhuiquan_bg.png");
+    .discountScroll {
+      height: 100%;
+      padding-top: 3.5rem;
+      box-sizing: border-box;
+      .discountList {
+        height: 100%;
+        overflow: hidden;
+        .item {
+          margin: 0 auto 0.2667rem;
+          width: 7.0533rem;
+          height: 1.68rem;
+          display: flex;
+          justify-content: space-between;
+          .bg("../../assets/image/discount_bg1.png");
+          box-sizing: border-box;
+          .itemLeft {
+            box-sizing: border-box;
+            padding-top: 0.4rem;
+            .itemName {
+              font-size: 0.3467rem;
+              color: #4b4b4b;
+              margin-bottom: 0.22rem;
+              padding-left: 0.4533rem;
+            }
+            .itemTime {
+              padding-left: 0.4533rem;
+              font-size: 0.2933rem;
+              color: #999;
+            }
+          }
+          .itemRight {
+            box-sizing: border-box;
+            padding: 0.2667rem;
+            padding-top: 0.6rem;
+            font-size: 0.3733rem;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+.vux-close {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  color: #fff;
+}
+// 优惠券结束
 .home {
   background: rgba(242, 242, 242, 1);
   .fuli {
@@ -460,7 +613,7 @@ export default {
       font-family: "PingFang SC";
     }
     .introduce_box {
-      margin-top: 0.56rem;
+      margin-top: 0.16rem;
       .title {
         .dialogTitle;
       }
@@ -484,6 +637,15 @@ export default {
       }
       p {
         .dialogP;
+      }
+    }
+    .btn_box {
+      button {
+        outline: none;
+        background: #fff;
+        border: none;
+        color: #ffd700;
+        padding: 0.1333rem;
       }
     }
   }
@@ -561,14 +723,14 @@ export default {
     // flex: 1;
     padding-top: 0.19rem;
     .position {
-      width: 0.3067rem;
-      height: 0.4133rem;
+      width: 0.4067rem;
+      height: 0.5133rem;
       float: left;
       margin-right: 0.1333rem;
       margin-top: -0.0667rem;
     }
     .adr_desc {
-      font-size: 0.3467rem;
+      font-size: 0.3733rem;
       font-family: "PingFang-SC-Regular";
       float: left;
       color: #414141;
@@ -839,6 +1001,4 @@ export default {
     }
   }
 }
-
-// vux
 </style>

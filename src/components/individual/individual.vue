@@ -1,18 +1,13 @@
 <template>
  <div id="individual" class="individual">
-   <!-- <div class="header_box clearfix">
-     <img src="../../assets/image/back_chat.png" alt="" class="back_arrow fl" @click="goBack">
-     <h3 class="title fl">编辑资料</h3>
-   </div> -->
    <my-header title="编辑资料" bg="#fff" ></my-header>
    <!-- <scroll> -->
    <div class="scrollBox vux-1px-t">
       <!-- 上传头像 -->
-      <div class="avatar_wrapper clearfix">
-          <img src="../../assets/image/avatar.jpg" alt="" class="pic_avatar fl" ref="avatar">
+      <div class="avatar_wrapper clearfix" @click="updateAvatar">
+          <img :src="userInfo.headimgurl" alt="" class="pic_avatar fl" ref="avatar">
           <div class="upload">
-              <span class="changeAvatar">更换头像</span> 
-              <input type="file" name="image" class="input_file" @change="Onchange">
+             <img src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
           </div>
       </div>
       <div class="tailor_wrapper" v-if="showTailor">
@@ -63,7 +58,7 @@
             </li>
             <li class="item vux-1px-b">
               <span class="item_name">手机</span>
-              <input type="text" class="input_name" value="15764271456">
+              <input type="text" class="input_name" v-model="phone">
             </li>
             <li class="item_last vux-1px-b">
               <span class="item_name signature">个性签名</span>
@@ -72,9 +67,10 @@
             </li>
           </ul>
       </div>
+      <router-view></router-view>
       <!-- 保存按钮 -->
       <div class="btn_wrapper">
-          <div class="btn">保存</div>
+          <div class="btn" @click="saveUserInfo">保存</div>
       </div>
    </div>
    <!-- </scroll> -->
@@ -107,7 +103,6 @@
                 </ul>
               </div>
             </div>
-      
         <div class="btn_box">
           <!-- <span class="vux-close"></span> -->
           <span class="btn" @click="save">确定</span>
@@ -123,6 +118,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
+import { mapState, mapMutations } from "vuex";
 import {
   XButton,
   XHeader,
@@ -133,8 +129,10 @@ import {
 } from "vux";
 import VueCropper from "vue-cropper";
 import axios from "axios";
+import api from "common/api";
 import Scroll from "../../base/scroll/scroll";
 import myHeader from "../../base/myheader/myheader";
+import { userInfo } from "os";
 export default {
   directives: {
     TransferDom
@@ -144,7 +142,7 @@ export default {
       signatureList: "",
       title: "最多选5个",
       diyTag: "",
-      commonList: [],
+      commonList: [], //标签
       checklist003: [],
       tagShow: false,
       name: "nicky",
@@ -153,9 +151,10 @@ export default {
       showPopupPickerC: false,
       gender: "男",
       constellation: "水瓶座",
+      phone: "15764271136",
       sex: ["男"],
       constellationArr: ["白羊座"],
-      signature: "",
+      signature: "你是我的眼",
       headerImage: "",
       path: "",
       resText: "",
@@ -187,19 +186,33 @@ export default {
         "小萌萌",
         "帅呆了"
       ],
-      option: {
-        img: "",
-        width: 300,
-        height: 250,
-        autoCrop: true
-      },
       height: ""
     };
   },
   created() {
     this.height = document.body.clientHeight - 50;
   },
+  computed: {
+    ...mapState(["userInfo"])
+  },
+  mounted() {
+    this.name = this.userInfo.nickname;
+    this.gender = this.userInfo.sex;
+    this.constellation = this.userInfo.constellation;
+    this.signatureList = this.userInfo.tags;
+    this.phone = this.userInfo.phone;
+    this.signature = this.userInfo.signature
+      ? this.userInfo.signature
+      : this.signature;
+  },
   methods: {
+    //进入修改头像页面
+    updateAvatar() {
+      let id = 0;
+      this.$router.push({
+        path: `/individual/${id}`
+      });
+    },
     //增加自定义标签
     plusTag() {
       if (this.diyTag.length > 0) {
@@ -242,6 +255,7 @@ export default {
       this.signatureList = this.commonList.join("、");
       this.commonList = [];
       this.diyTag = "";
+      console.log(this.signatureList);
     },
     //关闭个性表情模态框
     closeTag() {
@@ -260,12 +274,6 @@ export default {
     },
     // 标签选择
     showTag() {
-      // let elObj = this.$refs.tagList.childNodes;
-      // for (const key in elObj) {
-      //   if(elObj[key].tagName=='LI'){
-      //     elObj[key].className = "tag fl active"
-      //   }
-      // }
       this.tagShow = true;
     },
     //性别选择
@@ -275,6 +283,7 @@ export default {
     onChange_S(val1) {
       console.log(val1);
       this.gender = val1[0];
+      console.log(this.gender);
     },
     //星座选择
     onHide_C() {
@@ -298,6 +307,38 @@ export default {
         console.log(data);
       });
     },
+    //保存修改
+    saveUserInfo() {
+      let userInfoParam = {
+        nickName: this.name,
+        sex: this.gender === "男" ? 1 : 0,
+        constellation: this.constellation,
+        tags: this.signatureList,
+        phone: this.phone,
+        signature: this.signature
+      };
+      console.log(userInfoParam);
+      let strUserInfoParam = JSON.stringify(userInfoParam);
+      let decc = new TextEncoder("utf-8");
+      let param = decc.encode(strUserInfoParam);
+      api.savePersonalInfo(param).then(res => {
+        console.log(res);
+        if (res.errorCode === 0) {
+          api
+            .getUserInfo("/api/loadUserInfo")
+            .then(res => {
+              console.log(res);
+              this.getuserInfo(res);
+              this.$vux.toast.show({
+                text: "保存成功"
+              });
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      });
+    },
     //测试
     getUserInfo() {
       let _this = this;
@@ -311,104 +352,104 @@ export default {
           console.log(err);
         });
     },
-    // 图片上传
-    Onchange(e) {
-      var maxsize = 100 * 1024;
-      this.files = e.target.files || e.dataTransfer.files;
-      if (!this.files.length) return;
-      var files = Array.prototype.slice.call(this.files); //转化成数组
-      console.log(files);
-      if (files.length > 1) {
-        // console.log("最多同时只可上传2张图片");
-        return;
-      }
-      //遍历文件
-      files.forEach((file, i) => {
-        if (!/\/(?:jpeg|png|gif)/i.test(file.type)) return;
-        var reader = new FileReader();
-        reader.readAsDataURL(file); //读取文件
-        var _this = this;
-        reader.onload = function() {
-          var result = this.result;
-          var img = new Image();
-          img.src = result;
-          _this.showTailor = true;
-          _this.option.img = result;
-        };
-        // if (result.length <= maxsize) {
-        //   img = null;
-        //   return;
-        // }
-        //图片加载完毕之后进行压缩，然后上传
-        // if (img.complete) {
-        //   callback();
-        // } else {
-        //   img.onload = callback;
-        // }
-      });
-    },
-    // 使用canvas对大图片进行压缩
-    compress(img) {
-      var canvas = document.createElement("canvas");
-      var ctx = canvas.getContext("2d");
-      //    瓦片canvas
-      var tCanvas = document.createElement("canvas");
-      var tctx = tCanvas.getContext("2d");
-      var initSize = img.src.length;
-      var width = img.width;
-      var height = img.height;
-      //如果图片大于四百万像素，计算压缩比并将大小压至400万以下
-      var ratio;
-      if ((ratio = width * height / 4000000) > 1) {
-        ratio = Math.sqrt(ratio);
-        width /= ratio;
-        height /= ratio;
-      } else {
-        ratio = 1;
-      }
-      canvas.width = width;
-      canvas.height = height;
-      // 铺底色
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      //如果图片像素大于100万则使用瓦片绘制
-      var count;
-      if ((count = width * height / 1000000) > 1) {
-        count = ~~(Math.sqrt(count) + 1); //计算要分成多少块瓦片
-        //计算每块瓦片的宽和高
-        var nw = ~~(width / count);
-        var nh = ~~(height / count);
-        tCanvas.width = nw;
-        tCanvas.height = nh;
-        for (var i = 0; i < count; i++) {
-          for (var j = 0; j < count; j++) {
-            tctx.drawImage(
-              img,
-              i * nw * ratio,
-              j * nh * ratio,
-              nw * ratio,
-              nh * ratio,
-              0,
-              0,
-              nw,
-              nh
-            );
-            ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
-          }
-        }
-      } else {
-        ctx.drawImage(img, 0, 0, width, height);
-      }
-      //进行最小压缩
-      var ndata = canvas.toDataURL("image/jpeg", 0.1);
-      console.log("压缩前：" + initSize);
-      console.log("压缩后：" + ndata.length);
-      console.log(
-        "压缩率：" + ~~(100 * (initSize - ndata.length) / initSize) + "%"
-      );
-      tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
-      return ndata;
-    },
+    // // 图片上传
+    // Onchange(e) {
+    //   var maxsize = 100 * 1024;
+    //   this.files = e.target.files || e.dataTransfer.files;
+    //   if (!this.files.length) return;
+    //   var files = Array.prototype.slice.call(this.files); //转化成数组
+    //   console.log(files);
+    //   if (files.length > 1) {
+    //     // console.log("最多同时只可上传2张图片");
+    //     return;
+    //   }
+    //   //遍历文件
+    //   files.forEach((file, i) => {
+    //     if (!/\/(?:jpeg|png|gif)/i.test(file.type)) return;
+    //     var reader = new FileReader();
+    //     reader.readAsDataURL(file); //读取文件
+    //     var _this = this;
+    //     reader.onload = function() {
+    //       var result = this.result;
+    //       var img = new Image();
+    //       img.src = result;
+    //       _this.showTailor = true;
+    //       _this.option.img = result;
+    //     };
+    //     // if (result.length <= maxsize) {
+    //     //   img = null;
+    //     //   return;
+    //     // }
+    //     //图片加载完毕之后进行压缩，然后上传
+    //     // if (img.complete) {
+    //     //   callback();
+    //     // } else {
+    //     //   img.onload = callback;
+    //     // }
+    //   });
+    // },
+    // // 使用canvas对大图片进行压缩
+    // compress(img) {
+    //   var canvas = document.createElement("canvas");
+    //   var ctx = canvas.getContext("2d");
+    //   //    瓦片canvas
+    //   var tCanvas = document.createElement("canvas");
+    //   var tctx = tCanvas.getContext("2d");
+    //   var initSize = img.src.length;
+    //   var width = img.width;
+    //   var height = img.height;
+    //   //如果图片大于四百万像素，计算压缩比并将大小压至400万以下
+    //   var ratio;
+    //   if ((ratio = width * height / 4000000) > 1) {
+    //     ratio = Math.sqrt(ratio);
+    //     width /= ratio;
+    //     height /= ratio;
+    //   } else {
+    //     ratio = 1;
+    //   }
+    //   canvas.width = width;
+    //   canvas.height = height;
+    //   // 铺底色
+    //   ctx.fillStyle = "#fff";
+    //   ctx.fillRect(0, 0, canvas.width, canvas.height);
+    //   //如果图片像素大于100万则使用瓦片绘制
+    //   var count;
+    //   if ((count = width * height / 1000000) > 1) {
+    //     count = ~~(Math.sqrt(count) + 1); //计算要分成多少块瓦片
+    //     //计算每块瓦片的宽和高
+    //     var nw = ~~(width / count);
+    //     var nh = ~~(height / count);
+    //     tCanvas.width = nw;
+    //     tCanvas.height = nh;
+    //     for (var i = 0; i < count; i++) {
+    //       for (var j = 0; j < count; j++) {
+    //         tctx.drawImage(
+    //           img,
+    //           i * nw * ratio,
+    //           j * nh * ratio,
+    //           nw * ratio,
+    //           nh * ratio,
+    //           0,
+    //           0,
+    //           nw,
+    //           nh
+    //         );
+    //         ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
+    //       }
+    //     }
+    //   } else {
+    //     ctx.drawImage(img, 0, 0, width, height);
+    //   }
+    //   //进行最小压缩
+    //   var ndata = canvas.toDataURL("image/jpeg", 0.1);
+    //   console.log("压缩前：" + initSize);
+    //   console.log("压缩后：" + ndata.length);
+    //   console.log(
+    //     "压缩率：" + ~~(100 * (initSize - ndata.length) / initSize) + "%"
+    //   );
+    //   tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
+    //   return ndata;
+    // },
     onClickBack() {},
     changeName() {
       setTimeout(() => {
@@ -416,7 +457,10 @@ export default {
         let panel = this.$refs.inputArea;
         panel.scrollIntoView(true);
       }, 200);
-    }
+    },
+    ...mapMutations({
+      getuserInfo: "GET_USERINFO"
+    })
   },
   watch: {
     signature(newValue) {
@@ -472,20 +516,26 @@ export default {
         width: 1.7333rem;
         height: 1.7333rem;
         border-radius: 50%;
+        border: 1px solid #f1f1f1;
         // margin-left: 2.8933rem;
         // margin-right: 1.76rem;
       }
       .upload {
-        padding-top: 0.5333rem;
+        padding-top: 0.6333rem;
+        padding-right: 0.2rem;
         box-sizing: border-box;
         height: 1rem;
-        width: 1.7rem;
         float: right;
         line-height: 1rem;
         line-height: 20px;
         position: relative;
         text-decoration: none;
         color: #666;
+        .arrowRight {
+          width: 0.2267rem;
+          height: 0.3733rem;
+          // margin-right: 10rem;
+        }
         .changeAvatar {
           margin-top: -0.4rem;
           font-size: 0.3733rem;
@@ -515,10 +565,6 @@ export default {
       z-index: 999;
       .cropper {
         position: absolute;
-        // top: 50%;
-        // left: 50%;
-        // transform: translateX(-50%);
-        // transform: translateY(-50%)
       }
       .clip {
         position: absolute;

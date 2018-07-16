@@ -10,7 +10,7 @@
             </div>
 
             <div class="QRcode_wrapper">
-                <p class="desc">到店核销时 请出示此二维码</p>
+                <p class="desc">到店核销时 请出示此二维码或<span class="check">发起核销</span></p>
                 <img src="../../assets/image/QRcode.png" alt="" class="QR_pic">
             </div>
 
@@ -59,6 +59,7 @@
   background-color: #eee;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   overflow-y: auto;
   .discount_pic{
       padding: 0.2667rem;
@@ -94,15 +95,20 @@
   .QRcode_wrapper{
       padding-top: 0.4rem;
       margin-top: 0.2667rem;
-      height: 6.1333rem;
+      height: 7.1333rem;
       width: 100%;
       background:#fff;
       box-sizing: border-box;
+      text-align: center;
       .desc{
           width: 100%;
           text-align: center;
           font-size: 0.3733rem;
           color:#4b4b4b;
+          .check{
+              text-decoration: underline;
+              color: red;
+          }
       }
       .QR_pic{
           width: 4.7733rem;
@@ -121,7 +127,7 @@
           width: 100%;
           padding-left: 0.5667rem;
           .item{
-              margin-top: 0.4267rem;
+              margin-top: 0.2267rem;
               .title{
                   font-size: 0.4267rem;
                   font-weight: 700;
@@ -137,12 +143,16 @@
       }
   }
 }
+// 切换动画
 .slider-enter-active,
-.slider-leaver-active {
+.slider-leave-active {
   transition: all 0.3s;
 }
-.slider-enter,
-.slider_leaver {
+.slider-enter
+ {
   transform: translate3d(100%, 0, 0);
+}
+.slider-leave-to{
+    transform: translate3d(-100%, 0, 0);
 }
 </style>

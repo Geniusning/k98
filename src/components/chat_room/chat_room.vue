@@ -1,127 +1,147 @@
 <template>
-<!-- <transition name="slider"> -->
-  <div id="chat" class="chatRoom">
-        <div class="chat_nav">
-          <div class="back_box">
-            <img src="../../assets/image/back_chat.png" alt="" class="back_arrow" @click="goBack">
+  <transition name="fade">
+    <div id="chat" class="chatRoom">
+          <div class="chat_nav">
+            <div class="back_box">
+              <img src="../../assets/image/back_chat.png" alt="" class="back_arrow" @click="goBack">
+            </div>
+            <div class="name">
+              {{staticChatFriendObj.nickname}}
+            </div>
+            <div class="backHome_box">
+              <img src="../../assets/image/chat_home.png" alt="" class="home" @click="goHome">
+            </div>
           </div>
-          <div class="name">
-            {{staticChatFriendObj.nickname}}
+          <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
+            <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
+            <scroll ref="listView" 
+            class="chat_content"  
+            :scrollHeight='scrollHeight' 
+            :data="componentChatList" 
+            :listen-scroll="listenScroll"
+            :pullDownRefresh="pullDownRefresh"
+            @getIndex="getIndex" 
+            @scroll="myscroll" 
+            @pullingDown="pullingDown"
+            >
+              <ul class="chat_list" ref="chatList">
+                  <li class="clearfix" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" v-for="(item,index) in componentChatList">
+                      <div class="person_box">
+                          <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
+                          <img :src="staticChatFriendObj.headimgurl" alt="" class="avatar" v-if="item.friend">
+                          <img :src="userInfo.headimgurl" alt="" class="avatar" v-else>
+                      </div>
+                      <div class="message_box">
+                        <span v-show="item.type===1" class="arrow"></span>
+                        <p class="message" v-if="item.type===1" v-html="item.message"></p>
+                        <img v-else :src="item.message" alt="" class="messRecordPic" @click="showBigPic(item.message)">
+                      </div>
+                  </li>
+              </ul>
+            </scroll>
+            <div class="loading-container" v-show="isLoading">
+              <loading></loading>
+            </div>
           </div>
-          <div class="backHome_box">
-            <img src="../../assets/image/chat_home.png" alt="" class="home" @click="goHome">
-          </div>
-        </div>
-        <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
-          <scroll ref="listView" class="chat_content"  :scrollHeight='scrollHeight' :data="componentChatList" @getIndex="getIndex" @scroll="myscroll" :listen-scroll="listenScroll">
-            <ul class="chat_list" ref="chatList">
-                <li class="clearfix" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" v-for="(item,index) in componentChatList">
-                    <div class="person_box">
-                        <h2 class="name">19:20:10</h2>
-                        <img :src="staticChatFriendObj.headimgurl" alt="" class="avatar" v-if="item.friend">
-                        <img :src="userInfo.headimgurl" alt="" class="avatar" v-else>
-                    </div>
-                    <div class="message_box">
-                      <span class="arrow"></span>
-                      <p  class="message">{{item.message}}</p>
-                    </div>
+          <div class="input_wrapper">
+            <div class="input_area clearfix">
+              <input type="text" ref="sendWrapper" id="send_message" class="send_message"  @focus.prevent="myfocus" v-model="input_value">
+              <div @click="send" class="action_box clearfix" :class="{active:flag}">
+                  <img src="../../assets/image/plane.png" alt="" class="icon_plane fl">
+                  <span class="send fl"  ref="send">发送</span>
+              </div>
+            </div>
+            <div class="select_area">
+              <ul class="selectList clearfix">
+                <li class="item fl">
+                  <img src="../../assets/image/chat_emotion.png" alt="" @click="show_emotion">
                 </li>
-            </ul>
-          </scroll>
-        </div>
-        <div class="input_wrapper">
-          <div class="input_area clearfix">
-            <input type="text" ref="sendWrapper" id="send_message" class="send_message" :autofocus="autofocus" @focus.prevent="myfocus" v-model="input_value">
-            <div @click="send" class="action_box clearfix" :class="{active:flag}">
-                <img src="../../assets/image/plane.png" alt="" class="icon_plane fl">
-                <span class="send fl"  ref="send">发送</span>
+                <li class="item fl">
+                  <img src="../../assets/image/message_chat.png" alt="" @click="show_expression">
+                </li>
+                <li class="item fl" @click="showToastGift">
+                  <img src="../../assets/image/chat_gift.png" alt="" >
+                </li>
+                <li class="item fl">
+                  <img src="../../assets/image/chat_pic.png" alt="">
+                  <input type="file" class="file" accept="image/*" @change="uploadImage">
+                </li>
+                <li class="item fl">
+                  <img src="../../assets/image/game_chat.png" alt="" class="game">
+                </li>
+              </ul>
+            </div>
+            <div class="emotion_area" v-if="emotionShow">
+              <!-- dots-position="center" -->
+              <swiper :auto="false" height="130px" :show-dots="false">
+                <swiper-item class="black">
+                    <grid :show-vertical-dividers="true"  :cols="8">
+                       <div @click="selectEmtion(item.name)" v-for="item in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.2rem">
+                          <!-- <emotion is-gif >{{item}}</emotion> -->
+                          <img :src="item.num" alt="">
+                      </div>
+                      <!-- <grid-item v-for="(item,index) in emoj1" :key="index">
+                        <span slot="label" class="grid-center" @click="select_emotion(item)">{{item}}</span>
+                      </grid-item> -->
+                    </grid>
+                </swiper-item>
+                <!-- <swiper-item class="black">
+                    <grid :show-vertical-dividers="true"  :cols="8">
+                      <grid-item v-for="(item,index) in emoj2" :key="index">
+                        <span slot="label" class="grid-center" @click="select_emotion(item)">{{item}}</span>
+                      </grid-item>
+                    </grid>
+                </swiper-item> -->
+              </swiper>
+            </div>
+            <!-- 常用语 -->
+            <div class="expression_wrapper" v-if="expressionShow">
+              <ul class="expressList">
+                <li class="item vux-1px-b" v-for="(item,index) in expressionList" :key="index" @click="addExpress(item)">{{item}}</li>
+              </ul>
             </div>
           </div>
-          <div class="select_area">
-            <ul class="selectList clearfix">
-              <li class="item fl">
-                <img src="../../assets/image/chat_emotion.png" alt="" @click="show_emotion">
-              </li>
-              <li class="item fl">
-                <img src="../../assets/image/message_chat.png" alt="" @click="show_expression">
-              </li>
-              <li class="item fl">
-                <img src="../../assets/image/chat_gift.png" alt="" @click="showToastGift">
-              </li>
-              <li class="item fl">
-                <img src="../../assets/image/chat_pic.png" alt="">
-                <input type="file" class="file">
-              </li>
-              <li class="item fl">
-                <img src="../../assets/image/game_chat.png" alt="" class="game">
-              </li>
-            </ul>
-          </div>
-          <div class="emotion_area" v-if="emotionShow">
-            <swiper :auto="false" height="130px" dots-position="center">
-              <swiper-item class="black">
-                  <grid :show-vertical-dividers="true"  :cols="8">
-                    <grid-item v-for="(item,index) in emoj1" :key="index">
-                      <span slot="label" class="grid-center" @click="select_emotion(item)">{{item}}</span>
-                    </grid-item>
-                  </grid>
-              </swiper-item>
-              <swiper-item class="black">
-                  <grid :show-vertical-dividers="true"  :cols="8">
-                    <grid-item v-for="(item,index) in emoj2" :key="index">
-                      <span slot="label" class="grid-center" @click="select_emotion(item)">{{item}}</span>
-                    </grid-item>
-                  </grid>
-              </swiper-item>
-            </swiper>
-          </div>
-          <!-- 常用语 -->
-          <div class="expression_wrapper" v-if="expressionShow">
-            <ul class="expressList">
-              <li class="item vux-1px-b" v-for="(item,index) in expressionList" :key="index" @click="addExpress(item)">{{item}}</li>
-            </ul>
-          </div>
-        </div>
 
-        <!-- 送礼 -->
-        <div v-transfer-dom>
-          <popup v-model="showToast_gift" position="bottom">
-            <div class="position-vertical-demo">
-              <div class="title vux-1px-b">
-                <span>送个小礼，就是好朋友</span>
-                <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
+          <!-- 送礼 -->
+          <div v-transfer-dom>
+            <popup v-model="showToast_gift" position="bottom">
+              <div class="position-vertical-demo">
+                <div class="title vux-1px-b">
+                  <span>送个小礼，就是好朋友</span>
+                  <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
+                </div>
+                <div class="gift_list">
+                  <ul class="list clearfix">
+                    <li class="item">
+                      <img src="../../assets/image/beer.png" alt="" class="beer">
+                      <p class="gift_name">啤酒</p>
+                      <p class="gift_price">￥0.99</p>
+                    </li>
+                      <li class="item">
+                      <img src="../../assets/image/flower.png" alt="" class="flower">
+                      <p class="gift_name">鲜花</p>
+                      <p class="gift_price">￥1.88</p>
+                    </li>
+                      <li class="item">
+                      <img src="../../assets/image/house.png" alt="" class="house">
+                      <p class="gift_name">别墅</p>
+                      <p class="gift_price">￥5.20</p>
+                    </li>
+                      <li class="item">
+                      <img src="../../assets/image/car.png" alt="" class="car">
+                      <p class="gift_name">跑车</p>
+                      <p class="gift_price">￥16.8</p>
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <div class="gift_list">
-                <ul class="list clearfix">
-                  <li class="item">
-                    <img src="../../assets/image/beer.png" alt="" class="beer">
-                    <p class="gift_name">啤酒</p>
-                    <p class="gift_price">￥0.99</p>
-                  </li>
-                    <li class="item">
-                    <img src="../../assets/image/flower.png" alt="" class="flower">
-                    <p class="gift_name">鲜花</p>
-                    <p class="gift_price">￥1.88</p>
-                  </li>
-                    <li class="item">
-                    <img src="../../assets/image/house.png" alt="" class="house">
-                    <p class="gift_name">别墅</p>
-                    <p class="gift_price">￥5.20</p>
-                  </li>
-                    <li class="item">
-                    <img src="../../assets/image/car.png" alt="" class="car">
-                    <p class="gift_name">跑车</p>
-                    <p class="gift_price">￥16.8</p>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </popup>
-      </div>
-  </div>
-<!-- </transition> -->
+            </popup>
+        </div>
+    </div>
+  </transition>
 </template>
 <script type='text/ecmascript-6'>
+import loading from "../../base/loading/loading";
 import {
   Tab,
   TabItem,
@@ -132,13 +152,16 @@ import {
   SwiperItem,
   Grid,
   GridItem,
-  Popup
+  Popup,
+  WechatEmotion as Emotion
 } from "vux";
 import Scroll from "../../base/scroll/scroll.vue";
 import Url from "../../common/url.js";
 import api from "common/api.js";
+import util from "common/util.js";
+// import EXIF from "common/exif.js";
 import { mapState, mapMutations } from "vuex";
-
+import lrz from "lrz";
 export default {
   directives: {
     TransferDom,
@@ -148,7 +171,9 @@ export default {
   },
   data() {
     return {
+      showPreview: false,
       scrollHeight: 0,
+      pullDownRefresh: true,
       expressionShow: false,
       expressionList: [
         "您好，很高兴可以成为好朋友",
@@ -164,74 +189,165 @@ export default {
       flag: false,
       input_value: "",
       autofocus: false,
-      list: ["操作", "礼物"],
-      emoj1: [
-        "😄",
-        "😒",
-        "😂",
-        "😊",
-        "😉",
-        "😍",
-        "😘",
-        "😚",
-        "😜",
-        "😳",
-        "😔",
-        "😣",
-        "😢",
-        "😭",
-        "😭",
-        "😅",
-        "😩",
-        "😨",
-        "😱",
-        "😤",
-        "😵",
-        "😶",
-        "🤕",
-        "🙄"
+      emotionList: [
+        {
+          name: "[微笑]",
+          num: "/static/face/1.gif"
+          // num:1
+        },
+        {
+          name: "[色]",
+          num: "/static/face/2.gif"
+        },
+        {
+          name: "[大哭]",
+          num: "/static/face/3.gif"
+        },
+        {
+          name: "[嘻嘻]",
+          num: "/static/face/4.gif"
+        },
+        {
+          name: "[偷笑]",
+          num: "/static/face/5.gif"
+        },
+        {
+          name: "[大笑]",
+          num: "/static/face/6.gif"
+        },
+        {
+          name: "[晕]",
+          num: "/static/face/7.gif"
+        },
+        {
+          name: "[再见]",
+          num: "/static/face/8.gif"
+        },
+        {
+          name: "[抠鼻]",
+          num: "/static/face/9.gif"
+        },
+        {
+          name: "[委屈]",
+          num: "/static/face/10.gif"
+        },
+        {
+          name: "[抱抱]",
+          num: "/static/face/11.gif"
+        },
+        {
+          name: "[爱心]",
+          num: "/static/face/12.gif"
+        },
+        {
+          name: "[点赞]",
+          num: "/static/face/13.gif"
+        },
+        {
+          name: "[握手]",
+          num: "/static/face/14.gif"
+        },
+        {
+          name: "[ok]",
+          num: "/static/face/15.gif"
+        },
+        {
+          name: "[玫瑰]",
+          num: "/static/face/16.gif"
+        },
+        {
+          name: "[亲亲]",
+          num: "/static/face/17.gif"
+        },
+        {
+          name: "[难过]",
+          num: "/static/face/18.gif"
+        }
       ],
-      emoj2: [
-        "😖",
-        "😋",
-        "😷",
-        "😎",
-        "😇",
-        "🤓",
-        "🤗",
-        "🤖",
-        "👲",
-        "👳",
-        "👳",
-        "👮",
-        "❤️️",
-        "💔",
-        "💝",
-        "💋",
-        "🙈",
-        "🙉",
-        "💀",
-        "👻"
-      ],
+      // emoj1: [
+      //   "😄",
+      //   "😒",
+      //   "😂",
+      //   "😊",
+      //   "😉",
+      //   "😍",
+      //   "😘",
+      //   "😚",
+      //   "😜",
+      //   "😳",
+      //   "😔",
+      //   "😣",
+      //   "😢",
+      //   "😭",
+      //   "😭",
+      //   "😅",
+      //   "😩",
+      //   "😨",
+      //   "😱",
+      //   "😤",
+      //   "😵",
+      //   "😶",
+      //   "🤕",
+      //   "🙄"
+      // ],
+      // emoj2: [
+      //   "😖",
+      //   "😋",
+      //   "😷",
+      //   "😎",
+      //   "😇",
+      //   "🤓",
+      //   "🤗",
+      //   "🤖",
+      //   "👲",
+      //   "👳",
+      //   "👳",
+      //   "👮",
+      //   "❤️️",
+      //   "💔",
+      //   "💝",
+      //   "💋",
+      //   "🙈",
+      //   "🙉",
+      //   "💀",
+      //   "👻"
+      // ],
       index: 0,
-      componentChatList: []
+      componentChatList: [],
+      isscroll: true,
+      isLoading: false
     };
   },
   created() {
     this.listenScroll = true;
-    window.addEventListener("resize", function() {
-      if (document.activeElement.tagName === "INPUT") {
-        document.activeElement.scrollIntoView({ behavior: "smooth" });
-      }
-    });
+    this.today = new Date().getDate();
+    this.today = new Date().getDate();
+    console.log(this.today);
+    if (this.today < 10) {
+      this.today = "0" + this.today;
+    } else {
+      this.today = this.today.toString();
+    }
+    // window.addEventListener("resize", function() {
+    //   if (document.activeElement.tagName === "INPUT") {
+    //     document.activeElement.scrollIntoView({ behavior: "smooth" });
+    //   }
+    // });
   },
   activated() {
     //前端暂时获取聊天记录
     // console.log("activated");
     this._getChatList();
   },
+  mounted() {
+    //  this._getChatList();
+  },
+  destroyed() {},
   deactivated() {
+    this.endCursor = null;
     this.componentChatList = [];
+    let cursor = 0;
+    this.changeCursor(cursor);
   },
   computed: {
     ...mapState([
@@ -240,69 +356,159 @@ export default {
       "LastChatMsg",
       "inputValue",
       "socket",
-      "cursor"
+      "FriendListcursor"
     ])
   },
   methods: {
+    // 选择表情
+    selectEmtion(item) {
+      this.input_value += item;
+    },
     //获取聊天消息列表
     _getChatList() {
-      let cursor = this.cursor;
+      let cursor = this.FriendListcursor;
       api
         .getFriendMessList(cursor, this.staticChatFriendObj.openid)
         .then(res => {
           console.log(res);
+          this.changeCursor(res.cursor);
           let resultMessList = res.messages;
           var i;
           for (i = resultMessList.length - 1; i >= 0; i--) {
             let item = resultMessList[i];
             this.componentChatList.push({
               message: item.content,
-              friend: item.from === this.staticChatFriendObj.openid ? 1 : 0 //1为朋友，0为自己
+              friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
+              type: item.type,
+              time: util.timestampToTime(item.stime)
             });
           }
+
+          this.$refs.listView.finishPullDown();
         });
     },
-    websocketsend() {
-      //数据发送
-      // let messObj = {
-      //   To: this.staticChatFriendObj.openid,
-      //   MsgType: 1,
-      //   Content: this.input_value
-      // };
-      // let textMessObj = JSON.stringify(messObj);
-      // console.log(textMessObj);
-      // let decc1 = new TextEncoder("utf-8");
-      // let result = decc1.encode(textMessObj);
-      // this.socket.send(result);
-    },
-    //发送事件
+    //发送消息事件
     send() {
       if (!this.input_value) {
         return;
       }
+      //字符串转表情icon
+      for (var i = 0; i < this.emotionList.length; i++) {
+        // debugger;
+        if (this.input_value.indexOf(this.emotionList[i].name) !== -1) {
+          var reg = /\[.*\]/;
+          console.log(this.input_value.match(reg)[0]);
+          this.input_value = this.input_value.replace(
+            reg,
+            `<img src=${this.emotionList[i].num} style="vertical-align: -6px;">`
+          );
+        }
+      }
       //把自己发送的内容加到聊天列表里面
       this.componentChatList.push({
         message: this.input_value,
-        friend: 0
+        friend: 0,
+        type: 1,
+        time: util.timestampToTime(new Date().getTime())
       });
       let messObj = {
         To: this.staticChatFriendObj.openid,
-        MsgType: 1,
-        Content: this.input_value
+        Content: this.input_value,
+        type: 1
       };
       let textMessObj = JSON.stringify(messObj);
-      console.log(textMessObj);
       let decc1 = new TextEncoder("utf-8");
       let result = decc1.encode(textMessObj);
       api.postFriendMess(result).then(res => {
         console.log(res);
+        this.emotionShow = false;
       });
       this.$refs.listView.refresh();
       this.input_value = "";
-      document.getElementById("send_message").focus();
+      // document.getElementById("send_message").focus();
+    },
+    // 发送图片
+    uploadImage(e) {
+      if (!e.target.files[0]) {
+        return;
+      }
+      let vm = this;
+      lrz(e.target.files[0], { quality: 0.3 })
+        .then(function(rst) {
+          if (rst.base64Len > 1024 * 1024 * 1) {
+            // vm.$toast("图片不能超过1MB");
+            console.log("图片不能超过1MB");
+            return;
+          }
+          console.log(rst.base64);
+          let filename = rst.origin.name;
+          let dataURL = rst.file;
+          api
+            .postFriendPic(vm.staticChatFriendObj.openid, filename, dataURL)
+            .then(res => {
+              console.log(res);
+              vm.componentChatList.push({
+                message: res.content,
+                friend: 0,
+                type: 2,
+                time: util.timestampToTime(new Date().getTime())
+              });
+            });
+        })
+        .catch(function(err) {
+          vm.$toast("压缩图片失败");
+        });
+    },
+    //展示大图片
+    showBigPic(pic) {
+      this.showPreview = true;
+      let htmlImage = `<img src="${pic}" style="width:8rem;" class="preview-img"/>`;
+      this.$refs.preview_pic.innerHTML = htmlImage;
+      console.log(pic);
+    },
+    //关闭展示图
+    closePreview() {
+      this.showPreview = false;
+    },
+    //下拉刷新
+    pullingDown() {
+      console.log("下拉刷新");
+      if (!this.FriendListcursor || this.endCursor == 0) {
+        return;
+      }
+      let cursor = this.FriendListcursor;
+      this.isLoading = true;
+      api
+        .getFriendMessList(cursor, this.staticChatFriendObj.openid)
+        .then(res => {
+          console.log(res);
+          if (!res.messages.length) {
+            //如果有新消息才更改游标
+            return;
+          }
+          this.endCursor = res.cursor;
+          this.changeCursor(res.cursor);
+          this.isLoading = false; //加载loading
+          this.isscroll = false; //判断下拉刷新
+          let resultMessList = res.messages;
+          var i;
+          for (i = resultMessList.length - 1; i >= 0; i--) {
+            let item = resultMessList[i];
+            this.componentChatList.unshift({
+              message: item.content,
+              friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
+              time: util.timestampToTime(item.stime),
+              type: item.type
+            });
+          }
+          this.$refs.listView.finishPullDown();
+          this.$refs.listView.scrollTo(0, 0, 1000);
+          // this.$refs.listView.disable();
+        });
     },
     getIndex(val) {
-      this.index = val;
+      console.log("val:", val+1);
+      this.index = val + 1;
     },
     //监听滚动
     myscroll(pos) {
@@ -338,6 +544,7 @@ export default {
     },
     //展示送礼面板
     showToastGift() {
+      console.log("click");
       this.showToast_gift = true;
       this.expressionShow = false;
       this.emotionShow = false;
@@ -363,24 +570,27 @@ export default {
     myfocus() {
       this.emotionShow = false;
       this.expressionShow = false;
-      // setTimeout(() => {
-      //   let panel = this.$refs.sendWrapper;
-      //   panel.scrollIntoView(true);
-      // }, 200);
+      this.isscroll = true; //允许动态滚动到最底部记录
     },
     ...mapMutations({
       updateChatList: "UPDATE_CHATLIST",
-      updateValue: "UPDATE_INPUTVALUE"
+      updateValue: "UPDATE_INPUTVALUE",
+      changeCursor: "CHANGE_CURSOR"
     })
   },
   watch: {
     LastChatMsg: function(newValue) {
-      console.log(newValue.lastMsg);
-      this.componentChatList.push({
-        message: newValue.lastMsg.content,
-        friend:
-          newValue.lastMsg.from === this.staticChatFriendObj.openid ? 1 : 0  //1为朋友，0为自己
-      });
+      // console.log(newValue.lastMsg);
+      if (newValue.lastMsg.from == this.staticChatFriendObj.openid) {
+        //判断是否是进入时原来的两个人聊天进行聊天
+        this.componentChatList.push({
+          message: newValue.lastMsg.content,
+          friend:
+            newValue.lastMsg.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
+          type: newValue.lastMsg.type,
+          time: util.timestampToTime(newValue.lastMsg.stime)
+        });
+      }
     },
     input_value: function(newValue, oldValue) {
       if (newValue.length > 0 || oldValue > 0) {
@@ -390,9 +600,11 @@ export default {
       }
     },
     index: function(newValue) {
-      this.$nextTick(function() {
-        this.scrollHeight = this.$refs.chatList.clientHeight;
-      });
+      if (this.isscroll) {
+        this.$nextTick(function() {
+          this.scrollHeight = this.$refs.chatList.clientHeight;
+        });
+      }
     }
   },
   components: {
@@ -405,7 +617,9 @@ export default {
     Grid,
     GridItem,
     Scroll,
-    Popup
+    Popup,
+    loading,
+    Emotion
   }
 };
 </script>
@@ -413,14 +627,6 @@ export default {
 <style scoped lang='less'>
 @import "../../assets/less/variable.less";
 @import "../../assets/less/chat.less";
-.slider-enter-active,
-.slider-leaver-active {
-  transition: all 0.4s;
-}
-.slider-enter,
-.slider_leaver {
-  transform: translate3d(100%, 0, 0);
-}
 .chatRoom {
   position: fixed;
   z-index: 9999;
@@ -460,6 +666,20 @@ export default {
     padding: 0.1333rem 0.3733rem 0.1333rem;
     background: #eee;
     overflow-y: auto;
+    position: relative;
+    .preview_pic {
+      position: fixed;
+      text-align: center;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 998;
+      background: rgba(0, 0, 0, 0.3);
+      .preview-img {
+        width: 2rem;
+      }
+    }
     .chat_content {
       height: 100%;
       .chat_list {
@@ -469,6 +689,9 @@ export default {
           .arrow {
             .arrowDot(#fff);
             left: -0.05rem;
+          }
+          .messRecordPic {
+            width: 1.8rem;
           }
         }
         .mine {
@@ -482,8 +705,16 @@ export default {
           .message_box {
             margin-right: 0.2667rem;
           }
+          .messRecordPic {
+            width: 1.8rem;
+          }
         }
       }
+    }
+    .loading-container {
+      position: absolute;
+      width: 100%;
+      top: 2%;
     }
   }
   .input_wrapper {
@@ -671,5 +902,18 @@ export default {
 }
 .weui-grid:after {
   border-bottom: none;
+}
+.vux-popup-dialog {
+  z-index: 99999;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s;
+}
+.fade-enter {
+  transform: translate3d(100%, 0, 0);
+}
+.fade-leave-to {
+  transform: translate3d(-100%, 0, 0);
 }
 </style>
