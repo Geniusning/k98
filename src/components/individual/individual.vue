@@ -694,6 +694,7 @@ export default {
   background-repeat: no-repeat;
   background-size: 100%;
   padding-left: 0.4rem;
+  background-color: #fff;
   .signatureTitle {
     width: 100%;
     color: #fff;
@@ -771,11 +772,10 @@ export default {
   }
 }
 .btn_box {
-  // width: 100%;
   text-align: center;
   height: 0.8rem;
   line-height: 0.8rem;
-  margin-top: 0.4667rem;
+  background-color: #fff;
   .btn {
     display: inline-block;
     font-size: 0.4267rem;

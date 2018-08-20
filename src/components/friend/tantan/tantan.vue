@@ -14,7 +14,7 @@
       >
         <div style="height:100%" class="stack_content">
           <div class="big_box">
-            <div class="img_content">
+            <div class="img_content" @click="chooseImage">
               <div class="icon_box" v-if="item.info.sex=='男'">
                 <img src="../../../assets/image/online.png" alt="" class="icon" >
                 <img src="../../../assets/image/dot_green.png" alt="" class="dot">
@@ -25,7 +25,7 @@
                 <img src="../../../assets/image/dot_red.png" alt="" class="dot">
                 <span class="line_word">场外</span>
               </div>
-              <span class="time_desc">20分钟前登陆</span>
+              <span class="time_desc" >20分钟前登录</span>
               <!-- <img src="../../../assets/image/icon_changwai2.png" alt="" class="icon" v-else> -->
               <!-- <img :src="item.info.avatar" alt="" class="blur_avatar"> -->
               <div class="avatar_box">
@@ -40,10 +40,12 @@
                 <img src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex=='男'">
                 <img src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
                 <!-- <span class="online" :style="{background:item.info.online==='好友'?'red':'gray'}">{{item.info.online}}</span> -->
-                <span class="constellation">{{item.info.constellation?item.info.constellation:"水瓶座"}}</span>
-                <span class="gift"><img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">{{item.info.gift?item.info.gift:56}}</span>
-                <span class="thumb"><img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">{{item.info.thumb?item.info.thumb:99}}</span>
+                <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
                 <span class="friend"><img src="../../../assets/image/friend_tantan.png" alt="" class="friend_samll">{{item.info.thumb?item.info.thumb:10}}</span>
+                <!-- <img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">{{item.info.gift?item.info.gift:56}} -->
+                <span class="gift">富豪榜888</span>
+                <!-- <img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">{{item.info.thumb?item.info.thumb:99}} -->
+                <span class="thumb">战神榜777</span>
               </div>
               <div class="tag_wrapper">
                 <span v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')" :key="index">{{item}}</span>
@@ -110,7 +112,6 @@ export default {
   },
   watch: {
     pages(newValue) {
-      console.log(newValue)
       let data = newValue[0];
       this.$emit("firstData", data);
     }
@@ -139,6 +140,19 @@ export default {
     // console.log(this.pages);
   },
   methods: {
+    //选择图片
+    chooseImage() {
+      console.log('选择图片')
+      wx.chooseImage({
+        count: 2, // 默认9
+        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+        success: function(res) {
+          var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+          console.log(localIds);
+        }
+      });
+    },
     touchstart(e) {
       if (this.temporaryData.tracking) {
         return;
@@ -613,8 +627,7 @@ export default {
       .thumb {
         box-sizing: border-box;
         padding-top: 0.03rem;
-        .userInfo(#FF7272);
-        text-indent: 0.2rem;
+        .userInfo(#61d78b);
         .thumb_samll {
           width: 0.2933rem;
           height: 0.2933rem;
@@ -627,20 +640,16 @@ export default {
         box-sizing: border-box;
         padding-top: 0.03rem;
         .userInfo(#ffd800);
-        text-indent: 0.3rem;
         .friend_samll {
           width: 0.3733rem;
           height: 0.3733rem;
-          position: absolute;
-          top: 0.09rem;
-          left: 0.15rem;
+          vertical-align: -0.0267rem;
         }
       }
       .gift {
         box-sizing: border-box;
         padding-top: 0.04rem;
-        .userInfo(#75bdfa);
-        text-indent: 0.4rem;
+        .userInfo(#EE8232);
         .gift_small {
           width: 0.2833rem;
           height: 0.2833rem;

@@ -143,7 +143,7 @@ export default {
   },
   //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
   beforeRouteEnter(to, from, next) {
-    if (to.params.num === 2) {
+    if (to.params.routeParamNum === 2) {
       next(vm => {
         vm.isShow = 2;
       });
@@ -172,7 +172,6 @@ export default {
   },
   mounted() {
     this._loadFriends();
-    // console.log(this.alreadyFriendList);
   },
   destroyed() {
     // console.log("组件销毁");
@@ -366,6 +365,7 @@ export default {
 }
 .message_wrapper {
   width: 100%;
+  overflow-y: auto;
   .message_list {
     // margin-top: 10px;
     padding: 0 0.2667rem;

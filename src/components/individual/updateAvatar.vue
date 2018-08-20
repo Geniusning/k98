@@ -11,6 +11,9 @@
                     <input type="file" class="file" @change="onChange">
                 </div>
             </div>
+            <div class="dailyLifePhoto-wrapper" >
+              <h3 class="title">上传生活照</h3>
+            </div>
             <div class="tailor_wrapper" v-if="showTailor">
                 <vueCropper
                     ref="cropper"
@@ -24,9 +27,7 @@
                 <p @click="stop" class="confirm">确定</p>
                 <!-- <p @click="clip" class="clip">点击开始滑动截图</p> -->
             </div>
-            <!-- <div class="btn_wrapper"  @click="update">
-              <x-button type="default">保存</x-button>
-            </div> -->
+
         </div>
     </transition>
 </template>

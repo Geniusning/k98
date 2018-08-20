@@ -19,7 +19,7 @@
       <ul class="no_user_list" v-show="tagIndex==0">
         <li class="item" v-for="(item,index) in unusedList" @click="selectDiscout">
           <div class="left1">
-            <p class="name">{{item.content}}</p>
+            <p class="name">{{item.name}}</p>
             <p class="time">{{item.time}}</p>
           </div>
           <div class="right1">
@@ -52,35 +52,13 @@
         </li>
       </ul>
     </div>
-    <!-- <div class="discount_wrapper">
-        <ul class="discount_list">
-            <li @click="select_discount">
-               <div class="wrapper">
-                  <div class="content">
-                      <div class="title">
-                         10元优惠券
-                      </div>
-                      <div class="time">
-                          有效期至: 2018-01-25
-                      </div>
-                  </div>
-                  <div class="split-line"></div>
-                  <div class="tip">
-                      <div class="money">
-                          申请使用
-                      </div>
-                  </div>
-              </div>
-            </li>
-        </ul>
-    </div> -->
     <validate v-show="isShow"></validate>
     <router-view></router-view>
- 
  </div>
 </template>
 
 <script type='text/ecmascript-6'>
+import api from "common/api";
 import scroll from "../../base/scroll/scroll.vue";
 import { Tab, TabItem, XHeader, XButton } from "vux";
 import Validate from "../../base/validatephone/validatephone";
@@ -91,36 +69,7 @@ export default {
     return {
       flag: false,
       tagIndex: 0,
-      unusedList: [
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        }
-      ],
+      unusedList: [],
       usedList: [
         {
           content: "啤酒9折优惠券",
@@ -162,7 +111,25 @@ export default {
   computed: {
     ...mapGetters(["isShow"])
   },
+  created() {
+    this._loadUserAllCoupon()//获取优惠券
+  },
   methods: {
+    //获取优惠券
+    _loadUserAllCoupon() {
+      api.loadUserAllCoupon().then(res => {
+        console.log("优惠券：", res);
+         res.unuseCoupons.forEach(element => {
+          let tempObj = {};
+          tempObj.type = element.coupon.type?"实物券":"现金券";
+          tempObj.time = "过期时间："+element.coupon.endTime;
+          tempObj.name = element.coupon.type?"获得"+element.coupon.content:"获得"+element.coupon.value+"元代金券";
+          this.unusedList.push(tempObj)
+        });
+        // this.unusedList = res.unuseCoupons;
+        console.log(this.unusedList);
+      });
+    },
     //返回上一页
     goBack() {
       this.$router.go(-1);

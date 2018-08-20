@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    
     <div class="top_wrapper">
         <keep-alive>
            <router-view v-if="$route.meta.keepAlive"></router-view>
@@ -30,24 +31,65 @@
 import Tab from "./components/tab/tab.vue";
 import { mapState, mapGetters, mapMutations } from "vuex";
 import util from "common/util";
-
+import api from "common/api";
 export default {
   name: "app",
   data() {
     return {
-      flag: true,
+      flag: false,
       selected: 0,
-      dialog: false
+      dialog: false,
+      shareObj: {
+        title: "深圳魅力四射酒吧首页",
+        desc: "这是一个超级好玩的的地方哦",
+        link: "",
+        imgUrl: "http://i1.bvimg.com/643118/d3ed6dbc589609a1.png"
+      }
     };
   },
   computed: {
     ...mapState(["inputValue", "dynamicFriendEvt"])
   },
-  created() {},
+  created() {
+    // console.log(this.$route.name);
+    if (
+      this.$route.name === "home" ||
+      this.$route.name === "friend" ||
+      this.$route.name === "message" ||
+      this.$route.name === "welfare" ||
+      this.$route.name === "mine"
+    ) {
+      this.flag = true;
+    }
+    switch (this.$route.name) {
+      case "home":
+        this.selected = 0;
+        break;
+      case "friend":
+        this.selected = 1;
+        break;
+      case "message":
+        this.selected = 2;
+        // this.dialog = true;
+        setTimeout(() => {
+          this.dialog = false;
+        }, 1500);
+        break;
+      case "welfare":
+        this.selected = 3;
+        break;
+      case "mine":
+        this.selected = 4;
+        break;
+      default:
+        break;
+    }
+  },
   methods: {
     close() {
       this.dialog = false;
     },
+
     ...mapMutations({
       updateChatList: "UPDATE_CHATLIST"
     })
@@ -62,19 +104,15 @@ export default {
     $route: function(newValue) {
       //隐藏导航
       if (
-        newValue.name == "interview" ||
-        newValue.name == "individual" ||
-        newValue.name == "chat" ||
-        newValue.name == "gameDetail" ||
-        newValue.name == "giftDetail" ||
-        newValue.name == "gift_detail" ||
-        newValue.name == "card" ||
-        newValue.name == "updateAvatar" ||
-        newValue.name == "cardDetail"
+        newValue.name == "home" ||
+        newValue.name == "friend" ||
+        newValue.name == "message" ||
+        newValue.name == "welfare" ||
+        newValue.name == "mine"
       ) {
-        this.flag = false;
-      } else {
         this.flag = true;
+      } else {
+        this.flag = false;
       }
       //判断通过非点击tabbar栏切换选中状态
       switch (newValue.name) {

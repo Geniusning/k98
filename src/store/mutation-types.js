@@ -1,5 +1,3 @@
-
-
 export const CHANGE_VALIDATE = "CHANGE_VALIDATE"
 
 export const GET_USERINFO = "GET_USERINFO"
@@ -45,6 +43,9 @@ export const UPDATE_INANDOUT_FRIEND_CURSOR = "UPDATE_INANDOUT_FRIEND_CURSOR"
 
 //获取新消息时重新排列消息列表，把最新的一项放到顶部
 export const TO_TOP_MESSAGE = "TO_TOP_MESSAGE"
+
+//更改分享链接
+export const UPDATE_SHAREURL = "UPDATE_SHAREURL"
 
 //动态获取聊天对象
 // export const GET_DYNAMICFRIENDOBJ = "GET_DYNAMICFRIENDOBJ"

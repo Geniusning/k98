@@ -20,17 +20,17 @@
               <p class="score">8个</p>
             </li>
             <li class="item">
-              <p class="score_name">等级</p>
-              <p class="score">大地主</p>
+              <p class="score_name">富豪榜</p>
+              <p class="score">第6名</p>
             </li>
              <li class="item">
-              <p class="score_name">获赞数</p>
-              <p class="score">88个</p>
+              <p class="score_name">大话战神榜</p>
+              <p class="score">第11名</p>
             </li>
-             <li class="item">
+             <!-- <li class="item">
               <p class="score_name">大话排名</p>
               <p class="score">第2名</p>
-            </li>
+            </li> -->
           </ul>
         </div>
         <!-- 我的卡券 -->
@@ -52,7 +52,7 @@
         </div>
         <!-- 我的标签 -->
         <div class="tag_wrapper">
-          <h2 class="tag_title">我的标签<span class="star">#</span></h2>
+          <h2 class="tag_title" @click="chooseImage">我的标签<span class="star">#</span></h2>
           <ul class="tag_list" v-if="tags_show">
             <li v-for="(item,index) in tagList" :key="index" class="item">
               {{item}}
@@ -96,6 +96,7 @@ import {
 } from "vux";
 import { mapGetters, mapMutations } from "vuex";
 import util from "common/util";
+import api from "common/api";
 import Validate from "../../base/validatephone/validatephone";
 export default {
   directives: {
@@ -114,7 +115,37 @@ export default {
   computed: {
     ...mapGetters(["userInfo", "test", "isShow"])
   },
+  created() {
+    let url = window.location.href.split('#')[0];
+    console.log(url)
+    api
+      .getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
+      .then(res => {
+        wx.config({
+          //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+          appId: "wxb2fa3c446063ec19",
+          timestamp: res.timestamp,
+          nonceStr: res.nonceStr,
+          signature: res.signature,
+          jsApiList: [
+            "chooseImage"
+          ]
+        });
+      });
+  },
   methods: {
+    chooseImage() {
+      console.log("images");
+      wx.chooseImage({
+        count: 2, // 默认9
+        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+        success: function(res) {
+          var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+          console.log(localIds);
+        }
+      });
+    },
     //查看优惠券
     checkDiscout() {
       util.routerTo("card", this);
@@ -285,6 +316,8 @@ export default {
         box-sizing: border-box;
         .item {
           box-sizing: border-box;
+          width: 33.333%;
+          text-align: center;
           .score {
             color: #ff3131;
             font-size: 0.3467rem;

@@ -7,6 +7,11 @@
 <script type='text/ecmascript-6'>
 import BScroll from "better-scroll";
 export default {
+  data() {
+    return {
+      scrollData:111,
+    };
+  },
   props: {
     scrollHeight: {
       type: Number,
@@ -45,11 +50,20 @@ export default {
       default: false
     }
   },
+  updated() {
+    setTimeout(() => {
+      this.refresh();
+    }, 20);
+  },
   created() {},
   mounted() {
+    this.scrollData = 222
     // setTimeout(() => {
-    // console.log(this.data);
+    console.log("scroll优惠券:", this.data);
     this._initScroll();
+    this.$watch('scrollData',function(newval){
+      console.log("newVal--------------------------------------------:",newval);
+    })
     // }, 17);
   },
   methods: {
@@ -123,10 +137,11 @@ export default {
   watch: {
     scrollHeight: function(newValue) {
       console.log("scrollNewvalue:", newValue);
-      this.scroll.scrollTo(0, -newValue-300, 1000);
+      this.scroll.scrollTo(0, -newValue, 1000);
     },
     data(newValue) {
-      let len = newValue.length - 1;
+      let len = newValue.length;
+      console.log('scroll里面的聊天数量：',len);
       this.$emit("getIndex", len);
       setTimeout(() => {
         this.refresh();

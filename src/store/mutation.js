@@ -32,22 +32,24 @@ const mutations = {
         });
     },
     //获取已经成为好友列表
-    [types.GET_ALREADYFRIENDEVTLIST](state, { data }) {
+    [types.GET_ALREADYFRIENDEVTLIST](state, {
+        data
+    }) {
         var totalCount = 0;
         console.log(data)
         let tempData = [];
         data.forEach((item, index) => {
             if (item.info.lastMsg) { //如果有最新消息的 
                 item.info.lastMsg.stime = util.timestampToTime(item.info.lastMsg.stime)
-                // console.log(item.info.lastMsg.stime)
+                    // console.log(item.info.lastMsg.stime)
             }
             //如果有未读消息，把有未读消息的那一项放到顶部
-            if (item.info.unReadMsgCount>0){
+            if (item.info.unReadMsgCount > 0) {
                 tempData.unshift(item);
-            }else{
+            } else {
                 tempData.push(item)
             }
-            totalCount += item.info.unReadMsgCount  //累计未读消息
+            totalCount += item.info.unReadMsgCount //累计未读消息
         })
         state.msg_badgeCount = totalCount
 
@@ -87,7 +89,9 @@ const mutations = {
         state.dynamicFriendEvt = friendEvtObj
     },
     //获取好友事件
-    [types.GET_FRIENDEVTLIST](state, { data }) {
+    [types.GET_FRIENDEVTLIST](state, {
+        data
+    }) {
         let count = data.events.length
         state.event_badgeCount = count //获取未读好友事件数量
         state.friendEvtList = data.events
@@ -128,6 +132,10 @@ const mutations = {
     //更改场内场外好友游标
     [types.UPDATE_INANDOUT_FRIEND_CURSOR](state, cursor) {
         state.inAndOutFriendCursor = cursor
+    },
+    //更改分享链接
+    [types.UPDATE_SHAREURL](state, url) {
+        state.shareUrl = url;
     },
     //测试
     [types.TEST](state, test) {

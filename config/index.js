@@ -5,85 +5,85 @@
 const path = require('path')
 
 // ------------------------------
-const myStupidToken1 = "JfRYaxTRL_kAqhRA9p-YTte8WnMsxj9O5Ov6IxplAyyGJMjOZCg0fE9tNXl5tTqNWZZ9gA=="
+const myStupidToken1 = "exjkcmYFV7TItjpcK-bDH28Q2Z9riyLOWvPT7Zkk4InzGhXLI5RPlmAwfAWuX_Sdz8n-2A=="
 const myStupidToken2 = "Kb-Rblj-mn7lUuTOybU7vdQcK6CC3Yi_8Y0UpbyxjzOixjinATbG8WhVDsGWGMQcYAFRCQ=="
 
 const myStupidToken = myStupidToken1
-// ------------------------------
+    // ------------------------------
 
 module.exports = {
-  dev: {
+    dev: {
 
-    // Paths
-    assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
-    proxyTable: {
-      "/api": {
-        target: "http://llwant.test.qianz.com",
-        changeOrigin: true,
-        pathRewrite: function (path, req) { return path+"&tk="+myStupidToken }
-      },
+        // Paths
+        assetsSubDirectory: 'static',
+        assetsPublicPath: '/',
+        proxyTable: {
+            "/api": {
+                target: "http://llwant.test.qianz.com",
+                changeOrigin: true,
+                pathRewrite: function(path, req) { return path + "&tk=" + myStupidToken }
+            },
+        },
+
+        // Various Dev Server settings
+        host: '172.18.10.73',
+        //  host: '192.168.1.116',
+        //host: 'localhost', // can be overwritten by process.env.HOST
+        port: 8089, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+        autoOpenBrowser: false,
+        errorOverlay: true,
+        notifyOnErrors: true,
+        poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
+
+        // Use Eslint Loader?
+        // If true, your code will be linted during bundling and
+        // linting errors and warnings will be shown in the console.
+        useEslint: true,
+        // If true, eslint errors and warnings will also be shown in the error overlay
+        // in the browser.
+        showEslintErrorsInOverlay: false,
+
+        /**
+         * Source Maps
+         */
+
+        // https://webpack.js.org/configuration/devtool/#development
+        devtool: 'eval-source-map',
+
+        // If you have problems debugging vue-files in devtools,
+        // set this to false - it *may* help
+        // https://vue-loader.vuejs.org/en/options.html#cachebusting
+        cacheBusting: true,
+
+        // CSS Sourcemaps off by default because relative paths are "buggy"
+        // with this option, according to the CSS-Loader README
+        // (https://github.com/webpack/css-loader#sourcemaps)
+        // In our experience, they generally work as expected,
+        // just be aware of this issue when enabling this option.
+        cssSourceMap: false,
     },
 
-    // Various Dev Server settings
-    host: '172.18.10.73',
-    //  host: '192.168.1.116',
-    //host: 'localhost', // can be overwritten by process.env.HOST
-    port: 8089, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
-    autoOpenBrowser: false,
-    errorOverlay: true,
-    notifyOnErrors: true,
-    poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
+    build: {
+        // Template for index.html
+        index: path.resolve(__dirname, '../dist/index.html'),
 
-    // Use Eslint Loader?
-    // If true, your code will be linted during bundling and
-    // linting errors and warnings will be shown in the console.
-    useEslint: true,
-    // If true, eslint errors and warnings will also be shown in the error overlay
-    // in the browser.
-    showEslintErrorsInOverlay: false,
+        // Paths
+        assetsRoot: path.resolve(__dirname, '../dist'),
+        assetsSubDirectory: 'static',
+        assetsPublicPath: './',
 
-    /**
-     * Source Maps
-     */
+        /**
+         * Source Maps
+         */
 
-    // https://webpack.js.org/configuration/devtool/#development
-    devtool: 'eval-source-map',
+        productionSourceMap: false,
+        // https://webpack.js.org/configuration/devtool/#production
+        devtool: '#source-map',
 
-    // If you have problems debugging vue-files in devtools,
-    // set this to false - it *may* help
-    // https://vue-loader.vuejs.org/en/options.html#cachebusting
-    cacheBusting: true,
-
-    // CSS Sourcemaps off by default because relative paths are "buggy"
-    // with this option, according to the CSS-Loader README
-    // (https://github.com/webpack/css-loader#sourcemaps)
-    // In our experience, they generally work as expected,
-    // just be aware of this issue when enabling this option.
-    cssSourceMap: false,
-  },
-
-  build: {
-    // Template for index.html
-    index: path.resolve(__dirname, '../dist/index.html'),
-
-    // Paths
-    assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
-    assetsPublicPath: './',
-
-    /**
-     * Source Maps
-     */
-
-    productionSourceMap: false,
-    // https://webpack.js.org/configuration/devtool/#production
-    devtool: '#source-map',
-
-    // Run the build command with an extra argument to
-    // View the bundle analyzer report after build finishes:
-    // `npm run build --report`
-    // Set to `true` or `false` to always turn it on or off
-    bundleAnalyzerReport: process.env.npm_config_report
-  }
+        // Run the build command with an extra argument to
+        // View the bundle analyzer report after build finishes:
+        // `npm run build --report`
+        // Set to `true` or `false` to always turn it on or off
+        bundleAnalyzerReport: process.env.npm_config_report
+    }
 }

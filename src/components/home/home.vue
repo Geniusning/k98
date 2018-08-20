@@ -10,7 +10,7 @@
             <div class="bg"></div>
             <swiper class="slider":loop="true" :list="demo01_list" v-model="demo01_index" @click="show_introduce"></swiper>
              <!-- <carousel-3d :perspective="10" :display="5" :width="300" :height="140">
-              <slide :index="index" v-for="(item,index) in demo01_list" :key="index">
+              <slide :index="index" v-for="(item,index) in demo01_list1" :key="index">
                <img :src="item.img" alt="" style="height:100%">
               </slide>
             </carousel-3d> -->
@@ -36,13 +36,13 @@
                     <span class="desc">最烧脑游戏</span>
                 </div>
                 <ul class="game_list clearfix">
-                    <li @click="playGame">
+                    <li @click="playGame_challenge">
                         <img src="../../assets/image/game1.jpg" alt="" class="pic_game" onclick="return false">
                     </li>
-                    <li>
+                    <li @click="playGame_rank">
                         <img src="../../assets/image/game2.jpg" alt="" class="pic_game" onclick="return false">
                     </li>
-                    <li>
+                    <li @click="playGame_friend">
                         <img src="../../assets/image/game3.png" alt="" class="pic_game" onclick="return false">     
                     </li>
                 </ul>
@@ -109,16 +109,17 @@
                       <div class="center">
                         <p class="title">{{item.title}}</p>
                         <p class="desc">{{item.desc}}</p>
+                        <p class="limit">{{item.limit}}</p>
                         <p class="price">
                           <span class="discount_p">特惠￥{{item.price}}</span><del class="origin_p">原价￥{{item.originPrice}}</del>
                         </p>
                       </div>
                       <div class="right">
                         <div class="thunb_box clearfix" @click="thumb(index)">
-                          <img src="../../assets/image/thumb1.png" alt="" class="thumb"><span class="count">{{item.count}}</span>
+                          <span class="count fl">已订：{{item.count}}</span>
                         </div>
-                        <div class="show_detail" @click="showDetail">
-                          查看详情
+                        <div class="show_detail" @click="freeBook">
+                          免费预订
                         </div>
                       </div>
                     </li>
@@ -131,48 +132,26 @@
          <img src="../../assets/image/fuli.png" alt="" class="pic_fuli">
        </div>
 
-       <!-- 弹框 -->
-       <div v-transfer-dom>
+       <!-- 套餐预定 -->
+       <!-- <div v-transfer-dom>
           <x-dialog v-model="showDialogStyle" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', height: '50%', 'background-color': 'transparent'}">
             <p style="color:#fff;text-align:center;" @click="showDialogStyle = false">
-              <div class="dialog_wrapper">
-                <div class="banner_content">
-                  <img src="../../assets/image/banner.png" alt="" class="picBanner">
-                </div>
-                <div class="info_content">
-                  <h2>超级优惠四人套餐￥199</h2>
-                  <div class="introduce_box">
-                    <h3 class="title">说明:</h3>
-                    <p>用户到店可直接享受特惠价，无需团购预约</p>
-                  </div>
-                  <div class="endTime_box">
-                    <h3 class="title">截止日期：</h3>
-                    <p>2018.08.01-2018.09.01</p>
-                  </div>
-                  <div class="consume_box">
-                    <h3 class="title">消费时间段：</h3>
-                    <p>18:00-24:00</p>
-                  </div>
-                  <div class="btn_box">
-                    <button class="btn">立即预订</button>
-                  </div>
-                </div>
-              </div>
-              <x-icon type="ios-close-outline" style="fill:#fff;margin-top:20px;" @click="closeDialog"></x-icon>
+    
             </p>
           </x-dialog>
-      </div>
+      </div> -->
 
       <!-- 优惠券弹框 -->
       <div v-transfer-dom>
         <x-dialog v-model="discountShow" class="dialog-discount">
+          <h3 class="couponTitle"></h3>
           <div class="discount-box">
-            <scroll ref="discountScroll" class="discountScroll" :data="dicountList" >
+            <scroll ref="discountScroll" class="discountScroll" :data="dicountList" v-if="dicountList.length">
               <ul class="discountList">
                 <li class="item" v-for="(item,index) in dicountList" @click="intoCard">
                   <div class="itemLeft">
-                    <p class="itemName">{{item.name}}</p>
-                    <p class="itemTime">{{item.type}}  有效期至：{{item.effectiveTime}}</p>
+                      <p class="itemName">{{item.name}}</p>
+                      <p class="itemTime">{{item.type}}  有效期至：{{item.time}}</p>
                   </div>
                   <div class="itemRight">
                     立即查看
@@ -181,18 +160,16 @@
               </ul>
             </scroll>
           </div>
-          <div @click="discountShow=false">
-            <span class="vux-close"></span>
+          <div @click="closeAICard">
+             <x-icon type="ios-close-outline" style="fill:#fff;margin-top:20px;"></x-icon>
           </div>
         </x-dialog>
     </div>
-
+    <router-view></router-view>
  </div>
 </template>
 
 <script type='text/ecmascript-6'>
-// import swiper from "swiper";
-// import "swiper/dist/css/swiper.min.css";
 import Scroll from "../../base/scroll/scroll";
 import util from "common/util";
 import api from "common/api";
@@ -200,22 +177,21 @@ import { TransferDom, Swiper, Toast, XDialog } from "vux";
 import axios from "axios";
 import url from "common/url";
 import { mapMutations, mapActions, mapState } from "vuex";
-// import { Carousel3d, Slide } from "vue-carousel-3d";
 const baseList = [
   {
     url: "javascript:",
-    img: "http://i4.bvimg.com/643118/73f6f52ef0786f48.png", // 404
+    img: "http://i4.bvimg.com/643118/cbe37fbdd3e49bbb.png",
 
     title: ""
   },
   {
     url: "javascript:",
-    img: "http://i4.bvimg.com/643118/73f6f52ef0786f48.png",
+    img: "http://i4.bvimg.com/643118/cbe37fbdd3e49bbb.png",
     title: ""
   },
   {
     url: "javascript:",
-    img: "http://i4.bvimg.com/643118/73f6f52ef0786f48.png",
+    img: "http://i4.bvimg.com/643118/cbe37fbdd3e49bbb.png",
     title: ""
   }
 ];
@@ -226,57 +202,42 @@ export default {
   },
   data() {
     return {
-      dicountList: [
-        {
-          name: "获得啤酒一打",
-          type: "实物券",
-          effectiveTime: "2018-12-30"
-        },
-        {
-          name: "获得5元代金券",
-          type: "现金券",
-          effectiveTime: "2018-12-30"
-        },
-        // {
-        //   name: "获得水果一盘",
-        //   type: "实物券",
-        //   effectiveTime: "2018-12-30"
-        // }
-      ],
+      dicountList: [],
       discountShow: false, //AI优惠券
       showDialogStyle: false,
       show_advertise: true,
       friList: [
         {
-          src: "http://i4.bvimg.com/643118/66f258704c27edca.png"
+          src: "http://i1.bvimg.com/643118/2d4cdb6b943a3175.jpg"
         },
         {
-          src: "http://i4.bvimg.com/643118/66f258704c27edca.png"
+          src: "http://i1.bvimg.com/643118/47aaa8265e29874c.jpg"
         },
         {
-          src: "http://i4.bvimg.com/643118/e8156b29c3381636.png "
+          src: "http://i1.bvimg.com/643118/cd7b5471885e117f.jpg"
         }
       ],
       demo01_list: baseList,
       test1: "123",
       demo01_index: 0,
       data: [1, 2, 3],
-      url: "",
       distance: "",
       picList: [
         {
-          src: "http://i4.bvimg.com/643118/d3ed6dbc589609a1.png",
+          src: "http://i1.bvimg.com/643118/0c7ed06ec325ad1d.png",
 
           originPrice: "488",
           price: "388",
+          limit: "限周一白天使用",
           desc: "朋友聚会，超级实惠的哦",
           title: "超值四人水果拼盘",
           count: 88
         },
         {
-          src: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png",
+          src: "http://i1.bvimg.com/643118/d3ed6dbc589609a1.png",
           originPrice: "388",
           price: "188",
+          limit: "限周天白天使用",
           desc: "超值优惠，值得拥有",
           title: "聚会二楼包厢特惠",
           count: 8
@@ -287,38 +248,123 @@ export default {
     };
   },
   created() {
-    this.url = window.location.href.split("#")[0];
-    this._getUserInfo();
-    this._getJssdkInfo();
+    this._getUserInfo(); //获取用户信息
+    let _url = window.location.href;
+    if (util.isAndroid()) {
+      let shareObj = {
+        title: "深圳魅力四射激情酒吧",
+        desc: "今天店里举行派对喽，快来参加",
+        link: `http://llwant.test.qianz.com?/#/home`,
+        imgUrl: "http://i2.bvimg.com/643118/36347406d1739907.png"
+      };
+      util._getJssdkInfo(shareObj, _url);
+    } else {
+      let shareObj = {
+        title: "深圳魅力四射激情酒吧",
+        desc: "今天店里举行派对喽，快来参加",
+        link: this.shareUrl + "#/home ",
+        imgUrl: "http://i2.bvimg.com/643118/36347406d1739907.png"
+      };
+      util._getJssdkInfo(shareObj, this.shareUrl);
+    }
   },
   computed: {
-    ...mapState(["friendList", "inAndOutFriendCursor"])
+    ...mapState(["friendList", "inAndOutFriendCursor", "userInfo", "shareUrl"])
   },
   mounted() {
-    setTimeout(() => {
-      this.discountShow = true;
-    }, 1000);
     this._loadFriendEvts(); //获取好友事件列表
     this.getAlreadyFriend(); //获取已经成为好友列表
     this._getInOutNum();
+    this._loadUserCoupons(); //用户获取优惠券
     //this.addBadgeCount(); //未读消息数
   },
-  deactivated() {
-    // console.log("离开首页了");
-  },
   methods: {
+    //获取cookie
+    getCookie: function(cname) {
+      var name = cname + "=";
+      var ca = document.cookie.split(";");
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == " ") c = c.substring(1);
+        if (c.indexOf(name) != -1) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    },
     //进入优惠券
     intoCard() {
       this.$router.push({
         name: "card"
       });
-       this.discountShow = false;
+      this.discountShow = false;
     },
-    playGame() {
-      window.location.href = "http://llwant.test.qianz.com:8081/";
-      // api.loadAllQrcode().then(res => {
-      //   console.log(res);
+    //关闭AI优惠券
+    closeAICard() {
+      api.clearFirstLoadTag().then(res => {
+        this.discountShow = false;
+      });
+    },
+    playGame_challenge() {
+      window.location.href =
+        "http://llwant.test.qianz.com:8081/?gamePath=game1";
+      // api.createRoom("game1").then(res => {
+      //   let roomId = res.roomID;
+      //   if (res.errCode === 0) {
+      //     // window.location.href =`http://llwant.test.qianz.com:3002/tk=ulDOmrOTL3fGH6S505bXphsrmg2FeUEKgZSfzTOkn0DwXqtnYkVU7-tHCm9qWx-TYxyehA==&roomID=${roomId}`;
+      //     window.location.href =`http://llwant.test.qianz.com:3002/roomID=${roomId}`;
+      //   }
       // });
+    },
+    playGame_rank() {
+      // window.location.href =
+      // "http://llwant.test.qianz.com:8081/?gamePath=game2";
+      // this.$router.push({
+      //   name: "gameCompetion"
+      // });
+      let token = this.getCookie("tk");
+      api.createRoom("game2", token).then(res => {
+        console.log(res);
+        let roomId = res.roomID;
+        if (res.errCode === 0) {
+          // window.location.href =`http://llwant.test.qianz.com:8081/?tk=SbQrYt94bfAn8VCJWY1w3NatO86kqJD_qmB2KX1GcQf5au_Km4yY3L898IyxWORNoNDBiQ==&roomID=${roomId}`;
+          window.location.href = `http://llwant.test.qianz.com:8081/?roomID=${roomId}`;
+        }
+      });
+    },
+    playGame_friend() {
+      window.location.href =
+        "http://llwant.test.qianz.com:8081/?gamePath=game3";
+      // api.createRoom("game3").then(res => {
+      //     console.log(res);
+      //     let roomId = res.roomID;
+      //     if (res.errCode === 0) {
+      //       // window.location.href =`http://llwant.test.qianz.com:3002/tk=ulDOmrOTL3fGH6S505bXphsrmg2FeUEKgZSfzTOkn0DwXqtnYkVU7-tHCm9qWx-TYxyehA==&roomID=${roomId}`;
+      //       window.location.href =`http://llwant.test.qianz.com:3002/roomID=${roomId}`;
+      //     }
+      //   });
+    },
+    //用户获取首次进入系统优惠券
+    _loadUserCoupons() {
+      let channel = 1; //channel为1是AI优惠券类型
+      api.loadUserCoupons(channel).then(res => {
+        console.log("优惠券：", res);
+        // let AicardList = res.coupons.slice(-2);
+        let AicardList = res.coupons;
+        AicardList.forEach(element => {
+          let tempObj = {};
+          tempObj.type = element.coupon.type ? "实物券" : "现金券";
+          tempObj.time = element.coupon.endTime;
+          tempObj.name = element.coupon.type
+            ? "获得" + element.coupon.content
+            : "获得" + element.coupon.value + "元代金券";
+          this.dicountList.push(tempObj);
+        });
+        setTimeout(() => {
+          this.discountShow = this.userInfo.firstLoad;
+          // this.discountShow = true;
+        }, 1000);
+      });
     },
     //获取好友事件
     _loadFriendEvts() {
@@ -334,9 +380,14 @@ export default {
       this.picList[index].count++;
       // this.count++;
     },
-    //查看详情
-    showDetail() {
-      this.showDialogStyle = true;
+    //免费预定
+    freeBook() {
+      this.$vux.toast.show({
+        text: "您己成功预订A套餐，到门店时请先到收银台扫码确认",
+        type: "text",
+        time: 3000,
+        width: "3rem"
+      });
     },
     //关闭详情
     closeDialog() {
@@ -372,51 +423,46 @@ export default {
         });
     },
     //获取jssdk
-    _getJssdkInfo() {
-      console.log(this.url);
-      api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(this.url)).then(res => {
-          wx.config({
-            //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-            appId: "wxb2fa3c446063ec19", // 必填，公众号的唯一标识
-            timestamp: res.timestamp, // 必填，生成签名的时间戳
-            nonceStr: res.nonceStr, // 必填，生成签名的随机串
-            signature: res.signature, // 必填，签名，见附录1
-            jsApiList: [
-              "openLocation",
-              // "onMenuShareTimeline",
-              "getLocation",
-              "onMenuShareAppMessage"
-            ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-          });
-          wx.ready(() => {
-            wx.onMenuShareAppMessage({
-              title: "深圳魅力四射酒吧", // 分享标题
-              desc: "这是一个超级好玩的的地方哦", // 分享描述
-              link: "", // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-              imgUrl: "http://i2.bvimg.com/643118/b1ced24a0ebcda22.png", // 分享图标
-              type: "", // 分享类型,music、video或link，不填默认为link
-              dataUrl: "", // 如果type是music或video，则要提供数据链接，默认为空
-              success: () => {
-                // 用户确认分享后执行的回调函数
-                // this.$vux.toast.show({
-                //   text: "分享成功",
-                // });
-              },
-              cancel: () => {
-                // 用户取消分享后执行的回调函数
-              }
-            });
-          });
-          wx.error(function(res) {
-            // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-          });
-        })
-        .catch(err => {});
-    },
+    // _getJssdkInfo() {
+    //   console.log(this.url);
+    //   api
+    //     .getJssdkInfo(
+    //       "/api/loadJSSDKParams?url=" + encodeURIComponent(this.url)
+    //     )
+    //     .then(res => {
+    //       let that = this;
+    //       wx.config({
+    //         //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    //         appId: "wxb2fa3c446063ec19", // 必填，公众号的唯一标识
+    //         timestamp: res.timestamp, // 必填，生成签名的时间戳
+    //         nonceStr: res.nonceStr, // 必填，生成签名的随机串
+    //         signature: res.signature, // 必填，签名，见附录1
+    //         jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    //       });
+    //       wx.ready(() => {
+    //         wx.onMenuShareAppMessage({
+    //           title: "深圳魅力四射酒吧", // 分享标题
+    //           desc: "这是一个超级好玩的的地方哦", // 分享描述
+    //           link: this.url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+    //           imgUrl: "http://i2.bvimg.com/643118/575b6dacd979832e.jpg", // 分享图标
+    //           type: "", // 分享类型,music、video或link，不填默认为link
+    //           dataUrl: "", // 如果type是music或video，则要提供数据链接，默认为空
+    //           success: () => {
+    //             // 用户确认分享后执行的回调函数
+    //             console.log("分享成功");
+    //           }
+    //         });
+    //       });
+    //       wx.error(function(res) {
+    //         console.log(res);
+    //         // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+    //       });
+    //     })
+    //     .catch(err => {});
+    // },
     //获取场内场外人数
     _getInOutNum() {
       api.getInOutNum().then(res => {
-        // console.log(res);
         this.inFriendNum = res.inFieldNumber;
         this.outFriendNum = res.outFiledNumber;
       });
@@ -438,19 +484,19 @@ export default {
         return;
       }
       util.routerTo("friend", this, {
-        num: 1
+        routeParamNum: 1 //路由参数1为进入了场内
       });
     },
-    //进入场内交友界面
+    //进入场外交友界面
     outFriend() {
       util.routerTo("friend", this, {
-        num: 2
+        routeParamNum: 2 //路由参数2为进入了场外
       });
     },
     //进入店长信箱
     inToLetter() {
       util.routerTo("message", this, {
-        num: 2
+        routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
       });
     },
     //查看玩家部落
@@ -468,10 +514,9 @@ export default {
     //获取用户信息
     ...mapMutations({
       getuserInfo: "GET_USERINFO",
-      testmodel: "TEST",
       getPosition: "GET_POSITION",
-      getFriend: "GET_FRIENDlIST"
-      // addBadgeCount: "ADD_BADGE"
+      getFriend: "GET_FRIENDlIST",
+      updateShareUrl: "UPDATE_SHAREURL"
     }),
     ...mapActions({
       getFriendEvt: "get_FriendEvt", //获取好友事件
@@ -486,8 +531,6 @@ export default {
     Swiper,
     Toast,
     XDialog,
-    // Carousel3d,
-    // Slide,
     Scroll
   }
 };
@@ -503,25 +546,28 @@ export default {
 .weui-dialog {
   background: none;
 }
+.couponTitle {
+  height: 3.0667rem;
+  .bg("../../assets/image/youhuiquan_bg.png");
+  // background-color: #FFAE00;
+}
 .dialog-discount {
   .discount-box {
-    width: 7.9467rem;
-    // height: 9.6533rem;
-    background-color: none;
-    .bg("../../assets/image/youhuiquan_bg.png");
+    padding: 0.2333rem 0 0.1rem;
+    background-color: #ffd700;
+    overflow: hidden;
     .discountScroll {
-      height: 100%;
-      padding-top: 3.5rem;
+      height: 3.8rem;
       box-sizing: border-box;
       .discountList {
-        height: 100%;
-        overflow: hidden;
         .item {
           margin: 0 auto 0.2667rem;
           width: 7.0533rem;
           height: 1.68rem;
           display: flex;
           justify-content: space-between;
+          // border: 1px solid #FFAE00;
+          // border-left: 2px solid #FFAE00;
           .bg("../../assets/image/discount_bg1.png");
           box-sizing: border-box;
           .itemLeft {
@@ -952,12 +998,17 @@ export default {
             font-weight: bold;
           }
           .desc {
-            margin-top: 0.24rem;
+            margin-top: 0.1rem;
             color: #8f8f8f;
             font-size: 0.32rem;
           }
+          .limit {
+            margin-top: 0.16rem;
+            color: #8f8f8f;
+            font-size: 0.2667rem;
+          }
           .price {
-            margin-top: 0.3933rem;
+            margin-top: 0.1rem;
             .discount_p {
               color: #ff3131;
               font-size: 0.3467rem;

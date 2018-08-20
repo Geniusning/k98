@@ -26,8 +26,13 @@
                     </li>
                 </ul>
             </scroll>
-
-            <div class="btn_content">
+            <div class="selectMoneyBox">
+              <h2 class="titile">请选择充值的金额</h2>
+              <ul class="moneyList">
+                <li class="itemMoney" :class="{active:index==moneyIndex}" @click="selectMoney(index,$event)" :data-money="money.payNum" v-for="(money,index) in moneyList">{{money.content}}</li>
+              </ul>
+            </div>
+            <div class="btn_content" @click="pay">
                 <span class="btn">充值</span>
             </div>
         </div>
@@ -35,54 +40,108 @@
 </template>
 
 <script type='text/ecmascript-6'>
+import api from "common/api";
 import myHeader from "../../base/myheader/myheader";
 import Scroll from "../../base/scroll/scroll";
 export default {
   data() {
     return {
+      moneyIndex: 0,
+      moneyInitValue: 5,
+      moneyList: [
+        {
+          payNum: 5,
+          content: "5元"
+        },
+        {
+          payNum: 10,
+          content: "10元"
+        },
+        {
+          payNum: 15,
+          content: "15元"
+        },
+        {
+          payNum: 20,
+          content: "20元"
+        }
+      ],
       giftList: [
         {
           name: "打赏",
-          plus:true,
+          plus: true
         },
         {
           name: "大话骰房费",
-          plus:false,
+          plus: false
         },
         {
           name: "每日签到",
-          plus:true,
+          plus: true
         },
         {
           name: "打赏",
-          plus:true,
+          plus: true
         },
         {
           name: "大话骰房费",
-          plus:false,
+          plus: false
         },
         {
           name: "分享有礼",
-          plus:true,
+          plus: true
         },
         {
           name: "打赏",
-          plus:false,
+          plus: false
         },
         {
           name: "大话骰房费",
-          plus:true,
+          plus: true
         },
         {
           name: "每日签到",
-          plus:true,
+          plus: true
         },
         {
           name: "打赏",
-          plus:false,
-        },
+          plus: false
+        }
       ]
     };
+  },
+  methods: {
+    selectMoney(index, event) {
+      this.moneyIndex = index;
+      this.moneyInitValue = event.target.dataset.money;
+    },
+    pay() {
+      api.createOrder().then(res => {
+        if (res.errCode === 0) {
+          let resultInfo = res.data;
+          console.log(resultInfo);
+          WeixinJSBridge.invoke(
+            "getBrandWCPayRequest",
+            {
+              "appId": resultInfo.appId, //公众号名称，由商户传入
+              "timeStamp": "" + resultInfo.timeStamp, //时间戳，自1970年以来的秒数
+              "nonceStr": resultInfo.nonceStr, //随机串
+              "package": resultInfo.package,
+              "signType": resultInfo.signType, //微信签名方式：
+              "paySign": resultInfo.paySign //微信签名
+            },
+            function(res) {
+              console.log(res);
+              if (res.err_msg == "get_brand_wcpay_request:ok") {
+                // 使用以上方式判断前端返回,微信团队郑重提示：
+                console.log("微信支付成功");
+                //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+              }
+            }
+          );
+        }
+      });
+    }
   },
   components: {
     myHeader,
@@ -138,7 +197,7 @@ export default {
             font-size: 0.4rem;
             color: red;
             font-weight: 700;
-            width: 1.8333rem
+            width: 1.8333rem;
           }
           .plus {
             color: green;
@@ -150,10 +209,31 @@ export default {
         }
       }
     }
+    .selectMoneyBox {
+      margin: 0.2rem 0;
+      padding: 0 0.2667rem;
+      .titile {
+        font-size: 0.4267rem;
+        font-weight: 700;
+        margin: 0.2333rem 0;
+      }
+      .moneyList {
+        display: flex;
+        justify-content: space-between;
+        .itemMoney {
+          padding: 0.4rem;
+          border: 1px solid @baseColor;
+        }
+        .itemMoney.active {
+          background-color: @baseColor;
+          color: #fff;
+        }
+      }
+    }
     .btn_content {
       text-align: center;
       line-height: 1rem;
-      margin: 0.8667rem 0.5333rem 0.5rem;
+      margin: 0.2667rem 0.5333rem 0.5rem;
       border-radius: 0.2667rem;
       background: @baseColor;
       .btn {

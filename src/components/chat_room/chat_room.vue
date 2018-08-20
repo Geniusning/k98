@@ -312,7 +312,7 @@ export default {
       //   "💀",
       //   "👻"
       // ],
-      index: 0,
+      chatListIndex: 0,
       componentChatList: [],
       isscroll: true,
       isLoading: false
@@ -336,13 +336,8 @@ export default {
   },
   activated() {
     //前端暂时获取聊天记录
-    // console.log("activated");
     this._getChatList();
   },
-  mounted() {
-    //  this._getChatList();
-  },
-  destroyed() {},
   deactivated() {
     this.endCursor = null;
     this.componentChatList = [];
@@ -374,7 +369,7 @@ export default {
           this.changeCursor(res.cursor);
           let resultMessList = res.messages;
           var i;
-          for (i = resultMessList.length - 1; i >= 0; i--) {
+          for (i = resultMessList.length-1; i >= 0; i--) {
             let item = resultMessList[i];
             this.componentChatList.push({
               message: item.content,
@@ -453,6 +448,9 @@ export default {
                 type: 2,
                 time: util.timestampToTime(new Date().getTime())
               });
+            })
+            .catch(err => {
+              console.log(err);
             });
         })
         .catch(function(err) {
@@ -507,8 +505,8 @@ export default {
         });
     },
     getIndex(val) {
-      console.log("val:", val+1);
-      this.index = val + 1;
+      console.log("val:", val);
+      this.chatListIndex = val;
     },
     //监听滚动
     myscroll(pos) {
@@ -540,7 +538,7 @@ export default {
     },
     //选择常用语
     addExpress(item) {
-      this.input_value = item;
+      this.input_value += item;
     },
     //展示送礼面板
     showToastGift() {
@@ -582,7 +580,7 @@ export default {
     LastChatMsg: function(newValue) {
       // console.log(newValue.lastMsg);
       if (newValue.lastMsg.from == this.staticChatFriendObj.openid) {
-        //判断是否是进入时原来的两个人聊天进行聊天
+        //判断是否是进入时原来的两个人进行聊天
         this.componentChatList.push({
           message: newValue.lastMsg.content,
           friend:
@@ -599,10 +597,17 @@ export default {
         this.flag = false;
       }
     },
-    index: function(newValue) {
+    chatListIndex: function(newValue) {
+      console.log('父页面的chatListIndex：',newValue)
       if (this.isscroll) {
         this.$nextTick(function() {
-          this.scrollHeight = this.$refs.chatList.clientHeight;
+          let childNodes =  this.$refs.chatList.childNodes;
+          let chatListHeight = 0;
+          childNodes.forEach(item=>{
+            chatListHeight +=item.clientHeight
+          })
+          this.scrollHeight = chatListHeight;
+          console.log('父页面scrollHeight：',this.scrollHeight)
         });
       }
     }

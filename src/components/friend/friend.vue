@@ -118,29 +118,29 @@ export default {
       // height: 0,
       sexArr: [
         {
-          num: 0,
+          id: 0,
           name: "男"
         },
         {
-          num: 1,
+          id: 1,
           name: "女"
         },
         {
-          num: 2,
+          id: 2,
           name: "全部"
         }
       ],
       rangeArr: [
         {
-          num: 0,
+          id: 0,
           name: "场内"
         },
         {
-          num: 1,
+          id: 1,
           name: "场外"
         },
         {
-          num: 2,
+          id: 2,
           name: "全部"
         }
       ],
@@ -152,15 +152,12 @@ export default {
       xid: ""
     };
   },
-  created() {
-    // this.height = document.body.clientHeight;
-  },
   //路由判断，判断是场内还是场外1场内2场外
   beforeRouteEnter(to, from, next) {
     console.log(to);
-    if (to.params.num === 1) {
+    if (to.params.routeParamNum === 1) {
       next(vm => {
-        console.log("请求场内好友");
+        // 请求场内好友
         api.getLoadInsideCandidates(vm.inAndOutFriendCursor).then(res => {
           console.log(res);
           vm.getFriend(res);
@@ -173,7 +170,7 @@ export default {
       });
     } else {
       next(vm => {
-        console.log("请求场外好友");
+        // 请求场外好友
         api.getLoadOutsideCandidates(vm.inAndOutFriendCursor).then(res => {
           vm.getFriend(res);
         });
@@ -193,8 +190,7 @@ export default {
   },
   methods: {
     listenFirstdata(data) {
-      // console.log("下面是传回父级的数据");
-      console.log(data);
+      // 下面是传回父级的数据;
       this.friendId = data.info.openid;
       this.setChatFriend(data);
       this.isFriend = data.isAlreadyFriend;
@@ -218,14 +214,6 @@ export default {
     //关闭礼物
     close_gift() {
       this.showToast_gift = false;
-    },
-    //跳转个人修改信息
-    changePersonInfo() {
-      util.routerTo("individual", this);
-    },
-    //跳转修改标签
-    changeTagInfo() {
-      util.routerTo("mine", this);
     },
     //发起聊天
     chat() {
