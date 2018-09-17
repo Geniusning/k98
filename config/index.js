@@ -5,7 +5,7 @@
 const path = require('path')
 
 // ------------------------------
-const myStupidToken1 = "exjkcmYFV7TItjpcK-bDH28Q2Z9riyLOWvPT7Zkk4InzGhXLI5RPlmAwfAWuX_Sdz8n-2A=="
+const myStupidToken1 = "-cpX1ha2aJpZ9-IPx5hXZ3L6IqkrwDTStSm9nmORJP9JYcW0w6uZWc7nCgDMj9rSYHunHQ=="
 const myStupidToken2 = "Kb-Rblj-mn7lUuTOybU7vdQcK6CC3Yi_8Y0UpbyxjzOixjinATbG8WhVDsGWGMQcYAFRCQ=="
 
 const myStupidToken = myStupidToken1
@@ -21,15 +21,17 @@ module.exports = {
             "/api": {
                 target: "http://llwant.test.qianz.com",
                 changeOrigin: true,
-                pathRewrite: function(path, req) { return path + "&tk=" + myStupidToken }
+                pathRewrite: function(path, req) {
+                    return path + "&tk=" + myStupidToken
+                }
             },
         },
 
         // Various Dev Server settings
-        host: '172.18.10.73',
+        host: '172.18.10.44',
         //  host: '192.168.1.116',
         //host: 'localhost', // can be overwritten by process.env.HOST
-        port: 8089, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+        port: 8088, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
         autoOpenBrowser: false,
         errorOverlay: true,
         notifyOnErrors: true,

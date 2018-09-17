@@ -14,7 +14,7 @@
       >
         <div style="height:100%" class="stack_content">
           <div class="big_box">
-            <div class="img_content" @click="chooseImage">
+            <div class="img_content">
               <div class="icon_box" v-if="item.info.sex=='男'">
                 <img src="../../../assets/image/online.png" alt="" class="icon" >
                 <img src="../../../assets/image/dot_green.png" alt="" class="dot">
@@ -26,10 +26,11 @@
                 <span class="line_word">场外</span>
               </div>
               <span class="time_desc" >20分钟前登录</span>
-              <!-- <img src="../../../assets/image/icon_changwai2.png" alt="" class="icon" v-else> -->
-              <!-- <img :src="item.info.avatar" alt="" class="blur_avatar"> -->
+              <div class="avatarList-wrapper clearfix" @touchstart="showAlbum">
+                <img src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">4</span>
+              </div>
               <div class="avatar_box">
-                <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/e8156b29c3381636.png'" alt="暂无头像" >
+                <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="暂无头像" >
                 <img src="../../../assets/image/friend_icon.png" alt="" class="friend_icon" v-show="item.isAlreadyFriend">
               </div>
               <p class="name">{{item.info.nickname}}</p>
@@ -43,9 +44,9 @@
                 <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
                 <span class="friend"><img src="../../../assets/image/friend_tantan.png" alt="" class="friend_samll">{{item.info.thumb?item.info.thumb:10}}</span>
                 <!-- <img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">{{item.info.gift?item.info.gift:56}} -->
-                <span class="gift">富豪榜888</span>
+                <span class="gift">富豪榜10</span>
                 <!-- <img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">{{item.info.thumb?item.info.thumb:99}} -->
-                <span class="thumb">战神榜777</span>
+                <span class="thumb">战神榜28</span>
               </div>
               <div class="tag_wrapper">
                 <span v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')" :key="index">{{item}}</span>
@@ -64,7 +65,7 @@
 </template>
 <script>
 import detectPrefixes from "./tantan.js";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 export default {
   props: {
     stackinit: {
@@ -80,6 +81,7 @@ export default {
     return {
       // propData: this.pages,
       // isFriend:false,
+      intervalNumber: 8,
       tempArr: "二傻子、聪明、有远见",
       sign: "生活不止眼前的苟且，还有诗和远方的田野",
       basicdata: {
@@ -104,24 +106,23 @@ export default {
         lastOpacity: 0,
         swipe: false,
         zIndex: 10
-      }
+      },
     };
-  },
-  created() {
-    // console.log(this.pages);
   },
   watch: {
     pages(newValue) {
       let data = newValue[0];
-      this.$emit("firstData", data);
+      if (data < 10) {  //粗暴解决多次触发监听导致给父组件传递数据
+        this.$emit("firstData", data);
+      }
     }
   },
   computed: {
     ...mapGetters(["friendList"]),
+    ...mapState(["friendListCursor"]),
     // 划出面积比例
     offsetRatio() {
       let width = this.$el.offsetWidth;
-      // console.log(width)
       let height = this.$el.offsetHeight;
       let offsetWidth = width - Math.abs(this.temporaryData.poswidth);
       let offsetHeight = height - Math.abs(this.temporaryData.posheight);
@@ -134,24 +135,13 @@ export default {
       let offsetWidth = width - Math.abs(this.temporaryData.poswidth);
       let ratio = 1 - offsetWidth / width || 0;
       return ratio;
-    }
-  },
-  mounted() {
-    // console.log(this.pages);
+    },
+
   },
   methods: {
-    //选择图片
-    chooseImage() {
-      console.log('选择图片')
-      wx.chooseImage({
-        count: 2, // 默认9
-        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-        success: function(res) {
-          var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-          console.log(localIds);
-        }
-      });
+    //点击相册
+    showAlbum() {
+      this.$emit('showAblum', this.friendData?this.friendData:this.pages[0]);
     },
     touchstart(e) {
       if (this.temporaryData.tracking) {
@@ -190,10 +180,8 @@ export default {
       // 记录滑动位置
       this.endX = e.touches[0].clientX;
       this.distant = this.endX - this.startX;
-      // console.log(this.distant);
       if (this.temporaryData.tracking && !this.temporaryData.animation) {
         if (e.type === "touchmove") {
-          // e.preventDefault();
           this.basicdata.end.x = e.targetTouches[0].clientX;
           this.basicdata.end.y = e.targetTouches[0].clientY;
         } else {
@@ -202,14 +190,11 @@ export default {
           this.basicdata.end.y = e.clientY;
         }
         // 计算滑动值
-        this.temporaryData.poswidth =
-          this.basicdata.end.x - this.basicdata.start.x;
-        this.temporaryData.posheight =
-          this.basicdata.end.y - this.basicdata.start.y;
+        this.temporaryData.poswidth = this.basicdata.end.x - this.basicdata.start.x;
+        this.temporaryData.posheight = this.basicdata.end.y - this.basicdata.start.y;
         let rotateDirection = this.rotateDirection();
         let angleRatio = this.angleRatio();
-        this.temporaryData.rotate =
-          rotateDirection * this.offsetWidthRatio * 15 * angleRatio;
+        this.temporaryData.rotate = rotateDirection * this.offsetWidthRatio * 15 * angleRatio;
       }
     },
     touchend(e, item) {
@@ -222,14 +207,8 @@ export default {
         let ratio = Math.abs(
           this.temporaryData.posheight / this.temporaryData.poswidth
         );
-        this.temporaryData.poswidth =
-          this.temporaryData.poswidth >= 0
-            ? this.temporaryData.poswidth + 200
-            : this.temporaryData.poswidth - 200;
-        this.temporaryData.posheight =
-          this.temporaryData.posheight >= 0
-            ? Math.abs(this.temporaryData.poswidth * ratio)
-            : -Math.abs(this.temporaryData.poswidth * ratio);
+        this.temporaryData.poswidth = this.temporaryData.poswidth >= 0 ? this.temporaryData.poswidth + 200 : this.temporaryData.poswidth - 200;
+        this.temporaryData.posheight = this.temporaryData.posheight >= 0 ? Math.abs(this.temporaryData.poswidth * ratio) : -Math.abs(this.temporaryData.poswidth * ratio);
         this.temporaryData.opacity = 0;
         this.temporaryData.swipe = true;
         this.nextTick();
@@ -241,7 +220,6 @@ export default {
         this.temporaryData.rotate = 0;
       }
     },
-    // 测试·········
     nextTick() {
       // 记录最终滑动距离
       this.temporaryData.lastPosWidth = this.temporaryData.poswidth;
@@ -249,12 +227,13 @@ export default {
       this.temporaryData.lastRotate = this.temporaryData.rotate;
       this.temporaryData.lastZindex = 20;
       // 循环currentPage
-      this.temporaryData.currentPage =
-        this.temporaryData.currentPage === this.pages.length - 1
-          ? 0
-          : this.temporaryData.currentPage + 1;
-      let friendData = this.pages[this.temporaryData.currentPage];
-      this.$emit("firstData", friendData);
+      console.log('this.temporaryData.currentPage：', this.temporaryData.currentPage)
+      if (this.temporaryData.currentPage == this.pages.length - 2 && this.friendListCursor != 0) {
+        this.$emit('getMoreFriend');
+      }
+      this.temporaryData.currentPage = this.temporaryData.currentPage === this.pages.length - 1 ? 0 : this.temporaryData.currentPage + 1;
+      this.friendData = this.pages[this.temporaryData.currentPage];
+      this.$emit("firstData", this.friendData);
       let signList = [
         "努力吧,别把自己的青春铺张在爱情上",
         "兄弟虽然我们是在网络中相遇",
@@ -296,10 +275,7 @@ export default {
       this.temporaryData.lastZindex = 20;
       // 循环currentPage
       console.log(this.temporaryData.currentPage);
-      this.temporaryData.currentPage =
-        this.temporaryData.currentPage === this.pages.length - 1
-          ? 0
-          : this.temporaryData.currentPage - 1;
+      this.temporaryData.currentPage = this.temporaryData.currentPage === this.pages.length - 1 ? 0 : this.temporaryData.currentPage - 1;
       // currentPage切换，整体dom进行变化，把第一层滑动置最低
       this.$nextTick(() => {
         this.temporaryData.poswidth = 0;
@@ -334,9 +310,7 @@ export default {
     // },
     onTransitionEnd(index) {
       let lastPage =
-        this.temporaryData.currentPage === 0
-          ? this.pages.length - 1
-          : this.temporaryData.currentPage - 1;
+        this.temporaryData.currentPage === 0 ? this.pages.length - 1 : this.temporaryData.currentPage - 1;
       // dom发生变化正在执行的动画滑动序列已经变为上一层
       if (this.temporaryData.swipe && index === lastPage) {
         this.temporaryData.animation = true;
@@ -386,44 +360,23 @@ export default {
         return;
       }
       if (this.inStack(index, currentPage)) {
-        let perIndex =
-          index - currentPage > 0
-            ? index - currentPage
-            : index - currentPage + length;
+        let perIndex = index - currentPage > 0 ? index - currentPage : index - currentPage + length;
         style["opacity"] = "1";
-        style["transform"] =
-          "translate3D(0,0," +
-          -1 * 60 * (perIndex - this.offsetRatio) +
-          "px" +
-          ")";
+        style["transform"] = "translate3D(0,0," + -1 * 60 * (perIndex - this.offsetRatio) + "px" + ")";
         style["zIndex"] = visible - perIndex;
         if (!this.temporaryData.tracking) {
-          style[this.temporaryData.prefixes.transition + "TimingFunction"] =
-            "ease";
-          style[this.temporaryData.prefixes.transition + "Duration"] =
-            300 + "ms";
+          style[this.temporaryData.prefixes.transition + "TimingFunction"] = "ease";
+          style[this.temporaryData.prefixes.transition + "Duration"] = 300 + "ms";
         }
       } else if (index === lastPage) {
-        style["transform"] =
-          "translate3D(" +
-          this.temporaryData.lastPosWidth +
-          "px" +
-          "," +
-          this.temporaryData.lastPosHeight +
-          "px" +
-          ",0px) " +
-          "rotate(" +
-          this.temporaryData.lastRotate +
-          "deg)";
+        style["transform"] = "translate3D(" + this.temporaryData.lastPosWidth + "px" + "," + this.temporaryData.lastPosHeight + "px" + ",0px) " + "rotate(" + this.temporaryData.lastRotate + "deg)";
         style["opacity"] = this.temporaryData.lastOpacity;
         style["zIndex"] = this.temporaryData.lastZindex;
-        style[this.temporaryData.prefixes.transition + "TimingFunction"] =
-          "ease";
+        style[this.temporaryData.prefixes.transition + "TimingFunction"] = "ease";
         style[this.temporaryData.prefixes.transition + "Duration"] = 300 + "ms";
       } else {
         style["zIndex"] = "-1";
-        style["transform"] =
-          "translate3D(0,0," + -1 * visible * 60 + "px" + ")";
+        style["transform"] = "translate3D(0,0," + -1 * visible * 60 + "px" + ")";
       }
       return style;
     },
@@ -431,17 +384,7 @@ export default {
     transformIndex(index) {
       if (index === this.temporaryData.currentPage) {
         let style = {};
-        style["transform"] =
-          "translate3D(" +
-          this.temporaryData.poswidth +
-          "px" +
-          "," +
-          this.temporaryData.posheight +
-          "px" +
-          ",0px) " +
-          "rotate(" +
-          this.temporaryData.rotate +
-          "deg)";
+        style["transform"] = "translate3D(" + this.temporaryData.poswidth + "px" + "," + this.temporaryData.posheight + "px" + ",0px) " + "rotate(" + this.temporaryData.rotate + "deg)";
         style["opacity"] = this.temporaryData.opacity;
         style["zIndex"] = 10;
         if (this.temporaryData.animation) {
@@ -453,7 +396,7 @@ export default {
         return style;
       }
     }
-  }
+  },
 };
 </script>
 <style scoped lang='less'>
@@ -512,7 +455,26 @@ export default {
       border: 1px solid #d9d9d9;
       box-sizing: border-box;
       padding: 0.1rem;
-      z-index: 999999;
+      z-index: 10000;
+    }
+    .avatarList-wrapper {
+      position: absolute;
+      z-index: 10000;
+      top: 0.5rem;
+      right: 0.5rem;
+      background-color: #dfdfdf;
+      padding: 0.066rem 0.1667rem;
+      color: #fff;
+      box-sizing: border-box;
+      .avatar {
+        width: 0.4rem;
+        height: 0.3967rem;
+        margin-right: 0.1333rem;
+      }
+      .count {
+        margin-top: -0.0267rem;
+        font-size: 14px;
+      }
     }
     .icon_box {
       position: absolute;
@@ -520,7 +482,7 @@ export default {
       height: 0.9067rem;
       top: 0.4033rem;
       left: -0.15rem;
-      z-index: 100000;
+      z-index: 10000;
       .icon {
         width: 100%;
         height: 100%;
@@ -547,7 +509,7 @@ export default {
       height: 0.6133rem;
       top: 6.7rem;
       // left: 3.4167rem;
-      z-index: 100000;
+      z-index: 10000;
       font-size: 0.4533rem;
       font-weight: 700;
       color: #232323;

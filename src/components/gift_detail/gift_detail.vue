@@ -1,35 +1,42 @@
 <template>
  <div class="gift_detail">
-        <my-header title="收礼明细" ref="header"></my-header>
+        <my-header title="财富明细" ref="header"></my-header>
         <div class="gift_wrapper vux-1px-t">
             <div class="title_content vux-1px-b">
-                <h3 class="title"><strong>我的积分余额：</strong></h3>
-                <span class="money">688分</span>
+              <div class='title_content_item clearfix'>
+                <h3 class="title fl"><strong>我的财富：</strong></h3>
+                <span class="money fl">${{userInfo.money}}</span>
+              </div>
+               <div class='title_content_item clearfix'>
+                <h3 class="title fl"><strong>富豪榜排名：</strong></h3>
+                <span class="money fl">10</span>
+              </div>
             </div>
-             <!-- <div class="title_content vux-1px-b">
-                <h3 class="title"><strong>收礼总金额：</strong></h3>
-                <span class="money">￥888</span>
+            <div class="scrollTitle">
+              <span class="total">累计财富</span>
+              <span class="name">增减</span>
+              <span class="content">变动内容</span>
+              <span class="avatar">头像</span>
+              <span class="time">时间</span>
             </div>
-             <div class="title_content vux-1px-b">
-                <h3 class="title"><strong>送礼总金额：</strong></h3>
-                <span class="money">￥988</span>
-            </div> -->
             <scroll class="scroll" :data="giftList">
                 <ul class="gift_list">
                     <li class="item vux-1px" v-for="(item,index) in giftList" :key="index">
-                        <span class="name">{{item.name}}</span>
-                        <!-- <img src="../../assets/image/small_flower (2).png" class="gift_icon" v-if="index<5"/>
-                        <img src="../../assets/image/small_beer.png" class="gift_icon" v-if="index>=5"/> -->
-                        <span class="sum" :class="{plus:item.plus}" v-if="item.plus">+3积分</span>
-                        <span class="sum"  v-else>-3积分</span>
-                        <span class="time">2018-05-09</span>
+                        <span class="total">{{item.totalSum}}</span>
+                        <span class="name" :class="{plus:item.plus}" v-if="item.plus">+3积分</span>
+                        <span class="name"  v-else>-3积分</span>
+                        <span class="content">{{item.name}}</span>
+                        <div class="avatar">
+                          <img src="../../assets/image/avatar.jpg" class="gift_icon">
+                        </div>
+                        <span class="time">20180509 16:00:00</span>
                     </li>
                 </ul>
             </scroll>
             <div class="selectMoneyBox">
               <h2 class="titile">请选择充值的金额</h2>
               <ul class="moneyList">
-                <li class="itemMoney" :class="{active:index==moneyIndex}" @click="selectMoney(index,$event)" :data-money="money.payNum" v-for="(money,index) in moneyList">{{money.content}}</li>
+                <li class="itemMoney" :class="{active:index+1==moneyIndex}" @click="selectMoney(item.id,$event)" :data-money="item.money" v-for="(item,index) in moneyList">{{item.name}}</li>
               </ul>
             </div>
             <div class="btn_content" @click="pay">
@@ -43,83 +50,110 @@
 import api from "common/api";
 import myHeader from "../../base/myheader/myheader";
 import Scroll from "../../base/scroll/scroll";
+import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
-      moneyIndex: 0,
+      moneyIndex: 1,
       moneyInitValue: 5,
-      moneyList: [
-        {
-          payNum: 5,
-          content: "5元"
-        },
-        {
-          payNum: 10,
-          content: "10元"
-        },
-        {
-          payNum: 15,
-          content: "15元"
-        },
-        {
-          payNum: 20,
-          content: "20元"
-        }
-      ],
+      moneyList:
+        [
+          { "id": 1, "name": "1元", "money": 1, "points": 10 },
+          { "id": 2, "name": "5元", "money": 5, "points": 50 },
+          { "id": 3, "name": "10元", "money": 10, "points": 100 },
+          { "id": 4, "name": "15元", "money": 15, "points": 150 }
+        ]
+      ,
       giftList: [
         {
-          name: "打赏",
-          plus: true
-        },
-        {
-          name: "大话骰房费",
+          totalSum: "$300",
+          name: "游戏房费",
           plus: false
         },
         {
+          totalSum: "$200",
           name: "每日签到",
           plus: true
         },
         {
-          name: "打赏",
+          totalSum: "$210",
+          name: "分享活动",
           plus: true
         },
         {
-          name: "大话骰房费",
+          totalSum: "$210",
+          name: "送出别墅",
           plus: false
         },
         {
-          name: "分享有礼",
-          plus: true
-        },
-        {
-          name: "打赏",
-          plus: false
-        },
-        {
-          name: "大话骰房费",
-          plus: true
-        },
-        {
+          totalSum: "$200",
           name: "每日签到",
           plus: true
         },
         {
-          name: "打赏",
+          totalSum: "$210",
+          name: "分享活动",
+          plus: true
+        },
+        {
+          totalSum: "$210",
+          name: "收到鲜花",
+          plus: true
+        },
+        {
+          totalSum: "$300",
+          name: "游戏房费",
           plus: false
-        }
+        },
+        {
+          totalSum: "$200",
+          name: "每日签到",
+          plus: true
+        },
+        {
+          totalSum: "$210",
+          name: "分享活动",
+          plus: true
+        },
+        {
+          totalSum: "$210",
+          name: "送出啤酒",
+          plus: false
+        },
+        {
+          totalSum: "$200",
+          name: "每日签到",
+          plus: true
+        },
+        {
+          totalSum: "$210",
+          name: "分享活动",
+          plus: true
+        },
+        {
+          totalSum: "$210",
+          name: "送出跑车",
+          plus: false
+        },
       ]
     };
   },
+  computed: {
+    ...mapState(['userInfo'])
+  },
   methods: {
     selectMoney(index, event) {
-      this.moneyIndex = index;
+      this.moneyIndex = Number(index);
+      console.log(this.moneyIndex)
       this.moneyInitValue = event.target.dataset.money;
     },
     pay() {
-      api.createOrder().then(res => {
+
+      api.createOrder(this.moneyIndex).then(res => {
         if (res.errCode === 0) {
           let resultInfo = res.data;
           console.log(resultInfo);
+          let _this =this;
           WeixinJSBridge.invoke(
             "getBrandWCPayRequest",
             {
@@ -130,19 +164,29 @@ export default {
               "signType": resultInfo.signType, //微信签名方式：
               "paySign": resultInfo.paySign //微信签名
             },
-            function(res) {
+            (res) => {
               console.log(res);
               if (res.err_msg == "get_brand_wcpay_request:ok") {
                 // 使用以上方式判断前端返回,微信团队郑重提示：
-                console.log("微信支付成功");
+                alert("微信支付成功");
+                api.getUserInfo("/api/loadUserInfo").then(res => {
+                  this.getUserInfo(res);
+                })
+                  .catch(err => {
+                    console.log(err);
+                  });
                 //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
               }
             }
           );
         }
       });
-    }
+    },
+    ...mapMutations({
+      getUserInfo: "GET_USERINFO"  //获取用户信息
+    })
   },
+
   components: {
     myHeader,
     Scroll
@@ -159,16 +203,42 @@ export default {
     .title_content {
       margin-top: 0;
       display: flex;
-      justify-content: space-between;
       padding: 0.4rem 0.4rem;
       box-sizing: border-box;
+      .title_content_item {
+        margin-right: 0.6667rem;
+        box-sizing: border-box;
+      }
       .title {
         font-size: 0.4rem;
         color: #333;
       }
       .money {
+        padding-top: 0.05rem;
         font-size: 0.3733rem;
         color: #ff4646;
+      }
+    }
+    .scrollTitle {
+      padding: 0.4rem 0.2rem;
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+      font-size: 0.35rem;
+      .total {
+        width: 20%;
+      }
+      .name {
+        width: 20%;
+      }
+      .content {
+        width: 20%;
+      }
+      .avatar {
+        width: 20%;
+      }
+      .time {
+        width: 20%;
       }
     }
     .scroll {
@@ -179,32 +249,39 @@ export default {
       .gift_list {
         padding-bottom: 0.1333rem;
         .item {
-          padding: 0.4rem 0.4rem;
+          padding: 0.2rem 0.2rem;
           margin: 0.1333rem;
           display: flex;
-          justify-content: space-between;
           box-sizing: border-box;
           box-shadow: 1px 1px 1px 1px #eee;
+          font-size: 0.35rem;
+          text-align: center;
           .name {
-            font-size: 0.4rem;
-            width: 2.6667rem;
+            width: 20%;
+            padding-top: 0.1333rem;
+          }
+          .total {
+            width: 20%;
+            padding-top: 0.1333rem;
           }
           .gift_icon {
-            width: 0.5rem;
-            height: 0.5rem;
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%;
           }
-          .sum {
-            font-size: 0.4rem;
-            color: red;
-            font-weight: 700;
-            width: 1.8333rem;
+          .avatar {
+            width: 20%;
+          }
+          .content {
+            width: 20%;
+            padding-top: 0.1333rem;
+          }
+          .time {
+            width: 20%;
+            text-align: center;
           }
           .plus {
             color: green;
-          }
-          .time {
-            font-size: 0.4rem;
-            color: #999;
           }
         }
       }

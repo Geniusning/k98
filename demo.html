@@ -22,9 +22,17 @@
     <img src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQHS8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyNmlBSThRN1FkcWkxMDAwMHcwM3oAAgQy3DFbAwQAAAAA" alt="">
 </body>
 <script>
-    var str = "http://loaalhost:8080/home";
-    console.log(str.slice(0, str.length - 1))
-    console.log(new Date().getTime())
+    // var str = "http://loaalhost:8080/home";
+    // console.log(str.slice(0, str.length - 1))
+    // console.log(new Date().getTime())
+    // console.log("小萌萌、帅呆了、二货".split('、'))
+    var str =
+        "http://llwant.test.qianz.com?/#/sharedDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].coupon.couponID}&userBCouponID=${this.couponList[1].coupon.couponID}";
+    console.log(str.slice(str.indexOf('shareUserID='), str.indexOf("&userACouponID")).split('shareUserID=')[1])
+        // var str1 = str.split('CouponID=')[1]
+        // console.log(str1.slice(0, -6))
+    console.log(1 & 3)
+    console.log(!!3 & 1)
 </script>
 
 </html>

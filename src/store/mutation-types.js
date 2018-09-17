@@ -5,8 +5,14 @@ export const GET_USERINFO = "GET_USERINFO"
 // 地理位置
 export const GET_POSITION = "GET_POSITION"
 
-//获取候选人好友列表
+//获取候选人数据
 export const GET_FRIENDlIST = "GET_FRIENDlIST"
+
+//获取更多候选人数据
+export const GET_MOREFRIENDlIST = "GET_MOREFRIENDlIST"
+
+//获取不足10个候选人数据
+export const get_LESSTHAN10FRIENDLIST = "get_LESSTHAN10FRIENDLIST"
 
 //获取好友事件
 export const GET_FRIENDEVTLIST = "GET_FRIENDEVTLIST"
@@ -47,9 +53,21 @@ export const TO_TOP_MESSAGE = "TO_TOP_MESSAGE"
 //更改分享链接
 export const UPDATE_SHAREURL = "UPDATE_SHAREURL"
 
-//动态获取聊天对象
-// export const GET_DYNAMICFRIENDOBJ = "GET_DYNAMICFRIENDOBJ"
+//获取活动通知
+export const GET_ACTIVITY_NOTICE = "GET_ACTIVITY_NOTICE"
 
+//判断邀请有礼是否还有
+export const JUDGE_INVITE_COUPON = "JUDGE_INVITE_COUPON"
+
+//获取门店信息
+export const GET_SHOPINFO = "GET_SHOPINFO"
+
+//更改候选人浮标
+export const CHANGE_FRIENDlISTCURSOR = "CHANGE_FRIENDlISTCURSOR"
+    //动态获取聊天对象
+    // export const GET_DYNAMICFRIENDOBJ = "GET_DYNAMICFRIENDOBJ"
+    //获取礼物
+export const GET_GIFTLIST = "GET_GIFTLIST"
 
 //所有未读消息badge自增
 export const ADD_BADGE = "ADD_BADGE"

@@ -10,7 +10,7 @@
       </div>
    </div>
    <!-- 分享有礼 -->
-   <div class="share-wrapper">
+   <div class="share-wrapper" v-show="noCouponsFlag">
      <img @click="shareNewFriend" src="../../assets/image/share_enter.png" class="shareEnter" alt="">
      <!-- <div class="share-box">
         <div class="btn" @click="share">邀新有礼</div>
@@ -33,23 +33,23 @@
      </div> -->
    </div>
      <!-- 分享有礼遮罩 -->
-     <div class="bg" v-show="isShow_bg" @click="share">
+     <!-- <div class="bg" v-show="isShow_bg" @click="share">
          <img  src="../../assets/image/share.png" alt="">
-     </div>
+     </div> -->
      <!-- 大话骰动态 -->
      <div class="game-wrapper">
        <div class="game-content">
          <div class="title">大话骰排名赛动态</div>
          <div class="gamerule">
-            <strong>活动规则：</strong>这是游戏规则这是游戏规则这是游戏规则这是游戏规则这是游戏规则这是游
-           <span class="join">立即参与</span>
+            <!-- <img src="../../assets/image/arrow_right.png" alt="" class="arrowRight"> -->
+            <popup-picker :data="gameList" v-model="gameValue" @on-show="onShow" @on-hide="onHide" @on-change="onChange"></popup-picker>
          </div>
          <div class="line-box">
             <h4 class="game-result">赛果公告</h4>
          </div>
            <div class="swiper-container game">
               <div class="swiper-wrapper">
-                <div class="swiper-slide">
+                <div class="swiper-slide swiper-no-swiping">
                   <ul class="rankList">
                     <li class="item" v-for="(item,index) in rankList1">
                       <div class="itemLeft">
@@ -63,7 +63,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="swiper-slide">
+                <!-- <div class="swiper-slide">
                    <ul class="rankList">
                     <li class="item" v-for="(item,index) in rankList2">
                       <div class="itemLeft">
@@ -76,13 +76,13 @@
                       </div>
                     </li>
                   </ul>
-                </div>
+                </div> -->
               </div>
             </div>
        </div>
      </div>
      <!-- 人人抽奖 -->
-     <div class="game-wrapper">
+     <!-- <div class="game-wrapper">
        <div class="game-content">
          <div class="title">人人抽奖动态</div>
          <div class="gamerule">
@@ -123,30 +123,19 @@
               </div>
             </div>
        </div>
-     </div>
+     </div> -->
       <!-- 活动通知 -->
       <div class="activity-wrapper">
           <div class="title">活动通知</div>
           <ul class="activityList">
-            <li class="item">
-              <img src="http://i1.bvimg.com/643118/d3ed6dbc589609a1.png" alt="" class="pic">
-              <div>
+            <li class="item clearfix" v-for="item in activityNoticeList">
+              <img :src="item.image" alt="" class="pic fl" >
+              <div class="fl">
                   <p class="desc">
-                    天天向上约会今晚8点将驻点演唱，欢迎大家今晚前来观赏（现场将有抽奖活动哦）
+                    {{item.content}}
                   </p>
                   <div class="detailBtnBox">
                     <button class="btn" @click="showActivityDetail">查看详情</button>
-                  </div>
-              </div>
-            </li>
-             <li class="item">
-              <img src="http://i1.bvimg.com/643118/d3ed6dbc589609a1.png" alt="" class="pic">
-              <div>
-                  <p class="desc">
-                    天天向上约会今晚8点将驻点演唱，欢迎大家今晚前来观赏（现场将有抽奖活动哦）
-                  </p>
-                  <div class="detailBtnBox">
-                    <button class="btn"  @click="showActivityDetail">查看详情</button>
                   </div>
               </div>
             </li>
@@ -158,59 +147,36 @@
 
 <script type='text/ecmascript-6'>
 import Swiper from "../../libs/swiper/swiper-4.3.3.min.js";
-// import { Swiper, SwiperItem } from "vux";
+import { PopupPicker } from "vux";
 import util from "common/util";
-import { mapState } from "vuex";
+import api from "common/api";
+import { mapState,mapMutations } from "vuex";
 export default {
   data() {
     return {
-      isShow_bg: false,
+      title: "游戏期数",
+      gameList: [['第一期', '第二期', '第三期']],
+      gameValue: ['第一期'],
       rankList1: [
         {
           rank: "第一名",
-          imgUrl: "http://i1.bvimg.com/643118/47aaa8265e29874c.jpg",
+          imgUrl: "http://i4.bvimg.com/643118/c8fbfc37236ea2c7.png",
           name: "夏雨荷",
           prize: "一瓶XO"
         },
         {
           rank: "第二名",
-          imgUrl: "http://i1.bvimg.com/643118/cd7b5471885e117f.jpg",
+          imgUrl: "http://i4.bvimg.com/643118/c8fbfc37236ea2c7.png",
           name: "泰勒斯",
           prize: "免房费"
         },
         {
           rank: "第三名",
-          imgUrl: "http://i1.bvimg.com/643118/96545237381246c7.jpg",
+          imgUrl: "http://i4.bvimg.com/643118/c8fbfc37236ea2c7.png",
           name: "小夏河",
           prize: "代金券100元"
         }
       ],
-      rankList2: [
-        {
-          rank: "第四名",
-          time: "2018-12-30 8:30",
-          content: "获得一张5元现金券",
-          imgUrl: "http://i1.bvimg.com/643118/96545237381246c7.jpg",
-          name: "夏雨荷",
-          prize: "一盘水果"
-        },
-        {
-          rank: "第五名",
-          time: "2018-12-30 8:30",
-          content: "获得一张免房券",
-          imgUrl: "http://i1.bvimg.com/643118/cd7b5471885e117f.jpg",
-          name: "泰勒斯",
-          prize: "公仔一个"
-        },
-        {
-          rank: "第六名",
-          time: "2018-12-30 8:30",
-          content: "获得一扎啤酒",
-          imgUrl: "http://i1.bvimg.com/643118/cd7b5471885e117f.jpg",
-          name: "小夏河",
-          prize: "现金券50"
-        }
-      ]
     };
   },
   created() {
@@ -220,7 +186,7 @@ export default {
         title: "这是一个圆你梦的city",
         desc: "如果我能看得见WO就是Android，就会轻易的假装到处遨游",
         link: `http://llwant.test.qianz.com?/#/welfare`,
-        imgUrl: "http://i1.bvimg.com/643118/0c7ed06ec325ad1d.png"
+        imgUrl: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png"
       };
       util._getJssdkInfo(shareObj, _url);
     } else {
@@ -228,21 +194,21 @@ export default {
         title: "这是一个圆你梦的city",
         desc: "如果我能看得见wo就是IOS，就会轻易的假装到处遨游",
         link: this.shareUrl + "#/welfare",
-        imgUrl: "http://i1.bvimg.com/643118/0c7ed06ec325ad1d.png"
+        imgUrl: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png"
       };
       util._getJssdkInfo(shareObj, this.shareUrl);
     }
+   // this._loadInviteWaitGetCoupon(); //判断优惠券是否已经领取过
+    this._loadActivityInfo();   //获取活动通知
   },
   computed: {
-    ...mapState(["shareUrl"])
+    ...mapState(["shareUrl","activityNoticeList","noCouponsFlag"])
   },
   mounted() {
     new Swiper(".game", {
       direction: "vertical",
       loop: true,
-      autoplay: {
-        delay: 2000 //1秒切换一次
-      }
+      noSwiping: true,
     });
     new Swiper(".award", {
       direction: "vertical",
@@ -253,19 +219,22 @@ export default {
     });
   },
   methods: {
-    directRightUrl() {
-      let { href, protocol, host, search, hash } = window.location;
-      const param = "welfare"; // 解决支付路径问题添加的前缀，替换成你的
-      search = search || "?";
-      hash = hash || "#/";
-      let newHref = `${protocol}//${host}${pathname}${search}${hash}${param}`;
-      if (newHref !== href) {
-        window.location.replace(newHref);
-      }
+
+    //拉取活动通知
+    _loadActivityInfo(){
+      api.loadActivityInfo().then(res=>{
+        console.log('活动通知列表--------------------------：',res);
+        this.getActivityNoticeList(res.slice(0,2));
+      })
     },
-    //   分享
-    share() {
-      this.isShow_bg = !this.isShow_bg;
+    onShow() {
+      console.log('on show')
+    },
+    onHide(type) {
+      console.log('on hide', type)
+    },
+    onChange(val) {
+      console.log('val change', val)
     },
     //进入分享有礼
     shareNewFriend() {
@@ -278,14 +247,19 @@ export default {
         name: "shareActivity"
       });
     },
+    ...mapMutations({
+      getActivityNoticeList:"GET_ACTIVITY_NOTICE" //获取活动通知
+    })
     //抽奖
-    choujiang() {
-      // this.$router.push({
-      //   path: `/welfare/award`
-      // });
-    }
+    // choujiang() {
+    //   // this.$router.push({
+    //   //   path: `/welfare/award`
+    //   // });
+    // }
   },
-  components: {},
+  components: {
+    PopupPicker
+  },
   watch: {
     $route(newValue, oldValue) {
       console.log(newValue);
@@ -536,6 +510,17 @@ export default {
         font-size: 0.3733rem;
         color: #666;
         margin: 0.2933rem 0.2667rem;
+        display: flex;
+        justify-content: space-between;
+        padding-right: 0.5333rem;
+        position: relative;
+        .arrowRight {
+          position: absolute;
+          top: 0.1rem;
+          right: 0.2rem;
+          width: 0.3rem;
+          height: 0.3rem;
+        }
         .join {
           font-size: 0.4rem;
           color: #ff0000;
@@ -586,20 +571,20 @@ export default {
         margin-top: 0.48rem;
         padding: 0 0.2667rem;
         display: flex;
+        position: relative;
         .pic {
-          width: 2.8533rem;
           height: 2.1333rem;
         }
         .desc {
           margin-left: 0.2667rem;
-          font-size: 0.3733rem;
+          font-size: 0.3133rem;
           color: #333;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
         }
         .detailBtnBox {
           text-align: right;
+          position: absolute;
+          bottom: 0px;
+          right: 0.2667rem;
           button {
             border: none;
             outline: none;
@@ -616,5 +601,8 @@ export default {
       }
     }
   }
+}
+.vux-cell-box:not(:first-child):before {
+  border: none;
 }
 </style>

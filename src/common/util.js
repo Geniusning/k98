@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-08-17 17:31:36
+ * @Last Modified time: 2018-09-17 17:18:48
  */
 import api from 'common/api'
 let util = {};
@@ -63,6 +63,7 @@ util.GetOpenIdByCode = function(code) {
     }
     //时间戳转化成地址
 util.timestampToTime = function(timestamp) {
+    timestamp = Number(timestamp);
     // console.log(timestamp.toString().length)
     if (timestamp.toString().length > 11) {
         var date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
@@ -81,6 +82,7 @@ util.timestampToTime = function(timestamp) {
         var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
         var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
         var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
+        // console.log(Y)
         return Y + M + D + h + m + s;
 
     }
@@ -117,29 +119,28 @@ util._getJssdkInfo = function(shareObj, url) {
         })
         .catch(err => {});
 }
-util.getCookie = function(name) {
-        var strcookie = document.cookie; //获取cookie字符串
-        var arrcookie = strcookie.split("; "); //分割
-        console.log('arrcookie:', strcookie)
-            //遍历匹配
-        for (var i = 0; i < arrcookie.length; i++) {
-            var arr = arrcookie[i].split("=");
-            if (arr[0] == name) {
-                return arr[1];
+util.getCookie = function(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(";");
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == " ") c = c.substring(1);
+            if (c.indexOf(name) != -1) {
+                return c.substring(name.length, c.length);
             }
         }
         return "";
-    }
+    },
     //判断安卓或者苹果
-util.isAndroid = function() {
-    let u = navigator.userAgent;
-    let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-    let isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-    if (isAndroid) {
-        return true;
+    util.isAndroid = function() {
+        let u = navigator.userAgent;
+        let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        let isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if (isAndroid) {
+            return true;
+        }
+        if (isiOS) {
+            return false;
+        }
     }
-    if (isiOS) {
-        return false;
-    }
-}
 export default util

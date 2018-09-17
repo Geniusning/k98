@@ -4,6 +4,7 @@ import Home from 'components/home/home'
 import GameCompetion from 'components/home/gameCompetion/gameCompetion'
 import GameCompetionDetail from 'components/home/GameCompetionDetail/GameCompetionDetail'
 import Friend from 'components/friend/friend'
+import PersonalInfo from 'components/friend/personalInfo/personalInfo'
 import Message from 'components/message/message'
 import Welfare from 'components/welfare/welfare'
 import Mine from 'components/mine/mine'
@@ -17,6 +18,7 @@ import updateAvatar from 'components/individual/updateAvatar'
 import Award from 'components/welfare/award/award'
 import ShareNew from 'components/welfare/ShareNew/ShareNew'
 import ShareActivity from 'components/welfare/shareActivity/shareActivity'
+import SharedDiscount from 'components/welfare/sharedDiscount/sharedDiscount'
 
 Vue.use(Router)
 
@@ -49,7 +51,12 @@ export default new Router({
             path: '/friend',
             name: 'friend',
             component: Friend,
-            // meta: { keepAlive: true }
+            children: [{
+                    path: ':id',
+                    name: "personalInfo",
+                    component: PersonalInfo,
+                }]
+                // meta: { keepAlive: true }
         },
         {
             path: '/message',
@@ -72,7 +79,6 @@ export default new Router({
                 path: "award",
                 name: "award",
                 component: Award,
-                // meta: { keepAlive: true }
             }, ]
         },
         {
@@ -84,6 +90,11 @@ export default new Router({
             path: '/shareActivity',
             name: 'shareActivity',
             component: ShareActivity,
+        },
+        {
+            path: '/sharedDiscount',
+            name: 'sharedDiscount',
+            component: SharedDiscount,
         },
         {
             path: '/mine',

@@ -9,6 +9,7 @@
       <!-- <div class="dot" v-if="hello"></div> -->
    </div>
    <div class="message_wrapper">
+     <!-- 好友 -->
      <ul class="message_list" style="margin-top:0.4rem" v-if="isShow==0">
        <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList">
          <div class="info_message">
@@ -30,6 +31,7 @@
          </div>
        </li>
      </ul>
+     <!-- 新朋友招呼 -->
      <div class="message_list" v-else-if="isShow==1">
        <tab bar-active-color="#ffd800" default-color="#999">
         <tab-item selected @on-item-click="onItemClick">点赞</tab-item>
@@ -94,6 +96,7 @@
         </ul>
       </div>
      </div>
+     <!-- 店长留言 -->
      <ul class="message_list" style="margin-top:0.4rem" v-else>
         <li class="item vux-1px-b" @click="chat">
          <div class="info_message">
@@ -227,7 +230,7 @@ export default {
       addBadgeCount: "ADD_BADGE", //动态变化未读消息数量
       setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
       compareLastMsg: "COMPARE_LASTMESS", //推送最后的一个消息跟已有好友消息列表对比
-      toTopFriend:"TO_TOP_MESSAGE"//把最新消息的置顶
+      toTopFriend: "TO_TOP_MESSAGE"//把最新消息的置顶
     }),
     ...mapActions({
       getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
@@ -236,10 +239,10 @@ export default {
   },
   watch: {
     //监听最新的一条消息
-    LastChatMsg: function(newValue) {
-      this.compareLastMsg(newValue);
+    LastChatMsg: function (newValue) {
+      // console.log('在消息列表收到对方手来的消息------------------------------------：',newValue);
+      // this.compareLastMsg(newValue);
       //把最新的一条消息放到最顶部
-      console.log(newValue);
       let tempAlreadyFriendList = [];
       this.alreadyFriendList.forEach((element, index) => {
         // console.log(element);
@@ -252,7 +255,7 @@ export default {
       this.toTopFriend(tempAlreadyFriendList)
       // console.log(tempAlreadyFriendList)
     },
-    $route: function(newRoute) {
+    $route: function (newRoute) {
       if (newRoute.name == "message") {
         this._loadFriends();
       }

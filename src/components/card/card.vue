@@ -3,9 +3,9 @@
    <my-header title="我的卡券" bg="#fff"></my-header>
      <div class="tab_wrapper">
       <tab bar-active-color="#FFAE00">
-        <tab-item selected @on-item-click="onItemClick">未使用(2)</tab-item>
-        <tab-item @on-item-click="onItemClick">已使用(1)</tab-item>
-        <tab-item @on-item-click="onItemClick">已过期(2)</tab-item>
+        <tab-item selected @on-item-click="onItemClick">未使用({{unuseCouponsLength}})</tab-item>
+        <tab-item @on-item-click="onItemClick">已使用({{usedCouponsLength}})</tab-item>
+        <tab-item @on-item-click="onItemClick">已过期({{timeOutListLength}})</tab-item>
       </tab>
      </div>
     <!-- 温馨提示 -->
@@ -17,10 +17,11 @@
     <div class="discount_wrapper">
       <!-- 未使用 -->
       <ul class="no_user_list" v-show="tagIndex==0">
-        <li class="item" v-for="(item,index) in unusedList" @click="selectDiscout">
+        <h3 class="noCouponTips" v-if="!unusedList.length">暂无优惠券</h3>
+        <li v-else class="item" v-for="(item,index) in unusedList" @click="selectDiscout(item.id)">
           <div class="left1">
-            <p class="name">{{item.name}}</p>
-            <p class="time">{{item.time}}</p>
+            <p class="name">{{item.coupon.name}}</p>
+            <p class="time">{{item.coupon.time}}</p>
           </div>
           <div class="right1">
             立即使用
@@ -29,10 +30,11 @@
       </ul>
       <!-- 已使用 -->
       <ul class="usered_list" v-show="tagIndex==1">
-        <li class="item" v-for="(item,index) in usedList" :key="index">
+         <h3 class="noCouponTips" v-if="!usedList.length">暂无优惠券</h3>
+        <li v-else class="item" v-for="(item,index) in usedList" :key="index">
           <div class="left1">
-            <p class="name">{{item.content}}</p>
-            <p class="time">{{item.time}}</p>
+            <p class="name">{{item.coupon.name}}</p>
+            <p class="time">{{item.coupon.time}}</p>
           </div>
           <div class="right1">
             已使用
@@ -41,7 +43,8 @@
       </ul>
       <!-- 已过期 -->
        <ul class="past_list" v-show="tagIndex==2">
-        <li class="item" v-for="(item,index) in timeOutList" :key="index">
+          <h3 class="noCouponTips" v-if="!timeOutList.length">暂无优惠券</h3>
+        <li v-else class="item" v-for="(item,index) in timeOutList" :key="index">
           <div class="left1">
             <p class="name">{{item.content}}</p>
             <p class="time">{{item.time}}</p>
@@ -70,24 +73,10 @@ export default {
       flag: false,
       tagIndex: 0,
       unusedList: [],
-      usedList: [
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        }
-      ],
+      unuseCouponsLength: 0,
+      usedCouponsLength: 0,
+      timeOutListLength: 0,
+      usedList: [],
       timeOutList: [
         {
           content: "啤酒9折优惠券",
@@ -119,15 +108,19 @@ export default {
     _loadUserAllCoupon() {
       api.loadUserAllCoupon().then(res => {
         console.log("优惠券：", res);
-         res.unuseCoupons.forEach(element => {
-          let tempObj = {};
-          tempObj.type = element.coupon.type?"实物券":"现金券";
-          tempObj.time = "过期时间："+element.coupon.endTime;
-          tempObj.name = element.coupon.type?"获得"+element.coupon.content:"获得"+element.coupon.value+"元代金券";
-          this.unusedList.push(tempObj)
+        this.unuseCouponsLength = res.unuseCoupons.length;
+        this.usedCouponsLength = res.usedCoupos.length;
+        res.unuseCoupons.forEach(element => {
+          element.coupon.time = "过期时间：" + element.coupon.endTime;
+          element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
+          this.unusedList.push(element)
         });
-        // this.unusedList = res.unuseCoupons;
         console.log(this.unusedList);
+        res.usedCoupos.forEach(element => {
+          element.coupon.time = "过期时间：" + element.coupon.endTime;
+          element.coupon.name = element.coupon.type ? element.coupon.content : element.coupon.value + "元代金券";
+          this.usedList.push(element)
+        });
       });
     },
     //返回上一页
@@ -135,8 +128,7 @@ export default {
       this.$router.go(-1);
     },
     //进入优惠券详情
-    selectDiscout() {
-      let id = 0;
+    selectDiscout(id) {
       this.$router.push({
         path: `/card/${id}`
       });
@@ -150,7 +142,7 @@ export default {
       this.tagIndex = index;
       console.log(this.tagIndex);
     },
-    onClickBack() {},
+    onClickBack() { },
     ...mapMutations({
       changeValidate: "CHANGE_VALIDATE"
     })
@@ -209,6 +201,13 @@ export default {
     // margin-top: 0.2133rem;
     background: #eee;
     padding: 0 0.1867rem;
+    .noCouponTips {
+      font-size: 0.5333rem;
+      color: #ccc;
+      width: 100%;
+      text-align: center;
+      margin-top: 50%;
+    }
     .no_user_list {
       overflow-y: auto;
       .card("../../assets/image/discount_bg.png",0.5333rem);

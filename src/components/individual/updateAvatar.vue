@@ -12,7 +12,16 @@
                 </div>
             </div>
             <div class="dailyLifePhoto-wrapper" >
-              <h3 class="title">上传生活照</h3>
+              <h3 class="title">上传生活照<span class="desc">(最多上传4张)</span></h3>
+              <ul class="uploadLifePhotoList">
+                <li v-for="(item,index) in lifePhotoList" class="photo">
+                  <img :src="item" alt="" class="imgItem">
+                  <img src="../../assets/image/close-round.png" alt="" class="close" @click="close(index)">
+                </li>
+                 <li class="photo" v-show="isShowAddImg">
+                  <img src="../../assets/image/add_pic.png" alt="" class="imgItem" @click="chooseImage">
+                </li>
+              </ul>
             </div>
             <div class="tailor_wrapper" v-if="showTailor">
                 <vueCropper
@@ -38,23 +47,69 @@ import myHeader from "../../base/myheader/myheader";
 import { XButton } from "vux";
 import { mapState, mapMutations } from "vuex";
 import api from "common/api";
+import util from "common/util";
 import lrz from "lrz";
 export default {
   data() {
     return {
       showTailor: false,
+      isShowAddImg:true,
       option: {
         img: "",
         width: 300,
         height: 250,
         autoCrop: true
-      }
+      },
+      lifePhotoList: []
     };
+  },
+  created() {
+    let url = window.location.href.split("#")[0];
+    console.log(url);
+    api
+      .getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
+      .then(res => {
+        wx.config({
+          //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+          appId: "wxb2fa3c446063ec19",
+          timestamp: res.timestamp,
+          nonceStr: res.nonceStr,
+          signature: res.signature,
+          jsApiList: ["chooseImage"]
+        });
+      });
   },
   computed: {
     ...mapState(["userInfo"])
   },
   methods: {
+    //上传生活照
+    chooseImage() {
+      console.log("images");
+      let _this = this;
+      wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ["compressed"], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+        success: function(res) {
+          var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+          console.log('localIds----------------------',localIds);
+          _this.lifePhotoList.push(localIds[0]);
+          if(_this.lifePhotoList.length>3){
+            _this.isShowAddImg = false;
+          }
+        }
+      });
+    },
+    //删除生活照
+    close(index){
+      this.lifePhotoList.splice(index,1);
+      if(this.lifePhotoList.length===4){
+        this.isShowAddImg = false;
+      }else{
+        this.isShowAddImg = true;
+      }
+    },
     //选择图片
     onChange(e) {
       console.log(e.target.files[0]);
@@ -69,8 +124,7 @@ export default {
         _this.option.img = this.result;
       };
     },
-    update() {
-    },
+    update() {},
     stop() {
       this.$refs.cropper.getCropBlob(data => {
         console.log(data);
@@ -103,7 +157,7 @@ export default {
   },
   components: {
     VueCropper,
-    myHeader,
+    myHeader
     // XButton
   }
 };
@@ -142,6 +196,39 @@ export default {
       .file {
         height: 100%;
         opacity: 0;
+      }
+    }
+  }
+  .dailyLifePhoto-wrapper {
+    padding: 0.2667rem 0.2rem;
+    .title {
+      font-size: 0.3533rem;
+      font-weight: 600;
+      margin-bottom: 0.2667rem;
+      .desc{
+        font-size: 0.0067rem;
+        font-weight: normal;
+      }
+    }
+    .uploadLifePhotoList {
+      display: flex;
+      justify-content: flex-start;
+      .photo {
+        width: 2rem;
+        height: 2rem;
+        position: relative;
+        margin-right: 0.2667rem;
+        .close{
+          position: absolute;
+          width: 0.4rem;
+          height: 0.4rem;
+          top: -0.1333rem;
+          right: -0.1333rem;
+        }
+        .imgItem {
+          width: 100%;
+          height: 100%;
+        }
       }
     }
   }

@@ -1,27 +1,37 @@
 <template>
   <div id="app">
-    
     <div class="top_wrapper">
-        <keep-alive>
-           <router-view v-if="$route.meta.keepAlive"></router-view>
-        </keep-alive>
-        <router-view v-if="!$route.meta.keepAlive"></router-view>
-
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
       <lg-preview></lg-preview>
+      <transition name='envelop'>
+        <div class="envelop-wrapper" v-if="isShowEnvelop" @click="GotoPage(dynamicFriendEvt.extMsg.lastMsg.from)">
+          <img src="./assets/image/close_ad.png" alt="" class="close" @click.stop="close">
+          <div class="top">
+            <img :src="dynamicFriendEvt.fromInfo?dynamicFriendEvt.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="" class="avatar">
+            <div class="name">{{dynamicFriendEvt.fromInfo?dynamicFriendEvt.fromInfo.nickname:'店长'}}</div>
+          </div>
+          <div class="bottom">
+            <p class="content">{{dynamicFriendEvt.extMsg.lastMsg.msg}}</p>
+          </div>
+        </div>
+      </transition>
     </div>
     <div class="bottom_wrapper" v-if="flag">
       <tab :selected="selected"></tab>
       <transition name="messageDisplay">
-          <div class="message_box" v-if="dialog">
-            <img src="./assets/image/close.png" alt="" class="close" @click="close">
-            <div class="avatar">
-              <img :src="dynamicFriendEvt.headimgurl" alt=""  class="pic">
-            </div>
-            <div class="userInfo">
-              <p class="name">{{dynamicFriendEvt.nickname}}</p>
-              <p class="mess">{{dynamicFriendEvt.msg}}</p>
-            </div>
-          </div>
+        <!-- <div class="message_box" v-if="dialog">
+              <img src="./assets/image/close.png" alt="" class="close" @click="close">
+              <div class="avatar">
+                <img :src="dynamicFriendEvt.headimgurl" alt=""  class="pic">
+              </div>
+              <div class="userInfo">
+                <p class="name">{{dynamicFriendEvt.nickname}}</p>
+                <p class="mess">{{dynamicFriendEvt.msg}}</p>
+              </div>
+            </div> -->
       </transition>
     </div>
   </div>
@@ -29,13 +39,19 @@
 
 <script>
 import Tab from "./components/tab/tab.vue";
-import { mapState, mapGetters, mapMutations } from "vuex";
+import {
+  mapState,
+  mapGetters,
+  mapMutations
+} from "vuex";
 import util from "common/util";
 import api from "common/api";
 export default {
   name: "app",
   data() {
     return {
+      isThrottle: true,
+      isShowEnvelop: false,
       flag: false,
       selected: 0,
       dialog: false,
@@ -86,22 +102,35 @@ export default {
     }
   },
   methods: {
-    close() {
-      this.dialog = false;
+    GotoPage(path) {
+      // console.log('this.dynamicFriendEvt:', this.dynamicFriendEvt); 
+      this.setChatFriend(this.dynamicFriendEvt.fromInfo)
+      this.$router.push({
+        path: `/message/${path}`
+      });
     },
-
+    close() {
+      this.isShowEnvelop = false;
+    },
     ...mapMutations({
-      updateChatList: "UPDATE_CHATLIST"
+      // updateChatList: "UPDATE_CHATLIST",//更新聊天列表
+      setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
     })
   },
   watch: {
-    dynamicFriendEvt: function() {
-      this.dialog = true;
-      setTimeout(() => {
-        this.dialog = false;
-      }, 3000);
+    dynamicFriendEvt: function () {
+      if (this.isThrottle) {
+        this.isShowEnvelop = true;
+        this.isThrottle = false;
+        setTimeout(() => {
+          this.isShowEnvelop = false;
+        }, 5000);
+        setTimeout(() => {
+          this.isThrottle = true;
+        }, 10000);
+      }
     },
-    $route: function(newValue) {
+    $route: function (newValue) {
       //隐藏导航
       if (
         newValue.name == "home" ||
@@ -153,13 +182,15 @@ export default {
 a:hover {
   text-decoration: none !important;
 }
-.messageDisplay-enter-active,
-.messageDisplay-leave-active {
-  transition: all 0.3s linear;
+.envelop-enter-active,
+.envelop-leave-active {
+  transition: all 0.3s ease;
 }
-.messageDisplay-enter,
-.messageDisplay-leave-to {
-  opacity: 0;
+.envelop-enter {
+  transform: translate3d(-100%, 0, 0);
+}
+.envelop-leave-to {
+  transform: translate3d(-100%, 0, 0);
 }
 body,
 html {
@@ -193,49 +224,90 @@ html {
   -ms-flex: 1;
   -o-flex: 1;
   flex: 1;
+  position: relative;
+  .envelop-wrapper {
+    position: absolute;
+    width: 3.7333rem;
+    height: 2.0533rem;
+    top: 2rem;
+    background-image: url("./assets/image/envelop.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding: 0.1333rem;
+    .close {
+      position: absolute;
+      top: 0.2667rem;
+      right: 0.4rem;
+      width: 0.3333rem;
+      height: 0.3333rem;
+    }
+    .top {
+      display: flex;
+      margin: 0.1333rem;
+      .avatar {
+        width: 0.6667rem;
+        height: 0.6667rem;
+        border-radius: 50%;
+        margin-right: 0.2rem;
+      }
+      .name {
+        width: 2rem;
+        padding-top: 0.1333rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    .bottom {
+      margin-top: 0.2333rem;
+      .content {
+        padding-left: 0.1333rem;
+      }
+    }
+  }
 }
 .bottom_wrapper {
   height: 1.18rem;
   max-width: 10rem;
   position: relative;
-  .message_box {
-    position: absolute;
-    top: -1.85rem;
-    width: 100%;
-    height: 1.8667rem;
-    display: flex;
-    background: -webkit-linear-gradient(left, #ffba00, #ffd800);
-    .close {
-      position: absolute;
-      top: 0.4rem;
-      right: 0.4rem;
-      width: 0.4rem;
-      height: 0.4rem;
-    }
-    .avatar {
-      margin: 0.2933rem 0.2933rem 0 0.5333rem;
-      width: 1.3333rem;
-      height: 1.3333rem;
-      .pic {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-      }
-    }
-    .userInfo {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      padding: 0.3rem 0;
-      .name {
-        font-size: 0.4rem;
-        color: #fff;
-      }
-      .mess {
-        font-size: 0.3733rem;
-        color: #fff;
-      }
-    }
-  }
+  // .message_box {
+  //   position: absolute;
+  //   top: -1.85rem;
+  //   width: 100%;
+  //   height: 1.8667rem;
+  //   display: flex;
+  //   background: -webkit-linear-gradient(left, #ffba00, #ffd800);
+  //   .close {
+  //     position: absolute;
+  //     top: 0.4rem;
+  //     right: 0.4rem;
+  //     width: 0.4rem;
+  //     height: 0.4rem;
+  //   }
+  //   .avatar {
+  //     margin: 0.2933rem 0.2933rem 0 0.5333rem;
+  //     width: 1.3333rem;
+  //     height: 1.3333rem;
+  //     .pic {
+  //       width: 100%;
+  //       height: 100%;
+  //       border-radius: 50%;
+  //     }
+  //   }
+  //   .userInfo {
+  //     display: flex;
+  //     flex-direction: column;
+  //     justify-content: space-around;
+  //     padding: 0.3rem 0;
+  //     .name {
+  //       font-size: 0.4rem;
+  //       color: #fff;
+  //     }
+  //     .mess {
+  //       font-size: 0.3733rem;
+  //       color: #fff;
+  //     }
+  //   }
+  // }
 }
 </style>

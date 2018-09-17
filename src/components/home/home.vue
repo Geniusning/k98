@@ -1,172 +1,179 @@
 <template>
- <div id="home" class="home">
-      <div class="top_wrapper">
-            <div class="barLogo_wrapper">
-              <div class="logo_wrapper">
-                <img class="logo" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524204213993&di=5f93ef923bb06785474b70621b7a9e42&imgtype=0&src=http%3A%2F%2Fimg.brandcn.com%2FEditor%2FImages%2F201309%2F2013091309383713424223871.jpg" alt="">
-                <p class="bar_name">Lose Demon吧(迷失的恶魔魅力四射)</p>
-              </div>
-            </div>
-            <div class="bg"></div>
-            <swiper class="slider":loop="true" :list="demo01_list" v-model="demo01_index" @click="show_introduce"></swiper>
-             <!-- <carousel-3d :perspective="10" :display="5" :width="300" :height="140">
-              <slide :index="index" v-for="(item,index) in demo01_list1" :key="index">
-               <img :src="item.img" alt="" style="height:100%">
-              </slide>
-            </carousel-3d> -->
-      </div>
-      <div class="wrapper" ref="wrapper">
-        <div class="content">
-            <div class="adr_wrapper">
-                <div class="adr clearfix" @click="getMapPosition">
-                  <img src="../../assets/image/position.png" alt="" class="position" >
-                  <p class="adr_desc">龙华新区观澜街道大河路商业大厦B座4楼</p> 
-                </div>
-                <div class="tel">
-                    <a href="tel:15764271136">
-                      <img src="../../assets/image/call.png" alt="">
-                    </a>
-                </div>
-            </div>
-            <!-- 游戏 -->
-            <div class="game_wrapper">
-                <div class="title clearfix">
-                    <img src="../../assets/image/game_icon.png" alt="" class="icon fl">
-                    <h2 class="dice_title">大话骰</h2>
-                    <span class="desc">最烧脑游戏</span>
-                </div>
-                <ul class="game_list clearfix">
-                    <li @click="playGame_challenge">
-                        <img src="../../assets/image/game1.jpg" alt="" class="pic_game" onclick="return false">
-                    </li>
-                    <li @click="playGame_rank">
-                        <img src="../../assets/image/game2.jpg" alt="" class="pic_game" onclick="return false">
-                    </li>
-                    <li @click="playGame_friend">
-                        <img src="../../assets/image/game3.png" alt="" class="pic_game" onclick="return false">     
-                    </li>
-                </ul>
-            </div>
-            <!-- 好友 -->
-            <div class="friend_wrapper">
-                <div class="title_content_fri clearfix">
-                    <div class="title clearfix">
-                      <img src="../../assets/image/footPrint.png" alt="" class="icon fl" onclick="return false">
-                        <h2 class="friend_title">好友足迹</h2>
-                        <span class="desc">部落社员热聊中...</span>
-                    </div>
-                    <div class="more">
-                        <ul class="fri_list">
-                          <li class="item" v-for="(item,index) in friList" :key="index">
-                            <img :src="item.src" alt="暂无图片" class="min_avatar" onclick="return false">
-                          </li>
-                          <li class="item dotItem">
-                              <span class="dot">...</span>
-                          </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="pic_content">
-                    <ul class="pic_list">
-                        <li @click="intoFriend" class="inner_fri">
-                            <!-- <img src="../../assets/image/online.png" class="online" onclick="return false"> -->
-                            <span class="inner_onlinePerson">{{inFriendNum}}人在线</span>
-                            <img src="../../assets/image/inner_fri.jpg" alt="" class="friend_avatar_inner" onclick="return false">
-                        </li>
-                        <li @click="outFriend" class="out_fri">
-                            <span class="out_onlinePerson">{{outFriendNum}}人在线</span>
-                            <img src="../../assets/image/out_fri.jpg" alt="" class="friend_avatar_out" onclick="return false">
-                        </li>
-                         <!-- <li>
-                            <img src="../../assets/image/meinv3.png" alt="" class="friend_avatar">
-                        </li> -->
-                    </ul>
-                </div>
-            </div>
-            <!-- 福利 -->
-            <div class="welfare_wrapper">
-                <div class="title_content_wel">
-                    <div class="title clearfix">
-                      <img src="../../assets/image/recomment.png" onclick="return false" alt="" class="icon fl">
-                        <h2 class="shop_title">店长推荐</h2>
-                        <span class="desc">更贴心、更优惠</span>
-                    </div>
-                    <div class="more fr">
-                        <img src="../../assets/image/letter.gif" alt="" class="letter" @click="inToLetter">
-                    </div>
-                </div>
-                <div class="advertise_wrapper" v-if="show_advertise">
-                  <img src="../../assets/image/advertise.png" alt="" class="advertise" onclick="return false">
-                  <!-- <img src="http://llwant.test.qianz.com/download/file/5007c55f109d0ad7f840d3b2e4c5263c.png" alt="" class="advertise" > -->
-                  <img src="../../assets/image/close_ad.png" alt="" class="close" @click="close_adtise" >
-                </div>
-                <div class="welfare_content">
-                  <ul class="welfare_list">
-                    <li class="item clearfix" v-for="(item,index) in picList" :key="index">
-                      <div class="left">
-                        <img :src="item.src" alt="" class="shopPic">
-                      </div>
-                      <div class="center">
-                        <p class="title">{{item.title}}</p>
-                        <p class="desc">{{item.desc}}</p>
-                        <p class="limit">{{item.limit}}</p>
-                        <p class="price">
-                          <span class="discount_p">特惠￥{{item.price}}</span><del class="origin_p">原价￥{{item.originPrice}}</del>
-                        </p>
-                      </div>
-                      <div class="right">
-                        <div class="thunb_box clearfix" @click="thumb(index)">
-                          <span class="count fl">已订：{{item.count}}</span>
-                        </div>
-                        <div class="show_detail" @click="freeBook">
-                          免费预订
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-            </div>
+  <div id="home" class="home">
+    <div class="top_wrapper">
+      <div class="barLogo_wrapper">
+        <div class="logo_wrapper">
+          <img class="logo" :src="shopSettingInfo.image" alt="">
+          <p class="bar_name">{{shopSettingInfo.name}}</p>
         </div>
       </div>
-       <div class="fuli" @click="toWelfare">
-         <img src="../../assets/image/fuli.png" alt="" class="pic_fuli">
-       </div>
-
-       <!-- 套餐预定 -->
-       <!-- <div v-transfer-dom>
-          <x-dialog v-model="showDialogStyle" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', height: '50%', 'background-color': 'transparent'}">
-            <p style="color:#fff;text-align:center;" @click="showDialogStyle = false">
-    
-            </p>
-          </x-dialog>
-      </div> -->
-
-      <!-- 优惠券弹框 -->
-      <div v-transfer-dom>
-        <x-dialog v-model="discountShow" class="dialog-discount">
-          <h3 class="couponTitle"></h3>
-          <div class="discount-box">
-            <scroll ref="discountScroll" class="discountScroll" :data="dicountList" v-if="dicountList.length">
-              <ul class="discountList">
-                <li class="item" v-for="(item,index) in dicountList" @click="intoCard">
-                  <div class="itemLeft">
-                      <p class="itemName">{{item.name}}</p>
-                      <p class="itemTime">{{item.type}}  有效期至：{{item.time}}</p>
-                  </div>
-                  <div class="itemRight">
-                    立即查看
-                  </div>
+      <div class="bg"></div>
+      <swiper class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
+      <!-- <carousel-3d :perspective="10" :display="5" :width="300" :height="140">
+                <slide :index="index" v-for="(item,index) in demo01_list1" :key="index">
+                 <img :src="item.img" alt="" style="height:100%">
+                </slide>
+              </carousel-3d> -->
+    </div>
+    <div class="wrapper" ref="wrapper">
+      <div class="content">
+        <div class="adr_wrapper">
+          <div class="adr clearfix" @click="getMapPosition">
+            <img src="../../assets/image/position.png" alt="" class="position">
+            <p class="adr_desc">{{shopSettingInfo.address}}</p>
+          </div>
+          <div class="tel">
+            <a :href="shopSettingInfo.phone">
+              <img src="../../assets/image/call.png" alt="">
+            </a>
+          </div>
+        </div>
+        <!-- 游戏 -->
+        <div class="game_wrapper">
+          <div class="title clearfix">
+            <img src="../../assets/image/game_icon.png" alt="" class="icon fl">
+            <h2 class="dice_title">大话骰</h2>
+            <span class="desc">最烧脑游戏</span>
+          </div>
+          <ul class="game_list clearfix">
+            <li @click="playGame_challenge">
+              <img src="../../assets/image/game1.jpg" alt="" class="pic_game" onclick="return false">
+            </li>
+            <li @click="playGame_rank">
+              <img src="../../assets/image/game2.jpg" alt="" class="pic_game" onclick="return false">
+            </li>
+            <li @click="playGame_friend">
+              <img src="../../assets/image/game3.png" alt="" class="pic_game" onclick="return false">
+            </li>
+          </ul>
+        </div>
+        <!-- 好友 -->
+        <div class="friend_wrapper">
+          <div class="title_content_fri clearfix">
+            <div class="title clearfix">
+              <img src="../../assets/image/footPrint.png" alt="" class="icon fl" onclick="return false">
+              <h2 class="friend_title">好友足迹</h2>
+              <span class="desc">部落社员热聊中...</span>
+            </div>
+            <div class="more">
+              <ul class="fri_list" v-show="friendList.length>3">
+                <li class="item" v-for="(item,index) in friendIconList" :key="index">
+                  <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                    class="min_avatar" onclick="return false">
+                </li>
+                <li class="item dotItem">
+                  <span class="dot">...</span>
                 </li>
               </ul>
-            </scroll>
+            </div>
           </div>
-          <div @click="closeAICard">
-             <x-icon type="ios-close-outline" style="fill:#fff;margin-top:20px;"></x-icon>
+          <div class="pic_content">
+            <ul class="pic_list">
+              <li @click="intoFriend" class="inner_fri">
+                <!-- <img src="../../assets/image/online.png" class="online" onclick="return false"> -->
+                <span class="inner_onlinePerson">{{inFriendNum}}人在线</span>
+                <img src="../../assets/image/inner_fri.jpg" alt="" class="friend_avatar_inner" onclick="return false">
+              </li>
+              <li @click="outFriend" class="out_fri">
+                <span class="out_onlinePerson">{{outFriendNum}}人在线</span>
+                <img src="../../assets/image/out_fri.jpg" alt="" class="friend_avatar_out" onclick="return false">
+              </li>
+            </ul>
           </div>
-        </x-dialog>
+        </div>
+        <!-- 福利 -->
+        <div class="welfare_wrapper">
+          <div class="title_content_wel">
+            <div class="title clearfix">
+              <img src="../../assets/image/recomment.png" onclick="return false" alt="" class="icon fl">
+              <h2 class="shop_title">店长推荐</h2>
+              <span class="desc">更贴心、更优惠</span>
+            </div>
+            <div class="more fr">
+              <img src="../../assets/image/letter.gif" alt="" class="letter" @click="inToLetter">
+            </div>
+          </div>
+          <div class="advertise_wrapper" v-if="show_advertise">
+            <img src="../../assets/image/advertise.png" alt="" class="advertise" onclick="return false">
+            <!-- <img src="http://llwant.test.qianz.com/download/file/5007c55f109d0ad7f840d3b2e4c5263c.png" alt="" class="advertise" > -->
+            <img src="../../assets/image/close_ad.png" alt="" class="close" @click="close_adtise">
+          </div>
+          <div class="welfare_content">
+            <ul class="welfare_list">
+              <li class="item clearfix" v-for="(item,index) in recommendList" :key="index">
+                <div class="left">
+                  <img :src="item.image" alt="" class="shopPic">
+                </div>
+                <div class="center">
+                  <p class="title">{{item.name}}</p>
+                  <p class="desc">{{item.subtopic}}</p>
+                  <p class="limit">{{item.limit}}</p>
+                  <p class="price">
+                    <span class="discount_p">特惠￥{{item.discountPrice}}</span><del class="origin_p">原价￥{{item.originalPrice}}</del>
+                  </p>
+                </div>
+                <div class="right">
+                  <div class="thunb_box clearfix" @click="thumb(index)">
+                    <span class="count fl">已订：{{item.count}}</span>
+                  </div>
+                  <div class="show_detail" @click="freeBook">
+                    免费预订
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fuli" @click="toWelfare" v-show="noCouponsFlag">
+      <img src="../../assets/image/fuli.png" alt="" class="pic_fuli">
+    </div>
+    <!-- 套餐预定 -->
+    <!-- <div v-transfer-dom>
+            <x-dialog v-model="showDialogStyle" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', height: '50%', 'background-color': 'transparent'}">
+              <p style="color:#fff;text-align:center;" @click="showDialogStyle = false">
+      
+              </p>
+            </x-dialog>
+        </div> -->
+    <!-- 优惠券弹框 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="discountShow" class="dialog-discount">
+        <h3 class="couponTitle"></h3>
+        <div class="discount-box">
+          <scroll ref="discountScroll" class="discountScroll" :data="dicountList" v-if="dicountList.length">
+            <ul class="discountList">
+              <li class="item" v-for="(item,index) in dicountList" @click="intoCard">
+                <div class="itemLeft">
+                  <p class="itemName">{{item.name}}</p>
+                  <p class="itemTime">{{item.type}} 有效期至：{{item.time}}</p>
+                </div>
+                <div class="itemRight">
+                  立即查看
+                </div>
+              </li>
+            </ul>
+          </scroll>
+        </div>
+        <div @click="closeAICard">
+          <x-icon type="ios-close-outline" style="fill:#fff;margin-top:20px;"></x-icon>
+        </div>
+      </x-dialog>
+    </div>
+    <!-- 游戏框框 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="gameShow" class="dialog-gameBegin">
+        <div class="game-box">
+          <img src="../../assets/image/gameBegin.png" alt="" class="gameBegin" @click="intoReadyGame">
+        </div>
+        <div @click="closeGame">
+          <img src="../../assets/image/gameClose.png" alt="" class="close">
+        </div>
+      </x-dialog>
     </div>
     <router-view></router-view>
- </div>
+  </div>
 </template>
 
 <script type='text/ecmascript-6'>
@@ -177,24 +184,6 @@ import { TransferDom, Swiper, Toast, XDialog } from "vux";
 import axios from "axios";
 import url from "common/url";
 import { mapMutations, mapActions, mapState } from "vuex";
-const baseList = [
-  {
-    url: "javascript:",
-    img: "http://i4.bvimg.com/643118/cbe37fbdd3e49bbb.png",
-
-    title: ""
-  },
-  {
-    url: "javascript:",
-    img: "http://i4.bvimg.com/643118/cbe37fbdd3e49bbb.png",
-    title: ""
-  },
-  {
-    url: "javascript:",
-    img: "http://i4.bvimg.com/643118/cbe37fbdd3e49bbb.png",
-    title: ""
-  }
-];
 export default {
   name: "home",
   directives: {
@@ -202,46 +191,35 @@ export default {
   },
   data() {
     return {
+      friendIconList: [],
       dicountList: [],
+      gameShow: false,
       discountShow: false, //AI优惠券
       showDialogStyle: false,
       show_advertise: true,
-      friList: [
-        {
-          src: "http://i1.bvimg.com/643118/2d4cdb6b943a3175.jpg"
-        },
-        {
-          src: "http://i1.bvimg.com/643118/47aaa8265e29874c.jpg"
-        },
-        {
-          src: "http://i1.bvimg.com/643118/cd7b5471885e117f.jpg"
-        }
-      ],
-      demo01_list: baseList,
+      demo01_list: [],
       test1: "123",
       demo01_index: 0,
       data: [1, 2, 3],
       distance: "",
-      picList: [
-        {
-          src: "http://i1.bvimg.com/643118/0c7ed06ec325ad1d.png",
-
-          originPrice: "488",
-          price: "388",
-          limit: "限周一白天使用",
-          desc: "朋友聚会，超级实惠的哦",
-          title: "超值四人水果拼盘",
-          count: 88
-        },
-        {
-          src: "http://i1.bvimg.com/643118/d3ed6dbc589609a1.png",
-          originPrice: "388",
-          price: "188",
-          limit: "限周天白天使用",
-          desc: "超值优惠，值得拥有",
-          title: "聚会二楼包厢特惠",
-          count: 8
-        }
+      recommendList: [{
+        src: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png",
+        originPrice: "488",
+        price: "388",
+        limit: "限周一白天使用",
+        desc: "朋友聚会，超级实惠的哦",
+        title: "超值四人水果拼盘",
+        count: 88
+      },
+      {
+        src: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png",
+        originPrice: "388",
+        price: "188",
+        limit: "限周天白天使用",
+        desc: "超值优惠，值得拥有",
+        title: "聚会二楼包厢特惠",
+        count: 8
+      }
       ],
       inFriendNum: 0,
       outFriendNum: 0
@@ -249,6 +227,8 @@ export default {
   },
   created() {
     this._getUserInfo(); //获取用户信息
+    this.getFriendList(); //获取候选人
+    this._loadPublishArenas();
     let _url = window.location.href;
     if (util.isAndroid()) {
       let shareObj = {
@@ -269,18 +249,31 @@ export default {
     }
   },
   computed: {
-    ...mapState(["friendList", "inAndOutFriendCursor", "userInfo", "shareUrl"])
+    ...mapState(["friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo","noCouponsFlag"])
   },
   mounted() {
     this._loadFriendEvts(); //获取好友事件列表
     this.getAlreadyFriend(); //获取已经成为好友列表
     this._getInOutNum();
     this._loadUserCoupons(); //用户获取优惠券
-    //this.addBadgeCount(); //未读消息数
+    this._loadRecommends();//店长推荐数据
+    this._loadStoreSetting() //获取门店信息
+    this._loadAdvertisingPhoto();//拉取首页轮播图
+    this._loadInviteWaitGetCoupon();//判断是否已经领取优惠券
   },
   methods: {
+    //判断是否已经分享过优惠券
+    _loadInviteWaitGetCoupon() {
+      api.loadInviteWaitGetCoupon().then(res => {
+        console.log('优惠券----------------------------------:', res)
+        if (res.errCode === 0 && res.coupons === null) {
+          this.judgeInviteCoupon(false);
+        }
+      })
+    },
+
     //获取cookie
-    getCookie: function(cname) {
+    getCookie: function (cname) {
       var name = cname + "=";
       var ca = document.cookie.split(";");
       for (var i = 0; i < ca.length; i++) {
@@ -299,6 +292,17 @@ export default {
       });
       this.discountShow = false;
     },
+    //进入游戏初始页面
+    intoReadyGame() {
+      this.$router.push({
+        name: "gameCompetion"
+      });
+      this.gameShow = false;
+    },
+    // 关闭游戏
+    closeGame() {
+      this.gameShow = false;
+    },
     //关闭AI优惠券
     closeAICard() {
       api.clearFirstLoadTag().then(res => {
@@ -306,58 +310,59 @@ export default {
       });
     },
     playGame_challenge() {
+      let token = this.getCookie("tk");
       window.location.href =
-        "http://llwant.test.qianz.com:8081/?gamePath=game1";
-      // api.createRoom("game1").then(res => {
-      //   let roomId = res.roomID;
-      //   if (res.errCode === 0) {
-      //     // window.location.href =`http://llwant.test.qianz.com:3002/tk=ulDOmrOTL3fGH6S505bXphsrmg2FeUEKgZSfzTOkn0DwXqtnYkVU7-tHCm9qWx-TYxyehA==&roomID=${roomId}`;
-      //     window.location.href =`http://llwant.test.qianz.com:3002/roomID=${roomId}`;
-      //   }
-      // });
+        `http://llwant.test.qianz.com/game/?gamePath=game1&tk=${token}`;
     },
     playGame_rank() {
-      // window.location.href =
-      // "http://llwant.test.qianz.com:8081/?gamePath=game2";
-      // this.$router.push({
-      //   name: "gameCompetion"
-      // });
-      let token = this.getCookie("tk");
-      api.createRoom("game2", token).then(res => {
-        console.log(res);
-        let roomId = res.roomID;
-        if (res.errCode === 0) {
-          // window.location.href =`http://llwant.test.qianz.com:8081/?tk=SbQrYt94bfAn8VCJWY1w3NatO86kqJD_qmB2KX1GcQf5au_Km4yY3L898IyxWORNoNDBiQ==&roomID=${roomId}`;
-          window.location.href = `http://llwant.test.qianz.com:8081/?roomID=${roomId}`;
-        }
-      });
+      this.$router.push({
+        name: "gameCompetion"
+      })
     },
     playGame_friend() {
+      let token = this.getCookie("tk");
       window.location.href =
-        "http://llwant.test.qianz.com:8081/?gamePath=game3";
-      // api.createRoom("game3").then(res => {
-      //     console.log(res);
-      //     let roomId = res.roomID;
-      //     if (res.errCode === 0) {
-      //       // window.location.href =`http://llwant.test.qianz.com:3002/tk=ulDOmrOTL3fGH6S505bXphsrmg2FeUEKgZSfzTOkn0DwXqtnYkVU7-tHCm9qWx-TYxyehA==&roomID=${roomId}`;
-      //       window.location.href =`http://llwant.test.qianz.com:3002/roomID=${roomId}`;
-      //     }
-      //   });
+        `http://llwant.test.qianz.com/game/?gamePath=game3&tk=${token}`;
+    },
+    //获取cookie
+    getCookie: function (cname) {
+      var name = cname + "=";
+      var ca = document.cookie.split(";");
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == " ") c = c.substring(1);
+        if (c.indexOf(name) != -1) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    },
+    //拉取已经发布的比赛场
+    _loadPublishArenas() {
+      api.loadPublishArenas().then(res => {
+        var reverseArr = res.arenaInfos.reverse();
+        if (reverseArr.length > 0) {
+          this.gameShow = true;
+        }
+        console.log('拉取已经发布的比赛场:', res)
+      })
     },
     //用户获取首次进入系统优惠券
     _loadUserCoupons() {
       let channel = 1; //channel为1是AI优惠券类型
       api.loadUserCoupons(channel).then(res => {
         console.log("优惠券：", res);
-        // let AicardList = res.coupons.slice(-2);
+        if (res.length === 0) {
+          return false;
+        }
         let AicardList = res.coupons;
         AicardList.forEach(element => {
           let tempObj = {};
           tempObj.type = element.coupon.type ? "实物券" : "现金券";
           tempObj.time = element.coupon.endTime;
-          tempObj.name = element.coupon.type
-            ? "获得" + element.coupon.content
-            : "获得" + element.coupon.value + "元代金券";
+          tempObj.name = element.coupon.type ?
+            "获得" + element.coupon.content :
+            "获得" + element.coupon.value + "元代金券";
           this.dicountList.push(tempObj);
         });
         setTimeout(() => {
@@ -365,6 +370,35 @@ export default {
           // this.discountShow = true;
         }, 1000);
       });
+    },
+    //获取店长推荐
+    _loadRecommends() {
+      api.loadRecommends().then(res => {
+        console.log('店长推荐数据---------------------', res)
+        this.recommendList = res.slice(0, 2);
+      })
+    },
+    //获取门店信息
+    _loadStoreSetting() {
+      api.loadStoreSetting().then(res => {
+        console.log('门店信息---------------------------------：', res)
+        this.getShopSetting(res)
+      })
+    },
+    //拉取首页轮播图
+    _loadAdvertisingPhoto() {
+      api.loadAdvertisingPhoto().then(res => {
+        console.log('轮播图-------------------------：', res)
+        let swiperList = [];
+        res.adPhotoURL.forEach((item, index) => {
+          swiperList.push({
+            url: "javascript:",
+            img: item,
+            title: ""
+          })
+        })
+        this.demo01_list = swiperList
+      })
     },
     //获取好友事件
     _loadFriendEvts() {
@@ -377,7 +411,7 @@ export default {
     },
     //点赞
     thumb(index) {
-      this.picList[index].count++;
+      this.recommendList[index].count++;
       // this.count++;
     },
     //免费预定
@@ -399,7 +433,7 @@ export default {
       wx.getLocation({
         // type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
         type: "gcj02", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-        success: function(res) {
+        success: function (res) {
           var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
           var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
           // alert(longitude)
@@ -412,54 +446,14 @@ export default {
     },
     // 获取用户信息
     _getUserInfo() {
-      api
-        .getUserInfo("/api/loadUserInfo")
-        .then(res => {
-          console.log(res);
-          this.getuserInfo(res);
-        })
+      api.getUserInfo("/api/loadUserInfo").then(res => {
+        console.log('个人信息-------------------------：', res);
+        this.getuserInfo(res);
+      })
         .catch(err => {
           console.log(err);
         });
     },
-    //获取jssdk
-    // _getJssdkInfo() {
-    //   console.log(this.url);
-    //   api
-    //     .getJssdkInfo(
-    //       "/api/loadJSSDKParams?url=" + encodeURIComponent(this.url)
-    //     )
-    //     .then(res => {
-    //       let that = this;
-    //       wx.config({
-    //         //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    //         appId: "wxb2fa3c446063ec19", // 必填，公众号的唯一标识
-    //         timestamp: res.timestamp, // 必填，生成签名的时间戳
-    //         nonceStr: res.nonceStr, // 必填，生成签名的随机串
-    //         signature: res.signature, // 必填，签名，见附录1
-    //         jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-    //       });
-    //       wx.ready(() => {
-    //         wx.onMenuShareAppMessage({
-    //           title: "深圳魅力四射酒吧", // 分享标题
-    //           desc: "这是一个超级好玩的的地方哦", // 分享描述
-    //           link: this.url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-    //           imgUrl: "http://i2.bvimg.com/643118/575b6dacd979832e.jpg", // 分享图标
-    //           type: "", // 分享类型,music、video或link，不填默认为link
-    //           dataUrl: "", // 如果type是music或video，则要提供数据链接，默认为空
-    //           success: () => {
-    //             // 用户确认分享后执行的回调函数
-    //             console.log("分享成功");
-    //           }
-    //         });
-    //       });
-    //       wx.error(function(res) {
-    //         console.log(res);
-    //         // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-    //       });
-    //     })
-    //     .catch(err => {});
-    // },
     //获取场内场外人数
     _getInOutNum() {
       api.getInOutNum().then(res => {
@@ -499,24 +493,18 @@ export default {
         routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
       });
     },
-    //查看玩家部落
-    show_introduce() {
-      util.routerTo("interview", this);
-    },
-    // 更多好友
-    showMoreFriend() {
-      util.routerTo("friend", this);
-    },
     // 更多福利
     showMoreWelfare() {
       util.routerTo("welfare", this);
     },
-    //获取用户信息
     ...mapMutations({
-      getuserInfo: "GET_USERINFO",
+      getuserInfo: "GET_USERINFO",    //获取用户信息
+      getShopSetting: "GET_SHOPINFO",
       getPosition: "GET_POSITION",
       getFriend: "GET_FRIENDlIST",
-      updateShareUrl: "UPDATE_SHAREURL"
+      updateShareUrl: "UPDATE_SHAREURL",
+      getFriend: "GET_FRIENDlIST", //获取候选人,
+      judgeInviteCoupon: "JUDGE_INVITE_COUPON" //判断是否还有邀请有礼
     }),
     ...mapActions({
       getFriendEvt: "get_FriendEvt", //获取好友事件
@@ -525,7 +513,12 @@ export default {
     })
   },
   watch: {
-    $route: function(newValue, oldValue) {}
+    friendList: function (newValue) {
+      let tempArr = this.friendList.map((item, index) => {
+        return item.info;
+      });
+      this.friendIconList = tempArr.slice(0, 3);
+    }
   },
   components: {
     Swiper,
@@ -541,15 +534,13 @@ export default {
 @import "../../assets/less/home_common.less";
 @import "../../assets/less/mixin.less";
 @import "~vux/src/styles/close";
-// @import "../../assets/image/dialog_bg.png";
 // 优惠券开始
 .weui-dialog {
   background: none;
 }
 .couponTitle {
   height: 3.0667rem;
-  .bg("../../assets/image/youhuiquan_bg.png");
-  // background-color: #FFAE00;
+  .bg("../../assets/image/youhuiquan_bg.png"); // background-color: #FFAE00;
 }
 .dialog-discount {
   .discount-box {
@@ -565,8 +556,7 @@ export default {
           width: 7.0533rem;
           height: 1.68rem;
           display: flex;
-          justify-content: space-between;
-          // border: 1px solid #FFAE00;
+          justify-content: space-between; // border: 1px solid #FFAE00;
           // border-left: 2px solid #FFAE00;
           .bg("../../assets/image/discount_bg1.png");
           box-sizing: border-box;
@@ -603,6 +593,21 @@ export default {
   color: #fff;
 }
 // 优惠券结束
+// 弹框游戏开始
+.dialog-gameBegin {
+  .game-box {
+    .gameBegin {
+      width: 8.1867rem;
+      height: 7.2rem;
+    }
+  }
+  .close {
+    margin-top: 0.72rem;
+    width: 1.0667rem;
+    height: 1.0667rem;
+  }
+}
+// 弹框游戏结束
 .home {
   background: rgba(242, 242, 242, 1);
   .fuli {
@@ -700,13 +705,11 @@ export default {
 }
 .top_wrapper {
   position: relative;
-  height: 4.2667rem;
-  // background: #ffe200;
+  height: 4.2667rem; // background: #ffe200;
   .bg {
     position: absolute;
     height: 50%;
-    width: 100%;
-    // background: #ffe200;
+    width: 100%; // background: #ffe200;
   }
   .barLogo_wrapper {
     width: 100%;
@@ -741,14 +744,6 @@ export default {
   .slider {
     height: 100%;
   }
-  // .slider_wrapper {
-  //   height: 3.84rem;
-  //   // position: relative;
-  //   .swiper-container {
-  //     width: 100%;
-  //     height: 100%;
-  //   }
-  // }
 }
 .pic {
   width: 100%;
@@ -765,8 +760,7 @@ export default {
   .adr {
     font-family: "Times New Roman", Times, serif;
     height: 15px;
-    line-height: 15px;
-    // flex: 1;
+    line-height: 15px; // flex: 1;
     padding-top: 0.19rem;
     .position {
       width: 0.4067rem;
@@ -922,8 +916,7 @@ export default {
       .pic_game {
         float: left;
         width: 4.1333rem;
-        height: 2.5333rem;
-        // border-radius: 0.625rem;
+        height: 2.5333rem; // border-radius: 0.625rem;
       }
     }
   }
@@ -1021,8 +1014,7 @@ export default {
           }
         }
         .right {
-          float: right;
-          // margin-top: 0.4rem;
+          float: right; // margin-top: 0.4rem;
           .thunb_box {
             padding-left: 0.1833rem;
             .thumb {

@@ -53,7 +53,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["shareUrl"])
+    ...mapState(["shareUrl","activityNoticeList"])
   },
   methods: {
     goHome(){
@@ -130,8 +130,15 @@ export default {
       margin-bottom: 1.28rem;
     }
   }
+  .btn-container{
+    display: flex;
+    justify-content: space-around;
+    .btn{
+      width: 4rem;
+    }
+  }
   .bg {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -141,7 +148,7 @@ export default {
     img {
       width: 100px;
       height: 100px;
-      position: absolute;
+      position: fixed;
       right: 0;
     }
   }

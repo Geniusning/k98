@@ -4,7 +4,9 @@
         <img src="../../assets/image/select.png" alt=""  @click="showToast=true">
       </div>
       <div class="stack-wrapper">
-        <stack  ref="stack" :pages="someList" :stackinit="stackinit" @firstData="listenFirstdata">暂时没有好友</stack>
+        <!-- 相册··················································begin -->
+              <!-- 相册··················································end -->
+        <stack  ref="stack"   :pages="someList" :stackinit="stackinit" @getMoreFriend="getMoreFriend" @showAblum="showAblum" @firstData="listenFirstdata">暂时没有好友</stack>
         <div class="loading-container" v-show="!someList.length">
           <loading></loading>
         </div>
@@ -48,11 +50,8 @@
               </div>
             </x-dialog>
       </div>
-
-
     <!-- 点赞 -->
     <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask width="10em"  :text="text" :position="position"></toast>
-
     <!-- 见面礼 -->
     <div v-transfer-dom>
       <popup v-model="showToast_gift" position="bottom">
@@ -63,31 +62,39 @@
           </div>
           <div class="gift_list">
             <ul class="list clearfix">
-              <li class="item">
-                <img src="../../assets/image/beer.png" alt="" class="beer">
-                <p class="gift_name">啤酒</p>
-                <p class="gift_price">￥0.99</p>
+              <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)">
+                  <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
+                  <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
+                  <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
+                  <img v-else src="../../assets/image/car.png" alt="" class="car">
+                  <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
+                  <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
+                  <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
+                  <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
+                  <p  class="gift_price">￥{{item.money}}</p>
               </li>
+              <!-- 
                 <li class="item">
-                <img src="../../assets/image/flower.png" alt="" class="flower">
+                
                 <p class="gift_name">鲜花</p>
                 <p class="gift_price">￥1.88</p>
               </li>
                 <li class="item">
-                <img src="../../assets/image/house.png" alt="" class="house">
+               
                 <p class="gift_name gift_name_houseAndCar">别墅</p>
                 <p class="gift_price">￥5.20</p>
               </li>
                 <li class="item">
-                <img src="../../assets/image/car.png" alt="" class="car">
+               
                 <p class="gift_name gift_name_houseAndCar">跑车</p>
                 <p class="gift_price">￥16.8</p>
-              </li>
+              </li> -->
             </ul>
           </div>
         </div>
       </popup>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 <script>
@@ -104,6 +111,16 @@ export default {
   },
   data() {
     return {
+      imgs: [
+        {
+          url: 'http://covteam.u.qiniudn.com/ka2.jpg',
+          title: 'pic1'
+        },
+        {
+          url: 'http://covteam.u.qiniudn.com/poster.png',
+          title: 'pic2'
+        }
+      ],
       showToast_gift: false,
       text: "",
       isFriend: null,
@@ -159,42 +176,86 @@ export default {
       next(vm => {
         // 请求场内好友
         api.getLoadInsideCandidates(vm.inAndOutFriendCursor).then(res => {
-          console.log(res);
+          console.log('场内：', res);
           vm.getFriend(res);
         });
       });
     } else if (to.query.id === "0") {
       next(vm => {
-        let cursor = 0;
-        vm.getFriendList(cursor);
+        let cursor = 0
+        vm.getFriendList(cursor)
       });
     } else {
       next(vm => {
         // 请求场外好友
         api.getLoadOutsideCandidates(vm.inAndOutFriendCursor).then(res => {
+          console.log('场外：', res);
           vm.getFriend(res);
         });
       });
     }
   },
   computed: {
-    ...mapState(["friendList", "inAndOutFriendCursor"])
+    ...mapState(["friendList", "inAndOutFriendCursor", "friendListCursor", "giftList"])
   },
-  mounted() {},
-  destroyed() {
-    this.updateFriendCursor(0);
-  },
-  activated() {},
-  deactivated() {
-    this.updateFriendCursor(0);
+  mounted() {
+    this._loadAllGift();
   },
   methods: {
+    //拉取礼物
+    _loadAllGift() {
+      api.loadAllGift().then(res => {
+        // console.log(res);
+        if (res.errCode === 0) {
+          this.getGiftList(res.gifts);
+        }
+      })
+    },
+    //发送礼物
+    sendGift(id) {
+      // alert('被点击啦')
+      let params = {
+        giftID: parseInt(id),
+        to: this.friendId,
+      }
+      api.sendGift(params).then(res => {
+        console.log(res);
+        if (res.errCode === 0) {
+          this.$vux.toast.show({
+            text: "赠送礼物成功",
+            type: "text",
+            time: 2000,
+            width: "3rem"
+          });
+        } else {
+          this.$vux.toast.show({
+            text: "余额不足，请充值",
+            type: "text",
+            time: 2000,
+            width: "3rem"
+          });
+        }
+      })
+    },
+    // 监听点击相册
+    showAblum(data){
+      console.log('监听点击相册------------------------------：',data);
+      this.$router.push({
+        path:`/friend/${data.info.openid}`
+      })
+    },
     listenFirstdata(data) {
       // 下面是传回父级的数据;
+      console.log('滑动页面传回给父级数据：', data)
       this.friendId = data.info.openid;
       this.setChatFriend(data);
       this.isFriend = data.isAlreadyFriend;
       this.xid = data.xid;
+    },
+    //获取更多朋友
+    getMoreFriend() {
+      console.log('触发获取更多的朋友');
+      this.getMoreFriendList(this.friendListCursor)
     },
     //点赞
     showPosition(position) {
@@ -237,23 +298,20 @@ export default {
       this.showToast = false;
     },
     ...mapActions({
-      getFriendList: "get_Friendlist"
+      getFriendList: "get_Friendlist",//获取候选人
+      getMoreFriendList: "get_moreFriendList"//获取更多候选人
     }),
     ...mapMutations({
       setChatFriend: "SET_CHAT_FRIEND",
       getFriend: "GET_FRIENDlIST", //获取候选好友
-      updateFriendCursor: "UPDATE_INANDOUT_FRIEND_CURSOR" //更新场内场外游标
+      //updateFriendCursor: "UPDATE_INANDOUT_FRIEND_CURSOR", //更新场内场外游标
+      getGiftList: "GET_GIFTLIST"//获取礼物
     })
   },
   watch: {
     friendList(newValue) {
-      console.log(newValue);
       this.someList = newValue;
-    }
-    // $route: function(newValue, oldValue) {
-    //   console.log(oldValue);
-    //   console.log(newValue);
-    // }
+    },
   },
   components: {
     stack,
@@ -330,6 +388,21 @@ export default {
     height: 10.5333rem;
     list-style: none;
     pointer-events: none;
+    .ablum-wrapper {
+      position: absolute;
+      top: 100px;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      z-index: 999999;
+      background-color: rgba(0, 0, 0, 0.3);
+      width: 100%;
+      height: 4rem;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
     .loading-container {
       position: absolute;
       width: 100%;
@@ -500,7 +573,7 @@ export default {
           font-size: 0.2667rem;
           color: #666;
         }
-        .gift_name_houseAndCar{
+        .gift_name_houseAndCar {
           margin-top: 0.2267rem;
         }
         .gift_price {

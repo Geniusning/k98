@@ -7,7 +7,11 @@ import store from './store/index'
 import router from './router/index'
 import vuePicturePreview from 'vue-picture-preview'
 import { ToastPlugin } from 'vux'
-import { mapMutations, mapState, mapActions } from 'vuex'
+import {
+    mapMutations,
+    mapState,
+    mapActions
+} from 'vuex'
 import api from './common/api'
 import util from 'common/util'
 Vue.use(ToastPlugin)
@@ -28,8 +32,8 @@ new Vue({
             let _urlIos = window.location.href.split('#')[0];
             this.updateShareUrl(_urlIos); //更改分享url
         }
-        // this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws?tk=exjkcmYFV7TItjpcK-bDH28Q2Z9riyLOWvPT7Zkk4InzGhXLI5RPlmAwfAWuX_Sdz8n-2A==");
-        this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
+        this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws?tk=-cpX1ha2aJpZ9-IPx5hXZ3L6IqkrwDTStSm9nmORJP9JYcW0w6uZWc7nCgDMj9rSYHunHQ==");
+        // this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
         this.websock.binaryType = "arraybuffer";
         this.connect_websocket(this.websock);
         this.socket.onopen = this.websocketonopen;
@@ -50,13 +54,16 @@ new Vue({
             //数据接收
             var decc = new TextDecoder("utf-8");
             let result = JSON.parse(decc.decode(e.data));
-            //处理聊天消息
+            console.log('对方发来的信息-------------------------', result)
+            this.addFriendEvtObj(result)
+                //处理聊天消息
             if (result.msgCode === 1) {
-                this.appendLastMsg(result.content);
+                let message = result.content.extMsg
+                this.appendLastMsg(message);
                 // // 判断是否在聊天页面；是在聊天页面返回from给服务器表示消息已读
-                let reg = new RegExp(result.content.lastMsg.from)
+                let reg = new RegExp(message.lastMsg.from)
                 if (reg.test(this.$route.path)) {
-                    let fromId = result.content.lastMsg.from;
+                    let fromId = message.lastMsg.from;
                     //发送消息表示已读
                     api.sendMsgReaded(fromId).then(res => {
                         if (res.errorCode == 0) {
@@ -67,8 +74,9 @@ new Vue({
             }
             //处理好友点赞事件
             if (result.msgCode === 2) {
-                this.addFriendEvt(result.content) //往点赞列表新增一条数据
-                this.addFriendEvtObj(result.content)
+                console.log(result)
+                this.addFriendEvt(result.content.fromInfo) //往点赞列表新增一条数据
+                    // this.addFriendEvtObj(result)
                 let cursor = 0
                 this.getFriendEvt(cursor)
             }
@@ -94,6 +102,7 @@ new Vue({
     watch: {
         //websocket推送的最新消息
         LastChatMsg: function(newValue) {
+            console.log('在main收到对方手来的消息------------------------------------：', newValue);
             this.compareLastMsg(newValue)
         }
     },

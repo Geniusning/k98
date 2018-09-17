@@ -1,88 +1,125 @@
 <template>
- <div id="mine" class="mine">
-     <!-- 个人信息 -->
-     <div class="personInfo_wrapper">
-         <div class="person_info">
-             <img :src="userInfo.headimgurl" alt="" class="avatar">
-             <p class="name">{{userInfo.nickname||'小龙女'}}</p>
-             <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->
-             <span class="bindTel" @click="showTelBind" v-if="showTel">绑定手机</span>
-             <span class="bindTel1" @click="showTelBind" v-else>15764271126</span>
-         </div>
-         <img @click="edit_individual" src="../../assets/image/setting.png" alt="" class="edit">
-     </div>
-     <div class="content">
-        <!-- 我的信息 -->
-        <div class="userInfo_wrapper">
-          <ul class="user_list">
-            <li class="item">
-              <p class="score_name">好友数</p>
-              <p class="score">8个</p>
-            </li>
-            <li class="item">
-              <p class="score_name">富豪榜</p>
-              <p class="score">第6名</p>
-            </li>
-             <li class="item">
-              <p class="score_name">大话战神榜</p>
-              <p class="score">第11名</p>
-            </li>
-             <!-- <li class="item">
-              <p class="score_name">大话排名</p>
-              <p class="score">第2名</p>
-            </li> -->
-          </ul>
-        </div>
-        <!-- 我的卡券 -->
-        <div class="discount_wrapper">
-          <ul class="discount_list">
-            <li class="item vux-1px-r" @click="checkDiscout">
-              <img src="../../assets/image/discount.png" alt=""  class="pic_discount">
-              <p class="discount_name">我的卡券</p>
-            </li>
-            <li class="item vux-1px-r" @click="gameDetal">
-              <img src="../../assets/image/game_mine.png" alt="" class="pic_discount">
-              <p class="discount_name">游戏明细</p>
-             </li>
-             <li class="item" @click="giftDetal">
-              <img src="../../assets/image/yingxiangli.png" alt="" class="pic_discount">
-              <p class="discount_name">积分明细</p>
-             </li>
-          </ul>
-        </div>
-        <!-- 我的标签 -->
-        <div class="tag_wrapper">
-          <h2 class="tag_title" @click="chooseImage">我的标签<span class="star">#</span></h2>
-          <ul class="tag_list" v-if="tags_show">
-            <li v-for="(item,index) in tagList" :key="index" class="item">
-              {{item}}
-            </li>
-          </ul>
-          <p v-else class="no_tags"><span class="star">#</span>请在个人编辑里面设置标签，让朋友更了解你哦<span class="star">#</span></p>
-        </div>
-        <!-- 个性签名 -->
-        <div class="signature_wrapper">
-          <h2 class="signature_title">个性签名<span class="star">#</span></h2>
-          <p class="signature" v-if="showTag">我就是我，是不一样的烟火</p>
-          <p v-else class="no_signature"><span class="star">#</span>请在个人编辑里面设置签名<span class="star">#</span></p>
-        </div>
-     </div>
-    <!-- 绑定手机弹框 -->
+  <div id="mine" class="mine">
+    <!-- 个人信息 -->
+    <div class="personInfo_wrapper">
+      <div class="person_info">
+        <img :src="userInfo.headimgurl" alt="" class="avatar">
+        <p class="name">{{userInfo.nickname||'小龙女'}}</p>
+        <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->
+        <span class="bindTel" @click="showTelBind" v-if="showTel">绑定手机</span>
+        <span class="bindTel1" @click="showTelBind" v-else>15764271126</span>
+      </div>
+      <img @click="edit_individual" src="../../assets/image/setting.png" alt="" class="edit">
+    </div>
+    <div class="content">
+      <!-- 我的信息 -->
+      <div class="userInfo_wrapper">
+        <ul class="user_list">
+          <li class="item">
+            <p class="score_name">好友数</p>
+            <p class="score">8个</p>
+          </li>
+          <li class="item">
+            <p class="score_name">富豪榜</p>
+            <p class="score">第6名</p>
+          </li>
+          <li class="item">
+            <p class="score_name">大话战神榜</p>
+            <p class="score">第11名</p>
+          </li>
+        </ul>
+      </div>
+      <!-- 我的卡券 -->
+      <div class="discount_wrapper">
+        <ul class="discount_list">
+          <li class="item vux-1px-r" @click="checkDiscout">
+            <img src="../../assets/image/discount.png" alt="" class="pic_discount">
+            <p class="discount_name">我的卡券</p>
+          </li>
+          <li class="item vux-1px-r" @click="giftDetal">
+            <img src="../../assets/image/yingxiangli.png" alt="" class="pic_discount">
+            <p class="discount_name">积分明细</p>
+          </li>
+          <li class="item " @click="gameDetal">
+            <img src="../../assets/image/game_mine.png" alt="" class="pic_discount">
+            <p class="discount_name">游戏明细</p>
+          </li>
+        </ul>
+      </div>
+      <!-- 我的标签 -->
+      <div class="tag_wrapper">
+        <h2 class="tag_title" @click="chooseImage">我的标签<span class="star">#</span></h2>
+        <!-- <ul class="tag_list" v-if="userInfo.tags.length"> -->
+        <ul class="tag_list" v-if="showTag">
+          <li v-for="(item,index) in tagList" :key="index" class="item">
+            {{item}}
+          </li>
+        </ul>
+        <!-- <p v-if="userInfo.tags.length">{{userInfo.tags}}</p> -->
+        <p v-else class="no_tags"><span class="star">#</span>请在个人编辑里面设置标签，让朋友更了解你哦<span class="star">#</span></p>
+      </div>
+      <!-- 个性签名 -->
+      <div class="signature_wrapper">
+        <h2 class="signature_title">个性签名<span class="star">#</span></h2>
+        <p class="signature" v-if="showTag">youare</p>
+        <!-- <p class="signature" v-if="userInfo.signature.length">{{userInfo.signature}}</p> -->
+        <p v-else class="no_signature"><span class="star">#</span>请在个人编辑里面设置签名<span class="star">#</span></p>
+      </div>
+      <!-- 营销推广 -->
+      <div class="marketing_wrapper">
+        <h2 class="marketing_title">营销推广<span class="star">#</span></h2>
+        <ul class="marketing-list">
+          <li class="marketing-item">
+            <div class="marketing-left">
+                门店名片(首页)
+            </div>
+            <div class="marketing-right" @click="homeShare">
+              分享->
+            </div>
+          </li>
+           <li class="marketing-item">
+            <div class="marketing-left">
+                邀新有礼
+            </div>
+            <div class="marketing-right" @click="inviteShare">
+              分享->
+            </div>
+          </li>
+           <li class="marketing-item">
+            <div class="marketing-left">
+                大话争霸赛
+            </div>
+            <div class="marketing-right" @click="gameShare">
+              分享->
+            </div>
+          </li>
+           <li class="marketing-item">
+            <div class="marketing-left">
+                门店活动通知
+            </div>
+            <div class="marketing-right" @click="activetyShare">
+              分享->
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+       <!-- 绑定手机弹框 -->
     <validate v-show="isShow"></validate>
     <!-- 新增标签 -->
-    <div v-transfer-dom>
-          <x-dialog v-model="showTag" class="dialog-demo">
-            <div style="padding:10px 0px">
-              <div style="margin-bottom:10px" class="tag_box">
-                <input type="text" class="tag" placeholder="请输入标签" ref="tag">
-                <x-icon @click.native="closeTag" type="ios-close-empty" size="30" class="close"></x-icon>
-              </div> 
-              <x-button style="float:right;margin-right:20px;margin-bottom:10px;" @click.native="save" type="primary" :mini="true">新增</x-button>
-            </div>
-          </x-dialog>
-    </div>
+    <!-- <div v-transfer-dom>
+      <x-dialog v-model="showTag" class="dialog-demo">
+        <div style="padding:10px 0px">
+          <div style="margin-bottom:10px" class="tag_box">
+            <input type="text" class="tag" placeholder="请输入标签" ref="tag">
+            <x-icon @click.native="closeTag" type="ios-close-empty" size="30" class="close"></x-icon>
+          </div>
+          <x-button style="float:right;margin-right:20px;margin-bottom:10px;" @click.native="save" type="primary" :mini="true">新增</x-button>
+        </div>
+      </x-dialog>
+    </div> -->
     <router-view></router-view>
- </div>
+  </div>
 </template>
 
 <script type='text/ecmascript-6'>
@@ -94,7 +131,10 @@ import {
   Group,
   Toast
 } from "vux";
-import { mapGetters, mapMutations } from "vuex";
+import {
+  mapGetters,
+  mapMutations
+} from "vuex";
 import util from "common/util";
 import api from "common/api";
 import Validate from "../../base/validatephone/validatephone";
@@ -116,6 +156,8 @@ export default {
     ...mapGetters(["userInfo", "test", "isShow"])
   },
   created() {
+    // this.tagList = this.userInfo.tags.split('、')
+    console.log()
     let url = window.location.href.split('#')[0];
     console.log(url)
     api
@@ -134,13 +176,33 @@ export default {
       });
   },
   methods: {
+    activetyShare() {
+      this.$router.push({
+        name: "shareActivity"
+      })
+    },
+    gameShare() {
+      let token = util.getCookie("tk");
+      window.location.href =
+        `http://llwant.test.qianz.com/game/?gamePath=game3&tk=${token}`;
+    },
+    inviteShare() {
+      this.$router.push({
+        name: "shareNew"
+      })
+    },
+    homeShare() {
+      this.$router.push({
+        name: "home"
+      })
+    },
     chooseImage() {
       console.log("images");
       wx.chooseImage({
-        count: 2, // 默认9
+        count: 1, // 默认9
         sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
         sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-        success: function(res) {
+        success: function (res) {
           var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
           console.log(localIds);
         }
@@ -165,36 +227,36 @@ export default {
       });
     },
     // 新增标签
-    plusTag() {
-      this.showTag = true;
-    },
+    // plusTag() {
+    //   this.showTag = true;
+    // },
     // 保存新增标签
-    save() {
-      let tag = this.$refs.tag.value;
-      if (!tag) {
-        this.$vux.toast.show({
-          type: "text",
-          width: "9rem",
-          text: "请输入您的个性标签"
-        });
-        return;
-      }
-      if (this.tagList.length > 4) {
-        this.$vux.toast.show({
-          type: "text",
-          text: "最多设置5个标签哦"
-        });
-        return;
-      }
-      this.tagList.push(tag);
-      console.log(this.tagList.length);
-      this.showTag = false;
-      this.$refs.tag.value = "";
-    },
+    // save() {
+    //   let tag = this.$refs.tag.value;
+    //   if (!tag) {
+    //     this.$vux.toast.show({
+    //       type: "text",
+    //       width: "9rem",
+    //       text: "请输入您的个性标签"
+    //     });
+    //     return;
+    //   }
+    //   if (this.tagList.length > 4) {
+    //     this.$vux.toast.show({
+    //       type: "text",
+    //       text: "最多设置5个标签哦"
+    //     });
+    //     return;
+    //   }
+    //   this.tagList.push(tag);
+    //   console.log(this.tagList.length);
+    //   this.showTag = false;
+    //   this.$refs.tag.value = "";
+    // },
     // 关闭标签
-    closeTag() {
-      this.showTag = false;
-    },
+    // closeTag() {
+    //   this.showTag = false;
+    // },
     showTelBind() {
       this.changeValidate(true);
     },
@@ -292,8 +354,7 @@ export default {
         display: inline-block;
         width: 2.1867rem;
         line-height: normal;
-        padding: 0.1333rem 0;
-        // background-color: #fff;
+        padding: 0.1333rem 0; // background-color: #fff;
         border-radius: 0.3067rem;
         font-weight: 700;
         font-family: serif;
@@ -385,6 +446,32 @@ export default {
           padding: 0 0.4rem;
           margin-right: 0.2667rem;
           font-size: 0.3733rem;
+        }
+      }
+    }
+    .marketing_wrapper {
+      height: 4rem;
+      margin-top: 0.1333rem;
+      padding: 0 0.4rem;
+      background: #fff;
+      .marketing_title {
+        .title();
+      }
+      .marketing-list {
+        .marketing-item {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 0.24rem;
+          .marketing-left {
+            font-size: 0.3733rem;
+            margin-top: 0.1333rem;
+          }
+          .marketing-right {
+            font-size: 0.3733rem;
+            padding: 0.1067rem 0.1333rem;
+            background-color: @baseColor;
+            color: #fff;
+          }
         }
       }
     }

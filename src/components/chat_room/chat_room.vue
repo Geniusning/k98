@@ -39,9 +39,9 @@
                   </li>
               </ul>
             </scroll>
-            <div class="loading-container" v-show="isLoading">
+            <!-- <div class="loading-container" v-show="isLoading">
               <loading></loading>
-            </div>
+            </div> -->
           </div>
           <div class="input_wrapper">
             <div class="input_area clearfix">
@@ -165,7 +165,7 @@ import lrz from "lrz";
 export default {
   directives: {
     TransferDom,
-    focus: function(el) {
+    focus: function (el) {
       el.focus();
     }
   },
@@ -315,7 +315,7 @@ export default {
       chatListIndex: 0,
       componentChatList: [],
       isscroll: true,
-      isLoading: false
+      // isLoading: false
     };
   },
   created() {
@@ -351,7 +351,7 @@ export default {
       "LastChatMsg",
       "inputValue",
       "socket",
-      "FriendListcursor"
+      "alreadyFriendListcursor"
     ])
   },
   methods: {
@@ -361,7 +361,7 @@ export default {
     },
     //获取聊天消息列表
     _getChatList() {
-      let cursor = this.FriendListcursor;
+      let cursor = this.alreadyFriendListcursor;
       api
         .getFriendMessList(cursor, this.staticChatFriendObj.openid)
         .then(res => {
@@ -369,7 +369,7 @@ export default {
           this.changeCursor(res.cursor);
           let resultMessList = res.messages;
           var i;
-          for (i = resultMessList.length-1; i >= 0; i--) {
+          for (i = resultMessList.length - 1; i >= 0; i--) {
             let item = resultMessList[i];
             this.componentChatList.push({
               message: item.content,
@@ -415,7 +415,7 @@ export default {
       let decc1 = new TextEncoder("utf-8");
       let result = decc1.encode(textMessObj);
       api.postFriendMess(result).then(res => {
-        console.log(res);
+        console.log('发送消息成功:`````````````````````````````````````````', res);
         this.emotionShow = false;
       });
       this.$refs.listView.refresh();
@@ -428,8 +428,8 @@ export default {
         return;
       }
       let vm = this;
-      lrz(e.target.files[0], { quality: 0.3 })
-        .then(function(rst) {
+      lrz(e.target.files[0], { quality: 0.1 })
+        .then(function (rst) {
           if (rst.base64Len > 1024 * 1024 * 1) {
             // vm.$toast("图片不能超过1MB");
             console.log("图片不能超过1MB");
@@ -453,7 +453,7 @@ export default {
               console.log(err);
             });
         })
-        .catch(function(err) {
+        .catch(function (err) {
           vm.$toast("压缩图片失败");
         });
     },
@@ -471,11 +471,11 @@ export default {
     //下拉刷新
     pullingDown() {
       console.log("下拉刷新");
-      if (!this.FriendListcursor || this.endCursor == 0) {
+      if (!this.alreadyFriendListcursor || this.endCursor == 0) {
         return;
       }
-      let cursor = this.FriendListcursor;
-      this.isLoading = true;
+      let cursor = this.alreadyFriendListcursor;
+      // this.isLoading = true;
       api
         .getFriendMessList(cursor, this.staticChatFriendObj.openid)
         .then(res => {
@@ -486,7 +486,7 @@ export default {
           }
           this.endCursor = res.cursor;
           this.changeCursor(res.cursor);
-          this.isLoading = false; //加载loading
+          //this.isLoading = false; //加载loading
           this.isscroll = false; //判断下拉刷新
           let resultMessList = res.messages;
           var i;
@@ -577,37 +577,39 @@ export default {
     })
   },
   watch: {
-    LastChatMsg: function(newValue) {
-      // console.log(newValue.lastMsg);
+    LastChatMsg: function (newValue) {
+      // console.log('在聊天页面收到对方发来的消息-------------------------------：',newValue);
       if (newValue.lastMsg.from == this.staticChatFriendObj.openid) {
         //判断是否是进入时原来的两个人进行聊天
+        // console.log('在聊天页面的时间-----------------------------------------：',newValue.lastMsg.stime)
         this.componentChatList.push({
           message: newValue.lastMsg.content,
           friend:
             newValue.lastMsg.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
           type: newValue.lastMsg.type,
-          time: util.timestampToTime(newValue.lastMsg.stime)
+          time: newValue.lastMsg.stime
         });
       }
     },
-    input_value: function(newValue, oldValue) {
+    input_value: function (newValue, oldValue) {
       if (newValue.length > 0 || oldValue > 0) {
         this.flag = true;
       } else {
         this.flag = false;
       }
     },
-    chatListIndex: function(newValue) {
-      console.log('父页面的chatListIndex：',newValue)
+    chatListIndex: function (newValue) {
+      console.log('父页面的chatListIndex：', newValue)
       if (this.isscroll) {
-        this.$nextTick(function() {
-          let childNodes =  this.$refs.chatList.childNodes;
+        this.$nextTick(function () {
+          let childNodes = this.$refs.chatList.childNodes;
+          // console.log(childNodes)
           let chatListHeight = 0;
-          childNodes.forEach(item=>{
-            chatListHeight +=item.clientHeight
+          childNodes.forEach(item => {
+            chatListHeight += item.clientHeight
           })
           this.scrollHeight = chatListHeight;
-          console.log('父页面scrollHeight：',this.scrollHeight)
+          console.log('父页面scrollHeight：', this.scrollHeight)
         });
       }
     }

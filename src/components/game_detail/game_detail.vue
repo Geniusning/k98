@@ -1,67 +1,106 @@
 <template>
- <div id="game_detail" class="game_detail">
-     <my-header title="游戏明细"></my-header>
-         <div class="list_wrapper vux-1px-t">
-             <div class="title_content vux-1px-b">
-                 <h3 class="title">游戏获胜率：</h3>
-                 <p class="ratio">56%</p>
-             </div>
-             <scroll class="scroll">
-                <ul class="record_list">
-                    <li class="item vux-1px" v-for="(item,index) in resultList" :key="index">
-                        <span class="result_left" :class="{result:true,fail:false}">{{item.win}}</span>
-                        <span class="time">2018-2-02</span>
+ <div class="gift_detail">
+        <my-header title="大话战绩" ref="header"></my-header>
+        <div class="gift_wrapper vux-1px-t">
+            <div class="title_content vux-1px-b">
+              <div class='title_content_item clearfix'>
+                <h3 class="title fl"><strong>我的战绩：</strong></h3>
+                <img src="../../assets/image/jiubei.png" alt="" class="jiubeiIcon fl">
+                <span class="money fl">+200</span>
+              </div>
+               <div class='title_content_item clearfix'>
+                <h3 class="title fl"><strong>战神榜排名：</strong></h3>
+                <span class="money fl">11</span>
+              </div>
+            </div>
+            <div class="scrollTitle">
+              <span class="total">累计战绩</span>
+              <span class="name">每局战果</span>
+              <span class="content">参与项目</span>
+              <span class="avatar">对手</span>
+              <span class="time">时间</span>
+            </div>
+            <scroll class="scroll" :data="giftList">
+                <ul class="gift_list">
+                    <li class="item vux-1px" v-for="(item,index) in giftList" :key="index">
+                        <span class="total">{{item.totalSum}}</span>
+                        <span class="name">{{item.perResult}}</span>
+                        <span class="content">{{item.itemName}}</span>
+                        <div class="avatar">
+                          <img src="../../assets/image/avatar.jpg" class="gift_icon">
+                        </div>
+                        <span class="time">20180509 16:00:32</span>
                     </li>
-                    <!-- <li class="item vux-1px">
-                        <span class="result_left" :class="{result:false,fail:true}">失败</span>
-                        <span class="time">2018-2-02</span>
-                    </li> -->
                 </ul>
-             </scroll>
-         </div>
+            </scroll>
+        </div>
  </div>
 </template>
 
 <script type='text/ecmascript-6'>
+import api from "common/api";
 import myHeader from "../../base/myheader/myheader";
 import Scroll from "../../base/scroll/scroll";
 export default {
   data() {
     return {
-      win: true,
-      resultList: [
+      moneyIndex: 0,
+      moneyInitValue: 5,
+      giftList: [
         {
-          win: "胜利"
+          totalSum: "+8",
+          perResult: "+1",
+          itemName: "排名赛"
         },
         {
-          win: "胜利"
+          totalSum: "+8",
+          perResult: "+1",
+          itemName: "单挑邻桌"
         },
         {
-          win: "胜利"
+          totalSum: "+8",
+          perResult: "+1",
+          itemName: "好友开房"
         },
         {
-          win: "胜利"
+          totalSum: "+8",
+          perResult: "+2",
+          itemName: "好友开房"
         },
         {
-          win: "胜利"
+          totalSum: "+8",
+          perResult: "-1",
+          itemName: "排名赛"
         },
         {
-          win: "胜利"
+          totalSum: "+8",
+          perResult: "+1",
+          itemName: "排名赛"
         },
         {
-          win: "胜利"
+          totalSum: "+8",
+          perResult: "+1",
+          itemName: "单挑邻桌"
         },
         {
-          win: "胜利"
+          totalSum: "+8",
+          perResult: "+1",
+          itemName: "好友开房"
         },
         {
-          win: "胜利"
+          totalSum: "+8",
+          perResult: "+2",
+          itemName: "好友开房"
         },
         {
-          win: "胜利"
-        }
+          totalSum: "+8",
+          perResult: "-1",
+          itemName: "排名赛"
+        },
       ]
     };
+  },
+  methods: {
   },
   components: {
     myHeader,
@@ -72,51 +111,97 @@ export default {
 
 <style scoped lang='less'>
 @import "../../assets/less/variable.less";
-.game_detail {
+.gift_detail {
   height: 100%;
-  .list_wrapper {
-    padding-top: 0.1333rem;
+  .gift_wrapper {
+    height: 80%;
     .title_content {
-      //   margin: 0.1333rem;
+      margin-top: 0;
       display: flex;
-      justify-content: space-between;
       padding: 0.4rem 0.4rem;
       box-sizing: border-box;
+      .title_content_item {
+        margin-right: 0.6667rem;
+        box-sizing: border-box;
+      }
+      .jiubeiIcon {
+        width: 0.4rem;
+        height: 0.5rem;
+        margin-right: 0.1333rem;
+      }
       .title {
         font-size: 0.4rem;
         color: #333;
       }
-      .ratio {
+      .money {
+        padding-top: 0.05rem;
         font-size: 0.3733rem;
         color: #ff4646;
       }
     }
+    .scrollTitle {
+      padding: 0.4rem 0.2rem;
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+      font-size: 0.35rem;
+      .total {
+        width: 20%;
+      }
+      .name {
+        width: 20%;
+      }
+      .content {
+        width: 20%;
+      }
+      .avatar {
+        width: 20%;
+      }
+      .time {
+        width: 20%;
+      }
+    }
     .scroll {
-      height: 10.3333rem;
+      height: 9.3333rem;
       overflow: hidden;
       padding-bottom: 0.1333rem;
       border-bottom: 1px solid #ccc;
-      .record_list {
+      .gift_list {
         padding-bottom: 0.1333rem;
         .item {
-          padding: 0.4rem 0.4rem;
+          padding: 0.2rem 0.2rem;
           margin: 0.1333rem;
           display: flex;
-          justify-content: space-between;
           box-sizing: border-box;
           box-shadow: 1px 1px 1px 1px #eee;
-          .result_left {
-            font-size: 0.4rem;
-            &.result {
-              color: #ff4646;
-            }
-            &.fail {
-              color: #10a600;
-            }
+          font-size: 0.35rem;
+          text-align: center;
+          .name {
+            width: 20%;
+            padding-top: 0.1333rem;
+          }
+          .total {
+            width: 20%;
+            padding-top: 0.1333rem;
+          }
+          .gift_icon {
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%;
+          }
+          .avatar {
+            width: 20%;
+          }
+          .content {
+            width: 20%;
+            padding-top: 0.1333rem;
           }
           .time {
-            font-size: 0.3467rem;
-            color: #999;
+            width: 20%;
+            text-align: center;
+          }
+          .plus {
+            color: green;
           }
         }
       }

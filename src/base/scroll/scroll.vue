@@ -57,12 +57,10 @@ export default {
   },
   created() {},
   mounted() {
-    this.scrollData = 222
     // setTimeout(() => {
-    console.log("scroll优惠券:", this.data);
     this._initScroll();
     this.$watch('scrollData',function(newval){
-      console.log("newVal--------------------------------------------:",newval);
+      // console.log("newVal--------------------------------------------:",newval);
     })
     // }, 17);
   },
@@ -96,9 +94,7 @@ export default {
       }
       if (this.listenScroll) {
         let that = this;
-        // console.log(this.listenScroll);
         this.scroll.on("scroll", pos => {
-          // console.log(pos);
           that.$emit("scroll", pos);
         });
       }
@@ -136,12 +132,12 @@ export default {
   },
   watch: {
     scrollHeight: function(newValue) {
-      console.log("scrollNewvalue:", newValue);
+      // console.log("scrollNewvalue:", newValue);
       this.scroll.scrollTo(0, -newValue, 1000);
     },
     data(newValue) {
       let len = newValue.length;
-      console.log('scroll里面的聊天数量：',len);
+      // console.log('scroll里面的聊天数量：',len);
       this.$emit("getIndex", len);
       setTimeout(() => {
         this.refresh();
