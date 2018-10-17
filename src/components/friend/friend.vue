@@ -2,6 +2,7 @@
   <div id="friend" class="friend">
       <div class="nav">
         <img src="../../assets/image/select.png" alt=""  @click="showToast=true">
+        <img src="../../assets/image/setting.png" alt="" @click="intoSetting">
       </div>
       <div class="stack-wrapper">
         <!-- 相册··················································begin -->
@@ -62,7 +63,7 @@
           </div>
           <div class="gift_list">
             <ul class="list clearfix">
-              <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)">
+              <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
                   <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
                   <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
                   <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
@@ -93,6 +94,12 @@
           </div>
         </div>
       </popup>
+    </div>
+    <!-- 引导背景 v-show="userInfo.firstLoad" -->
+    <div class="guide_bg" v-show="isFirstLoad" @click="isFirstLoad=false">
+      <img class="thumb" src="../../assets/image/thumb.png" alt="">
+      <!-- <img class="close" src="../../assets/image/close.png" alt=""> -->
+      <p class="intro">请尽快完善信息，让更多人认识你哦！</p>
     </div>
     <router-view></router-view>
   </div>
@@ -132,7 +139,7 @@ export default {
       show_mask: true,
       currentIndex1: 0,
       currentIndex2: 0,
-      // height: 0,
+      isFirstLoad: false,
       sexArr: [
         {
           id: 0,
@@ -196,16 +203,26 @@ export default {
     }
   },
   computed: {
-    ...mapState(["friendList", "inAndOutFriendCursor", "friendListCursor", "giftList"])
+    ...mapState(["friendList", "inAndOutFriendCursor", "friendListCursor", "giftList", "userInfo"])
   },
   mounted() {
+    if (this.userInfo.firstLoad) {
+      this.isFirstLoad = true;
+    } else {
+      this.isFirstLoad = false;
+    }
     this._loadAllGift();
   },
   methods: {
+    //进入个人信息设置页面
+    intoSetting(){
+      this.$router.push({
+        name:"individual"
+      })
+    },
     //拉取礼物
     _loadAllGift() {
       api.loadAllGift().then(res => {
-        // console.log(res);
         if (res.errCode === 0) {
           this.getGiftList(res.gifts);
         }
@@ -213,7 +230,6 @@ export default {
     },
     //发送礼物
     sendGift(id) {
-      // alert('被点击啦')
       let params = {
         giftID: parseInt(id),
         to: this.friendId,
@@ -238,10 +254,10 @@ export default {
       })
     },
     // 监听点击相册
-    showAblum(data){
-      console.log('监听点击相册------------------------------：',data);
+    showAblum(data) {
+      console.log('监听点击相册------------------------------：', data);
       this.$router.push({
-        path:`/friend/${data.info.openid}`
+        path: `/friend/${data.info.openid}`
       })
     },
     listenFirstdata(data) {
@@ -408,6 +424,44 @@ export default {
       width: 100%;
       top: 50%;
       // transform: translateY(-50%);
+    }
+  }
+  .guide_bg {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    .thumb {
+      position: absolute;
+      width: 0.8rem;
+      top: 0.2667rem;
+      left: 0.9933rem;
+      animation: jump 1000ms linear 500ms infinite normal;
+      @keyframes jump {
+        10% {
+          left: 0.9933rem;
+        }
+        50% {
+          left: 0.9033rem;
+        }
+        100% {
+          left: 0.9933rem;
+        }
+      }
+    }
+    // .close {
+    //   position: absolute;
+    //   width: 0.8rem;
+    //   top: 0.2667rem;
+    //   right: 0.3933rem;
+    // }
+    .intro {
+      position: absolute;
+      top: 0.4667rem;
+      left: 2rem;
+      color: #fff;
     }
   }
 }

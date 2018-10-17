@@ -7,11 +7,7 @@ import store from './store/index'
 import router from './router/index'
 import vuePicturePreview from 'vue-picture-preview'
 import { ToastPlugin } from 'vux'
-import {
-    mapMutations,
-    mapState,
-    mapActions
-} from 'vuex'
+import { mapMutations, mapState, mapActions } from 'vuex'
 import api from './common/api'
 import util from 'common/util'
 Vue.use(ToastPlugin)
@@ -32,7 +28,7 @@ new Vue({
             let _urlIos = window.location.href.split('#')[0];
             this.updateShareUrl(_urlIos); //更改分享url
         }
-        this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws?tk=-cpX1ha2aJpZ9-IPx5hXZ3L6IqkrwDTStSm9nmORJP9JYcW0w6uZWc7nCgDMj9rSYHunHQ==");
+        this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws?tk=QhVVscl3hJJeZEI9tJKSRo79E9JgX3BvgEzorSz1aS2Ev8vp4_3OVr13LwLw6i64VISMIQ==");
         // this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
         this.websock.binaryType = "arraybuffer";
         this.connect_websocket(this.websock);
@@ -40,6 +36,9 @@ new Vue({
         this.socket.onerror = this.websocketonerror;
         this.socket.onmessage = this.websocketonmessage;
         this.socket.onclose = this.websocketclose;
+        this._acquireWaitGetCoupons(); //判断是否已经领取AI优惠券
+        this._createQrcode(); //创建二维码
+
     },
     methods: {
         websocketonopen(e) {
@@ -47,7 +46,6 @@ new Vue({
         },
         websocketonerror(e) {
             //错误
-            console.log(e);
             console.log("WebSocket连接发生错误");
         },
         websocketonmessage(e) {
@@ -73,17 +71,45 @@ new Vue({
                 }
             }
             //处理好友点赞事件
-            if (result.msgCode === 2) {
+            else if (result.msgCode === 2) {
                 console.log(result)
                 this.addFriendEvt(result.content.fromInfo) //往点赞列表新增一条数据
                     // this.addFriendEvtObj(result)
                 let cursor = 0
                 this.getFriendEvt(cursor)
             }
+            //处理送礼事件
+            else if (result.msgCode === 3) {
+
+            }
         },
         websocketclose(e) {
             //关闭
             console.log("connection closed (" + e.code + ")");
+        },
+        _acquireWaitGetCoupons() {
+            let channel = 1 //channel为1是AI优惠券类型
+            setTimeout(() => {
+                api.acquireWaitGetCoupons(channel).then(res => {
+                    console.log("AI优惠券------------------------------", res);
+                    if (res.coupons.length > 0) {
+                        let result = {
+                            msgCode: 4,
+                            content: {
+                                extMsg: {},
+                                fromInfo: null,
+                            }
+                        }
+                        this.addFriendEvtObj(result);
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
+            }, 15000);
+        },
+        //创建二维码
+        _createQrcode() {
+            api.createQrcode();
         },
         ...mapMutations({
             connect_websocket: "CONNECT_WEBSOCKET",

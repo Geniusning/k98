@@ -1,0 +1,281 @@
+<template>
+ <div id="gameCompetionDetail" class="gameCompetionDetail">
+     <div class="notice-wrapper">
+         <div class="name">大话骰排名赛直播间</div>
+         <img src="../../../assets/image/refresh.png" alt="" class="refresh" @click="refresh">
+         <span class="refresh-text">刷新排名</span>
+         <img class="home" src="../../../assets/image/game_home.png" alt="" @click="goHome">
+     </div>
+
+     <div class="scroll-wrapper">
+         <div class="playerNumber">
+           <ul class="titleList">
+             <li class="subTitle">名次</li>
+             <li class="subTitle">参赛者</li>
+             <li class="subTitle">战绩(杯)</li>
+             <li class="subTitle">已打(局)</li>
+             <li class="subTitle">邀请人</li>
+           </ul>
+         </div>
+         <loading v-show="isLoading" style="position:absolute;top:30%;left:0"></loading>
+         <scroll class="scrollList" :data="playList">
+             <ul class="userList">
+                 <li class="userItem" v-for="(item,index) in playList">
+                     <span class="rankNum" :class="{'first':index==0,'second':index==1,'third':index==2}">{{index+1}}</span>
+                     <div class="userInfo">
+                        <img class="avatar" :src="item.headURI" alt="">
+                        <div class="username">{{item.nick}}</div>
+                     </div>
+                     <span class="score">{{item.score}}</span>
+                     <span class="finishRound">{{item.finishRound}}</span>
+                     <span class="inviterInfo" v-if="!item.inviterDate">暂无</span>
+                      <div class="userInfo" v-else>
+                        <img class="avatar" :src="item.inviterDate.headURI" alt="">
+                        <div class="username">{{item.inviterDate.nick}}</div>
+                     </div>
+                 </li>
+             </ul>
+         </scroll>
+     </div>
+     <div class="btn-wrapper">
+         <p class='backHome'>长按关注本店公众号，享受会员特权：领福利、交群友、玩游戏！</p>
+         <img :src="QRcodeUrl" alt="" class="QRcode">
+     </div>
+ </div>
+</template>
+
+<script type='text/ecmascript-6'>
+import Scroll from "base/scroll/scroll";
+import Loading from "base/loading/loading";
+import api from 'common/api'
+// import { setInterval, clearTimeout } from 'timers';
+export default {
+  data() {
+    return {
+      playList: [],
+      timeout: 200000,
+      QRcodeUrl: "",
+      url: "",
+      arenaID: '',
+      isLoading: false,
+    };
+  },
+  mounted() {
+    this._loadArenaRank();//拉取比赛场排名
+    this._loadAllQrcode();//拉取二维码
+    console.log('arenaID------------------------------', this.$route.params.arenaID);
+  },
+  methods: {
+    //拉取比赛场排名
+    _loadArenaRank() {
+      // let timer = null;
+      this.url = window.location.href;
+      this.isLoading = true;
+      var ArenaId = this.url.split('arenaID=')[1];
+      if (ArenaId) {
+        this.arenaID = ArenaId;
+      } else {
+        this.arenaID = this.$route.params.arenaID
+      }
+      // if (timer) {
+      //   clearTimeout(timer);
+      // }
+      api.loadArenaRank(this.arenaID).then(res => {
+        console.log(res)
+        if (res.errCode === 0) {
+          this.playList = res.userRanks;
+          this.isLoading = false;
+          if (res.isAllComplete) {  //如果比赛结束，结束轮训
+            this.$vux.toast.show({
+              text: "比赛已结束",
+              type: "text",
+              time: 2000,
+              width: "3rem"
+            });
+            return false;
+          }
+          // timer = setTimeout(() => {
+          //   this._loadArenaRank();
+          // }, 10000);
+        }
+      })
+    },
+    //刷新
+    refresh() {
+      this._loadArenaRank();
+    },
+    _loadAllQrcode() {
+      api.loadAllQrcode().then(res => {
+        console.log('二维码----------------', res)
+        this.QRcodeUrl = res.urls[0]
+      })
+    },
+    //回到主页
+    goHome() {
+      this.$router.push({
+        name: "welfare"
+      })
+    }
+  },
+  components: {
+    Scroll,
+    Loading
+  }
+};
+</script>
+
+<style scoped lang='less'>
+@import "../../../assets/less/mixin.less";
+.gameCompetionDetail {
+  height: 100%;
+  box-sizing: border-box;
+  // background-color: #196045;
+  overflow-y: auto;
+  padding-top: 0.4267rem;
+  .notice-wrapper {
+    width: 8.8rem;
+    height: 1.4667rem;
+    position: relative;
+    box-sizing: border-box;
+    padding: 0.3433rem 0.2667rem;
+    // .bg("../../assets/image/playerTitle_bg.png");
+    position: relative;
+    margin: 0 auto;
+    .refresh {
+      position: absolute;
+      width: 0.8rem;
+      height: 0.8rem;
+      top: 0.3rem;
+      left: 0.4333rem;
+    }
+    .refresh-text {
+      position: absolute;
+      width: 1.5rem;
+      top: 1.13rem;
+      left: 0.3rem;
+    }
+    .name {
+      font-size: 0.48rem;
+      // text-shadow: 0 0.0533rem 0.0267rem;
+      font-weight: bold;
+      color: #333;
+      letter-spacing: 0.0667rem;
+      text-align: center;
+    }
+    .home {
+      position: absolute;
+      width: 1rem;
+      height: 1rem;
+      right: 0.2667rem;
+      top: 0.1333rem;
+    }
+  }
+  .scroll-wrapper {
+    width: 8.8rem;
+    height: 11.04rem;
+    // .bg("../../assets/image/player_bg.png");
+    margin: 0.2933rem auto 0;
+    border-radius: 0.32rem;
+    border: 1px solid #333;
+    .playerNumber {
+      width: 100%;
+      border-bottom: 1px solid #ccc;
+      .titleList {
+        width: 100%;
+        display: flex;
+        .subTitle {
+          width: 20%;
+          text-align: center;
+          font-size: 0.4rem;
+          color: #333;
+        }
+      }
+    }
+    .scrollList {
+      height: 9.5rem;
+      overflow: hidden;
+      .userList {
+        .userItem {
+          display: flex;
+          margin-top: 0.1633rem;
+          width: 100%;
+          border-bottom: 1px solid #ccc;
+          .rankNum {
+            color: #333;
+            font-size: 0.5133rem;
+            padding-top: 0.2333rem;
+            width: 20%;
+            text-align: center;
+            &.first {
+              color: gold;
+              font-weight: bold;
+            }
+            &.second {
+              color: goldenrod;
+              font-weight: bold;
+            }
+            &.third {
+              color: red;
+              font-weight: bold;
+            }
+          }
+          .userInfo {
+            text-align: center;
+            width: 20%;
+            .avatar {
+              width: 1rem;
+              height: 1rem;
+              border-radius: 50%;
+            }
+            .username {
+              font-size: 0.4rem;
+              color: #333;
+              // padding-top: 0.1333rem;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+          .score {
+            width: 20%;
+            text-align: center;
+            padding-top: 0.3333rem;
+            color: #333;
+            font-size: 0.4rem;
+          }
+          .finishRound {
+            width: 20%;
+            text-align: center;
+            padding-top: 0.3333rem;
+            color: #333;
+            font-size: 0.4rem;
+          }
+          .inviterInfo {
+            width: 20%;
+            text-align: center;
+            padding-top: 0.3333rem;
+            color: #333;
+            font-size: 0.4rem;
+          }
+        }
+      }
+    }
+  }
+  .btn-wrapper {
+    margin-top: 0.2667rem;
+    text-align: center;
+    // background-color: #366f95;
+    .QRcode {
+      width: 2.6667rem;
+      height: 2.6667rem;
+    }
+    .backHome {
+      font-size: 0.3333rem;
+      font-weight: bold;
+      text-align: center;
+      color: #333;
+      margin-bottom: 0.2667rem;
+    }
+  }
+}
+</style>

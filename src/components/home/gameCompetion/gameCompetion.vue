@@ -3,7 +3,7 @@
     <div class="title-wrapper">
       <h3 class="title">大话骰游戏规则介绍</h3>
       <img @click="showRuleBtn" src="../../../assets/image/Arrow.png" alt="">
-      <img src="../../../assets/image/game_home.png" alt="" @click="goBackHome" class="homeBtn">
+      <img src="../../../assets/image/gameNoticeHome.png" alt="" @click="goBackHome" class="homeBtn">
     </div>
     <transition name="slideDown">
       <div v-show="isShowRule" class="mask">
@@ -46,7 +46,7 @@
         </ul>
       </div>
       <!-- 上期前三名玩家公布 -->
-      <div class="lastPrizeResult-wrapper">
+      <!-- <div class="lastPrizeResult-wrapper">
         <h3 class='title'>上期前三名玩家公布</h3>
         <ul class='lastPrizeResultList'>
           <li class='item' v-for="(item,index) in lastAwardUsers">
@@ -57,7 +57,7 @@
             </div>
           </li>
         </ul>
-      </div>
+      </div> -->
       <!-- Clocker -->
       <div class="clocker-wrapper">
         <h3 class="countDown" v-show="isLessThanPublickTime">暂无比赛</h3>

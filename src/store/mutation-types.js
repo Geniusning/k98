@@ -14,8 +14,14 @@ export const GET_MOREFRIENDlIST = "GET_MOREFRIENDlIST"
 //获取不足10个候选人数据
 export const get_LESSTHAN10FRIENDLIST = "get_LESSTHAN10FRIENDLIST"
 
-//获取好友事件
+//获取好友点赞列表
 export const GET_FRIENDEVTLIST = "GET_FRIENDEVTLIST"
+
+//获取好友送礼列表
+export const GET_FRIENDGIFTLIST = "GET_FRIENDGIFTLIST"
+
+//获取店长消息列表
+export const GET_CAPTAINMESSAGELIST = "GET_CAPTAINMESSAGELIST"
 
 //获取已经成为好友事件
 export const GET_ALREADYFRIENDEVTLIST = "GET_ALREADYFRIENDEVTLIST"
@@ -68,6 +74,9 @@ export const CHANGE_FRIENDlISTCURSOR = "CHANGE_FRIENDlISTCURSOR"
     // export const GET_DYNAMICFRIENDOBJ = "GET_DYNAMICFRIENDOBJ"
     //获取礼物
 export const GET_GIFTLIST = "GET_GIFTLIST"
+
+//获取首页轮播图
+export const GET_ADVERTISINGIMG = "GET_ADVERTISINGIMG"
 
 //所有未读消息badge自增
 export const ADD_BADGE = "ADD_BADGE"

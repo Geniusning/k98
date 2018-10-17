@@ -15,17 +15,17 @@
         <div style="height:100%" class="stack_content">
           <div class="big_box">
             <div class="img_content">
-              <div class="icon_box" v-if="item.info.sex=='男'">
+              <div class="icon_box" v-if="item.isIndoor">
                 <img src="../../../assets/image/online.png" alt="" class="icon" >
                 <img src="../../../assets/image/dot_green.png" alt="" class="dot">
                 <span class="line_word">场内</span>
               </div>
-              <div class="icon_box" v-else="item.info.sex=='女'">
+              <div class="icon_box" v-else>
                 <img src="../../../assets/image/outline.png" alt="" class="icon" >
                 <img src="../../../assets/image/dot_red.png" alt="" class="dot">
                 <span class="line_word">场外</span>
               </div>
-              <span class="time_desc" >20分钟前登录</span>
+              <!-- <span class="time_desc" >20分钟前登录</span> -->
               <div class="avatarList-wrapper clearfix" @touchstart="showAlbum">
                 <img src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">4</span>
               </div>
@@ -42,11 +42,11 @@
                 <img src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
                 <!-- <span class="online" :style="{background:item.info.online==='好友'?'red':'gray'}">{{item.info.online}}</span> -->
                 <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
-                <span class="friend"><img src="../../../assets/image/friend_tantan.png" alt="" class="friend_samll">{{item.info.thumb?item.info.thumb:10}}</span>
+                <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>
                 <!-- <img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">{{item.info.gift?item.info.gift:56}} -->
-                <span class="gift">富豪榜10</span>
+                <span class="gift">富豪榜 {{item.info.wealthRanking}}</span>
                 <!-- <img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">{{item.info.thumb?item.info.thumb:99}} -->
-                <span class="thumb">战神榜28</span>
+                <span class="thumb">战神榜 {{item.info.gameScoreRanking}}</span>
               </div>
               <div class="tag_wrapper">
                 <span v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')" :key="index">{{item}}</span>
@@ -111,8 +111,9 @@ export default {
   },
   watch: {
     pages(newValue) {
+      console.log('候选人数据----------------------------------------',newValue)
       let data = newValue[0];
-      if (data < 10) {  //粗暴解决多次触发监听导致给父组件传递数据
+      if (newValue.length <= 10) {  //粗暴解决多次触发监听导致给父组件传递数据
         this.$emit("firstData", data);
       }
     }

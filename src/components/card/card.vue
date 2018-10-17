@@ -46,8 +46,8 @@
           <h3 class="noCouponTips" v-if="!timeOutList.length">暂无优惠券</h3>
         <li v-else class="item" v-for="(item,index) in timeOutList" :key="index">
           <div class="left1">
-            <p class="name">{{item.content}}</p>
-            <p class="time">{{item.time}}</p>
+            <p class="name">{{item.coupon.name}}</p>
+            <p class="time">{{item.coupon.time}}</p>
           </div>
           <div class="right1">
             已过期
@@ -77,31 +77,14 @@ export default {
       usedCouponsLength: 0,
       timeOutListLength: 0,
       usedList: [],
-      timeOutList: [
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        },
-        {
-          content: "啤酒9折优惠券",
-          time: "过期时间:2018-01-25"
-        }
-      ]
+      timeOutList: []
     };
   },
   computed: {
     ...mapGetters(["isShow"])
   },
   created() {
-    this._loadUserAllCoupon()//获取优惠券
+    this._acquireWaitGetCoupons()//获取优惠券
   },
   methods: {
     //获取优惠券
@@ -110,18 +93,37 @@ export default {
         console.log("优惠券：", res);
         this.unuseCouponsLength = res.unuseCoupons.length;
         this.usedCouponsLength = res.usedCoupos.length;
+        this.timeOutListLength = res.expiredCoupos.length;
+        //未使用优惠券
         res.unuseCoupons.forEach(element => {
           element.coupon.time = "过期时间：" + element.coupon.endTime;
           element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
           this.unusedList.push(element)
         });
-        console.log(this.unusedList);
+        //已使用优惠券
         res.usedCoupos.forEach(element => {
           element.coupon.time = "过期时间：" + element.coupon.endTime;
-          element.coupon.name = element.coupon.type ? element.coupon.content : element.coupon.value + "元代金券";
+          element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
           this.usedList.push(element)
         });
+        //过期优惠券
+        res.expiredCoupos.forEach(element => {
+          element.coupon.time = "过期时间：" + element.coupon.endTime;
+          element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
+          this.timeOutList.push(element);
+          console.log(this.timeOutList)
+        })
       });
+    },
+    //拉取未领取的优惠券（登录公众号优惠券，目前只有AI发送才有）
+    _acquireWaitGetCoupons() {
+      let channel = 1 //channel为1是AI优惠券类型
+      api.acquireWaitGetCoupons(channel).then(res => {
+        console.log("AI优惠券------------------------------", res);
+        this._loadUserAllCoupon();
+      }).catch(err => {
+        console.log(err)
+      })
     },
     //返回上一页
     goBack() {
@@ -210,15 +212,15 @@ export default {
     }
     .no_user_list {
       overflow-y: auto;
-      .card("../../assets/image/discount_bg.png",0.5333rem);
+      .card("../../assets/image/discount_bg.png", 0.5333rem);
     }
     .usered_list {
       overflow-y: auto;
-      .card("../../assets/image/used.png",0.7333rem);
+      .card("../../assets/image/used.png", 0.7333rem);
     }
     .past_list {
       overflow-y: auto;
-      .card("../../assets/image/past.png",0.7333rem);
+      .card("../../assets/image/past.png", 0.7333rem);
     }
   }
   // .discount_wrapper {

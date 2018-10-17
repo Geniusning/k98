@@ -7,7 +7,7 @@
       <router-view v-if="!$route.meta.keepAlive"></router-view>
       <lg-preview></lg-preview>
       <transition name='envelop'>
-        <div class="envelop-wrapper" v-if="isShowEnvelop" @click="GotoPage(dynamicFriendEvt.extMsg.lastMsg.from)">
+        <div class="envelop-wrapper" v-if="isShowEnvelop">
           <img src="./assets/image/close_ad.png" alt="" class="close" @click.stop="close">
           <div class="top">
             <img :src="dynamicFriendEvt.fromInfo?dynamicFriendEvt.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="" class="avatar">
@@ -39,11 +39,7 @@
 
 <script>
 import Tab from "./components/tab/tab.vue";
-import {
-  mapState,
-  mapGetters,
-  mapMutations
-} from "vuex";
+import {mapState,mapGetters,mapMutations} from "vuex";
 import util from "common/util";
 import api from "common/api";
 export default {
@@ -103,12 +99,12 @@ export default {
   },
   methods: {
     GotoPage(path) {
-      // console.log('this.dynamicFriendEvt:', this.dynamicFriendEvt); 
       this.setChatFriend(this.dynamicFriendEvt.fromInfo)
       this.$router.push({
         path: `/message/${path}`
       });
     },
+    
     close() {
       this.isShowEnvelop = false;
     },

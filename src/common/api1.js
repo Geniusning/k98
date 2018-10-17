@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-09-15 10:37:38
+ * @Last Modified time: 2018-10-12 16:18:21
  */
 
 import axios from 'axios'
@@ -246,6 +246,19 @@ api.loadUserCoupons = function(channel) {
                 })
         })
     }
+    //拉取未领取的优惠券（登录公众号弹出优惠券，目前只有AI发送才有）
+api.acquireWaitGetCoupons = function(channel) {
+        return new Promise((resolve, reject) => {
+            axios.get(Url.commonUrl + `/api/acquireWaitGetCoupons?channel=${channel}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
     //拉取所有优惠券
 api.loadUserAllCoupon = function() {
         return new Promise((resolve, reject) => {
@@ -459,6 +472,176 @@ api.loadStoreSetting = function() {
 api.loadAdvertisingPhoto = function() {
         return new Promise((resolve, reject) => {
             axios.get(`/api/loadAdvertisingPhoto`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //拉取礼物详情
+api.loadWealthDetail = function() {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/loadWealthDetail`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //拉取游戏详情
+api.LoadGameScoreDetail = function() {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/LoadGameScoreDetail`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //加载活动详情
+api.loadActivityDetail = function(activityID) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/loadActivityDetail?activityID=${activityID}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //签到
+api.checkIn = function() {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/checkIn`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //拉取比赛按照结束时间重新排名
+api.loadAllArenaInfo = function() {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/loadAllArenaInfo`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    // 拉取每场比赛的前十名选手信息， 以及对应的奖品
+api.loadArenaTopRank = function(arenaID, topNumber) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/loadArenaTopRank?arenaID=${arenaID}&topNumber=${topNumber}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //记录打电话
+api.statCalls = function() {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/statCalls`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //店长推荐预定
+api.bookingRecommend = function(recommendID) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/bookingRecommend?recommendID=${recommendID}`)
+                .then(res => {
+                    console.log(res)
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //验证员工
+api.verifyPhoneNumber = function(phone) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/verifyPhoneNumber?phone=${phone}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //拉取每场比赛的前十名选手信息
+api.loadArenaRanking = function(arenaID) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/loadArenaRanking?arenaID=${arenaID}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //赠送礼物申请成为好友  拉取收礼记录
+api.loadGiftsRecord = function() {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/loadGiftsRecord`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //感谢好友送礼  
+api.thanksForGit = function(giftGiverID) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/thanksForGit?targetID=${giftGiverID}&agree=yes`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //拉取店长留言信息
+api.loadManagerNoticeInfo = function() {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/loadManagerNoticeInfo`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)

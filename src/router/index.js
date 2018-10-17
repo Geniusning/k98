@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from 'components/home/home'
 import GameCompetion from 'components/home/gameCompetion/gameCompetion'
-import GameCompetionDetail from 'components/home/GameCompetionDetail/GameCompetionDetail'
+import GameRank from 'components/home/GameRank/GameRank'
 import Friend from 'components/friend/friend'
 import PersonalInfo from 'components/friend/personalInfo/personalInfo'
 import Message from 'components/message/message'
@@ -19,6 +19,10 @@ import Award from 'components/welfare/award/award'
 import ShareNew from 'components/welfare/ShareNew/ShareNew'
 import ShareActivity from 'components/welfare/shareActivity/shareActivity'
 import SharedDiscount from 'components/welfare/sharedDiscount/sharedDiscount'
+import ShareNewUsers from 'components/welfare/shareNewUsers/shareNewUsers'
+import GameRecord from 'components/welfare/gameRecord'
+import GameRecordDetail from 'components/welfare/gameRecordDetail'
+
 
 Vue.use(Router)
 
@@ -43,9 +47,9 @@ export default new Router({
             component: GameCompetion
         },
         {
-            path: "/GameCompetionDetail",
-            name: "GameCompetionDetail",
-            component: GameCompetionDetail
+            path: "/gameRank",
+            name: "gameRank",
+            component: GameRank
         },
         {
             path: '/friend',
@@ -82,6 +86,16 @@ export default new Router({
             }, ]
         },
         {
+            path: '/gameRecord',
+            name: 'gameRecord',
+            component: GameRecord,
+            children: [{
+                path: ":id",
+                name: "gameRecordDetail",
+                component: GameRecordDetail,
+            }, ]
+        },
+        {
             path: '/shareNew',
             name: 'shareNew',
             component: ShareNew,
@@ -90,6 +104,11 @@ export default new Router({
             path: '/shareActivity',
             name: 'shareActivity',
             component: ShareActivity,
+        },
+        {
+            path: '/shareNewUsers',
+            name: 'shareNewUsers',
+            component: ShareNewUsers,
         },
         {
             path: '/sharedDiscount',

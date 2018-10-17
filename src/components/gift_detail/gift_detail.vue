@@ -1,162 +1,139 @@
 <template>
- <div class="gift_detail">
-        <my-header title="财富明细" ref="header"></my-header>
-        <div class="gift_wrapper vux-1px-t">
-            <div class="title_content vux-1px-b">
-              <div class='title_content_item clearfix'>
-                <h3 class="title fl"><strong>我的财富：</strong></h3>
-                <span class="money fl">${{userInfo.money}}</span>
-              </div>
-               <div class='title_content_item clearfix'>
-                <h3 class="title fl"><strong>富豪榜排名：</strong></h3>
-                <span class="money fl">10</span>
-              </div>
-            </div>
-            <div class="scrollTitle">
-              <span class="total">累计财富</span>
-              <span class="name">增减</span>
-              <span class="content">变动内容</span>
-              <span class="avatar">头像</span>
-              <span class="time">时间</span>
-            </div>
-            <scroll class="scroll" :data="giftList">
-                <ul class="gift_list">
-                    <li class="item vux-1px" v-for="(item,index) in giftList" :key="index">
-                        <span class="total">{{item.totalSum}}</span>
-                        <span class="name" :class="{plus:item.plus}" v-if="item.plus">+3积分</span>
-                        <span class="name"  v-else>-3积分</span>
-                        <span class="content">{{item.name}}</span>
-                        <div class="avatar">
-                          <img src="../../assets/image/avatar.jpg" class="gift_icon">
-                        </div>
-                        <span class="time">20180509 16:00:00</span>
-                    </li>
-                </ul>
-            </scroll>
-            <div class="selectMoneyBox">
-              <h2 class="titile">请选择充值的金额</h2>
-              <ul class="moneyList">
-                <li class="itemMoney" :class="{active:index+1==moneyIndex}" @click="selectMoney(item.id,$event)" :data-money="item.money" v-for="(item,index) in moneyList">{{item.name}}</li>
-              </ul>
-            </div>
-            <div class="btn_content" @click="pay">
-                <span class="btn">充值</span>
-            </div>
+  <div class="gift_detail">
+    <my-header title="财富明细" ref="header"></my-header>
+    <div class="gift_wrapper vux-1px-t">
+      <div class="title_content vux-1px-b">
+        <div class='title_content_item clearfix'>
+          <h3 class="title fl"><strong>我的财富：</strong></h3>
+          <span class="money fl">${{giftContent.wealth}}</span>
         </div>
- </div>
+        <div class='title_content_item clearfix'>
+          <h3 class="title fl"><strong>富豪榜排名：</strong></h3>
+          <span class="money fl">{{giftContent.ranking}}</span>
+        </div>
+        <div class='title_content_item clearfix' @click="showTreasure">
+          <img src="../../assets/image/treasure.png" alt="" class="fl" style="width:0.6rem;height:0.5rem">
+          <h3 class="title fl"><strong>财富充值</strong></h3>
+        </div>
+      </div>
+      <div class="scrollTitle">
+        <span class="total">累计财富</span>
+        <span class="name">增减(积分)</span>
+        <span class="content">变动内容</span>
+        <span class="avatar">头像</span>
+        <span class="time">时间</span>
+      </div>
+      <scroll class="scroll" :data="giftContent.wealthDetails">
+        <ul class="gift_list">
+          <li class="item vux-1px" v-for="(item,index) in giftContent.wealthDetails" :key="index">
+            <span class="total">{{item.money}}</span>
+            <span class="name" :class="{minus:item.amount<0,plus:item.amount>0}">{{item.amount}}</span>
+            <!-- <span class="name"  v-else>-3积分</span> -->
+            <span class="content">{{item.content}}</span>
+            <div class="avatar">
+              <img :src="item.headimgurl" class="gift_icon">
+            </div>
+            <span class="time">{{item.time}}</span>
+          </li>
+           <p  v-if="!giftContent.wealthDetails.length" class="noContent">暂无积分变动内容</p>
+        </ul>
+      </scroll>
+      <div class="selectMoneyBox" v-show="isShowTreasure">
+        <h2 class="titile">请选择充值的积分</h2>
+        <p class="payInfo">1元兑换100积分，5元兑换500积分，10元兑换1000积分，15元兑换1500积分</p>
+        <ul class="moneyList">
+          <li class="itemMoney" :class="{active:index+1==moneyIndex}" @click="selectMoney(item.id,$event)" :data-money="item.money" v-for="(item,index) in moneyList">{{item.name}}</li>
+        </ul>
+      </div>
+      <div class="btn_content" v-show="isShowTreasure" @click="pay">
+        <span class="btn">充值</span>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script type='text/ecmascript-6'>
 import api from "common/api";
+import util from 'common/util'
 import myHeader from "../../base/myheader/myheader";
 import Scroll from "../../base/scroll/scroll";
-import { mapState, mapMutations } from 'vuex'
+import {
+  mapState,
+  mapMutations
+} from 'vuex'
 export default {
   data() {
     return {
       moneyIndex: 1,
       moneyInitValue: 5,
-      moneyList:
-        [
-          { "id": 1, "name": "1元", "money": 1, "points": 10 },
-          { "id": 2, "name": "5元", "money": 5, "points": 50 },
-          { "id": 3, "name": "10元", "money": 10, "points": 100 },
-          { "id": 4, "name": "15元", "money": 15, "points": 150 }
-        ]
-      ,
-      giftList: [
-        {
-          totalSum: "$300",
-          name: "游戏房费",
-          plus: false
-        },
-        {
-          totalSum: "$200",
-          name: "每日签到",
-          plus: true
-        },
-        {
-          totalSum: "$210",
-          name: "分享活动",
-          plus: true
-        },
-        {
-          totalSum: "$210",
-          name: "送出别墅",
-          plus: false
-        },
-        {
-          totalSum: "$200",
-          name: "每日签到",
-          plus: true
-        },
-        {
-          totalSum: "$210",
-          name: "分享活动",
-          plus: true
-        },
-        {
-          totalSum: "$210",
-          name: "收到鲜花",
-          plus: true
-        },
-        {
-          totalSum: "$300",
-          name: "游戏房费",
-          plus: false
-        },
-        {
-          totalSum: "$200",
-          name: "每日签到",
-          plus: true
-        },
-        {
-          totalSum: "$210",
-          name: "分享活动",
-          plus: true
-        },
-        {
-          totalSum: "$210",
-          name: "送出啤酒",
-          plus: false
-        },
-        {
-          totalSum: "$200",
-          name: "每日签到",
-          plus: true
-        },
-        {
-          totalSum: "$210",
-          name: "分享活动",
-          plus: true
-        },
-        {
-          totalSum: "$210",
-          name: "送出跑车",
-          plus: false
-        },
-      ]
+      isShowTreasure: false,
+      moneyList: [{
+        "id": 1,
+        "name": "1元",
+        "money": 1,
+        "points": 10
+      },
+      {
+        "id": 2,
+        "name": "5元",
+        "money": 5,
+        "points": 50
+      },
+      {
+        "id": 3,
+        "name": "10元",
+        "money": 10,
+        "points": 100
+      },
+      {
+        "id": 4,
+        "name": "15元",
+        "money": 15,
+        "points": 150
+      }
+      ],
+      giftContent: {
+        wealthDetails:[]
+      },
+      giftList: []
     };
   },
   computed: {
     ...mapState(['userInfo'])
   },
+  created() {
+     this._loadWealthDetail();
+  },
+  mounted() {
+    //this._loadWealthDetail();
+  },
   methods: {
+    showTreasure() {
+      this.isShowTreasure = !this.isShowTreasure;
+    },
+    //拉取礼物明细
+    _loadWealthDetail() {
+      api.loadWealthDetail().then(res => {
+        console.log('礼物明细-----------------------------', res);
+        this.giftContent = res;
+        this.giftContent.wealthDetails.forEach(item => {
+          item.time = util.timestampToTimeNoLine(item.time);
+        })
+      })
+    },
     selectMoney(index, event) {
       this.moneyIndex = Number(index);
       console.log(this.moneyIndex)
       this.moneyInitValue = event.target.dataset.money;
     },
     pay() {
-
       api.createOrder(this.moneyIndex).then(res => {
         if (res.errCode === 0) {
           let resultInfo = res.data;
           console.log(resultInfo);
-          let _this =this;
+          let _this = this;
           WeixinJSBridge.invoke(
-            "getBrandWCPayRequest",
-            {
+            "getBrandWCPayRequest", {
               "appId": resultInfo.appId, //公众号名称，由商户传入
               "timeStamp": "" + resultInfo.timeStamp, //时间戳，自1970年以来的秒数
               "nonceStr": resultInfo.nonceStr, //随机串
@@ -183,10 +160,9 @@ export default {
       });
     },
     ...mapMutations({
-      getUserInfo: "GET_USERINFO"  //获取用户信息
+      getUserInfo: "GET_USERINFO" //获取用户信息
     })
   },
-
   components: {
     myHeader,
     Scroll
@@ -203,7 +179,7 @@ export default {
     .title_content {
       margin-top: 0;
       display: flex;
-      padding: 0.4rem 0.4rem;
+      padding: 0.4rem 0.1rem;
       box-sizing: border-box;
       .title_content_item {
         margin-right: 0.6667rem;
@@ -280,9 +256,19 @@ export default {
             width: 20%;
             text-align: center;
           }
-          .plus {
+          .minus {
             color: green;
           }
+          .plus {
+            color: red;
+          }
+        }
+        .noContent {
+          width: 100%;
+          text-align: center;
+          margin-top: 50%;
+          color: #ccc;
+          font-size: 0.5333rem;
         }
       }
     }
@@ -292,7 +278,11 @@ export default {
       .titile {
         font-size: 0.4267rem;
         font-weight: 700;
-        margin: 0.2333rem 0;
+        margin: 0.2333rem 0 0 0;
+      }
+      .payInfo {
+        margin: 0.1333rem 0;
+        font-size: 0.3733rem;
       }
       .moneyList {
         display: flex;

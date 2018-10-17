@@ -1,142 +1,123 @@
 <template>
   <transition name="fade">
     <div id="chat" class="chatRoom">
-          <div class="chat_nav">
-            <div class="back_box">
-              <img src="../../assets/image/back_chat.png" alt="" class="back_arrow" @click="goBack">
-            </div>
-            <div class="name">
-              {{staticChatFriendObj.nickname}}
-            </div>
-            <div class="backHome_box">
-              <img src="../../assets/image/chat_home.png" alt="" class="home" @click="goHome">
-            </div>
-          </div>
-          <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
-            <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
-            <scroll ref="listView" 
-            class="chat_content"  
-            :scrollHeight='scrollHeight' 
-            :data="componentChatList" 
-            :listen-scroll="listenScroll"
-            :pullDownRefresh="pullDownRefresh"
-            @getIndex="getIndex" 
-            @scroll="myscroll" 
-            @pullingDown="pullingDown"
-            >
-              <ul class="chat_list" ref="chatList">
-                  <li class="clearfix" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" v-for="(item,index) in componentChatList">
-                      <div class="person_box">
-                          <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
-                          <img :src="staticChatFriendObj.headimgurl" alt="" class="avatar" v-if="item.friend">
-                          <img :src="userInfo.headimgurl" alt="" class="avatar" v-else>
-                      </div>
-                      <div class="message_box">
-                        <span v-show="item.type===1" class="arrow"></span>
-                        <p class="message" v-if="item.type===1" v-html="item.message"></p>
-                        <img v-else :src="item.message" alt="" class="messRecordPic" @click="showBigPic(item.message)">
-                      </div>
-                  </li>
-              </ul>
-            </scroll>
-            <!-- <div class="loading-container" v-show="isLoading">
-              <loading></loading>
-            </div> -->
-          </div>
-          <div class="input_wrapper">
-            <div class="input_area clearfix">
-              <input type="text" ref="sendWrapper" id="send_message" class="send_message"  @focus.prevent="myfocus" v-model="input_value">
-              <div @click="send" class="action_box clearfix" :class="{active:flag}">
-                  <img src="../../assets/image/plane.png" alt="" class="icon_plane fl">
-                  <span class="send fl"  ref="send">发送</span>
-              </div>
-            </div>
-            <div class="select_area">
-              <ul class="selectList clearfix">
-                <li class="item fl">
-                  <img src="../../assets/image/chat_emotion.png" alt="" @click="show_emotion">
-                </li>
-                <li class="item fl">
-                  <img src="../../assets/image/message_chat.png" alt="" @click="show_expression">
-                </li>
-                <li class="item fl" @click="showToastGift">
-                  <img src="../../assets/image/chat_gift.png" alt="" >
-                </li>
-                <li class="item fl">
-                  <img src="../../assets/image/chat_pic.png" alt="">
-                  <input type="file" class="file" accept="image/*" @change="uploadImage">
-                </li>
-                <li class="item fl">
-                  <img src="../../assets/image/game_chat.png" alt="" class="game">
-                </li>
-              </ul>
-            </div>
-            <div class="emotion_area" v-if="emotionShow">
-              <!-- dots-position="center" -->
-              <swiper :auto="false" height="130px" :show-dots="false">
-                <swiper-item class="black">
-                    <grid :show-vertical-dividers="true"  :cols="8">
-                       <div @click="selectEmtion(item.name)" v-for="item in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.2rem">
-                          <!-- <emotion is-gif >{{item}}</emotion> -->
-                          <img :src="item.num" alt="">
-                      </div>
-                      <!-- <grid-item v-for="(item,index) in emoj1" :key="index">
-                        <span slot="label" class="grid-center" @click="select_emotion(item)">{{item}}</span>
-                      </grid-item> -->
-                    </grid>
-                </swiper-item>
-                <!-- <swiper-item class="black">
-                    <grid :show-vertical-dividers="true"  :cols="8">
-                      <grid-item v-for="(item,index) in emoj2" :key="index">
-                        <span slot="label" class="grid-center" @click="select_emotion(item)">{{item}}</span>
-                      </grid-item>
-                    </grid>
-                </swiper-item> -->
-              </swiper>
-            </div>
-            <!-- 常用语 -->
-            <div class="expression_wrapper" v-if="expressionShow">
-              <ul class="expressList">
-                <li class="item vux-1px-b" v-for="(item,index) in expressionList" :key="index" @click="addExpress(item)">{{item}}</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- 送礼 -->
-          <div v-transfer-dom>
-            <popup v-model="showToast_gift" position="bottom">
-              <div class="position-vertical-demo">
-                <div class="title vux-1px-b">
-                  <span>送个小礼，就是好朋友</span>
-                  <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
-                </div>
-                <div class="gift_list">
-                  <ul class="list clearfix">
-                    <li class="item">
-                      <img src="../../assets/image/beer.png" alt="" class="beer">
-                      <p class="gift_name">啤酒</p>
-                      <p class="gift_price">￥0.99</p>
-                    </li>
-                      <li class="item">
-                      <img src="../../assets/image/flower.png" alt="" class="flower">
-                      <p class="gift_name">鲜花</p>
-                      <p class="gift_price">￥1.88</p>
-                    </li>
-                      <li class="item">
-                      <img src="../../assets/image/house.png" alt="" class="house">
-                      <p class="gift_name">别墅</p>
-                      <p class="gift_price">￥5.20</p>
-                    </li>
-                      <li class="item">
-                      <img src="../../assets/image/car.png" alt="" class="car">
-                      <p class="gift_name">跑车</p>
-                      <p class="gift_price">￥16.8</p>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </popup>
+      <div class="chat_nav">
+        <div class="back_box">
+          <img src="../../assets/image/back_chat.png" alt="" class="back_arrow" @click="goBack">
         </div>
+        <div class="name">
+          {{staticChatFriendObj.nickname}}
+        </div>
+        <div class="backHome_box">
+          <img src="../../assets/image/chat_home.png" alt="" class="home" @click="goHome">
+        </div>
+      </div>
+      <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
+        <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
+        <scroll ref="listView" class="chat_content" :scrollHeight='scrollHeight' :scrollToDomElement='scrollToDomElement' :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
+          <ul class="chat_list" ref="chatList">
+            <li class="clearfix" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" v-for="(item,index) in componentChatList">
+              <div class="person_box">
+                <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
+                <img :src="staticChatFriendObj.headimgurl" alt="" class="avatar" v-if="item.friend">
+                <img :src="userInfo.headimgurl" alt="" class="avatar" v-else>
+              </div>
+              <div class="message_box">
+                <span v-show="item.type===1" class="arrow"></span>
+                <p class="message" v-if="item.type===1" v-html="item.message"></p>
+                <img v-else :src="item.message" alt="" class="messRecordPic" @click="showBigPic(item.message)">
+              </div>
+            </li>
+          </ul>
+        </scroll>
+        <!-- <div class="loading-container" v-show="isLoading">
+                <loading></loading>
+              </div> -->
+      </div>
+      <div class="input_wrapper">
+        <div class="input_area clearfix">
+          <input type="text" ref="sendWrapper" id="send_message" class="send_message" @focus.prevent="myfocus" v-model="input_value">
+          <div @click="send" class="action_box clearfix" :class="{active:flag}">
+            <img src="../../assets/image/plane.png" alt="" class="icon_plane fl">
+            <span class="send fl" ref="send">发送</span>
+          </div>
+        </div>
+        <div class="select_area">
+          <ul class="selectList clearfix">
+            <li class="item fl">
+              <img src="../../assets/image/chat_emotion.png" alt="" @click="show_emotion">
+            </li>
+            <li class="item fl">
+              <img src="../../assets/image/message_chat.png" alt="" @click="show_expression">
+            </li>
+            <li class="item fl" @click="showToastGift">
+              <img src="../../assets/image/chat_gift.png" alt="">
+            </li>
+            <li class="item fl">
+              <img src="../../assets/image/chat_pic.png" alt="">
+              <input type="file" class="file" accept="image/*" @change="uploadImage">
+            </li>
+            <li class="item fl">
+              <img src="../../assets/image/game_chat.png" alt="" class="game">
+            </li>
+          </ul>
+        </div>
+        <div class="emotion_area" v-if="emotionShow">
+          <!-- dots-position="center" -->
+          <swiper :auto="false" height="130px" :show-dots="false">
+            <swiper-item class="black">
+              <grid :show-vertical-dividers="true" :cols="8">
+                <div @click="selectEmtion(item.name)" v-for="item in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.2rem">
+                  <!-- <emotion is-gif >{{item}}</emotion> -->
+                  <img :src="item.num" alt="">
+                </div>
+                <!-- <grid-item v-for="(item,index) in emoj1" :key="index">
+                          <span slot="label" class="grid-center" @click="select_emotion(item)">{{item}}</span>
+                        </grid-item> -->
+              </grid>
+            </swiper-item>
+            <!-- <swiper-item class="black">
+                      <grid :show-vertical-dividers="true"  :cols="8">
+                        <grid-item v-for="(item,index) in emoj2" :key="index">
+                          <span slot="label" class="grid-center" @click="select_emotion(item)">{{item}}</span>
+                        </grid-item>
+                      </grid>
+                  </swiper-item> -->
+          </swiper>
+        </div>
+        <!-- 常用语 -->
+        <div class="expression_wrapper" v-if="expressionShow">
+          <ul class="expressList">
+            <li class="item vux-1px-b" v-for="(item,index) in expressionList" :key="index" @click="addExpress(item)">{{item}}</li>
+          </ul>
+        </div>
+      </div>
+      <!-- 送礼 -->
+      <div v-transfer-dom>
+        <popup v-model="showToast_gift" position="bottom">
+          <div class="position-vertical-demo">
+            <div class="title vux-1px-b">
+              <span>送个小礼，就是好朋友</span>
+              <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
+            </div>
+            <div class="gift_list">
+              <ul class="list clearfix">
+                <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
+                  <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
+                  <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
+                  <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
+                  <img v-else src="../../assets/image/car.png" alt="" class="car">
+                  <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
+                  <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
+                  <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
+                  <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
+                  <p class="gift_price">￥{{item.money}}</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </popup>
+      </div>
     </div>
   </transition>
 </template>
@@ -160,7 +141,10 @@ import Url from "../../common/url.js";
 import api from "common/api.js";
 import util from "common/util.js";
 // import EXIF from "common/exif.js";
-import { mapState, mapMutations } from "vuex";
+import {
+  mapState,
+  mapMutations
+} from "vuex";
 import lrz from "lrz";
 export default {
   directives: {
@@ -173,6 +157,7 @@ export default {
     return {
       showPreview: false,
       scrollHeight: 0,
+      scrollToDomElement: "",
       pullDownRefresh: true,
       expressionShow: false,
       expressionList: [
@@ -189,80 +174,79 @@ export default {
       flag: false,
       input_value: "",
       autofocus: false,
-      emotionList: [
-        {
-          name: "[微笑]",
-          num: "/static/face/1.gif"
-          // num:1
-        },
-        {
-          name: "[色]",
-          num: "/static/face/2.gif"
-        },
-        {
-          name: "[大哭]",
-          num: "/static/face/3.gif"
-        },
-        {
-          name: "[嘻嘻]",
-          num: "/static/face/4.gif"
-        },
-        {
-          name: "[偷笑]",
-          num: "/static/face/5.gif"
-        },
-        {
-          name: "[大笑]",
-          num: "/static/face/6.gif"
-        },
-        {
-          name: "[晕]",
-          num: "/static/face/7.gif"
-        },
-        {
-          name: "[再见]",
-          num: "/static/face/8.gif"
-        },
-        {
-          name: "[抠鼻]",
-          num: "/static/face/9.gif"
-        },
-        {
-          name: "[委屈]",
-          num: "/static/face/10.gif"
-        },
-        {
-          name: "[抱抱]",
-          num: "/static/face/11.gif"
-        },
-        {
-          name: "[爱心]",
-          num: "/static/face/12.gif"
-        },
-        {
-          name: "[点赞]",
-          num: "/static/face/13.gif"
-        },
-        {
-          name: "[握手]",
-          num: "/static/face/14.gif"
-        },
-        {
-          name: "[ok]",
-          num: "/static/face/15.gif"
-        },
-        {
-          name: "[玫瑰]",
-          num: "/static/face/16.gif"
-        },
-        {
-          name: "[亲亲]",
-          num: "/static/face/17.gif"
-        },
-        {
-          name: "[难过]",
-          num: "/static/face/18.gif"
-        }
+      emotionList: [{
+        name: "[微笑]",
+        num: "/static/face/1.gif"
+        // num:1
+      },
+      {
+        name: "[色]",
+        num: "/static/face/2.gif"
+      },
+      {
+        name: "[大哭]",
+        num: "/static/face/3.gif"
+      },
+      {
+        name: "[嘻嘻]",
+        num: "/static/face/4.gif"
+      },
+      {
+        name: "[偷笑]",
+        num: "/static/face/5.gif"
+      },
+      {
+        name: "[大笑]",
+        num: "/static/face/6.gif"
+      },
+      {
+        name: "[晕]",
+        num: "/static/face/7.gif"
+      },
+      {
+        name: "[再见]",
+        num: "/static/face/8.gif"
+      },
+      {
+        name: "[抠鼻]",
+        num: "/static/face/9.gif"
+      },
+      {
+        name: "[委屈]",
+        num: "/static/face/10.gif"
+      },
+      {
+        name: "[抱抱]",
+        num: "/static/face/11.gif"
+      },
+      {
+        name: "[爱心]",
+        num: "/static/face/12.gif"
+      },
+      {
+        name: "[点赞]",
+        num: "/static/face/13.gif"
+      },
+      {
+        name: "[握手]",
+        num: "/static/face/14.gif"
+      },
+      {
+        name: "[ok]",
+        num: "/static/face/15.gif"
+      },
+      {
+        name: "[玫瑰]",
+        num: "/static/face/16.gif"
+      },
+      {
+        name: "[亲亲]",
+        num: "/static/face/17.gif"
+      },
+      {
+        name: "[难过]",
+        num: "/static/face/18.gif"
+      }
       ],
       // emoj1: [
       //   "😄",
@@ -335,8 +319,8 @@ export default {
     // });
   },
   activated() {
-    //前端暂时获取聊天记录
-    this._getChatList();
+    this._getChatList(); //前端暂时获取聊天记录
+    this._loadAllGift(); //获取礼物
   },
   deactivated() {
     this.endCursor = null;
@@ -351,7 +335,8 @@ export default {
       "LastChatMsg",
       "inputValue",
       "socket",
-      "alreadyFriendListcursor"
+      "alreadyFriendListcursor",
+      "giftList"
     ])
   },
   methods: {
@@ -359,28 +344,59 @@ export default {
     selectEmtion(item) {
       this.input_value += item;
     },
+    //获取礼物列表
+    _loadAllGift() {
+      api.loadAllGift().then(res => {
+        if (res.errCode === 0) {
+          this.getGiftList(res.gifts);
+        }
+      })
+    },
+    //发送礼物
+    sendGift(id) {
+      let params = {
+        giftID: parseInt(id),
+        to: this.staticChatFriendObj.openid,
+      }
+      api.sendGift(params).then(res => {
+        console.log(res);
+        if (res.errCode === 0) {
+          this.$vux.toast.show({
+            text: "赠送礼物成功",
+            type: "text",
+            time: 2000,
+            width: "3rem"
+          });
+          this.showToast_gift = false;
+        } else {
+          this.$vux.toast.show({
+            text: "余额不足，请充值",
+            type: "text",
+            time: 2000,
+            width: "3rem"
+          });
+        }
+      })
+    },
     //获取聊天消息列表
     _getChatList() {
       let cursor = this.alreadyFriendListcursor;
-      api
-        .getFriendMessList(cursor, this.staticChatFriendObj.openid)
-        .then(res => {
-          console.log(res);
-          this.changeCursor(res.cursor);
-          let resultMessList = res.messages;
-          var i;
-          for (i = resultMessList.length - 1; i >= 0; i--) {
-            let item = resultMessList[i];
-            this.componentChatList.push({
-              message: item.content,
-              friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
-              type: item.type,
-              time: util.timestampToTime(item.stime)
-            });
-          }
-
-          this.$refs.listView.finishPullDown();
-        });
+      api.getFriendMessList(cursor, this.staticChatFriendObj.openid).then(res => {
+        console.log(res);
+        this.changeCursor(res.cursor);
+        let resultMessList = res.messages;
+        var i;
+        for (i = resultMessList.length - 1; i >= 0; i--) {
+          let item = resultMessList[i];
+          this.componentChatList.push({
+            message: item.content,
+            friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
+            type: item.type,
+            time: util.timestampToTime(item.stime)
+          });
+        }
+        this.$refs.listView.finishPullDown();
+      });
     },
     //发送消息事件
     send() {
@@ -428,27 +444,25 @@ export default {
         return;
       }
       let vm = this;
-      lrz(e.target.files[0], { quality: 0.1 })
+      lrz(e.target.files[0], {
+        quality: 0.1
+      })
         .then(function (rst) {
           if (rst.base64Len > 1024 * 1024 * 1) {
             // vm.$toast("图片不能超过1MB");
             console.log("图片不能超过1MB");
             return;
           }
-          console.log(rst.base64);
           let filename = rst.origin.name;
           let dataURL = rst.file;
-          api
-            .postFriendPic(vm.staticChatFriendObj.openid, filename, dataURL)
-            .then(res => {
-              console.log(res);
-              vm.componentChatList.push({
-                message: res.content,
-                friend: 0,
-                type: 2,
-                time: util.timestampToTime(new Date().getTime())
-              });
-            })
+          api.postFriendPic(vm.staticChatFriendObj.openid, filename, dataURL).then(res => {
+            vm.componentChatList.push({
+              message: res.content,
+              friend: 0,
+              type: 2,
+              time: util.timestampToTime(new Date().getTime())
+            });
+          })
             .catch(err => {
               console.log(err);
             });
@@ -505,7 +519,7 @@ export default {
         });
     },
     getIndex(val) {
-      console.log("val:", val);
+      console.log("getIndex--------------------------:", val);
       this.chatListIndex = val;
     },
     //监听滚动
@@ -573,7 +587,8 @@ export default {
     ...mapMutations({
       updateChatList: "UPDATE_CHATLIST",
       updateValue: "UPDATE_INPUTVALUE",
-      changeCursor: "CHANGE_CURSOR"
+      changeCursor: "CHANGE_CURSOR",
+      getGiftList: "GET_GIFTLIST" //获取礼物
     })
   },
   watch: {
@@ -584,8 +599,7 @@ export default {
         // console.log('在聊天页面的时间-----------------------------------------：',newValue.lastMsg.stime)
         this.componentChatList.push({
           message: newValue.lastMsg.content,
-          friend:
-            newValue.lastMsg.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
+          friend: newValue.lastMsg.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
           type: newValue.lastMsg.type,
           time: newValue.lastMsg.stime
         });
@@ -603,7 +617,6 @@ export default {
       if (this.isscroll) {
         this.$nextTick(function () {
           let childNodes = this.$refs.chatList.childNodes;
-          // console.log(childNodes)
           let chatListHeight = 0;
           childNodes.forEach(item => {
             chatListHeight += item.clientHeight
@@ -636,7 +649,7 @@ export default {
 @import "../../assets/less/chat.less";
 .chatRoom {
   position: fixed;
-  z-index: 9999;
+  z-index: 9;
   top: 0;
   left: 0;
   right: 0;
@@ -649,9 +662,11 @@ export default {
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
-    padding: 0.32rem 0.4rem;
+    padding: 0.32rem 0.4rem 0.32rem 0;
     background: #ddd;
     .back_box {
+      padding: 0 0.4rem;
+      box-sizing: border-box;
       .back_arrow {
         width: 0.32rem;
         height: 0.5333rem;
@@ -692,7 +707,7 @@ export default {
       .chat_list {
         .friend {
           margin-bottom: 0.4667rem;
-          .chatList(left,#fff);
+          .chatList(left, #fff);
           .arrow {
             .arrowDot(#fff);
             left: -0.05rem;
@@ -704,7 +719,7 @@ export default {
         .mine {
           width: 100%;
           margin-bottom: 0.4667rem;
-          .chatList(right,#FFD800);
+          .chatList(right, #FFD800);
           .arrow {
             .arrowDot(#FFD800);
             right: -0.05rem;
@@ -727,8 +742,7 @@ export default {
   .input_wrapper {
     border-top: 1px solid #ccc;
     background: #eee;
-    padding: 0 0 0 0.4rem;
-    //输入区域
+    padding: 0 0 0 0.4rem; //输入区域
     .input_area {
       padding: 0.2133rem 0;
       height: 1.44rem;
@@ -747,8 +761,7 @@ export default {
         margin-left: 0.2767rem;
         float: left;
         width: 2rem;
-        height: 1.06rem;
-        // line-height: 0.9867rem;
+        height: 1.06rem; // line-height: 0.9867rem;
         background: #999;
         border-radius: 0.1067rem;
         padding: 0.2533rem 0.2933rem;
@@ -765,8 +778,7 @@ export default {
           font-size: 0.4rem;
         }
       }
-    }
-    //选择区域
+    } //选择区域
     .select_area {
       height: 1.1rem;
       box-sizing: border-box;
@@ -794,8 +806,7 @@ export default {
           }
         }
       }
-    }
-    // 表情区域
+    } // 表情区域
     .emotion_area {
       overflow: hidden;
       .grid-center {
@@ -837,8 +848,7 @@ export default {
       height: 0.4rem;
       position: absolute;
       top: 0.3rem;
-      right: 0.4rem;
-      // z-index: 999;
+      right: 0.4rem; // z-index: 999;
     }
   }
   .gift_list {
@@ -848,8 +858,7 @@ export default {
       justify-content: space-around;
       margin-left: 0.4rem;
       .item {
-        float: left;
-        // margin-right: 1rem;
+        float: left; // margin-right: 1rem;
         width: 1.7067rem;
         height: 1.9467rem;
         box-sizing: border-box;

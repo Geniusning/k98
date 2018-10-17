@@ -1,17 +1,18 @@
 <template>
     <div class="shareActivity-wrapper">
         <div class="logo-container">
-            <img class="logoPic" src="../../../assets/image/logo_activity.png" alt="">
+            <img class="logoPic" :src="activityContent.bgImage" alt="">
             <div class="shop-container" @click="goHome">
-               <img class="logo" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524204213993&di=5f93ef923bb06785474b70621b7a9e42&imgtype=0&src=http%3A%2F%2Fimg.brandcn.com%2FEditor%2FImages%2F201309%2F2013091309383713424223871.jpg" alt="">
-               <p class="bar_name">Lose Demon吧(迷失的恶魔魅力四射)</p>
+               <img class="logo" :src="shopSettingInfo.image" alt="">
+               <p class="bar_name">{{shopSettingInfo.name}}</p>
             </div>
         </div>
         <div class="rule-container">
+            <p class="theme">活动主题：{{activityContent.name}}</p>
             <h3 class="title">活动细则：</h3>
-            <p class="desc">天天向上的主持人今晚8点驻唱，欢迎大家前来围观支持~ 现场将有签名活动</p>
-            <p class="limit">限制条件：未满十八岁未成年须在成人带领下进入</p>
-            <p class="time">活动时间：2018-08-12 至 2018-09-12</p>
+            <p class="desc">{{activityContent.content}}</p>
+            <p class="limit">限制条件：{{activityContent.limit}}</p>
+            <p class="time">活动时间：{{activityContent.startTime}} 至 {{activityContent.endTime}}</p>
         </div>
         <div class="btn-container">
             <img @click="back" class="btn" src="../../../assets/image/tuichu.png" alt="">
@@ -25,11 +26,14 @@
 
 <script type='text/ecmascript-6'>
 import util from "common/util";
+import api from 'common/api'
 import { mapState } from "vuex";
 export default {
   data() {
     return {
-      isShow_bg: false
+      isShow_bg: false,
+      activityID: "",
+      activityContent: "",
     };
   },
   created() {
@@ -51,13 +55,25 @@ export default {
       };
       util._getJssdkInfo(shareObj, this.shareUrl);
     }
+    this.activityID = this.$route.params.id;
+    console.log(this.activityID)
+  },
+  mounted() {
+    this._loadActivityDetail();
   },
   computed: {
-    ...mapState(["shareUrl","activityNoticeList"])
+    ...mapState(["shareUrl", "activityNoticeList","shopSettingInfo"])
   },
   methods: {
-    goHome(){
-       this.$router.push({
+    //加载活动详情
+    _loadActivityDetail() {
+      api.loadActivityDetail(this.activityID).then(res => {
+        console.log('活动详情-----------------------',res);
+        this.activityContent = res;
+      })
+    },
+    goHome() {
+      this.$router.push({
         name: "home"
       });
     },
@@ -89,7 +105,7 @@ export default {
     .shop-container {
       position: absolute;
       display: flex;
-      top:0.6667rem;
+      top: 0.6667rem;
       left: 0.2667rem;
       .logo {
         width: 0.6733rem;
@@ -121,19 +137,23 @@ export default {
       font-weight: bold;
     }
     .desc {
-      margin: 0.4rem 0;
+      margin-bottom: 0.4rem;
     }
     .limit {
+       margin: 0.4rem 0;
+    }
+    .theme{
+      margin-bottom: .4rem;
     }
     .time {
       margin-top: 0.4rem;
       margin-bottom: 1.28rem;
     }
   }
-  .btn-container{
+  .btn-container {
     display: flex;
     justify-content: space-around;
-    .btn{
+    .btn {
       width: 4rem;
     }
   }

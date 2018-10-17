@@ -1,19 +1,15 @@
 <template>
   <div id="home" class="home">
-    <div class="top_wrapper">
+    <div class="homeTop_wrapper">
       <div class="barLogo_wrapper">
         <div class="logo_wrapper">
           <img class="logo" :src="shopSettingInfo.image" alt="">
           <p class="bar_name">{{shopSettingInfo.name}}</p>
         </div>
       </div>
-      <div class="bg"></div>
       <swiper class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
-      <!-- <carousel-3d :perspective="10" :display="5" :width="300" :height="140">
-                <slide :index="index" v-for="(item,index) in demo01_list1" :key="index">
-                 <img :src="item.img" alt="" style="height:100%">
-                </slide>
-              </carousel-3d> -->
+      <div class="shadowLeft"></div>
+      <div class="shadowRight"></div>
     </div>
     <div class="wrapper" ref="wrapper">
       <div class="content">
@@ -23,8 +19,8 @@
             <p class="adr_desc">{{shopSettingInfo.address}}</p>
           </div>
           <div class="tel">
-            <a :href="shopSettingInfo.phone">
-              <img src="../../assets/image/call.png" alt="">
+            <a href="javascript:void(0);" >
+              <img src="../../assets/image/call.png" alt="" @click="callPhone">
             </a>
           </div>
         </div>
@@ -99,24 +95,24 @@
             <img src="../../assets/image/close_ad.png" alt="" class="close" @click="close_adtise">
           </div>
           <div class="welfare_content">
-            <ul class="welfare_list">
-              <li class="item clearfix" v-for="(item,index) in recommendList" :key="index">
-                <div class="left">
-                  <img :src="item.image" alt="" class="shopPic">
+            <ul class="welfare_list" v-if="recommendList.length">
+              <li class="item clearfix" v-for="(item,index) in recommendList" :key="index" >
+                <div class="left" >
+                  <img :src="item.recommend.image" alt="" class="shopPic">
                 </div>
                 <div class="center">
-                  <p class="title">{{item.name}}</p>
-                  <p class="desc">{{item.subtopic}}</p>
-                  <p class="limit">{{item.limit}}</p>
+                  <p class="title">{{item.recommend.name}}</p>
+                  <p class="desc">{{item.recommend.subtopic}}</p>
+                  <p class="limit">{{item.recommend.limit}}</p>
                   <p class="price">
-                    <span class="discount_p">特惠￥{{item.discountPrice}}</span><del class="origin_p">原价￥{{item.originalPrice}}</del>
+                    <span class="discount_p">特惠￥{{item.recommend.discountPrice}}</span><del class="origin_p">原价￥{{item.recommend.originalPrice}}</del>
                   </p>
                 </div>
                 <div class="right">
-                  <div class="thunb_box clearfix" @click="thumb(index)">
-                    <span class="count fl">已订：{{item.count}}</span>
+                  <div class="thunb_box clearfix">
+                    <span class="count fl">已订：{{item.booking.bookingNumber}}</span>
                   </div>
-                  <div class="show_detail" @click="freeBook">
+                  <div class="show_detail" @click="freeBook(item.recommend.recommendID)">
                     免费预订
                   </div>
                 </div>
@@ -129,22 +125,14 @@
     <div class="fuli" @click="toWelfare" v-show="noCouponsFlag">
       <img src="../../assets/image/fuli.png" alt="" class="pic_fuli">
     </div>
-    <!-- 套餐预定 -->
-    <!-- <div v-transfer-dom>
-            <x-dialog v-model="showDialogStyle" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', height: '50%', 'background-color': 'transparent'}">
-              <p style="color:#fff;text-align:center;" @click="showDialogStyle = false">
-      
-              </p>
-            </x-dialog>
-        </div> -->
     <!-- 优惠券弹框 -->
-    <div v-transfer-dom>
+    <!-- <div v-transfer-dom>
       <x-dialog v-model="discountShow" class="dialog-discount">
         <h3 class="couponTitle"></h3>
         <div class="discount-box">
           <scroll ref="discountScroll" class="discountScroll" :data="dicountList" v-if="dicountList.length">
             <ul class="discountList">
-              <li class="item" v-for="(item,index) in dicountList" @click="intoCard">
+              <li class="item" v-for="(item,index) in dicountList" @click="intoCard" :key="index">
                 <div class="itemLeft">
                   <p class="itemName">{{item.name}}</p>
                   <p class="itemTime">{{item.type}} 有效期至：{{item.time}}</p>
@@ -160,12 +148,12 @@
           <x-icon type="ios-close-outline" style="fill:#fff;margin-top:20px;"></x-icon>
         </div>
       </x-dialog>
-    </div>
+    </div> -->
     <!-- 游戏框框 -->
     <div v-transfer-dom>
       <x-dialog v-model="gameShow" class="dialog-gameBegin">
         <div class="game-box">
-          <img src="../../assets/image/gameBegin.png" alt="" class="gameBegin" @click="intoReadyGame">
+          <img src="../../assets/image/gameBegin.jpg" alt="" class="gameBegin" @click="intoReadyGame">
         </div>
         <div @click="closeGame">
           <img src="../../assets/image/gameClose.png" alt="" class="close">
@@ -180,10 +168,17 @@
 import Scroll from "../../base/scroll/scroll";
 import util from "common/util";
 import api from "common/api";
-import { TransferDom, Swiper, Toast, XDialog } from "vux";
+import {
+  TransferDom,
+  Swiper,
+  Toast,
+  XDialog
+} from "vux";
 import axios from "axios";
 import url from "common/url";
 import { mapMutations, mapActions, mapState } from "vuex";
+// import { Carousel3d, Slide } from 'vue-carousel-3d';
+import mySwiper from '../../libs/swiper/swiper-4.3.3.min.js'
 export default {
   name: "home",
   directives: {
@@ -202,33 +197,12 @@ export default {
       demo01_index: 0,
       data: [1, 2, 3],
       distance: "",
-      recommendList: [{
-        src: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png",
-        originPrice: "488",
-        price: "388",
-        limit: "限周一白天使用",
-        desc: "朋友聚会，超级实惠的哦",
-        title: "超值四人水果拼盘",
-        count: 88
-      },
-      {
-        src: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png",
-        originPrice: "388",
-        price: "188",
-        limit: "限周天白天使用",
-        desc: "超值优惠，值得拥有",
-        title: "聚会二楼包厢特惠",
-        count: 8
-      }
-      ],
+      recommendList: [],
       inFriendNum: 0,
       outFriendNum: 0
     };
   },
   created() {
-    this._getUserInfo(); //获取用户信息
-    this.getFriendList(); //获取候选人
-    this._loadPublishArenas();
     let _url = window.location.href;
     if (util.isAndroid()) {
       let shareObj = {
@@ -249,19 +223,32 @@ export default {
     }
   },
   computed: {
-    ...mapState(["friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo","noCouponsFlag"])
+    ...mapState(["friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo", "noCouponsFlag"])
   },
   mounted() {
+    this._getUserInfo(); //获取用户信息
+    this.getFriendList(); //获取候选人
+    this._loadPublishArenas();//拉取已经发布的比赛场
     this._loadFriendEvts(); //获取好友事件列表
+    this.getFriendGift();//获取好友送礼列表
     this.getAlreadyFriend(); //获取已经成为好友列表
     this._getInOutNum();
-    this._loadUserCoupons(); //用户获取优惠券
-    this._loadRecommends();//店长推荐数据
+    //this._loadUserCoupons(); //用户获取优惠券
+    //this._acquireWaitGetCoupons();//用户获取优惠券
+    this._loadRecommends(); //店长推荐数据
     this._loadStoreSetting() //获取门店信息
-    this._loadAdvertisingPhoto();//拉取首页轮播图
-    this._loadInviteWaitGetCoupon();//判断是否已经领取优惠券
+    this._loadAdvertisingPhoto(); //拉取首页轮播图
+    this._loadInviteWaitGetCoupon(); //判断是否已经领取优惠券
+
   },
   methods: {
+    //打电话
+    callPhone() {
+      window.location.href = `tel://${this.shopSettingInfo.phone}`;
+      api.statCalls().then(res => {
+        console.log('打电话记录------------------', res);
+      })
+    },
     //判断是否已经分享过优惠券
     _loadInviteWaitGetCoupon() {
       api.loadInviteWaitGetCoupon().then(res => {
@@ -271,7 +258,6 @@ export default {
         }
       })
     },
-
     //获取cookie
     getCookie: function (cname) {
       var name = cname + "=";
@@ -286,12 +272,12 @@ export default {
       return "";
     },
     //进入优惠券
-    intoCard() {
-      this.$router.push({
-        name: "card"
-      });
-      this.discountShow = false;
-    },
+    // intoCard() {
+    //   this.$router.push({
+    //     name: "card"
+    //   });
+    //   this.discountShow = false;
+    // },
     //进入游戏初始页面
     intoReadyGame() {
       this.$router.push({
@@ -304,11 +290,11 @@ export default {
       this.gameShow = false;
     },
     //关闭AI优惠券
-    closeAICard() {
-      api.clearFirstLoadTag().then(res => {
-        this.discountShow = false;
-      });
-    },
+    // closeAICard() {
+    //   api.clearFirstLoadTag().then(res => {
+    //     this.discountShow = false;
+    //   });
+    // },
     playGame_challenge() {
       let token = this.getCookie("tk");
       window.location.href =
@@ -348,34 +334,37 @@ export default {
       })
     },
     //用户获取首次进入系统优惠券
-    _loadUserCoupons() {
-      let channel = 1; //channel为1是AI优惠券类型
-      api.loadUserCoupons(channel).then(res => {
-        console.log("优惠券：", res);
-        if (res.length === 0) {
-          return false;
-        }
-        let AicardList = res.coupons;
-        AicardList.forEach(element => {
-          let tempObj = {};
-          tempObj.type = element.coupon.type ? "实物券" : "现金券";
-          tempObj.time = element.coupon.endTime;
-          tempObj.name = element.coupon.type ?
-            "获得" + element.coupon.content :
-            "获得" + element.coupon.value + "元代金券";
-          this.dicountList.push(tempObj);
-        });
-        setTimeout(() => {
-          this.discountShow = this.userInfo.firstLoad;
-          // this.discountShow = true;
-        }, 1000);
-      });
-    },
+    // _loadUserCoupons() {
+    //   let channel = 1; //channel为1是AI优惠券类型
+    //   api.loadUserCoupons(channel).then(res => {
+    //     console.log("AI优惠券------------------------------", res);
+    //     if (res.length === 0) {
+    //       return false;
+    //     }
+    //     let AicardList = res.coupons;
+    //     AicardList.forEach(element => {
+    //       let tempObj = {};
+    //       tempObj.type = element.coupon.type ? "实物券" : "现金券";
+    //       tempObj.time = element.coupon.endTime;
+    //       tempObj.name = element.coupon.type ?
+    //         "获得" + element.coupon.content :
+    //         "获得" + element.coupon.value + "元代金券";
+    //       this.dicountList.push(tempObj);
+    //     });
+    //     setTimeout(() => {
+    //       this.discountShow = this.userInfo.firstLoad;
+    //       // this.discountShow = true;
+    //     }, 1000);
+    //   });
+    // },
     //获取店长推荐
     _loadRecommends() {
       api.loadRecommends().then(res => {
         console.log('店长推荐数据---------------------', res)
         this.recommendList = res.slice(0, 2);
+        // tempArr.forEach(item=>{
+        //   .push(item.recommend)
+        // })
       })
     },
     //获取门店信息
@@ -389,15 +378,18 @@ export default {
     _loadAdvertisingPhoto() {
       api.loadAdvertisingPhoto().then(res => {
         console.log('轮播图-------------------------：', res)
-        let swiperList = [];
-        res.adPhotoURL.forEach((item, index) => {
-          swiperList.push({
-            url: "javascript:",
-            img: item,
-            title: ""
+        this.getAdvertisingImg(res.adPhotoURL);
+        this.$nextTick(() => {
+          let swiperList = [];
+          res.adPhotoURL.forEach((item, index) => {
+            swiperList.push({
+              url: "javascript:",
+              img: item,
+              title: ""
+            })
           })
+          this.demo01_list = swiperList
         })
-        this.demo01_list = swiperList
       })
     },
     //获取好友事件
@@ -409,18 +401,39 @@ export default {
     close_adtise() {
       this.show_advertise = false;
     },
-    //点赞
-    thumb(index) {
-      this.recommendList[index].count++;
-      // this.count++;
-    },
     //免费预定
-    freeBook() {
-      this.$vux.toast.show({
-        text: "您己成功预订A套餐，到门店时请先到收银台扫码确认",
-        type: "text",
-        time: 3000,
-        width: "3rem"
+    freeBook(recommendID) {
+      var couponId = "";
+      console.log('recommendID--------------------------------:', recommendID);
+      api.bookingRecommend(recommendID).then(res => {
+        console.log('预定结果--------------', res);
+        couponId = res.userCouponID;
+        //发起预订券核销
+        console.log('couponId------------------------', couponId)
+        api.launchSetOffUserCoupon(couponId).then(res => {
+          console.log('发起预订券核销------------', res)
+          if (res.errCode === 0) {
+            console.log('发起预订券核销----------------------', res)
+          }
+        })
+        if (res.errCode && res.errCode == 1021) {
+          this.$vux.toast.show({
+            text: "您己成功预订,无需重复预定",
+            type: "text",
+            time: 2000,
+            width: "3rem"
+          });
+        } else {
+          this.$vux.toast.show({
+            text: "您己成功预订套餐，到门店时请先到收银台扫码确认",
+            type: "text",
+            time: 3000,
+            width: "3rem"
+          });
+          this._loadRecommends(); //重新拉取店长推荐
+        }
+      }).catch(err => {
+        console.log(err)
       });
     },
     //关闭详情
@@ -449,10 +462,9 @@ export default {
       api.getUserInfo("/api/loadUserInfo").then(res => {
         console.log('个人信息-------------------------：', res);
         this.getuserInfo(res);
-      })
-        .catch(err => {
-          console.log(err);
-        });
+      }).catch(err => {
+        console.log(err);
+      });
     },
     //获取场内场外人数
     _getInOutNum() {
@@ -464,7 +476,7 @@ export default {
     //进入福利页面
     toWelfare() {
       this.$router.push({
-        name: "welfare"
+        name: "shareNew"
       });
     },
     //进入场内交友界面
@@ -484,13 +496,13 @@ export default {
     //进入场外交友界面
     outFriend() {
       util.routerTo("friend", this, {
-        routeParamNum: 2 //路由参数2为进入了场外
+        routeParamNum: 2                                      //路由参数2为进入了场外
       });
     },
     //进入店长信箱
     inToLetter() {
       util.routerTo("message", this, {
-        routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
+        routeParamNum: 2                                      //路由参数2表示从店长信箱进入店长留言
       });
     },
     // 更多福利
@@ -498,18 +510,20 @@ export default {
       util.routerTo("welfare", this);
     },
     ...mapMutations({
-      getuserInfo: "GET_USERINFO",    //获取用户信息
+      getuserInfo: "GET_USERINFO",                            //获取用户信息
       getShopSetting: "GET_SHOPINFO",
       getPosition: "GET_POSITION",
       getFriend: "GET_FRIENDlIST",
       updateShareUrl: "UPDATE_SHAREURL",
-      getFriend: "GET_FRIENDlIST", //获取候选人,
-      judgeInviteCoupon: "JUDGE_INVITE_COUPON" //判断是否还有邀请有礼
+      getFriend: "GET_FRIENDlIST",                            //获取候选人,
+      judgeInviteCoupon: "JUDGE_INVITE_COUPON",               //判断是否还有邀请有礼
+      getAdvertisingImg: "GET_ADVERTISINGIMG"                  //获取首页轮播图
     }),
     ...mapActions({
-      getFriendEvt: "get_FriendEvt", //获取好友事件
-      getAlreadyFriend: "get_alreadyFriendList", //获取已经成为好友事件
-      getFriendList: "get_Friendlist"
+      getFriendEvt: "get_FriendEvt",                          //获取好友事件
+      getAlreadyFriend: "get_alreadyFriendList",              //获取已经成为好友事件
+      getFriendList: "get_Friendlist",
+      getFriendGift: "get_FriendGift"                          //获取好友送礼事件
     })
   },
   watch: {
@@ -524,7 +538,9 @@ export default {
     Swiper,
     Toast,
     XDialog,
-    Scroll
+    Scroll,
+    // Carousel3d,
+    // Slide
   }
 };
 </script>
@@ -534,6 +550,7 @@ export default {
 @import "../../assets/less/home_common.less";
 @import "../../assets/less/mixin.less";
 @import "~vux/src/styles/close";
+@import "../../libs/swiper/swiper-4.3.3.min.css";
 // 优惠券开始
 .weui-dialog {
   background: none;
@@ -703,20 +720,23 @@ export default {
 }
 .content {
 }
-.top_wrapper {
+.homeTop_wrapper {
   position: relative;
-  height: 4.2667rem; // background: #ffe200;
-  .bg {
-    position: absolute;
-    height: 50%;
-    width: 100%; // background: #ffe200;
-  }
+  height: 4.2667rem;
+  padding-top: 0.4rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  background: -webkit-linear-gradient(left, #fff800, #fef200, #fccc00, #fbbc00);
+  margin-bottom: 0.4rem;
+  // padding: 0.1667rem;
+  // .bg('../../assets/image/welfare_bg.png');
+  // background: #ffe200;
   .barLogo_wrapper {
     width: 100%;
     position: absolute;
     z-index: 999;
-    top: 0.16rem;
-    left: -0.0933rem;
+    top: 0.96rem;
+    left: .23rem;
     .logo_wrapper {
       display: inline-block;
       height: 0.5rem;
@@ -743,6 +763,8 @@ export default {
   }
   .slider {
     height: 100%;
+    position: relative;
+    top: 0.4rem;
   }
 }
 .pic {

@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-09-17 17:18:48
+ * @Last Modified time: 2018-10-11 10:32:23
  */
 import api from 'common/api'
 let util = {};
@@ -61,7 +61,7 @@ util.GetOpenIdByCode = function(code) {
         var data = "code=" + code + "&appId=wx2684abab04c7017d";
         xhr.send(data);
     }
-    //时间戳转化成地址
+    //时间戳转化成地址  格式xxxx-xx-xx xx-xx-xx
 util.timestampToTime = function(timestamp) {
     timestamp = Number(timestamp);
     // console.log(timestamp.toString().length)
@@ -83,6 +83,30 @@ util.timestampToTime = function(timestamp) {
         var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
         var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
         // console.log(Y)
+        return Y + M + D + h + m + s;
+
+    }
+}
+util.timestampToTimeNoLine = function(timestamp) {
+    timestamp = Number(timestamp);
+    console.log(timestamp.toString().length)
+    if (timestamp.toString().length > 11) {
+        var date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        var Y = date.getFullYear() + '';
+        var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+        var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
+        var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+        var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
+        var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
+        return Y + M + D + h + m + s;
+    } else {
+        var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        var Y = date.getFullYear() + ''; //+''转字符串
+        var M = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+        var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
+        var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+        var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
+        var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
         return Y + M + D + h + m + s;
 
     }

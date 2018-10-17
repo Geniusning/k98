@@ -9,7 +9,7 @@ const mutations = {
     //获取用户数据
     [types.GET_USERINFO](state, userinfo) {
         userinfo.sex = userinfo.sex === 1 ? "男" : "女"
-        state.userInfo = userinfo
+        state.userInfo = userinfo;
     },
     // 获取地理位置
     [types.GET_POSITION](state, position) {
@@ -55,9 +55,7 @@ const mutations = {
         });
     },
     //获取已经成为好友列表
-    [types.GET_ALREADYFRIENDEVTLIST](state, {
-        data
-    }) {
+    [types.GET_ALREADYFRIENDEVTLIST](state, { data }) {
         var totalCount = 0;
         // console.log(data)
         let tempData = [];
@@ -101,10 +99,7 @@ const mutations = {
     },
     //增加推送点赞事件列表
     [types.ADD_FRIENDEVTLIST](state, friendEvtList) {
-        let friendEvtObj = {
-            evtType: 1,
-            from: friendEvtList,
-        }
+        let friendEvtObj = { evtType: 1, from: friendEvtList }
         state.friendEvtList.push(friendEvtObj)
     },
     //更新好友事件消息框内容
@@ -146,17 +141,24 @@ const mutations = {
         }
     },
     //获取好友事件
-    [types.GET_FRIENDEVTLIST](state, {
-        data
-    }) {
-        let count = data.events.length
-        state.event_badgeCount = count //获取未读好友事件数量
+    [types.GET_FRIENDEVTLIST](state, { data }) {
+        state.event_badgeCount = data.events.length //获取未读好友事件数量
         state.friendEvtList = data.events
+    },
+    //获取好友送礼
+    [types.GET_FRIENDGIFTLIST](state, { data }) {
+        console.log('mutationGift--------------', data)
+        state.gift_badgeCount = data.length;
+        state.friendGiftList = data;
+    },
+    //获取店长消息列表
+    [types.GET_CAPTAINMESSAGELIST](state, { data }) {
+        state.captainMessageList = data;
     },
     //所有类型的未读消息累加总的未读消息里面
     [types.ADD_BADGE](state) {
         let total = 0;
-        total = state.msg_badgeCount + state.event_badgeCount;
+        total = state.msg_badgeCount + state.event_badgeCount + state.gift_badgeCount;
         state.badgeCount = total;
     },
     //设置候选人聊天的信息
@@ -214,6 +216,10 @@ const mutations = {
     //判断邀请有礼是否还有
     [types.JUDGE_INVITE_COUPON](state, noCouponsFlag) {
         state.noCouponsFlag = noCouponsFlag;
+    },
+    //获取首页轮播图
+    [types.GET_ADVERTISINGIMG](state, AdvertisingPhoto) {
+        state.AdvertisingPhoto = AdvertisingPhoto;
     },
     //测试
     [types.TEST](state, test) {

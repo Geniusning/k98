@@ -17,18 +17,20 @@
         <ul class="user_list">
           <li class="item">
             <p class="score_name">好友数</p>
-            <p class="score">8个</p>
+            <p class="score">{{userInfo.numOfFriends}}个</p>
           </li>
           <li class="item">
             <p class="score_name">富豪榜</p>
-            <p class="score">第6名</p>
+            <p class="score">第{{userInfo.wealthRanking}}名</p>
           </li>
           <li class="item">
             <p class="score_name">大话战神榜</p>
-            <p class="score">第11名</p>
+            <p class="score">第{{userInfo.gameScoreRanking}}名</p>
           </li>
         </ul>
       </div>
+      <!-- 签到 -->
+      <span class="signIn" @click="sign_in">签到</span>
       <!-- 我的卡券 -->
       <div class="discount_wrapper">
         <ul class="discount_list">
@@ -67,35 +69,36 @@
       </div>
       <!-- 营销推广 -->
       <div class="marketing_wrapper">
+      <!-- <div class="marketing_wrapper" v-show="userInfo.role"> -->
         <h2 class="marketing_title">营销推广<span class="star">#</span></h2>
         <ul class="marketing-list">
           <li class="marketing-item">
             <div class="marketing-left">
-                门店名片(首页)
+              门店名片(首页)
             </div>
             <div class="marketing-right" @click="homeShare">
               分享->
             </div>
           </li>
-           <li class="marketing-item">
+          <li class="marketing-item" v-show="noCouponsFlag">
             <div class="marketing-left">
-                邀新有礼
+              邀新有礼
             </div>
             <div class="marketing-right" @click="inviteShare">
               分享->
             </div>
           </li>
-           <li class="marketing-item">
+          <li class="marketing-item">
             <div class="marketing-left">
-                大话争霸赛
+              大话争霸赛
             </div>
             <div class="marketing-right" @click="gameShare">
               分享->
             </div>
           </li>
-           <li class="marketing-item">
+          <li class="marketing-item">
             <div class="marketing-left">
-                门店活动通知
+              门店活动通知
             </div>
             <div class="marketing-right" @click="activetyShare">
               分享->
@@ -104,20 +107,20 @@
         </ul>
       </div>
     </div>
-       <!-- 绑定手机弹框 -->
+    <!-- 绑定手机弹框 -->
     <validate v-show="isShow"></validate>
     <!-- 新增标签 -->
     <!-- <div v-transfer-dom>
-      <x-dialog v-model="showTag" class="dialog-demo">
-        <div style="padding:10px 0px">
-          <div style="margin-bottom:10px" class="tag_box">
-            <input type="text" class="tag" placeholder="请输入标签" ref="tag">
-            <x-icon @click.native="closeTag" type="ios-close-empty" size="30" class="close"></x-icon>
+        <x-dialog v-model="showTag" class="dialog-demo">
+          <div style="padding:10px 0px">
+            <div style="margin-bottom:10px" class="tag_box">
+              <input type="text" class="tag" placeholder="请输入标签" ref="tag">
+              <x-icon @click.native="closeTag" type="ios-close-empty" size="30" class="close"></x-icon>
+            </div>
+            <x-button style="float:right;margin-right:20px;margin-bottom:10px;" @click.native="save" type="primary" :mini="true">新增</x-button>
           </div>
-          <x-button style="float:right;margin-right:20px;margin-bottom:10px;" @click.native="save" type="primary" :mini="true">新增</x-button>
-        </div>
-      </x-dialog>
-    </div> -->
+        </x-dialog>
+      </div> -->
     <router-view></router-view>
   </div>
 </template>
@@ -132,6 +135,7 @@ import {
   Toast
 } from "vux";
 import {
+  mapState,
   mapGetters,
   mapMutations
 } from "vuex";
@@ -153,10 +157,11 @@ export default {
     };
   },
   computed: {
+    ...mapState(["noCouponsFlag"]),
     ...mapGetters(["userInfo", "test", "isShow"])
   },
   created() {
-    // this.tagList = this.userInfo.tags.split('、')
+    // this.tagList = this.userInfo.tags.split('、');
     console.log()
     let url = window.location.href.split('#')[0];
     console.log(url)
@@ -225,6 +230,27 @@ export default {
       this.$router.push({
         name: "individual"
       });
+    },
+    //签到
+    sign_in() {
+      api.checkIn().then(res => {
+        console.log('签到---------------------------', res);
+        if (res.errCode === 0) {
+          this.$vux.toast.show({
+            text: "签到成功 +2积分",
+            type: "text",
+            time: 3000,
+            width: "3rem"
+          });
+        } else {
+          this.$vux.toast.show({
+            text: "今日您已签到 明天再来吧",
+            type: "text",
+            time: 3000,
+            width: "3rem"
+          });
+        }
+      })
     },
     // 新增标签
     // plusTag() {
@@ -364,9 +390,10 @@ export default {
     }
   }
   .content {
-    flex: 1;
+    // flex: 1;
     display: flex;
     flex-direction: column;
+    position: relative;
     .userInfo_wrapper {
       height: 1.8667rem;
       background: #fff;
@@ -396,6 +423,19 @@ export default {
           }
         }
       }
+    }
+    .signIn {
+      position: absolute;
+      top: -1rem;
+      right: 0rem;
+      box-sizing: border-box;
+      width: 1.0667rem;
+      height: 1.0667rem;
+      text-align: center;
+      line-height: 1.0667rem;
+      border-radius: 50%;
+      background: #f6d001;
+      color: #fff;
     }
     .discount_wrapper {
       margin-top: 0.1333rem;
@@ -450,7 +490,7 @@ export default {
       }
     }
     .marketing_wrapper {
-      height: 4rem;
+      // height: 6rem;
       margin-top: 0.1333rem;
       padding: 0 0.4rem;
       background: #fff;
@@ -476,9 +516,10 @@ export default {
       }
     }
     .signature_wrapper {
-      flex: 1;
+      // flex: 1;
       margin-top: 0.1333rem;
       padding-left: 0.4rem;
+      padding-bottom: 0.2667rem;
       background: #fff;
       .signature_title {
         .title();

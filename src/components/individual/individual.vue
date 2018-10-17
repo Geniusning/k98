@@ -317,146 +317,31 @@ export default {
         phone: this.phone,
         signature: this.signature
       };
-      console.log(userInfoParam);
       let strUserInfoParam = JSON.stringify(userInfoParam);
       let decc = new TextEncoder("utf-8");
       let param = decc.encode(strUserInfoParam);
+      //保存信息
       api.savePersonalInfo(param).then(res => {
-        console.log(res);
         if (res.errorCode === 0) {
-          api
-            .getUserInfo("/api/loadUserInfo")
-            .then(res => {
-              console.log(res);
-              this.getuserInfo(res);
-              this.$vux.toast.show({
-                text: "保存成功"
-              });
-            })
+          api.getUserInfo("/api/loadUserInfo").then(res => {
+            console.log(res);
+            this.getuserInfo(res);
+            this.$vux.toast.show({
+              text: "保存成功"
+            });
+          })
             .catch(err => {
               console.log(err);
             });
         }
       });
-    },
-    //测试
-    getUserInfo() {
-      let _this = this;
-      axios
-        .get("http://llwant.test.qianz.com" + _this.path)
-        .then(res => {
-          _this.resText = JSON.stringify(res.data);
-          console.log(res.data);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // // 图片上传
-    // Onchange(e) {
-    //   var maxsize = 100 * 1024;
-    //   this.files = e.target.files || e.dataTransfer.files;
-    //   if (!this.files.length) return;
-    //   var files = Array.prototype.slice.call(this.files); //转化成数组
-    //   console.log(files);
-    //   if (files.length > 1) {
-    //     // console.log("最多同时只可上传2张图片");
-    //     return;
-    //   }
-    //   //遍历文件
-    //   files.forEach((file, i) => {
-    //     if (!/\/(?:jpeg|png|gif)/i.test(file.type)) return;
-    //     var reader = new FileReader();
-    //     reader.readAsDataURL(file); //读取文件
-    //     var _this = this;
-    //     reader.onload = function() {
-    //       var result = this.result;
-    //       var img = new Image();
-    //       img.src = result;
-    //       _this.showTailor = true;
-    //       _this.option.img = result;
-    //     };
-    //     // if (result.length <= maxsize) {
-    //     //   img = null;
-    //     //   return;
-    //     // }
-    //     //图片加载完毕之后进行压缩，然后上传
-    //     // if (img.complete) {
-    //     //   callback();
-    //     // } else {
-    //     //   img.onload = callback;
-    //     // }
-    //   });
-    // },
-    // // 使用canvas对大图片进行压缩
-    // compress(img) {
-    //   var canvas = document.createElement("canvas");
-    //   var ctx = canvas.getContext("2d");
-    //   //    瓦片canvas
-    //   var tCanvas = document.createElement("canvas");
-    //   var tctx = tCanvas.getContext("2d");
-    //   var initSize = img.src.length;
-    //   var width = img.width;
-    //   var height = img.height;
-    //   //如果图片大于四百万像素，计算压缩比并将大小压至400万以下
-    //   var ratio;
-    //   if ((ratio = width * height / 4000000) > 1) {
-    //     ratio = Math.sqrt(ratio);
-    //     width /= ratio;
-    //     height /= ratio;
-    //   } else {
-    //     ratio = 1;
-    //   }
-    //   canvas.width = width;
-    //   canvas.height = height;
-    //   // 铺底色
-    //   ctx.fillStyle = "#fff";
-    //   ctx.fillRect(0, 0, canvas.width, canvas.height);
-    //   //如果图片像素大于100万则使用瓦片绘制
-    //   var count;
-    //   if ((count = width * height / 1000000) > 1) {
-    //     count = ~~(Math.sqrt(count) + 1); //计算要分成多少块瓦片
-    //     //计算每块瓦片的宽和高
-    //     var nw = ~~(width / count);
-    //     var nh = ~~(height / count);
-    //     tCanvas.width = nw;
-    //     tCanvas.height = nh;
-    //     for (var i = 0; i < count; i++) {
-    //       for (var j = 0; j < count; j++) {
-    //         tctx.drawImage(
-    //           img,
-    //           i * nw * ratio,
-    //           j * nh * ratio,
-    //           nw * ratio,
-    //           nh * ratio,
-    //           0,
-    //           0,
-    //           nw,
-    //           nh
-    //         );
-    //         ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
-    //       }
-    //     }
-    //   } else {
-    //     ctx.drawImage(img, 0, 0, width, height);
-    //   }
-    //   //进行最小压缩
-    //   var ndata = canvas.toDataURL("image/jpeg", 0.1);
-    //   console.log("压缩前：" + initSize);
-    //   console.log("压缩后：" + ndata.length);
-    //   console.log(
-    //     "压缩率：" + ~~(100 * (initSize - ndata.length) / initSize) + "%"
-    //   );
-    //   tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
-    //   return ndata;
-    // },
-    onClickBack() {},
-    changeName() {
-      setTimeout(() => {
-        console.log(111);
-        let panel = this.$refs.inputArea;
-        panel.scrollIntoView(true);
-      }, 200);
+      //核对员工电话
+      api.verifyPhoneNumber(this.phone).then(res => {
+        console.log('核对员工电话结果-------------------',res);
+       }).catch(err => {
+        console.log(err);
+      })
+
     },
     ...mapMutations({
       getuserInfo: "GET_USERINFO"

@@ -27,11 +27,11 @@
     <!-- 操作 -->
     <div class="handle-container">
       <img @click="intoDiscountList" class="btn" src="../../../assets/image/lookUp.png" alt="">
-      <!-- <img @click="share" class="btn" src="../../../assets/image/fenxiang.png" alt=""> -->
     </div>
-    <!-- <div class="bg" v-show="isShow_bg" @click="share">
-      <img src="../../../assets/image/share.png" alt="">
-    </div> -->
+    <div class="Qr-wrapper">
+         <p class='desc'>长按关注本店公众号，享受会员特权：领福利、交群友、玩游戏！</p>
+         <img :src="QRcodeUrl" alt="" class="QRcode">
+     </div>
   </div>
 </template>
 
@@ -47,21 +47,23 @@ export default {
       userBCouponID: "",
       shareUserID: "",
       sharedCoupon: {},
+      QRcodeUrl: ""
       // picUrl:"http://i1.bvimg.com/643118/5091c94a86646498.jpg"
     };
   },
   created() {
-    alert(window.location.href);
+    // alert(window.location.href);
     let url = window.location.href;
     let urlSplitArr = url.split('CouponID=');
     this.shareUserID = url.slice(url.indexOf('shareUserID='), url.indexOf("&userACouponID")).split('shareUserID=')[1]
     this.userACouponID = urlSplitArr[1].slice(0, -6);
     this.userBCouponID = urlSplitArr[2];
-    this.$nextTick(()=>{
+    this.$nextTick(() => {
       this._acquireInviteWaitGetCoupons();
     })
   },
   mounted() {
+    this._loadAllQrcode();
   },
   computed: {
     ...mapState(["shareUrl"])
@@ -95,6 +97,13 @@ export default {
           }
           this.sharedCoupon = tempObj;
         }
+      })
+    },
+    //拉取二维码
+    _loadAllQrcode() {
+      api.loadAllQrcode().then(res => {
+        console.log('二维码----------------', res)
+        this.QRcodeUrl = res.urls[0]
       })
     },
     goHome() {
@@ -219,20 +228,20 @@ export default {
       height: 1.4133rem;
     }
   }
-  .bg {
-    position: absolute;
+  .Qr-wrapper {
     width: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    img {
-      width: 100px;
-      height: 100px;
-      position: absolute;
-      right: 0;
+    text-align: center;
+    margin-top: 0.2667rem;
+    .desc {
+      font-size: 0.3333rem;
+      font-weight: bold;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 0.2667rem;
+    }
+    .QRcode {
+      width: 4.3333rem;
+      height: 4.3333rem;
     }
   }
 }

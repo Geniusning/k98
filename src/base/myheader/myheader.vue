@@ -37,10 +37,12 @@ export default {
 @import "../../assets/less/variable.less";
 .nav_wrapper {
   background: #fff;
-  padding: 0 0.4rem;
+  // padding: 0 0.4rem;
   box-sizing: border-box;
   // height: 1.1733rem;
   .back_content {
+    padding: 0 0.4rem;
+    box-sizing: border-box;
     margin: 0.32rem 0;
     .backArrow {
       width: 0.32rem;
@@ -48,7 +50,7 @@ export default {
     }
   }
   .title {
-    margin-left: 3.44rem;
+    margin-left: 3.35rem;
     font-size: 0.4267rem;
     color: #333;
     margin-top: 0.3rem;

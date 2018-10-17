@@ -44,23 +44,29 @@ const actions = {
         })
     },
 
-    // 获取好友事件
-    get_FriendEvt({
-        commit,
-        state
-    }, cursor) {
+    // 获取好友点赞事件
+    get_FriendEvt({ commit, state }, cursor) {
         api.loadFriendEvts(cursor).then(res => {
-            commit("GET_FRIENDEVTLIST", {
-                data: res
-            });
+            commit("GET_FRIENDEVTLIST", { data: res });
             commit('ADD_BADGE');
         })
     },
+    //获取好友送礼事件
+    get_FriendGift({ commit, state }) {
+        api.loadGiftsRecord().then(res => {
+            commit("GET_FRIENDGIFTLIST", { data: res.giftRecord });
+            commit('ADD_BADGE');
+        })
+    },
+    //获取店长消息
+    get_captainMessageList({ commit }) {
+        api.loadManagerNoticeInfo().then(res => {
+            console.log('店长消息-----------------', res)
+            commit("GET_CAPTAINMESSAGELIST", { data: res.managerNoticeInfo })
+        })
+    },
     //场内好友接口
-    get_loadInsideCandidates({
-        commit,
-        state
-    }, cursor) {
+    get_loadInsideCandidates({ commit, state }, cursor) {
         api.getLoadInsideCandidates(cursor).then(res => {
             commit("GET_FRIENDlIST", res);
         })

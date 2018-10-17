@@ -6,11 +6,11 @@
               <div class='title_content_item clearfix'>
                 <h3 class="title fl"><strong>我的战绩：</strong></h3>
                 <img src="../../assets/image/jiubei.png" alt="" class="jiubeiIcon fl">
-                <span class="money fl">+200</span>
+                <span class="money fl">{{gameContent.score}}</span>
               </div>
                <div class='title_content_item clearfix'>
                 <h3 class="title fl"><strong>战神榜排名：</strong></h3>
-                <span class="money fl">11</span>
+                <span class="money fl">{{gameContent.ranking}}</span>
               </div>
             </div>
             <div class="scrollTitle">
@@ -20,17 +20,20 @@
               <span class="avatar">对手</span>
               <span class="time">时间</span>
             </div>
-            <scroll class="scroll" :data="giftList">
+            <scroll class="scroll" :data="gameContent.gameScoreDetails">
                 <ul class="gift_list">
-                    <li class="item vux-1px" v-for="(item,index) in giftList" :key="index">
-                        <span class="total">{{item.totalSum}}</span>
-                        <span class="name">{{item.perResult}}</span>
-                        <span class="content">{{item.itemName}}</span>
+                    <li class="item vux-1px" v-for="(item,index) in gameContent.gameScoreDetails" :key="index">
+                        <span class="total">{{item.score}}</span>
+                        <span class="name">{{item.amount}}</span>
+                        <span class="content" v-if="item.content==='game1'">随机场</span>
+                        <span class="content" v-else-if="item.content==='game2'">比赛场</span>
+                        <span class="content" v-else>好友场</span>
                         <div class="avatar">
-                          <img src="../../assets/image/avatar.jpg" class="gift_icon">
+                          <img :src="item.headimgurl" class="gift_icon">
                         </div>
-                        <span class="time">20180509 16:00:32</span>
+                        <span class="time">{{item.time}}</span>
                     </li>
+                     <p v-if="!gameContent.gameScoreDetails.length" class="noContent">暂无战绩内容</p>
                 </ul>
             </scroll>
         </div>
@@ -39,6 +42,7 @@
 
 <script type='text/ecmascript-6'>
 import api from "common/api";
+import util from "common/util";
 import myHeader from "../../base/myheader/myheader";
 import Scroll from "../../base/scroll/scroll";
 export default {
@@ -46,61 +50,25 @@ export default {
     return {
       moneyIndex: 0,
       moneyInitValue: 5,
-      giftList: [
-        {
-          totalSum: "+8",
-          perResult: "+1",
-          itemName: "排名赛"
-        },
-        {
-          totalSum: "+8",
-          perResult: "+1",
-          itemName: "单挑邻桌"
-        },
-        {
-          totalSum: "+8",
-          perResult: "+1",
-          itemName: "好友开房"
-        },
-        {
-          totalSum: "+8",
-          perResult: "+2",
-          itemName: "好友开房"
-        },
-        {
-          totalSum: "+8",
-          perResult: "-1",
-          itemName: "排名赛"
-        },
-        {
-          totalSum: "+8",
-          perResult: "+1",
-          itemName: "排名赛"
-        },
-        {
-          totalSum: "+8",
-          perResult: "+1",
-          itemName: "单挑邻桌"
-        },
-        {
-          totalSum: "+8",
-          perResult: "+1",
-          itemName: "好友开房"
-        },
-        {
-          totalSum: "+8",
-          perResult: "+2",
-          itemName: "好友开房"
-        },
-        {
-          totalSum: "+8",
-          perResult: "-1",
-          itemName: "排名赛"
-        },
-      ]
+      gameContent: {
+        gameScoreDetails:[]
+      },
     };
   },
+  mounted() {
+    this._LoadGameScoreDetail()
+  },
   methods: {
+    //拉取游戏详情
+    _LoadGameScoreDetail() {
+      api.LoadGameScoreDetail().then(res => {
+        console.log('游戏详情-------------------', res);
+        this.gameContent = res;
+        this.gameContent.gameScoreDetails.forEach(item => {
+          item.time = util.timestampToTimeNoLine(item.time);
+        })
+      })
+    }
   },
   components: {
     myHeader,
@@ -203,6 +171,13 @@ export default {
           .plus {
             color: green;
           }
+        }
+        .noContent {
+          width: 100%;
+          text-align: center;
+          margin-top: 50%;
+          color: #ccc;
+          font-size: 0.5333rem;
         }
       }
     }

@@ -3,7 +3,7 @@
    <div class="title">
       <div class="btn_box clearfix">
         <div :class="{active:isShow==0}" class="fri_btn fl" @click="btn_fri">好友</div>
-        <div :class="{active:isShow==1}" class="hello_btn fl" @click="btn_hello">新朋友招呼<i class="dot" v-show="friendEvtList.length"></i></div>
+        <div :class="{active:isShow==1}" class="hello_btn fl" @click="btn_hello">新朋友招呼<i class="dot" v-show="friendEvtList.length||friendGiftList.length"></i></div>
         <div :class="{active:isShow==2}" class="system_btn fl" @click="btn_sys">店长消息</div>
       </div>
       <!-- <div class="dot" v-if="hello"></div> -->
@@ -30,6 +30,7 @@
            <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,10)==today?item.info.lastMsg.stime.slice(10,16):item.info.lastMsg.stime.slice(5,10):""}}</p>
          </div>
        </li>
+       <p v-if="!alreadyFriendList.length" class="noContent">暂无好友</p>
      </ul>
      <!-- 新朋友招呼 -->
      <div class="message_list" v-else-if="isShow==1">
@@ -57,24 +58,29 @@
               <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">回赞</p>
             </div>
           </li>
+          <p v-if="!friendEvtList.length" class="noContent">暂无点赞内容</p>
         </ul>
         <!-- 送礼 -->
         <ul class="newMessage_list" v-if="greeting_flag===1">
-          <li class="item vux-1px-b">
+          <li class="item vux-1px-b" v-for="(item,index) in friendGiftList" :key="index">
             <div class="info_message">
               <div class="avatar">
-                <img src="../../assets/image/avater1.jpg" alt="">
+                <img :src="item.GiftGiverHeadImgURL" alt="">
                 <i class="dot"></i>
               </div>
               <div class="name_and_message">
-                <p class="name">小包包</p>
-                <p class="message">/gift小包包送了一个飞机给我</p>
+                <p class="name">{{item.GiftGiverNickname}}</p>
+                <p class="message" v-if="item.gift.id==1">{{item.GiftGiverNickname}}送你一个啤酒</p>
+                <p class="message" v-if="item.gift.id==2">{{item.GiftGiverNickname}}送你一个鲜花</p>
+                <p class="message" v-if="item.gift.id==3">{{item.GiftGiverNickname}}送你一个别墅</p>
+                <p class="message" v-if="item.gift.id==4">{{item.GiftGiverNickname}}送你一个跑车</p>
               </div>
             </div>
-            <div class="thumb_wrapper">
+            <div class="thumb_wrapper" @click="thanksTo(item.GiftGiverID)">
               <p class="back_thumb vux-1px">感谢</p>
             </div>
           </li>
+           <p v-if="!friendGiftList.length" class="noContent">暂无送礼内容</p>
         </ul>
         <!-- 游戏 -->
         <ul class="newMessage_list" v-if="greeting_flag===2">
@@ -98,22 +104,22 @@
      </div>
      <!-- 店长留言 -->
      <ul class="message_list" style="margin-top:0.4rem" v-else>
-        <li class="item vux-1px-b" @click="chat">
+        <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index">
          <div class="info_message">
            <div class="avatar">
              <!-- <img :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/795ecd968a430f39.png'" alt=""> -->
-             <img src="../../assets/image/avatar3.jpg" alt="">
-             <i class="dot"></i>
+             <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1539344421964&di=11d0ae8ce5a8d96ccff899cd14523aa9&imgtype=0&src=http%3A%2F%2Fwww.whtv.com.cn%2Fzt%2F2014%2Fxx%2F201412%2FW020141215549964776134.jpg" alt="">
+             <!-- <i class="dot"></i> -->
            </div>
            <div class="name_and_message">
              <!-- <p class="name">{{item.info.nickname}}</p> -->
-             <p class="name">美女店长</p>
-             <p class="message">有事请您留言</p>  
+             <p class="name">店长</p>
+             <p class="captainMessage">活动通知:<{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>  
            </div>
          </div>
-         <div class="info_time">
+         <!-- <div class="info_time">
            <p>下午11:11</p>
-         </div>
+         </div> -->
        </li>
      </ul>
    </div>
@@ -161,8 +167,13 @@ export default {
       "friendEvtList",
       "alreadyFriendList",
       "staticChatFriendObj",
-      "LastChatMsg"
-    ])
+      "LastChatMsg",
+      "friendGiftList",
+      "captainMessageList"
+    ]),
+    messageTime() {
+      return
+    }
   },
   created() {
     this.today = new Date().getDate();
@@ -174,7 +185,9 @@ export default {
     }
   },
   mounted() {
-    this._loadFriends();
+    this._loadFriends();               //拉取好友
+    this.getFriendGift();              //拉取好友送礼  
+    this.getCaptainMessList();         //获取店长信息            
   },
   destroyed() {
     // console.log("组件销毁");
@@ -182,12 +195,15 @@ export default {
   methods: {
     btn_fri() {
       this.isShow = 0;
+      this.greeting_flag = 0;
     },
     btn_hello() {
       this.isShow = 1;
+      this.greeting_flag = 0;
     },
     btn_sys() {
       this.isShow = 2;
+      this.greeting_flag = 0;
     },
     //回赞事件
     backThumbClick(type, flag) {
@@ -209,16 +225,30 @@ export default {
         }
       });
     },
+    //感谢事件
+    thanksTo(giftGiverId) {
+      api.thanksForGit(giftGiverId).then(res => {
+        console.log('感谢后的结果---------------', res);
+        if (res.errCode == 0) {
+          this.text = "已感谢对方";
+          this.showPositionValue = true;
+          this.getFriendGift();     // 重新拉取送礼列表
+          this._loadFriends();      //重新拉取已经成为好友列表
+        }
+      })
+    },
+
+    //拉取好友
     _loadFriends() {
       let cursor = 0;
       this.getAlreadyFriendList(cursor);
-      // console.log("重新加载已经成为好友列表");
     },
     // tab事件
     onItemClick(index) {
       this.greeting_flag = index;
       console.log(index);
     },
+
     //发起聊天
     chat(item) {
       this.setChatFriend(item);
@@ -227,14 +257,16 @@ export default {
       });
     },
     ...mapMutations({
-      addBadgeCount: "ADD_BADGE", //动态变化未读消息数量
-      setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
-      compareLastMsg: "COMPARE_LASTMESS", //推送最后的一个消息跟已有好友消息列表对比
-      toTopFriend: "TO_TOP_MESSAGE"//把最新消息的置顶
+      addBadgeCount: "ADD_BADGE",                            //动态变化未读消息数量
+      setChatFriend: "SET_CHAT_FRIEND",                      //全局设置聊天对象的信息
+      compareLastMsg: "COMPARE_LASTMESS",                    //推送最后的一个消息跟已有好友消息列表对比
+      toTopFriend: "TO_TOP_MESSAGE"                          //把最新消息的置顶
     }),
     ...mapActions({
-      getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
-      getFriendEvt: "get_FriendEvt" //加载好友事件类型
+      getAlreadyFriendList: "get_alreadyFriendList",          //加载已经成为好友列表
+      getFriendEvt: "get_FriendEvt",                          //加载好友事件类型
+      getFriendGift: "get_FriendGift",                        //获取好友送礼事件
+      getCaptainMessList: "get_captainMessageList"             //获取店长信息
     })
   },
   watch: {
@@ -302,7 +334,7 @@ export default {
         border: 1px solid #ffd800;
       }
       .dot {
-        .dot(-0.1rem,-0.1rem);
+        .dot(-0.1rem, -0.1rem);
       }
     }
     .hello_btn {
@@ -323,7 +355,7 @@ export default {
         border-bottom: 1px solid #ffd800;
       }
       .dot {
-        .dot(-0.1rem,-0.1rem);
+        .dot(-0.1rem, -0.1rem);
       }
     }
     .system_btn {
@@ -343,12 +375,12 @@ export default {
         border: 1px solid #ffd800;
       }
       .dot {
-        .dot(-0.1rem,-0.1rem);
+        .dot(-0.1rem, -0.1rem);
       }
     }
   }
   .dot {
-    .dot(0.2rem,0.8rem);
+    .dot(0.2rem, 0.8rem);
   }
   span {
     display: inline-block;
@@ -394,7 +426,7 @@ export default {
             border-radius: 50%;
           }
           .dot {
-            .dot(0,0);
+            .dot(0, 0);
             // position: absolute;
             // top: 0;
             // right: -0.1333rem;
@@ -438,6 +470,17 @@ export default {
             margin-top: 0.4rem;
             text-align: left;
           }
+          .captainMessage {
+            color: #666;
+            width: 7rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            height: 0.6667rem;
+            font-size: 0.3467rem;
+            margin-top: 0.4rem;
+            text-align: left;
+          }
         }
       }
       .info_time {
@@ -447,6 +490,13 @@ export default {
         font-size: 0.3733rem;
         color: #999;
       }
+    }
+    .noContent {
+      width: 100%;
+      text-align: center;
+      margin-top: 50%;
+      color: #ccc;
+      font-size: 0.5333rem;
     }
   }
   .newFriend_wrapper {
@@ -474,7 +524,7 @@ export default {
               border-radius: 50%;
             }
             .dot {
-              .dot(0,0);
+              .dot(0, 0);
             }
           }
           .name_and_message {
@@ -493,6 +543,8 @@ export default {
               height: 0.6667rem;
               font-size: 0.3467rem;
               margin-top: 0.4rem;
+            }
+            .captainMessage {
             }
           }
         }
@@ -517,6 +569,13 @@ export default {
             padding-right: 0.2667rem;
           }
         }
+      }
+      .noContent {
+        width: 100%;
+        text-align: center;
+        margin-top: 50%;
+        color: #ccc;
+        font-size: 0.5333rem;
       }
     }
   }

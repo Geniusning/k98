@@ -52,7 +52,7 @@ export default {
     this._loadInviteWaitGetCoupon();
   },
   computed: {
-    ...mapState(["shareUrl","userInfo"])
+    ...mapState(["shareUrl", "userInfo"])
   },
   methods: {
     _getJssdkInfo(shareObj, url) {
@@ -92,6 +92,9 @@ export default {
     //获取优惠券
     _loadInviteWaitGetCoupon() {
       api.loadInviteWaitGetCoupon().then(res => {
+        if (!res.coupons) {
+          return false
+        }
         let tempArr = []
         if (res.errCode === 0) {
           tempArr[0] = res.coupons.aCoupon;
