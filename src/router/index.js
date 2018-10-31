@@ -22,6 +22,7 @@ import SharedDiscount from 'components/welfare/sharedDiscount/sharedDiscount'
 import ShareNewUsers from 'components/welfare/shareNewUsers/shareNewUsers'
 import GameRecord from 'components/welfare/gameRecord'
 import GameRecordDetail from 'components/welfare/gameRecordDetail'
+import test from 'base/test/test'
 
 
 Vue.use(Router)
@@ -40,6 +41,11 @@ export default new Router({
             meta: {
                 keepAlive: true
             }
+        },
+        {
+            path: '/test',
+            name: 'test',
+            component: test,
         },
         {
             path: "/gameCompetion",

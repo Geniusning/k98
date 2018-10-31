@@ -19,7 +19,8 @@
                   <img src="../../assets/image/close-round.png" alt="" class="close" @click="close(index)">
                 </li>
                  <li class="photo" v-show="isShowAddImg">
-                  <img src="../../assets/image/add_pic.png" alt="" class="imgItem" @click="chooseImage">
+                  <img src="../../assets/image/add_pic.png" alt="" class="imgItem">
+                  <input type="file" accept="image/*" class="imageBtn" @change="uploadLifePic">
                 </li>
               </ul>
             </div>
@@ -53,7 +54,7 @@ export default {
   data() {
     return {
       showTailor: false,
-      isShowAddImg:true,
+      isShowAddImg: true,
       option: {
         img: "",
         width: 300,
@@ -85,28 +86,60 @@ export default {
   methods: {
     //上传生活照
     chooseImage() {
-      console.log("images");
       let _this = this;
-      wx.chooseImage({
-        count: 1, // 默认9
-        sizeType: ["compressed"], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-        success: function(res) {
-          var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-          console.log('localIds----------------------',localIds);
-          _this.lifePhotoList.push(localIds[0]);
-          if(_this.lifePhotoList.length>3){
-            _this.isShowAddImg = false;
-          }
-        }
-      });
+      // wx.chooseImage({
+      //   count: 1, // 默认9
+      //   sizeType: ["compressed"], // 可以指定是原图还是压缩图，默认二者都有
+      //   sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+      //   success: function(res) {
+      //     var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+      //     console.log('localIds----------------------',localIds);
+      //     _this.lifePhotoList.push(localIds[0]);
+      //     if(_this.lifePhotoList.length>3){
+      //       _this.isShowAddImg = false;
+      //     }
+      //   }
+      // });
+    },
+    //上传生活照
+    uploadLifePic(e) {
+      let file = e.target.files[0];
+      this.fileName = file.name;
+      let _this = this;
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        _this.result = this.result;
+        let param = new FormData();
+        param.append("file", _this.result);
+        api.updateLifePic(param).then(res => {
+          console.log(res);
+        })
+
+      };
+      // if (!e.target.files[0]) {
+      //   return;
+      // }
+      // let vm = this;
+      // lrz(e.target.files[0], { quality: 0.1 }).then(function (rst) {
+      //   if (rst.base64Len > 1024 * 1024 * 1) {
+      //     // vm.$toast("图片不能超过1MB");
+      //     console.log("图片不能超过1MB");
+      //     return;
+      //   }
+      //   let filename = rst.origin.name;
+      //   let dataURL = rst.file;
+      //   console.log(dataURL);
+      // }).catch(function (err) {
+      //     vm.$toast("压缩图片失败");
+      //   });
     },
     //删除生活照
-    close(index){
-      this.lifePhotoList.splice(index,1);
-      if(this.lifePhotoList.length===4){
+    close(index) {
+      this.lifePhotoList.splice(index, 1);
+      if (this.lifePhotoList.length === 4) {
         this.isShowAddImg = false;
-      }else{
+      } else {
         this.isShowAddImg = true;
       }
     },
@@ -118,13 +151,13 @@ export default {
       let _this = this;
       let reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = function() {
+      reader.onload = function () {
         _this.result = this.result;
         _this.showTailor = true;
         _this.option.img = this.result;
       };
     },
-    update() {},
+    update() { },
     stop() {
       this.$refs.cropper.getCropBlob(data => {
         console.log(data);
@@ -135,15 +168,13 @@ export default {
         api.updateAvatar(this.fileName, this.result1).then(res => {
           console.log(res);
           if (res.imgURL.length > 0) {
-            api
-              .getUserInfo("/api/loadUserInfo")
-              .then(res => {
-                console.log(res);
-                this.getuserInfo(res);
-                this.$vux.toast.show({
-                  text: "保存成功"
-                });
-              })
+            api.getUserInfo("/api/loadUserInfo").then(res => {
+              console.log(res);
+              this.getuserInfo(res);
+              this.$vux.toast.show({
+                text: "保存成功"
+              });
+            })
               .catch(err => {
                 console.log(err);
               });
@@ -205,7 +236,7 @@ export default {
       font-size: 0.3533rem;
       font-weight: 600;
       margin-bottom: 0.2667rem;
-      .desc{
+      .desc {
         font-size: 0.0067rem;
         font-weight: normal;
       }
@@ -218,7 +249,14 @@ export default {
         height: 2rem;
         position: relative;
         margin-right: 0.2667rem;
-        .close{
+        .imageBtn {
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+          position: absolute;
+          top: 0;
+        }
+        .close {
           position: absolute;
           width: 0.4rem;
           height: 0.4rem;

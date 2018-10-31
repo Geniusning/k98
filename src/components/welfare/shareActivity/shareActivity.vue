@@ -62,13 +62,13 @@ export default {
     this._loadActivityDetail();
   },
   computed: {
-    ...mapState(["shareUrl", "activityNoticeList","shopSettingInfo"])
+    ...mapState(["shareUrl", "activityNoticeList", "shopSettingInfo"])
   },
   methods: {
     //加载活动详情
     _loadActivityDetail() {
       api.loadActivityDetail(this.activityID).then(res => {
-        console.log('活动详情-----------------------',res);
+        console.log('活动详情-----------------------', res);
         this.activityContent = res;
       })
     },
@@ -98,6 +98,7 @@ export default {
   box-sizing: border-box;
   overflow-y: auto;
   .bg("../../assets/image/activity_bg.png");
+  background-color: #ff5c01;
   .logo-container {
     box-sizing: border-box;
     padding-top: 0.2667rem;
@@ -140,10 +141,10 @@ export default {
       margin-bottom: 0.4rem;
     }
     .limit {
-       margin: 0.4rem 0;
+      margin: 0.4rem 0;
     }
-    .theme{
-      margin-bottom: .4rem;
+    .theme {
+      margin-bottom: 0.4rem;
     }
     .time {
       margin-top: 0.4rem;

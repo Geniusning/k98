@@ -2,15 +2,14 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-10-16 17:13:26
+ * @Last Modified time: 2018-10-30 17:51:27
  */
 
 import axios from 'axios'
 import Url from './url'
 
 let api = {};
-let tk = "QhVVscl3hJJeZEI9tJKSRo79E9JgX3BvgEzorSz1aS2Ev8vp4_3OVr13LwLw6i64VISMIQ=="
-    //获取用户信息
+//获取用户信息
 api.getUserInfo = function(path) {
     return new Promise((resolve, reject) => {
         axios.get(Url.commonUrl + path).then(res => {
@@ -105,8 +104,9 @@ api.loadFriends = function(cursor) {
 //发送聊天消息
 api.postFriendMess = function(param) {
         return new Promise((resolve, reject) => {
-            axios.post(Url.commonUrl + `/api/sendChatMsg?tk=${tk}`, param).then((res) => {
-                // console.log(res)
+            // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
+            axios.post(Url.commonUrl + "/api/sendChatMsg", param).then((res) => {
+                console.log(res)
                 if (res.status == 200) {
                     resolve(res.data)
                 }
@@ -118,8 +118,8 @@ api.postFriendMess = function(param) {
     //发送聊天图片
 api.postFriendPic = function(openId, fileName, param) {
         return new Promise((resolve, reject) => {
-            // 
-            axios.post(Url.commonUrl + `/api/sendImage?to=${openId}&fileName=${fileName}&tk=${tk}`, param).then((res) => {
+            // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
+            axios.post(Url.commonUrl + `/api/sendImage?to=${openId}&fileName=${fileName}`, param).then((res) => {
                 // console.log(res)
                 if (res.status == 200) {
                     resolve(res.data)
@@ -132,8 +132,8 @@ api.postFriendPic = function(openId, fileName, param) {
     //根据websocket返回来的信息拉取个人的聊天信息列表
 api.getFriendMessList = function(cursor, who) {
     return new Promise((resolve, reject) => {
-        // 
-        axios.get(Url.commonUrl + `/api/loadChatMsg?cursor=${cursor}&who=${who}&tk=${tk}`)
+        // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
+        axios.get(Url.commonUrl + `/api/loadChatMsg?cursor=${cursor}&who=${who}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -147,8 +147,8 @@ api.getFriendMessList = function(cursor, who) {
 //标记用户已读
 api.sendMsgReaded = function(who) {
         return new Promise((resolve, reject) => {
-            // 
-            axios.get(Url.commonUrl + `/api/setMsgRead?who=${who}&tk=${tk}`)
+            // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
+            axios.get(Url.commonUrl + `/api/setMsgRead?who=${who}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -160,24 +160,36 @@ api.sendMsgReaded = function(who) {
     }
     //修改个人信息头像
 api.updateAvatar = function(fileName, param) {
-    // 
-    return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/updatePortrait?fileName=${fileName}&tk=${tk}`, param)
-            .then(res => {
-                if (res.status == 200) {
-                    resolve(res.data)
-                }
-            }).catch(err => {
-                reject(err)
-            })
-    })
-}
-
-//保存个人信息修改
+        // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
+        return new Promise((resolve, reject) => {
+            axios.post(Url.commonUrl + `/api/updatePortrait?fileName=${fileName}`, param)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //上传生活照
+api.updateLifePic = function(param) {
+        return new Promise((resolve, reject) => {
+            axios.post(Url.commonUrl + `/api/photoUpload`, param)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //保存个人信息修改
 api.savePersonalInfo = function(param) {
-    // 
+    // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/updateUserInfo?tk=${tk}`, param)
+        axios.post(Url.commonUrl + `/api/updateUserInfo`, param)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -190,9 +202,9 @@ api.savePersonalInfo = function(param) {
 
 //获取场内场外人数
 api.getInOutNum = function() {
-    // 
+    // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadInOutFieldNumber?tk=${tk}`)
+        axios.get(Url.commonUrl + `/api/loadInOutFieldNumber`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -205,9 +217,9 @@ api.getInOutNum = function() {
 
 //拉取场内候选人
 api.getLoadInsideCandidates = function(cursor) {
-    // 
+    // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadInsideCandidates?cursor=${cursor}&tk=${tk}`)
+        axios.get(Url.commonUrl + `/api/loadInsideCandidates?cursor=${cursor}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -220,9 +232,9 @@ api.getLoadInsideCandidates = function(cursor) {
 
 //拉取场外候选人
 api.getLoadOutsideCandidates = function(cursor) {
-    // 
+    // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadOutsideCandidates?cursor=${cursor}&tk=${tk}`)
+        axios.get(Url.commonUrl + `/api/loadOutsideCandidates?cursor=${cursor}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -236,7 +248,7 @@ api.getLoadOutsideCandidates = function(cursor) {
 //用户拉取Ai优惠券
 api.loadUserCoupons = function(channel) {
         return new Promise((resolve, reject) => {
-            axios.get(Url.commonUrl + `/api/loadUserCoupons?tk=${tk}&channel=${channel}`)
+            axios.get(Url.commonUrl + `/api/loadUserCoupons?channel=${channel}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -249,7 +261,7 @@ api.loadUserCoupons = function(channel) {
     //拉取未领取的优惠券（登录公众号弹出优惠券，目前只有AI发送才有）
 api.acquireWaitGetCoupons = function(channel) {
         return new Promise((resolve, reject) => {
-            axios.get(Url.commonUrl + `/api/acquireWaitGetCoupons?tk=${tk}&channel=${channel}`)
+            axios.get(Url.commonUrl + `/api/acquireWaitGetCoupons?channel=${channel}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -261,36 +273,8 @@ api.acquireWaitGetCoupons = function(channel) {
     }
     //拉取所有优惠券
 api.loadUserAllCoupon = function() {
-    return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadUserAllCoupon?tk=${tk}`)
-            .then(res => {
-                if (res.status == 200) {
-                    resolve(res.data)
-                }
-            }).catch(err => {
-                reject(err)
-            })
-    })
-}
-
-//微信支付
-api.createOrder = function(goodsID) {
-    return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/createOrder?goodsID=${goodsID}&tk=${tk}`)
-            .then(res => {
-                if (res.status == 200) {
-                    resolve(res.data)
-                }
-            }).catch(err => {
-                reject(err)
-            })
-    })
-}
-
-//标识已进入过公众号
-api.clearFirstLoadTag = function() {
         return new Promise((resolve, reject) => {
-            axios.get(Url.commonUrl + `/api/clearFirstLoadTag?tk=${tk}`)
+            axios.get(Url.commonUrl + `/api/loadUserAllCoupon`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -300,7 +284,33 @@ api.clearFirstLoadTag = function() {
                 })
         })
     }
-    // 获取游戏房间ID
+    //微信支付
+api.createOrder = function(goodsID) {
+        return new Promise((resolve, reject) => {
+            axios.get(Url.commonUrl + `/api/createOrder?goodsID=${goodsID}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //标识已进入过公众号
+api.clearFirstLoadTag = function() {
+        return new Promise((resolve, reject) => {
+            axios.get(Url.commonUrl + `/api/clearFirstLoadTag`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    // 获取比赛游戏房间ID
 api.createRoom = function(tk, arenaID) {
         return new Promise((resolve, reject) => {
             axios.get(`http://llwant.test.qianz.com:3002/createRoom?tk=${tk}&gamePath=game2&arenaID=${arenaID}`)
@@ -314,9 +324,9 @@ api.createRoom = function(tk, arenaID) {
         })
     }
     //拉取游戏比赛场
-api.loadArenas = function(gamePath) {
+api.loadArenas = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadArenas?tk=${tk}`)
+            axios.get(`/api/loadArenas`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -329,7 +339,7 @@ api.loadArenas = function(gamePath) {
     //拉取已经发布的比赛场
 api.loadPublishArenas = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadPublishArenas?tk=${tk}`)
+            axios.get(`/api/loadPublishArenas`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -340,10 +350,9 @@ api.loadPublishArenas = function() {
         })
     }
     //拉取比赛场排名
-    //a01cf831-46c4-4693-bf5b-692d1ef3a1b9
 api.loadArenaRank = function(arenaID) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadArenaRank?arenaID=${arenaID}&tk=${tk}`)
+            axios.get(`/api/loadArenaRank?arenaID=${arenaID}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -355,21 +364,22 @@ api.loadArenaRank = function(arenaID) {
     }
     //拉取礼物
 api.loadAllGift = function(arenaID) {
-        return new Promise((resolve, reject) => {
-            axios.get(`/api/loadAllGift?tk=${tk}`)
-                .then(res => {
-                    if (res.status == 200) {
-                        resolve(res.data)
-                    }
-                }).catch(err => {
-                    reject(err)
-                })
-        })
-    }
-    //发送礼物
+    return new Promise((resolve, reject) => {
+        axios.get(`/api/loadAllGift`)
+            .then(res => {
+                if (res.status == 200) {
+                    resolve(res.data)
+                }
+            }).catch(err => {
+                reject(err)
+            })
+    })
+}
+
+//发送礼物
 api.sendGift = function(params) {
         return new Promise((resolve, reject) => {
-            axios.post(`/api/sendGift?tk=${tk}`, params)
+            axios.post(`/api/sendGift`, params)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -382,7 +392,7 @@ api.sendGift = function(params) {
     //拉取待领取的邀请有礼优惠券
 api.loadInviteWaitGetCoupon = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadInviteWaitGetCoupon?tk=${tk}`)
+            axios.get(`/api/loadInviteWaitGetCoupon`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -395,7 +405,7 @@ api.loadInviteWaitGetCoupon = function() {
     //分享出去后领取者调用的拉取优惠券
 api.acquireInviteWaitGetCoupons = function(params) {
         return new Promise((resolve, reject) => {
-            axios.post(`/api/acquireInviteWaitGetCoupons?tk=${tk}`, params)
+            axios.post(`/api/acquireInviteWaitGetCoupons`, params)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -408,7 +418,7 @@ api.acquireInviteWaitGetCoupons = function(params) {
     //拉取单个优惠券信息
 api.loadUserCouponByID = function(couponId) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadUserCouponByID?userCouponID=${couponId}&tk=${tk}`)
+            axios.post(`/api/loadUserCouponByID?userCouponID=${couponId}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -421,7 +431,7 @@ api.loadUserCouponByID = function(couponId) {
     //C端主动发起核销发起
 api.launchSetOffUserCoupon = function(couponId) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/launchSetOffUserCoupon?userCouponID=${couponId}&tk=${tk}`)
+            axios.get(`/api/launchSetOffUserCoupon?userCouponID=${couponId}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -434,7 +444,7 @@ api.launchSetOffUserCoupon = function(couponId) {
     //拉取店长推荐
 api.loadRecommends = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadRecommends?tk=${tk}`)
+            axios.get(`/api/loadRecommends`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -447,7 +457,7 @@ api.loadRecommends = function() {
     //拉取活动通知
 api.loadActivityInfo = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadActivityInfo?tk=${tk}`)
+            axios.get(`/api/loadActivityInfo`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -460,7 +470,7 @@ api.loadActivityInfo = function() {
     //拉取门店信息
 api.loadStoreSetting = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadStoreSetting?tk=${tk}`)
+            axios.get(`/api/loadStoreSetting`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -473,7 +483,7 @@ api.loadStoreSetting = function() {
     //拉取首页轮播图
 api.loadAdvertisingPhoto = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadAdvertisingPhoto?tk=${tk}`)
+            axios.get(`/api/loadAdvertisingPhoto`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -486,7 +496,7 @@ api.loadAdvertisingPhoto = function() {
     //拉取礼物详情
 api.loadWealthDetail = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadWealthDetail?tk=${tk}`)
+            axios.get(`/api/loadWealthDetail`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -499,7 +509,7 @@ api.loadWealthDetail = function() {
     //拉取游戏详情
 api.LoadGameScoreDetail = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/LoadGameScoreDetail?tk=${tk}`)
+            axios.get(`/api/LoadGameScoreDetail`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -512,7 +522,7 @@ api.LoadGameScoreDetail = function() {
     //加载活动详情
 api.loadActivityDetail = function(activityID) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadActivityDetail?activityID=${activityID}&tk=${tk}`)
+            axios.get(`/api/loadActivityDetail?activityID=${activityID}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -525,7 +535,7 @@ api.loadActivityDetail = function(activityID) {
     //签到
 api.checkIn = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/checkIn?tk=${tk}`)
+            axios.get(`/api/checkIn`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -538,7 +548,7 @@ api.checkIn = function() {
     //拉取比赛按照结束时间重新排名
 api.loadAllArenaInfo = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadAllArenaInfo?tk=${tk}`)
+            axios.get(`/api/loadAllArenaInfo`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -551,10 +561,9 @@ api.loadAllArenaInfo = function() {
     // 拉取每场比赛的前十名选手信息， 以及对应的奖品
 api.loadArenaTopRank = function(arenaID, topNumber) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadArenaTopRank?arenaID=${arenaID}&topNumber=${topNumber}&tk=${tk}`)
+            axios.get(`/api/loadArenaTopRank?arenaID=${arenaID}&topNumber=${topNumber}`)
                 .then(res => {
                     if (res.status == 200) {
-                        console.log(res)
                         resolve(res.data)
                     }
                 }).catch(err => {
@@ -565,7 +574,7 @@ api.loadArenaTopRank = function(arenaID, topNumber) {
     //记录打电话
 api.statCalls = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/statCalls?tk=${tk}`)
+            axios.get(`/api/statCalls`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -578,8 +587,9 @@ api.statCalls = function() {
     //店长推荐预定
 api.bookingRecommend = function(recommendID) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/bookingRecommend?recommendID=${recommendID}&tk=${tk}`)
+            axios.get(`/api/bookingRecommend?recommendID=${recommendID}`)
                 .then(res => {
+                    console.log(res)
                     if (res.status == 200) {
                         resolve(res.data)
                     }
@@ -591,7 +601,7 @@ api.bookingRecommend = function(recommendID) {
     //验证员工
 api.verifyPhoneNumber = function(phone) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/verifyPhoneNumber?phone=${phone}&tk=${tk}`)
+            axios.get(`/api/verifyPhoneNumber?phone=${phone}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -604,7 +614,7 @@ api.verifyPhoneNumber = function(phone) {
     //拉取每场比赛的前十名选手信息
 api.loadArenaRanking = function(arenaID) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadArenaRanking?arenaID=${arenaID}&tk=${tk}`)
+            axios.get(`/api/loadArenaRanking?arenaID=${arenaID}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -617,7 +627,7 @@ api.loadArenaRanking = function(arenaID) {
     //赠送礼物申请成为好友  拉取收礼记录
 api.loadGiftsRecord = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadGiftsRecord?tk=${tk}`)
+            axios.get(`/api/loadGiftsRecord`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -627,10 +637,10 @@ api.loadGiftsRecord = function() {
                 })
         })
     }
-    //感谢好友送礼   
+    //感谢好友送礼  
 api.thanksForGit = function(giftGiverID) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/thanksForGit?targetID=${giftGiverID}&${tk}&agree=yes`)
+            axios.get(`/api/thanksForGit?targetID=${giftGiverID}&agree=yes`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -643,7 +653,46 @@ api.thanksForGit = function(giftGiverID) {
     //拉取店长留言信息
 api.loadManagerNoticeInfo = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadManagerNoticeInfo?${tk}`)
+            axios.get(`/api/loadManagerNoticeInfo`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //约战
+api.sentPlayGameMsg = function(toUserID) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/sentPlayGameMsg?toUserID=${toUserID}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //拉取约战列表
+api.loadInviteCombat = function() {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/loadInviteCombat`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //拒绝约战
+api.deleteInviteCombat = function(combatID) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/deleteInviteCombat?combatID=${combatID}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -655,8 +704,9 @@ api.loadManagerNoticeInfo = function() {
     }
     //创建二维码
 api.createQrcode = function() {
+    // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/createQrcode?tk=${tk}`)
+        axios.get(Url.commonUrl + `/api/createQrcode`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -670,7 +720,8 @@ api.createQrcode = function() {
 //拉取已经创建过的二维码
 api.loadAllQrcode = function() {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadAllQrcode?tk=${tk}`)
+        // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
+        axios.get(Url.commonUrl + `/api/loadAllQrcode`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)

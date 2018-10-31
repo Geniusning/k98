@@ -18,7 +18,7 @@
             <p>6）劈：叫‘劈’后，认输还是x1结算，开牌后输赢x2,对手，‘反劈’后，认输2倍结算，开牌后输赢x4结算，只能反劈一次。</p>
             <p>6）投降：对手劈你或反劈后，可选择投降，只输一半；</p>
             <p>7）只要叫牌方喊出的点数和个数小于双方实际骰钟的个数，则开牌方胜。</p>
-            <p>7）比赛时间结束得出本轮比赛排行榜，前三名有丰富奖品</p>
+            <p>8）比赛时间结束得出本轮比赛排行榜，前三名有丰富奖品</p>
           </div>
         </div>
         <div class="arrow-wrapper">
@@ -80,6 +80,7 @@ import { Clocker } from "vux";
 import Scroll from "base/scroll/scroll";
 import api from "common/api";
 import util from "common/util";
+import { mapState } from 'vuex';
 export default {
   data() {
     return {
@@ -92,6 +93,9 @@ export default {
       playInformation: {},
       lastAwardUsers: [],
     };
+  },
+  computed:{
+    ...mapState(['baseUrl'])
   },
   created() {
     // 拉取已经发布的比赛场
@@ -167,7 +171,7 @@ export default {
     play() {
       let token = this.getCookie("tk");
       // token ="fCfYmLWfDLlAFntkvBxAvyXKVBKjJMdaaf4epk8VJntPH1ViQTpfLkRqejJEz3nuraFmBw==";
-      window.location.href = `http://llwant.test.qianz.com/game/?tk=${token}&gamePath=game2&arenaID=${this.arenaID}`;
+      window.location.href = `${this.baseUrl}/game/?gamePath=game2&arenaID=${this.arenaID}`;
     },
     //获取cookie
     getCookie: function (cname) {

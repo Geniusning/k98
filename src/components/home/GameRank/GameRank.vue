@@ -1,5 +1,6 @@
 <template>
  <div id="gameCompetionDetail" class="gameCompetionDetail">
+   <div class="bg"></div>
      <div class="notice-wrapper">
          <div class="name">大话骰排名赛直播间</div>
          <img src="../../../assets/image/refresh.png" alt="" class="refresh" @click="refresh">
@@ -19,7 +20,7 @@
          </div>
          <loading v-show="isLoading" style="position:absolute;top:30%;left:0"></loading>
          <scroll class="scrollList" :data="playList">
-             <ul class="userList">
+             <ul class="userList" v-if="playList.length">
                  <li class="userItem" v-for="(item,index) in playList">
                      <span class="rankNum" :class="{'first':index==0,'second':index==1,'third':index==2}">{{index+1}}</span>
                      <div class="userInfo">
@@ -35,6 +36,7 @@
                      </div>
                  </li>
              </ul>
+             <p style="font-size:20px;font-weight:400;color:#ccc;width:100%;text-align:center;margin-top:50%" class="noContentText" v-else>暂无选手参赛</p>
          </scroll>
      </div>
      <div class="btn-wrapper">
@@ -131,7 +133,14 @@ export default {
   box-sizing: border-box;
   // background-color: #196045;
   overflow-y: auto;
-  padding-top: 0.4267rem;
+  position: relative;
+  .bg{
+    width: 100%;
+    height: 4rem;
+    position: absolute;
+    background: -webkit-linear-gradient(top, #fbbc00, #fccc00, #fccc00,#fff);
+    z-index: -1;
+  }
   .notice-wrapper {
     width: 8.8rem;
     height: 1.4667rem;
@@ -177,6 +186,7 @@ export default {
     margin: 0.2933rem auto 0;
     border-radius: 0.32rem;
     border: 1px solid #333;
+    background-color: #fff;
     .playerNumber {
       width: 100%;
       border-bottom: 1px solid #ccc;
@@ -192,7 +202,7 @@ export default {
       }
     }
     .scrollList {
-      height: 9.5rem;
+      height: 10rem;
       overflow: hidden;
       .userList {
         .userItem {

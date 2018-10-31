@@ -1,8 +1,8 @@
 <template>
   <div class="shareNew-wrapper" id="shareNew">
     <div class="shop-container" @click="goHome">
-      <img class="logo" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524204213993&di=5f93ef923bb06785474b70621b7a9e42&imgtype=0&src=http%3A%2F%2Fimg.brandcn.com%2FEditor%2FImages%2F201309%2F2013091309383713424223871.jpg" alt="">
-      <p class="bar_name">Lose Demon吧(迷失的恶魔魅力四射)</p>
+      <img class="logo" :src="shopSettingInfo.image">
+      <p class="bar_name">{{shopSettingInfo.name}}</p>
     </div>
     <img src="../../../assets/image/shared.jpg" alt="" class="sharePic">
     <ul class="discount-container">
@@ -28,17 +28,19 @@
     <div class="handle-container">
       <img @click="intoDiscountList" class="btn" src="../../../assets/image/lookUp.png" alt="">
     </div>
-    <div class="Qr-wrapper">
+    <qrCode v-show="qrIsShow" title="成功领券,关注公众号,以便核销"></qrCode>
+    <!-- <div class="Qr-wrapper">
          <p class='desc'>长按关注本店公众号，享受会员特权：领福利、交群友、玩游戏！</p>
          <img :src="QRcodeUrl" alt="" class="QRcode">
-     </div>
+     </div> -->
   </div>
 </template>
 
 <script type='text/ecmascript-6'>
 import util from "common/util";
 import api from "common/api";
-import { mapState } from "vuex";
+import qrCode from 'base/qrCode/qrCode'
+import { mapState, mapMutations, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -63,10 +65,11 @@ export default {
     })
   },
   mounted() {
-    this._loadAllQrcode();
+    // this._loadAllQrcode();
   },
   computed: {
-    ...mapState(["shareUrl"])
+    ...mapState(["shareUrl","shopSettingInfo"]),
+    ...mapGetters(["qrIsShow"])
   },
   methods: {
     //拉取优惠券
@@ -83,6 +86,7 @@ export default {
       // }
       api.acquireInviteWaitGetCoupons(params).then(res => {
         console.log(res)
+        this.showQrcode(true);
         if (res.errCode === 0) {
           let tempObj = res.aCoupon;
           switch (tempObj.coupon.type) {
@@ -100,12 +104,12 @@ export default {
       })
     },
     //拉取二维码
-    _loadAllQrcode() {
-      api.loadAllQrcode().then(res => {
-        console.log('二维码----------------', res)
-        this.QRcodeUrl = res.urls[0]
-      })
-    },
+    // _loadAllQrcode() {
+    //   api.loadAllQrcode().then(res => {
+    //     console.log('二维码----------------', res)
+    //     this.QRcodeUrl = res.urls[0]
+    //   })
+    // },
     goHome() {
       this.$router.push({
         name: "home"
@@ -116,7 +120,9 @@ export default {
         name: "card"
       });
     },
-
+    ...mapMutations({
+      showQrcode: "SHOW_QRCODE"
+    })
   },
   watch: {
     $route: function (newValue, oldValue) {
@@ -124,7 +130,9 @@ export default {
       console.log(newValue);
     }
   },
-  components: {}
+  components: {
+    qrCode
+  }
 };
 </script>
 
@@ -135,7 +143,7 @@ export default {
   width: 100%;
   overflow-y: auto;
   box-sizing: border-box;
-  background-color: #ff5c01;
+  background-color: #FE9A08;
   padding-bottom: 1.3333rem;
   position: relative;
   .shop-container {

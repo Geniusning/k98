@@ -95,24 +95,47 @@ export default {
         this.usedCouponsLength = res.usedCoupos.length;
         this.timeOutListLength = res.expiredCoupos.length;
         //未使用优惠券
-        res.unuseCoupons.forEach(element => {
-          element.coupon.time = "过期时间：" + element.coupon.endTime;
-          element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
-          this.unusedList.push(element)
-        });
+        this.distributeDiscount(res.unuseCoupons,this.unusedList);
+        // res.unuseCoupons.forEach(element => {
+        //   element.coupon.time = "过期时间：" + element.coupon.endTime;
+        //   element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
+        //   this.unusedList.push(element)
+        // });
         //已使用优惠券
-        res.usedCoupos.forEach(element => {
-          element.coupon.time = "过期时间：" + element.coupon.endTime;
-          element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
-          this.usedList.push(element)
-        });
+        this.distributeDiscount(res.usedCoupos,this.usedList);
+        // res.usedCoupos.forEach(element => {
+        //   element.coupon.time = "过期时间：" + element.coupon.endTime;
+        //   element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
+        //   this.usedList.push(element)
+        // });
         //过期优惠券
-        res.expiredCoupos.forEach(element => {
-          element.coupon.time = "过期时间：" + element.coupon.endTime;
-          element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
-          this.timeOutList.push(element);
-          console.log(this.timeOutList)
-        })
+         this.distributeDiscount(res.expiredCoupos,this.timeOutList);
+        // res.expiredCoupos.forEach(element => {
+        //   element.coupon.time = "过期时间：" + element.coupon.endTime;
+        //   element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
+        //   this.timeOutList.push(element);
+        //   console.log(this.timeOutList)
+        // })
+      });
+    },
+    distributeDiscount(resDiscountList, discountList) {
+      resDiscountList.forEach(element => {
+        element.coupon.time = "过期时间：" + element.coupon.endTime;
+        switch (element.coupon.type) {
+          case 0:
+            element.coupon.name = element.coupon.value + "元代金券";
+            break;
+          case 1:
+            element.coupon.name = "获得" + element.coupon.content;
+            break;
+          case 2:
+            element.coupon.name = element.coupon.value + "折扣券";;
+            break;
+          default:
+            element.coupon.name = "获得" + element.coupon.content;
+            break;
+        }
+        discountList.push(element)
       });
     },
     //拉取未领取的优惠券（登录公众号优惠券，目前只有AI发送才有）

@@ -52,7 +52,7 @@
             </x-dialog>
       </div>
     <!-- 点赞 -->
-    <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask width="10em"  :text="text" :position="position"></toast>
+    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask width="10em"  :text="text" :position="position"></toast>
     <!-- 见面礼 -->
     <div v-transfer-dom>
       <popup v-model="showToast_gift" position="bottom">
@@ -101,12 +101,16 @@
       <!-- <img class="close" src="../../assets/image/close.png" alt=""> -->
       <p class="intro">请尽快完善信息，让更多人认识你哦！</p>
     </div>
+    <transition name="appear">
+       <envelope v-show="isShowEnvelope" :text='envelopeText'></envelope>
+    </transition>
     <router-view></router-view>
   </div>
 </template>
 <script>
 import stack from "./tantan/tantan.vue";
 import loading from "../../base/loading/loading";
+import envelope from 'base/envelope/envelope'
 import util from "common/util";
 import api from "common/api";
 import { mapState, mapActions, mapMutations } from "vuex";
@@ -130,9 +134,11 @@ export default {
       ],
       showToast_gift: false,
       text: "",
+      envelopeText: "",
       isFriend: null,
       position: "default",
       showPositionValue: false,
+      isShowEnvelope: false,
       personShow: false,
       showFriendList: false,
       showToast: false,
@@ -173,7 +179,7 @@ export default {
         visible: 3,
         currentPage: 0
       },
-      xid: ""
+      xid: "",
     };
   },
   //路由判断，判断是场内还是场外1场内2场外
@@ -215,9 +221,9 @@ export default {
   },
   methods: {
     //进入个人信息设置页面
-    intoSetting(){
+    intoSetting() {
       this.$router.push({
-        name:"individual"
+        name: "individual"
       })
     },
     //拉取礼物
@@ -237,19 +243,32 @@ export default {
       api.sendGift(params).then(res => {
         console.log(res);
         if (res.errCode === 0) {
-          this.$vux.toast.show({
-            text: "赠送礼物成功",
-            type: "text",
-            time: 2000,
-            width: "3rem"
-          });
+          // this.$vux.toast.show({
+          //   text: "赠送礼物成功",
+          //   type: "text",
+          //   time: 2000,
+          //   width: "3rem"
+          // });
+          this.isShowEnvelope = true;
+          this.envelopeText = "赠送礼物成功"
+          setTimeout(() => {
+            this.isShowEnvelope = false;
+          }, 2000);
         } else {
-          this.$vux.toast.show({
-            text: "余额不足，请充值",
-            type: "text",
-            time: 2000,
-            width: "3rem"
-          });
+          // this.$vux.toast.show({
+          //   text: "余额不足，请充值",
+          //   type: "text",
+          //   time: 2000,
+          //   width: "3rem"
+          // });
+          this.isShowEnvelope = true;
+          this.envelopeText = "余额不足，请充值"
+          setTimeout(() => {
+            this.isShowEnvelope = false;
+            this.$router.push({
+              name: "giftDetail"
+            })
+          }, 2000);
         }
       })
     },
@@ -280,11 +299,21 @@ export default {
       api.makeFriend(this.xid).then(res => {
         console.log(res);
         if (res.errcode === 0) {
-          that.text = "飞奔个赞过去";
-          this.showPositionValue = true;
+          // that.text = "飞奔个赞过去";
+          // this.showPositionValue = true;
+          this.isShowEnvelope = true;
+          this.envelopeText = "飞奔个赞过去,等待对方回赞成为好友"
+          setTimeout(() => {
+            this.isShowEnvelope = false;
+          }, 2000);
         } else {
-          that.text = "您已点赞了哦";
-          this.showPositionValue = true;
+          // that.text = "您已点赞了哦";
+          // this.showPositionValue = true;
+          this.isShowEnvelope = true;
+          this.envelopeText = "您已点赞了哦,等待对方回赞成为好友"
+          setTimeout(() => {
+            this.isShowEnvelope = false;
+          }, 2000);
         }
       });
     },
@@ -301,7 +330,17 @@ export default {
     },
     //玩游戏
     playGame() {
-      window.location.href = "http://llwant.test.qianz.com:8081/";
+      api.sentPlayGameMsg(this.friendId).then(res => {
+        console.log('约战返回--------', res)
+        if (res.errCode == 0) {
+          // this.text = "您已发出邀请  等待对方的回应";
+          this.isShowEnvelope = true;
+          this.envelopeText = "您已发出邀请  等待对方的回应"
+          setTimeout(() => {
+            this.isShowEnvelope = false;
+          }, 2000);
+        }
+      })
     },
     // 性别选择
     chooseSex(index) {
@@ -336,7 +375,8 @@ export default {
     XDialog,
     XButton,
     Scroller,
-    loading
+    loading,
+    envelope
   }
 };
 </script>
@@ -498,7 +538,7 @@ export default {
   .select_title {
     color: #fff;
     font-size: 16px;
-    font-weight: bold;
+    // font-weight: bold;
     padding-top: 0.5067rem;
   }
   .sex_wrapper {

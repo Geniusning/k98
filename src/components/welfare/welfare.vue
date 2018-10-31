@@ -120,16 +120,10 @@
 
 <script type='text/ecmascript-6'>
   import Swiper from "../../libs/swiper/swiper-4.3.3.min.js";
-  import {
-    Selector,
-    Group
-  } from "vux";
+  // import {Selector,Group} from "vux";
   import util from "common/util";
   import api from "common/api";
-  import {
-    mapState,
-    mapMutations
-  } from "vuex";
+  import {mapState,mapMutations} from "vuex";
   import Scroll from '../../base/scroll/scroll.vue'
   export default {
     data() {
@@ -139,7 +133,8 @@
         isShowGameEntry: false,
         // gameValue: ['第一期'],
         rankList: [],
-        arenaInfo: {}
+        arenaInfo: {},
+        arenaID:""
       };
     },
     created() {
@@ -165,7 +160,7 @@
       this._loadActivityInfo(); //获取活动通知
     },
     computed: {
-      ...mapState(["shareUrl", "activityNoticeList", "noCouponsFlag", "AdvertisingPhoto", "shopSettingInfo"])
+      ...mapState(["baseUrl","shareUrl", "activityNoticeList", "noCouponsFlag", "AdvertisingPhoto", "shopSettingInfo"])
     },
     mounted() {
       new Swiper(".game", {
@@ -192,6 +187,7 @@
             this.gameShow = true;
             this.isShowGameEntry = true;
             let arenaInfo = res.arenaInfos[0];
+            this.arenaID = arenaInfo.arenaID
             this.arenaInfo = arenaInfo;
             var typeCoupon = ['firstPrize', 'secondPrize', 'thirdPrize'];
             for (let i = 0; i < typeCoupon.length; i++) {
@@ -256,8 +252,8 @@
       //进入游戏
       playGame() {
         let token = this.getCookie("tk");
-        window.location.href =
-          `http://llwant.test.qianz.com/game/?gamePath=game3&tk=${token}`;
+        // window.location.href =`http://llwant.test.qianz.com/game/?gamePath=game3&tk=${token}`;
+        window.location.href = `${this.baseUrl}/game/?gamePath=game2&arenaID=${this.arenaID}`
       },
       getCookie: function(cname) {
         var name = cname + "=";
@@ -282,8 +278,8 @@
       // }
     },
     components: {
-      Selector,
-      Group,
+      // Selector,
+      // Group,
       Scroll
     },
     watch: {

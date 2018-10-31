@@ -50,9 +50,9 @@
       </div>
       <!-- 我的标签 -->
       <div class="tag_wrapper">
-        <h2 class="tag_title" @click="chooseImage">我的标签<span class="star">#</span></h2>
-        <!-- <ul class="tag_list" v-if="userInfo.tags.length"> -->
-        <ul class="tag_list" v-if="showTag">
+        <h2 class="tag_title" >我的标签<span class="star">#</span></h2>
+        <ul class="tag_list" v-if="userInfo.tags.length">
+        <!-- <ul class="tag_list" v-if="showTag"> -->
           <li v-for="(item,index) in tagList" :key="index" class="item">
             {{item}}
           </li>
@@ -63,13 +63,13 @@
       <!-- 个性签名 -->
       <div class="signature_wrapper">
         <h2 class="signature_title">个性签名<span class="star">#</span></h2>
-        <p class="signature" v-if="showTag">youare</p>
-        <!-- <p class="signature" v-if="userInfo.signature.length">{{userInfo.signature}}</p> -->
+        <!-- <p class="signature" v-if="showTag">youare</p> -->
+        <p class="signature" v-if="userInfo.signature.length">{{userInfo.signature}}</p>
         <p v-else class="no_signature"><span class="star">#</span>请在个人编辑里面设置签名<span class="star">#</span></p>
       </div>
       <!-- 营销推广 -->
-      <div class="marketing_wrapper">
-      <!-- <div class="marketing_wrapper" v-show="userInfo.role"> -->
+      <!-- <div class="marketing_wrapper"> -->
+      <div class="marketing_wrapper" v-show="userInfo.role">
         <h2 class="marketing_title">营销推广<span class="star">#</span></h2>
         <ul class="marketing-list">
           <li class="marketing-item">
@@ -96,14 +96,14 @@
               分享->
             </div>
           </li>
-          <li class="marketing-item">
+          <!-- <li class="marketing-item">
             <div class="marketing-left">
               门店活动通知
             </div>
             <div class="marketing-right" @click="activetyShare">
               分享->
             </div>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>
@@ -165,20 +165,18 @@ export default {
     console.log()
     let url = window.location.href.split('#')[0];
     console.log(url)
-    api
-      .getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
-      .then(res => {
-        wx.config({
-          //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-          appId: "wxb2fa3c446063ec19",
-          timestamp: res.timestamp,
-          nonceStr: res.nonceStr,
-          signature: res.signature,
-          jsApiList: [
-            "chooseImage"
-          ]
-        });
-      });
+    // api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url)).then(res => {
+    //     wx.config({
+    //       //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    //       appId: "wxb2fa3c446063ec19",
+    //       timestamp: res.timestamp,
+    //       nonceStr: res.nonceStr,
+    //       signature: res.signature,
+    //       jsApiList: [
+    //         "chooseImage"
+    //       ]
+    //     });
+    //   });
   },
   methods: {
     activetyShare() {
@@ -201,18 +199,18 @@ export default {
         name: "home"
       })
     },
-    chooseImage() {
-      console.log("images");
-      wx.chooseImage({
-        count: 1, // 默认9
-        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-        success: function (res) {
-          var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-          console.log(localIds);
-        }
-      });
-    },
+    // chooseImage() {
+    //   console.log("images");
+    //   wx.chooseImage({
+    //     count: 1, // 默认9
+    //     sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+    //     sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+    //     success: function (res) {
+    //       var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+    //       console.log(localIds);
+    //     }
+    //   });
+    // },
     //查看优惠券
     checkDiscout() {
       util.routerTo("card", this);

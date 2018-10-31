@@ -3,8 +3,17 @@ import util from "common/util";
 import router from '../router/index.js';
 
 const mutations = {
+    //修改地址
+    [types.GET_URL](state, url) {
+        state.baseUrl = url;
+    },
+    //控制手机验证码弹框
     [types.CHANGE_VALIDATE](state, flag) {
         state.isShow = flag;
+    },
+    //控制二维码关注弹框
+    [types.SHOW_QRCODE](state, flag) {
+        state.qrIsShow = flag
     },
     //获取用户数据
     [types.GET_USERINFO](state, userinfo) {
@@ -44,7 +53,7 @@ const mutations = {
     },
     //获取不足10个候选人数据
     [types.get_LESSTHAN10FRIENDLIST](state, data) {
-        console.log('获取不足10个候选人数据：', data);
+        // console.log('获取不足10个候选人数据：', data);
         data.forEach(item => {
             if (item.info.sex == 1) {
                 item.info.sex = "男";
@@ -81,7 +90,7 @@ const mutations = {
     },
     //推送最后的一个消息跟已有好友消息列表对比
     [types.COMPARE_LASTMESS](state, lastMsgFrom) {
-        console.log('COMPARE_LASTMESS:```````````````````````````````````', lastMsgFrom)
+        // console.log('COMPARE_LASTMESS:```````````````````````````````````', lastMsgFrom)
         let totalCount = 0;
         state.alreadyFriendList.forEach(item => {
             if (lastMsgFrom.lastMsg.from === item.info.openid) {
@@ -105,8 +114,8 @@ const mutations = {
     //更新好友事件消息框内容
     [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
         // console.log('mutation```````````````````', friendEvtObj)
-        console.log('路由消息---------------------------：', router.history.current.name)
-            //聊天信封弹框不在对话框弹出
+        // console.log('路由消息---------------------------：', router.history.current.name)
+        //聊天信封弹框不在对话框弹出
         if (router.history.current.name === 'chat') {
             return false;
         }
@@ -136,6 +145,11 @@ const mutations = {
                 friendEvtObj.content.extMsg.lastMsg['msg'] = "店长给你发优惠券啦";
                 state.dynamicFriendEvt = friendEvtObj.content;
                 break;
+            case 7:
+                friendEvtObj.content.extMsg.lastMsg = {};
+                friendEvtObj.content.extMsg.lastMsg['msg'] = "你邀请的好友进入游戏啦";
+                state.dynamicFriendEvt = friendEvtObj.content;
+                break;
             default:
                 break;
         }
@@ -147,7 +161,6 @@ const mutations = {
     },
     //获取好友送礼
     [types.GET_FRIENDGIFTLIST](state, { data }) {
-        console.log('mutationGift--------------', data)
         state.gift_badgeCount = data.length;
         state.friendGiftList = data;
     },
@@ -155,10 +168,21 @@ const mutations = {
     [types.GET_CAPTAINMESSAGELIST](state, { data }) {
         state.captainMessageList = data;
     },
+    //获取约战消息列表
+    [types.GET_CHALLENGEGAMELIST](state, gameMessage) {
+        state.challengeGameList.push(gameMessage);
+        state.game_badgeCount = state.challengeGameList.length;
+        console.log('约战条数---------', state.game_badgeCount)
+    },
+    //清空约战列表
+    [types.CLEAR_CHALLENGEGAMELIST](state) {
+        state.challengeGameList = [];
+        state.game_badgeCount = state.challengeGameList.length;
+    },
     //所有类型的未读消息累加总的未读消息里面
     [types.ADD_BADGE](state) {
         let total = 0;
-        total = state.msg_badgeCount + state.event_badgeCount + state.gift_badgeCount;
+        total = state.msg_badgeCount + state.event_badgeCount + state.gift_badgeCount + state.game_badgeCount;
         state.badgeCount = total;
     },
     //设置候选人聊天的信息

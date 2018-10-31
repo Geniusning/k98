@@ -141,10 +141,7 @@ import Url from "../../common/url.js";
 import api from "common/api.js";
 import util from "common/util.js";
 // import EXIF from "common/exif.js";
-import {
-  mapState,
-  mapMutations
-} from "vuex";
+import {mapState,mapMutations} from "vuex";
 import lrz from "lrz";
 export default {
   directives: {
@@ -444,10 +441,7 @@ export default {
         return;
       }
       let vm = this;
-      lrz(e.target.files[0], {
-        quality: 0.1
-      })
-        .then(function (rst) {
+      lrz(e.target.files[0], {quality: 0.1}).then(function (rst) {
           if (rst.base64Len > 1024 * 1024 * 1) {
             // vm.$toast("图片不能超过1MB");
             console.log("图片不能超过1MB");

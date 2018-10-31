@@ -196,6 +196,7 @@ html {
   overflow-x: hidden;
   max-width: 10rem;
   height: 100%;
+  box-sizing: border-box;
   -webkit-display: flex;
   -moz-display: flex;
   -ms-display: flex;
@@ -214,6 +215,7 @@ html {
 }
 .top_wrapper {
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   -webkit-flex: 1;
   -moz-flex: 1;
@@ -230,6 +232,7 @@ html {
     background-repeat: no-repeat;
     background-size: contain;
     padding: 0.1333rem;
+    z-index: 99999;
     .close {
       position: absolute;
       top: 0.2667rem;

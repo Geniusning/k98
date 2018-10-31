@@ -1,5 +1,7 @@
 const state = {
-    isShow: false,
+    baseUrl: "", //公众号地址
+    isShow: false, //控住手机验证码弹框
+    qrIsShow: false, //控制关注二维码弹框
     userInfo: {},
     giftList: [],
     shareUrl: "",
@@ -11,12 +13,14 @@ const state = {
     friendEvtList: [], //好友点赞事件列表
     friendGiftList: [], //好友送礼列表
     captainMessageList: [], //店长信息列表
+    challengeGameList: [], //约战信息列表
     dynamicFriendEvt: {}, //好友事件消息框
     alreadyFriendListcursor: 0, //聊天记录游标
     badgeCount: 0, //总未读消息数量
     msg_badgeCount: 0, //未读消息数量
     event_badgeCount: 0, //好友事件未读消息
     gift_badgeCount: 0, //送礼事件未读消息
+    game_badgeCount: 0, //约战事件未读消息
     staticChatFriendObj: {}, //拉取列表时候的聊天对象信息
     chatFriendObj_id: "", //动态获取聊天对象的id
     LastChatMsg: {}, //聊天列表

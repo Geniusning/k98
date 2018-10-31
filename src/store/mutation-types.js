@@ -1,5 +1,12 @@
+//获得公众号地址
+export const GET_URL = "GET_URL"
+    //手机验证码弹框
 export const CHANGE_VALIDATE = "CHANGE_VALIDATE"
 
+//关注二维码弹框
+export const SHOW_QRCODE = "SHOW_QRCODE"
+
+//获取用户信息
 export const GET_USERINFO = "GET_USERINFO"
 
 // 地理位置
@@ -19,6 +26,12 @@ export const GET_FRIENDEVTLIST = "GET_FRIENDEVTLIST"
 
 //获取好友送礼列表
 export const GET_FRIENDGIFTLIST = "GET_FRIENDGIFTLIST"
+
+//获取约战列表
+export const GET_CHALLENGEGAMELIST = "GET_CHALLENGEGAMELIST"
+
+//清空约战列表
+export const CLEAR_CHALLENGEGAMELIST = "CLEAR_CHALLENGEGAMELIST"
 
 //获取店长消息列表
 export const GET_CAPTAINMESSAGELIST = "GET_CAPTAINMESSAGELIST"

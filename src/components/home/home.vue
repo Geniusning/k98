@@ -7,7 +7,7 @@
           <p class="bar_name">{{shopSettingInfo.name}}</p>
         </div>
       </div>
-      <swiper class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
+      <swiper :auto="true" class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
       <div class="shadowLeft"></div>
       <div class="shadowRight"></div>
     </div>
@@ -26,21 +26,33 @@
         </div>
         <!-- 游戏 -->
         <div class="game_wrapper">
-          <div class="title clearfix">
-            <img src="../../assets/image/game_icon.png" alt="" class="icon fl">
-            <h2 class="dice_title">大话骰</h2>
-            <span class="desc">最烧脑游戏</span>
+          <div class="title clearfix ">
+            <div class="fl">
+              <img src="../../assets/image/game_icon.png" alt="" class="icon animations fl" ref="iconAnimation">
+              <h2 class="dice_title">大话骰</h2>
+              <span class="desc">排名赛进行中，不服来战...</span>
+            </div>
+            <div class="fr challengeGameBox">
+              <span class="arrowRight" :class="{active:arrowIndex ==0}" >&gt;</span>
+              <span class="arrowRight" :class="{active:arrowIndex ==1}" >&gt;</span>
+              <span class="arrowRight" :class="{active:arrowIndex ==2}" >&gt;</span>
+              <span class="arrowRight" :class="{active:arrowIndex ==3}" >&gt;</span>
+              <span class="arrowRight" :class="{active:arrowIndex ==4}" >&gt;</span>
+              <img src="../../assets/image/huangguan.png" class="huangguan" alt="" @click="playGame_rank">
+            </div>
           </div>
-          <ul class="game_list clearfix">
-            <li @click="playGame_challenge">
-              <img src="../../assets/image/game1.jpg" alt="" class="pic_game" onclick="return false">
-            </li>
-            <li @click="playGame_rank">
-              <img src="../../assets/image/game2.jpg" alt="" class="pic_game" onclick="return false">
-            </li>
+          <ul class="game_list ">
             <li @click="playGame_friend">
-              <img src="../../assets/image/game3.png" alt="" class="pic_game" onclick="return false">
+              <img src="../../assets/image/haoyou.png" alt="" class="pic_game" onclick="return false">
+              <img src="../../assets/image/nvlang.png" alt="" class="nvlang">
             </li>
+            <li @click="playGame_challenge">
+              <img src="../../assets/image/lingzhuo.png" alt="" class="pic_game" onclick="return false">
+            </li>
+            
+            <!-- <li @click="playGame_friend">
+              <img src="../../assets/image/game3.png" alt="" class="pic_game" onclick="return false">
+            </li> -->
           </ul>
         </div>
         <!-- 好友 -->
@@ -48,8 +60,8 @@
           <div class="title_content_fri clearfix">
             <div class="title clearfix">
               <img src="../../assets/image/footPrint.png" alt="" class="icon fl" onclick="return false">
-              <h2 class="friend_title">好友足迹</h2>
-              <span class="desc">部落社员热聊中...</span>
+              <h2 class="friend_title">找朋友</h2>
+              <span class="desc">瞅瞅老友在干哈......</span>
             </div>
             <div class="more">
               <ul class="fri_list" v-show="friendList.length>3">
@@ -65,14 +77,14 @@
           </div>
           <div class="pic_content">
             <ul class="pic_list">
-              <li @click="intoFriend" class="inner_fri">
-                <!-- <img src="../../assets/image/online.png" class="online" onclick="return false"> -->
-                <span class="inner_onlinePerson">{{inFriendNum}}人在线</span>
-                <img src="../../assets/image/inner_fri.jpg" alt="" class="friend_avatar_inner" onclick="return false">
-              </li>
               <li @click="outFriend" class="out_fri">
-                <span class="out_onlinePerson">{{outFriendNum}}人在线</span>
-                <img src="../../assets/image/out_fri.jpg" alt="" class="friend_avatar_out" onclick="return false">
+                <span class="out_onlinePerson">{{outFriendNum}}人在线 ></span>
+                <img src="../../assets/image/dianwai.png" alt="" class="friend_avatar_out" onclick="return false">
+              </li>
+                <li @click="intoFriend" class="inner_fri">
+                <!-- <img src="../../assets/image/online.png" class="online" onclick="return false"> -->
+                <span class="inner_onlinePerson">{{inFriendNum}}人在线 ></span>
+                <img src="../../assets/image/diannei.png" alt="" class="friend_avatar_inner" onclick="return false">
               </li>
             </ul>
           </div>
@@ -83,7 +95,7 @@
             <div class="title clearfix">
               <img src="../../assets/image/recomment.png" onclick="return false" alt="" class="icon fl">
               <h2 class="shop_title">店长推荐</h2>
-              <span class="desc">更贴心、更优惠</span>
+              <span class="desc">预订享优惠</span>
             </div>
             <div class="more fr">
               <img src="../../assets/image/letter.gif" alt="" class="letter" @click="inToLetter">
@@ -160,6 +172,9 @@
         </div>
       </x-dialog>
     </div>
+    <transition name="appear">
+       <envelope v-show="isShowEnvelope" :text='envelopeText'></envelope>
+    </transition>
     <router-view></router-view>
   </div>
 </template>
@@ -176,8 +191,10 @@ import {
 } from "vux";
 import axios from "axios";
 import url from "common/url";
+
 import { mapMutations, mapActions, mapState } from "vuex";
 // import { Carousel3d, Slide } from 'vue-carousel-3d';
+import envelope from 'base/envelope/envelope'
 import mySwiper from '../../libs/swiper/swiper-4.3.3.min.js'
 export default {
   name: "home",
@@ -192,6 +209,8 @@ export default {
       discountShow: false, //AI优惠券
       showDialogStyle: false,
       show_advertise: true,
+      isShowEnvelope: false,
+      envelopeText: "",
       demo01_list: [],
       test1: "123",
       demo01_index: 0,
@@ -199,7 +218,8 @@ export default {
       distance: "",
       recommendList: [],
       inFriendNum: 0,
-      outFriendNum: 0
+      outFriendNum: 0,
+      arrowIndex: 0,
     };
   },
   created() {
@@ -221,12 +241,18 @@ export default {
       };
       util._getJssdkInfo(shareObj, this.shareUrl);
     }
+    this.arrowTimer = setInterval(() => {
+      this.arrowIndex++;
+      if (this.arrowIndex == 5) {
+        this.arrowIndex = 0;
+      }
+    }, 100)
   },
   computed: {
-    ...mapState(["friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo", "noCouponsFlag"])
+    ...mapState(["baseUrl","friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo", "noCouponsFlag"])
   },
   mounted() {
-    this._getUserInfo(); //获取用户信息
+   
     this.getFriendList(); //获取候选人
     this._loadPublishArenas();//拉取已经发布的比赛场
     this._loadFriendEvts(); //获取好友事件列表
@@ -236,9 +262,20 @@ export default {
     //this._loadUserCoupons(); //用户获取优惠券
     //this._acquireWaitGetCoupons();//用户获取优惠券
     this._loadRecommends(); //店长推荐数据
-    this._loadStoreSetting() //获取门店信息
     this._loadAdvertisingPhoto(); //拉取首页轮播图
     this._loadInviteWaitGetCoupon(); //判断是否已经领取优惠券
+    this._loadInviteCombat();//拉取约战列表
+    setInterval(() => {
+      this.$refs.iconAnimation.className = "icon animations fl"
+    }, 5000)
+    this.$refs.iconAnimation.addEventListener('webkitAnimationEnd', () => {
+      this.$refs.iconAnimation.className = "icon fl"
+      console.log('动画结束啦')
+    }, false);
+  },
+  activated() {
+  },
+  deactivated() {
 
   },
   methods: {
@@ -295,20 +332,24 @@ export default {
     //     this.discountShow = false;
     //   });
     // },
+    // 随机场
     playGame_challenge() {
       let token = this.getCookie("tk");
-      window.location.href =
-        `http://llwant.test.qianz.com/game/?gamePath=game1&tk=${token}`;
+      // let url = `${this.baseUrl}/game/?gamePath=game1`;
+      window.location.href =`${this.baseUrl}/game/?gamePath=game1`;
     },
+    // 比赛场
     playGame_rank() {
       this.$router.push({
         name: "gameCompetion"
       })
     },
+    // 好友场
     playGame_friend() {
       let token = this.getCookie("tk");
-      window.location.href =
-        `http://llwant.test.qianz.com/game/?gamePath=game3&tk=${token}`;
+      // let url = `${this.baseUrl}/game/?gamePath=game3`
+      // alert(url)
+      window.location.href =`${this.baseUrl}/game/?gamePath=game3`;
     },
     //获取cookie
     getCookie: function (cname) {
@@ -367,13 +408,6 @@ export default {
         // })
       })
     },
-    //获取门店信息
-    _loadStoreSetting() {
-      api.loadStoreSetting().then(res => {
-        console.log('门店信息---------------------------------：', res)
-        this.getShopSetting(res)
-      })
-    },
     //拉取首页轮播图
     _loadAdvertisingPhoto() {
       api.loadAdvertisingPhoto().then(res => {
@@ -390,6 +424,25 @@ export default {
           })
           this.demo01_list = swiperList
         })
+      })
+    },
+    //拉取约战列表
+    _loadInviteCombat() {
+      api.loadInviteCombat().then(res => {
+        console.log('约战列表--------------', res);
+        if (res.errCode == 0) {
+          res.inviteCombatInfo.forEach(item => {
+            let content = {              extMsg: {
+                combatID: item.combatID,
+                headImgURL: item.headImgURL,
+                inviterID: item.inviterID,
+                nickName: item.nickName,
+                url: item.url,
+              }            }
+            this.getChallengeGamelist(content);
+            this.addBandge();
+          })
+        }
       })
     },
     //获取好友事件
@@ -417,19 +470,29 @@ export default {
           }
         })
         if (res.errCode && res.errCode == 1021) {
-          this.$vux.toast.show({
-            text: "您己成功预订,无需重复预定",
-            type: "text",
-            time: 2000,
-            width: "3rem"
-          });
+          // this.$vux.toast.show({
+          //   text: "您己成功预订,无需重复预定",
+          //   type: "text",
+          //   time: 2000,
+          //   width: "3rem"
+          // });
+          this.isShowEnvelope = true;
+          this.envelopeText = "您己成功预订,无需重复预定"
+          setTimeout(() => {
+            this.isShowEnvelope = false;
+          }, 2000);
         } else {
-          this.$vux.toast.show({
-            text: "您己成功预订套餐，到门店时请先到收银台扫码确认",
-            type: "text",
-            time: 3000,
-            width: "3rem"
-          });
+          // this.$vux.toast.show({
+          //   text: "您己成功预订套餐，到门店时请先到收银台扫码确认",
+          //   type: "text",
+          //   time: 3000,
+          //   width: "3rem"
+          // });
+          this.isShowEnvelope = true;
+          this.envelopeText = "您己成功预订套餐，到门店时请先到收银台扫码确认"
+          setTimeout(() => {
+            this.isShowEnvelope = false;
+          }, 2000);
           this._loadRecommends(); //重新拉取店长推荐
         }
       }).catch(err => {
@@ -453,19 +516,11 @@ export default {
           var speed = res.speed; // 速度，以米/每秒计
           var accuracy = res.accuracy; // 位置精度
           //window.location.href="http://apis.map.qq.com/uri/v1/marker?marker=coord:22.547986,113.988039;title:深圳魅力四射酒吧;addr:好吃好玩的地方&referer=myapp"
-          window.location.href = `http://apis.map.qq.com/uri/v1/routeplan?type=bus&from=我的位置&fromcoord=${latitude},${longitude}&to=欢乐谷&tocoord=22.547986,113.988039&policy=1&referer=myapp`;
+          window.location.href = `http://apis.map.qq.com/uri/v1/routeplan?type=bus&from=我的位置&fromcoord=${latitude},${longitude}&to=${this.shopSettingInfo.address}&tocoord=${this.shopSettingInfo.lat},${this.shopSettingInfo.lng}&policy=1&referer=myapp`;
         }
       });
     },
-    // 获取用户信息
-    _getUserInfo() {
-      api.getUserInfo("/api/loadUserInfo").then(res => {
-        console.log('个人信息-------------------------：', res);
-        this.getuserInfo(res);
-      }).catch(err => {
-        console.log(err);
-      });
-    },
+
     //获取场内场外人数
     _getInOutNum() {
       api.getInOutNum().then(res => {
@@ -502,7 +557,7 @@ export default {
     //进入店长信箱
     inToLetter() {
       util.routerTo("message", this, {
-        routeParamNum: 2                                      //路由参数2表示从店长信箱进入店长留言
+        routeParamNum: 1                                      //路由参数2表示从店长信箱进入店长留言
       });
     },
     // 更多福利
@@ -510,14 +565,14 @@ export default {
       util.routerTo("welfare", this);
     },
     ...mapMutations({
-      getuserInfo: "GET_USERINFO",                            //获取用户信息
-      getShopSetting: "GET_SHOPINFO",
       getPosition: "GET_POSITION",
       getFriend: "GET_FRIENDlIST",
       updateShareUrl: "UPDATE_SHAREURL",
       getFriend: "GET_FRIENDlIST",                            //获取候选人,
       judgeInviteCoupon: "JUDGE_INVITE_COUPON",               //判断是否还有邀请有礼
-      getAdvertisingImg: "GET_ADVERTISINGIMG"                  //获取首页轮播图
+      getAdvertisingImg: "GET_ADVERTISINGIMG",                  //获取首页轮播图
+      getChallengeGamelist: "GET_CHALLENGEGAMELIST",            //更新新增约战列表
+      addBandge: "ADD_BADGE",
     }),
     ...mapActions({
       getFriendEvt: "get_FriendEvt",                          //获取好友事件
@@ -531,7 +586,7 @@ export default {
       let tempArr = this.friendList.map((item, index) => {
         return item.info;
       });
-      this.friendIconList = tempArr.slice(0, 3);
+      this.friendIconList = tempArr.slice(0, 5);
     }
   },
   components: {
@@ -539,6 +594,7 @@ export default {
     Toast,
     XDialog,
     Scroll,
+    envelope
     // Carousel3d,
     // Slide
   }
@@ -723,9 +779,9 @@ export default {
 .homeTop_wrapper {
   position: relative;
   height: 4.2667rem;
-  padding-top: 0.4rem;
-  padding-left: 0.6rem;
-  padding-right: 0.6rem;
+  padding-top: 0.3rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
   background: -webkit-linear-gradient(left, #fff800, #fef200, #fccc00, #fbbc00);
   margin-bottom: 0.4rem;
   // padding: 0.1667rem;
@@ -736,7 +792,7 @@ export default {
     position: absolute;
     z-index: 999;
     top: 0.96rem;
-    left: .23rem;
+    left: 0.4rem;
     .logo_wrapper {
       display: inline-block;
       height: 0.5rem;
@@ -766,6 +822,26 @@ export default {
     position: relative;
     top: 0.4rem;
   }
+  .shadowLeft {
+    position: absolute;
+    width: 0.45rem;
+    height: 3.8rem;
+    background: #fff;
+    border-radius: 0 10px 10px 0px;
+    top: 1.2rem;
+    left: 0;
+    transform: skewY(-30deg);
+  }
+  .shadowRight {
+    position: absolute;
+    width: 0.45rem;
+    height: 3.8rem;
+    background: #fff;
+    border-radius: 10px 0px 0px 10px;
+    top: 1.2rem;
+    right: 0;
+    transform: skewY(30deg);
+  }
 }
 .pic {
   width: 100%;
@@ -777,25 +853,28 @@ export default {
   justify-content: space-between;
   background-color: #fff;
   padding: 0rem 0.5rem 0rem;
-  height: 0.7733rem;
+  height: 0.8733rem;
   box-sizing: border-box;
   .adr {
     font-family: "Times New Roman", Times, serif;
     height: 15px;
-    line-height: 15px; // flex: 1;
+    line-height: 15px;
+    flex-grow: 1;
+    display: flex;
     padding-top: 0.19rem;
     .position {
       width: 0.4067rem;
       height: 0.5133rem;
-      float: left;
       margin-right: 0.1333rem;
-      margin-top: -0.0667rem;
+      margin-top: -0.0167rem;
     }
     .adr_desc {
       font-size: 0.3733rem;
       font-family: "PingFang-SC-Regular";
-      float: left;
-      color: #414141;
+      color: #9f9f9f;
+      flex-grow: 1;
+      padding-top: 0.07rem;
+      // text-align: center;
     }
   }
   .navigator {
@@ -817,9 +896,8 @@ export default {
       color: #ccc;
     }
     img {
-      width: 0.88rem;
-      height: 0.88rem;
-      margin-top: -0.26rem;
+      width: 0.8267rem;
+      height: 0.8267rem;
       position: relative;
       z-index: 10;
     }
@@ -876,13 +954,13 @@ export default {
   }
   .pic_content {
     .pic_list {
-      padding: 0 0.2667rem;
+      padding: 0 0.4667rem;
       display: flex;
       justify-content: space-between;
       padding-bottom: 0.2167rem;
       li {
         &.out_fri {
-          padding-top: 0.1633rem;
+          // padding-top: 0.1633rem;
         }
         position: relative;
         .inner_onlinePerson {
@@ -890,14 +968,13 @@ export default {
         }
         .out_onlinePerson {
           .online;
+          right: 0.6867rem;
         }
         .friend_avatar_inner {
-          width: 4.6933rem;
-          height: 2.7333rem;
+          width: 4.2933rem;
         }
         .friend_avatar_out {
-          width: 4.6933rem;
-          height: 2.56rem;
+          width: 4.2933rem;
         }
       }
     }
@@ -908,15 +985,36 @@ export default {
   // width: 100%;
   overflow-y: hidden;
   .icon {
-    width: 1.1067rem;
-    height: 0.6133rem;
+    width: 0.6rem;
+    height: 0.7067rem;
     margin-right: 0.16rem;
+    transform: rotate(0deg);
+  }
+  .animations {
+    animation: rock 1000ms linear 1 normal;
+    @keyframes rock {
+      10% {
+        transform: rotate(-45deg);
+      }
+      30% {
+        transform: rotate(0deg);
+      }
+      50% {
+        transform: rotate(-45deg);
+      }
+      70% {
+        transform: rotate(0deg);
+      }
+      90% {
+        transform: rotate(-45deg);
+      }
+    }
   }
   .titleWrapper;
   .title {
-    padding-bottom: 0.2333rem;
+    padding-bottom: 0.1333rem;
     padding-top: 0.2667rem;
-    .title;
+    .title();
     .dice_title {
       .homeTitle;
       padding-top: 0.0967rem;
@@ -925,20 +1023,55 @@ export default {
       .titleDesc;
       padding-top: 0.0967rem;
     }
+    .challengeGameBox {
+      margin-right: 0.2667rem;
+      padding-top: 0.1033rem;
+      width: 2.6667rem;
+      display: flex;
+      justify-content: space-between;
+      .arrowRight {
+        font-size: 0.4rem;
+        font-weight: 700;
+        color: #ffdd44;
+        &.active {
+          color: red;
+          font-weight: 700;
+        }
+      }
+      .huangguan {
+        width: 0.5333rem;
+        height: 0.3333rem;
+        padding: 0.1067rem;
+      }
+    }
   }
   .game_list {
-    overflow-x: auto;
-    overflow-y: hidden;
-    height: 2.5333rem;
-    margin: 0 0.2667rem;
-    padding-bottom: 0.2167rem;
+    // overflow-x: auto;
+    // overflow-y: hidden;
+    height: 2.3333rem;
+    margin: 0 0.4667rem;
+    padding-bottom: 0.16rem;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
     li {
-      display: table-cell;
+      // display: table-cell;
       box-sizing: border-box;
       .pic_game {
         float: left;
-        width: 4.1333rem;
-        height: 2.5333rem; // border-radius: 0.625rem;
+        width: 4.2933rem;
+        height: 2.2533rem;
+      }
+      &:nth-child(2) {
+        margin-left: 0.2667rem;
+      }
+      .nvlang {
+        position: absolute;
+        z-index: 4;
+        width: 1.44rem;
+        height: 2.33rem;
+        top: -0.2rem;
+        left: 0.2rem;
       }
     }
   }
@@ -1057,8 +1190,15 @@ export default {
             padding: 0.1067rem 0;
             text-align: center;
             line-height: 0.5067rem;
-            background: @baseColor;
-            color: #fff;
+            // background: @baseColor;
+            background: -webkit-linear-gradient(
+              left,
+              #fff800,
+              #fef200,
+              #fccc00,
+              #fbbc00
+            );
+            color: #1d1d1d;
             border-radius: 0.08rem;
           }
         }

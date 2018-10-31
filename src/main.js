@@ -6,10 +6,17 @@ import App from './App'
 import store from './store/index'
 import router from './router/index'
 import vuePicturePreview from 'vue-picture-preview'
-import { ToastPlugin } from 'vux'
-import { mapMutations, mapState, mapActions } from 'vuex'
+import {
+    ToastPlugin
+} from 'vux'
+import {
+    mapMutations,
+    mapState,
+    mapActions
+} from 'vuex'
 import api from './common/api'
 import util from 'common/util'
+import tk from './common/tk'
 Vue.use(ToastPlugin)
 Vue.use(vuePicturePreview)
 FastClick.attach(document.body)
@@ -28,8 +35,8 @@ new Vue({
             let _urlIos = window.location.href.split('#')[0];
             this.updateShareUrl(_urlIos); //更改分享url
         }
-        this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws?tk=QhVVscl3hJJeZEI9tJKSRo79E9JgX3BvgEzorSz1aS2Ev8vp4_3OVr13LwLw6i64VISMIQ==");
-        // this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
+        // this.websock = new WebSocket(`ws://llwant.test.qianz.com/api/ws?tk=${tk}`);
+        this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
         this.websock.binaryType = "arraybuffer";
         this.connect_websocket(this.websock);
         this.socket.onopen = this.websocketonopen;
@@ -38,9 +45,16 @@ new Vue({
         this.socket.onclose = this.websocketclose;
         this._acquireWaitGetCoupons(); //判断是否已经领取AI优惠券
         this._createQrcode(); //创建二维码
+        this._getUserInfo(); //获取用户信息
+        this._loadStoreSetting(); //获取门店信息
+        this.getWeChatUrl(); //获取公众号地址
 
     },
     methods: {
+        getWeChatUrl() {
+            let url = window.location.href.split('/#')[0];
+            this.getUrl(url);
+        },
         websocketonopen(e) {
             console.log("WebSocket连接成功");
         },
@@ -74,13 +88,13 @@ new Vue({
             else if (result.msgCode === 2) {
                 console.log(result)
                 this.addFriendEvt(result.content.fromInfo) //往点赞列表新增一条数据
-                    // this.addFriendEvtObj(result)
                 let cursor = 0
                 this.getFriendEvt(cursor)
             }
-            //处理送礼事件
-            else if (result.msgCode === 3) {
-
+            //处理约战事件
+            else if (result.msgCode === 7) {
+                this.getChallengeGamelist(result.content);
+                this.addBange();
             }
         },
         websocketclose(e) {
@@ -107,9 +121,26 @@ new Vue({
                 })
             }, 15000);
         },
+        // 获取用户信息
+        _getUserInfo() {
+            api.getUserInfo("/api/loadUserInfo").then(res => {
+                console.log('个人信息-------------------------：', res);
+                this.getuserInfo(res);
+            }).catch(err => {
+                console.log(err);
+            });
+        },
+        //获取门店信息
+        _loadStoreSetting() {
+            api.loadStoreSetting().then(res => {
+                console.log('门店信息---------------------------------：', res)
+                this.getShopSetting(res)
+            })
+        },
         //创建二维码
         _createQrcode() {
-            api.createQrcode();
+            // api.createQrcode();
+            api.loadAllQrcode();
         },
         ...mapMutations({
             connect_websocket: "CONNECT_WEBSOCKET",
@@ -119,7 +150,11 @@ new Vue({
             compareLastMsg: "COMPARE_LASTMESS",
             addFriendEvt: "ADD_FRIENDEVTLIST", //新增好友事件列表
             addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框
+            getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
             updateShareUrl: "UPDATE_SHAREURL",
+            getuserInfo: "GET_USERINFO", //获取用户信息
+            getShopSetting: "GET_SHOPINFO", //获取门店信息
+            getUrl: "GET_URL", //获取公众号地址
         }),
         ...mapActions({
             getFriendEvt: "get_FriendEvt"

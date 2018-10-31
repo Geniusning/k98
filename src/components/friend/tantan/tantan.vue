@@ -18,12 +18,12 @@
               <div class="icon_box" v-if="item.isIndoor">
                 <img src="../../../assets/image/online.png" alt="" class="icon" >
                 <img src="../../../assets/image/dot_green.png" alt="" class="dot">
-                <span class="line_word">场内</span>
+                <span class="line_word">店内</span>
               </div>
               <div class="icon_box" v-else>
                 <img src="../../../assets/image/outline.png" alt="" class="icon" >
                 <img src="../../../assets/image/dot_red.png" alt="" class="dot">
-                <span class="line_word">场外</span>
+                <span class="line_word">店外</span>
               </div>
               <!-- <span class="time_desc" >20分钟前登录</span> -->
               <div class="avatarList-wrapper clearfix" @touchstart="showAlbum">

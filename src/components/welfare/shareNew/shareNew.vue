@@ -1,8 +1,8 @@
 <template>
   <div class="shareNew-wrapper" id="shareNew">
     <div class="shop-container" @click="goHome">
-      <img class="logo" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524204213993&di=5f93ef923bb06785474b70621b7a9e42&imgtype=0&src=http%3A%2F%2Fimg.brandcn.com%2FEditor%2FImages%2F201309%2F2013091309383713424223871.jpg" alt="">
-      <p class="bar_name">Lose Demon吧(迷失的恶魔魅力四射)</p>
+      <img class="logo" :src="shopSettingInfo.image" alt="">
+      <p class="bar_name">{{shopSettingInfo.name}}</p>
     </div>
     <img src="../../../assets/image/shareLogo.jpg" alt="" class="sharePic">
     <ul class="discount-container">
@@ -52,7 +52,7 @@ export default {
     this._loadInviteWaitGetCoupon();
   },
   computed: {
-    ...mapState(["shareUrl", "userInfo"])
+    ...mapState(["shareUrl", "userInfo","shopSettingInfo"])
   },
   methods: {
     _getJssdkInfo(shareObj, url) {
