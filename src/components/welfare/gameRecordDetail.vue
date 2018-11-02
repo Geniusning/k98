@@ -2,7 +2,7 @@
     <transition name='fade'>
         <div id="gameRecordDetail" class="gameRecordDetail">
             <my-header title="排名详情"></my-header>
-            <div class="myRank">
+            <div class="myRank" v-if="ownRank.ranking||ownRank.score">
                 <p class="rank">我的排名：{{ownRank.ranking+1}}</p>
                 <p class="score">杯数：{{ownRank.score}}</p>
             </div>

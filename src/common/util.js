@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-10-11 10:32:23
+ * @Last Modified time: 2018-11-01 14:43:07
  */
 import api from 'common/api'
 let util = {};
@@ -112,8 +112,7 @@ util.timestampToTimeNoLine = function(timestamp) {
     }
 }
 util._getJssdkInfo = function(shareObj, url) {
-    api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
-        .then(res => {
+    api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url)).then(res => {
             wx.config({
                 //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                 appId: "wxb2fa3c446063ec19",

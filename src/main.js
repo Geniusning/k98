@@ -35,8 +35,8 @@ new Vue({
             let _urlIos = window.location.href.split('#')[0];
             this.updateShareUrl(_urlIos); //更改分享url
         }
-        // this.websock = new WebSocket(`ws://llwant.test.qianz.com/api/ws?tk=${tk}`);
-        this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
+        this.websock = new WebSocket(`ws://llwant.test.qianz.com/api/ws?tk=${tk}`);
+        // this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
         this.websock.binaryType = "arraybuffer";
         this.connect_websocket(this.websock);
         this.socket.onopen = this.websocketonopen;

@@ -50,7 +50,7 @@ export default {
     }
   }
   .title {
-    margin-left: 3.35rem;
+    margin-left: 3.2rem;
     font-size: 0.4267rem;
     color: #333;
     margin-top: 0.3rem;

@@ -20,19 +20,19 @@
               <div class="person_box">
                 <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
                 <img :src="staticChatFriendObj.headimgurl" alt="" class="avatar" v-if="item.friend">
-                <img :src="userInfo.headimgurl" alt="" class="avatar" v-else>
+                <img :src="userInfo.headimgurl"  alt="" class="avatar" v-else>
               </div>
               <div class="message_box">
                 <span v-show="item.type===1" class="arrow"></span>
                 <p class="message" v-if="item.type===1" v-html="item.message"></p>
-                <img v-else :src="item.message" alt="" class="messRecordPic" @click="showBigPic(item.message)">
+                <img v-else :src="item.message" @load="onImgLoaded" alt="" class="messRecordPic" @click="showBigPic(item.message)" ref="picture">
               </div>
             </li>
           </ul>
         </scroll>
         <!-- <div class="loading-container" v-show="isLoading">
-                <loading></loading>
-              </div> -->
+                  <loading></loading>
+                </div> -->
       </div>
       <div class="input_wrapper">
         <div class="input_area clearfix">
@@ -63,26 +63,14 @@
           </ul>
         </div>
         <div class="emotion_area" v-if="emotionShow">
-          <!-- dots-position="center" -->
           <swiper :auto="false" height="130px" :show-dots="false">
             <swiper-item class="black">
               <grid :show-vertical-dividers="true" :cols="8">
                 <div @click="selectEmtion(item.name)" v-for="item in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.2rem">
-                  <!-- <emotion is-gif >{{item}}</emotion> -->
                   <img :src="item.num" alt="">
                 </div>
-                <!-- <grid-item v-for="(item,index) in emoj1" :key="index">
-                          <span slot="label" class="grid-center" @click="select_emotion(item)">{{item}}</span>
-                        </grid-item> -->
               </grid>
             </swiper-item>
-            <!-- <swiper-item class="black">
-                      <grid :show-vertical-dividers="true"  :cols="8">
-                        <grid-item v-for="(item,index) in emoj2" :key="index">
-                          <span slot="label" class="grid-center" @click="select_emotion(item)">{{item}}</span>
-                        </grid-item>
-                      </grid>
-                  </swiper-item> -->
           </swiper>
         </div>
         <!-- 常用语 -->
@@ -118,10 +106,15 @@
           </div>
         </popup>
       </div>
+      <!-- 信封弹框 -->
+      <transition name="appear">
+        <envelope v-show="isShowEnvelope" :text='envelopeText'></envelope>
+      </transition>
     </div>
   </transition>
 </template>
 <script type='text/ecmascript-6'>
+import envelope from 'base/envelope/envelope';
 import loading from "../../base/loading/loading";
 import {
   Tab,
@@ -141,7 +134,10 @@ import Url from "../../common/url.js";
 import api from "common/api.js";
 import util from "common/util.js";
 // import EXIF from "common/exif.js";
-import {mapState,mapMutations} from "vuex";
+import {
+  mapState,
+  mapMutations
+} from "vuex";
 import lrz from "lrz";
 export default {
   directives: {
@@ -152,6 +148,8 @@ export default {
   },
   data() {
     return {
+      isShowEnvelope: false,  //信封弹框判断
+      envelopeText: "",       //信封弹框内容
       showPreview: false,
       scrollHeight: 0,
       scrollToDomElement: "",
@@ -245,54 +243,6 @@ export default {
         num: "/static/face/18.gif"
       }
       ],
-      // emoj1: [
-      //   "😄",
-      //   "😒",
-      //   "😂",
-      //   "😊",
-      //   "😉",
-      //   "😍",
-      //   "😘",
-      //   "😚",
-      //   "😜",
-      //   "😳",
-      //   "😔",
-      //   "😣",
-      //   "😢",
-      //   "😭",
-      //   "😭",
-      //   "😅",
-      //   "😩",
-      //   "😨",
-      //   "😱",
-      //   "😤",
-      //   "😵",
-      //   "😶",
-      //   "🤕",
-      //   "🙄"
-      // ],
-      // emoj2: [
-      //   "😖",
-      //   "😋",
-      //   "😷",
-      //   "😎",
-      //   "😇",
-      //   "🤓",
-      //   "🤗",
-      //   "🤖",
-      //   "👲",
-      //   "👳",
-      //   "👳",
-      //   "👮",
-      //   "❤️️",
-      //   "💔",
-      //   "💝",
-      //   "💋",
-      //   "🙈",
-      //   "🙉",
-      //   "💀",
-      //   "👻"
-      // ],
       chatListIndex: 0,
       componentChatList: [],
       isscroll: true,
@@ -309,11 +259,11 @@ export default {
     } else {
       this.today = this.today.toString();
     }
-    // window.addEventListener("resize", function() {
-    //   if (document.activeElement.tagName === "INPUT") {
-    //     document.activeElement.scrollIntoView({ behavior: "smooth" });
-    //   }
-    // });
+    window.addEventListener("resize", function() {
+      if (document.activeElement.tagName === "INPUT") {
+        document.activeElement.scrollIntoView({ behavior: "smooth" });
+      }
+    });
   },
   activated() {
     this._getChatList(); //前端暂时获取聊天记录
@@ -337,6 +287,10 @@ export default {
     ])
   },
   methods: {
+    onImgLoaded(){
+      console.log('图片加载完成了')
+      this.$refs.listView.refresh();
+    },
     // 选择表情
     selectEmtion(item) {
       this.input_value += item;
@@ -358,20 +312,21 @@ export default {
       api.sendGift(params).then(res => {
         console.log(res);
         if (res.errCode === 0) {
-          this.$vux.toast.show({
-            text: "赠送礼物成功",
-            type: "text",
-            time: 2000,
-            width: "3rem"
-          });
+          this.isShowEnvelope = true;
+          this.envelopeText = "赠送礼物成功"
+          setTimeout(() => {
+            this.isShowEnvelope = false;
+          }, 2000);
           this.showToast_gift = false;
         } else {
-          this.$vux.toast.show({
-            text: "余额不足，请充值",
-            type: "text",
-            time: 2000,
-            width: "3rem"
-          });
+          this.isShowEnvelope = true;
+          this.envelopeText = "余额不足，请充值"
+          setTimeout(() => {
+            this.isShowEnvelope = false;
+            this.$router.push({
+              name: "giftDetail"
+            })
+          }, 2000);
         }
       })
     },
@@ -441,26 +396,28 @@ export default {
         return;
       }
       let vm = this;
-      lrz(e.target.files[0], {quality: 0.1}).then(function (rst) {
-          if (rst.base64Len > 1024 * 1024 * 1) {
-            // vm.$toast("图片不能超过1MB");
-            console.log("图片不能超过1MB");
-            return;
-          }
-          let filename = rst.origin.name;
-          let dataURL = rst.file;
-          api.postFriendPic(vm.staticChatFriendObj.openid, filename, dataURL).then(res => {
-            vm.componentChatList.push({
-              message: res.content,
-              friend: 0,
-              type: 2,
-              time: util.timestampToTime(new Date().getTime())
-            });
-          })
-            .catch(err => {
-              console.log(err);
-            });
+      lrz(e.target.files[0], {
+        quality: 0.1
+      }).then(function (rst) {
+        if (rst.base64Len > 1024 * 1024 * 1) {
+          // vm.$toast("图片不能超过1MB");
+          console.log("图片不能超过1MB");
+          return;
+        }
+        let filename = rst.origin.name;
+        let dataURL = rst.file;
+        api.postFriendPic(vm.staticChatFriendObj.openid, filename, dataURL).then(res => {
+          vm.componentChatList.push({
+            message: res.content,
+            friend: 0,
+            type: 2,
+            time: util.timestampToTime(new Date().getTime())
+          });
         })
+          .catch(err => {
+            console.log(err);
+          });
+      })
         .catch(function (err) {
           vm.$toast("压缩图片失败");
         });
@@ -633,7 +590,8 @@ export default {
     Scroll,
     Popup,
     loading,
-    Emotion
+    Emotion,
+    envelope
   }
 };
 </script>
@@ -713,9 +671,9 @@ export default {
         .mine {
           width: 100%;
           margin-bottom: 0.4667rem;
-          .chatList(right, #FFD800);
+          .chatList(right, #ffd800);
           .arrow {
-            .arrowDot(#FFD800);
+            .arrowDot(#ffd800);
             right: -0.05rem;
           }
           .message_box {

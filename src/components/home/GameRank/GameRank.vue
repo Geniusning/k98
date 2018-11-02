@@ -19,8 +19,8 @@
            </ul>
          </div>
          <loading v-show="isLoading" style="position:absolute;top:30%;left:0"></loading>
-         <scroll class="scrollList" :data="playList">
-             <ul class="userList" v-if="playList.length">
+         <scroll class="scrollList" :data="playList" v-if="playList.length">
+             <ul class="userList">
                  <li class="userItem" v-for="(item,index) in playList">
                      <span class="rankNum" :class="{'first':index==0,'second':index==1,'third':index==2}">{{index+1}}</span>
                      <div class="userInfo">
@@ -36,8 +36,8 @@
                      </div>
                  </li>
              </ul>
-             <p style="font-size:20px;font-weight:400;color:#ccc;width:100%;text-align:center;margin-top:50%" class="noContentText" v-else>暂无选手参赛</p>
          </scroll>
+          <p style="font-size:20px;font-weight:400;color:#ccc;width:100%;text-align:center;margin-top:50%" class="noContentText" v-else>暂无选手参赛</p>
      </div>
      <div class="btn-wrapper">
          <p class='backHome'>长按关注本店公众号，享受会员特权：领福利、交群友、玩游戏！</p>

@@ -132,35 +132,46 @@
             </ul>
           </div>
         </div>
+         <!-- 友商互推 -->
+        <!-- <div class="welfare_wrapper">
+          <div class="title_content_wel">
+            <div class="title clearfix">
+              <img src="../../assets/image/hutui.png" onclick="return false" alt="" class="icon fl">
+              <h2 class="shop_title">友好商家</h2>
+              <span class="desc">享会员优惠,交更多朋友</span>
+            </div>
+          </div>
+          <div class="welfare_content">
+            <ul class="welfare_list" v-if="recommendList.length">
+              <li class="item clearfix" v-for="(item,index) in recommendList" :key="index" >
+                <div class="left" >
+                  <img src="../../assets/image/hutuishop1.png" alt="" class="shopPic">
+                </div>
+                <div class="center">
+                  <p class="title">爱尚KTV</p>
+                  <p class="desc">{{item.recommend.subtopic}}</p>
+                  <p class="limit">{{item.recommend.limit}}</p>
+                  <p class="price">
+                    <span class="discount_p" style="font-size:.3rem">优惠券内容摘要：100元现金券</span>
+                  </p>
+                </div>
+                <div class="right">
+                  <div class="thunb_box clearfix">
+                    <p class="count fl">&lt;.5km</p>
+                  </div>
+                  <div style="margin-left:.3rem" class="show_detail" @click="freeBook(item.recommend.recommendID)">
+                    领取
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div> -->
       </div>
     </div>
     <div class="fuli" @click="toWelfare" v-show="noCouponsFlag">
       <img src="../../assets/image/fuli.png" alt="" class="pic_fuli">
     </div>
-    <!-- 优惠券弹框 -->
-    <!-- <div v-transfer-dom>
-      <x-dialog v-model="discountShow" class="dialog-discount">
-        <h3 class="couponTitle"></h3>
-        <div class="discount-box">
-          <scroll ref="discountScroll" class="discountScroll" :data="dicountList" v-if="dicountList.length">
-            <ul class="discountList">
-              <li class="item" v-for="(item,index) in dicountList" @click="intoCard" :key="index">
-                <div class="itemLeft">
-                  <p class="itemName">{{item.name}}</p>
-                  <p class="itemTime">{{item.type}} 有效期至：{{item.time}}</p>
-                </div>
-                <div class="itemRight">
-                  立即查看
-                </div>
-              </li>
-            </ul>
-          </scroll>
-        </div>
-        <div @click="closeAICard">
-          <x-icon type="ios-close-outline" style="fill:#fff;margin-top:20px;"></x-icon>
-        </div>
-      </x-dialog>
-    </div> -->
     <!-- 游戏框框 -->
     <div v-transfer-dom>
       <x-dialog v-model="gameShow" class="dialog-gameBegin">
@@ -249,10 +260,10 @@ export default {
     }, 100)
   },
   computed: {
-    ...mapState(["baseUrl","friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo", "noCouponsFlag"])
+    ...mapState(["baseUrl", "friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo", "noCouponsFlag"])
   },
   mounted() {
-   
+    this.getWeJSsdk();
     this.getFriendList(); //获取候选人
     this._loadPublishArenas();//拉取已经发布的比赛场
     this._loadFriendEvts(); //获取好友事件列表
@@ -279,6 +290,24 @@ export default {
 
   },
   methods: {
+    getWeJSsdk() {
+      let url = window.location.href;
+      api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url)).then(res => {
+        wx.config({
+          //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+          appId: "wxb2fa3c446063ec19",
+          timestamp: res.timestamp,
+          nonceStr: res.nonceStr,
+          signature: res.signature,
+          jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", "chooseImage"]
+        });
+        wx.error(function (res) {
+          //alert('调取微信jssdk失败')
+          // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+        });
+      })
+        .catch(err => { });
+    },
     //打电话
     callPhone() {
       window.location.href = `tel://${this.shopSettingInfo.phone}`;
@@ -295,48 +324,19 @@ export default {
         }
       })
     },
-    //获取cookie
-    getCookie: function (cname) {
-      var name = cname + "=";
-      var ca = document.cookie.split(";");
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") c = c.substring(1);
-        if (c.indexOf(name) != -1) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    },
-    //进入优惠券
-    // intoCard() {
-    //   this.$router.push({
-    //     name: "card"
-    //   });
-    //   this.discountShow = false;
-    // },
     //进入游戏初始页面
     intoReadyGame() {
-      this.$router.push({
-        name: "gameCompetion"
-      });
+      this.$router.push({name: "gameCompetion"});
       this.gameShow = false;
     },
     // 关闭游戏
     closeGame() {
       this.gameShow = false;
     },
-    //关闭AI优惠券
-    // closeAICard() {
-    //   api.clearFirstLoadTag().then(res => {
-    //     this.discountShow = false;
-    //   });
-    // },
     // 随机场
     playGame_challenge() {
       let token = this.getCookie("tk");
-      // let url = `${this.baseUrl}/game/?gamePath=game1`;
-      window.location.href =`${this.baseUrl}/game/?gamePath=game1`;
+      window.location.href = `${this.baseUrl}/game/?gamePath=game1`;
     },
     // 比赛场
     playGame_rank() {
@@ -347,9 +347,7 @@ export default {
     // 好友场
     playGame_friend() {
       let token = this.getCookie("tk");
-      // let url = `${this.baseUrl}/game/?gamePath=game3`
-      // alert(url)
-      window.location.href =`${this.baseUrl}/game/?gamePath=game3`;
+      window.location.href = `${this.baseUrl}/game/?gamePath=game3`;
     },
     //获取cookie
     getCookie: function (cname) {
@@ -374,38 +372,11 @@ export default {
         console.log('拉取已经发布的比赛场:', res)
       })
     },
-    //用户获取首次进入系统优惠券
-    // _loadUserCoupons() {
-    //   let channel = 1; //channel为1是AI优惠券类型
-    //   api.loadUserCoupons(channel).then(res => {
-    //     console.log("AI优惠券------------------------------", res);
-    //     if (res.length === 0) {
-    //       return false;
-    //     }
-    //     let AicardList = res.coupons;
-    //     AicardList.forEach(element => {
-    //       let tempObj = {};
-    //       tempObj.type = element.coupon.type ? "实物券" : "现金券";
-    //       tempObj.time = element.coupon.endTime;
-    //       tempObj.name = element.coupon.type ?
-    //         "获得" + element.coupon.content :
-    //         "获得" + element.coupon.value + "元代金券";
-    //       this.dicountList.push(tempObj);
-    //     });
-    //     setTimeout(() => {
-    //       this.discountShow = this.userInfo.firstLoad;
-    //       // this.discountShow = true;
-    //     }, 1000);
-    //   });
-    // },
     //获取店长推荐
     _loadRecommends() {
       api.loadRecommends().then(res => {
         console.log('店长推荐数据---------------------', res)
         this.recommendList = res.slice(0, 2);
-        // tempArr.forEach(item=>{
-        //   .push(item.recommend)
-        // })
       })
     },
     //拉取首页轮播图
@@ -463,12 +434,7 @@ export default {
         couponId = res.userCouponID;
         //发起预订券核销
         console.log('couponId------------------------', couponId)
-        api.launchSetOffUserCoupon(couponId).then(res => {
-          console.log('发起预订券核销------------', res)
-          if (res.errCode === 0) {
-            console.log('发起预订券核销----------------------', res)
-          }
-        })
+        api.launchSetOffUserCoupon(couponId);
         if (res.errCode && res.errCode == 1021) {
           // this.$vux.toast.show({
           //   text: "您己成功预订,无需重复预定",
@@ -482,12 +448,6 @@ export default {
             this.isShowEnvelope = false;
           }, 2000);
         } else {
-          // this.$vux.toast.show({
-          //   text: "您己成功预订套餐，到门店时请先到收银台扫码确认",
-          //   type: "text",
-          //   time: 3000,
-          //   width: "3rem"
-          // });
           this.isShowEnvelope = true;
           this.envelopeText = "您己成功预订套餐，到门店时请先到收银台扫码确认"
           setTimeout(() => {
@@ -506,17 +466,18 @@ export default {
     //获取地图位置
     getMapPosition() {
       //获取地理位置
+      console.log('获取地理位置');
+      let _this = this;
       wx.getLocation({
         // type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
         type: "gcj02", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
         success: function (res) {
           var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
           var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-          // alert(longitude)
           var speed = res.speed; // 速度，以米/每秒计
           var accuracy = res.accuracy; // 位置精度
           //window.location.href="http://apis.map.qq.com/uri/v1/marker?marker=coord:22.547986,113.988039;title:深圳魅力四射酒吧;addr:好吃好玩的地方&referer=myapp"
-          window.location.href = `http://apis.map.qq.com/uri/v1/routeplan?type=bus&from=我的位置&fromcoord=${latitude},${longitude}&to=${this.shopSettingInfo.address}&tocoord=${this.shopSettingInfo.lat},${this.shopSettingInfo.lng}&policy=1&referer=myapp`;
+          window.location.href = `http://apis.map.qq.com/uri/v1/routeplan?type=bus&from=我的位置&fromcoord=${latitude},${longitude}&to=${_this.shopSettingInfo.address}&tocoord=${_this.shopSettingInfo.lat},${_this.shopSettingInfo.lng}&policy=1&referer=myapp`;
         }
       });
     },
@@ -1180,6 +1141,8 @@ export default {
             }
             .count {
               float: left;
+              width: 100%;
+              text-align: center;
               color: #8f8f8f;
               font-size: 0.3467rem;
             }

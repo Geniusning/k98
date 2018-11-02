@@ -110,7 +110,7 @@
 <script>
 import stack from "./tantan/tantan.vue";
 import loading from "../../base/loading/loading";
-import envelope from 'base/envelope/envelope'
+import envelope from 'base/envelope/envelope';
 import util from "common/util";
 import api from "common/api";
 import { mapState, mapActions, mapMutations } from "vuex";

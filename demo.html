@@ -84,7 +84,7 @@
 </head>
 
 <body>
-    <div id="box">
+    <!-- <div id="box">
         <div id="dial"></div>
         <div id="hand">
             <div id="hour"></div>
@@ -92,47 +92,26 @@
             <div id="sec"></div>
             <div id="centre"></div>
         </div>
-    </div>
+    </div> -->
 </body>
 <script>
     window.onload = function() {
-        var oDial = document.getElementById('dial');
-        var oHour = document.getElementById("hour");
-        var oMin = document.getElementById("min");
-        var oSec = document.getElementById("sec");
-        addDot(oDial);
-        time(oHour, oMin, oSec);
-        setInterval(() => {
-            time(oHour, oMin, oSec);
-
-        }, 1000)
+        var oBody = document.getElementsByTagName('body')[0];
+        // console.log(oBody);
+        var oDiv = document.createElement('div');
+        oDiv.style.width = '100px';
+        oDiv.style.height = '100px';
+        oDiv.style.border = '1px solid #ccc';
+        var oImg = document.createElement('img');
+        oDiv.innerHTML = `<p>你是我的眼</p>`;
+        oBody.appendChild(oDiv);
 
     }
 
-    function time(h, m, s) {
-        var oDate = new Date();
-        var sec = oDate.getSeconds();
-        var min = oDate.getMinutes() + sec / 60;
-        var hour = (oDate.getHours() % 12) + min / 60;
-        console.log(sec, min, hour);
-        h.style.WebkitTransform = `rotate(${hour*360/12}deg)`;
-        m.style.WebkitTransform = `rotate(${min*360/60}deg)`;
-        s.style.WebkitTransform = `rotate(${sec*360/60}deg)`;
-    }
-
-    function addDot(obj) {
-        var strDot = "";
-        var iDeg = 6;
-        for (let i = 0; i < 60; i++) {
-            strDot += `<span class='dot' style='-webkit-transform:rotate(${iDeg*i}deg)'></span>`
-        }
-        obj.innerHTML = strDot;
-    }
-
-    var date = new Date('2018-10-30 15:38').getTime();
-    console.log(date)
-        // var str = "20:00";
-        // console.log(new.Date().getTime())
+    // var date = new Date('2018-10-30 15:38').getTime();
+    // console.log(date)
+    // var str = "20:00";
+    // console.log(new.Date().getTime())
 </script>
 
 </html>
