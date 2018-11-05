@@ -3,17 +3,16 @@
         <div class="card_detail">
             <my-header title="卡券详情" bg="#fff"></my-header>
             <!-- <div class="discount_pic vux-1px-t"> 
-                <div class="banner_bg">
-                    <div class="desc">入场送一扎啤酒</div>
-                    <p class="time">截止日期：2018.5.5-2018-6-5</p>
-                </div>
-            </div> -->
+                    <div class="banner_bg">
+                        <div class="desc">入场送一扎啤酒</div>
+                        <p class="time">截止日期：2018.5.5-2018-6-5</p>
+                    </div>
+                </div> -->
             <div class="QRcode_wrapper">
                 <p class="desc">到店核销时 请出示此二维码或点击<span @click="lauchCheckOutCoupon" class="check">发起核销</span></p>
                 <!-- <img src="../../assets/image/QRcode.png" alt="" class="QR_pic"> -->
                 <canvas id="canvas" ref="canvas" style="width:220px;height:220px;"></canvas>
             </div>
-
             <div class="infoMessage_wrapper">
                 <ul class="infoList">
                     <li class="item">
@@ -28,20 +27,27 @@
                     </li>
                 </ul>
             </div>
+            <!-- 信封弹框 -->
+            <transition name="appear">
+                <envelope v-show="isShowEnvelope" :text='envelopeText'></envelope>
+            </transition>
         </div>
     </transition>
 </template>
 
 <script type='text/ecmascript-6'>
 import myHeader from "../../base/myheader/myheader";
-import QRcode from 'qrcode'
-import api from 'common/api'
+import QRcode from 'qrcode';
+import api from 'common/api';
+import envelope from 'base/envelope/envelope';
 export default {
     data() {
         return {
             couponId: "",
             qrUrl: "",
-            couponObj: {}
+            couponObj: {},
+            isShowEnvelope: false,  //信封弹框判断
+            envelopeText: "",
         };
     },
     mounted() {
@@ -51,7 +57,6 @@ export default {
             canvas = document.getElementById('canvas')
         })
         this.couponId = this.$route.params.id;
-
         api.loadUserCouponByID(this.couponId).then(res => {
             if (res.errCode === 0) {
                 console.log(res)
@@ -72,19 +77,24 @@ export default {
             api.launchSetOffUserCoupon(this.couponId).then(res => {
                 console.log(res)
                 if (res.errCode === 0) {
-                    this.$vux.toast.show({
-                        text: "已发起核销，带收银同意确认",
-                        type: "text",
-                        time: 3000,
-                        width: "3rem"
-                    });
+                    // this.$vux.toast.show({
+                    //     text: "已发起核销，待收银同意确认",
+                    //     type: "text",
+                    //     time: 3000,
+                    //     width: "3rem"
+                    // });
+                    this.isShowEnvelope = true;
+                    this.envelopeText = "已发起核销，待收银同意确认"
+                    setTimeout(() => {
+                        this.isShowEnvelope = false;
+                    }, 2000);
                 }
             })
         }
     },
     components: {
         myHeader,
-
+        envelope
     }
 };
 </script>
@@ -136,8 +146,7 @@ export default {
   }
   .QRcode_wrapper {
     padding-top: 0.4rem;
-    margin-top: 0.2667rem;
-    // height: 7.1333rem;
+    margin-top: 0.2667rem; // height: 7.1333rem;
     width: 100%;
     background: #fff;
     box-sizing: border-box;

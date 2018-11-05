@@ -237,18 +237,18 @@ export default {
     let _url = window.location.href;
     if (util.isAndroid()) {
       let shareObj = {
-        title: "深圳魅力四射激情酒吧",
-        desc: "今天店里举行派对喽，快来参加",
-        link: `http://llwant.test.qianz.com?/#/home`,
-        imgUrl: "http://i2.bvimg.com/643118/36347406d1739907.png"
+        title: "发现一个好玩的地方",
+        desc: "可以认识许多新朋友，打比赛。老板还特傻X，见人就发红包",
+        link: `${baseUrl}?/#/home`,
+        imgUrl: `${this.shopSettingInfo.image}`
       };
       util._getJssdkInfo(shareObj, _url);
     } else {
       let shareObj = {
-        title: "深圳魅力四射激情酒吧",
-        desc: "今天店里举行派对喽，快来参加",
+        title: "发现一个好玩的地方",
+        desc: "可以认识许多新朋友，打比赛。老板还特傻X，见人就发红包",
         link: this.shareUrl + "#/home ",
-        imgUrl: "http://i2.bvimg.com/643118/36347406d1739907.png"
+        imgUrl:`${this.shopSettingInfo.image}`
       };
       util._getJssdkInfo(shareObj, this.shareUrl);
     }

@@ -1,5 +1,5 @@
 <template>
- <div>
+ <div class="qrCode_wrapper">
      <!-- 绑定手机弹框 -->
     <div v-transfer-dom>
           <x-dialog v-model="qrIsShow" class="dialog-demo">
@@ -65,6 +65,9 @@ export default {
 
 <style scoped lang='less'>
 @import "../../assets/less/mixin.less";
+.qrCode_wrapper{
+  position: absolute;
+}
 .bindTel_wrapper {
   width: 8rem;
   height: 7.8rem;

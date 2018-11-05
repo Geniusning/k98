@@ -8,7 +8,7 @@
                 </div>
                 <div class="file-box">
                     <p class="text">更换头像</p>
-                    <input type="file" class="file" @change="onChange">
+                    <input type="file" class="file" @change="uploadAvatar">
                 </div>
             </div>
             <div class="dailyLifePhoto-wrapper" >
@@ -23,6 +23,7 @@
                   <input type="file" accept="image/*" class="imageBtn" @change="uploadLifePic">
                 </li>
               </ul>
+             <button class="btn" style="margin-top:10px" @click="uploadAllLifePicBtn">确定</button>
             </div>
             <div class="tailor_wrapper" v-if="showTailor">
                 <vueCropper
@@ -34,10 +35,13 @@
                     :autoCropHeight="option.height"
                     class="cropper"
                 ></vueCropper>
-                <p @click="stop" class="confirm">确定</p>
+                <div>
+                  <p v-if="uploadAvatarShow" @click="avatarPicupLoad" class="confirm">确定头像</p>
+                  <p v-else @click="LifePicupComfirmBtn" class="confirm">确定生活照</p>
+                </div>
                 <!-- <p @click="clip" class="clip">点击开始滑动截图</p> -->
             </div>
-
+            
         </div>
     </transition>
 </template>
@@ -53,6 +57,7 @@ import lrz from "lrz";
 export default {
   data() {
     return {
+      uploadAvatarShow: true,
       showTailor: false,
       isShowAddImg: true,
       option: {
@@ -64,88 +69,74 @@ export default {
       lifePhotoList: []
     };
   },
-  created() {
-    let url = window.location.href.split("#")[0];
-    console.log(url);
-    api
-      .getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
-      .then(res => {
-        wx.config({
-          //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-          appId: "wxb2fa3c446063ec19",
-          timestamp: res.timestamp,
-          nonceStr: res.nonceStr,
-          signature: res.signature,
-          jsApiList: ["chooseImage"]
-        });
-      });
+  mounted() {
+    if(this.userInfo.lifePhotoURL.lifePhotoURL){
+      this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
+      if (this.userInfo.lifePhotoURL.lifePhotoURL.length == 4) {
+        this.isShowAddImg = false;
+      }
+    }
   },
   computed: {
     ...mapState(["userInfo"])
   },
   methods: {
-    //上传生活照
-    chooseImage() {
-      let _this = this;
-      // wx.chooseImage({
-      //   count: 1, // 默认9
-      //   sizeType: ["compressed"], // 可以指定是原图还是压缩图，默认二者都有
-      //   sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-      //   success: function(res) {
-      //     var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-      //     console.log('localIds----------------------',localIds);
-      //     _this.lifePhotoList.push(localIds[0]);
-      //     if(_this.lifePhotoList.length>3){
-      //       _this.isShowAddImg = false;
-      //     }
-      //   }
-      // });
-    },
-    //上传生活照
+    //选择上传生活照
     uploadLifePic(e) {
+      this.uploadAvatarShow = false;
       let file = e.target.files[0];
-      this.fileName = file.name;
+      this.lifePicName = file.name;
       let _this = this;
       let reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = function () {
         _this.result = this.result;
-        let param = new FormData();
-        param.append("file", _this.result);
-        api.updateLifePic(param).then(res => {
-          console.log(res);
-        })
-
+        _this.showTailor = true;
+        _this.option.img = this.result;
       };
-      // if (!e.target.files[0]) {
-      //   return;
-      // }
-      // let vm = this;
-      // lrz(e.target.files[0], { quality: 0.1 }).then(function (rst) {
-      //   if (rst.base64Len > 1024 * 1024 * 1) {
-      //     // vm.$toast("图片不能超过1MB");
-      //     console.log("图片不能超过1MB");
-      //     return;
-      //   }
-      //   let filename = rst.origin.name;
-      //   let dataURL = rst.file;
-      //   console.log(dataURL);
-      // }).catch(function (err) {
-      //     vm.$toast("压缩图片失败");
-      //   });
+    },
+    //确定生活照
+    LifePicupComfirmBtn() {
+      this.$refs.cropper.getCropBlob(data => {
+        console.log('this.$refs.cropper.getCropBlob----------', data);
+        this.resultLife = data;
+        this.showTailor = false;
+        //上传生活照
+        api.updateLifePic(this.lifePicName, this.resultLife).then(res => {
+          console.log(res)
+          if (res.photoURL) {
+            this.addLifeImg(res.photoURL);
+             this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
+            if (this.lifePhotoList.length === 4) {
+              this.isShowAddImg = false;
+            }
+          }
+        });
+      });
+    },
+    //上传全部生活照
+    uploadAllLifePicBtn() {
+      console.log(111)
+      let lifeListParam = {
+        lifePhotoURL: this.lifePhotoList
+      }
+      api.uploadAllLifePic(lifeListParam).then(res => {
+        console.log(res)
+      })
     },
     //删除生活照
     close(index) {
-      this.lifePhotoList.splice(index, 1);
+      this.deleteLifeImg(index);
+       this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
       if (this.lifePhotoList.length === 4) {
         this.isShowAddImg = false;
       } else {
         this.isShowAddImg = true;
       }
     },
-    //选择图片
-    onChange(e) {
-      console.log(e.target.files[0]);
+    //选择头像图片
+    uploadAvatar(e) {
+      this.uploadAvatarShow = true;
       let file = e.target.files[0];
       this.fileName = file.name;
       let _this = this;
@@ -157,18 +148,17 @@ export default {
         _this.option.img = this.result;
       };
     },
-    update() { },
-    stop() {
+    avatarPicupLoad() {
       this.$refs.cropper.getCropBlob(data => {
-        console.log(data);
-        this.result1 = data;
+        console.log('this.$refs.cropper.getCropBlob----------', data);
+        this.resultAvatar = data;
         this.$refs.avatar.src = data;
         this.showTailor = false;
         //更新头像
-        api.updateAvatar(this.fileName, this.result1).then(res => {
-          console.log(res);
+        api.updateAvatar(this.fileName, this.resultAvatar).then(res => {
+          // console.log(res);
           if (res.imgURL.length > 0) {
-            api.getUserInfo("/api/loadUserInfo").then(res => {
+            api.getUserInfo().then(res => {
               console.log(res);
               this.getuserInfo(res);
               this.$vux.toast.show({
@@ -183,13 +173,15 @@ export default {
       });
     },
     ...mapMutations({
-      getuserInfo: "GET_USERINFO"
+      getuserInfo: "GET_USERINFO",
+      addLifeImg:"CHANGE_LIFEIMG",//新增生活照
+      deleteLifeImg:"DELETE_LIFEIMG" //删除生活照
     })
   },
   components: {
     VueCropper,
-    myHeader
-    // XButton
+    myHeader,
+    XButton
   }
 };
 </script>
@@ -237,7 +229,7 @@ export default {
       font-weight: 600;
       margin-bottom: 0.2667rem;
       .desc {
-        font-size: 0.0067rem;
+        font-size: 0.267rem;
         font-weight: normal;
       }
     }
@@ -268,6 +260,13 @@ export default {
           height: 100%;
         }
       }
+    }
+    .btn {
+      width: 100%;
+      border: none;
+      padding: 0.2667rem 0;
+      background-color: #ccc;
+      color: #fff;
     }
   }
   .tailor_wrapper {

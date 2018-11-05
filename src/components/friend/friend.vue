@@ -74,22 +74,6 @@
                   <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
                   <p  class="gift_price">￥{{item.money}}</p>
               </li>
-              <!-- 
-                <li class="item">
-                
-                <p class="gift_name">鲜花</p>
-                <p class="gift_price">￥1.88</p>
-              </li>
-                <li class="item">
-               
-                <p class="gift_name gift_name_houseAndCar">别墅</p>
-                <p class="gift_price">￥5.20</p>
-              </li>
-                <li class="item">
-               
-                <p class="gift_name gift_name_houseAndCar">跑车</p>
-                <p class="gift_price">￥16.8</p>
-              </li> -->
             </ul>
           </div>
         </div>
@@ -101,6 +85,7 @@
       <!-- <img class="close" src="../../assets/image/close.png" alt=""> -->
       <p class="intro">请尽快完善信息，让更多人认识你哦！</p>
     </div>
+    <qrCode v-show="qrIsShow" title="您未关注公众号，请先关注"></qrCode>
     <transition name="appear">
        <envelope v-show="isShowEnvelope" :text='envelopeText'></envelope>
     </transition>
@@ -111,9 +96,10 @@
 import stack from "./tantan/tantan.vue";
 import loading from "../../base/loading/loading";
 import envelope from 'base/envelope/envelope';
+import qrCode from 'base/qrCode/qrCode';
 import util from "common/util";
 import api from "common/api";
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState, mapActions, mapMutations,mapGetters } from "vuex";
 import { Toast, TransferDom, Popup, XDialog, XButton, Scroller } from "vux";
 export default {
   // el: "#stack",
@@ -209,7 +195,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(["friendList", "inAndOutFriendCursor", "friendListCursor", "giftList", "userInfo"])
+    ...mapState(["friendList", "inAndOutFriendCursor", "friendListCursor", "giftList", "userInfo"]),
+    ...mapGetters(["qrIsShow"]),
   },
   mounted() {
     if (this.userInfo.firstLoad) {
@@ -243,24 +230,14 @@ export default {
       api.sendGift(params).then(res => {
         console.log(res);
         if (res.errCode === 0) {
-          // this.$vux.toast.show({
-          //   text: "赠送礼物成功",
-          //   type: "text",
-          //   time: 2000,
-          //   width: "3rem"
-          // });
           this.isShowEnvelope = true;
           this.envelopeText = "赠送礼物成功"
           setTimeout(() => {
             this.isShowEnvelope = false;
           }, 2000);
-        } else {
-          // this.$vux.toast.show({
-          //   text: "余额不足，请充值",
-          //   type: "text",
-          //   time: 2000,
-          //   width: "3rem"
-          // });
+        }else if(res.errCode == 1023){
+          this.showQrcode(true);
+        }else {
           this.isShowEnvelope = true;
           this.envelopeText = "余额不足，请充值"
           setTimeout(() => {
@@ -275,8 +252,9 @@ export default {
     // 监听点击相册
     showAblum(data) {
       console.log('监听点击相册------------------------------：', data);
+      this.changeUserLifeImgList(data.info.lifePhotoURL.lifePhotoURL);
       this.$router.push({
-        path: `/friend/${data.info.openid}`
+        path: `/friend/${data.info.openid}`,
       })
     },
     listenFirstdata(data) {
@@ -306,7 +284,10 @@ export default {
           setTimeout(() => {
             this.isShowEnvelope = false;
           }, 2000);
-        } else {
+        }else if(res.errcode === 1023){
+          this.showQrcode(true);
+        }
+         else {
           // that.text = "您已点赞了哦";
           // this.showPositionValue = true;
           this.isShowEnvelope = true;
@@ -339,6 +320,8 @@ export default {
           setTimeout(() => {
             this.isShowEnvelope = false;
           }, 2000);
+        }else if(res.errCode == 1023){
+          this.showQrcode(true);
         }
       })
     },
@@ -357,9 +340,11 @@ export default {
       getMoreFriendList: "get_moreFriendList"//获取更多候选人
     }),
     ...mapMutations({
+      showQrcode: "SHOW_QRCODE", //暂时二维码
       setChatFriend: "SET_CHAT_FRIEND",
       getFriend: "GET_FRIENDlIST", //获取候选好友
       //updateFriendCursor: "UPDATE_INANDOUT_FRIEND_CURSOR", //更新场内场外游标
+      changeUserLifeImgList:"GET_LIFEIMG", //更改用户生活照
       getGiftList: "GET_GIFTLIST"//获取礼物
     })
   },
@@ -376,7 +361,8 @@ export default {
     XButton,
     Scroller,
     loading,
-    envelope
+    envelope,
+    qrCode
   }
 };
 </script>

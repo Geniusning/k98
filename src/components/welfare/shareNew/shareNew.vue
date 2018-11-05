@@ -52,7 +52,7 @@ export default {
     this._loadInviteWaitGetCoupon();
   },
   computed: {
-    ...mapState(["shareUrl", "userInfo","shopSettingInfo"])
+    ...mapState(["shareUrl", "userInfo","shopSettingInfo","baseUrl"])
   },
   methods: {
     _getJssdkInfo(shareObj, url) {
@@ -117,20 +117,19 @@ export default {
         let _url = window.location.href;
         if (util.isAndroid()) {
           let shareObj = {
-            title: "搞活动啦",
-            desc: "分享给好友，双方都可以获得豪礼",
-            link: `http://llwant.test.qianz.com?/#/sharedDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
-            imgUrl: "http://i1.bvimg.com/643118/52096e914aafe486.jpg"
+            title: "新人大礼包",
+            desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
+            link: `${this.baseUrl}?/#/sharedDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
+            imgUrl: `${this.shopSettingInfo.image}`
           };
           this._getJssdkInfo(shareObj, _url);
         } else {
           let shareObj = {
-            title: "搞活动啦",
-            desc: "分享给好友，双方都可以获得豪礼",
+            title: "新人大礼包",
+            desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
             link: this.shareUrl + `#/sharedDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
-            imgUrl: "http://i1.bvimg.com/643118/52096e914aafe486.jpg"
+            imgUrl: `${this.shopSettingInfo.image}`
           };
-          console.log(shareObj)
           this._getJssdkInfo(shareObj, this.shareUrl);
         }
       })

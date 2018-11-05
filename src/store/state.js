@@ -2,6 +2,7 @@ const state = {
     baseUrl: "", //公众号地址
     isShow: false, //控住手机验证码弹框
     qrIsShow: false, //控制关注二维码弹框
+    lifeImgList: [],
     userInfo: {},
     giftList: [],
     shareUrl: "",

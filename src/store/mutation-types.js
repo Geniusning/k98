@@ -5,6 +5,13 @@ export const CHANGE_VALIDATE = "CHANGE_VALIDATE"
 
 //关注二维码弹框
 export const SHOW_QRCODE = "SHOW_QRCODE"
+    //获得用户生活照
+export const GET_LIFEIMG = "GET_LIFEIMG"
+    //更改用户生活照
+export const CHANGE_LIFEIMG = "CHANGE_LIFEIMG"
+
+//删除生活照
+export const DELETE_LIFEIMG = "DELETE_LIFEIMG"
 
 //获取用户信息
 export const GET_USERINFO = "GET_USERINFO"

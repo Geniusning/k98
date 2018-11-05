@@ -120,7 +120,7 @@ export default {
   },
   computed: {
     ...mapGetters(["friendList"]),
-    ...mapState(["friendListCursor"]),
+    ...mapState(["friendListCursor","userInfo"]),
     // 划出面积比例
     offsetRatio() {
       let width = this.$el.offsetWidth;

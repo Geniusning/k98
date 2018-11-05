@@ -11,6 +11,19 @@ const mutations = {
     [types.CHANGE_VALIDATE](state, flag) {
         state.isShow = flag;
     },
+    //新增用户生活照
+    [types.CHANGE_LIFEIMG](state, life) {
+        console.log(typeof state.userInfo);
+        state.userInfo.lifePhotoURL.lifePhotoURL.push(life);
+    },
+    //获得用户生活照
+    [types.GET_LIFEIMG](state, lifeList) {
+        state.lifeImgList = lifeList;
+    },
+    //删除生活照
+    [types.DELETE_LIFEIMG](state, index) {
+        state.userinfo.lifePhotoURL.lifePhotoURL.splice(index, 1)
+    },
     //控制二维码关注弹框
     [types.SHOW_QRCODE](state, flag) {
         state.qrIsShow = flag

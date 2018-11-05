@@ -210,8 +210,9 @@ export default {
 @import "../../../assets/less/gameCompetion.less";
 .gameCompetion {
   height: 100%;
-  background-image: url("../../../assets/image/game_bg.jpg");
-  background-size: 100%;
+  background-image: url("../../../assets/image/game_bg.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   display: flex;
   flex-direction: column;
   .title-wrapper {

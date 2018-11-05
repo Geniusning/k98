@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-11-01 15:17:48
+ * @Last Modified time: 2018-11-05 15:45:52
  */
 
 import axios from 'axios'
@@ -14,7 +14,7 @@ let api = {};
 //获取用户信息
 api.getUserInfo = function(path) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + path).then(res => {
+        axios.get(Url.commonUrl + `/api/loadUserInfo?tk=${tk}`).then(res => {
             if (res.status == 200) {
                 // console.log(res.data)
                 resolve(res.data)
@@ -173,14 +173,23 @@ api.updateAvatar = function(fileName, param) {
                 })
         })
     }
-    //上传生活照
-api.updateLifePic = function(param) {
+    //上传单个生活照
+api.updateLifePic = function(fileName, param) {
         return new Promise((resolve, reject) => {
-            axios.post(Url.commonUrl + `/api/photoUpload?tk=${tk}`, param, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data;'
+            axios.post(Url.commonUrl + `/api/photoUploadForLife?fileName=${fileName}&tk=${tk}`, param)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
                     }
+                }).catch(err => {
+                    reject(err)
                 })
+        })
+    }
+    // 上传全部生活照Btn
+api.uploadAllLifePic = function(param) {
+        return new Promise((resolve, reject) => {
+            axios.post(Url.commonUrl + `/api/uploadLifePhotoURL?tk=${tk}`, param)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -673,7 +682,7 @@ api.loadManagerNoticeInfo = function() {
     //约战
 api.sentPlayGameMsg = function(toUserID) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/sentPlayGameMsg?${tk}&toUserID=${toUserID}`)
+            axios.get(`/api/sentPlayGameInvite?${tk}&toUserID=${toUserID}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)

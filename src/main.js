@@ -123,7 +123,7 @@ new Vue({
         },
         // 获取用户信息
         _getUserInfo() {
-            api.getUserInfo("/api/loadUserInfo").then(res => {
+            api.getUserInfo().then(res => {
                 console.log('个人信息-------------------------：', res);
                 this.getuserInfo(res);
             }).catch(err => {
@@ -139,8 +139,8 @@ new Vue({
         },
         //创建二维码
         _createQrcode() {
-            // api.createQrcode();
-            api.loadAllQrcode();
+            api.createQrcode();
+            // api.loadAllQrcode();
         },
         ...mapMutations({
             connect_websocket: "CONNECT_WEBSOCKET",

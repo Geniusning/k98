@@ -40,18 +40,18 @@ export default {
     let _url = window.location.href;
     if (util.isAndroid()) {
       let shareObj = {
-        title: "搞活动啦",
-        desc: "今天店里举行派对喽，快来参加",
-        link: `http://llwant.test.qianz.com?/#/shareActivity`,
-        imgUrl: "http://i2.bvimg.com/643118/36347406d1739907.png"
+        title: "活动通知",
+        desc: "本店最新活动，会员特权。点击查看",
+        link: `${this.baseUrl}?/#/shareActivity`,
+        imgUrl: `${this.shopSettingInfo.image}`
       };
       util._getJssdkInfo(shareObj, _url);
     } else {
       let shareObj = {
-        title: "搞活动啦",
-        desc: "今天店里举行派对喽，快来参加",
+        title: "活动通知",
+        desc: "本店最新活动，会员特权。点击查看",
         link: this.shareUrl + "#/shareActivity",
-        imgUrl: "http://i2.bvimg.com/643118/36347406d1739907.png"
+        imgUrl: `${this.shopSettingInfo.image}`
       };
       util._getJssdkInfo(shareObj, this.shareUrl);
     }
@@ -62,7 +62,7 @@ export default {
     this._loadActivityDetail();
   },
   computed: {
-    ...mapState(["shareUrl", "activityNoticeList", "shopSettingInfo"])
+    ...mapState(["shareUrl", "activityNoticeList", "shopSettingInfo","baseUrl"])
   },
   methods: {
     //加载活动详情

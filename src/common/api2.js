@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-10-30 17:51:27
+ * @Last Modified time: 2018-11-05 19:12:03
  */
 
 import axios from 'axios'
@@ -12,7 +12,7 @@ let api = {};
 //获取用户信息
 api.getUserInfo = function(path) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + path).then(res => {
+        axios.get(Url.commonUrl + `/api/loadUserInfo`).then(res => {
             if (res.status == 200) {
                 // console.log(res.data)
                 resolve(res.data)
@@ -173,9 +173,22 @@ api.updateAvatar = function(fileName, param) {
         })
     }
     //上传生活照
-api.updateLifePic = function(param) {
+api.updateLifePic = function(fileName, param) {
         return new Promise((resolve, reject) => {
-            axios.post(Url.commonUrl + `/api/photoUpload`, param)
+            axios.post(Url.commonUrl + `/api/photoUploadForLife?fileName=${fileName}`, param)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    // 上传全部生活照Btn
+api.uploadAllLifePic = function(param) {
+        return new Promise((resolve, reject) => {
+            axios.post(Url.commonUrl + `/api/uploadLifePhotoURL`, param)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -666,7 +679,7 @@ api.loadManagerNoticeInfo = function() {
     //约战
 api.sentPlayGameMsg = function(toUserID) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/sentPlayGameMsg?toUserID=${toUserID}`)
+            axios.get(`/api/sentPlayGameInvite?toUserID=${toUserID}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
