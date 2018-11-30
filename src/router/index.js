@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from 'components/home/home'
 import GameCompetion from 'components/home/gameCompetion/gameCompetion'
 import GameRank from 'components/home/GameRank/GameRank'
+import GameHall from 'components/home/GameHall/GameHall'
 import Friend from 'components/friend/friend'
 import PersonalInfo from 'components/friend/personalInfo/personalInfo'
 import Message from 'components/message/message'
@@ -19,10 +20,10 @@ import Award from 'components/welfare/award/award'
 import ShareNew from 'components/welfare/ShareNew/ShareNew'
 import ShareActivity from 'components/welfare/shareActivity/shareActivity'
 import SharedDiscount from 'components/welfare/sharedDiscount/sharedDiscount'
-import ShareNewUsers from 'components/welfare/shareNewUsers/shareNewUsers'
+// import ShareNewUsers from 'components/welfare/shareNewUsers/shareNewUsers'
 import GameRecord from 'components/welfare/gameRecord'
 import GameRecordDetail from 'components/welfare/gameRecordDetail'
-import test from 'base/test/test'
+// import test from 'base/test/test'
 
 
 Vue.use(Router)
@@ -43,14 +44,17 @@ export default new Router({
             }
         },
         {
-            path: '/test',
-            name: 'test',
-            component: test,
+            path: '/gameHall',
+            name: 'gameHall',
+            component: GameHall,
         },
         {
             path: "/gameCompetion",
             name: "gameCompetion",
-            component: GameCompetion
+            component: GameCompetion,
+            meta: {
+                keepAlive: true
+            }
         },
         {
             path: "/gameRank",
@@ -111,11 +115,11 @@ export default new Router({
             name: 'shareActivity',
             component: ShareActivity,
         },
-        {
-            path: '/shareNewUsers',
-            name: 'shareNewUsers',
-            component: ShareNewUsers,
-        },
+        // {
+        //     path: '/shareNewUsers',
+        //     name: 'shareNewUsers',
+        //     component: ShareNewUsers,
+        // },
         {
             path: '/sharedDiscount',
             name: 'sharedDiscount',

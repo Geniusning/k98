@@ -79,13 +79,13 @@
         </div>
       </popup>
     </div>
-    <!-- 引导背景 v-show="userInfo.firstLoad" -->
+    <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad" -->
     <div class="guide_bg" v-show="isFirstLoad" @click="isFirstLoad=false">
       <img class="thumb" src="../../assets/image/thumb.png" alt="">
-      <!-- <img class="close" src="../../assets/image/close.png" alt=""> -->
       <p class="intro">请尽快完善信息，让更多人认识你哦！</p>
+      <p class="intro_mfTips">绿灯闪烁表示好友在线哦，赶紧去联系Ta吧</p>
     </div>
-    <qrCode v-show="qrIsShow" title="您未关注公众号，请先关注"></qrCode>
+    <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
     <transition name="appear">
        <envelope v-show="isShowEnvelope" :text='envelopeText'></envelope>
     </transition>
@@ -99,7 +99,7 @@ import envelope from 'base/envelope/envelope';
 import qrCode from 'base/qrCode/qrCode';
 import util from "common/util";
 import api from "common/api";
-import { mapState, mapActions, mapMutations,mapGetters } from "vuex";
+import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
 import { Toast, TransferDom, Popup, XDialog, XButton, Scroller } from "vux";
 export default {
   // el: "#stack",
@@ -174,6 +174,8 @@ export default {
     if (to.params.routeParamNum === 1) {
       next(vm => {
         // 请求场内好友
+        let cursor = 0
+        vm.updateFriendCursor(cursor)
         api.getLoadInsideCandidates(vm.inAndOutFriendCursor).then(res => {
           console.log('场内：', res);
           vm.getFriend(res);
@@ -187,6 +189,8 @@ export default {
     } else {
       next(vm => {
         // 请求场外好友
+        let cursor = 0;
+        vm.updateFriendCursor(cursor);
         api.getLoadOutsideCandidates(vm.inAndOutFriendCursor).then(res => {
           console.log('场外：', res);
           vm.getFriend(res);
@@ -204,9 +208,26 @@ export default {
     } else {
       this.isFirstLoad = false;
     }
+    this._clearFirstLoadTag(); //标识已经进入过公众号
     this._loadAllGift();
   },
   methods: {
+    //标识进入过公众号
+    _clearFirstLoadTag() {
+      api.clearFirstLoadTag().then(res => {
+        console.log('标识进入过公众号---------------', res);
+        this._getUserInfo();
+      });
+    },
+    // 获取用户信息
+    _getUserInfo() {
+      api.getUserInfo().then(res => {
+        console.log('个人信息-------------------------：', res);
+        this.getuserInfo(res);
+      }).catch(err => {
+        console.log(err);
+      });
+    },
     //进入个人信息设置页面
     intoSetting() {
       this.$router.push({
@@ -235,9 +256,9 @@ export default {
           setTimeout(() => {
             this.isShowEnvelope = false;
           }, 2000);
-        }else if(res.errCode == 1023){
+        } else if (res.errCode == 1023) {
           this.showQrcode(true);
-        }else {
+        } else {
           this.isShowEnvelope = true;
           this.envelopeText = "余额不足，请充值"
           setTimeout(() => {
@@ -284,10 +305,10 @@ export default {
           setTimeout(() => {
             this.isShowEnvelope = false;
           }, 2000);
-        }else if(res.errcode === 1023){
+        } else if (res.errcode === 1023) {
           this.showQrcode(true);
         }
-         else {
+        else {
           // that.text = "您已点赞了哦";
           // this.showPositionValue = true;
           this.isShowEnvelope = true;
@@ -320,7 +341,7 @@ export default {
           setTimeout(() => {
             this.isShowEnvelope = false;
           }, 2000);
-        }else if(res.errCode == 1023){
+        } else if (res.errCode == 1023) {
           this.showQrcode(true);
         }
       })
@@ -342,9 +363,10 @@ export default {
     ...mapMutations({
       showQrcode: "SHOW_QRCODE", //暂时二维码
       setChatFriend: "SET_CHAT_FRIEND",
+      getuserInfo: "GET_USERINFO", //获取用户信息
       getFriend: "GET_FRIENDlIST", //获取候选好友
-      //updateFriendCursor: "UPDATE_INANDOUT_FRIEND_CURSOR", //更新场内场外游标
-      changeUserLifeImgList:"GET_LIFEIMG", //更改用户生活照
+      updateFriendCursor: "UPDATE_INANDOUT_FRIEND_CURSOR", //更新场内场外游标
+      changeUserLifeImgList: "GET_LIFEIMG", //更改用户生活照
       getGiftList: "GET_GIFTLIST"//获取礼物
     })
   },
@@ -486,6 +508,12 @@ export default {
     .intro {
       position: absolute;
       top: 0.4667rem;
+      left: 2rem;
+      color: #fff;
+    }
+    .intro_mfTips {
+      position: absolute;
+      top: 2.4667rem;
       left: 2rem;
       color: #fff;
     }

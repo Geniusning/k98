@@ -34,7 +34,7 @@
         <div class="line-box">
           <h4 class="game-result">本期比赛奖品</h4>
         </div>
-        <scroll ref="rankList">
+        <div ref="rankList">
           <ul class="rankList" v-if="gameShow">
             <li class="item" v-for="(item,index) in rankList" :key="index">
               <div class="itemLeft">
@@ -47,7 +47,7 @@
             </li>
           </ul>
           <p v-else class="noGame">暂无比赛</p>
-        </scroll>
+        </div>
       </div>
       <!-- <div class="handle-wrapper">
           <button class="btnRecord" @click="goToGameRecord">查看往期赛事</button>
@@ -123,6 +123,7 @@
   // import {Selector,Group} from "vux";
   import util from "common/util";
   import api from "common/api";
+  import Config from 'common/url'
   import {mapState,mapMutations} from "vuex";
   import Scroll from '../../base/scroll/scroll.vue'
   export default {
@@ -138,24 +139,6 @@
       };
     },
     created() {
-      let _url = window.location.href;
-      if (util.isAndroid()) {
-        let shareObj = {
-          title: "这是一个圆你梦的city",
-          desc: "如果我能看得见WO就是Android，就会轻易的假装到处遨游",
-          link: `http://llwant.test.qianz.com?/#/welfare`,
-          imgUrl: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png"
-        };
-        util._getJssdkInfo(shareObj, _url);
-      } else {
-        let shareObj = {
-          title: "这是一个圆你梦的city",
-          desc: "如果我能看得见wo就是IOS，就会轻易的假装到处遨游",
-          link: this.shareUrl + "#/welfare",
-          imgUrl: "http://i4.bvimg.com/643118/0c7ed06ec325ad1d.png"
-        };
-        util._getJssdkInfo(shareObj, this.shareUrl);
-      }
       // this._loadInviteWaitGetCoupon(); //判断优惠券是否已经领取过
       this._loadActivityInfo(); //获取活动通知
     },
@@ -163,18 +146,6 @@
       ...mapState(["baseUrl","shareUrl", "activityNoticeList", "noCouponsFlag", "AdvertisingPhoto", "shopSettingInfo"])
     },
     mounted() {
-      new Swiper(".game", {
-        direction: "vertical",
-        loop: true,
-        noSwiping: true,
-      });
-      new Swiper(".award", {
-        direction: "vertical",
-        loop: true,
-        autoplay: {
-          delay: 3000 //1秒切换一次swiper-container-award
-        }
-      });
       this._loadPublishArenas(); //拉取是否有比赛场
     },
     methods: {
@@ -191,7 +162,6 @@
             this.arenaInfo = arenaInfo;
             var typeCoupon = ['firstPrize', 'secondPrize', 'thirdPrize'];
             for (let i = 0; i < typeCoupon.length; i++) {
-              // debugger;
               switch (arenaInfo[typeCoupon[i]].type) {
                 case 0:
                   arenaInfo[typeCoupon[i]].content = arenaInfo[typeCoupon[i]].value + "元现金券";
@@ -251,21 +221,9 @@
       },
       //进入游戏
       playGame() {
-        let token = this.getCookie("tk");
+        let token = util.getCookie("tk");
         // window.location.href =`http://llwant.test.qianz.com/game/?gamePath=game3&tk=${token}`;
-        window.location.href = `${this.baseUrl}/game/?gamePath=game2&arenaID=${this.arenaID}`
-      },
-      getCookie: function(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(";");
-        for (var i = 0; i < ca.length; i++) {
-          var c = ca[i];
-          while (c.charAt(0) == " ") c = c.substring(1);
-          if (c.indexOf(name) != -1) {
-            return c.substring(name.length, c.length);
-          }
-        }
-        return "";
+        window.location.href = `${Config.shareUrl}game/?gamePath=game2&arenaID=${this.arenaID}`
       },
       ...mapMutations({
         getActivityNoticeList: "GET_ACTIVITY_NOTICE" //获取活动通知

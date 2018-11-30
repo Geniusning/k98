@@ -1,5 +1,5 @@
 <template>
-  <div id="message" class="message">
+  <div id="message" class="message_wrapper">
     <div class="title">
       <div class="btn_box clearfix">
         <div :class="{active:isShow==0}" class="fri_btn fl" @click="selectList(0)">好友</div>
@@ -74,7 +74,7 @@
               <p class=" back_thumb vux-1px fl" @click="playGame(item.extMsg.url,item.extMsg.combatID)">进入</p>
             </div>
             <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-              <p class="time_desc">2018-12-30 17:00</p>
+              <p class="time_desc">{{item.extMsg.time}}</p>
             </div>
           </div>
         </li>
@@ -239,6 +239,7 @@ import {
   ButtonTabItem,
   Toast
 } from "vux";
+import util from 'common/util'
 export default {
   data() {
     return {
@@ -259,6 +260,19 @@ export default {
     if (to.params.routeParamNum === 1) {
       next(vm => {
         vm.isShow = 1;
+      });
+    } else if (to.params.routeParamNum === 2) {
+      next(vm => {
+        vm.isShow = 2;
+      });
+    } else if (to.params.routeParamNum === 3) {
+      next(vm => {
+        vm.isShow = 3;
+      });
+    }
+    else if (to.params.routeParamNum === 4) {
+      next(vm => {
+        vm.isShow = 4;
       });
     } else {
       next(vm => {
@@ -355,8 +369,7 @@ export default {
     },
     //进入游戏
     playGame(url, combatID) {
-      // console.log(url);
-      this.clearHistory(combatID, url);
+      this.clearHistory(combatID, url)
     },
     //拒接游戏
     rejectGame(combatID) {
@@ -395,8 +408,10 @@ export default {
                   inviterID: item.inviterID,
                   nickName: item.nickName,
                   url: item.url,
+                  time: util.timestampToTimeNoLine(item.score)
                 }
               };
+              console.log('```````````````````````````````````', content)
               this.getChallengeGamelist(content);
               this.addBandge();
             })
@@ -476,14 +491,16 @@ export default {
 @import "../../assets/less/mixin.less";
 @import "../../assets/less/variable.less";
 @import "../../assets/less/message_common.less";
-.message {
+.message_wrapper {
   height: 100%;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 .title {
   text-align: center;
   padding: 0.11rem 0.6125rem;
   margin-top: 0.1333rem;
+  height: 1rem;
   .btn_box {
     .fri_btn {
       width: 1.71rem;
@@ -568,6 +585,7 @@ export default {
 }
 .message_wrapper {
   width: 100%;
+  flex-grow: 1;
   overflow-y: auto;
   .message_list {
     // margin-top: 10px;

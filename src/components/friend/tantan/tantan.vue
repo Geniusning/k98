@@ -17,17 +17,18 @@
             <div class="img_content">
               <div class="icon_box" v-if="item.isIndoor">
                 <img src="../../../assets/image/online.png" alt="" class="icon" >
-                <img src="../../../assets/image/dot_green.png" alt="" class="dot">
+                <img src="../../../assets/image/dot_green.png" alt="" class="dot bling">
                 <span class="line_word">店内</span>
               </div>
               <div class="icon_box" v-else>
                 <img src="../../../assets/image/outline.png" alt="" class="icon" >
-                <img src="../../../assets/image/dot_red.png" alt="" class="dot">
+                <img src="../../../assets/image/dot_red.png" alt="" class="dot bling">
                 <span class="line_word">店外</span>
               </div>
+              <!-- <p class="makeFriTips">绿灯闪烁表示好友在线哦，赶紧去找朋友吧...</p> -->
               <!-- <span class="time_desc" >20分钟前登录</span> -->
-              <div class="avatarList-wrapper clearfix" @touchstart="showAlbum">
-                <img src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">4</span>
+              <div class="avatarList-wrapper clearfix" @touchstart="showAlbum" v-if="Boolean(item.info.lifePhotoURL.lifePhotoURL)">
+                <img src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
               </div>
               <div class="avatar_box">
                 <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="暂无头像" >
@@ -111,7 +112,7 @@ export default {
   },
   watch: {
     pages(newValue) {
-      console.log('候选人数据----------------------------------------',newValue)
+      console.log('候选人数据----------------------------------------', newValue)
       let data = newValue[0];
       if (newValue.length <= 10) {  //粗暴解决多次触发监听导致给父组件传递数据
         this.$emit("firstData", data);
@@ -120,7 +121,7 @@ export default {
   },
   computed: {
     ...mapGetters(["friendList"]),
-    ...mapState(["friendListCursor","userInfo"]),
+    ...mapState(["friendListCursor", "userInfo"]),
     // 划出面积比例
     offsetRatio() {
       let width = this.$el.offsetWidth;
@@ -142,7 +143,7 @@ export default {
   methods: {
     //点击相册
     showAlbum() {
-      this.$emit('showAblum', this.friendData?this.friendData:this.pages[0]);
+      this.$emit('showAblum', this.friendData ? this.friendData : this.pages[0]);
     },
     touchstart(e) {
       if (this.temporaryData.tracking) {
@@ -445,6 +446,13 @@ export default {
     height: 7.1733rem;
     position: relative;
     text-align: center;
+    // .makeFriTips {
+    //   position: absolute;
+    //   top: 0.1rem;
+    //   left: 1.4rem;
+    //   // background: rgba(0, 0, 0, 0.4);
+    //   color: #ccc;
+    // }
     .time_desc {
       position: absolute;
       top: 0.4rem;
@@ -494,6 +502,17 @@ export default {
         position: absolute;
         top: 0.2333rem;
         left: 0.3rem;
+      }
+      .bling {
+        animation: bling 1000ms linear infinite normal;
+        @keyframes bling {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
       }
       .line_word {
         font-size: 0.3467rem;
@@ -585,7 +604,7 @@ export default {
         height: 0.5333rem;
       }
       .constellation {
-        .userInfo(#C579FF);
+        .userInfo(#c579ff);
       }
       .thumb {
         box-sizing: border-box;
@@ -612,7 +631,7 @@ export default {
       .gift {
         box-sizing: border-box;
         padding-top: 0.04rem;
-        .userInfo(#EE8232);
+        .userInfo(#ee8232);
         .gift_small {
           width: 0.2833rem;
           height: 0.2833rem;

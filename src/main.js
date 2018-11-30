@@ -15,8 +15,7 @@ import {
     mapActions
 } from 'vuex'
 import api from './common/api'
-import util from 'common/util'
-import tk from './common/tk'
+import tk from 'common/tk.js'
 Vue.use(ToastPlugin)
 Vue.use(vuePicturePreview)
 FastClick.attach(document.body)
@@ -30,11 +29,6 @@ new Vue({
         ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
     },
     created() {
-        // 苹果设备
-        if (!util.isAndroid()) {
-            let _urlIos = window.location.href.split('#')[0];
-            this.updateShareUrl(_urlIos); //更改分享url
-        }
         this.websock = new WebSocket(`ws://llwant.test.qianz.com/api/ws?tk=${tk}`);
         // this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
         this.websock.binaryType = "arraybuffer";
@@ -47,12 +41,13 @@ new Vue({
         this._createQrcode(); //创建二维码
         this._getUserInfo(); //获取用户信息
         this._loadStoreSetting(); //获取门店信息
-        this.getWeChatUrl(); //获取公众号地址
-
+        //this.getWeChatUrl(); //获取公众号地址
     },
+    mounted() {},
     methods: {
         getWeChatUrl() {
             let url = window.location.href.split('/#')[0];
+            // alert(url);
             this.getUrl(url);
         },
         websocketonopen(e) {
@@ -83,18 +78,25 @@ new Vue({
                         }
                     })
                 }
+                this.judgeMessType('message')
             }
             //处理好友点赞事件
             else if (result.msgCode === 2) {
                 console.log(result)
                 this.addFriendEvt(result.content.fromInfo) //往点赞列表新增一条数据
                 let cursor = 0
-                this.getFriendEvt(cursor)
+                this.getFriendEvt(cursor);
+                this.judgeMessType('thumb')
+            }
+            //处理送礼
+            else if (result.msgCode === 3) {
+                this.judgeMessType('gift')
             }
             //处理约战事件
             else if (result.msgCode === 7) {
                 this.getChallengeGamelist(result.content);
                 this.addBange();
+                this.judgeMessType('playGame')
             }
         },
         websocketclose(e) {
@@ -151,10 +153,11 @@ new Vue({
             addFriendEvt: "ADD_FRIENDEVTLIST", //新增好友事件列表
             addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框
             getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
-            updateShareUrl: "UPDATE_SHAREURL",
+            updateShareUrl: "UPDATE_SHAREURL", //苹果分享地址
             getuserInfo: "GET_USERINFO", //获取用户信息
             getShopSetting: "GET_SHOPINFO", //获取门店信息
             getUrl: "GET_URL", //获取公众号地址
+            judgeMessType: "JUDGE_MESSTYPE" //判断消息类型
         }),
         ...mapActions({
             getFriendEvt: "get_FriendEvt"

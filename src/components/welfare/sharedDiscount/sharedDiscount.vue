@@ -68,7 +68,7 @@ export default {
     // this._loadAllQrcode();
   },
   computed: {
-    ...mapState(["shareUrl","shopSettingInfo"]),
+    ...mapState(["shareUrl", "shopSettingInfo"]),
     ...mapGetters(["qrIsShow"])
   },
   methods: {
@@ -79,14 +79,8 @@ export default {
         userACouponID: this.userACouponID,
         userBCouponID: this.userBCouponID
       };
-      // let params = {
-      //   shareUserID: 'ohzRa0hhT6J0vws1EF6V2MrH63Ss',
-      //   userACouponID: '9b48df84-77f1-4235-ab84-e28d9a8314ce',
-      //   userBCouponID: 'cd6fadcb-c0fb-40b7-b0ed-3078b8dfe271'
-      // }
       api.acquireInviteWaitGetCoupons(params).then(res => {
         console.log(res)
-        this.showQrcode(true);
         if (res.errCode === 0) {
           let tempObj = res.aCoupon;
           switch (tempObj.coupon.type) {
@@ -100,6 +94,8 @@ export default {
               break;
           }
           this.sharedCoupon = tempObj;
+        } else if (res.errCode === 1023) {
+          this.showQrcode(true);
         }
       })
     },
@@ -143,7 +139,7 @@ export default {
   width: 100%;
   overflow-y: auto;
   box-sizing: border-box;
-  background-color: #FE9A08;
+  background-color: #fe9a08;
   padding-bottom: 1.3333rem;
   position: relative;
   .shop-container {

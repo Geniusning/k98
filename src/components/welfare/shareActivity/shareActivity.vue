@@ -20,13 +20,15 @@
         </div>
         <div class="bg" v-show="isShow_bg" @click="share">
             <img src="../../../assets/image/share.png" alt="">
+            <p class="shareText">点击“...”分享好友</p>
         </div>
     </div>
 </template>
 
 <script type='text/ecmascript-6'>
 import util from "common/util";
-import api from 'common/api'
+import api from 'common/api';
+import Config from "common/url";
 import { mapState } from "vuex";
 export default {
   data() {
@@ -37,34 +39,68 @@ export default {
     };
   },
   created() {
-    let _url = window.location.href;
+    var _url = window.location.href;
+    this.myShareUrl = _url.split('#')[0];
+    this.activityID = this.$route.params.id;
+    if (_url.indexOf('activityID') > 0) {  //判断是系统本身进入当前页面的还是从分享链接进入本页面
+      this.activityID = _url.split('activityID=')[1];
+    }
     if (util.isAndroid()) {
       let shareObj = {
         title: "活动通知",
         desc: "本店最新活动，会员特权。点击查看",
-        link: `${this.baseUrl}?/#/shareActivity`,
+        link: `${Config.shareUrl}/#/shareActivity?activityID=${this.activityID}`,
         imgUrl: `${this.shopSettingInfo.image}`
       };
-      util._getJssdkInfo(shareObj, _url);
+      util._getJssdkInfo(shareObj, this.myShareUrl);
     } else {
       let shareObj = {
         title: "活动通知",
         desc: "本店最新活动，会员特权。点击查看",
-        link: this.shareUrl + "#/shareActivity",
+        link: `${Config.shareUrl}#/shareActivity?activityID=${this.activityID}`,
         imgUrl: `${this.shopSettingInfo.image}`
       };
-      util._getJssdkInfo(shareObj, this.shareUrl);
+      util._getJssdkInfo(shareObj, this.myShareUrl);
     }
-    this.activityID = this.$route.params.id;
-    console.log(this.activityID)
   },
   mounted() {
     this._loadActivityDetail();
   },
   computed: {
-    ...mapState(["shareUrl", "activityNoticeList", "shopSettingInfo","baseUrl"])
+    ...mapState(["shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl"])
   },
   methods: {
+    // _getJssdkInfo(shareObj, url) {
+    //   api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
+    //     .then(res => {
+    //       wx.config({
+    //         //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    //         appId: Config.appId,
+    //         timestamp: res.timestamp,
+    //         nonceStr: res.nonceStr,
+    //         signature: res.signature,
+    //         jsApiList: ["onMenuShareAppMessage"]
+    //       });
+    //       wx.ready(() => {
+    //         wx.onMenuShareAppMessage({
+    //           title: shareObj.title,
+    //           desc: shareObj.desc,
+    //           link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+    //           imgUrl: shareObj.imgUrl,
+    //           success: () => {
+    //             console.log("分享成功");
+    //           }
+    //         });
+    //       });
+    //       wx.error(function (res) {
+    //         console.log(res);
+    //         // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+    //       });
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // },
     //加载活动详情
     _loadActivityDetail() {
       api.loadActivityDetail(this.activityID).then(res => {
@@ -108,6 +144,7 @@ export default {
       display: flex;
       top: 0.6667rem;
       left: 0.2667rem;
+      background-color: rgba(0, 0, 0, 0.1);
       .logo {
         width: 0.6733rem;
         height: 0.6733rem;
@@ -170,6 +207,13 @@ export default {
       width: 100px;
       height: 100px;
       position: fixed;
+      right: 0;
+    }
+    .shareText{
+      font-size: 0.7rem;
+      color: #fff;
+      position: fixed;
+      top: 110px;
       right: 0;
     }
   }

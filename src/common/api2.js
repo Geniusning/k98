@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-11-05 19:12:03
+ * @Last Modified time: 2018-11-23 17:09:14
  */
 
 import axios from 'axios'
@@ -706,6 +706,71 @@ api.loadInviteCombat = function() {
 api.deleteInviteCombat = function(combatID) {
         return new Promise((resolve, reject) => {
             axios.get(`/api/deleteInviteCombat?combatID=${combatID}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //获取手机验证码
+api.getVerifyCode = function(phoneNumbers) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/getVerifyCode?phoneNumbers=${phoneNumbers}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //创建战队
+api.createTeam = function(arenaID) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/createTeam?arenaID=${arenaID}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //加入战队
+api.joinTeam = function(teamID, arenaID) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/joinTeam?teamID=${teamID}&arenaID=${arenaID}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //拉取战队
+api.loadTeam = function(teamID, arenaID) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/loadTeam?teamID=${teamID}&arenaID=${arenaID}`)
+                .then(res => {
+                    if (res.status == 200) {
+                        resolve(res.data)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    //发送手机验证码
+api.checkVerifyCode = function(phoneNumbers, vCode) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/api/checkVerifyCode?phoneNumbers=${phoneNumbers}&vCode=${vCode}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)

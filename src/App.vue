@@ -7,7 +7,8 @@
       <router-view v-if="!$route.meta.keepAlive"></router-view>
       <lg-preview></lg-preview>
       <transition name='envelop'>
-        <div class="envelop-wrapper" v-if="isShowEnvelop">
+        <!-- isShowEnvelop -->
+        <div class="envelop-wrapper" v-if="isShowEnvelop" @click="showDetail">
           <img src="./assets/image/close_ad.png" alt="" class="close" @click.stop="close">
           <div class="top">
             <img :src="dynamicFriendEvt.fromInfo?dynamicFriendEvt.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="" class="avatar">
@@ -15,31 +16,21 @@
           </div>
           <div class="bottom">
             <p class="content">{{dynamicFriendEvt.extMsg.lastMsg.msg}}</p>
+            <!-- <p class="content">你试试我的眼的</p> -->
           </div>
+          <div class="detail">&gt;&gt;详情</div>
         </div>
       </transition>
     </div>
-    <div class="bottom_wrapper" v-if="flag">
+    <div class="bottom_wrapper" v-if="tabFlag">
       <tab :selected="selected"></tab>
-      <transition name="messageDisplay">
-        <!-- <div class="message_box" v-if="dialog">
-              <img src="./assets/image/close.png" alt="" class="close" @click="close">
-              <div class="avatar">
-                <img :src="dynamicFriendEvt.headimgurl" alt=""  class="pic">
-              </div>
-              <div class="userInfo">
-                <p class="name">{{dynamicFriendEvt.nickname}}</p>
-                <p class="mess">{{dynamicFriendEvt.msg}}</p>
-              </div>
-            </div> -->
-      </transition>
     </div>
   </div>
 </template>
 
 <script>
 import Tab from "./components/tab/tab.vue";
-import {mapState,mapGetters,mapMutations} from "vuex";
+import { mapState, mapGetters, mapMutations } from "vuex";
 import util from "common/util";
 import api from "common/api";
 export default {
@@ -48,9 +39,9 @@ export default {
     return {
       isThrottle: true,
       isShowEnvelop: false,
-      flag: false,
+      tabFlag: false,
       selected: 0,
-      dialog: false,
+
       shareObj: {
         title: "深圳魅力四射酒吧首页",
         desc: "这是一个超级好玩的的地方哦",
@@ -60,10 +51,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(["inputValue", "dynamicFriendEvt"])
+    ...mapState(["inputValue", "dynamicFriendEvt", "messType"])
   },
   created() {
-    // console.log(this.$route.name);
+    console.log(this.$route.name);
     if (
       this.$route.name === "home" ||
       this.$route.name === "friend" ||
@@ -71,7 +62,7 @@ export default {
       this.$route.name === "welfare" ||
       this.$route.name === "mine"
     ) {
-      this.flag = true;
+      this.tabFlag = true;
     }
     switch (this.$route.name) {
       case "home":
@@ -82,10 +73,6 @@ export default {
         break;
       case "message":
         this.selected = 2;
-        // this.dialog = true;
-        setTimeout(() => {
-          this.dialog = false;
-        }, 1500);
         break;
       case "welfare":
         this.selected = 3;
@@ -98,13 +85,46 @@ export default {
     }
   },
   methods: {
-    GotoPage(path) {
-      this.setChatFriend(this.dynamicFriendEvt.fromInfo)
-      this.$router.push({
-        path: `/message/${path}`
-      });
+    showDetail() {
+      switch (this.messType) {
+        case "message":
+          this.$router.push({
+            name: `message`,
+            params: {
+              routeParamNum: 0
+            }
+          });
+          break;
+        case "thumb":
+          this.$router.push({
+            name: `message`,
+            params: {
+              routeParamNum: 4
+            }
+          });
+          break;
+        case "playGame":
+          this.$router.push({
+            name: `message`,
+            params: {
+              routeParamNum: 2
+            }
+          });
+          break;
+        case "gift":
+          this.$router.push({
+            name: `message`,
+            params: {
+              routeParamNum: 3
+            }
+          });
+          break;
+        default:
+          break;
+      }
+      this.isShowEnvelop = false;
     },
-    
+
     close() {
       this.isShowEnvelop = false;
     },
@@ -120,7 +140,7 @@ export default {
         this.isThrottle = false;
         setTimeout(() => {
           this.isShowEnvelop = false;
-        }, 5000);
+        }, 7000);
         setTimeout(() => {
           this.isThrottle = true;
         }, 10000);
@@ -133,11 +153,12 @@ export default {
         newValue.name == "friend" ||
         newValue.name == "message" ||
         newValue.name == "welfare" ||
-        newValue.name == "mine"
+        newValue.name == "mine" ||
+        newValue.name === "gameRank"
       ) {
-        this.flag = true;
+        this.tabFlag = true;
       } else {
-        this.flag = false;
+        this.tabFlag = false;
       }
       //判断通过非点击tabbar栏切换选中状态
       switch (newValue.name) {
@@ -149,10 +170,6 @@ export default {
           break;
         case "message":
           this.selected = 2;
-          // this.dialog = true;
-          setTimeout(() => {
-            this.dialog = false;
-          }, 1500);
           break;
         case "welfare":
           this.selected = 3;
@@ -225,14 +242,21 @@ html {
   position: relative;
   .envelop-wrapper {
     position: absolute;
-    width: 3.7333rem;
-    height: 2.0533rem;
+    width: 4rem;
+    height: 2.2533rem;
     top: 2rem;
     background-image: url("./assets/image/envelop.png");
     background-repeat: no-repeat;
     background-size: contain;
     padding: 0.1333rem;
     z-index: 99999;
+    font-size: 0.3467rem;
+    .detail {
+      position: absolute;
+      bottom: 0.4rem;
+      right: 0.2rem;
+      color: orange;
+    }
     .close {
       position: absolute;
       top: 0.2667rem;

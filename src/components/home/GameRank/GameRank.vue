@@ -28,7 +28,7 @@
                         <div class="username">{{item.nick}}</div>
                      </div>
                      <span class="score">{{item.score}}</span>
-                     <span class="finishRound">{{item.finishRound}}</span>
+                     <span class="finishRound">{{item.finishRound*3}}</span>
                      <span class="inviterInfo" v-if="!item.inviterDate">暂无</span>
                       <div class="userInfo" v-else>
                         <img class="avatar" :src="item.inviterDate.headURI" alt="">
@@ -39,10 +39,10 @@
          </scroll>
           <p style="font-size:20px;font-weight:400;color:#ccc;width:100%;text-align:center;margin-top:50%" class="noContentText" v-else>暂无选手参赛</p>
      </div>
-     <div class="btn-wrapper">
+     <!-- <div class="btn-wrapper">
          <p class='backHome'>长按关注本店公众号，享受会员特权：领福利、交群友、玩游戏！</p>
          <img :src="QRcodeUrl" alt="" class="QRcode">
-     </div>
+     </div> -->
  </div>
 </template>
 
@@ -181,7 +181,7 @@ export default {
   }
   .scroll-wrapper {
     width: 8.8rem;
-    height: 11.04rem;
+    height: 12.88rem;
     // .bg("../../assets/image/player_bg.png");
     margin: 0.2933rem auto 0;
     border-radius: 0.32rem;
@@ -202,7 +202,7 @@ export default {
       }
     }
     .scrollList {
-      height: 10rem;
+      height: 12rem;
       overflow: hidden;
       .userList {
         .userItem {

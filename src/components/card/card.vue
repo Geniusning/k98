@@ -9,7 +9,7 @@
       </tab>
      </div>
     <!-- 温馨提示 -->
-    <div class="warm_tips">
+    <div class="warm_tips" v-show="!userInfo.phone">
         <p class="tips">温馨提示：绑定手机，方便您到店核销</p>
         <span class="bingTel" @click="bindTel">绑定手机</span>
     </div>
@@ -65,7 +65,7 @@ import api from "common/api";
 import scroll from "../../base/scroll/scroll.vue";
 import { Tab, TabItem, XHeader, XButton } from "vux";
 import Validate from "../../base/validatephone/validatephone";
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations,mapState } from "vuex";
 import myHeader from "../../base/myheader/myheader.vue";
 export default {
   data() {
@@ -81,7 +81,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["isShow"])
+    ...mapGetters(["isShow"]),
+    ...mapState(["userInfo"])
   },
   created() {
     this._acquireWaitGetCoupons()//获取优惠券
@@ -223,7 +224,7 @@ export default {
     }
   }
   .discount_wrapper {
-    // margin-top: 0.2133rem;
+    margin-top: 0.1133rem;
     background: #eee;
     padding: 0 0.1867rem;
     .noCouponTips {

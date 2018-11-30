@@ -1,6 +1,6 @@
-
-
 export default {
-    //commonUrl: 'http://llwant.test.qianz.com'   //测试
-    commonUrl: ''  //
-} 
+    commonUrl: '', //
+    shareUrl: "http://llwant.test.qianz.com/",
+    // shareUrl: "http://llwant1.qianz.com",
+    appId: "wxb2fa3c446063ec19"
+}

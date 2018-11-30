@@ -70,7 +70,7 @@ export default {
     };
   },
   mounted() {
-    if(this.userInfo.lifePhotoURL.lifePhotoURL){
+    if (this.userInfo.lifePhotoURL.lifePhotoURL) {
       this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
       if (this.userInfo.lifePhotoURL.lifePhotoURL.length == 4) {
         this.isShowAddImg = false;
@@ -106,7 +106,7 @@ export default {
           console.log(res)
           if (res.photoURL) {
             this.addLifeImg(res.photoURL);
-             this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
+            this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
             if (this.lifePhotoList.length === 4) {
               this.isShowAddImg = false;
             }
@@ -122,12 +122,17 @@ export default {
       }
       api.uploadAllLifePic(lifeListParam).then(res => {
         console.log(res)
+        if (res.errorCode == 0) {
+          this.$vux.toast.show({
+            text: "保存成功"
+          });
+        }
       })
     },
     //删除生活照
     close(index) {
       this.deleteLifeImg(index);
-       this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
+      this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
       if (this.lifePhotoList.length === 4) {
         this.isShowAddImg = false;
       } else {
@@ -174,8 +179,8 @@ export default {
     },
     ...mapMutations({
       getuserInfo: "GET_USERINFO",
-      addLifeImg:"CHANGE_LIFEIMG",//新增生活照
-      deleteLifeImg:"DELETE_LIFEIMG" //删除生活照
+      addLifeImg: "CHANGE_LIFEIMG",//新增生活照
+      deleteLifeImg: "DELETE_LIFEIMG" //删除生活照
     })
   },
   components: {

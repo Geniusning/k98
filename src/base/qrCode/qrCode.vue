@@ -8,7 +8,7 @@
               <img src="../../assets/image/close.png" alt="" class="close" @click="cancel">
               <div class="validate_box">
                   <img :src="qrUrl" alt="" class="qrCode">
-                  <p class="desc">长按关注享受会员特权：领福利、交群友、玩游戏</p>
+                  <p class="desc">长按关注享受会员特权：领福利、交朋友</p>
               </div>
             </div>
           </x-dialog>

@@ -1,18 +1,18 @@
 <template>
   <div class="shareNew-wrapper" id="shareNew">
     <div class="shop-container" @click="goHome">
-      <img class="logo" :src="shopSettingInfo.image" alt="">
+      <img class="logo" :src="shopSettingInfo.image" alt>
       <p class="bar_name">{{shopSettingInfo.name}}</p>
     </div>
-    <img src="../../../assets/image/shareLogo.jpg" alt="" class="sharePic">
+    <img src="../../../assets/image/shareLogo.jpg" alt class="sharePic">
     <ul class="discount-container">
-      <li class="item"  v-for="(item,index) in couponList" :key="index">
+      <li class="item" v-for="(item,index) in couponList" :key="index">
         <div class="item-left">
           <p class="title" v-if="item.coupon.type==0">现金券</p>
           <p class="title" v-else-if="item.coupon.type==1">实物券</p>
           <p class="title" v-else="item.coupon.type==2">折扣券</p>
         </div>
-        <div class="item-right" >
+        <div class="item-right">
           <div class="discount-content">{{item.coupon.content}}</div>
           <div class="discount-limitCondition">{{item.coupon.limit}}</div>
         </div>
@@ -21,18 +21,17 @@
     <!-- 规则 -->
     <div class="rule-container">
       <h3 class="title">活动规则：</h3>
-      <p class="desc">
-        分享优惠券给好友后，您的好友可以领取左侧的优惠券，您将获得右侧优惠券。
-      </p>
+      <p class="desc">分享优惠券给好友后，您的好友可以领取左侧的优惠券，您将获得右侧优惠券。</p>
       <!-- <p class="time">活动时间：2018-08-12 至 2018-09-12</p> -->
     </div>
     <!-- 操作 -->
     <div class="handle-container">
-      <img @click="back" class="btn" src="../../../assets/image/tuichu.png" alt="">
-      <img @click="share" class="btn" src="../../../assets/image/fenxiang.png" alt="">
+      <img @click="back" class="btn" src="../../../assets/image/tuichu.png" alt>
+      <img @click="share" class="btn" src="../../../assets/image/fenxiang.png" alt>
     </div>
     <div class="bg" v-show="isShow_bg" @click="share">
-      <img src="../../../assets/image/share.png" alt="">
+      <img src="../../../assets/image/share.png" alt>
+       <p class="shareText">点击“...”分享好友</p>
     </div>
   </div>
 </template>
@@ -40,6 +39,7 @@
 <script type='text/ecmascript-6'>
 import util from "common/util";
 import api from "common/api";
+import Config from "common/url";
 import { mapState } from "vuex";
 export default {
   data() {
@@ -52,43 +52,42 @@ export default {
     this._loadInviteWaitGetCoupon();
   },
   computed: {
-    ...mapState(["shareUrl", "userInfo","shopSettingInfo","baseUrl"])
+    ...mapState(["shareUrl", "userInfo", "shopSettingInfo", "baseUrl"])
   },
   methods: {
-    _getJssdkInfo(shareObj, url) {
-      api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
-        .then(res => {
-          wx.config({
-            //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-            appId: "wxb2fa3c446063ec19",
-            timestamp: res.timestamp,
-            nonceStr: res.nonceStr,
-            signature: res.signature,
-            jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", "chooseImage"]
-          });
-          wx.ready(() => {
-            wx.onMenuShareAppMessage({
-              title: shareObj.title,
-              desc: shareObj.desc,
-              link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-              imgUrl: shareObj.imgUrl,
-              type: "",
-              dataUrl: "",
-              success: () => {
-                console.log("分享成功");
-                // window.location.href = url
-              }
-            });
-          });
-          wx.error(function (res) {
-            console.log(res);
-            // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-          });
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
+    // _getJssdkInfo(shareObj, url) {
+    //   api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
+    //     .then(res => {
+    //       wx.config({
+    //         //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    //         appId: Config.appId,
+    //         timestamp: res.timestamp,
+    //         nonceStr: res.nonceStr,
+    //         signature: res.signature,
+    //         jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", "chooseImage"]
+    //       });
+    //       wx.ready(() => {
+    //         wx.onMenuShareAppMessage({
+    //           title: shareObj.title,
+    //           desc: shareObj.desc,
+    //           link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+    //           imgUrl: shareObj.imgUrl,
+    //           type: "",
+    //           dataUrl: "",
+    //           success: () => {
+    //             console.log("分享成功");
+    //           }
+    //         });
+    //       });
+    //       wx.error(function (res) {
+    //         console.log(res);
+    //         // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+    //       });
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // },
     //获取优惠券
     _loadInviteWaitGetCoupon() {
       api.loadInviteWaitGetCoupon().then(res => {
@@ -115,22 +114,40 @@ export default {
         console.log('分享的优惠券-----------------------：', tempArr)
         this.couponList = tempArr;
         let _url = window.location.href;
+        this.myShareUrl = _url.split('#')[0];
+        // if (util.isAndroid()) {
+        //   let shareObj = {
+        //     title: "新人大礼包",
+        //     desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
+        //     link: `${this.baseUrl}?/#/sharedDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
+        //     imgUrl: `${this.shopSettingInfo.image}`
+        //   };
+        //   this._getJssdkInfo(shareObj, _url);
+        // } else {
+        //   let shareObj = {
+        //     title: "新人大礼包",
+        //     desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
+        //     link: this.shareUrl + `#/sharedDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
+        //     imgUrl: `${this.shopSettingInfo.image}`
+        //   };
+        //   this._getJssdkInfo(shareObj, this.shareUrl);
+        // }
         if (util.isAndroid()) {
           let shareObj = {
             title: "新人大礼包",
             desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
-            link: `${this.baseUrl}?/#/sharedDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
+            link: `${Config.shareUrl}#/sharedDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
-          this._getJssdkInfo(shareObj, _url);
+          util._getJssdkInfo(shareObj, this.myShareUrl);
         } else {
           let shareObj = {
             title: "新人大礼包",
             desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
-            link: this.shareUrl + `#/sharedDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
+            link: Config.shareUrl + `#/sharedDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
-          this._getJssdkInfo(shareObj, this.shareUrl);
+          util._getJssdkInfo(shareObj, this.myShareUrl);
         }
       })
     },
@@ -174,6 +191,9 @@ export default {
     display: flex;
     top: 0.6667rem;
     left: 0.2667rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 0 0.1333rem;
+    border-radius: 0.1333rem;
     .logo {
       width: 0.6733rem;
       height: 0.6733rem;
@@ -269,6 +289,13 @@ export default {
       width: 100px;
       height: 100px;
       position: fixed;
+      right: 0;
+    }
+     .shareText{
+      font-size: 0.7rem;
+      color: #fff;
+      position: fixed;
+      top: 110px;
       right: 0;
     }
   }

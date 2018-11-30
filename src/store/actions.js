@@ -9,9 +9,9 @@ const actions = {
         state
     }, params) {
         api.getFriendList(params).then(res => {
-            console.log('候选人数据：·····················', res)
-            commit("CHANGE_FRIENDlISTCURSOR", res.cursor)
-            commit("GET_FRIENDlIST", res)
+            console.log('候选人数据：·····················', res);
+            commit("CHANGE_FRIENDlISTCURSOR", res.cursor);
+            commit("GET_FRIENDlIST", res);
         })
     },
     //获取更多候选人信息
@@ -20,14 +20,14 @@ const actions = {
         state
     }, params) {
         api.getFriendList(params).then(res => {
-            console.log('更多候选人数据：·····················', res)
+            console.log('更多候选人数据：·····················', res);
             if (res.cursor == 0) {
-                commit("get_LESSTHAN10FRIENDLIST", res.candidates)
-                commit("CHANGE_FRIENDlISTCURSOR", res.cursor)
-                return false
+                commit("get_LESSTHAN10FRIENDLIST", res.candidates);
+                commit("CHANGE_FRIENDlISTCURSOR", res.cursor);
+                return false;
             }
-            commit("CHANGE_FRIENDlISTCURSOR", res.cursor)
-            commit("GET_MOREFRIENDlIST", res.candidates)
+            commit("CHANGE_FRIENDlISTCURSOR", res.cursor);
+            commit("GET_MOREFRIENDlIST", res.candidates);
         })
     },
     //获取已经成为好友列表

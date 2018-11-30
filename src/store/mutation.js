@@ -3,6 +3,10 @@ import util from "common/util";
 import router from '../router/index.js';
 
 const mutations = {
+    //判断消息类型
+    [types.JUDGE_MESSTYPE](state, type) {
+        state.messType = type;
+    },
     //修改地址
     [types.GET_URL](state, url) {
         state.baseUrl = url;
@@ -13,8 +17,12 @@ const mutations = {
     },
     //新增用户生活照
     [types.CHANGE_LIFEIMG](state, life) {
-        console.log(typeof state.userInfo);
-        state.userInfo.lifePhotoURL.lifePhotoURL.push(life);
+        if (state.userInfo.lifePhotoURL.lifePhotoURL == null) {
+            state.userInfo.lifePhotoURL.lifePhotoURL = [];
+            state.userInfo.lifePhotoURL.lifePhotoURL.push(life);
+        } else {
+            state.userInfo.lifePhotoURL.lifePhotoURL.push(life);
+        }
     },
     //获得用户生活照
     [types.GET_LIFEIMG](state, lifeList) {
@@ -22,7 +30,7 @@ const mutations = {
     },
     //删除生活照
     [types.DELETE_LIFEIMG](state, index) {
-        state.userinfo.lifePhotoURL.lifePhotoURL.splice(index, 1)
+        state.userInfo.lifePhotoURL.lifePhotoURL.splice(index, 1)
     },
     //控制二维码关注弹框
     [types.SHOW_QRCODE](state, flag) {
@@ -77,7 +85,9 @@ const mutations = {
         });
     },
     //获取已经成为好友列表
-    [types.GET_ALREADYFRIENDEVTLIST](state, { data }) {
+    [types.GET_ALREADYFRIENDEVTLIST](state, {
+        data
+    }) {
         var totalCount = 0;
         // console.log(data)
         let tempData = [];
@@ -121,7 +131,10 @@ const mutations = {
     },
     //增加推送点赞事件列表
     [types.ADD_FRIENDEVTLIST](state, friendEvtList) {
-        let friendEvtObj = { evtType: 1, from: friendEvtList }
+        let friendEvtObj = {
+            evtType: 1,
+            from: friendEvtList
+        }
         state.friendEvtList.push(friendEvtObj)
     },
     //更新好友事件消息框内容
@@ -168,22 +181,29 @@ const mutations = {
         }
     },
     //获取好友事件
-    [types.GET_FRIENDEVTLIST](state, { data }) {
+    [types.GET_FRIENDEVTLIST](state, {
+        data
+    }) {
         state.event_badgeCount = data.events.length //获取未读好友事件数量
         state.friendEvtList = data.events
     },
     //获取好友送礼
-    [types.GET_FRIENDGIFTLIST](state, { data }) {
+    [types.GET_FRIENDGIFTLIST](state, {
+        data
+    }) {
         state.gift_badgeCount = data.length;
         state.friendGiftList = data;
     },
     //获取店长消息列表
-    [types.GET_CAPTAINMESSAGELIST](state, { data }) {
+    [types.GET_CAPTAINMESSAGELIST](state, {
+        data
+    }) {
         state.captainMessageList = data;
     },
     //获取约战消息列表
     [types.GET_CHALLENGEGAMELIST](state, gameMessage) {
         state.challengeGameList.push(gameMessage);
+        console.log(state.challengeGameList)
         state.game_badgeCount = state.challengeGameList.length;
         console.log('约战条数---------', state.game_badgeCount)
     },

@@ -2,9 +2,10 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-11-01 14:43:07
+ * @Last Modified time: 2018-11-08 14:13:35
  */
 import api from 'common/api'
+import Config from 'common/url'
 let util = {};
 //路由跳转
 util.routerTo = function(route, vm, param) {
@@ -88,61 +89,63 @@ util.timestampToTime = function(timestamp) {
     }
 }
 util.timestampToTimeNoLine = function(timestamp) {
-    timestamp = Number(timestamp);
-    console.log(timestamp.toString().length)
-    if (timestamp.toString().length > 11) {
-        var date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-        var Y = date.getFullYear() + '';
-        var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
-        var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
-        var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
-        var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
-        var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
-        return Y + M + D + h + m + s;
-    } else {
-        var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-        var Y = date.getFullYear() + ''; //+''转字符串
-        var M = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
-        var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
-        var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
-        var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
-        var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
-        return Y + M + D + h + m + s;
+        timestamp = Number(timestamp);
+        console.log(timestamp.toString().length)
+        if (timestamp.toString().length > 11) {
+            var date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+            var Y = date.getFullYear() + '';
+            var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+            var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
+            var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+            var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
+            var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
+            return Y + M + D + h + m + s;
+        } else {
+            var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+            var Y = date.getFullYear() + ''; //+''转字符串
+            var M = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+            var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
+            var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+            var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
+            var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
+            return Y + M + D + h + m + s;
 
+        }
     }
-}
+    //获取微信jssdk
 util._getJssdkInfo = function(shareObj, url) {
-    api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url)).then(res => {
-            wx.config({
-                //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                appId: "wxb2fa3c446063ec19",
-                timestamp: res.timestamp,
-                nonceStr: res.nonceStr,
-                signature: res.signature,
-                jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", "chooseImage"]
-            });
-            wx.ready(() => {
-                wx.onMenuShareAppMessage({
-                    title: shareObj.title,
-                    desc: shareObj.desc,
-                    link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: shareObj.imgUrl,
-                    type: "",
-                    dataUrl: "",
-                    success: () => {
-                        console.log("分享成功");
-                        // window.location.href = url
-                    }
+        api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
+            .then(res => {
+                wx.config({
+                    //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: Config.appId,
+                    timestamp: res.timestamp,
+                    nonceStr: res.nonceStr,
+                    signature: res.signature,
+                    jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", "chooseImage"]
                 });
+                wx.ready(() => {
+                    wx.onMenuShareAppMessage({
+                        title: shareObj.title,
+                        desc: shareObj.desc,
+                        link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        imgUrl: shareObj.imgUrl,
+                        success: () => {
+                            console.log("分享成功");
+                        }
+                    });
+                });
+                wx.error(function(res) {
+                    console.log(res);
+                    // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+                });
+            })
+            .catch(err => {
+                console.log(err);
             });
-            wx.error(function(res) {
-                console.log(res);
-                // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-            });
-        })
-        .catch(err => {});
-}
-util.getCookie = function(cname) {
+    },
+    //获取cookie
+    util.getCookie = function(cname) {
         var name = cname + "=";
         var ca = document.cookie.split(";");
         for (var i = 0; i < ca.length; i++) {

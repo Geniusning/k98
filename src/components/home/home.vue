@@ -3,8 +3,10 @@
     <div class="homeTop_wrapper">
       <div class="barLogo_wrapper">
         <div class="logo_wrapper">
-          <img class="logo" :src="shopSettingInfo.image" alt="">
-          <p class="bar_name">{{shopSettingInfo.name}}</p>
+          <img class="logo" :src="shopSettingInfo.image" alt>
+          <!-- <p class="bar_name">{{shopSettingInfo.name}}</p> -->
+          <p class="bar_name">{{shopInfo.name}}</p>
+          <p class="bar_name" v-if="shopInfo.name1">{{shopInfo.name1}}</p>
         </div>
       </div>
       <swiper :auto="true" class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
@@ -15,17 +17,65 @@
       <div class="content">
         <div class="adr_wrapper">
           <div class="adr clearfix" @click="getMapPosition">
-            <img src="../../assets/image/position.png" alt="" class="position">
+            <img src="../../assets/image/position.png" alt class="position">
             <p class="adr_desc">{{shopSettingInfo.address}}</p>
           </div>
           <div class="tel">
-            <a href="javascript:void(0);" >
-              <img src="../../assets/image/call.png" alt="" @click="callPhone">
+            <a href="javascript:void(0);">
+              <img src="../../assets/image/call.png" alt @click="callPhone">
             </a>
           </div>
         </div>
+        <!-- 望眼镜背景 -->
+        <div class="telescope_wrapper">
+          <img src="../../assets/image/telescope_bg.png" alt class="telescope_img">
+          <div class="left_radius_box" ref="leftRadiusBox">
+            <div class="online_person" @click="gotoFriend">{{outFriendNum+inFriendNum}}人在线 &gt;</div>
+            <div class="leftCircle" v-if="hiddenTelescope">
+              <div class="leftCirclePart" ref="leftCirclePart"></div>
+              <div class="rightCirclePart"></div>
+            </div>
+            <!-- <div v-for="item in circleList" class="left_radius" :style="item"></div> -->
+            <img
+              src="../../assets/image/findFriend.png"
+              alt
+              class="findFriend_text"
+              v-if="hiddenTelescope"
+            >
+          </div>
+          <div class="right_radius_box" ref="rightRadiusBox">
+            <div class="online_player" @click="gotoPlay">5人在玩 &gt;</div>
+            <!-- <div v-for="item in circleList" class="right_radius" :style="item"></div> -->
+            <div class="rightCircle" v-if="hiddenTelescope">
+              <div class="leftCirclePart"></div>
+              <div class="rightCirclePart"></div>
+            </div>
+            <img
+              src="../../assets/image/dahuashai.png"
+              alt
+              class="dahuashai_text"
+              v-if="hiddenTelescope"
+            >
+          </div>
+          <!-- 更多好友 -->
+          <div class="more">
+            <ul class="fri_list" v-show="friendList.length>3">
+              <li class="item" v-for="(item,index) in friendIconList" :key="index">
+                <img
+                  :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                  class="min_avatar"
+                  onclick="return false"
+                >
+              </li>
+              <li class="item dotItem" @click="gotoFriend">
+                <span class="dot">...</span>
+                <span class="rightArrow">&gt;</span>
+              </li>
+            </ul>
+          </div>
+        </div>
         <!-- 游戏 -->
-        <div class="game_wrapper">
+        <!-- <div class="game_wrapper">
           <div class="title clearfix ">
             <div class="fl">
               <img src="../../assets/image/game_icon.png" alt="" class="icon animations fl" ref="iconAnimation">
@@ -49,14 +99,10 @@
             <li @click="playGame_challenge">
               <img src="../../assets/image/lingzhuo.png" alt="" class="pic_game" onclick="return false">
             </li>
-            
-            <!-- <li @click="playGame_friend">
-              <img src="../../assets/image/game3.png" alt="" class="pic_game" onclick="return false">
-            </li> -->
           </ul>
-        </div>
+        </div>-->
         <!-- 好友 -->
-        <div class="friend_wrapper">
+        <!-- <div class="friend_wrapper">
           <div class="title_content_fri clearfix">
             <div class="title clearfix">
               <img src="../../assets/image/footPrint.png" alt="" class="icon fl" onclick="return false">
@@ -82,57 +128,65 @@
                 <img src="../../assets/image/dianwai.png" alt="" class="friend_avatar_out" onclick="return false">
               </li>
                 <li @click="intoFriend" class="inner_fri">
-                <!-- <img src="../../assets/image/online.png" class="online" onclick="return false"> -->
                 <span class="inner_onlinePerson">{{inFriendNum}}人在线 ></span>
                 <img src="../../assets/image/diannei.png" alt="" class="friend_avatar_inner" onclick="return false">
               </li>
             </ul>
           </div>
-        </div>
+        </div>-->
         <!-- 福利 -->
         <div class="welfare_wrapper">
           <div class="title_content_wel">
             <div class="title clearfix">
-              <img src="../../assets/image/recomment.png" onclick="return false" alt="" class="icon fl">
+              <img
+                src="../../assets/image/recomment.png"
+                onclick="return false"
+                alt
+                class="icon fl"
+              >
               <h2 class="shop_title">店长推荐</h2>
               <span class="desc">预订享优惠</span>
             </div>
             <div class="more fr">
-              <img src="../../assets/image/letter.gif" alt="" class="letter" @click="inToLetter">
+              <img src="../../assets/image/letter.gif" alt class="letter" @click="inToLetter">
             </div>
           </div>
           <div class="advertise_wrapper" v-if="show_advertise">
-            <img src="../../assets/image/advertise.png" alt="" class="advertise" onclick="return false">
+            <img
+              src="../../assets/image/advertise.png"
+              alt
+              class="advertise"
+              onclick="return false"
+            >
             <!-- <img src="http://llwant.test.qianz.com/download/file/5007c55f109d0ad7f840d3b2e4c5263c.png" alt="" class="advertise" > -->
-            <img src="../../assets/image/close_ad.png" alt="" class="close" @click="close_adtise">
+            <img src="../../assets/image/close_ad.png" alt class="close" @click="close_adtise">
           </div>
           <div class="welfare_content">
             <ul class="welfare_list" v-if="recommendList.length">
-              <li class="item clearfix" v-for="(item,index) in recommendList" :key="index" >
-                <div class="left" >
-                  <img :src="item.recommend.image" alt="" class="shopPic">
+              <li class="item clearfix" v-for="(item,index) in recommendList" :key="index">
+                <div class="left">
+                  <img :src="item.recommend.image" alt class="shopPic">
                 </div>
                 <div class="center">
                   <p class="title">{{item.recommend.name}}</p>
                   <p class="desc">{{item.recommend.subtopic}}</p>
                   <p class="limit">{{item.recommend.limit}}</p>
                   <p class="price">
-                    <span class="discount_p">特惠￥{{item.recommend.discountPrice}}</span><del class="origin_p">原价￥{{item.recommend.originalPrice}}</del>
+                    <span class="discount_p">特惠￥{{item.recommend.discountPrice}}</span>
+                    <del class="origin_p">原价￥{{item.recommend.originalPrice}}</del>
                   </p>
                 </div>
                 <div class="right">
                   <div class="thunb_box clearfix">
                     <span class="count fl">已订：{{item.booking.bookingNumber}}</span>
                   </div>
-                  <div class="show_detail" @click="freeBook(item.recommend.recommendID)">
-                    免费预订
-                  </div>
+                  <div class="show_detail" @click="freeBook(item.recommend.recommendID)">免费预订</div>
                 </div>
               </li>
             </ul>
           </div>
         </div>
-         <!-- 友商互推 -->
+        <!-- 友商互推 -->
         <!-- <div class="welfare_wrapper">
           <div class="title_content_wel">
             <div class="title clearfix">
@@ -166,25 +220,26 @@
               </li>
             </ul>
           </div>
-        </div> -->
+        </div>-->
       </div>
     </div>
     <div class="fuli" @click="toWelfare" v-show="noCouponsFlag">
-      <img src="../../assets/image/fuli.png" alt="" class="pic_fuli">
+      <img src="../../assets/image/fuli.png" alt class="pic_fuli">
     </div>
     <!-- 游戏框框 -->
     <div v-transfer-dom>
       <x-dialog v-model="gameShow" class="dialog-gameBegin">
         <div class="game-box">
-          <img src="../../assets/image/gameBegin.jpg" alt="" class="gameBegin" @click="intoReadyGame">
+          <img src="../../assets/image/gameBegin.jpg" alt class="gameBegin" @click="intoReadyGame">
         </div>
         <div @click="closeGame">
-          <img src="../../assets/image/gameClose.png" alt="" class="close">
+          <img src="../../assets/image/gameClose.png" alt class="close">
         </div>
       </x-dialog>
     </div>
+    <!-- <img style="visibility:hidden" :src="shopSettingInfo.image" alt=""> -->
     <transition name="appear">
-       <envelope v-show="isShowEnvelope" :text='envelopeText'></envelope>
+      <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
     </transition>
     <router-view></router-view>
   </div>
@@ -194,19 +249,14 @@
 import Scroll from "../../base/scroll/scroll";
 import util from "common/util";
 import api from "common/api";
-import {
-  TransferDom,
-  Swiper,
-  Toast,
-  XDialog
-} from "vux";
+import { TransferDom, Swiper, Toast, XDialog } from "vux";
 import axios from "axios";
-import url from "common/url";
-
-import { mapMutations, mapActions, mapState } from "vuex";
+import Config from "common/url";
+import { mapMutations, mapActions, mapState, mapGetters } from "vuex";
 // import { Carousel3d, Slide } from 'vue-carousel-3d';
 import envelope from 'base/envelope/envelope'
 import mySwiper from '../../libs/swiper/swiper-4.3.3.min.js'
+import { setInterval, clearInterval } from 'timers';
 export default {
   name: "home",
   directives: {
@@ -214,6 +264,8 @@ export default {
   },
   data() {
     return {
+      showTelescopeFlag: true,
+      circleList: [],
       friendIconList: [],
       dicountList: [],
       gameShow: false,
@@ -231,39 +283,63 @@ export default {
       inFriendNum: 0,
       outFriendNum: 0,
       arrowIndex: 0,
+      deg: 0,
+      hiddenTelescope:true,
+      shopInfo: {
+        name: "深圳市乐乐湾"
+      }
     };
   },
   created() {
-    let _url = window.location.href;
-    if (util.isAndroid()) {
-      let shareObj = {
-        title: "发现一个好玩的地方",
-        desc: "可以认识许多新朋友，打比赛。老板还特傻X，见人就发红包",
-        link: `${baseUrl}?/#/home`,
-        imgUrl: `${this.shopSettingInfo.image}`
-      };
-      util._getJssdkInfo(shareObj, _url);
-    } else {
-      let shareObj = {
-        title: "发现一个好玩的地方",
-        desc: "可以认识许多新朋友，打比赛。老板还特傻X，见人就发红包",
-        link: this.shareUrl + "#/home ",
-        imgUrl:`${this.shopSettingInfo.image}`
-      };
-      util._getJssdkInfo(shareObj, this.shareUrl);
-    }
-    this.arrowTimer = setInterval(() => {
-      this.arrowIndex++;
-      if (this.arrowIndex == 5) {
-        this.arrowIndex = 0;
+    for (let i = 0; i < 360; i++) {
+      let tempObj = {
+        transform: `rotate(${i}deg)`,
+        width: "0.04rem",
+        height: "1.6rem",
+        background: "-webkit-linear-gradient(top, #79b7f4, #2785f0)",
+        position: "absolute",
+        left: "50%",
+        marginLeft: "-0.02rem",
+        transformOrigin: "bottom"
       }
-    }, 100)
+      this.circleList.push(tempObj);
+    }
+    // setTimeout(() => {
+    //   this.openCircle();
+    // }, 3000);
+    setTimeout(() => {
+      console.log('门店logo--------------------', this.shopSettingInfo.image)
+      let _url = window.location.href;
+      this.myShareUrl = _url.split('#')[0];
+      if (util.isAndroid()) {
+        let shareObj = {
+          title: "发现一个好玩的地方",
+          desc: "可以认识许多新朋友，打比赛。老板还特傻X，见人就发红包",
+          link: `${Config.shareUrl}#/home`,
+          imgUrl: `${this.shopSettingInfo.image}`
+        };
+        util._getJssdkInfo(shareObj, this.myShareUrl);
+      } else {
+        let shareObj = {
+          title: "发现一个好玩的地方",
+          desc: "可以认识许多新朋友，打比赛。老板还特傻X，见人就发红包",
+          link: Config.shareUrl + "#/home",
+          imgUrl: `${this.shopSettingInfo.image}`
+        };
+        util._getJssdkInfo(shareObj, this.myShareUrl);
+      }
+    }, 1000);
+    // this.arrowTimer = setInterval(() => {
+    //   this.arrowIndex++;
+    //   if (this.arrowIndex == 5) {
+    //     this.arrowIndex = 0;
+    //   }
+    // }, 100)
   },
   computed: {
-    ...mapState(["baseUrl", "friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo", "noCouponsFlag"])
+    ...mapState(["baseUrl", "friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo", "noCouponsFlag"]),
   },
   mounted() {
-    this.getWeJSsdk();
     this.getFriendList(); //获取候选人
     this._loadPublishArenas();//拉取已经发布的比赛场
     this._loadFriendEvts(); //获取好友事件列表
@@ -274,42 +350,70 @@ export default {
     //this._acquireWaitGetCoupons();//用户获取优惠券
     this._loadRecommends(); //店长推荐数据
     this._loadAdvertisingPhoto(); //拉取首页轮播图
-    this._loadInviteWaitGetCoupon(); //判断是否已经领取优惠券
+    this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
     this._loadInviteCombat();//拉取约战列表
-    setInterval(() => {
-      this.$refs.iconAnimation.className = "icon animations fl"
-    }, 5000)
-    this.$refs.iconAnimation.addEventListener('webkitAnimationEnd', () => {
-      this.$refs.iconAnimation.className = "icon fl"
-      console.log('动画结束啦')
+    //监听摇色蛊动画
+    // setInterval(() => {
+    //   this.$refs.iconAnimation.className = "icon animations fl"
+    // }, 5000)
+    // this.$refs.iconAnimation.addEventListener('webkitAnimationEnd', () => {
+    //   this.$refs.iconAnimation.className = "icon fl"
+    //   console.log('动画结束啦')
+    // }, false);
+    //监听望眼镜动画leftCirclePart
+    this.$refs.leftCirclePart.addEventListener('webkitAnimationEnd', () => {
+      this.hiddenTelescope = false; //隐藏望眼镜扇形动画
+      
     }, false);
+    // 圆圈动画
+    // this.renderCircle();
+    // setTimeout(() => {
+    //   this.openCircle();
+    // }, 1000);
   },
   activated() {
+
   },
   deactivated() {
 
   },
   methods: {
-    getWeJSsdk() {
-      let url = window.location.href;
-      api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url)).then(res => {
-        wx.config({
-          //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-          appId: "wxb2fa3c446063ec19",
-          timestamp: res.timestamp,
-          nonceStr: res.nonceStr,
-          signature: res.signature,
-          jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", "chooseImage"]
-        });
-        wx.error(function (res) {
-          //alert('调取微信jssdk失败')
-          // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-        });
-      })
-        .catch(err => { });
+    //渲染圆形
+    // renderCircle() {
+    //   let deg = 360;
+    //   var domStr = "";
+    //   for (let i = 0; i < deg; i++) {
+    //     domStr += "<div class='left_radius' style='transform:rotate(" + i + "deg); width:0.04rem;height:1.6rem;background: -webkit-linear-gradient(top, #79b7f4, #2785f0);position: absolute;left: 50%;margin-left: -0.02rem;transform-origin: bottom;'></div>"
+    //   }
+    //   this.$refs.leftRadiusBox.innerHTML = domStr;
+    //   this.$refs.rightRadiusBox.innerHTML = domStr;
+    // },
+    //打开扇形
+    // openCircle() {
+    //   var timer = setInterval(() => {
+    //     console.log('执行定时器')
+    //     if (this.circleList.length === 0) {
+    //       this.showTelescopeFlag = false;
+    //       clearInterval(timer);
+    //       return;
+    //     }
+    //     this.circleList.splice(0, 2);
+
+    //   }, 100)
+    // },
+    //去游戏
+    gotoPlay() {
+      let token = util.getCookie("tk");
+      window.location.href = `${Config.shareUrl}game/?gamePath=game1`;
+    },
+    gotoFriend() {
+      util.routerTo("friend", this, {
+        routeParamNum: 0                                   //路由参数2为进入了场外
+      });
     },
     //打电话
     callPhone() {
+      this.set(this.shopInfo, "name1", "hahaha")
       window.location.href = `tel://${this.shopSettingInfo.phone}`;
       api.statCalls().then(res => {
         console.log('打电话记录------------------', res);
@@ -326,7 +430,7 @@ export default {
     },
     //进入游戏初始页面
     intoReadyGame() {
-      this.$router.push({name: "gameCompetion"});
+      this.$router.push({ name: "gameCompetion" });
       this.gameShow = false;
     },
     // 关闭游戏
@@ -335,8 +439,8 @@ export default {
     },
     // 随机场
     playGame_challenge() {
-      let token = this.getCookie("tk");
-      window.location.href = `${this.baseUrl}/game/?gamePath=game1`;
+      let token = util.getCookie("tk");
+      window.location.href = `${Config.shareUrl}game/?gamePath=game1`;
     },
     // 比赛场
     playGame_rank() {
@@ -346,21 +450,8 @@ export default {
     },
     // 好友场
     playGame_friend() {
-      let token = this.getCookie("tk");
-      window.location.href = `${this.baseUrl}/game/?gamePath=game3`;
-    },
-    //获取cookie
-    getCookie: function (cname) {
-      var name = cname + "=";
-      var ca = document.cookie.split(";");
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") c = c.substring(1);
-        if (c.indexOf(name) != -1) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
+      let token = util.getCookie("tk");
+      window.location.href = `${Config.shareUrl}game/?gamePath=game3`;
     },
     //拉取已经发布的比赛场
     _loadPublishArenas() {
@@ -403,13 +494,16 @@ export default {
         console.log('约战列表--------------', res);
         if (res.errCode == 0) {
           res.inviteCombatInfo.forEach(item => {
-            let content = {              extMsg: {
+            let content = {
+              extMsg: {
                 combatID: item.combatID,
                 headImgURL: item.headImgURL,
                 inviterID: item.inviterID,
                 nickName: item.nickName,
                 url: item.url,
-              }            }
+                time: util.timestampToTimeNoLine(item.score)
+              }
+            }
             this.getChallengeGamelist(content);
             this.addBandge();
           })
@@ -428,13 +522,9 @@ export default {
     //免费预定
     freeBook(recommendID) {
       var couponId = "";
-      console.log('recommendID--------------------------------:', recommendID);
       api.bookingRecommend(recommendID).then(res => {
         console.log('预定结果--------------', res);
         couponId = res.userCouponID;
-        //发起预订券核销
-        console.log('couponId------------------------', couponId)
-        api.launchSetOffUserCoupon(couponId);
         if (res.errCode && res.errCode == 1021) {
           // this.$vux.toast.show({
           //   text: "您己成功预订,无需重复预定",
@@ -449,12 +539,16 @@ export default {
           }, 2000);
         } else {
           this.isShowEnvelope = true;
-          this.envelopeText = "您己成功预订套餐，到门店时请先到收银台扫码确认"
+          this.envelopeText = "成功预订，到店请先到收银台扫码确认"
           setTimeout(() => {
             this.isShowEnvelope = false;
           }, 2000);
           this._loadRecommends(); //重新拉取店长推荐
         }
+        //发起预订券核销
+        return api.launchSetOffUserCoupon(couponId);
+      }).then(res => {
+        console.log('发起预定券核销结果-------------', res);
       }).catch(err => {
         console.log(err)
       });
@@ -525,7 +619,15 @@ export default {
     showMoreWelfare() {
       util.routerTo("welfare", this);
     },
+    // //获取门店信息
+    // _loadStoreSetting() {
+    //   api.loadStoreSetting().then(res => {
+    //     console.log('门店信息---------------------------------：', res)
+    //     this.getShopSetting(res)
+    //   })
+    // },
     ...mapMutations({
+      //getShopSetting: "GET_SHOPINFO",                         //获取门店信息
       getPosition: "GET_POSITION",
       getFriend: "GET_FRIENDlIST",
       updateShareUrl: "UPDATE_SHAREURL",
@@ -646,18 +748,18 @@ export default {
   background: rgba(242, 242, 242, 1);
   .fuli {
     position: fixed;
-    bottom: 180px;
+    bottom: 80px;
     right: 1px;
     animation: jump 1500ms linear 500ms infinite normal;
     @keyframes jump {
       10% {
-        bottom: 180px;
+        bottom: 80px;
       }
       50% {
-        bottom: 175px;
+        bottom: 75px;
       }
       100% {
-        bottom: 180px;
+        bottom: 80px;
       }
     }
     .pic_fuli {
@@ -737,10 +839,241 @@ export default {
 }
 .content {
 }
+.telescope_wrapper {
+  width: 100%;
+  height: 7rem;
+  background-color: #fff;
+  position: relative;
+    @keyframes rotateAn {
+          0% {
+              transform: rotate(0deg);
+              //  opacity: 1;
+          }
+          99% {
+              transform: rotate(180deg);
+              opacity: 1;
+          }
+          100% {
+              transform: rotate(180deg);
+              opacity: 0;
+          }
+      }
+  .left_radius_box {
+    width: 3.2333rem;
+    height: 3.2333rem;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 1;
+    top: 1.7rem;
+    left: 0.66rem;
+    overflow: hidden;
+    .leftCircle{
+      width: 3.3333rem;
+      height: 3.3333rem;
+      border-radius: 50%;
+      position: absolute;
+      overflow: hidden;
+      .leftCirclePart,.rightCirclePart{
+        position: absolute;
+        width: 50%;
+        height: 100%;
+        top: 0;
+        font-size:0;
+      }
+      .leftCirclePart{
+        left: -0.0267rem;
+        overflow: hidden;
+        border-radius: 50% 0 0 50%;
+        // background-color: pink;
+      }
+      .leftCirclePart::after{
+        // background: -webkit-linear-gradient(bottom, #79B5F3, #2781EF);
+        background-color: #F7D91F;
+        opacity: 1;
+        display: block;
+        content: "";
+        width: 100%;
+        height: 100%;
+        transform-origin: right center;
+        animation: rotateAn 4s 7s linear forwards;
+      }
+      .rightCirclePart{
+        right: 2px;
+        overflow: hidden;
+        border-radius: 0 50% 50% 0;
+      }
+      .rightCirclePart::after {
+        // background: -webkit-linear-gradient(bottom, #79B5F3, #2781EF);
+        background-color: #F7D91F;
+        opacity: 1;
+        display: block;
+        content: "";
+        width: 100%;
+        height: 100%;
+        transform-origin: left center;
+        animation: rotateAn 4s 3s linear forwards;
+      }
+    }
+    .findFriend_text{
+       position: absolute;
+       width: 2.6rem;
+       top: 1.2rem;
+       left: 0.4rem
+    }
+    .online_person{
+      width: 1.7rem;
+      box-sizing: border-box;
+      text-align: center;
+      background-color: #fff;
+      border-radius: 0.2667rem;
+      position: absolute;
+      bottom: 0.2667rem;
+      left: 0.8067rem;
+      padding: .05rem .1rem;
+      font-size: 0.24rem;
+    }
+    // .left_radius {
+    //   width: 0.04rem;
+    //   height: 1.6rem;
+    //   background: linear-gradient(top, #79b7f4, #2785f0);
+    //   position: absolute;
+    //   left: 50%;
+    //   margin-left: -0.02rem;
+    //   transform-origin: bottom;
+    // }
+  }
+  .right_radius_box {
+    width: 3.2333rem;
+    height: 3.2333rem;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 1;
+    top: 1.67rem;
+    right: 0.6rem;
+    overflow: hidden;
+    .rightCircle{
+      width: 3.3333rem;
+      height: 3.3333rem;
+      border-radius: 50%;
+      position: absolute;
+      overflow: hidden;
+      left: 0.0133rem;
+      .leftCirclePart,.rightCirclePart{
+        position: absolute;
+        width: 50%;
+        height: 100%;
+        top: 0;
+      }
+      .leftCirclePart{
+        left: -0.0267rem;
+        overflow: hidden;
+        border-radius: 50% 0 0 50%;
+        // background-color: pink;
+      }
+      .leftCirclePart::after{
+        // background: -webkit-linear-gradient(bottom, #79B5F3, #2781EF);
+         background-color: #F7D91F;
+        opacity: 1;
+        display: block;
+        content: "";
+        width: 100%;
+        height: 100%;
+        transform-origin: right center;
+        animation: rotateAn 4s 7s linear forwards;
+      }
+      .rightCirclePart{
+        right: 0.0267rem;
+        overflow: hidden;
+        border-radius: 0 50% 50% 0;
+      }
+      .rightCirclePart::after {
+        // background: -webkit-linear-gradient(bottom, #79B5F3, #2781EF);
+        background-color: #F7D91F;
+        opacity: 1;
+        display: block;
+        content: "";
+        width: 100%;
+        height: 100%;
+        transform-origin: left center;
+        animation: rotateAn 4s 3s linear forwards;
+      }
+    }
+    .dahuashai_text{
+       position: absolute;
+       width: 2.6rem;
+       top: 1.2rem;
+       left: 0.4rem;
+    }
+    .online_player{
+      width: 1.7rem;
+      box-sizing: border-box;
+      text-align: center;
+      background-color: #fff;
+      border-radius: 0.2667rem;
+      position: absolute;
+      bottom: 0.2667rem;
+      left: 0.8167rem;
+      padding: .05rem .1rem;
+      font-size: 0.24rem;
+    }
+    .right_radius {
+      width: 0.04rem;
+      height: 1.6rem;
+      background: -webkit-linear-gradient(top, #79b7f4, #2785f0);
+      position: absolute;
+      right: 50%;
+      margin-right: -0.02rem;
+      transform-origin: bottom;
+    }
+  }
+  .telescope_img {
+    position: absolute;
+    // top: -0.2333rem;
+    width: 100%;
+    height: 100%;
+  }
+  .more{
+    position: absolute;
+    bottom: 0rem;
+    right: 0rem;
+    padding: 0.1rem 0.1333rem;
+    padding-top: 0.3rem;
+    padding-right: 0.4333rem;
+    .fri_list {
+      .item {
+        float: left;
+        margin-left: -0.25rem;
+        .dot {
+          font-size: 0.5533rem;
+          display: inline-block;
+          line-height: 0.3rem;
+          color: #d1d1d1;
+        }
+        .min_avatar {
+          width: 0.6667rem;
+          height: 0.6667rem;
+          border-radius: 50%;
+        }
+      }
+      .dotItem {
+        margin-left: 0.1rem;
+        padding-top: 0.0667rem;
+        .rightArrow{
+          position: absolute;
+          right: 0.0933rem;
+          top: 0.3rem;
+          font-size: 0.5533rem;
+          display: inline-block;
+          color: #d1d1d1;
+        }
+      }
+    }
+  }
+}
 .homeTop_wrapper {
   position: relative;
   height: 4.2667rem;
-  padding-top: 0.3rem;
+  padding-top: 0.2rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
   background: -webkit-linear-gradient(left, #fff800, #fef200, #fccc00, #fbbc00);
@@ -757,7 +1090,7 @@ export default {
     .logo_wrapper {
       display: inline-block;
       height: 0.5rem;
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(0, 0, 0, 0.1);
       line-height: 0.5rem;
       margin: 0 0.5rem;
       border-radius: 10px;
@@ -816,6 +1149,7 @@ export default {
   padding: 0rem 0.5rem 0rem;
   height: 0.8733rem;
   box-sizing: border-box;
+  margin-bottom: 0.2667rem;
   .adr {
     font-family: "Times New Roman", Times, serif;
     height: 15px;
@@ -874,8 +1208,8 @@ export default {
   }
   .titleWrapper;
   .title {
-    padding-bottom: 0.2333rem;
-    padding-top: 0.2667rem;
+    padding-bottom: 0.1333rem;
+    padding-top: 0.1rem;
     float: left;
     display: inline-block;
     .title;
@@ -889,8 +1223,8 @@ export default {
     }
   }
   .more {
-    padding: 0.1333rem 0.1333rem;
-    padding-top: 0.4rem;
+    padding: 0.1rem 0.1333rem;
+    padding-top: 0.3rem;
     float: right;
     .fri_list {
       .item {
@@ -918,7 +1252,7 @@ export default {
       padding: 0 0.4667rem;
       display: flex;
       justify-content: space-between;
-      padding-bottom: 0.2167rem;
+      padding-bottom: 0.167rem;
       li {
         &.out_fri {
           // padding-top: 0.1633rem;
@@ -933,9 +1267,11 @@ export default {
         }
         .friend_avatar_inner {
           width: 4.2933rem;
+          height: 2.2533rem;
         }
         .friend_avatar_out {
           width: 4.2933rem;
+          height: 2.2533rem;
         }
       }
     }
@@ -1011,7 +1347,7 @@ export default {
     // overflow-y: hidden;
     height: 2.3333rem;
     margin: 0 0.4667rem;
-    padding-bottom: 0.16rem;
+    padding-bottom: 0.17rem;
     display: flex;
     justify-content: space-between;
     position: relative;

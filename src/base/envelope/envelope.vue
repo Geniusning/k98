@@ -54,7 +54,7 @@ export default {
     background-size: 100% 100%;
     .text {
       color: #333;
-      font-size: 0.32rem;
+      font-size: 0.42rem;
     }
   }
 }

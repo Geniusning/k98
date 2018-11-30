@@ -6,8 +6,8 @@
         <img :src="userInfo.headimgurl" alt="" class="avatar">
         <p class="name">{{userInfo.nickname||'小龙女'}}</p>
         <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->
-        <span class="bindTel" @click="showTelBind" v-if="showTel">绑定手机</span>
-        <span class="bindTel1" @click="showTelBind" v-else>15764271126</span>
+        <span class="bindTel" @click="showTelBind" v-if="!userInfo.phone">绑定手机</span>
+        <span class="bindTel1" v-else>{{userInfo.phone}}</span>
       </div>
       <img @click="edit_individual" src="../../assets/image/setting.png" alt="" class="edit">
     </div>
@@ -109,18 +109,6 @@
     </div>
     <!-- 绑定手机弹框 -->
     <validate v-show="isShow"></validate>
-    <!-- 新增标签 -->
-    <!-- <div v-transfer-dom>
-        <x-dialog v-model="showTag" class="dialog-demo">
-          <div style="padding:10px 0px">
-            <div style="margin-bottom:10px" class="tag_box">
-              <input type="text" class="tag" placeholder="请输入标签" ref="tag">
-              <x-icon @click.native="closeTag" type="ios-close-empty" size="30" class="close"></x-icon>
-            </div>
-            <x-button style="float:right;margin-right:20px;margin-bottom:10px;" @click.native="save" type="primary" :mini="true">新增</x-button>
-          </div>
-        </x-dialog>
-      </div> -->
     <router-view></router-view>
   </div>
 </template>
@@ -134,11 +122,7 @@ import {
   Group,
   Toast
 } from "vux";
-import {
-  mapState,
-  mapGetters,
-  mapMutations
-} from "vuex";
+import {mapState,mapGetters,mapMutations} from "vuex";
 import util from "common/util";
 import api from "common/api";
 import Validate from "../../base/validatephone/validatephone";
@@ -161,22 +145,10 @@ export default {
     ...mapGetters(["userInfo", "test", "isShow"])
   },
   created() {
-    // this.tagList = this.userInfo.tags.split('、');
-    console.log()
-    let url = window.location.href.split('#')[0];
-    console.log(url)
-    // api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url)).then(res => {
-    //     wx.config({
-    //       //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    //       appId: "wxb2fa3c446063ec19",
-    //       timestamp: res.timestamp,
-    //       nonceStr: res.nonceStr,
-    //       signature: res.signature,
-    //       jsApiList: [
-    //         "chooseImage"
-    //       ]
-    //     });
-    //   });
+    //判断是否自定义了标签
+    if(this.userInfo.tags){
+      this.tagList = this.userInfo.tags.split('、');
+    }
   },
   methods: {
     activetyShare() {
@@ -289,7 +261,7 @@ export default {
       this.changeValidate(false);
     },
     ...mapMutations({
-      changeValidate: "CHANGE_VALIDATE"
+      changeValidate: "CHANGE_VALIDATE",
     })
   },
   components: {

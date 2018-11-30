@@ -1,4 +1,6 @@
-//获得公众号地址
+//判断消息累心
+export const JUDGE_MESSTYPE = "JUDGE_MESSTYPE"
+    //获得公众号地址
 export const GET_URL = "GET_URL"
     //手机验证码弹框
 export const CHANGE_VALIDATE = "CHANGE_VALIDATE"
