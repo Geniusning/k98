@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import Home from 'components/home/home'
 import GameCompetion from 'components/home/gameCompetion/gameCompetion'
 import GameRank from 'components/home/GameRank/GameRank'
-import GameHall from 'components/home/GameHall/GameHall'
+import MarsRank from 'components/home/marsRank/marsRank'
+import TreasureRank from 'components/home/treasureRank/treasureRank'
 import Friend from 'components/friend/friend'
 import PersonalInfo from 'components/friend/personalInfo/personalInfo'
 import Message from 'components/message/message'
@@ -23,7 +24,6 @@ import SharedDiscount from 'components/welfare/sharedDiscount/sharedDiscount'
 // import ShareNewUsers from 'components/welfare/shareNewUsers/shareNewUsers'
 import GameRecord from 'components/welfare/gameRecord'
 import GameRecordDetail from 'components/welfare/gameRecordDetail'
-// import test from 'base/test/test'
 
 
 Vue.use(Router)
@@ -44,9 +44,14 @@ export default new Router({
             }
         },
         {
-            path: '/gameHall',
-            name: 'gameHall',
-            component: GameHall,
+            path: '/marsRank',
+            name: 'marsRank',
+            component: MarsRank,
+        },
+        {
+            path: '/treasureRank',
+            name: 'treasureRank',
+            component: TreasureRank,
         },
         {
             path: "/gameCompetion",

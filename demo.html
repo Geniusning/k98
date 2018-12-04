@@ -193,30 +193,30 @@
 <script src="https://cdn.bootcss.com/snabbdom/0.7.2/snabbdom-eventlisteners.js"></script>
 <script src="https://cdn.bootcss.com/snabbdom/0.7.2/h.js"></script>
 <script>
-    let str =
-        'http://llwant.test.qianz.com/?from=singlemessage#/gameCompetion?teamID=d23b89f7-4cb6-4a34-b877-81fcb2928230'
-    console.log(str.split('teamID='))
+    // let str =
+    //     'http://llwant.test.qianz.com/?from=singlemessage#/gameCompetion?teamID=d23b89f7-4cb6-4a34-b877-81fcb2928230'
+    // console.log(str.split('teamID='))
 
-    function waitHandle() {
-        var dtd = $.Deferred();
+    // function waitHandle() {
+    //     var dtd = $.Deferred();
 
-        var wait = function(dtd) {
-            var tast = function() {
-                console.log('任务执行了');
-                dtd.resolve();
-            }
+    //     var wait = function(dtd) {
+    //         var tast = function() {
+    //             console.log('任务执行了');
+    //             dtd.resolve();
+    //         }
 
-            setTimeout(tast, 2000);
+    //         setTimeout(tast, 2000);
 
-            return dtd;
-        }
+    //         return dtd;
+    //     }
 
-        return wait(dtd)
-    }
-    waitHandle().then(() => {
-            console.log('ok1')
-        })
-        // var snabbdom = window.snabbdom;
+    //     return wait(dtd)
+    // }
+    // waitHandle().then(() => {
+    //         console.log('ok1')
+    //     })
+    // var snabbdom = window.snabbdom;
 
     // //定义patch
     // var patch = snabbdom.init([
@@ -274,6 +274,17 @@
     //     render(data);
     // }
     // render(data)
+    var arr = [1, 2, 1, 2, 1, 2];
+    var obj = {};
+    for (var i = 0; i < arr.length; i++) {
+        if (!obj[arr[i]]) {
+            obj[arr[i]] = 1;
+        } else {
+            obj[arr[i]]++;
+        }
+    }
+    console.log(obj);
+    console.log([...new Set(arr)])
 </script>
 
 </html>

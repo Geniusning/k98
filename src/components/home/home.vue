@@ -29,8 +29,8 @@
         <!-- 望眼镜背景 -->
         <div class="telescope_wrapper">
           <img src="../../assets/image/telescope_bg.png" alt class="telescope_img">
-          <div class="left_radius_box" ref="leftRadiusBox">
-            <div class="online_person" @click="gotoFriend">{{outFriendNum+inFriendNum}}人在线 &gt;</div>
+          <div class="left_radius_box" ref="leftRadiusBox" @click="gotoFriend">
+            <div class="online_person">{{outFriendNum+inFriendNum}}人在线 &gt;</div>
             <div class="leftCircle" v-if="hiddenTelescope">
               <div class="leftCirclePart" ref="leftCirclePart"></div>
               <div class="rightCirclePart"></div>
@@ -43,8 +43,8 @@
               v-if="hiddenTelescope"
             >
           </div>
-          <div class="right_radius_box" ref="rightRadiusBox">
-            <div class="online_player" @click="gotoPlay">5人在玩 &gt;</div>
+          <div class="right_radius_box" ref="rightRadiusBox" @click="gotoPlay">
+            <div class="online_player">5人在玩 &gt;</div>
             <!-- <div v-for="item in circleList" class="right_radius" :style="item"></div> -->
             <div class="rightCircle" v-if="hiddenTelescope">
               <div class="leftCirclePart"></div>
@@ -404,7 +404,7 @@ export default {
     //去游戏
     gotoPlay() {
       let token = util.getCookie("tk");
-      window.location.href = `${Config.shareUrl}game/?gamePath=game1`;
+      window.location.href = `${Config.shareUrl}game`;
     },
     gotoFriend() {
       util.routerTo("friend", this, {
@@ -878,7 +878,6 @@ export default {
         width: 50%;
         height: 100%;
         top: 0;
-        font-size:0;
       }
       .leftCirclePart{
         left: -0.0267rem;
@@ -895,7 +894,7 @@ export default {
         width: 100%;
         height: 100%;
         transform-origin: right center;
-        animation: rotateAn 4s 7s linear forwards;
+        animation: rotateAn 2s 5s linear forwards;
       }
       .rightCirclePart{
         right: 2px;
@@ -911,7 +910,7 @@ export default {
         width: 100%;
         height: 100%;
         transform-origin: left center;
-        animation: rotateAn 4s 3s linear forwards;
+        animation: rotateAn 2s 3s linear forwards;
       }
     }
     .findFriend_text{
@@ -930,7 +929,7 @@ export default {
       bottom: 0.2667rem;
       left: 0.8067rem;
       padding: .05rem .1rem;
-      font-size: 0.24rem;
+      font-size: 0.28rem;
     }
     // .left_radius {
     //   width: 0.04rem;
@@ -979,7 +978,7 @@ export default {
         width: 100%;
         height: 100%;
         transform-origin: right center;
-        animation: rotateAn 4s 7s linear forwards;
+        animation: rotateAn 2s 5s linear forwards;
       }
       .rightCirclePart{
         right: 0.0267rem;
@@ -995,7 +994,7 @@ export default {
         width: 100%;
         height: 100%;
         transform-origin: left center;
-        animation: rotateAn 4s 3s linear forwards;
+        animation: rotateAn 2s 3s linear forwards;
       }
     }
     .dahuashai_text{
@@ -1014,7 +1013,7 @@ export default {
       bottom: 0.2667rem;
       left: 0.8167rem;
       padding: .05rem .1rem;
-      font-size: 0.24rem;
+      font-size: 0.28rem;
     }
     .right_radius {
       width: 0.04rem;
