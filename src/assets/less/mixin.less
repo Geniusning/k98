@@ -14,16 +14,33 @@
 .bg(@url) {
     background-image: url(@url);
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: 100% 100%;
 }
 
+//放大缩小动画
 .appear-enter-active,
 .appear-leave-active {
     transition: all 0.3s;
 }
+
 .appear-enter {
     transform: scale(0.1);
 }
+
 .appear-leave-to {
     transform: scale(0.1);
+}
+
+//淡入淡出动画
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.3s;
+}
+
+.fade-enter {
+    opacity: 1;
+}
+
+.fade-leave-to {
+    opacity: 0;
 }

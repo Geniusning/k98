@@ -3,17 +3,28 @@
     <my-header title="财富明细" ref="header"></my-header>
     <div class="gift_wrapper vux-1px-t">
       <div class="title_content vux-1px-b">
-        <div class='title_content_item clearfix'>
-          <h3 class="title fl"><strong>我的财富：</strong></h3>
+        <div class="title_content_item clearfix">
+          <h3 class="title fl">
+            <strong>我的财富：</strong>
+          </h3>
           <span class="money fl">${{giftContent.wealth}}</span>
         </div>
-        <div class='title_content_item clearfix'>
-          <h3 class="title fl"><strong>富豪榜排名：</strong></h3>
+        <div class="title_content_item clearfix">
+          <h3 class="title fl">
+            <strong>富豪榜排名：</strong>
+          </h3>
           <span class="money fl">{{giftContent.ranking}}</span>
         </div>
-        <div class='title_content_item clearfix' @click="showTreasure">
-          <img src="../../assets/image/treasure.png" alt="" class="fl" style="width:0.6rem;height:0.5rem">
-          <h3 class="title fl"><strong>财富充值</strong></h3>
+        <div class="title_content_item clearfix" @click="showTreasure">
+          <img
+            src="../../assets/image/treasure.png"
+            alt
+            class="fl"
+            style="width:0.6rem;height:0.5rem"
+          >
+          <h3 class="title fl">
+            <strong>财富充值</strong>
+          </h3>
         </div>
       </div>
       <div class="scrollTitle">
@@ -35,10 +46,11 @@
             </div>
             <span class="time">{{item.time}}</span>
           </li>
-           <p  v-if="!giftContent.wealthDetails.length" class="noContent">暂无积分变动内容</p>
+          <p v-if="!giftContent.wealthDetails.length" class="noContent">暂无积分变动内容</p>
         </ul>
       </scroll>
-      <div class="selectMoneyBox" v-show="isShowTreasure">
+      <topUp v-show="isIntegralPanel" @closeIntegralPanel="closeIntegralPanel"></topUp>
+      <!-- <div class="selectMoneyBox" v-show="isShowTreasure">
         <h2 class="titile">请选择充值的积分</h2>
         <p class="payInfo">1元兑换100积分，5元兑换500积分，10元兑换1000积分，15元兑换1500积分</p>
         <ul class="moneyList">
@@ -47,7 +59,7 @@
       </div>
       <div class="btn_content" v-show="isShowTreasure" @click="pay">
         <span class="btn">充值</span>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -57,6 +69,7 @@ import api from "common/api";
 import util from 'common/util'
 import myHeader from "../../base/myheader/myheader";
 import Scroll from "../../base/scroll/scroll";
+import topUp from 'base/topUp/topUp'
 import {
   mapState,
   mapMutations
@@ -66,34 +79,35 @@ export default {
     return {
       moneyIndex: 1,
       moneyInitValue: 5,
-      isShowTreasure: false,
-      moneyList: [{
-        "id": 1,
-        "name": "1元",
-        "money": 1,
-        "points": 10
-      },
-      {
-        "id": 2,
-        "name": "5元",
-        "money": 5,
-        "points": 50
-      },
-      {
-        "id": 3,
-        "name": "10元",
-        "money": 10,
-        "points": 100
-      },
-      {
-        "id": 4,
-        "name": "15元",
-        "money": 15,
-        "points": 150
-      }
-      ],
+      // isShowTreasure: false,
+      isIntegralPanel:false,
+      // moneyList: [{
+      //   "id": 1,
+      //   "name": "1元",
+      //   "money": 1,
+      //   "points": 10
+      // },
+      // {
+      //   "id": 2,
+      //   "name": "5元",
+      //   "money": 5,
+      //   "points": 50
+      // },
+      // {
+      //   "id": 3,
+      //   "name": "10元",
+      //   "money": 10,
+      //   "points": 100
+      // },
+      // {
+      //   "id": 4,
+      //   "name": "15元",
+      //   "money": 15,
+      //   "points": 150
+      // }
+      // ],
       giftContent: {
-        wealthDetails:[]
+        wealthDetails: []
       },
       giftList: []
     };
@@ -102,14 +116,19 @@ export default {
     ...mapState(['userInfo'])
   },
   created() {
-     this._loadWealthDetail();
+    this._loadWealthDetail();
   },
   mounted() {
     //this._loadWealthDetail();
   },
   methods: {
+    //监听充值面板状态
+    closeIntegralPanel(flag) {
+      console.log('面板状态-----------', flag);
+      this.isIntegralPanel = flag;
+    },
     showTreasure() {
-      this.isShowTreasure = !this.isShowTreasure;
+      this.isIntegralPanel = !this.isIntegralPanel;
     },
     //拉取礼物明细
     _loadWealthDetail() {
@@ -165,7 +184,8 @@ export default {
   },
   components: {
     myHeader,
-    Scroll
+    Scroll,
+    topUp
   }
 };
 </script>
@@ -175,7 +195,9 @@ export default {
 .gift_detail {
   height: 100%;
   .gift_wrapper {
-    height: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     .title_content {
       margin-top: 0;
       display: flex;
@@ -218,7 +240,8 @@ export default {
       }
     }
     .scroll {
-      height: 9.3333rem;
+      // height: 9.3333rem;
+      flex: 1;
       overflow: hidden;
       padding-bottom: 0.1333rem;
       border-bottom: 1px solid #ccc;

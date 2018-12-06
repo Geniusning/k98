@@ -1,78 +1,113 @@
 <template>
   <div id="friend" class="friend">
-      <div class="nav">
-        <img src="../../assets/image/select.png" alt=""  @click="showToast=true">
-        <img src="../../assets/image/setting.png" alt="" @click="intoSetting">
+    <div class="nav">
+      <img src="../../assets/image/select.png" alt @click="showToast=true">
+      <img src="../../assets/image/setting.png" alt @click="intoSetting">
+    </div>
+    <div class="stack-wrapper">
+      <!-- 相册··················································begin -->
+      <!-- 相册··················································end -->
+      <stack
+        ref="stack"
+        :pages="someList"
+        :stackinit="stackinit"
+        @getMoreFriend="getMoreFriend"
+        @showAblum="showAblum"
+        @firstData="listenFirstdata"
+      >暂时没有好友</stack>
+      <div class="loading-container" v-show="!someList.length">
+        <loading></loading>
       </div>
-      <div class="stack-wrapper">
-        <!-- 相册··················································begin -->
-              <!-- 相册··················································end -->
-        <stack  ref="stack"   :pages="someList" :stackinit="stackinit" @getMoreFriend="getMoreFriend" @showAblum="showAblum" @firstData="listenFirstdata">暂时没有好友</stack>
-        <div class="loading-container" v-show="!someList.length">
-          <loading></loading>
-        </div>
+    </div>
+    <div class="control_wrapper">
+      <div class="gifts" @click="isGiftPanel=true">
+        <img src="../../assets/image/gift.png" alt>
+        <!-- <p>见面礼</p> -->
       </div>
-      <div class="control_wrapper">
-        <div class="gifts" @click="showToast_gift=true">
-           <img src="../../assets/image/gift.png" alt="">
-           <!-- <p>见面礼</p> -->
-        </div>
-         <div class="thumbs" @click="showPosition('middle')" v-if="!isFriend">
-          <img src="../../assets/image/thumbs-o-up.png" alt="">
-        </div>
-         <div class="hello" v-else @click="chat">
-          <img src="../../assets/image/sayhi.png" alt="">
-        </div>
-        <div class="playGame" @click="playGame">
-           <img src="../../assets/image/game.png" alt="">
-           <!-- <p>玩一把</p> -->
-        </div>
+      <div class="thumbs" @click="showPosition('middle')" v-if="!isFriend">
+        <img src="../../assets/image/thumbs-o-up.png" alt>
       </div>
-      <!-- 筛选好友信息 -->
-      <div v-transfer-dom>
-            <x-dialog v-model="showToast" class="dialog-demo">
-              <div class="select_wrapper">
-                <img src="../../assets/image/close.png" alt="" class="close" @click="cancel">
-                <p class="select_title">条件筛选</p>
-                  <div class="sex_wrapper">
-                    <h3>性别:</h3>
-                    <ul class="sex_list">
-                      <li @click="chooseSex(index)" :class="{active:currentIndex1 == index}" v-for="(item,index) in sexArr" :key="index"><span>{{item.name}}</span></li>
-                    </ul>
-                  </div>
-                  <div class="dis_wrapper">
-                    <h3>范围:</h3>
-                    <ul class="dis_list">
-                      <!-- <li><span>范围:</span></li> -->
-                      <li @click="chooseRange(index)" :class="{active:currentIndex2 == index}" v-for="(item,index) in rangeArr" :key="index">{{item.name}}</li>
-                    </ul>
-                  </div>
-                  <p class="confirm" @click="cancel">确定</p>
-              </div>
-            </x-dialog>
+      <div class="hello" v-else @click="chat">
+        <img src="../../assets/image/sayhi.png" alt>
       </div>
+      <div class="playGame" @click="playGame">
+        <img src="../../assets/image/game.png" alt>
+        <!-- <p>玩一把</p> -->
+      </div>
+    </div>
+    <!-- 筛选好友信息 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="showToast" class="dialog-demo">
+        <div class="select_wrapper">
+          <img src="../../assets/image/close.png" alt class="close" @click="cancel">
+          <p class="select_title">条件筛选</p>
+          <div class="sex_wrapper">
+            <h3>性别:</h3>
+            <ul class="sex_list">
+              <li
+                @click="chooseSex(index)"
+                :class="{active:currentIndex1 == index}"
+                v-for="(item,index) in sexArr"
+                :key="index"
+              >
+                <span>{{item.name}}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="dis_wrapper">
+            <h3>范围:</h3>
+            <ul class="dis_list">
+              <!-- <li><span>范围:</span></li> -->
+              <li
+                @click="chooseRange(index)"
+                :class="{active:currentIndex2 == index}"
+                v-for="(item,index) in rangeArr"
+                :key="index"
+              >{{item.name}}</li>
+            </ul>
+          </div>
+          <p class="confirm" @click="cancel">确定</p>
+        </div>
+      </x-dialog>
+    </div>
     <!-- 点赞 -->
-    <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask width="10em"  :text="text" :position="position"></toast>
+    <toast
+      v-model="showPositionValue"
+      type="text"
+      :time="2000"
+      is-show-mask
+      width="10em"
+      :text="text"
+      :position="position"
+    ></toast>
     <!-- 见面礼 -->
     <div v-transfer-dom>
       <popup v-model="showToast_gift" position="bottom">
         <div class="position-vertical-demo">
           <div class="title vux-1px-b">
             <span>手指抖一抖，就是好朋友</span>
-            <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
+            <img src="../../assets/image/close-round.png" alt class="close" @click="close_gift">
           </div>
           <div class="gift_list">
             <ul class="list clearfix">
-              <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
-                  <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
-                  <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
-                  <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
-                  <img v-else src="../../assets/image/car.png" alt="" class="car">
-                  <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
-                  <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
-                  <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
-                  <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
-                  <p  class="gift_price">￥{{item.money}}</p>
+              <li
+                class="item"
+                v-for="(item,index) in giftList"
+                @click="sendGift(item.id)"
+                :key="item.id"
+              >
+                <img v-if="item.id===1" src="../../assets/image/beer.png" alt class="beer">
+                <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt class="flower">
+                <img v-else-if="item.id===3" src="../../assets/image/house.png" alt class="house">
+                <img v-else src="../../assets/image/car.png" alt class="car">
+                <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
+                <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
+                <p
+                  v-else-if="item.name==='house'"
+                  class="gift_name gift_name_houseAndCar"
+                >{{item.name==='house'?'别墅':"礼物"}}</p>
+                <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
+                <p class="gift_price">￥{{item.money}}</p>
               </li>
             </ul>
           </div>
@@ -81,13 +116,17 @@
     </div>
     <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad" -->
     <div class="guide_bg" v-show="isFirstLoad" @click="isFirstLoad=false">
-      <img class="thumb" src="../../assets/image/thumb.png" alt="">
+      <img class="thumb" src="../../assets/image/thumb.png" alt>
       <p class="intro">请尽快完善信息，让更多人认识你哦！</p>
       <p class="intro_mfTips">绿灯闪烁表示好友在线哦，赶紧去联系Ta吧</p>
     </div>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
+    <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel"></topUp>
+    <!-- <transition name="fade">
+      <giftPanel v-show="isGiftPanel" @closeGiftPanel="closeGiftPanel"></giftPanel>
+    </transition> -->
     <transition name="appear">
-       <envelope v-show="isShowEnvelope" :text='envelopeText'></envelope>
+      <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
     </transition>
     <router-view></router-view>
   </div>
@@ -96,6 +135,8 @@
 import stack from "./tantan/tantan.vue";
 import loading from "../../base/loading/loading";
 import envelope from 'base/envelope/envelope';
+import topUp from 'base/topUp/topUp';
+import giftPanel from 'base/giftPanel/giftPanel';
 import qrCode from 'base/qrCode/qrCode';
 import util from "common/util";
 import api from "common/api";
@@ -132,6 +173,8 @@ export default {
       currentIndex1: 0,
       currentIndex2: 0,
       isFirstLoad: false,
+      isIntegralPanel: false,  //面板显示状态
+      isGiftPanel:false,  //礼物面板状态
       sexArr: [
         {
           id: 0,
@@ -212,6 +255,15 @@ export default {
     this._loadAllGift();
   },
   methods: {
+    //监听礼物面板状态
+    closeGiftPanel(flag) {
+      this.isGiftPanel = flag;
+    },
+    //监听充值面板状态
+    closeIntegralPanel(flag) {
+      console.log('面板状态-----------', flag);
+      this.isGiftPanel = flag;
+    },
     //标识进入过公众号
     _clearFirstLoadTag() {
       api.clearFirstLoadTag().then(res => {
@@ -259,14 +311,15 @@ export default {
         } else if (res.errCode == 1023) {
           this.showQrcode(true);
         } else {
-          this.isShowEnvelope = true;
-          this.envelopeText = "余额不足，请充值"
-          setTimeout(() => {
-            this.isShowEnvelope = false;
-            this.$router.push({
-              name: "giftDetail"
-            })
-          }, 2000);
+          this.isIntegralPanel = true;  //显示充值面板
+          // this.isShowEnvelope = true;
+          // this.envelopeText = "余额不足，请充值";
+          // setTimeout(() => {
+          //   this.isShowEnvelope = false;
+          //   this.$router.push({
+          //     name: "giftDetail"
+          //   })
+          // }, 2000);
         }
       })
     },
@@ -336,6 +389,7 @@ export default {
         console.log('约战返回--------', res)
         if (res.errCode == 0) {
           // this.text = "您已发出邀请  等待对方的回应";
+
           this.isShowEnvelope = true;
           this.envelopeText = "您已发出邀请  等待对方的回应"
           setTimeout(() => {
@@ -343,6 +397,7 @@ export default {
           }, 2000);
         } else if (res.errCode == 1023) {
           this.showQrcode(true);
+
         }
       })
     },
@@ -384,7 +439,9 @@ export default {
     Scroller,
     loading,
     envelope,
-    qrCode
+    qrCode,
+    topUp,
+    giftPanel
   }
 };
 </script>

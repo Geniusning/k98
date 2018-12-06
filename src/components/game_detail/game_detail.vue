@@ -82,7 +82,7 @@ export default {
 .gift_detail {
   height: 100%;
   .gift_wrapper {
-    height: 80%;
+    height: 100%;
     .title_content {
       margin-top: 0;
       display: flex;
@@ -130,7 +130,7 @@ export default {
       }
     }
     .scroll {
-      height: 9.3333rem;
+      height: 13.3333rem;
       overflow: hidden;
       padding-bottom: 0.1333rem;
       border-bottom: 1px solid #ccc;

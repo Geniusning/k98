@@ -413,7 +413,7 @@ export default {
     },
     //打电话
     callPhone() {
-      this.set(this.shopInfo, "name1", "hahaha")
+      // this.set(this.shopInfo, "name1", "hahaha")
       window.location.href = `tel://${this.shopSettingInfo.phone}`;
       api.statCalls().then(res => {
         console.log('打电话记录------------------', res);

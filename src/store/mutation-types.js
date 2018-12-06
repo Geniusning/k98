@@ -1,4 +1,6 @@
-//判断消息累心
+//获取店长推荐列表
+export const GET_RECOMMENTLIST = "GET_RECOMMENTLIST"
+    //判断消息类型
 export const JUDGE_MESSTYPE = "JUDGE_MESSTYPE"
     //获得公众号地址
 export const GET_URL = "GET_URL"
