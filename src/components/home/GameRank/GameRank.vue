@@ -1,49 +1,56 @@
 <template>
- <div id="gameCompetionDetail" class="gameCompetionDetail">
-   <div class="bg"></div>
-     <div class="notice-wrapper">
-         <div class="name">大话骰排名赛直播间</div>
-         <img src="../../../assets/image/refresh.png" alt="" class="refresh" @click="refresh">
-         <span class="refresh-text">刷新排名</span>
-         <img class="home" src="../../../assets/image/game_home.png" alt="" @click="goHome">
-     </div>
+  <div id="gameCompetionDetail" class="gameCompetionDetail">
+    <div class="bg"></div>
+    <div class="notice-wrapper">
+      <div class="name">大话骰排名赛直播间</div>
+      <img src="../../../assets/image/refresh.png" alt class="refresh" @click="refresh">
+      <span class="refresh-text">刷新排名</span>
+      <img class="home" src="../../../assets/image/game_home.png" alt @click="goHome">
+    </div>
 
-     <div class="scroll-wrapper">
-         <div class="playerNumber">
-           <ul class="titleList">
-             <li class="subTitle">名次</li>
-             <li class="subTitle">参赛者</li>
-             <li class="subTitle">战绩(杯)</li>
-             <li class="subTitle">已打(局)</li>
-             <li class="subTitle">邀请人</li>
-           </ul>
-         </div>
-         <loading v-show="isLoading" style="position:absolute;top:30%;left:0"></loading>
-         <scroll class="scrollList" :data="playList" v-if="playList.length">
-             <ul class="userList">
-                 <li class="userItem" v-for="(item,index) in playList">
-                     <span class="rankNum" :class="{'first':index==0,'second':index==1,'third':index==2}">{{index+1}}</span>
-                     <div class="userInfo">
-                        <img class="avatar" :src="item.headURI" alt="">
-                        <div class="username">{{item.nick}}</div>
-                     </div>
-                     <span class="score">{{item.score}}</span>
-                     <span class="finishRound">{{item.finishRound*3}}</span>
-                     <span class="inviterInfo" v-if="!item.inviterDate">暂无</span>
-                      <div class="userInfo" v-else>
-                        <img class="avatar" :src="item.inviterDate.headURI" alt="">
-                        <div class="username">{{item.inviterDate.nick}}</div>
-                     </div>
-                 </li>
-             </ul>
-         </scroll>
-          <p style="font-size:20px;font-weight:400;color:#ccc;width:100%;text-align:center;margin-top:50%" class="noContentText" v-else>暂无选手参赛</p>
-     </div>
-     <!-- <div class="btn-wrapper">
+    <div class="scroll-wrapper">
+      <div class="playerNumber">
+        <ul class="titleList">
+          <li class="subTitle">名次</li>
+          <li class="subTitle">参赛者</li>
+          <li class="subTitle">战绩(杯)</li>
+          <li class="subTitle">已打(局)</li>
+          <li class="subTitle">邀请人</li>
+        </ul>
+      </div>
+      <loading v-show="isLoading" style="position:absolute;top:30%;left:0"></loading>
+      <scroll class="scrollList" :data="playList" v-if="playList.length">
+        <ul class="userList">
+          <li class="userItem" v-for="(item,index) in playList">
+            <span
+              class="rankNum"
+              :class="{'first':index==0,'second':index==1,'third':index==2}"
+            >{{index+1}}</span>
+            <div class="userInfo">
+              <img class="avatar" :src="item.headURI" alt>
+              <div class="username">{{item.teamName}}</div>
+            </div>
+            <span class="score">{{item.score}}</span>
+            <span class="finishRound">{{item.finishRound*3}}</span>
+            <span class="inviterInfo" v-if="!item.inviterDate">暂无</span>
+            <div class="userInfo" v-else>
+              <img class="avatar" :src="item.inviterDate.headURI" alt>
+              <div class="username">{{item.inviterDate.nick}}</div>
+            </div>
+          </li>
+        </ul>
+      </scroll>
+      <p
+        style="font-size:20px;font-weight:400;color:#ccc;width:100%;text-align:center;margin-top:50%"
+        class="noContentText"
+        v-else
+      >暂无选手参赛</p>
+    </div>
+    <!-- <div class="btn-wrapper">
          <p class='backHome'>长按关注本店公众号，享受会员特权：领福利、交群友、玩游戏！</p>
          <img :src="QRcodeUrl" alt="" class="QRcode">
-     </div> -->
- </div>
+    </div>-->
+  </div>
 </template>
 
 <script type='text/ecmascript-6'>
@@ -64,7 +71,7 @@ export default {
   },
   mounted() {
     this._loadArenaRank();//拉取比赛场排名
-    this._loadAllQrcode();//拉取二维码
+    //this._loadAllQrcode();//拉取二维码
     console.log('arenaID------------------------------', this.$route.params.arenaID);
   },
   methods: {
@@ -83,9 +90,13 @@ export default {
       //   clearTimeout(timer);
       // }
       api.loadArenaRank(this.arenaID).then(res => {
-        console.log(res)
+        console.log('比赛排名信息-----------', res)
         if (res.errCode === 0) {
-          this.playList = res.userRanks;
+          if (res.arenaType) {    //arenaType=0个人赛  arenaType=1团体赛
+            this.playList = res.teamRanks;
+          } else {
+            this.playList = res.userRanks;
+          }
           this.isLoading = false;
           if (res.isAllComplete) {  //如果比赛结束，结束轮训
             this.$vux.toast.show({
@@ -106,12 +117,13 @@ export default {
     refresh() {
       this._loadArenaRank();
     },
-    _loadAllQrcode() {
-      api.loadAllQrcode().then(res => {
-        console.log('二维码----------------', res)
-        this.QRcodeUrl = res.urls[0]
-      })
-    },
+    //拉取二维码
+    // _loadAllQrcode() {
+    //   api.loadAllQrcode().then(res => {
+    //     console.log('二维码----------------', res)
+    //     this.QRcodeUrl = res.urls[0]
+    //   })
+    // },
     //回到主页
     goHome() {
       this.$router.push({
@@ -134,11 +146,11 @@ export default {
   // background-color: #196045;
   overflow-y: auto;
   position: relative;
-  .bg{
+  .bg {
     width: 100%;
     height: 4rem;
     position: absolute;
-    background: -webkit-linear-gradient(top, #fbbc00, #fccc00, #fccc00,#fff);
+    background: -webkit-linear-gradient(top, #fbbc00, #fccc00, #fccc00, #fff);
     z-index: -1;
   }
   .notice-wrapper {

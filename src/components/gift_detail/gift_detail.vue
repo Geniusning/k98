@@ -7,13 +7,13 @@
           <h3 class="title fl">
             <strong>我的财富：</strong>
           </h3>
-          <span class="money fl">${{giftContent.wealth}}</span>
+          <span class="money fl">${{userInfo.money}}</span>
         </div>
         <div class="title_content_item clearfix">
           <h3 class="title fl">
             <strong>富豪榜排名：</strong>
           </h3>
-          <span class="money fl">{{giftContent.ranking}}</span>
+          <span class="money fl">{{userInfo.wealthRanking}}</span>
         </div>
         <div class="title_content_item clearfix" @click="showTreasure">
           <img
@@ -29,16 +29,19 @@
       </div>
       <div class="scrollTitle">
         <span class="total">累计财富</span>
-        <span class="name">增减(积分)</span>
-        <span class="content">变动内容</span>
+        <span class="name">积分变动</span>
+        <span class="content">变动原因</span>
         <span class="avatar">头像</span>
         <span class="time">时间</span>
       </div>
-      <scroll class="scroll" :data="giftContent.wealthDetails">
+      <scroll class="scroll" :data="giftContent" @pullingUp="pullUpMoreData" :pullup="true">
         <ul class="gift_list">
-          <li class="item vux-1px" v-for="(item,index) in giftContent.wealthDetails" :key="index">
-            <span class="total">{{item.money}}</span>
-            <span class="name" :class="{minus:item.amount<0,plus:item.amount>0}">{{item.amount}}</span>
+          <li class="item vux-1px" v-for="(item,index) in giftContent" :key="index">
+            <span class="total">{{item.value}}</span>
+            <span
+              class="name"
+              :class="{minus:item.amount<0,plus:item.amount>0}"
+            >{{item.amount>0?'+'+item.amount:item.amount}}</span>
             <!-- <span class="name"  v-else>-3积分</span> -->
             <span class="content">{{item.content}}</span>
             <div class="avatar">
@@ -46,10 +49,15 @@
             </div>
             <span class="time">{{item.time}}</span>
           </li>
-          <p v-if="!giftContent.wealthDetails.length" class="noContent">暂无积分变动内容</p>
+          <p v-if="!giftContent.length" class="noContent">暂无积分变动内容</p>
         </ul>
+        <p slot='pullup'>加载更多内容</p>
       </scroll>
-      <topUp v-show="isIntegralPanel" @closeIntegralPanel="closeIntegralPanel"></topUp>
+      <topUp
+        v-show="isIntegralPanel"
+        @closeIntegralPanel="closeIntegralPanel"
+        :fatherPanelIndex="fatherPanelIndex"
+      ></topUp>
       <!-- <div class="selectMoneyBox" v-show="isShowTreasure">
         <h2 class="titile">请选择充值的积分</h2>
         <p class="payInfo">1元兑换100积分，5元兑换500积分，10元兑换1000积分，15元兑换1500积分</p>
@@ -79,8 +87,9 @@ export default {
     return {
       moneyIndex: 1,
       moneyInitValue: 5,
+      fatherPanelIndex: 0,
       // isShowTreasure: false,
-      isIntegralPanel:false,
+      isIntegralPanel: false,
       // moneyList: [{
       //   "id": 1,
       //   "name": "1元",
@@ -106,10 +115,9 @@ export default {
       //   "points": 150
       // }
       // ],
-      giftContent: {
-        wealthDetails: []
-      },
-      giftList: []
+      giftContent: [],
+      giftList: [],
+      giftCursor: 0,
     };
   },
   computed: {
@@ -122,6 +130,13 @@ export default {
     //this._loadWealthDetail();
   },
   methods: {
+    //上拉加载更多
+    pullUpMoreData() {
+      console.log('上拉加载更多');
+      if (this.giftCursor) {
+        this._loadWealthDetail();
+      }
+    },
     //监听充值面板状态
     closeIntegralPanel(flag) {
       console.log('面板状态-----------', flag);
@@ -132,19 +147,22 @@ export default {
     },
     //拉取礼物明细
     _loadWealthDetail() {
-      api.loadWealthDetail().then(res => {
+      let count = 20;
+      api.loadWealthDetail(this.giftCursor, count).then(res => {
         console.log('礼物明细-----------------------------', res);
-        this.giftContent = res;
-        this.giftContent.wealthDetails.forEach(item => {
+        this.giftContent = this.giftContent.concat(res.wealthDetailRanking.details);
+        console.log('this.giftContent---------------', this.giftContent)
+        this.giftCursor = res.wealthDetailRanking.cursor;
+        this.giftContent.forEach(item => {
           item.time = util.timestampToTimeNoLine(item.time);
         })
       })
     },
-    selectMoney(index, event) {
-      this.moneyIndex = Number(index);
-      console.log(this.moneyIndex)
-      this.moneyInitValue = event.target.dataset.money;
-    },
+    // selectMoney(index, event) {
+    //   this.moneyIndex = Number(index);
+    //   console.log(this.moneyIndex)
+    //   this.moneyInitValue = event.target.dataset.money;
+    // },
     pay() {
       api.createOrder(this.moneyIndex).then(res => {
         if (res.errCode === 0) {
@@ -194,8 +212,10 @@ export default {
 @import "../../assets/less/variable.less";
 .gift_detail {
   height: 100%;
+  display: flex;
+  flex-direction: column;
   .gift_wrapper {
-    height: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
     .title_content {
@@ -203,6 +223,7 @@ export default {
       display: flex;
       padding: 0.4rem 0.1rem;
       box-sizing: border-box;
+      height: 1.3rem;
       .title_content_item {
         margin-right: 0.6667rem;
         box-sizing: border-box;
@@ -223,6 +244,7 @@ export default {
       justify-content: space-between;
       text-align: center;
       font-size: 0.35rem;
+      height: 0.5667rem;
       .total {
         width: 20%;
       }
@@ -240,7 +262,7 @@ export default {
       }
     }
     .scroll {
-      // height: 9.3333rem;
+      // height: 11rem;
       flex: 1;
       overflow: hidden;
       padding-bottom: 0.1333rem;

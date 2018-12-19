@@ -67,6 +67,7 @@ export default {
 @import "../../assets/less/mixin.less";
 .qrCode_wrapper{
   position: absolute;
+  z-index: 99999;
 }
 .bindTel_wrapper {
   width: 8rem;

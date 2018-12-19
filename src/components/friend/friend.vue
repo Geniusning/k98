@@ -120,8 +120,8 @@
       <p class="intro">请尽快完善信息，让更多人认识你哦！</p>
       <p class="intro_mfTips">绿灯闪烁表示好友在线哦，赶紧去联系Ta吧</p>
     </div>
+    <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId='friendId' :fatherPanelIndex='fatherPanelIndex'></topUp>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
-    <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel"></topUp>
     <!-- <transition name="fade">
       <giftPanel v-show="isGiftPanel" @closeGiftPanel="closeGiftPanel"></giftPanel>
     </transition> -->
@@ -159,6 +159,7 @@ export default {
           title: 'pic2'
         }
       ],
+      fatherPanelIndex:1,
       showToast_gift: false,
       text: "",
       envelopeText: "",
@@ -204,6 +205,7 @@ export default {
         }
       ],
       someList: [],
+      friendId:"",
       stackinit: {
         visible: 3,
         currentPage: 0
@@ -397,7 +399,6 @@ export default {
           }, 2000);
         } else if (res.errCode == 1023) {
           this.showQrcode(true);
-
         }
       })
     },

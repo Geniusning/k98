@@ -172,15 +172,17 @@
                   <p class="desc">{{item.recommend.subtopic}}</p>
                   <p class="limit">{{item.recommend.limit}}</p>
                   <p class="price">
-                    <span class="discount_p">特惠￥{{item.recommend.discountPrice}}</span>
-                    <del class="origin_p">原价￥{{item.recommend.originalPrice}}</del>
+                    <span class="discount_p">消耗积分：{{item.recommend.discountPrice}}</span>
+                    <!-- <span class="discount_p">特惠￥{{item.recommend.discountPrice}}</span> -->
+                    <!-- <del class="origin_p">原价￥{{item.recommend.originalPrice}}</del> -->
                   </p>
                 </div>
                 <div class="right">
-                  <div class="thunb_box clearfix">
-                    <span class="count fl">已订：{{item.booking.bookingNumber}}</span>
+                  <div class="thunb_box">
+                    <!-- <span class="count fl">已订：{{item.booking.bookingNumber}}</span> -->
+                    <!-- <div class="booking_btn" @click="freeBook(item.recommend.recommendID)">免费预订</div> -->
                   </div>
-                  <div class="show_detail" @click="freeBook(item.recommend.recommendID)">免费预订</div>
+                  <div class="show_detail_btn">积分兑换</div>
                 </div>
               </li>
             </ul>
@@ -284,29 +286,13 @@ export default {
       outFriendNum: 0,
       arrowIndex: 0,
       deg: 0,
-      hiddenTelescope:true,
+      hiddenTelescope: true,
       shopInfo: {
         name: "深圳市乐乐湾"
       }
     };
   },
   created() {
-    for (let i = 0; i < 360; i++) {
-      let tempObj = {
-        transform: `rotate(${i}deg)`,
-        width: "0.04rem",
-        height: "1.6rem",
-        background: "-webkit-linear-gradient(top, #79b7f4, #2785f0)",
-        position: "absolute",
-        left: "50%",
-        marginLeft: "-0.02rem",
-        transformOrigin: "bottom"
-      }
-      this.circleList.push(tempObj);
-    }
-    // setTimeout(() => {
-    //   this.openCircle();
-    // }, 3000);
     setTimeout(() => {
       console.log('门店logo--------------------', this.shopSettingInfo.image)
       let _url = window.location.href;
@@ -363,7 +349,7 @@ export default {
     //监听望眼镜动画leftCirclePart
     this.$refs.leftCirclePart.addEventListener('webkitAnimationEnd', () => {
       this.hiddenTelescope = false; //隐藏望眼镜扇形动画
-      
+
     }, false);
     // 圆圈动画
     // this.renderCircle();
@@ -378,32 +364,8 @@ export default {
 
   },
   methods: {
-    //渲染圆形
-    // renderCircle() {
-    //   let deg = 360;
-    //   var domStr = "";
-    //   for (let i = 0; i < deg; i++) {
-    //     domStr += "<div class='left_radius' style='transform:rotate(" + i + "deg); width:0.04rem;height:1.6rem;background: -webkit-linear-gradient(top, #79b7f4, #2785f0);position: absolute;left: 50%;margin-left: -0.02rem;transform-origin: bottom;'></div>"
-    //   }
-    //   this.$refs.leftRadiusBox.innerHTML = domStr;
-    //   this.$refs.rightRadiusBox.innerHTML = domStr;
-    // },
-    //打开扇形
-    // openCircle() {
-    //   var timer = setInterval(() => {
-    //     console.log('执行定时器')
-    //     if (this.circleList.length === 0) {
-    //       this.showTelescopeFlag = false;
-    //       clearInterval(timer);
-    //       return;
-    //     }
-    //     this.circleList.splice(0, 2);
-
-    //   }, 100)
-    // },
     //去游戏
     gotoPlay() {
-      let token = util.getCookie("tk");
       window.location.href = `${Config.shareUrl}game`;
     },
     gotoFriend() {
@@ -430,8 +392,9 @@ export default {
     },
     //进入游戏初始页面
     intoReadyGame() {
-      this.$router.push({ name: "gameCompetion" });
+      // this.$router.push({ name: "gameCompetion" });
       this.gameShow = false;
+      window.location.href = `${Config.shareUrl}game/?gamePath=game2`;
     },
     // 关闭游戏
     closeGame() {
@@ -468,6 +431,8 @@ export default {
       api.loadRecommends().then(res => {
         console.log('店长推荐数据---------------------', res)
         this.recommendList = res.slice(0, 2);
+        let recomment = res.slice(0, 4)
+        this.getRecommentList(recomment);
       })
     },
     //拉取首页轮播图
@@ -636,6 +601,7 @@ export default {
       getAdvertisingImg: "GET_ADVERTISINGIMG",                  //获取首页轮播图
       getChallengeGamelist: "GET_CHALLENGEGAMELIST",            //更新新增约战列表
       addBandge: "ADD_BADGE",
+      getRecommentList: "GET_RECOMMENTLIST"
     }),
     ...mapActions({
       getFriendEvt: "get_FriendEvt",                          //获取好友事件
@@ -844,50 +810,50 @@ export default {
   height: 7rem;
   background-color: #fff;
   position: relative;
-    @keyframes rotateAn {
-          0% {
-              transform: rotate(0deg);
-              //  opacity: 1;
-          }
-          99% {
-              transform: rotate(180deg);
-              opacity: 1;
-          }
-          100% {
-              transform: rotate(180deg);
-              opacity: 0;
-          }
-      }
+  @keyframes rotateAn {
+    0% {
+      transform: rotate(0deg);
+      //  opacity: 1;
+    }
+    99% {
+      transform: rotate(180deg);
+      opacity: 1;
+    }
+    100% {
+      transform: rotate(180deg);
+      opacity: 0;
+    }
+  }
   .left_radius_box {
-    width: 3.2333rem;
-    height: 3.2333rem;
+    width: 3.4rem;
+    height: 3.4rem;
     border-radius: 50%;
     position: absolute;
     z-index: 1;
-    top: 1.7rem;
-    left: 0.66rem;
+    top: 1.6rem;
+    left: 0.57rem;
     overflow: hidden;
-    .leftCircle{
-      width: 3.3333rem;
-      height: 3.3333rem;
+    .leftCircle {
+      width: 3.4rem;
+      height: 3.4rem;
       border-radius: 50%;
       position: absolute;
       overflow: hidden;
-      .leftCirclePart,.rightCirclePart{
+      .leftCirclePart,
+      .rightCirclePart {
         position: absolute;
         width: 50%;
         height: 100%;
         top: 0;
       }
-      .leftCirclePart{
+      .leftCirclePart {
         left: -0.0267rem;
         overflow: hidden;
         border-radius: 50% 0 0 50%;
         // background-color: pink;
       }
-      .leftCirclePart::after{
-        // background: -webkit-linear-gradient(bottom, #79B5F3, #2781EF);
-        background-color: #F7D91F;
+      .leftCirclePart::after {
+        background-color: #f7d91f;
         opacity: 1;
         display: block;
         content: "";
@@ -896,14 +862,13 @@ export default {
         transform-origin: right center;
         animation: rotateAn 2s 5s linear forwards;
       }
-      .rightCirclePart{
+      .rightCirclePart {
         right: 2px;
         overflow: hidden;
         border-radius: 0 50% 50% 0;
       }
       .rightCirclePart::after {
-        // background: -webkit-linear-gradient(bottom, #79B5F3, #2781EF);
-        background-color: #F7D91F;
+        background-color: #f7d91f;
         opacity: 1;
         display: block;
         content: "";
@@ -913,13 +878,13 @@ export default {
         animation: rotateAn 2s 3s linear forwards;
       }
     }
-    .findFriend_text{
-       position: absolute;
-       width: 2.6rem;
-       top: 1.2rem;
-       left: 0.4rem
+    .findFriend_text {
+      position: absolute;
+      width: 2.6rem;
+      top: 1.2rem;
+      left: 0.4rem;
     }
-    .online_person{
+    .online_person {
       width: 1.7rem;
       box-sizing: border-box;
       text-align: center;
@@ -928,7 +893,7 @@ export default {
       position: absolute;
       bottom: 0.2667rem;
       left: 0.8067rem;
-      padding: .05rem .1rem;
+      padding: 0.05rem 0.1rem;
       font-size: 0.28rem;
     }
     // .left_radius {
@@ -942,36 +907,36 @@ export default {
     // }
   }
   .right_radius_box {
-    width: 3.2333rem;
-    height: 3.2333rem;
+    width: 3.4rem;
+    height: 3.4rem;
     border-radius: 50%;
     position: absolute;
     z-index: 1;
-    top: 1.67rem;
-    right: 0.6rem;
+    top: 1.56rem;
+    right: 0.54rem;
     overflow: hidden;
-    .rightCircle{
-      width: 3.3333rem;
-      height: 3.3333rem;
+    .rightCircle {
+      width: 3.4rem;
+      height: 3.4rem;
       border-radius: 50%;
       position: absolute;
       overflow: hidden;
       left: 0.0133rem;
-      .leftCirclePart,.rightCirclePart{
+      .leftCirclePart,
+      .rightCirclePart {
         position: absolute;
         width: 50%;
         height: 100%;
         top: 0;
       }
-      .leftCirclePart{
+      .leftCirclePart {
         left: -0.0267rem;
         overflow: hidden;
         border-radius: 50% 0 0 50%;
         // background-color: pink;
       }
-      .leftCirclePart::after{
-        // background: -webkit-linear-gradient(bottom, #79B5F3, #2781EF);
-         background-color: #F7D91F;
+      .leftCirclePart::after {
+        background-color: #f7d91f;
         opacity: 1;
         display: block;
         content: "";
@@ -980,14 +945,13 @@ export default {
         transform-origin: right center;
         animation: rotateAn 2s 5s linear forwards;
       }
-      .rightCirclePart{
+      .rightCirclePart {
         right: 0.0267rem;
         overflow: hidden;
         border-radius: 0 50% 50% 0;
       }
       .rightCirclePart::after {
-        // background: -webkit-linear-gradient(bottom, #79B5F3, #2781EF);
-        background-color: #F7D91F;
+        background-color: #f7d91f;
         opacity: 1;
         display: block;
         content: "";
@@ -997,13 +961,13 @@ export default {
         animation: rotateAn 2s 3s linear forwards;
       }
     }
-    .dahuashai_text{
-       position: absolute;
-       width: 2.6rem;
-       top: 1.2rem;
-       left: 0.4rem;
+    .dahuashai_text {
+      position: absolute;
+      width: 2.6rem;
+      top: 1.2rem;
+      left: 0.4rem;
     }
-    .online_player{
+    .online_player {
       width: 1.7rem;
       box-sizing: border-box;
       text-align: center;
@@ -1012,7 +976,7 @@ export default {
       position: absolute;
       bottom: 0.2667rem;
       left: 0.8167rem;
-      padding: .05rem .1rem;
+      padding: 0.05rem 0.1rem;
       font-size: 0.28rem;
     }
     .right_radius {
@@ -1031,7 +995,7 @@ export default {
     width: 100%;
     height: 100%;
   }
-  .more{
+  .more {
     position: absolute;
     bottom: 0rem;
     right: 0rem;
@@ -1057,7 +1021,7 @@ export default {
       .dotItem {
         margin-left: 0.1rem;
         padding-top: 0.0667rem;
-        .rightArrow{
+        .rightArrow {
           position: absolute;
           right: 0.0933rem;
           top: 0.3rem;
@@ -1465,9 +1429,8 @@ export default {
           }
         }
         .right {
-          float: right; // margin-top: 0.4rem;
+           // margin-top: 0.4rem;
           .thunb_box {
-            padding-left: 0.1833rem;
             .thumb {
               width: 0.4rem;
               height: 0.4rem;
@@ -1481,14 +1444,22 @@ export default {
               color: #8f8f8f;
               font-size: 0.3467rem;
             }
+            .booking_btn {
+              width: 1.4667rem;
+              padding: 0.1067rem 0;
+              text-align: center;
+              line-height: 0.5067rem;
+              background: -webkit-linear-gradient(left, #fff800, #fef200, #fccc00, #fbbc00);
+              color: #1d1d1d;
+              border-radius: 0.08rem;
+            }
           }
-          .show_detail {
-            margin-top: 1.1rem;
+          .show_detail_btn {
+            margin-top: 1.5rem;
             width: 1.4667rem;
             padding: 0.1067rem 0;
             text-align: center;
-            line-height: 0.5067rem;
-            // background: @baseColor;
+            line-height: 0.5067rem; // background: @baseColor;
             background: -webkit-linear-gradient(
               left,
               #fff800,

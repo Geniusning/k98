@@ -4,13 +4,13 @@
       <my-header title="战胜榜" ref="header"></my-header>
       <div class="tabBox vux-1px-t">
         <button-tab v-model="tabIndex">
-          <button-tab-item @on-item-click="switchTabIndex0">社群排名</button-tab-item>
-          <button-tab-item @on-item-click="switchTabIndex1">好友排名</button-tab-item>
+          <button-tab-item @on-item-click="switchTabIndex0">好友排名</button-tab-item>
+          <button-tab-item @on-item-click="switchTabIndex1">社群排名</button-tab-item>
         </button-tab>
       </div>
     </div>
     <div class="body">
-      <div class="body-left" v-if="!isFriendList">
+      <div class="body-left" v-if="isFriendList">
         <scroll ref="scrollList" class="scrollList">
           <ul class="marsList">
             <li class="mars-item-title">
@@ -19,18 +19,38 @@
               <div class="title_item">杯数</div>
               <div class="title_item">排名</div>
             </li>
-            <li class="mars-item">
+            <li class="mars-item" v-for="(item,index) in friendList" :key="index">
               <div class="avatar-box">
-                <img src='../../../assets/image/small_car.png' alt class="avatar">
+                <img :src="item.headImgURL" alt class="avatar">
               </div>
-              <div class="name">大毛</div>
-              <div class="score">11</div>
-              <div class="rank">2</div>
+              <div class="name">{{item.nickName}}</div>
+              <div class="score">{{item.score}}</div>
+              <div class="title_item">
+                <img
+                  v-if="index===0"
+                  src="../../../assets/image/img_rank1.png"
+                  alt
+                  class="rankIcon"
+                >
+                <img
+                  v-else-if="index===1"
+                  src="../../../assets/image/img_rank2.png"
+                  alt
+                  class="rankIcon"
+                >
+                <img
+                  v-else-if="index===2"
+                  src="../../../assets/image/img_rank3.png"
+                  alt
+                  class="rankIcon"
+                >
+                <div v-else class="rank">{{index+1}}</div>
+              </div>
             </li>
           </ul>
         </scroll>
       </div>
-       <div class="body-right" v-else>
+      <div class="body-right" v-else>
         <scroll ref="scrollList" class="scrollList">
           <ul class="marsList">
             <li class="mars-item-title">
@@ -41,23 +61,23 @@
             </li>
             <li class="mars-item">
               <div class="avatar-box">
-                <img src='../../../assets/image/small_house.png' alt class="avatar">
+                <img src="../../../assets/image/small_house.png" alt class="avatar">
               </div>
               <div class="name">大毛</div>
               <div class="score">11</div>
               <div class="rank">2</div>
             </li>
-             <li class="mars-item">
+            <li class="mars-item">
               <div class="avatar-box">
-                <img src='../../../assets/image/small_house.png' alt class="avatar">
+                <img src="../../../assets/image/small_house.png" alt class="avatar">
               </div>
               <div class="name">大毛</div>
               <div class="score">11</div>
               <div class="rank">2</div>
             </li>
-             <li class="mars-item">
+            <li class="mars-item">
               <div class="avatar-box">
-                <img src='../../../assets/image/small_house.png' alt class="avatar">
+                <img src="../../../assets/image/small_house.png" alt class="avatar">
               </div>
               <div class="name">大毛</div>
               <div class="score">11</div>
@@ -71,24 +91,42 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import { ButtonTab, ButtonTabItem } from 'vux';
+import {
+  ButtonTab,
+  ButtonTabItem
+} from 'vux';
 import myHeader from 'base/myheader/myheader';
 import Scroll from 'base/scroll/scroll'
+import api from 'common/api'
 export default {
   data() {
     return {
       tabIndex: 0,
-      isFriendList:true,
+      isFriendList: true,
+      allPeoPleList: [],
+      friendList: [],
     }
   },
+  mounted() {
+    this._loadGameScoreRanking()
+  },
   methods: {
+    _loadGameScoreRanking() {
+      let type = 'friend'
+      api.loadGameScoreRanking(type).then(res => {
+        if (res.errCode === 0) {
+          this.friendList = res.scoreRanking.gameScoreInfos
+        }
+        console.log('拉取好友排名----------', res);
+      })
+    },
     switchTabIndex0() {
       this.tabIndex = 0
-      this.isFriendList = false;
+      this.isFriendList = true;
     },
     switchTabIndex1() {
       this.tabIndex = 1;
-      this.isFriendList = true;
+      this.isFriendList = false;
     },
   },
   components: {
@@ -101,60 +139,72 @@ export default {
 </script>
 
 <style scoped lang='less'>
-.vux-button-group > a.vux-button-tab-item-last:after,.vux-button-group > a.vux-button-tab-item-first:after {
+.vux-button-group > a.vux-button-tab-item-last:after,
+.vux-button-group > a.vux-button-tab-item-first:after {
   border-right: 1px solid #ffd800;
-    border-top: 1px solid #ffd800;
-    border-bottom: 1px solid #ffd800;
-    border: 1px solid #ffd800;
+  border-top: 1px solid #ffd800;
+  border-bottom: 1px solid #ffd800;
+  border: 1px solid #ffd800;
 }
-.vux-button-group > a.vux-button-group-current{
+.vux-button-group > a.vux-button-group-current {
   background: #ffd800;
 }
-.marsRank_wrapper{
+.marsRank_wrapper {
   display: flex;
   flex-direction: column;
   height: 100%;
-  .header{
+  .header {
     height: 2.2667rem;
     box-sizing: border-box;
-    .tabBox{
+    .tabBox {
       padding-top: 0.1333rem;
     }
   }
-  .body{
+  .body {
     flex: 1;
     width: 100%;
-    .scrollList{
+    .scrollList {
       height: 100%;
-       width: 100%;
-      .marsList{
+      width: 100%;
+      .marsList {
         width: 100%;
         height: 100%;
-        .mars-item-title{
+        .mars-item-title {
           width: 100%;
           font-size: 0.4rem;
           display: flex;
           justify-content: space-around;
-          .title_item{
+          .title_item {
             width: 25%;
             text-align: center;
           }
         }
-        .mars-item{
-            width: 100%;
+        .mars-item {
+          width: 100%;
           font-size: 0.4rem;
           display: flex;
           justify-content: space-around;
-          .avatar-box,.name,.score,.rank{
+          .title_item {
             width: 25%;
             text-align: center;
+            .rankIcon {
+              width: 0.6333rem;
+              height: 0.6333rem;
+            }
           }
-          .avatar{
+          .avatar-box,
+          .name,
+          .score,
+          .rank {
+            width: 25%;
+            text-align: center;
+            margin-top: 0.2133rem;
+          }
+          .avatar {
             width: 0.8rem;
             height: 0.8rem;
             border-radius: 50%;
           }
-        
         }
       }
     }

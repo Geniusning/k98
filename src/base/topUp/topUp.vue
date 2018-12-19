@@ -1,146 +1,144 @@
 <template>
   <div class="topUp_wrapper">
-    <div class="coinBox" v-if="panelIndex===0">
-      <div class="coinBox_top vux-1px-b">
-        <div class="integral_box">
-          <img src="../../assets/image/integralIcon.png" alt="icon" class="integral">
-          <p class="integral_text">积分充值：</p>
-        </div>
-        <img
-          src="../../assets/image/close-round.png"
-          alt="icon"
-          class="close"
-          @click="closeIntegralPanel"
-        >
-      </div>
-      <div class="coinBox_bottom">
-        <ul class="coinList">
-          <li
-            class="coinItem"
-            v-for="(item,index) in moneyList"
-            :key="item.id"
-            @click="payForCoin(item.id)"
+    <transition name="fade" mode="out-in">
+      <div class="coinBox" v-if="panelIndex===0" key="coinBox">
+        <div class="coinBox_top vux-1px-b">
+          <div class="integral_box">
+            <img src="../../assets/image/integralIcon.png" alt="icon" class="integral">
+            <p class="integral_text">余额不足请充积分：</p>
+          </div>
+          <img
+            src="../../assets/image/close-round.png"
+            alt="icon"
+            class="close"
+            @click="closeIntegralPanel"
           >
-            <img :src="item.imgUrl" alt :class="item.iconClass">
-            <p class="intergral">{{item.points}}</p>
-            <p class="moneyCount">￥{{item.name}}</p>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <!-- 选择送礼物的面板 -->
-    <div class="giftPanelBox" v-else-if="panelIndex===1">
-      <div class="giftPanelBox_title vux-1px-b">
-        <p class="desc">手指抖一抖，就是好朋友</p>
-        <img src="../../assets/image/close-round.png" alt class="close" @click="closeIntegralPanel">
-      </div>
-      <div class="giftListpart vux-1px-b">
-        <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
-        <ul class="list">
-          <li class="item" v-for="(item,index) in giftList" :key="index">
-            <img v-if="item.id===1" src="../../assets/image/beer.png" alt class="giftIcon">
-            <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt class="giftIcon">
-            <img v-else-if="item.id===3" src="../../assets/image/car.png" alt class="giftIcon">
-            <img v-else src="../../assets/image/boat.png" alt class="giftIcon">
-            <p class="price">{{item.money}}</p>
-          </li>
-          <!-- <li class="item">
-            <img src="../../assets/image/flower.png" alt class="giftIcon">
-            <p class="price">188</p>
-          </li>
-          <li class="item">
-            <img src="../../assets/image/car.png" alt class="giftIcon">
-            <p class="price">999</p>
-          </li>
-          <li class="item">
-            <img src="../../assets/image/boat.png" alt class="giftIcon">
-            <p class="price">1688</p>
-          </li> -->
-        </ul>
-      </div>
-      <div class="shopItemListpart vux-1px-b">
-        <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
-        <ul class="list">
-          <li class="item">
-            <img src="../../assets/image/coffee.png" alt class="giftIcon">
-            <p class="price">9900</p>
-          </li>
-          <li class="item">
-            <img src="../../assets/image/coffee.png" alt class="giftIcon">
-            <p class="price">12800</p>
-          </li>
-          <li class="item">
-            <img src="../../assets/image/coffee.png" alt class="giftIcon">
-            <p class="price">20000</p>
-          </li>
-          <li class="item">
-            <img src="../../assets/image/coffee.png" alt class="giftIcon">
-            <p class="price">99999</p>
-          </li>
-        </ul>
-      </div>
-      <div class="entityGiftListpart">
-        <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
-        <ul class="list">
-          <li class="item">
-            <img src="../../assets/image/wawa1.png" alt class="giftIcon">
-            <p class="price">9900</p>
-          </li>
-          <li class="item">
-            <img src="../../assets/image/wawa2.png" alt class="giftIcon">
-            <p class="price">12800</p>
-          </li>
-          <li class="item">
-            <img src="../../assets/image/wawa3.png" alt class="giftIcon">
-            <p class="price">99889</p>
-          </li>
-          <li class="item">
-            <img src="../../assets/image/wawa4.png" alt class="giftIcon">
-            <p class="price">99999</p>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <!-- 确认送礼物面板 -->
-    <div class="sendGiftPanelBox" v-else-if="panelIndex===2">
-      <div class="header">
-        <img src="../../assets/image/giftBox.png" class="giftBoxIfon">
-        <p class="header_text">送出本份礼物需要消耗您积分：88</p>
-        <div class="close" @click="closeIntegralPanel">X</div>
-      </div>
-      <div class="content">
-        <div class="pictureBox">
-          <img src="../../assets/image/coffee.png" alt class="pictureBox_img">
         </div>
-        <div class="giftInfoBox">
-          <p class="title">咖啡套餐</p>
-          <p class="desc">英式咖啡</p>
-          <p class="limit">限周二使用</p>
-          <p class="price">特惠￥19</p>
+        <div class="coinBox_bottom">
+          <ul class="coinList">
+            <li
+              class="coinItem"
+              v-for="(item,index) in moneyList"
+              :key="item.id"
+              @click="payForCoin(item.id)"
+            >
+              <img :src="item.imgUrl" alt :class="item.iconClass">
+              <p class="intergral">{{item.points}}</p>
+              <p class="moneyCount">￥{{item.name}}</p>
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="handle">
-        <button class="btn">确认赠送</button>
+      <!-- 选择送礼物的面板 -->
+      <div class="giftPanelBox" v-else-if="panelIndex===1" key="giftPanelBox">
+        <div class="giftPanelBox_title vux-1px-b">
+          <p class="desc">手指抖一抖，就是好朋友</p>
+          <img
+            src="../../assets/image/close-round.png"
+            alt
+            class="close"
+            @click="closeIntegralPanel"
+          >
+        </div>
+        <div class="giftListpart vux-1px-b">
+          <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <ul class="list">
+            <li
+              class="item"
+              v-for="(item,index) in giftList"
+              :key="index"
+              @click="sendGift(item.id)"
+            >
+              <img v-if="item.id===1" src="../../assets/image/beer.png" alt class="giftIcon">
+              <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt class="giftIcon">
+              <img v-else-if="item.id===3" src="../../assets/image/car.png" alt class="giftIcon">
+              <img v-else src="../../assets/image/boat.png" alt class="giftIcon">
+              <p class="price">{{item.money}}</p>
+            </li>
+          </ul>
+        </div>
+        <div class="shopItemListpart vux-1px-b" v-if="recommentList.length>0">
+          <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <ul class="list">
+            <li
+              class="item"
+              v-for="(item,index) in recommentList"
+              :key="index"
+              @click="sendShopItemGift"
+            >
+              <img :src="item.recommend.image" alt class="giftIcon">
+              <p class="price">9900</p>
+            </li>
+          </ul>
+        </div>
+        <div class="entityGiftListpart">
+          <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <ul class="list">
+            <li class="item">
+              <img src="../../assets/image/wawa1.png" alt class="giftIcon">
+              <p class="price">9900</p>
+            </li>
+            <li class="item">
+              <img src="../../assets/image/wawa2.png" alt class="giftIcon">
+              <p class="price">12800</p>
+            </li>
+            <li class="item">
+              <img src="../../assets/image/wawa3.png" alt class="giftIcon">
+              <p class="price">99889</p>
+            </li>
+            <li class="item">
+              <img src="../../assets/image/wawa4.png" alt class="giftIcon">
+              <p class="price">99999</p>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <div class="successfullyBox" v-else="panelIndex===3">
-      <div class="envelope">
-        <div class="close" @click="closeIntegralPanel">X</div>
-        <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
-        <p class="successful_text">充值成功，增加9999积分</p>
-        <p class="gotoTopUpText" @click="gotoTopUp">去充值&gt;</p>
+      <!-- 确认送礼物面板 -->
+      <div class="sendGiftPanelBox" v-else-if="panelIndex===2" key="sendGiftPanelBox">
+        <div class="header">
+          <img src="../../assets/image/giftBox.png" class="giftBoxIfon">
+          <p class="header_text">送出本份礼物需要消耗您积分：88</p>
+          <div class="close" @click="closeIntegralPanel">X</div>
+        </div>
+        <div class="content">
+          <div class="pictureBox">
+            <img src="../../assets/image/coffee.png" alt class="pictureBox_img">
+          </div>
+          <div class="giftInfoBox">
+            <p class="title">咖啡套餐</p>
+            <p class="desc">英式咖啡</p>
+            <p class="limit">限周二使用</p>
+            <p class="price">特惠￥19</p>
+          </div>
+        </div>
+        <div class="handle">
+          <button class="btn" @click="confirmShopItemGift">确认赠送</button>
+        </div>
       </div>
-    </div>
+      <div class="successfullyBox" v-else="panelIndex===3" key="successfullyBox">
+        <div class="envelope">
+          <div class="close" @click="closeIntegralPanel">X</div>
+          <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <p class="successful_text">{{successfulText}}</p>
+          <p class="gotoTopUpText" @click="gotoTopUp">去充值&gt;</p>
+          <div class="myWelfare">
+            <img class="welIcon" src="../../assets/image/integralIcon.png" alt="">
+            <p>20324</p>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script type='text/ecmascript-6'>
 import api from "common/api";
-import {mapState} from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 export default {
   data() {
     return {
       panelIndex: 1,
+      successfulText: "操作成功",
       moneyList: [{
         "id": 1,
         "name": "2",
@@ -175,16 +173,51 @@ export default {
       }],
     }
   },
-  computed:{
-      ...mapState(['giftList'])
+  computed: {
+    ...mapState(['giftList']),
+    ...mapGetters(['recommentList'])
   },
+  mounted() {
+    console.log('this.friendId----------------', this.friendId);
+    this.panelIndex = this.fatherPanelIndex;
+  },
+  props: ['friendId', 'fatherPanelIndex'],
   methods: {
     closeIntegralPanel() {
       this.$emit("closeIntegralPanel", false);
+      this.panelIndex = 1;
     },
     // 前往充值
     gotoTopUp() {
       this.panelIndex = 0;
+    },
+
+    //发送礼物
+    sendGift(id) {
+      let params = {
+        giftID: parseInt(id),
+        to: this.friendId,
+      }
+      api.sendGift(params).then(res => {
+        console.log('赠送礼物返回结果', res);
+        if (res.errCode === 0) {
+          this.panelIndex = 3;
+          this.successfulText = "送礼成功"
+        } else if (res.errCode == 1023) {
+          this.showQrcode(true);
+        } else {
+          this.panelIndex = 0;  //显示充值面板
+        }
+      })
+    },
+    //赠送店铺项目
+    sendShopItemGift() {
+      this.panelIndex = 2;
+      this.successfulText = "赠送礼物成功"
+    },
+    //确认赠送店铺项目
+    confirmShopItemGift() {
+      this.panelIndex = 3;
     },
     //   充值
     payForCoin(id) {
@@ -221,7 +254,10 @@ export default {
           );
         }
       });
-    }
+    },
+    ...mapMutations({
+      showQrcode: "SHOW_QRCODE", //暂时二维码
+    })
   },
   components: {
 
@@ -238,6 +274,7 @@ export default {
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.3);
+  z-index: 100;
   .coinBox {
     width: 100%;
     height: 4.48rem;
@@ -303,10 +340,10 @@ export default {
     }
   }
   .giftPanelBox {
-    transform: translateY(50%);
+    margin: 50% auto;
     background-color: #fff;
     width: 100%;
-    height: 6.5rem;
+    // height: 6.5rem;
     .giftPanelBox_title {
       display: flex;
       justify-content: space-between;
@@ -466,37 +503,52 @@ export default {
   }
   .successfullyBox {
     width: 100%;
-    .envelope {
-      margin: 50% auto;
-      width: 4.7333rem;
-      height: 3.0533rem;
-      .bg("../../assets/image/envelop.png");
-      position: relative;
-      .close {
-        width: 0.4667rem;
-        height: 0.4667rem;
-        text-align: center;
-        position: absolute;
-        top: 0.1333rem;
-        right: 0.1933rem;
+    // .envelope {
+    margin: 50% auto;
+    width: 4.7333rem;
+    height: 3.0533rem;
+    .bg("../../assets/image/envelop.png");
+    position: relative;
+    .myWelfare{
+      position: absolute;
+      left: 0.4rem;
+      bottom: 0.2333rem;
+      display: flex;
+      .welIcon{
+        width: 0.5rem;
+        height: 0.5rem;
+        margin-right: 0.1333rem;
       }
-      .integralIcon {
-        margin-top: 0.2267rem;
-        margin-left: 0.36rem;
-        width: 0.6rem;
-        height: 0.6rem;
-      }
-      .successful_text {
-        margin-top: 0.2667rem;
-        font-size: 0.34rem;
-        text-align: center;
-      }
-      .gotoTopUpText {
-        position: absolute;
-        bottom: 0.3533rem;
-        right: 0.18rem;
+      p{
+        margin-top: 0.133rem;
+        font-size: 0.2667rem;
       }
     }
+    .close {
+      width: 0.4667rem;
+      height: 0.4667rem;
+      text-align: right;
+      position: absolute;
+      top: 0.1333rem;
+      right: 0.1933rem;
+    }
+    .integralIcon {
+      margin-top: 0.2267rem;
+      margin-left: 0.36rem;
+      width: 0.6rem;
+      height: 0.6rem;
+    }
+    .successful_text {
+      margin-top: 0.2667rem;
+      font-size: 0.44rem;
+      text-align: center;
+    }
+    .gotoTopUpText {
+      position: absolute;
+      bottom: 0.3533rem;
+      right: 0.18rem;
+    }
+    // }
   }
 }
 </style>

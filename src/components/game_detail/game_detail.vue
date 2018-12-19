@@ -1,43 +1,47 @@
 <template>
- <div class="gift_detail">
-        <my-header title="大话战绩" ref="header"></my-header>
-        <div class="gift_wrapper vux-1px-t">
-            <div class="title_content vux-1px-b">
-              <div class='title_content_item clearfix'>
-                <h3 class="title fl"><strong>我的战绩：</strong></h3>
-                <img src="../../assets/image/jiubei.png" alt="" class="jiubeiIcon fl">
-                <span class="money fl">{{gameContent.score}}</span>
-              </div>
-               <div class='title_content_item clearfix'>
-                <h3 class="title fl"><strong>战神榜排名：</strong></h3>
-                <span class="money fl">{{gameContent.ranking}}</span>
-              </div>
-            </div>
-            <div class="scrollTitle">
-              <span class="total">累计战绩</span>
-              <span class="name">每局战果</span>
-              <span class="content">参与项目</span>
-              <span class="avatar">对手</span>
-              <span class="time">时间</span>
-            </div>
-            <scroll class="scroll" :data="gameContent.gameScoreDetails">
-                <ul class="gift_list">
-                    <li class="item vux-1px" v-for="(item,index) in gameContent.gameScoreDetails" :key="index">
-                        <span class="total">{{item.score}}</span>
-                        <span class="name">{{item.amount}}</span>
-                        <span class="content" v-if="item.content==='game1'">随机场</span>
-                        <span class="content" v-else-if="item.content==='game2'">比赛场</span>
-                        <span class="content" v-else>好友场</span>
-                        <div class="avatar">
-                          <img :src="item.headimgurl" class="gift_icon">
-                        </div>
-                        <span class="time">{{item.time}}</span>
-                    </li>
-                     <p v-if="!gameContent.gameScoreDetails.length" class="noContent">暂无战绩内容</p>
-                </ul>
-            </scroll>
+  <div class="gift_detail">
+    <my-header title="大话战绩" ref="header"></my-header>
+    <div class="gift_wrapper vux-1px-t">
+      <div class="title_content vux-1px-b">
+        <div class="title_content_item clearfix">
+          <h3 class="title fl">
+            <strong>我的战绩：</strong>
+          </h3>
+          <img src="../../assets/image/jiubei.png" alt class="jiubeiIcon fl">
+          <span class="money fl">{{userInfo.gameScore}}</span>
         </div>
- </div>
+        <div class="title_content_item clearfix">
+          <h3 class="title fl">
+            <strong>战神榜排名：</strong>
+          </h3>
+          <span class="money fl">{{userInfo.gameScoreRanking}}</span>
+        </div>
+      </div>
+      <div class="scrollTitle">
+        <span class="total">累计战绩</span>
+        <span class="name">每局战果</span>
+        <span class="content">参与项目</span>
+        <span class="avatar">对手</span>
+        <span class="time">时间</span>
+      </div>
+      <scroll class="scroll" :data="gameContent" @scrollToEnd="pullUpMoreData" :pullup="true">
+        <ul class="gift_list">
+          <li class="item vux-1px" v-for="(item,index) in gameContent" :key="index">
+            <span class="total">{{item.value}}</span>
+            <span class="name">{{item.amount}}</span>
+            <span class="content" v-if="item.content==='game1'">随机场</span>
+            <span class="content" v-else-if="item.content==='game2'">比赛场</span>
+            <span class="content" v-else>好友场</span>
+            <div class="avatar">
+              <img :src="item.headimgurl" class="gift_icon">
+            </div>
+            <span class="time">{{item.time}}</span>
+          </li>
+          <p v-if="!gameContent.length" class="noContent">暂无战绩内容</p>
+        </ul>
+      </scroll>
+    </div>
+  </div>
 </template>
 
 <script type='text/ecmascript-6'>
@@ -45,26 +49,35 @@ import api from "common/api";
 import util from "common/util";
 import myHeader from "../../base/myheader/myheader";
 import Scroll from "../../base/scroll/scroll";
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
       moneyIndex: 0,
       moneyInitValue: 5,
-      gameContent: {
-        gameScoreDetails:[]
-      },
+      gameContent: [],
     };
   },
   mounted() {
     this._LoadGameScoreDetail()
   },
+  computed:{
+    ...mapState(['userInfo'])
+  },
   methods: {
+    //上拉加载更多
+    pullUpMoreData() {
+      console.log('上拉加载更多');
+      // if (this.giftCursor) {
+      //   this._loadWealthDetail();
+      // }
+    },
     //拉取游戏详情
     _LoadGameScoreDetail() {
       api.LoadGameScoreDetail().then(res => {
         console.log('游戏详情-------------------', res);
-        this.gameContent = res;
-        this.gameContent.gameScoreDetails.forEach(item => {
+        this.gameContent = res.coupon.details;
+        this.gameContent.forEach(item => {
           item.time = util.timestampToTimeNoLine(item.time);
         })
       })
@@ -81,13 +94,18 @@ export default {
 @import "../../assets/less/variable.less";
 .gift_detail {
   height: 100%;
+  display: flex;
+  flex-direction: column;
   .gift_wrapper {
-    height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     .title_content {
       margin-top: 0;
       display: flex;
       padding: 0.4rem 0.4rem;
       box-sizing: border-box;
+      height: 1.3rem;
       .title_content_item {
         margin-right: 0.6667rem;
         box-sizing: border-box;
@@ -113,6 +131,7 @@ export default {
       justify-content: space-between;
       text-align: center;
       font-size: 0.35rem;
+      height: 0.5667rem;
       .total {
         width: 20%;
       }
@@ -130,7 +149,8 @@ export default {
       }
     }
     .scroll {
-      height: 13.3333rem;
+      // height: 13.3333rem;
+      flex: 1;
       overflow: hidden;
       padding-bottom: 0.1333rem;
       border-bottom: 1px solid #ccc;

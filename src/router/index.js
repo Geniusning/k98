@@ -7,6 +7,7 @@ import MarsRank from 'components/home/marsRank/marsRank'
 import TreasureRank from 'components/home/treasureRank/treasureRank'
 import Friend from 'components/friend/friend'
 import PersonalInfo from 'components/friend/personalInfo/personalInfo'
+// import TopUp from 'base/topUp/topUp'
 import Message from 'components/message/message'
 import Welfare from 'components/welfare/welfare'
 import Mine from 'components/mine/mine'
@@ -74,7 +75,7 @@ export default new Router({
                     path: ':id',
                     name: "personalInfo",
                     component: PersonalInfo,
-                }]
+                }, ]
                 // meta: { keepAlive: true }
         },
         {

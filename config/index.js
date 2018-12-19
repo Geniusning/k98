@@ -1,12 +1,12 @@
 'use strict'
 // Template version: 1.2.4
-// see http://vuejs-templates.github.io/webpack for documentation.
+// see http://vuejs-templates.github.io/webpack for documentation.WYeT57QFXwQUvRB2FAhrXuD8sl97z0kVXtXbCA_tw-AWYzMfAf7zaYng8NZ5DmApbmJkew==     wTx9yVEH7YZ94ySgUpUZcJ6VQOWz-ZCNoWIMBeQKN2B3L9s_9J2Fn_zgiRi3ETZEOjdrkw==
 
 const path = require('path')
 
 // ------------------------------
-const myStupidToken1 = "PLCu_jYb5Uf1raUBcaU-xl1D3njXADkfntAnsBjZfsUlVIH170jixb0MjXXTxoSJ0N_GYQ==";
-const myStupidToken2 = "Kb-Rblj-mn7lUuTOybU7vdQcK6CC3Yi_8Y0UpbyxjzOixjinATbG8WhVDsGWGMQcYAFRCQ=="
+const myStupidToken1 = "wBufg5s8akxPif-oNXQTjsL8CHUUQkaYbo1zjKvDCt7iZi33RWzHZanm-beZE8677RttIQ==";
+const myStupidToken2 = ""
 
 const myStupidToken = myStupidToken1
     // ------------------------------

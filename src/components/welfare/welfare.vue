@@ -223,7 +223,7 @@
       playGame() {
         let token = util.getCookie("tk");
         // window.location.href =`http://llwant.test.qianz.com/game/?gamePath=game3&tk=${token}`;
-        window.location.href = `${Config.shareUrl}game/?gamePath=game2&arenaID=${this.arenaID}`
+        window.location.href = `${Config.shareUrl}game/?gamePath=game2`
       },
       ...mapMutations({
         getActivityNoticeList: "GET_ACTIVITY_NOTICE" //获取活动通知

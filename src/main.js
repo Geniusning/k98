@@ -29,8 +29,8 @@ new Vue({
         ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
     },
     created() {
-        this.websock = new WebSocket(`ws://llwant.test.qianz.com/api/ws?tk=${tk}`);
-        // this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
+        // this.websock = new WebSocket(`ws://llwant.test.qianz.com/api/ws?tk=${tk}`);
+        this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
         this.websock.binaryType = "arraybuffer";
         this.connect_websocket(this.websock);
         this.socket.onopen = this.websocketonopen;
@@ -91,6 +91,8 @@ new Vue({
             //处理送礼
             else if (result.msgCode === 3) {
                 this.judgeMessType('gift')
+            } else if (result.msgCode === 4) {
+                this.judgeMessType('discount')
             }
             //处理约战事件
             else if (result.msgCode === 7) {
@@ -117,11 +119,12 @@ new Vue({
                             }
                         }
                         this.addFriendEvtObj(result);
+                        this.judgeMessType('discount');
                     }
                 }).catch(err => {
                     console.log(err)
                 })
-            }, 15000);
+            }, 10000);
         },
         // 获取用户信息
         _getUserInfo() {

@@ -1,290 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
-        /* #box {
-            width: 206px;
-            height: 206px;
-            margin: 100px auto;
-            position: relative;
-        }
-        
-        #dial {
-            height: 200px;
-            border: 2px solid #333;
-            border-radius: 50%;
-            position: relative;
-        }
-        
-        #dial .dot {
-            width: 2px;
-            height: 6px;
-            background-color: #999;
-            position: absolute;
-            top: 0;
-            left: 100px;
-            -webkit-transform-origin: 0 100px;
-        }
-        
-        #hand {
-            width: 12px;
-            height: 12px;
-            position: absolute;
-            left: 97px;
-            top: 97px;
-        }
-        
-        #hour {
-            width: 4px;
-            height: 45px;
-            background: #000;
-            position: absolute;
-            left: 4px;
-            bottom: 6px;
-            -webkit-transform-origin: bottom;
-        }
-        
-        #min {
-            width: 2px;
-            height: 60px;
-            background: #666;
-            position: absolute;
-            left: 5px;
-            bottom: 6px;
-            -webkit-transform-origin: bottom;
-        }
-        
-        #sec {
-            width: 2px;
-            height: 75px;
-            background: red;
-            position: absolute;
-            left: 5px;
-            bottom: 6px;
-            -webkit-transform-origin: bottom;
-        }
-        
-        #centre {
-            height: 12px;
-            border-radius: 9px;
-            background: #000;
-            position: relative;
-        }
-        
-        #dial span:nth-of-type(5n+1) {
-            height: 10px;
-            background: #000;
-        } */
-        
-        @keyframes rotateAn {
-            0% {
-                transform: rotate(0deg);
-            }
-            99% {
-                transform: rotate(180deg);
-                opacity: 1;
-            }
-            100% {
-                transform: rotate(180deg);
-                opacity: 0;
-            }
-        }
-        
         * {
             margin: 0;
             padding: 0;
         }
         
-        .circle-dev {
-            width: 200px;
-            height: 200px;
-            border-radius: 100px;
-            overflow: hidden;
+        body {
+            background: #666;
+        }
+        
+        #box {
+            width: 1200px;
+            height: 700px;
+            background: url(img/bg.png) no-repeat;
             position: relative;
+            margin: 100px auto;
         }
         
-        .circle-bg,
-        .circle-alt {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: red;
+        #box div {
+            width: 400px;
+            height: 100px;
+            border-radius: 9px;
             position: absolute;
-            top: 0;
-            left: 0;
+            left: 555px;
+            top: 444px;
+            /*
+ 29 
+ 30             */
+            background: url(img/logo.png) no-repeat 280px 56px;
+            transform-origin: 35px 50px;
+            transition: 1s;
         }
         
-        .circle-alt {
-            opacity: 1;
+        #box div:nth-of-type(1) {
+            padding: 0px;
+            line-height: 1.5 !important;
         }
         
-        .circle-alt-lft,
-        .circle-alt-rht {
-            position: absolute;
-            width: 50%;
-            height: 100%;
-            top: 0;
+        #box div:nth-of-type(2) {
+            background-color: #ce8298;
         }
         
-        .circle-alt-lft {
-            left: 0;
-            overflow: hidden;
-            border-radius: 50% 0 0 50%;
+        #box div:nth-of-type(3) {
+            background-color: #f78992;
         }
         
-        .circle-alt-lft:after {
-            background: yellow;
-            opacity: 1;
-            display: block;
-            content: "";
-            width: 100%;
-            height: 100%;
-            transform-origin: right center;
-            animation: rotateAn 2s 2s linear forwards;
+        #box div:nth-of-type(4) {
+            background-color: #fbc0a5;
         }
         
-        .circle-alt-rht {
-            right: 0;
-            overflow: hidden;
-            border-radius: 0 50% 50% 0;
+        #box div:nth-of-type(5) {
+            background-color: #f8988f;
         }
         
-        .circle-alt-rht:after {
-            background: yellow;
-            opacity: 1;
-            display: block;
-            content: "";
-            width: 100%;
-            height: 100%;
-            transform-origin: left center;
-            animation: rotateAn 2s linear forwards;
+        #box div:nth-of-type(6) {
+            background-color: #f16273;
+        }
+        
+        #box div:nth-of-type(7) {
+            background-color: #9c9fcd;
+        }
+        
+        #box div:nth-of-type(8) {
+            background-color: #bae2d3;
+        }
+        
+        #box div:nth-of-type(9) {
+            background-color: #43bab8;
+        }
+        
+        #box div:nth-of-type(10) {
+            background-color: #678d95
         }
     </style>
 </head>
 
+
 <body>
-    <div class="circle-dev">
-        <div class="circle-bg"></div>
-        <div class="circle-alt">
-            <div class="circle-alt-lft"></div>
-            <div class="circle-alt-rht"></div>
-        </div>
+    <div id="box">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
     </div>
-    <!-- <div id="box">
-        <div id="dial"></div>
-        <div id="hand">
-            <div id="hour"></div>
-            <div id="min"></div>
-            <div id="sec"></div>
-            <div id="centre"></div>
-        </div>
-    </div> -->
-</body>
-<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://cdn.bootcss.com/snabbdom/0.7.2/snabbdom.js"></script>
-<script src="https://cdn.bootcss.com/snabbdom/0.7.2/snabbdom-class.js"></script>
-<script src="https://cdn.bootcss.com/snabbdom/0.7.2/snabbdom-props.js"></script>
-<script src="https://cdn.bootcss.com/snabbdom/0.7.2/snabbdom-style.js"></script>
-<script src="https://cdn.bootcss.com/snabbdom/0.7.2/snabbdom-eventlisteners.js"></script>
-<script src="https://cdn.bootcss.com/snabbdom/0.7.2/h.js"></script>
-<script>
-    // let str =
-    //     'http://llwant.test.qianz.com/?from=singlemessage#/gameCompetion?teamID=d23b89f7-4cb6-4a34-b877-81fcb2928230'
-    // console.log(str.split('teamID='))
+    <script>
+        console.log(typeof 111)
+        window.onload = function() {
 
-    // function waitHandle() {
-    //     var dtd = $.Deferred();
+            var box = document.getElementById('box');
 
-    //     var wait = function(dtd) {
-    //         var tast = function() {
-    //             console.log('任务执行了');
-    //             dtd.resolve();
-    //         }
+            var divs = box.getElementsByTagName('div');
 
-    //         setTimeout(tast, 2000);
+            var jilu = true;
 
-    //         return dtd;
-    //     }
+            setTimeout(function() {
+                go();
 
-    //     return wait(dtd)
-    // }
-    // waitHandle().then(() => {
-    //         console.log('ok1')
-    //     })
-    // var snabbdom = window.snabbdom;
+            }, 1000);
 
-    // //定义patch
-    // var patch = snabbdom.init([
-    //     snabbdom_class,
-    //     snabbdom_props,
-    //     snabbdom_style,
-    //     snabbdom_eventlisteners
-    // ]);
+            //222 270 +48
+            //7 237 270 +33
+            //6 252 270 +18
+            // 15
 
-    // //定义h 
-    // var h = snabbdom.h;
+            //为每个div添加点击事件
 
-    // var container = document.getElementById('container');
-    // var btn = document.getElementById('btn');
-    // var data = [{
-    //     name: "one",
-    //     age: 12,
-    //     sex: "1"
-    // }, {
-    //     name: "two",
-    //     age: 12,
-    //     sex: "1"
-    // }, {
-    //     name: "three",
-    //     age: 12,
-    //     sex: "1"
-    // }]
+            for (var i = 0; i < divs.length - 1; i++) {
+                divs[i].index = i;
+                divs[i].onclick = function() {
 
-    // var vnode;
+                    for (var i = 0; i < divs.length; i++) {
+                        //当第i个div被点击，其他div的角度
 
-    // function render(data) {
-    //     var newNode = h("table", {}, data.map((item) => {
-    //         var tds = [];
-    //         for (var i in item) {
-    //             if (item.hasOwnProperty(i)) {
-    //                 tds.push(h('td', {}, item[i] + ''))
-    //             }
-    //         }
-    //         return h("tr", {}, tds);
-    //     }));
-    //     if (vnode) {
-    //         patch(vnode, newNode)
-    //     } else {
-    //         //初次渲染   
-    //         patch(container, newNode);
-    //     }
-    //     vnode = newNode;
-    // }
+                        if (this.index > i) {
+                            divs[i].style.transform = "rotate(" + (342 - (i * 15) + this.index * 15 - 72 + 10) + "deg)";
+
+                        }
+
+                        if (this.index < i) {
+                            divs[i].style.transform = "rotate(" + (342 - (i * 15) + this.index * 15 - 72 - 10) + "deg)";
+
+                        }
+
+                    }
+                    //被点击div的角度
+                    divs[this.index].style.transform = "rotate(" + (342 - (this.index * 15) + this.index * 15 - 72) +
+                        "deg)";
+
+                }
+
+            }
+
+            //点击最后一个图片，合并扇形
+            divs[9].onclick = function() {
+
+                if (jilu) {
+                    back();
+
+                } else {
+                    go();
+
+                }
+                jilu = !jilu;
 
 
-    // btn.onclick = () => {
-    //     console.log(111)
-    //     data[0].name = "你是我的眼";
-    //     data[1].age = 999;
-    //     render(data);
-    // }
-    // render(data)
-    var arr = [1, 2, 1, 2, 1, 2];
-    var obj = {};
-    for (var i = 0; i < arr.length; i++) {
-        if (!obj[arr[i]]) {
-            obj[arr[i]] = 1;
-        } else {
-            obj[arr[i]]++;
+            }
+
+            //使扇形打开
+
+            function go() {
+
+                for (var i = 0; i < divs.length; i++) {
+                    //"rotate("+345-(i*15)+"deg)"
+                    //不行，因为这样会先算"rotate("+345
+                    divs[i].style.transform = "rotate(" + (342 - (i * 15)) + "deg)";
+
+                }
+
+            }
+            //是扇形合并
+
+            function back() {
+
+                for (var i = 0; i < divs.length; i++) {
+                    divs[i].style.transform = "rotate(0deg)";
+
+                }
+
+            }
+
         }
-    }
-    console.log(obj);
-    console.log([...new Set(arr)])
-</script>
+    </script>
+</body>
+
 
 </html>

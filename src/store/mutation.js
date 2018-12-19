@@ -3,6 +3,10 @@ import util from "common/util";
 import router from '../router/index.js';
 
 const mutations = {
+    //获取店长推荐
+    [types.GET_RECOMMENTLIST](state, recommentList) {
+        state.recommentList = recommentList;
+    },
     //判断消息类型
     [types.JUDGE_MESSTYPE](state, type) {
         state.messType = type;
