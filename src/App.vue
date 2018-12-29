@@ -6,23 +6,29 @@
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive"></router-view>
       <lg-preview></lg-preview>
-      <transition name='envelop'>
+      <transition name="envelop">
         <!-- isShowEnvelop -->
         <div class="envelop-wrapper" v-if="isShowEnvelop" @click="showDetail">
-          <img src="./assets/image/close_ad.png" alt="" class="close" @click.stop="close">
+          <img src="./assets/image/close_ad.png" alt class="close" @click.stop="close">
           <div class="top">
             <img :src="dynamicFriendEvt.fromInfo?dynamicFriendEvt.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-              alt="" class="avatar">
+              alt class="avatar">
             <div class="name">{{dynamicFriendEvt.fromInfo?dynamicFriendEvt.fromInfo.nickname:'店长'}}</div>
           </div>
           <div class="bottom">
             <p class="content">{{dynamicFriendEvt.extMsg.lastMsg.msg}}</p>
             <!-- <p class="content">你试试我的眼的</p> -->
           </div>
-          <div class="detail">&gt;&gt;详情</div>
+          <div class="detail" v-if="messType !='onlineNotice'">&gt;&gt;详情</div>
+          <div class="detail" v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true ">&gt;&gt;去聊天</div>
+          <div class="detail" v-else>&gt;&gt;打招呼</div>
         </div>
       </transition>
     </div>
+    <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
+    <transition name="appear">
+      <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
+    </transition>
     <div class="bottom_wrapper" v-if="tabFlag">
       <tab :selected="selected"></tab>
     </div>
@@ -31,6 +37,8 @@
 
 <script>
   import Tab from "./components/tab/tab.vue";
+  import qrCode from 'base/qrCode/qrCode';
+  import envelope from 'base/envelope/envelope';
   import {
     mapState,
     mapGetters,
@@ -46,16 +54,13 @@
         isShowEnvelop: false,
         tabFlag: false,
         selected: 0,
-        shareObj: {
-          title: "深圳魅力四射酒吧首页",
-          desc: "这是一个超级好玩的的地方哦",
-          link: "",
-          imgUrl: "http://i1.bvimg.com/643118/d3ed6dbc589609a1.png"
-        }
+        envelopeText: "",
+        isShowEnvelope: false,
       };
     },
     computed: {
-      ...mapState(["inputValue", "dynamicFriendEvt", "messType"])
+      ...mapState(["inputValue", "dynamicFriendEvt", "messType"]),
+      ...mapGetters(["qrIsShow"]),
     },
     created() {
       console.log(this.$route.name);
@@ -92,11 +97,9 @@
       showDetail() {
         switch (this.messType) {
           case "message":
+            this.setChatFriend(this.dynamicFriendEvt.fromInfo);
             this.$router.push({
-              name: `message`,
-              params: {
-                routeParamNum: 0
-              }
+              path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
             });
             break;
           case "thumb":
@@ -128,6 +131,34 @@
               name: `card`,
             });
             break;
+          case "onlineNotice":
+            console.log(this.dynamicFriendEvt.fromInfo.nickname);
+            this.setChatFriend(this.dynamicFriendEvt.fromInfo);
+            if (this.dynamicFriendEvt.fromInfo.isAlreadyFriends) {
+              this.$router.push({
+                path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
+              });
+            } else {
+              api.makeFriend(this.xid).then(res => {
+                console.log(res);
+                if (res.errcode === 0) {
+                  this.isShowEnvelope = true;
+                  this.envelopeText = "飞奔个赞过去,等待对方回赞成为好友"
+                  setTimeout(() => {
+                    this.isShowEnvelope = false;
+                  }, 2000);
+                } else if (res.errcode === 1023) {
+                  this.showQrcode(true);
+                } else {
+                  this.isShowEnvelope = true;
+                  this.envelopeText = "您已点赞了哦,等待对方回赞成为好友"
+                  setTimeout(() => {
+                    this.isShowEnvelope = false;
+                  }, 2000);
+                }
+              });
+            }
+            break;
           default:
             break;
         }
@@ -139,6 +170,7 @@
       ...mapMutations({
         // updateChatList: "UPDATE_CHATLIST",//更新聊天列表
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
+        showQrcode: "SHOW_QRCODE", //展示二维码
       })
     },
     watch: {
@@ -191,15 +223,17 @@
       }
     },
     components: {
-      Tab
+      Tab,
+      qrCode,
+      envelope
     }
   };
 </script>
 
 <style lang="less">
-  @import "./assets/reset.css";
-  // @import "~vux/src/styles/reset.less";
+  @import "./assets/reset.css"; // @import "~vux/src/styles/reset.less";
   @import "~vux/src/styles/1px.less";
+  @import "./assets/less/mixin.less";
   a:hover {
     text-decoration: none !important;
   }
@@ -293,6 +327,9 @@
         margin-top: 0.2333rem;
         .content {
           padding-left: 0.1333rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
     }

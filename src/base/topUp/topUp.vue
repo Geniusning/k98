@@ -7,21 +7,11 @@
             <img src="../../assets/image/integralIcon.png" alt="icon" class="integral">
             <p class="integral_text">余额不足请充积分：</p>
           </div>
-          <img
-            src="../../assets/image/close-round.png"
-            alt="icon"
-            class="close"
-            @click="closeIntegralPanel"
-          >
+          <img src="../../assets/image/close-round.png" alt="icon" class="close" @click="closeIntegralPanel">
         </div>
         <div class="coinBox_bottom">
           <ul class="coinList">
-            <li
-              class="coinItem"
-              v-for="(item,index) in moneyList"
-              :key="item.id"
-              @click="payForCoin(item.id)"
-            >
+            <li class="coinItem" v-for="(item,index) in moneyList" :key="item.id" @click="payForCoin(item.id)">
               <img :src="item.imgUrl" alt :class="item.iconClass">
               <p class="intergral">{{item.points}}</p>
               <p class="moneyCount">￥{{item.name}}</p>
@@ -33,22 +23,12 @@
       <div class="giftPanelBox" v-else-if="panelIndex===1" key="giftPanelBox">
         <div class="giftPanelBox_title vux-1px-b">
           <p class="desc">手指抖一抖，就是好朋友</p>
-          <img
-            src="../../assets/image/close-round.png"
-            alt
-            class="close"
-            @click="closeIntegralPanel"
-          >
+          <img src="../../assets/image/close-round.png" alt class="close" @click="closeIntegralPanel">
         </div>
         <div class="giftListpart vux-1px-b">
           <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
           <ul class="list">
-            <li
-              class="item"
-              v-for="(item,index) in giftList"
-              :key="index"
-              @click="sendGift(item.id)"
-            >
+            <li class="item" v-for="(item,index) in giftList" :key="index" @click="sendGift(item.id)">
               <img v-if="item.id===1" src="../../assets/image/beer.png" alt class="giftIcon">
               <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt class="giftIcon">
               <img v-else-if="item.id===3" src="../../assets/image/car.png" alt class="giftIcon">
@@ -60,12 +40,7 @@
         <div class="shopItemListpart vux-1px-b" v-if="recommentList.length>0">
           <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
           <ul class="list">
-            <li
-              class="item"
-              v-for="(item,index) in recommentList"
-              :key="index"
-              @click="sendShopItemGift"
-            >
+            <li class="item" v-for="(item,index) in recommentList" :key="index" @click="sendShopItemGift">
               <img :src="item.recommend.image" alt class="giftIcon">
               <p class="price">9900</p>
             </li>
@@ -121,10 +96,10 @@
           <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
           <p class="successful_text">{{successfulText}}</p>
           <p class="gotoTopUpText" @click="gotoTopUp">去充值&gt;</p>
-          <div class="myWelfare">
+          <!-- <div class="myWelfare">
             <img class="welIcon" src="../../assets/image/integralIcon.png" alt="">
             <p>20324</p>
-          </div>
+          </div> -->
         </div>
       </div>
     </transition>
@@ -132,423 +107,420 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import api from "common/api";
-import { mapState, mapGetters, mapMutations } from 'vuex'
-export default {
-  data() {
-    return {
-      panelIndex: 1,
-      successfulText: "操作成功",
-      moneyList: [{
-        "id": 1,
-        "name": "2",
-        "money": 2,
-        "points": 200,
-        "imgUrl": require("../../assets/image/200coin.png"),
-        "iconClass": "coin200"
-      },
-      {
-        "id": 2,
-        "name": "10",
-        "money": 10,
-        "points": 1000,
-        "imgUrl": require("../../assets/image/1000coin.png"),
-        "iconClass": "coin1000"
-      },
-      {
-        "id": 3,
-        "name": "50",
-        "money": 50,
-        "points": 5000,
-        "imgUrl": require("../../assets/image/5000coin.png"),
-        "iconClass": "coin5000"
-      },
-      {
-        "id": 4,
-        "name": "100",
-        "money": 100,
-        "points": 10000,
-        "imgUrl": require("../../assets/image/10000coin.png"),
-        "iconClass": "coin10000"
-      }],
-    }
-  },
-  computed: {
-    ...mapState(['giftList']),
-    ...mapGetters(['recommentList'])
-  },
-  mounted() {
-    console.log('this.friendId----------------', this.friendId);
-    this.panelIndex = this.fatherPanelIndex;
-  },
-  props: ['friendId', 'fatherPanelIndex'],
-  methods: {
-    closeIntegralPanel() {
-      this.$emit("closeIntegralPanel", false);
-      this.panelIndex = 1;
-    },
-    // 前往充值
-    gotoTopUp() {
-      this.panelIndex = 0;
-    },
-
-    //发送礼物
-    sendGift(id) {
-      let params = {
-        giftID: parseInt(id),
-        to: this.friendId,
+  import api from "common/api";
+  import {
+    mapState,
+    mapGetters,
+    mapMutations
+  } from 'vuex'
+  export default {
+    data() {
+      return {
+        panelIndex: 1,
+        successfulText: "操作成功",
+        moneyList: [{
+            "id": 1,
+            "name": "2",
+            "money": 2,
+            "points": 200,
+            "imgUrl": require("../../assets/image/200coin.png"),
+            "iconClass": "coin200"
+          },
+          {
+            "id": 2,
+            "name": "10",
+            "money": 10,
+            "points": 1000,
+            "imgUrl": require("../../assets/image/1000coin.png"),
+            "iconClass": "coin1000"
+          },
+          {
+            "id": 3,
+            "name": "50",
+            "money": 50,
+            "points": 5000,
+            "imgUrl": require("../../assets/image/5000coin.png"),
+            "iconClass": "coin5000"
+          },
+          {
+            "id": 4,
+            "name": "100",
+            "money": 100,
+            "points": 10000,
+            "imgUrl": require("../../assets/image/10000coin.png"),
+            "iconClass": "coin10000"
+          }
+        ],
       }
-      api.sendGift(params).then(res => {
-        console.log('赠送礼物返回结果', res);
-        if (res.errCode === 0) {
-          this.panelIndex = 3;
-          this.successfulText = "送礼成功"
-        } else if (res.errCode == 1023) {
-          this.showQrcode(true);
-        } else {
-          this.panelIndex = 0;  //显示充值面板
+    },
+    computed: {
+      ...mapState(['giftList']),
+      ...mapGetters(['recommentList'])
+    },
+    mounted() {
+      console.log('this.friendId----------------', this.friendId);
+      this.panelIndex = this.fatherPanelIndex;
+    },
+    props: ['friendId', 'fatherPanelIndex'],
+    methods: {
+      closeIntegralPanel() {
+        this.$emit("closeIntegralPanel", false);
+        this.panelIndex = 1;
+      },
+      // 前往充值
+      gotoTopUp() {
+        this.panelIndex = 0;
+      },
+      //发送礼物
+      sendGift(id) {
+        let params = {
+          giftID: parseInt(id),
+          to: this.friendId,
         }
+        api.sendGift(params).then(res => {
+          console.log('赠送礼物返回结果', res);
+          if (res.errCode === 0) {
+            this.panelIndex = 3;
+            this.successfulText = "送礼成功"
+          } else if (res.errCode == 1023) {
+            this.showQrcode(true);
+          } else {
+            this.panelIndex = 0; //显示充值面板
+          }
+        })
+      },
+      //赠送店铺项目
+      sendShopItemGift() {
+        this.panelIndex = 2;
+        this.successfulText = "赠送礼物成功"
+      },
+      //确认赠送店铺项目
+      confirmShopItemGift() {
+        this.panelIndex = 3;
+      },
+      //   充值
+      payForCoin(id) {
+        //   console.log(id);
+        api.createOrder(id).then(res => {
+          if (res.errCode === 0) {
+            let resultInfo = res.data;
+            console.log(resultInfo);
+            let _this = this;
+            WeixinJSBridge.invoke(
+              "getBrandWCPayRequest", {
+                "appId": resultInfo.appId, //公众号名称，由商户传入
+                "timeStamp": "" + resultInfo.timeStamp, //时间戳，自1970年以来的秒数
+                "nonceStr": resultInfo.nonceStr, //随机串
+                "package": resultInfo.package,
+                "signType": resultInfo.signType, //微信签名方式：
+                "paySign": resultInfo.paySign //微信签名
+              },
+              (res) => {
+                console.log(res);
+                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                  // 使用以上方式判断前端返回,微信团队郑重提示：
+                  // alert("微信支付成功");
+                  this.panelIndex = 0;
+                  api.getUserInfo("/api/loadUserInfo").then(res => {
+                      this.getUserInfo(res);
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+                  //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                }
+              }
+            );
+          }
+        });
+      },
+      ...mapMutations({
+        showQrcode: "SHOW_QRCODE", //暂时二维码
       })
     },
-    //赠送店铺项目
-    sendShopItemGift() {
-      this.panelIndex = 2;
-      this.successfulText = "赠送礼物成功"
-    },
-    //确认赠送店铺项目
-    confirmShopItemGift() {
-      this.panelIndex = 3;
-    },
-    //   充值
-    payForCoin(id) {
-      //   console.log(id);
-      api.createOrder(id).then(res => {
-        if (res.errCode === 0) {
-          let resultInfo = res.data;
-          console.log(resultInfo);
-          let _this = this;
-          WeixinJSBridge.invoke(
-            "getBrandWCPayRequest", {
-              "appId": resultInfo.appId, //公众号名称，由商户传入
-              "timeStamp": "" + resultInfo.timeStamp, //时间戳，自1970年以来的秒数
-              "nonceStr": resultInfo.nonceStr, //随机串
-              "package": resultInfo.package,
-              "signType": resultInfo.signType, //微信签名方式：
-              "paySign": resultInfo.paySign //微信签名
-            },
-            (res) => {
-              console.log(res);
-              if (res.err_msg == "get_brand_wcpay_request:ok") {
-                // 使用以上方式判断前端返回,微信团队郑重提示：
-                // alert("微信支付成功");
-                this.panelIndex = 0;
-                api.getUserInfo("/api/loadUserInfo").then(res => {
-                  this.getUserInfo(res);
-                })
-                  .catch(err => {
-                    console.log(err);
-                  });
-                //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-              }
-            }
-          );
-        }
-      });
-    },
-    ...mapMutations({
-      showQrcode: "SHOW_QRCODE", //暂时二维码
-    })
-  },
-  components: {
-
+    components: {
+    }
   }
-}
 </script>
 
 <style scoped lang='less'>
-@import "../../assets/less/mixin.less";
-.topUp_wrapper {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  z-index: 100;
-  .coinBox {
-    width: 100%;
-    height: 4.48rem;
-    // transform: translateY(50%);
-    margin: 50% auto;
-
-    background-color: #fff;
-    .coinBox_top {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.3333rem 0.36rem;
-      .integral_box {
-        display: flex;
-        .integral {
-          width: 0.8rem;
-          height: 0.8rem;
-        }
-        .integral_text {
-          padding-top: 0.2667rem;
-          padding-left: 0.1333rem;
-          font-weight: 700;
-        }
-      }
-      .close {
-        padding-top: 0.1333rem;
-        width: 0.5333rem;
-        height: 0.5333rem;
-      }
-    }
-    .coinBox_bottom {
-      .coinList {
+  @import "../../assets/less/mixin.less";
+  .topUp_wrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    .coinBox {
+      width: 100%;
+      height: 4.48rem; // transform: translateY(50%);
+      margin: 50% auto;
+      background-color: #fff;
+      .coinBox_top {
         display: flex;
         justify-content: space-between;
-        padding: 0 1.2rem 0 0.7rem;
-        .coinItem {
-          width: 0.9333rem;
-          .coin200 {
-            width: 100%;
-            margin-top: 0.96rem;
+        padding: 0.3333rem 0.36rem;
+        .integral_box {
+          display: flex;
+          .integral {
+            width: 0.8rem;
+            height: 0.8rem;
           }
-          .coin1000 {
-            width: 100%;
-            margin-top: 0.72rem;
+          .integral_text {
+            padding-top: 0.2667rem;
+            padding-left: 0.1333rem;
+            font-weight: 700;
           }
-          .coin5000 {
-            width: 100%;
-            margin-top: 0.32rem;
-          }
-          .coin10000 {
-            width: 1.28rem;
-            margin-top: 0.32rem;
-          }
-          .intergral {
-            width: 100%;
-            text-align: center;
-            color: #ffdf03;
-          }
-          .moneyCount {
-            margin-top: 0.3rem;
+        }
+        .close {
+          padding-top: 0.1333rem;
+          width: 0.5333rem;
+          height: 0.5333rem;
+        }
+      }
+      .coinBox_bottom {
+        .coinList {
+          display: flex;
+          justify-content: space-between;
+          padding: 0 1.2rem 0 0.7rem;
+          .coinItem {
+            width: 0.9333rem;
+            .coin200 {
+              width: 100%;
+              margin-top: 0.96rem;
+            }
+            .coin1000 {
+              width: 100%;
+              margin-top: 0.72rem;
+            }
+            .coin5000 {
+              width: 100%;
+              margin-top: 0.32rem;
+            }
+            .coin10000 {
+              width: 1.28rem;
+              margin-top: 0.32rem;
+            }
+            .intergral {
+              width: 100%;
+              text-align: center;
+              color: #ffdf03;
+            }
+            .moneyCount {
+              margin-top: 0.3rem;
+            }
           }
         }
       }
     }
-  }
-  .giftPanelBox {
-    margin: 50% auto;
-    background-color: #fff;
-    width: 100%;
-    // height: 6.5rem;
-    .giftPanelBox_title {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.3rem;
-      .desc {
-        font-size: 0.4rem;
-        color: #f2e252;
-      }
-      .close {
-        width: 0.48rem;
-        height: 0.48rem;
-      }
-    }
-    .giftListpart {
-      position: relative;
-      .integralIcon {
-        position: absolute;
-        left: 0.1333rem;
-        bottom: 0.1333rem;
-        width: 0.6267rem;
-        height: 0.6267rem;
-      }
-      .list {
+    .giftPanelBox {
+      margin: 50% auto;
+      background-color: #fff;
+      width: 100%; // height: 6.5rem;
+      .giftPanelBox_title {
         display: flex;
-        justify-content: space-around;
-        padding: 0.1133rem 0.7rem;
-        .item {
-          .giftIcon {
-            width: 1rem;
-            height: 1.2rem;
-          }
-          .price {
-            width: 1.2rem;
-            text-align: center;
-          }
-        }
-      }
-    }
-    .shopItemListpart {
-      position: relative;
-      .integralIcon {
-        position: absolute;
-        left: 0.1333rem;
-        bottom: 0.1333rem;
-        width: 0.6267rem;
-        height: 0.6267rem;
-      }
-      .list {
-        display: flex;
-        justify-content: space-around;
-        padding: 0.1133rem 0.7rem;
-        .item {
-          .giftIcon {
-            width: 1rem;
-            height: 1rem;
-          }
-          .price {
-            width: 1rem;
-            text-align: center;
-          }
-        }
-      }
-    }
-    .entityGiftListpart {
-      position: relative;
-      .integralIcon {
-        position: absolute;
-        left: 0.1333rem;
-        bottom: 0.1333rem;
-        width: 0.6267rem;
-        height: 0.6267rem;
-      }
-      .list {
-        display: flex;
-        justify-content: space-around;
-        padding: 0.1133rem 0.7rem;
-        .item {
-          .giftIcon {
-            width: 1rem;
-            height: 1rem;
-          }
-          .price {
-            width: 1rem;
-            text-align: center;
-          }
-        }
-      }
-    }
-  }
-  .sendGiftPanelBox {
-    width: 7.3333rem;
-    height: 4.5rem;
-    margin: 50% auto;
-    .bg("../../assets/image/envelop.png");
-    .header {
-      display: flex;
-      padding: 0.2667rem 0.4rem;
-      position: relative;
-      .close {
-        font-size: 0.3467rem;
-        position: absolute;
-        top: 0.2333rem;
-        right: 0.3667rem;
-        width: 0.5667rem;
-        height: 0.5667rem;
-        text-align: right;
-      }
-      .giftBoxIfon {
-        width: 0.4rem;
-        height: 0.4rem;
-        margin-right: 0.1667rem;
-      }
-      .header_text {
-        font-size: 0.3rem;
-        color: #333;
-        padding-top: 0.0533rem;
-      }
-    }
-    .content {
-      display: flex;
-      // justify-content: space-between;
-      padding: 0 0.4rem;
-      .pictureBox {
-        .pictureBox_img {
-          width: 2.5rem;
-          margin-right: 0.2667rem;
-        }
-      }
-      .giftInfoBox {
-        p {
-          margin-bottom: 0.06rem;
-        }
-        .title {
-          font-weight: 600;
-        }
+        justify-content: space-between;
+        padding: 0.3rem;
         .desc {
-          color: #ccc;
+          font-size: 0.4rem;
+          color: #f2e252;
         }
-        .limit {
-          color: #ccc;
+        .close {
+          width: 0.48rem;
+          height: 0.48rem;
         }
-        .price {
-          font-weight: 600;
+      }
+      .giftListpart {
+        position: relative;
+        .integralIcon {
+          position: absolute;
+          left: 0.1333rem;
+          bottom: 0.1333rem;
+          width: 0.6267rem;
+          height: 0.6267rem;
+        }
+        .list {
+          display: flex;
+          justify-content: space-around;
+          padding: 0.1133rem 0.7rem;
+          .item {
+            .giftIcon {
+              width: 1rem;
+              height: 1.2rem;
+            }
+            .price {
+              width: 1.2rem;
+              text-align: center;
+            }
+          }
+        }
+      }
+      .shopItemListpart {
+        position: relative;
+        .integralIcon {
+          position: absolute;
+          left: 0.1333rem;
+          bottom: 0.1333rem;
+          width: 0.6267rem;
+          height: 0.6267rem;
+        }
+        .list {
+          display: flex;
+          justify-content: space-around;
+          padding: 0.1133rem 0.7rem;
+          .item {
+            .giftIcon {
+              width: 1rem;
+              height: 1rem;
+            }
+            .price {
+              width: 1rem;
+              text-align: center;
+            }
+          }
+        }
+      }
+      .entityGiftListpart {
+        position: relative;
+        .integralIcon {
+          position: absolute;
+          left: 0.1333rem;
+          bottom: 0.1333rem;
+          width: 0.6267rem;
+          height: 0.6267rem;
+        }
+        .list {
+          display: flex;
+          justify-content: space-around;
+          padding: 0.1133rem 0.7rem;
+          .item {
+            .giftIcon {
+              width: 1rem;
+              height: 1rem;
+            }
+            .price {
+              width: 1rem;
+              text-align: center;
+            }
+          }
         }
       }
     }
-    .handle {
-      width: 100%;
-      text-align: center;
-      padding-top: 0.4rem;
-      .btn {
-        padding: 0.08rem 0.1067rem;
-        border: none;
-        background: -webkit-linear-gradient(top, #fcd502, #e59305);
+    .sendGiftPanelBox {
+      width: 7.3333rem;
+      height: 4.5rem;
+      margin: 50% auto;
+      .bg("../../assets/image/envelop.png");
+      .header {
+        display: flex;
+        padding: 0.2667rem 0.4rem;
+        position: relative;
+        .close {
+          font-size: 0.3467rem;
+          position: absolute;
+          top: 0.2333rem;
+          right: 0.3667rem;
+          width: 0.5667rem;
+          height: 0.5667rem;
+          text-align: right;
+        }
+        .giftBoxIfon {
+          width: 0.4rem;
+          height: 0.4rem;
+          margin-right: 0.1667rem;
+        }
+        .header_text {
+          font-size: 0.3rem;
+          color: #333;
+          padding-top: 0.0533rem;
+        }
       }
+      .content {
+        display: flex; // justify-content: space-between;
+        padding: 0 0.4rem;
+        .pictureBox {
+          .pictureBox_img {
+            width: 2.5rem;
+            margin-right: 0.2667rem;
+          }
+        }
+        .giftInfoBox {
+          p {
+            margin-bottom: 0.06rem;
+          }
+          .title {
+            font-weight: 600;
+          }
+          .desc {
+            color: #ccc;
+          }
+          .limit {
+            color: #ccc;
+          }
+          .price {
+            font-weight: 600;
+          }
+        }
+      }
+      .handle {
+        width: 100%;
+        text-align: center;
+        padding-top: 0.4rem;
+        .btn {
+          padding: 0.08rem 0.1067rem;
+          border: none;
+          background: -webkit-linear-gradient(top, #fcd502, #e59305);
+        }
+      }
+    }
+    .successfullyBox {
+      width: 100%; // .envelope {
+      margin: 50% auto;
+      width: 4.7333rem;
+      height: 3.0533rem;
+      .bg("../../assets/image/envelop.png");
+      position: relative;
+      .myWelfare {
+        position: absolute;
+        left: 0.4rem;
+        bottom: 0.2333rem;
+        display: flex;
+        .welIcon {
+          width: 0.5rem;
+          height: 0.5rem;
+          margin-right: 0.1333rem;
+        }
+        p {
+          margin-top: 0.133rem;
+          font-size: 0.2667rem;
+        }
+      }
+      .close {
+        width: 0.4667rem;
+        height: 0.4667rem;
+        text-align: right;
+        position: absolute;
+        top: 0.1333rem;
+        right: 0.1933rem;
+      }
+      .integralIcon {
+        margin-top: 0.2267rem;
+        margin-left: 0.36rem;
+        width: 0.6rem;
+        height: 0.6rem;
+      }
+      .successful_text {
+        margin-top: 0.2667rem;
+        font-size: 0.44rem;
+        text-align: center;
+      }
+      .gotoTopUpText {
+        position: absolute;
+        bottom: 0.2533rem;
+        right: 0.18rem;
+      } // }
     }
   }
-  .successfullyBox {
-    width: 100%;
-    // .envelope {
-    margin: 50% auto;
-    width: 4.7333rem;
-    height: 3.0533rem;
-    .bg("../../assets/image/envelop.png");
-    position: relative;
-    .myWelfare{
-      position: absolute;
-      left: 0.4rem;
-      bottom: 0.2333rem;
-      display: flex;
-      .welIcon{
-        width: 0.5rem;
-        height: 0.5rem;
-        margin-right: 0.1333rem;
-      }
-      p{
-        margin-top: 0.133rem;
-        font-size: 0.2667rem;
-      }
-    }
-    .close {
-      width: 0.4667rem;
-      height: 0.4667rem;
-      text-align: right;
-      position: absolute;
-      top: 0.1333rem;
-      right: 0.1933rem;
-    }
-    .integralIcon {
-      margin-top: 0.2267rem;
-      margin-left: 0.36rem;
-      width: 0.6rem;
-      height: 0.6rem;
-    }
-    .successful_text {
-      margin-top: 0.2667rem;
-      font-size: 0.44rem;
-      text-align: center;
-    }
-    .gotoTopUpText {
-      position: absolute;
-      bottom: 0.3533rem;
-      right: 0.18rem;
-    }
-    // }
-  }
-}
 </style>

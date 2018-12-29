@@ -1,16 +1,42 @@
 <template>
   <div class="marsRank_wrapper">
     <div class="header">
-      <my-header title="战胜榜" ref="header"></my-header>
+      <my-header title="战神榜" ref="header"></my-header>
       <div class="tabBox vux-1px-t">
         <button-tab v-model="tabIndex">
-          <button-tab-item @on-item-click="switchTabIndex0">好友排名</button-tab-item>
-          <button-tab-item @on-item-click="switchTabIndex1">社群排名</button-tab-item>
+          <button-tab-item @on-item-click="switchTabIndex0">社群排名</button-tab-item>
+          <button-tab-item @on-item-click="switchTabIndex1">好友排名</button-tab-item>
         </button-tab>
       </div>
     </div>
     <div class="body">
       <div class="body-left" v-if="isFriendList">
+        <scroll ref="scrollList" class="scrollList">
+          <ul class="marsList" v-if="allPeopleList.length">
+            <li class="mars-item-title">
+              <div class="title_item">头像</div>
+              <div class="title_item">名字</div>
+              <div class="title_item">杯数</div>
+              <div class="title_item">排名</div>
+            </li>
+            <li class="mars-item" v-for="(item,index) in allPeopleList" :key="index">
+              <div class="avatar-box">
+                <img :src="item.headImgURL" alt class="avatar">
+              </div>
+              <div class="name">{{item.nickName}}</div>
+              <div class="score">{{item.score}}</div>
+              <div class="title_item">
+                <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
+                <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
+                <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
+                <div v-else class="rank">{{index+1}}</div>
+              </div>
+            </li>
+          </ul>
+          <p v-else class="noData">暂无数据</p>
+        </scroll>
+      </div>
+      <div class="body-right" v-else>
         <scroll ref="scrollList" class="scrollList">
           <ul class="marsList">
             <li class="mars-item-title">
@@ -26,62 +52,11 @@
               <div class="name">{{item.nickName}}</div>
               <div class="score">{{item.score}}</div>
               <div class="title_item">
-                <img
-                  v-if="index===0"
-                  src="../../../assets/image/img_rank1.png"
-                  alt
-                  class="rankIcon"
-                >
-                <img
-                  v-else-if="index===1"
-                  src="../../../assets/image/img_rank2.png"
-                  alt
-                  class="rankIcon"
-                >
-                <img
-                  v-else-if="index===2"
-                  src="../../../assets/image/img_rank3.png"
-                  alt
-                  class="rankIcon"
-                >
+                <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
+                <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
+                <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
                 <div v-else class="rank">{{index+1}}</div>
               </div>
-            </li>
-          </ul>
-        </scroll>
-      </div>
-      <div class="body-right" v-else>
-        <scroll ref="scrollList" class="scrollList">
-          <ul class="marsList">
-            <li class="mars-item-title">
-              <div class="title_item">头像</div>
-              <div class="title_item">名字</div>
-              <div class="title_item">杯数</div>
-              <div class="title_item">排名</div>
-            </li>
-            <li class="mars-item">
-              <div class="avatar-box">
-                <img src="../../../assets/image/small_house.png" alt class="avatar">
-              </div>
-              <div class="name">大毛</div>
-              <div class="score">11</div>
-              <div class="rank">2</div>
-            </li>
-            <li class="mars-item">
-              <div class="avatar-box">
-                <img src="../../../assets/image/small_house.png" alt class="avatar">
-              </div>
-              <div class="name">大毛</div>
-              <div class="score">11</div>
-              <div class="rank">2</div>
-            </li>
-            <li class="mars-item">
-              <div class="avatar-box">
-                <img src="../../../assets/image/small_house.png" alt class="avatar">
-              </div>
-              <div class="name">大毛</div>
-              <div class="score">11</div>
-              <div class="rank">2</div>
             </li>
           </ul>
         </scroll>
@@ -91,123 +66,140 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import {
-  ButtonTab,
-  ButtonTabItem
-} from 'vux';
-import myHeader from 'base/myheader/myheader';
-import Scroll from 'base/scroll/scroll'
-import api from 'common/api'
-export default {
-  data() {
-    return {
-      tabIndex: 0,
-      isFriendList: true,
-      allPeoPleList: [],
-      friendList: [],
-    }
-  },
-  mounted() {
-    this._loadGameScoreRanking()
-  },
-  methods: {
-    _loadGameScoreRanking() {
-      let type = 'friend'
-      api.loadGameScoreRanking(type).then(res => {
-        if (res.errCode === 0) {
-          this.friendList = res.scoreRanking.gameScoreInfos
-        }
-        console.log('拉取好友排名----------', res);
-      })
-    },
-    switchTabIndex0() {
-      this.tabIndex = 0
-      this.isFriendList = true;
-    },
-    switchTabIndex1() {
-      this.tabIndex = 1;
-      this.isFriendList = false;
-    },
-  },
-  components: {
+  import {
     ButtonTab,
-    ButtonTabItem,
-    myHeader,
-    Scroll
+    ButtonTabItem
+  } from 'vux';
+  import myHeader from 'base/myheader/myheader';
+  import Scroll from 'base/scroll/scroll'
+  import api from 'common/api'
+  export default {
+    data() {
+      return {
+        tabIndex: 0,
+        isFriendList: true,
+        allPeopleCursor: 0,
+        allPeopleList: [],
+        friendList: [],
+      }
+    },
+    mounted() {
+      this._loadGameScoreRanking()
+    },
+    methods: {
+      _loadGameScoreRanking() {
+        let type = 'friend'
+        api.loadGameScoreRanking(type).then(res => {
+          if (res.errCode === 0) {
+            this.friendList = res.scoreRanking.gameScoreInfos
+          }
+          console.log('拉取好友排名----------', res);
+        })
+      },
+      _loadWealthAllPeopleRanking() {
+        let type = 'allPerson';
+        let count = 20;
+        api.loadGameScoreRanking(type, count, this.allPeopleCursor).then(res => {
+          console.log('财富全部排行信息----------------', res)
+          this.allPeopleList = res.wealthRanking.wealthInfos;
+          this.allPeopleCursor = res.wealthRanking.cursor;
+        })
+      },
+      switchTabIndex0() {
+        this.tabIndex = 0
+        this.isFriendList = true;
+      },
+      switchTabIndex1() {
+        this.tabIndex = 1;
+        this.isFriendList = false;
+      },
+    },
+    components: {
+      ButtonTab,
+      ButtonTabItem,
+      myHeader,
+      Scroll
+    }
   }
-}
 </script>
 
 <style scoped lang='less'>
-.vux-button-group > a.vux-button-tab-item-last:after,
-.vux-button-group > a.vux-button-tab-item-first:after {
-  border-right: 1px solid #ffd800;
-  border-top: 1px solid #ffd800;
-  border-bottom: 1px solid #ffd800;
-  border: 1px solid #ffd800;
-}
-.vux-button-group > a.vux-button-group-current {
-  background: #ffd800;
-}
-.marsRank_wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  .header {
-    height: 2.2667rem;
-    box-sizing: border-box;
-    .tabBox {
-      padding-top: 0.1333rem;
-    }
+  .vux-button-group>a.vux-button-tab-item-last:after,
+  .vux-button-group>a.vux-button-tab-item-first:after {
+    border-right: 1px solid #ffd800;
+    border-top: 1px solid #ffd800;
+    border-bottom: 1px solid #ffd800;
+    border: 1px solid #ffd800;
   }
-  .body {
-    flex: 1;
-    width: 100%;
-    .scrollList {
-      height: 100%;
+  .vux-button-group>a.vux-button-group-current {
+    background: #ffd800;
+  }
+  .marsRank_wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    .header {
+      height: 2.2667rem;
+      box-sizing: border-box;
+      .tabBox {
+        padding-top: 0.1333rem;
+      }
+    }
+    .body {
+      flex: 1;
       width: 100%;
-      .marsList {
-        width: 100%;
+      .scrollList {
         height: 100%;
-        .mars-item-title {
+        width: 100%;
+        .marsList {
           width: 100%;
-          font-size: 0.4rem;
-          display: flex;
-          justify-content: space-around;
-          .title_item {
-            width: 25%;
-            text-align: center;
-          }
-        }
-        .mars-item {
-          width: 100%;
-          font-size: 0.4rem;
-          display: flex;
-          justify-content: space-around;
-          .title_item {
-            width: 25%;
-            text-align: center;
-            .rankIcon {
-              width: 0.6333rem;
-              height: 0.6333rem;
+          height: 100%;
+          .mars-item-title {
+            width: 100%;
+            font-size: 0.4rem;
+            display: flex;
+            justify-content: space-around;
+            .title_item {
+              width: 25%;
+              text-align: center;
             }
           }
-          .avatar-box,
-          .name,
-          .score,
-          .rank {
-            width: 25%;
-            text-align: center;
-            margin-top: 0.2133rem;
+          .mars-item {
+            width: 100%;
+            font-size: 0.4rem;
+            display: flex;
+            justify-content: space-around;
+            .title_item {
+              width: 25%;
+              text-align: center;
+              .rankIcon {
+                width: 0.6333rem;
+                height: 0.6333rem;
+              }
+            }
+            .avatar-box,
+            .name,
+            .score,
+            .rank {
+              width: 25%;
+              text-align: center;
+              margin-top: 0.2133rem;
+              display: inline-block;
+            }
+            .avatar {
+              width: 0.8rem;
+              height: 0.8rem;
+              border-radius: 50%;
+            }
           }
-          .avatar {
-            width: 0.8rem;
-            height: 0.8rem;
-            border-radius: 50%;
-          }
+        }
+        .noData {
+          margin: 50% auto;
+          font-size: 0.5333rem;
+          color: #ccc;
+          text-align: center;
         }
       }
     }
   }
-}
 </style>

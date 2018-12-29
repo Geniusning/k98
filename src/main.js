@@ -100,6 +100,10 @@ new Vue({
                 this.addBange();
                 this.judgeMessType('playGame')
             }
+            //上线通知
+            else if(result.msgCode === 8){
+                this.judgeMessType('onlineNotice');
+            }   
         },
         websocketclose(e) {
             //关闭

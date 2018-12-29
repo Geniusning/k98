@@ -62,7 +62,7 @@
             </li>
             <li class="item_last vux-1px-b">
               <span class="item_name signature">个性签名</span>
-              <input type="text" class="signature_area" v-model="signature" placeholder="最多输入15个汉字" maxlength="15" >
+              <input @blur="blurAdjust" type="text" class="signature_area" v-model="signature" placeholder="最多输入15个汉字" maxlength="15" >
               <div class="count">{{length}}/15</div>
             </li>
           </ul>
@@ -206,6 +206,9 @@ export default {
       : this.signature;
   },
   methods: {
+    blurAdjust(){
+       window.scrollTo(0, 0);
+    },
     //进入修改头像页面
     updateAvatar() {
       let id = 0;

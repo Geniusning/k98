@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-12-19 12:24:35
+ * @Last Modified time: 2018-12-28 14:50:03
  */
 
 import axios from 'axios'
@@ -93,8 +93,9 @@ api.giveBackThumb = function (type, flag) {
 //获取好友列表
 api.loadFriends = function (cursor) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/loadFriends?cursor=${cursor}`).then(res => {
+    axios.post(Url.commonUrl + `/api/loadFriends?tk=${tk}`).then(res => {
       if (res.status == 200) {
+        console.log('拉取好友详细数据-----------',res)
         resolve(res.data)
       }
     }).catch(err => {

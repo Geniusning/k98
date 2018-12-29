@@ -15,7 +15,7 @@
         <div style="height:100%" class="stack_content">
           <div class="big_box">
             <div class="img_content">
-              <div class="icon_box" v-if="item.isIndoor">
+              <div class="icon_box" v-if="item.info.onlineDiceServer || item.info.onlineL98Server">
                 <img src="../../../assets/image/online.png" alt="" class="icon" >
                 <img src="../../../assets/image/dot_green.png" alt="" class="dot bling">
                 <span class="line_word">店内</span>

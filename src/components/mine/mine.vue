@@ -64,8 +64,8 @@
                 <p class="desc">{{item.recommend.subtopic}}</p>
                 <p class="limit">{{item.recommend.limit}}</p>
                 <p class="price">
-                  <span class="discount_p">特惠￥{{item.recommend.discountPrice}}</span>
-                  <del class="origin_p">原价￥{{item.recommend.originalPrice}}</del>
+                  <span class="discount_p">特惠{{item.recommend.discountPrice}}</span>
+                  <span class="origin_p">积分换 ${{item.recommend.originalPrice}}</span>
                 </p>
               </div>
               <div class="right">
@@ -79,36 +79,36 @@
         </div>
       </div>
       <!-- 我的标签 -->
-      <div class="tag_wrapper">
+      <!-- <div class="tag_wrapper">
         <h2 class="tag_title">我的标签
           <span class="star">#</span>
         </h2>
         <ul class="tag_list" v-if="userInfo.tags.length">
-          <!-- <ul class="tag_list" v-if="showTag"> -->
+          <ul class="tag_list" v-if="showTag">
           <li v-for="(item,index) in tagList" :key="index" class="item">{{item}}</li>
         </ul>
-        <!-- <p v-if="userInfo.tags.length">{{userInfo.tags}}</p> -->
+        <p v-if="userInfo.tags.length">{{userInfo.tags}}</p>
         <p v-else class="no_tags">
           <span class="star">#</span>请在个人编辑里面设置标签，让朋友更了解你哦
           <span class="star">#</span>
         </p>
-      </div>
+      </div> -->
       <!-- 个性签名 -->
-      <div class="signature_wrapper">
+      <!-- <div class="signature_wrapper">
         <h2 class="signature_title">个性签名
           <span class="star">#</span>
         </h2>
-        <!-- <p class="signature" v-if="showTag">youare</p> -->
+        <p class="signature" v-if="showTag">youare</p>
         <p class="signature" v-if="userInfo.signature.length">{{userInfo.signature}}</p>
         <p v-else class="no_signature">
           <span class="star">#</span>请在个人编辑里面设置签名
           <span class="star">#</span>
         </p>
-      </div>
-      <!-- 营销推广 -->
-      <!-- <div class="marketing_wrapper"> -->
-      <div class="marketing_wrapper" v-show="userInfo.role">
-        <h2 class="marketing_title">营销推广
+      </div> -->
+      <!-- 分享赚积分 -->
+      <div class="marketing_wrapper">
+      <!-- <div class="marketing_wrapper" v-show="userInfo.role"> -->
+        <h2 class="marketing_title">分享赚积分
           <span class="star">#</span>
         </h2>
         <ul class="marketing-list">

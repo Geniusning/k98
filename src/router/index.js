@@ -7,7 +7,6 @@ import MarsRank from 'components/home/marsRank/marsRank'
 import TreasureRank from 'components/home/treasureRank/treasureRank'
 import Friend from 'components/friend/friend'
 import PersonalInfo from 'components/friend/personalInfo/personalInfo'
-// import TopUp from 'base/topUp/topUp'
 import Message from 'components/message/message'
 import Welfare from 'components/welfare/welfare'
 import Mine from 'components/mine/mine'
@@ -30,141 +29,144 @@ import GameRecordDetail from 'components/welfare/gameRecordDetail'
 Vue.use(Router)
 
 export default new Router({
-    // mode: 'history',
-    routes: [{
-            path: '/',
-            redirect: "/home",
+  // mode: 'history',
+  routes: [{
+      path: '/',
+      redirect: "/home",
 
-        },
-        {
-            path: '/home',
-            name: 'home',
-            component: Home,
-            meta: {
-                keepAlive: true
-            }
-        },
-        {
-            path: '/marsRank',
-            name: 'marsRank',
-            component: MarsRank,
-        },
-        {
-            path: '/treasureRank',
-            name: 'treasureRank',
-            component: TreasureRank,
-        },
-        {
-            path: "/gameCompetion",
-            name: "gameCompetion",
-            component: GameCompetion,
-            meta: {
-                keepAlive: true
-            }
-        },
-        {
-            path: "/gameRank",
-            name: "gameRank",
-            component: GameRank
-        },
-        {
-            path: '/friend',
-            name: 'friend',
-            component: Friend,
-            children: [{
-                    path: ':id',
-                    name: "personalInfo",
-                    component: PersonalInfo,
-                }, ]
-                // meta: { keepAlive: true }
-        },
-        {
-            path: '/message',
-            name: 'message',
-            component: Message,
-            // meta: { keepAlive: true },
-            props: true,
-            children: [{
-                path: ":id",
-                name: "chat",
-                component: Chat,
-                // meta: { keepAlive: true }
-            }, ]
-        },
-        {
-            path: '/welfare',
-            name: 'welfare',
-            component: Welfare,
-            children: [{
-                path: "award",
-                name: "award",
-                component: Award,
-            }, ]
-        },
-        {
-            path: '/gameRecord',
-            name: 'gameRecord',
-            component: GameRecord,
-            children: [{
-                path: ":id",
-                name: "gameRecordDetail",
-                component: GameRecordDetail,
-            }, ]
-        },
-        {
-            path: '/shareNew',
-            name: 'shareNew',
-            component: ShareNew,
-        },
-        {
-            path: '/shareActivity',
-            name: 'shareActivity',
-            component: ShareActivity,
-        },
-        // {
-        //     path: '/shareNewUsers',
-        //     name: 'shareNewUsers',
-        //     component: ShareNewUsers,
-        // },
-        {
-            path: '/sharedDiscount',
-            name: 'sharedDiscount',
-            component: SharedDiscount,
-        },
-        {
-            path: '/mine',
-            name: 'mine',
-            component: Mine,
-        },
-        {
-            path: '/card',
-            name: 'card',
-            component: Card,
-            children: [{
-                path: ":id",
-                name: "cardDetail",
-                component: cardDetail
-            }]
-        },
-        {
-            path: "/individual",
-            name: "individual",
-            component: Individual,
-            children: [{
-                path: ':id',
-                component: updateAvatar,
-                name: "updateAvatar"
-            }]
-        },
-        {
-            path: "/game_detail",
-            name: "gameDetail",
-            component: GameDetail
-        },
-        {
-            path: '/gift_detail',
-            name: 'giftDetail',
-            component: GiftDetail,
-        }
-    ]
+    },
+    {
+      path: '/home',
+      name: 'home',
+      component: Home,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/marsRank',
+      name: 'marsRank',
+      component: MarsRank,
+    },
+    {
+      path: '/treasureRank',
+      name: 'treasureRank',
+      component: TreasureRank,
+    },
+    {
+      path: "/gameCompetion",
+      name: "gameCompetion",
+      component: GameCompetion,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: "/gameRank",
+      name: "gameRank",
+      component: GameRank
+    },
+    {
+      path: '/friend',
+      name: 'friend',
+      component: Friend,
+      children: [{
+        path: ':id',
+        name: "personalInfo",
+        component: PersonalInfo,
+      }, ]
+      // meta: { keepAlive: true }
+    },
+    {
+      path: '/message',
+      name: 'message',
+      component: Message,
+      // meta: { keepAlive: true },
+      props: true,
+      children: [{
+        path: ":id",
+        name: "chat",
+        component: Chat,
+        // meta: { keepAlive: true }
+      }, ]
+    },
+    {
+      path: '/welfare',
+      name: 'welfare',
+      component: Welfare,
+      children: [{
+        path: "award",
+        name: "award",
+        component: Award,
+      }, ]
+    },
+    {
+      path: '/gameRecord',
+      name: 'gameRecord',
+      component: GameRecord,
+      children: [{
+        path: ":id",
+        name: "gameRecordDetail",
+        component: GameRecordDetail,
+      }, ]
+    },
+    {
+      path: '/shareNew',
+      name: 'shareNew',
+      component: ShareNew,
+    },
+    {
+      path: '/shareActivity',
+      name: 'shareActivity',
+      component: ShareActivity,
+    },
+    // {
+    //     path: '/shareNewUsers',
+    //     name: 'shareNewUsers',
+    //     component: ShareNewUsers,
+    // },
+    {
+      path: '/sharedDiscount',
+      name: 'sharedDiscount',
+      component: SharedDiscount,
+    },
+    {
+      path: '/mine',
+      name: 'mine',
+      component: Mine,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/card',
+      name: 'card',
+      component: Card,
+      children: [{
+        path: ":id",
+        name: "cardDetail",
+        component: cardDetail
+      }]
+    },
+    {
+      path: "/individual",
+      name: "individual",
+      component: Individual,
+      children: [{
+        path: ':id',
+        component: updateAvatar,
+        name: "updateAvatar"
+      }]
+    },
+    {
+      path: "/game_detail",
+      name: "gameDetail",
+      component: GameDetail
+    },
+    {
+      path: '/gift_detail',
+      name: 'giftDetail',
+      component: GiftDetail,
+    }
+  ]
 })

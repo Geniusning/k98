@@ -4,19 +4,45 @@
       <my-header title="财富榜" ref="header"></my-header>
       <div class="tabBox vux-1px-t">
         <button-tab v-model="tabIndex">
-          <button-tab-item @on-item-click="switchTabIndex0">好友排名</button-tab-item>
-          <button-tab-item @on-item-click="switchTabIndex1">社群排名</button-tab-item>
+          <button-tab-item @on-item-click="switchTabIndex0">社群排名</button-tab-item>
+          <button-tab-item @on-item-click="switchTabIndex1">好友排名</button-tab-item>
         </button-tab>
       </div>
     </div>
     <div class="body">
       <div class="body-left" v-if="isFriendList">
         <scroll ref="scrollList" class="scrollList">
+          <ul class="treasureList" v-if="allPeopleList.length">
+            <li class="treasure-item-title">
+              <div class="title_item">头像</div>
+              <div class="title_item">名字</div>
+              <div class="title_item">积分数</div>
+              <div class="title_item">排名</div>
+            </li>
+            <li class="treasure-item" v-for="(item,index) in allPeopleList" :key="index">
+              <div class="avatar-box">
+                <img :src="item.headImgURL" alt class="avatar">
+              </div>
+              <div class="name">{{item.nickName}}</div>
+              <div class="score">{{item.wealth}}</div>
+              <div class="title_item">
+                <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
+                <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
+                <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
+                <div v-else class="rank">{{index+1}}</div>
+              </div>
+            </li>
+          </ul>
+          <p v-else class="noData">暂无数据</p>
+        </scroll>
+      </div>
+      <div class="body-right" v-else>
+        <scroll ref="scrollList" class="scrollList">
           <ul class="treasureList">
             <li class="treasure-item-title">
               <div class="title_item">头像</div>
               <div class="title_item">名字</div>
-              <div class="title_item">积分</div>
+              <div class="title_item">积分数</div>
               <div class="title_item">排名</div>
             </li>
             <li class="treasure-item" v-for="(item,index) in friendList" :key="index">
@@ -31,26 +57,6 @@
                 <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
                 <div v-else class="rank">{{index+1}}</div>
               </div>
-            </li>
-          </ul>
-        </scroll>
-      </div>
-      <div class="body-right" v-else>
-        <scroll ref="scrollList" class="scrollList">
-          <ul class="treasureList">
-            <li class="treasure-item-title">
-              <div class="title_item">头像</div>
-              <div class="title_item">名字</div>
-              <div class="title_item">积分</div>
-              <div class="title_item">排名</div>
-            </li>
-            <li class="treasure-item">
-              <div class="avatar-box">
-                <img src="../../../assets/image/small_car.png" alt class="avatar">
-              </div>
-              <div class="name">大毛</div>
-              <div class="score">11</div>
-              <div class="rank">充值</div>
             </li>
           </ul>
         </scroll>
@@ -97,7 +103,7 @@
         let count = 20;
         api.loadWealthRanking(type, count, this.allPeopleCursor).then(res => {
           console.log('财富全部排行信息----------------', res)
-          this.allPeopleCursor = res.wealthRanking.wealthInfos;
+          this.allPeopleList = res.wealthRanking.wealthInfos;
           this.allPeopleCursor = res.wealthRanking.cursor;
         })
       },
@@ -181,6 +187,7 @@
               margin-top: 0.2133rem;
               width: 25%;
               text-align: center;
+              display: inline-block;
             }
             .avatar {
               width: 0.8rem;
@@ -188,6 +195,12 @@
               border-radius: 50%;
             }
           }
+        }
+        .noData {
+          margin: 50% auto;
+          font-size: 0.5333rem;
+          color: #ccc;
+          text-align: center;
         }
       }
     }

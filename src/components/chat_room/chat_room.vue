@@ -29,8 +29,8 @@
           </ul>
         </scroll>
         <!-- <div class="loading-container" v-show="isLoading">
-                    <loading></loading>
-          </div>-->
+                        <loading></loading>
+              </div>-->
       </div>
       <div class="input_wrapper">
         <div class="input_area clearfix">
@@ -80,30 +80,30 @@
       </div>
       <!-- 送礼 -->
       <!-- <div v-transfer-dom>
-          <popup v-model="showToast_gift" position="bottom">
-            <div class="position-vertical-demo">
-              <div class="title vux-1px-b">
-                <span>送个小礼，就是好朋友</span>
-                <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
-              </div>
-              <div class="gift_list">
-                <ul class="list clearfix">
-                  <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
-                    <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
-                    <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
-                    <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
-                    <img v-else src="../../assets/image/car.png" alt="" class="car">
-                    <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
-                    <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
-                    <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
-                    <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
-                    <p class="gift_price">￥{{item.money}}</p>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </popup>
-        </div>-->
+              <popup v-model="showToast_gift" position="bottom">
+                <div class="position-vertical-demo">
+                  <div class="title vux-1px-b">
+                    <span>送个小礼，就是好朋友</span>
+                    <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
+                  </div>
+                  <div class="gift_list">
+                    <ul class="list clearfix">
+                      <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
+                        <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
+                        <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
+                        <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
+                        <img v-else src="../../assets/image/car.png" alt="" class="car">
+                        <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
+                        <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
+                        <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
+                        <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
+                        <p class="gift_price">￥{{item.money}}</p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </popup>
+            </div>-->
       <!-- 信封弹框 -->
       <transition name="appear">
         <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
@@ -160,7 +160,7 @@
         expressionShow: false,
         fatherPanelIndex: 1,
         isGiftPanel: false,
-        friendId:"",
+        friendId: "",
         expressionList: [
           "您好，很高兴可以成为好朋友",
           "过来喝一杯？",
@@ -256,6 +256,7 @@
       };
     },
     created() {
+      // console.log(navigator.userAgent)
       this.listenScroll = true;
       this.today = new Date().getDate();
       this.today = new Date().getDate();
@@ -288,13 +289,13 @@
       ...mapState([
         "userInfo",
         "staticChatFriendObj",
-        "LastChatMsg",
+        // "LastChatMsg",
         "inputValue",
         "socket",
         "alreadyFriendListcursor",
         "giftList"
       ]),
-      ...mapGetters(["qrIsShow"]),
+      ...mapGetters(["qrIsShow", "LastChatMsg"]),
     },
     methods: {
       //监听充值面板状态
@@ -334,6 +335,22 @@
           }
         })
       },
+      blurAdjust() {
+        setTimeout(() => {
+          if (document.activeElement.tagName == 'INPUT' || document.activeElement.tagName == 'TEXTAREA') {
+            return
+          }
+          let result = 'pc';
+          if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) { //判断iPhone|iPad|iPod|iOS
+            result = 'ios'
+          } else if (/(Android)/i.test(navigator.userAgent)) {  //判断Android
+            result = 'android'
+          }
+          if (result = 'ios') {
+            document.activeElement.scrollIntoViewIfNeeded(true);
+          }
+        }, 400)
+      },
       //发送礼物
       // sendGift(id) {
       //   let params = {
@@ -365,7 +382,7 @@
       _getChatList() {
         let cursor = this.alreadyFriendListcursor;
         api.getFriendMessList(cursor, this.staticChatFriendObj.openid).then(res => {
-          console.log(res);
+          console.log('聊天信息---------', res);
           this.changeCursor(res.cursor);
           let resultMessList = res.messages;
           var i;
@@ -383,6 +400,8 @@
       },
       //发送消息事件
       send() {
+        window.scrollTo(0, 0);
+        //  this.blurAdjust();
         if (!this.input_value) {
           return;
         }
@@ -509,9 +528,11 @@
         // console.log(pos);
       },
       tagScroll() {
+        window.scrollTo(0, 0);
         this.expressionShow = false;
         this.emotionShow = false;
         document.getElementById("send_message").blur();
+        // this.blurAdjust();
       },
       //关闭送礼
       // close_gift() {
@@ -540,7 +561,7 @@
       showToastGift() {
         console.log("click");
         // this.showToast_gift = true;
-        this.isGiftPanel=true;
+        this.isGiftPanel = true;
         this.expressionShow = false;
         this.emotionShow = false;
       },
@@ -577,16 +598,17 @@
     },
     watch: {
       LastChatMsg: function(newValue) {
-        // console.log('在聊天页面收到对方发来的消息-------------------------------：',newValue);
+        console.log('在聊天页面收到对方发来的消息-------------------------------：', newValue);
         if (newValue.lastMsg.from == this.staticChatFriendObj.openid) {
           //判断是否是进入时原来的两个人进行聊天
-          // console.log('在聊天页面的时间-----------------------------------------：',newValue.lastMsg.stime)
+          console.log('我进来了')
           this.componentChatList.push({
             message: newValue.lastMsg.content,
             friend: newValue.lastMsg.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
             type: newValue.lastMsg.type,
             time: newValue.lastMsg.stime
           });
+          console.log('聊天记录-------------', this.componentChatList)
         }
       },
       input_value: function(newValue, oldValue) {
