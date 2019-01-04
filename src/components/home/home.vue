@@ -1,5 +1,6 @@
 <template>
   <div id="home" class="home">
+    <div class="guideBg" v-if="isFirstLoad" @click="isFirstLoad=false"></div>
     <div class="homeTop_wrapper">
       <div class="barLogo_wrapper">
         <div class="logo_wrapper">
@@ -28,6 +29,10 @@
         </div>
         <!-- 望眼镜背景 -->
         <div class="telescope_wrapper">
+          <div v-show="isFirstLoad" @click="isFirstLoad=false">
+            <img src="../../assets/image/finger.png" alt class="guideFinger">
+            <p class="guideText">点击找朋友，右边点击玩游戏</p>
+          </div>
           <img src="../../assets/image/telescope_bg.png" alt class="telescope_img">
           <div class="left_radius_box" ref="leftRadiusBox" @click="gotoFriend">
             <div class="online_person">{{outFriendNum+inFriendNum}}人在线 &gt;</div>
@@ -63,64 +68,64 @@
         </div>
         <!-- 游戏 -->
         <!-- <div class="game_wrapper">
-            <div class="title clearfix ">
-              <div class="fl">
-                <img src="../../assets/image/game_icon.png" alt="" class="icon animations fl" ref="iconAnimation">
-                <h2 class="dice_title">大话骰</h2>
-                <span class="desc">排名赛进行中，不服来战...</span>
-              </div>
-              <div class="fr challengeGameBox">
-                <span class="arrowRight" :class="{active:arrowIndex ==0}" >&gt;</span>
-                <span class="arrowRight" :class="{active:arrowIndex ==1}" >&gt;</span>
-                <span class="arrowRight" :class="{active:arrowIndex ==2}" >&gt;</span>
-                <span class="arrowRight" :class="{active:arrowIndex ==3}" >&gt;</span>
-                <span class="arrowRight" :class="{active:arrowIndex ==4}" >&gt;</span>
-                <img src="../../assets/image/huangguan.png" class="huangguan" alt="" @click="playGame_rank">
-              </div>
-            </div>
-            <ul class="game_list ">
-              <li @click="playGame_friend">
-                <img src="../../assets/image/haoyou.png" alt="" class="pic_game" onclick="return false">
-                <img src="../../assets/image/nvlang.png" alt="" class="nvlang">
-              </li>
-              <li @click="playGame_challenge">
-                <img src="../../assets/image/lingzhuo.png" alt="" class="pic_game" onclick="return false">
-              </li>
-            </ul>
-          </div>-->
+                          <div class="title clearfix ">
+                            <div class="fl">
+                              <img src="../../assets/image/game_icon.png" alt="" class="icon animations fl" ref="iconAnimation">
+                              <h2 class="dice_title">大话骰</h2>
+                              <span class="desc">排名赛进行中，不服来战...</span>
+                            </div>
+                            <div class="fr challengeGameBox">
+                              <span class="arrowRight" :class="{active:arrowIndex ==0}" >&gt;</span>
+                              <span class="arrowRight" :class="{active:arrowIndex ==1}" >&gt;</span>
+                              <span class="arrowRight" :class="{active:arrowIndex ==2}" >&gt;</span>
+                              <span class="arrowRight" :class="{active:arrowIndex ==3}" >&gt;</span>
+                              <span class="arrowRight" :class="{active:arrowIndex ==4}" >&gt;</span>
+                              <img src="../../assets/image/huangguan.png" class="huangguan" alt="" @click="playGame_rank">
+                            </div>
+                          </div>
+                          <ul class="game_list ">
+                            <li @click="playGame_friend">
+                              <img src="../../assets/image/haoyou.png" alt="" class="pic_game" onclick="return false">
+                              <img src="../../assets/image/nvlang.png" alt="" class="nvlang">
+                            </li>
+                            <li @click="playGame_challenge">
+                              <img src="../../assets/image/lingzhuo.png" alt="" class="pic_game" onclick="return false">
+                            </li>
+                          </ul>
+                </div>-->
         <!-- 好友 -->
         <!-- <div class="friend_wrapper">
-            <div class="title_content_fri clearfix">
-              <div class="title clearfix">
-                <img src="../../assets/image/footPrint.png" alt="" class="icon fl" onclick="return false">
-                <h2 class="friend_title">找朋友</h2>
-                <span class="desc">瞅瞅老友在干哈......</span>
-              </div>
-              <div class="more">
-                <ul class="fri_list" v-show="friendList.length>3">
-                  <li class="item" v-for="(item,index) in friendIconList" :key="index">
-                    <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-                      class="min_avatar" onclick="return false">
-                  </li>
-                  <li class="item dotItem">
-                    <span class="dot">...</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="pic_content">
-              <ul class="pic_list">
-                <li @click="outFriend" class="out_fri">
-                  <span class="out_onlinePerson">{{outFriendNum}}人在线 ></span>
-                  <img src="../../assets/image/dianwai.png" alt="" class="friend_avatar_out" onclick="return false">
-                </li>
-                  <li @click="intoFriend" class="inner_fri">
-                  <span class="inner_onlinePerson">{{inFriendNum}}人在线 ></span>
-                  <img src="../../assets/image/diannei.png" alt="" class="friend_avatar_inner" onclick="return false">
-                </li>
-              </ul>
-            </div>
-          </div>-->
+                          <div class="title_content_fri clearfix">
+                            <div class="title clearfix">
+                              <img src="../../assets/image/footPrint.png" alt="" class="icon fl" onclick="return false">
+                              <h2 class="friend_title">找朋友</h2>
+                              <span class="desc">瞅瞅老友在干哈......</span>
+                            </div>
+                            <div class="more">
+                              <ul class="fri_list" v-show="friendList.length>3">
+                                <li class="item" v-for="(item,index) in friendIconList" :key="index">
+                                  <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                                    class="min_avatar" onclick="return false">
+                                </li>
+                                <li class="item dotItem">
+                                  <span class="dot">...</span>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div class="pic_content">
+                            <ul class="pic_list">
+                              <li @click="outFriend" class="out_fri">
+                                <span class="out_onlinePerson">{{outFriendNum}}人在线 ></span>
+                                <img src="../../assets/image/dianwai.png" alt="" class="friend_avatar_out" onclick="return false">
+                              </li>
+                                <li @click="intoFriend" class="inner_fri">
+                                <span class="inner_onlinePerson">{{inFriendNum}}人在线 ></span>
+                                <img src="../../assets/image/diannei.png" alt="" class="friend_avatar_inner" onclick="return false">
+                              </li>
+                            </ul>
+                          </div>
+                </div>-->
         <!-- 福利 -->
         <div class="welfare_wrapper">
           <div class="title_content_wel">
@@ -156,8 +161,8 @@
                 </div>
                 <div class="right">
                   <div class="thunb_box">
-                    <span class="count fl">已订：{{item.booking.bookingNumber}}</span>
-                    <div class="booking_btn" @click="freeBook(item.recommend.recommendID)">积分兑换</div>
+                    <span class="count fl">已订：{{item.convert.convertNumber}}</span>
+                    <div class="booking_btn" @click="freeBook(item.recommend.recommendID,index)">积分兑换</div>
                   </div>
                   <!-- <div class="show_detail_btn">积分兑换</div> -->
                 </div>
@@ -167,39 +172,39 @@
         </div>
         <!-- 友商互推 -->
         <!-- <div class="welfare_wrapper">
-            <div class="title_content_wel">
-              <div class="title clearfix">
-                <img src="../../assets/image/hutui.png" onclick="return false" alt="" class="icon fl">
-                <h2 class="shop_title">友好商家</h2>
-                <span class="desc">享会员优惠,交更多朋友</span>
-              </div>
-            </div>
-            <div class="welfare_content">
-              <ul class="welfare_list" v-if="recommendList.length">
-                <li class="item clearfix" v-for="(item,index) in recommendList" :key="index" >
-                  <div class="left" >
-                    <img src="../../assets/image/hutuishop1.png" alt="" class="shopPic">
-                  </div>
-                  <div class="center">
-                    <p class="title">爱尚KTV</p>
-                    <p class="desc">{{item.recommend.subtopic}}</p>
-                    <p class="limit">{{item.recommend.limit}}</p>
-                    <p class="price">
-                      <span class="discount_p" style="font-size:.3rem">优惠券内容摘要：100元现金券</span>
-                    </p>
-                  </div>
-                  <div class="right">
-                    <div class="thunb_box clearfix">
-                      <p class="count fl">&lt;.5km</p>
-                    </div>
-                    <div style="margin-left:.3rem" class="show_detail" @click="freeBook(item.recommend.recommendID)">
-                      领取
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>-->
+                          <div class="title_content_wel">
+                            <div class="title clearfix">
+                              <img src="../../assets/image/hutui.png" onclick="return false" alt="" class="icon fl">
+                              <h2 class="shop_title">友好商家</h2>
+                              <span class="desc">享会员优惠,交更多朋友</span>
+                            </div>
+                          </div>
+                          <div class="welfare_content">
+                            <ul class="welfare_list" v-if="recommendList.length">
+                              <li class="item clearfix" v-for="(item,index) in recommendList" :key="index" >
+                                <div class="left" >
+                                  <img src="../../assets/image/hutuishop1.png" alt="" class="shopPic">
+                                </div>
+                                <div class="center">
+                                  <p class="title">爱尚KTV</p>
+                                  <p class="desc">{{item.recommend.subtopic}}</p>
+                                  <p class="limit">{{item.recommend.limit}}</p>
+                                  <p class="price">
+                                    <span class="discount_p" style="font-size:.3rem">优惠券内容摘要：100元现金券</span>
+                                  </p>
+                                </div>
+                                <div class="right">
+                                  <div class="thunb_box clearfix">
+                                    <p class="count fl">&lt;.5km</p>
+                                  </div>
+                                  <div style="margin-left:.3rem" class="show_detail" @click="freeBook(item.recommend.recommendID)">
+                                    领取
+                                  </div>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                </div>-->
       </div>
     </div>
     <div class="fuli" @click="toWelfare" v-show="noCouponsFlag">
@@ -217,6 +222,7 @@
       </x-dialog>
     </div>
     <!-- <img style="visibility:hidden" :src="shopSettingInfo.image" alt=""> -->
+    <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :giftInfo="recommendItemIndo" :fatherPanelIndex="fatherPanelIndex"></topUp>
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
     </transition>
@@ -228,6 +234,7 @@
   import Scroll from "../../base/scroll/scroll";
   import util from "common/util";
   import api from "common/api";
+  import topUp from 'base/topUp/topUp';
   import {
     TransferDom,
     Swiper,
@@ -256,6 +263,21 @@
     },
     data() {
       return {
+        recommendItemIndo: {
+          convert: {},
+          coupInfo: {},
+          recommend: {
+            couponID: '',
+            discountPrice: '',
+            image: '',
+            limit: '',
+            name: '',
+            originalPrice: '',
+            recommendID: '',
+            subtopic: '',
+          },
+        },
+        fatherPanelIndex: 2,
         showTelescopeFlag: true,
         circleList: [],
         friendIconList: [],
@@ -275,8 +297,9 @@
         inFriendNum: 0,
         outFriendNum: 0,
         arrowIndex: 0,
-        deg: 0,
+        isGiftPanel: false,
         hiddenTelescope: true,
+        isFirstLoad: false,
         shopInfo: {
           name: "深圳市乐乐湾"
         }
@@ -316,6 +339,11 @@
       ...mapState(["baseUrl", "friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo", "noCouponsFlag"]),
     },
     mounted() {
+      if (!this.userInfo.firstLoad) {
+        this.isFirstLoad = true;
+      } else {
+        this.isFirstLoad = false;
+      }
       this.getFriendList(); //获取候选人
       this._loadPublishArenas(); //拉取已经发布的比赛场
       this._loadFriendEvts(); //获取好友事件列表
@@ -346,11 +374,14 @@
       //   this.openCircle();
       // }, 1000);
     },
-    activated() {
-    },
-    deactivated() {
-    },
+    activated() {},
+    deactivated() {},
     methods: {
+      //监听充值面板状态
+      closeIntegralPanel(flag) {
+        console.log('面板状态-----------', flag);
+        this.isGiftPanel = flag;
+      },
       //去游戏
       gotoPlay() {
         window.location.href = `${Config.shareUrl}game`;
@@ -472,38 +503,38 @@
         this.show_advertise = false;
       },
       //免费预定
-      freeBook(recommendID) {
+      freeBook(recommendID, index) {
+        console.log('recommendID----------', recommendID)
+        console.log('index----------', index)
         var couponId = "";
-        api.bookingRecommend(recommendID).then(res => {
-          console.log('预定结果--------------', res);
-          couponId = res.userCouponID;
-          if (res.errCode && res.errCode == 1021) {
-            // this.$vux.toast.show({
-            //   text: "您己成功预订,无需重复预定",
-            //   type: "text",
-            //   time: 2000,
-            //   width: "3rem"
-            // });
-            this.isShowEnvelope = true;
-            this.envelopeText = "您己成功兑换,无需重复兑换"
-            setTimeout(() => {
-              this.isShowEnvelope = false;
-            }, 2000);
-          } else {
-            this.isShowEnvelope = true;
-            this.envelopeText = "成功兑换，到店请先到收银台扫码确认"
-            setTimeout(() => {
-              this.isShowEnvelope = false;
-            }, 2000);
-            this._loadRecommends(); //重新拉取店长推荐
-          }
-          //发起预订券核销
-          return api.launchSetOffUserCoupon(couponId);
-        }).then(res => {
-          console.log('发起预定券核销结果-------------', res);
-        }).catch(err => {
-          console.log(err)
-        });
+        this.isGiftPanel = true;
+        this.fatherPanelIndex = 2,
+          console.log(this.fatherPanelIndex)
+        this.recommendItemIndo = this.recommendList[index];
+        // api.convertRecommend(recommendID).then(res => {
+        //   console.log('预定结果--------------', res);
+        //   couponId = res.userCouponID;
+        //   if (res.errCode && res.errCode == 1021) {
+        //     this.isShowEnvelope = true;
+        //     this.envelopeText = "您己成功兑换,无需重复兑换"
+        //     setTimeout(() => {
+        //       this.isShowEnvelope = false;
+        //     }, 2000);
+        //   } else {
+        //     this.isShowEnvelope = true;
+        //     this.envelopeText = "成功兑换，到店请先到收银台扫码确认"
+        //     setTimeout(() => {
+        //       this.isShowEnvelope = false;
+        //     }, 2000);
+        //     this._loadRecommends(); //重新拉取店长推荐
+        //   }
+        //   //发起预订券核销
+        //   return api.launchSetOffUserCoupon(couponId);
+        // }).then(res => {
+        //   console.log('发起预定券核销结果-------------', res);
+        // }).catch(err => {
+        //   console.log(err)
+        // });
       },
       //关闭详情
       closeDialog() {
@@ -609,7 +640,8 @@
       Toast,
       XDialog,
       Scroll,
-      envelope
+      envelope,
+      topUp,
       // Carousel3d,
       // Slide
     }
@@ -621,14 +653,9 @@
   @import "../../assets/less/home_common.less";
   @import "../../assets/less/mixin.less";
   @import "~vux/src/styles/close";
-  @import "../../libs/swiper/swiper-4.3.3.min.css";
-  // 优惠券开始
+  @import "../../libs/swiper/swiper-4.3.3.min.css"; // 优惠券开始
   .weui-dialog {
     background: none;
-  }
-  .couponTitle {
-    height: 3.0667rem;
-    .bg("../../assets/image/youhuiquan_bg.png"); // background-color: #FFAE00;
   }
   .dialog-discount {
     .discount-box {
@@ -679,8 +706,7 @@
     margin-top: 8px;
     margin-bottom: 8px;
     color: #fff;
-  }
-  // 优惠券结束
+  } // 优惠券结束
   // 弹框游戏开始
   .dialog-gameBegin {
     .game-box {
@@ -694,9 +720,17 @@
       width: 1.0667rem;
       height: 1.0667rem;
     }
-  }
-  // 弹框游戏结束
+  } // 弹框游戏结束
   .home {
+    .guideBg {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 8;
+      background-color: rgba(0, 0, 0, 0.3);
+    }
     background: rgba(242, 242, 242, 1);
     .fuli {
       position: fixed;
@@ -791,10 +825,38 @@
   }
   .content {}
   .telescope_wrapper {
+    @keyframes bigAndSmall {
+      0% {
+        transform: scale(1); //  opacity: 1;
+      }
+      50% {
+        transform: scale(.7);
+      }
+      100% {
+        transform: rotate(.8);
+      }
+    }
     width: 100%;
     height: 7rem;
     background-color: #fff;
     position: relative;
+    .guideFinger {
+      width: 2rem;
+      height: 2rem;
+      position: absolute;
+      top: 2.5rem;
+      left: 1.6667rem;
+      z-index: 9;
+      animation: bigAndSmall 1s linear infinite;
+    }
+    .guideText{
+      position: absolute;
+      top: 4.5rem;
+      left: 1.6667rem;
+      z-index: 9;
+      font-size: 0.5333rem;
+      color: #fff;
+    }
     @keyframes rotateAn {
       0% {
         transform: rotate(0deg); //  opacity: 1;
@@ -1086,8 +1148,7 @@
   .pic {
     width: 100%;
     height: 100%;
-  }
-  // 地址
+  } // 地址
   .adr_wrapper {
     display: flex;
     justify-content: space-between;
@@ -1142,8 +1203,7 @@
         z-index: 10;
       }
     }
-  }
-  // 好友
+  } // 好友
   .friend_wrapper {
     overflow: hidden;
     .icon {
@@ -1221,8 +1281,7 @@
         }
       }
     }
-  }
-  // 游戏
+  } // 游戏
   .game_wrapper {
     // width: 100%;
     overflow-y: hidden;
@@ -1317,8 +1376,7 @@
         }
       }
     }
-  }
-  // 福利
+  } // 福利
   .welfare_wrapper {
     .titleWrapper;
     .title_content_wel {
@@ -1427,14 +1485,14 @@
                 font-size: 0.3467rem;
                 position: absolute;
                 top: -1.5rem;
-                right: 0.0333rem
+                right: 0.0333rem;
               }
               .booking_btn {
                 width: 1.4667rem;
                 padding: 0.1067rem 0;
                 text-align: center;
                 line-height: 0.5067rem;
-                background: -webkit-linear-gradient(left, #fff800, #fef200, #fccc00, #fbbc00);
+                background: -webkit-linear-gradient( left, #fff800, #fef200, #fccc00, #fbbc00);
                 color: #1d1d1d;
                 border-radius: 0.08rem;
               }

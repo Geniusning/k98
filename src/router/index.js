@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from 'components/home/home'
-import GameCompetion from 'components/home/gameCompetion/gameCompetion'
 import GameRank from 'components/home/GameRank/GameRank'
 import MarsRank from 'components/home/marsRank/marsRank'
 import TreasureRank from 'components/home/treasureRank/treasureRank'
@@ -20,7 +19,7 @@ import updateAvatar from 'components/individual/updateAvatar'
 import Award from 'components/welfare/award/award'
 import ShareNew from 'components/welfare/ShareNew/ShareNew'
 import ShareActivity from 'components/welfare/shareActivity/shareActivity'
-import SharedDiscount from 'components/welfare/sharedDiscount/sharedDiscount'
+import NewUserGetDiscount from 'components/welfare/newUserGetDiscount/newUserGetDiscount'
 // import ShareNewUsers from 'components/welfare/shareNewUsers/shareNewUsers'
 import GameRecord from 'components/welfare/gameRecord'
 import GameRecordDetail from 'components/welfare/gameRecordDetail'
@@ -52,14 +51,6 @@ export default new Router({
       path: '/treasureRank',
       name: 'treasureRank',
       component: TreasureRank,
-    },
-    {
-      path: "/gameCompetion",
-      name: "gameCompetion",
-      component: GameCompetion,
-      meta: {
-        keepAlive: true
-      }
     },
     {
       path: "/gameRank",
@@ -126,9 +117,9 @@ export default new Router({
     //     component: ShareNewUsers,
     // },
     {
-      path: '/sharedDiscount',
-      name: 'sharedDiscount',
-      component: SharedDiscount,
+      path: '/newUserGetDiscount',
+      name: 'newUserGetDiscount',
+      component: NewUserGetDiscount,
     },
     {
       path: '/mine',

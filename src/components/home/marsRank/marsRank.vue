@@ -9,59 +9,86 @@
         </button-tab>
       </div>
     </div>
-    <div class="body">
-      <div class="body-left" v-if="isFriendList">
-        <scroll ref="scrollList" class="scrollList">
-          <ul class="marsList" v-if="allPeopleList.length">
-            <li class="mars-item-title">
-              <div class="title_item">头像</div>
-              <div class="title_item">名字</div>
-              <div class="title_item">杯数</div>
-              <div class="title_item">排名</div>
-            </li>
-            <li class="mars-item" v-for="(item,index) in allPeopleList" :key="index">
-              <div class="avatar-box">
-                <img :src="item.headImgURL" alt class="avatar">
-              </div>
-              <div class="name">{{item.nickName}}</div>
-              <div class="score">{{item.score}}</div>
-              <div class="title_item">
-                <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
-                <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
-                <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
-                <div v-else class="rank">{{index+1}}</div>
-              </div>
-            </li>
-          </ul>
-          <p v-else class="noData">暂无数据</p>
-        </scroll>
-      </div>
-      <div class="body-right" v-else>
-        <scroll ref="scrollList" class="scrollList">
-          <ul class="marsList">
-            <li class="mars-item-title">
-              <div class="title_item">头像</div>
-              <div class="title_item">名字</div>
-              <div class="title_item">杯数</div>
-              <div class="title_item">排名</div>
-            </li>
-            <li class="mars-item" v-for="(item,index) in friendList" :key="index">
-              <div class="avatar-box">
-                <img :src="item.headImgURL" alt class="avatar">
-              </div>
-              <div class="name">{{item.nickName}}</div>
-              <div class="score">{{item.score}}</div>
-              <div class="title_item">
-                <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
-                <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
-                <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
-                <div v-else class="rank">{{index+1}}</div>
-              </div>
-            </li>
-          </ul>
-        </scroll>
-      </div>
-    </div>
+    <!-- <div class="body">
+        <div class="body-left" v-if="isFriendList"> -->
+    <scroll ref="scrollList" class="scrollList">
+      <ul class="marsList" v-if="isFriendList">
+        <li class="mars-item-title">
+          <div class="title_item">头像</div>
+          <div class="title_item">名字</div>
+          <div class="title_item">杯数</div>
+          <div class="title_item">排名</div>
+        </li>
+        <li class="treasure-item-title">
+          <p v-if="!allPeopleList.length" class="noData">暂无数据</p>
+        </li>
+        <li class="mars-item" v-for="(item,index) in allPeopleList" :key="index">
+          <div class="avatar-box">
+            <img :src="item.headImgURL" alt class="avatar">
+          </div>
+          <div class="name">{{item.nickName}}</div>
+          <div class="score">{{item.score}}</div>
+          <div class="title_item">
+            <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
+            <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
+            <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
+            <div v-else class="rank">{{index+1}}</div>
+          </div>
+        </li>
+      </ul>
+      <ul class="marsList" v-else>
+        <li class="mars-item-title">
+          <div class="title_item">头像</div>
+          <div class="title_item">名字</div>
+          <div class="title_item">杯数</div>
+          <div class="title_item">排名</div>
+        </li>
+        <li class="treasure-item-title">
+          <p v-if="!friendList.length" class="noData">暂无数据</p>
+        </li>
+        <li class="mars-item" v-for="(item,index) in friendList" :key="index">
+          <div class="avatar-box">
+            <img :src="item.headImgURL" alt class="avatar">
+          </div>
+          <div class="name">{{item.nickName}}</div>
+          <div class="score">{{item.score}}</div>
+          <div class="title_item">
+            <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
+            <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
+            <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
+            <div v-else class="rank">{{index+1}}</div>
+          </div>
+        </li>
+      </ul>
+      <p v-else class="noData">暂无数据</p>
+    </scroll>
+  </div>
+  <!-- <div class="body-right" v-else>
+          <scroll ref="scrollList" class="scrollList">
+            <ul class="marsList">
+              <li class="mars-item-title">
+                <div class="title_item">头像</div>
+                <div class="title_item">名字</div>
+                <div class="title_item">杯数</div>
+                <div class="title_item">排名</div>
+              </li>
+              <li class="mars-item" v-for="(item,index) in friendList" :key="index">
+                <div class="avatar-box">
+                  <img :src="item.headImgURL" alt class="avatar">
+                </div>
+                <div class="name">{{item.nickName}}</div>
+                <div class="score">{{item.score}}</div>
+                <div class="title_item">
+                  <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
+                  <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
+                  <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
+                  <div v-else class="rank">{{index+1}}</div>
+                </div>
+              </li>
+            </ul>
+          </scroll>
+        </div>
+      </div> -->
   </div>
 </template>
 
@@ -144,62 +171,60 @@
       .tabBox {
         padding-top: 0.1333rem;
       }
-    }
-    .body {
+    } // .body {
+    //   flex: 1;
+    //   width: 100%;
+    .scrollList {
       flex: 1;
       width: 100%;
-      .scrollList {
-        height: 100%;
+      .marsList {
         width: 100%;
-        .marsList {
+        height: 100%;
+        .mars-item-title {
           width: 100%;
-          height: 100%;
-          .mars-item-title {
-            width: 100%;
-            font-size: 0.4rem;
-            display: flex;
-            justify-content: space-around;
-            .title_item {
-              width: 25%;
-              text-align: center;
-            }
-          }
-          .mars-item {
-            width: 100%;
-            font-size: 0.4rem;
-            display: flex;
-            justify-content: space-around;
-            .title_item {
-              width: 25%;
-              text-align: center;
-              .rankIcon {
-                width: 0.6333rem;
-                height: 0.6333rem;
-              }
-            }
-            .avatar-box,
-            .name,
-            .score,
-            .rank {
-              width: 25%;
-              text-align: center;
-              margin-top: 0.2133rem;
-              display: inline-block;
-            }
-            .avatar {
-              width: 0.8rem;
-              height: 0.8rem;
-              border-radius: 50%;
-            }
+          font-size: 0.4rem;
+          display: flex;
+          justify-content: space-around;
+          .title_item {
+            width: 25%;
+            text-align: center;
           }
         }
-        .noData {
-          margin: 50% auto;
-          font-size: 0.5333rem;
-          color: #ccc;
-          text-align: center;
+        .mars-item {
+          width: 100%;
+          font-size: 0.4rem;
+          display: flex;
+          justify-content: space-around;
+          .title_item {
+            width: 25%;
+            text-align: center;
+            .rankIcon {
+              width: 0.6333rem;
+              height: 0.6333rem;
+            }
+          }
+          .avatar-box,
+          .name,
+          .score,
+          .rank {
+            width: 25%;
+            text-align: center;
+            margin-top: 0.2133rem;
+            display: inline-block;
+          }
+          .avatar {
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%;
+          }
         }
       }
-    }
+      .noData {
+        margin: 50% auto;
+        font-size: 0.5333rem;
+        color: #ccc;
+        text-align: center;
+      }
+    } // }
   }
 </style>

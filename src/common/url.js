@@ -1,6 +1,7 @@
 export default {
     commonUrl: '', //
-    shareUrl: "http://llwant.test.qianz.com/",
+    shareUrl: "https://singledog.qianz.com/",
+    websocketUrl:"ws://singledog.qianz.com/api/ws",
     // shareUrl: "http://llwant1.qianz.com",
     appId: "wxb2fa3c446063ec19"
 }

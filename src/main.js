@@ -15,6 +15,7 @@ import {
     mapActions
 } from 'vuex'
 import api from './common/api'
+import config from './common/url'
 import tk from 'common/tk.js'
 Vue.use(ToastPlugin)
 Vue.use(vuePicturePreview)
@@ -29,8 +30,8 @@ new Vue({
         ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
     },
     created() {
-        // this.websock = new WebSocket(`ws://llwant.test.qianz.com/api/ws?tk=${tk}`);
-        this.websock = new WebSocket("ws://llwant.test.qianz.com/api/ws");
+        // this.websock = new WebSocket(`${config.websocketUrl}?tk=${tk}`);
+        this.websock = new WebSocket(`${config.websocketUrl}`);
         this.websock.binaryType = "arraybuffer";
         this.connect_websocket(this.websock);
         this.socket.onopen = this.websocketonopen;
@@ -148,8 +149,13 @@ new Vue({
         },
         //创建二维码
         _createQrcode() {
-            api.createQrcode();
-            // api.loadAllQrcode();
+            api.loadAllQrcode().then(res=>{ //没有创建过二维码才创建
+                if(!res.urls.length || !res.urls){
+                    api.createQrcode();
+                    console.log('进来创建二维码了')
+                }
+        
+            });
         },
         ...mapMutations({
             connect_websocket: "CONNECT_WEBSOCKET",

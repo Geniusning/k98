@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-12-28 14:50:03
+ * @Last Modified time: 2019-01-04 16:28:11
  */
 
 import axios from 'axios'
@@ -95,7 +95,7 @@ api.loadFriends = function (cursor) {
   return new Promise((resolve, reject) => {
     axios.post(Url.commonUrl + `/api/loadFriends?tk=${tk}`).then(res => {
       if (res.status == 200) {
-        console.log('拉取好友详细数据-----------',res)
+        console.log('拉取好友详细数据-----------', res)
         resolve(res.data)
       }
     }).catch(err => {
@@ -603,9 +603,9 @@ api.statCalls = function () {
   })
 }
 //店长推荐预定
-api.bookingRecommend = function (recommendID) {
+api.convertRecommend = function (recommendID) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/bookingRecommend?recommendID=${recommendID}&tk=${tk}`)
+    axios.get(`/api/convertRecommend?recommendID=${recommendID}&tk=${tk}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -801,25 +801,38 @@ api.loadWealthRanking = function (rankingType, count, cursor) {
 }
 //战神榜排名
 api.loadGameScoreRanking = function (rankingType, count, cursor) {
-    let pcount = count || "";
-    let pcursor = cursor || "";
-    return new Promise((resolve, reject) => {
-      axios.get(`/api/loadGameScoreRanking?rankingType=${rankingType}&count=${pcount}&cursor=${pcursor}&tk=${tk}`)
-        .then(res => {
-          if (res.status == 200) {
-            resolve(res.data)
-          }
-        }).catch(err => {
-          reject(err)
-        })
-    })
-  }
+  let pcount = count || "";
+  let pcursor = cursor || "";
+  return new Promise((resolve, reject) => {
+    axios.get(`/api/loadGameScoreRanking?rankingType=${rankingType}&count=${pcount}&cursor=${pcursor}&tk=${tk}`)
+      .then(res => {
+        if (res.status == 200) {
+          resolve(res.data)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
+//分享邀约记录创建
+api.createShareDaylog = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/createShareDaylog?tk=${tk}`)
+      .then(res => {
+        if (res.status == 200) {
+          resolve(res.data)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
 //创建二维码 
 api.createQrcode = function () {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/createQrcode?tk=${tk}`)
       .then(res => {
-        console.log('二维码--------', res)
+        console.log('创建二维码--------', res)
         if (res.status == 200) {
           resolve(res.data)
         }
@@ -835,7 +848,7 @@ api.loadAllQrcode = function () {
     axios.get(Url.commonUrl + `/api/loadAllQrcode?tk=${tk}`)
       .then(res => {
         if (res.status == 200) {
-          console.log('二维码--------', res)
+          console.log('拉取二维码--------', res)
           resolve(res.data)
         }
       }).catch(err => {

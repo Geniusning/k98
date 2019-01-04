@@ -72,22 +72,22 @@
       <div class="sendGiftPanelBox" v-else-if="panelIndex===2" key="sendGiftPanelBox">
         <div class="header">
           <img src="../../assets/image/giftBox.png" class="giftBoxIfon">
-          <p class="header_text">送出本份礼物需要消耗您积分：88</p>
+          <p class="header_text">送出本份礼物需要消耗您{{giftInfo.recommend.originalPrice}}积分</p>
           <div class="close" @click="closeIntegralPanel">X</div>
         </div>
         <div class="content">
           <div class="pictureBox">
-            <img src="../../assets/image/coffee.png" alt class="pictureBox_img">
+            <img :src="giftInfo.recommend.image" alt class="pictureBox_img">
           </div>
           <div class="giftInfoBox">
-            <p class="title">咖啡套餐</p>
-            <p class="desc">英式咖啡</p>
-            <p class="limit">限周二使用</p>
-            <p class="price">特惠￥19</p>
+            <p class="title">{{giftInfo.recommend.name}}</p>
+            <p class="desc">{{giftInfo.recommend.subtopic}}</p>
+            <p class="limit">{{giftInfo.recommend.limit}}</p>
+            <p class="price">特惠 ￥{{giftInfo.recommend.discountPrice}}</p>
           </div>
         </div>
         <div class="handle">
-          <button class="btn" @click="confirmShopItemGift">确认赠送</button>
+          <button class="btn" @click="confirmShopItemGift(giftInfo.recommend.recommendID)">确认兑换</button>
         </div>
       </div>
       <div class="successfullyBox" v-else="panelIndex===3" key="successfullyBox">
@@ -97,9 +97,9 @@
           <p class="successful_text">{{successfulText}}</p>
           <p class="gotoTopUpText" @click="gotoTopUp">去充值&gt;</p>
           <!-- <div class="myWelfare">
-            <img class="welIcon" src="../../assets/image/integralIcon.png" alt="">
-            <p>20324</p>
-          </div> -->
+                <img class="welIcon" src="../../assets/image/integralIcon.png" alt="">
+                <p>20324</p>
+              </div> -->
         </div>
       </div>
     </transition>
@@ -116,7 +116,7 @@
   export default {
     data() {
       return {
-        panelIndex: 1,
+        panelIndex: null,
         successfulText: "操作成功",
         moneyList: [{
             "id": 1,
@@ -157,15 +157,38 @@
       ...mapState(['giftList']),
       ...mapGetters(['recommentList'])
     },
-    mounted() {
+    created() {
       console.log('this.friendId----------------', this.friendId);
+      console.log('this.giftInfo----------------', this.giftInfo);
       this.panelIndex = this.fatherPanelIndex;
+      console.log('this.panelIndex----------', this.panelIndex)
+      console.log('this.giftInfo------------', this.giftInfo)
     },
-    props: ['friendId', 'fatherPanelIndex'],
+    mounted() {
+      // console.log('this.friendId----------------', this.friendId);
+      // console.log('this.giftInfo----------------', this.giftInfo);
+      // this.panelIndex = this.fatherPanelIndex;
+      // console.log('this.panelIndex----------',this.panelIndex)
+      // console.log('this.giftInfo------------', this.giftInfo)
+    },
+    props: {
+      friendId: {
+        type: String,
+        default: null,
+      },
+      fatherPanelIndex: {
+        type: Number,
+        default: 1
+      },
+      giftInfo: {
+        type: Object,
+        default: null,
+      }
+    },
     methods: {
       closeIntegralPanel() {
         this.$emit("closeIntegralPanel", false);
-        this.panelIndex = 1;
+        // this.panelIndex = 1;
       },
       // 前往充值
       gotoTopUp() {
@@ -195,7 +218,18 @@
         this.successfulText = "赠送礼物成功"
       },
       //确认赠送店铺项目
-      confirmShopItemGift() {
+      confirmShopItemGift(recommendID) {
+        api.convertRecommend(recommendID).then(res => {
+          console.log('兑换结果--------------', res);
+          if (res.errCode && res.errCode == 1021) {
+            this.successfulText = "您已兑换，兑换券已发放至你优惠券列表"
+          } else {
+            this.successfulText = "兑换成功，兑换券已发放至你优惠券列表"
+          }
+        }).catch(err => {
+          console.log(err)
+        });
+        alert('测试')
         this.panelIndex = 3;
       },
       //   充值
@@ -238,8 +272,7 @@
         showQrcode: "SHOW_QRCODE", //暂时二维码
       })
     },
-    components: {
-    }
+    components: {}
   }
 </script>
 
@@ -420,30 +453,32 @@
         .close {
           font-size: 0.3467rem;
           position: absolute;
-          top: 0.2333rem;
-          right: 0.3667rem;
+          top: 0.3333rem;
+          right: 0.2667rem;
           width: 0.5667rem;
           height: 0.5667rem;
-          text-align: right;
+          text-align: center;
         }
         .giftBoxIfon {
-          width: 0.4rem;
-          height: 0.4rem;
+          width: 0.6rem;
+          height: 0.6rem;
           margin-right: 0.1667rem;
         }
         .header_text {
-          font-size: 0.3rem;
+          font-size: 0.35rem;
           color: #333;
-          padding-top: 0.0533rem;
+          padding-top: 0.0833rem;
         }
       }
       .content {
         display: flex; // justify-content: space-between;
         padding: 0 0.4rem;
         .pictureBox {
+          margin-left: 0.7rem;
           .pictureBox_img {
             width: 2.5rem;
-            margin-right: 0.2667rem;
+            height: 2rem;
+            margin-right: 0.667rem;
           }
         }
         .giftInfoBox {
@@ -467,7 +502,7 @@
       .handle {
         width: 100%;
         text-align: center;
-        padding-top: 0.4rem;
+        padding-top: 0.3rem;
         .btn {
           padding: 0.08rem 0.1067rem;
           border: none;

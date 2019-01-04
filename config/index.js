@@ -5,7 +5,7 @@
 const path = require('path')
 
 // ------------------------------
-const myStupidToken1 = "61WYwX3TWG49VwXtSxj7BrllH1g0zfmtolnHjexfCozj-ZAXQPxENfHsXPJB7ZVMjrgi8Q==";
+const myStupidToken1 = "PugmGqxXcttC-Bs29qqr_gRYmBkf1ouA1BhrO9BwtOjgw88xh2TT3PumEXPJ3WouSI6YcA==";
 const myStupidToken2 = "jO5NAlEdOVeCr6z5vHJ6niuV39LL-VKgFJYbGWgreeLi7okCIaTTjQqCoAWz6SJoQ46FZQ=="
 
 const myStupidToken = myStupidToken1
@@ -19,7 +19,7 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             "/api": {
-                target: "http://llwant.test.qianz.com",
+                target: "http://singledog.qianz.com",
                 changeOrigin: true,
                 pathRewrite: function(path, req) {
                     return path + "&tk=" + myStupidToken

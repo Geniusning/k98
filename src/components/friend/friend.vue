@@ -13,18 +13,23 @@
       </div>
     </div>
     <div class="control_wrapper">
-      <div class="gifts" @click="isGiftPanel=true">
-        <img src="../../assets/image/gift.png" alt>
+      <p class="control_guide" v-show="isFirstLoad" >下面按钮是与社群好友交互，对方同意后即可成为好友</p>
+      <div class="gifts" >
+        <img src="../../assets/image/gift.png" @click="isGiftPanel=true" alt>
+        <img src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt>
         <!-- <p>见面礼</p> -->
       </div>
-      <div class="thumbs" @click="giveThumb('middle')" v-if="!isFriend">
-        <img src="../../assets/image/thumbs-o-up.png" alt>
+      <div class="thumbs"  v-if="!isFriend">
+        <img src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt>
+        <img src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
       </div>
-      <div class="hello" v-else @click="chat">
-        <img src="../../assets/image/sayhi.png" alt>
+      <div class="hello" v-else >
+        <img src="../../assets/image/sayhi.png" @click="chat" alt>
+         <img src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
       </div>
-      <div class="playGame" @click="playGame">
-        <img src="../../assets/image/game.png" alt>
+      <div class="playGame" >
+        <img src="../../assets/image/game.png" @click="playGame" alt>
+        <img src="../../assets/image/game.png" v-show="isFirstLoad" class="guidePlayGame" alt>
         <!-- <p>玩一把</p> -->
       </div>
     </div>
@@ -87,11 +92,11 @@
       <p class="intro">请尽快完善信息，让更多人认识你哦！</p>
       <p class="intro_mfTips">绿灯闪烁表示好友在线哦，赶紧去联系Ta吧</p>
     </div>
-    <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
+    <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
     <!-- <transition name="fade">
-          <giftPanel v-show="isGiftPanel" @closeGiftPanel="closeGiftPanel"></giftPanel>
-      </transition>-->
+            <giftPanel v-show="isGiftPanel" @closeGiftPanel="closeGiftPanel"></giftPanel>
+        </transition>-->
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
     </transition>
@@ -224,7 +229,7 @@
       ...mapGetters(["qrIsShow"]),
     },
     mounted() {
-      if (this.userInfo.firstLoad) {
+      if (!this.userInfo.firstLoad) {
         this.isFirstLoad = true;
       } else {
         this.isFirstLoad = false;
@@ -451,20 +456,57 @@
       justify-content: space-between;
       padding: 0 1.6rem; // margin-top: -0.2667rem;
       box-sizing: border-box;
+      position: relative;
+      .control_guide{
+        position: absolute;
+        z-index: 9;
+        color: #fff;
+        font-size: 0.4rem;
+        left: 0.3rem;
+        bottom: 2.3333rem;
+      }
       img {
         width: 1.6rem;
         height: 1.6rem;
       }
       .thumbs {
+        position: relative;
+        .guideThumbs {
+          position: absolute;
+          z-index: 10;
+          top: 0.8667rem;
+          left: 0;
+        }
         .action();
       }
       .hello {
+        position: relative;
+         .guideThumbs {
+          position: absolute;
+          z-index: 10;
+          top: 0.8667rem;
+          left: 0;
+        }
         .action();
       }
       .gifts {
+        position: relative;
+        .guideGift {
+          position: absolute;
+          z-index: 10;
+          top: 0.8667rem;
+          left: 0;
+        }
         .action();
       }
       .playGame {
+        position: relative;
+        .guidePlayGame {
+          position: absolute;
+          z-index: 10;
+          top: 0.8667rem;
+          left: 0;
+        }
         .action();
       }
     }
@@ -539,8 +581,7 @@
         color: #fff;
       }
     }
-  }
-  // 弹框礼物
+  } // 弹框礼物
   // .friend_gift_wrapper {
   //   .gift_list {
   //     display: flex;

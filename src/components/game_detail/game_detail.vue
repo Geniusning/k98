@@ -24,7 +24,7 @@
         <span class="avatar">对手</span>
         <span class="time">时间</span>
       </div>
-      <scroll class="scroll" :data="gameContent" @scrollToEnd="pullUpMoreData" :pullup="true">
+      <scroll class="scroll" :data="gameContent" @pullingUp="pullUpMoreData" :pullup="true">
         <ul class="gift_list">
           <li class="item vux-1px" v-for="(item,index) in gameContent" :key="index">
             <span class="total">{{item.value}}</span>
@@ -56,6 +56,7 @@ export default {
       moneyIndex: 0,
       moneyInitValue: 5,
       gameContent: [],
+      gameCursor:0,
     };
   },
   mounted() {
@@ -68,15 +69,17 @@ export default {
     //上拉加载更多
     pullUpMoreData() {
       console.log('上拉加载更多');
-      // if (this.giftCursor) {
-      //   this._loadWealthDetail();
-      // }
+      if (this.gameCursor) {
+          this._LoadGameScoreDetail();
+        }
     },
     //拉取游戏详情
     _LoadGameScoreDetail() {
-      api.LoadGameScoreDetail().then(res => {
+      let count = 20;
+      api.LoadGameScoreDetail(this.gameCursor,count).then(res => {
         console.log('游戏详情-------------------', res);
-        this.gameContent = res.coupon.details;
+        this.gameContent =this.gameContent.concat(res.coupon.details);
+        this.gameCursor = res.coupon.cursor;
         this.gameContent.forEach(item => {
           item.time = util.timestampToTimeNoLine(item.time);
         })

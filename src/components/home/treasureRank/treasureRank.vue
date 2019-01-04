@@ -9,59 +9,85 @@
         </button-tab>
       </div>
     </div>
-    <div class="body">
-      <div class="body-left" v-if="isFriendList">
-        <scroll ref="scrollList" class="scrollList">
-          <ul class="treasureList" v-if="allPeopleList.length">
-            <li class="treasure-item-title">
-              <div class="title_item">头像</div>
-              <div class="title_item">名字</div>
-              <div class="title_item">积分数</div>
-              <div class="title_item">排名</div>
-            </li>
-            <li class="treasure-item" v-for="(item,index) in allPeopleList" :key="index">
-              <div class="avatar-box">
-                <img :src="item.headImgURL" alt class="avatar">
-              </div>
-              <div class="name">{{item.nickName}}</div>
-              <div class="score">{{item.wealth}}</div>
-              <div class="title_item">
-                <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
-                <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
-                <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
-                <div v-else class="rank">{{index+1}}</div>
-              </div>
-            </li>
-          </ul>
-          <p v-else class="noData">暂无数据</p>
-        </scroll>
-      </div>
-      <div class="body-right" v-else>
-        <scroll ref="scrollList" class="scrollList">
-          <ul class="treasureList">
-            <li class="treasure-item-title">
-              <div class="title_item">头像</div>
-              <div class="title_item">名字</div>
-              <div class="title_item">积分数</div>
-              <div class="title_item">排名</div>
-            </li>
-            <li class="treasure-item" v-for="(item,index) in friendList" :key="index">
-              <div class="avatar-box">
-                <img :src="item.headImgURL" alt class="avatar">
-              </div>
-              <div class="name">{{item.nickName}}</div>
-              <div class="score">{{item.wealth}}</div>
-              <div class="title_item">
-                <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
-                <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
-                <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
-                <div v-else class="rank">{{index+1}}</div>
-              </div>
-            </li>
-          </ul>
-        </scroll>
-      </div>
-    </div>
+    <!-- <div class="body"> -->
+    <!-- <div class="body-left" v-if="isFriendList"> -->
+    <scroll ref="scrollList" class="scrollList" :data="allPeopleList">
+      <ul class="treasureList" v-if="isFriendList">
+        <li class="treasure-item-title">
+          <div class="title_item">头像</div>
+          <div class="title_item">名字</div>
+          <div class="title_item">积分数</div>
+          <div class="title_item">排名</div>
+        </li>
+        <li class="treasure-item-title">
+          <p v-if="!allPeopleList.length" class="noData">暂无数据</p>
+        </li>
+        <li class="treasure-item" v-for="(item,index) in allPeopleList" :key="index">
+          <div class="avatar-box">
+            <img :src="item.headImgURL" alt class="avatar">
+          </div>
+          <div class="name">{{item.nickName}}</div>
+          <div class="score">{{item.wealth}}</div>
+          <div class="title_item">
+            <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
+            <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
+            <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
+            <div v-else class="rank">{{index+1}}</div>
+          </div>
+        </li>
+      </ul>
+      <ul class="treasureList" v-else>
+        <li class="treasure-item-title">
+          <div class="title_item">头像</div>
+          <div class="title_item">名字</div>
+          <div class="title_item">积分数</div>
+          <div class="title_item">排名</div>
+        </li>
+        <li class="treasure-item-title">
+          <p v-if="!friendList.length" class="noData">暂无数据</p>
+        </li>
+        <li class="treasure-item" v-for="(item,index) in friendList" :key="index">
+          <div class="avatar-box">
+            <img :src="item.headImgURL" alt class="avatar">
+          </div>
+          <div class="name">{{item.nickName}}</div>
+          <div class="score">{{item.wealth}}</div>
+          <div class="title_item">
+            <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
+            <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
+            <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
+            <div v-else class="rank">{{index+1}}</div>
+          </div>
+        </li>
+      </ul>
+    </scroll>
+    <!-- </div> -->
+    <!-- <div class="body-right" v-else>
+          <scroll ref="scrollList" class="scrollList" :data='friendList' v-else>
+            <ul class="treasureList">
+              <li class="treasure-item-title">
+                <div class="title_item">头像</div>
+                <div class="title_item">名字</div>
+                <div class="title_item">积分数</div>
+                <div class="title_item">排名</div>
+              </li>
+              <li class="treasure-item" v-for="(item,index) in friendList" :key="index">
+                <div class="avatar-box">
+                  <img :src="item.headImgURL" alt class="avatar">
+                </div>
+                <div class="name">{{item.nickName}}</div>
+                <div class="score">{{item.wealth}}</div>
+                <div class="title_item">
+                  <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
+                  <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
+                  <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
+                  <div v-else class="rank">{{index+1}}</div>
+                </div>
+              </li>
+            </ul>
+          </scroll>
+      </div>-->
+    <!-- </div> -->
   </div>
 </template>
 
@@ -146,63 +172,65 @@
       .tabBox {
         padding-top: 0.1333rem;
       }
-    }
-    .body {
+    } // .body {
+    //   flex: 1;
+    //   width: 100%;
+    // .body-left {
+    //   overflow: hidden;
+    //   height: 100%;
+    // }
+    .scrollList {
       flex: 1;
       width: 100%;
-      .scrollList {
-        height: 100%;
-        width: 100%;
-        .treasureList {
+      overflow: hidden;
+      .treasureList {
+        width: 100%; // height: 6rem;
+        .treasure-item-title {
           width: 100%;
-          height: 100%;
-          .treasure-item-title {
-            width: 100%;
-            font-size: 0.4rem;
-            display: flex;
-            justify-content: space-around;
-            .title_item {
-              width: 25%;
-              text-align: center;
-            }
+          font-size: 0.4rem;
+          display: flex;
+          justify-content: space-around;
+          .title_item {
+            width: 25%;
+            text-align: center;
           }
-          .treasure-item {
-            width: 100%;
-            font-size: 0.4rem;
-            display: flex;
-            justify-content: space-around;
-            margin-top: 0.1333rem;
-            .title_item {
-              width: 25%;
-              text-align: center;
-            }
-            .rankIcon {
-              width: 0.6333rem;
-              height: 0.6333rem;
-            }
-            .avatar-box,
-            .name,
-            .score,
-            .rank {
-              margin-top: 0.2133rem;
-              width: 25%;
-              text-align: center;
-              display: inline-block;
-            }
-            .avatar {
-              width: 0.8rem;
-              height: 0.8rem;
-              border-radius: 50%;
-            }
+          .noData {
+            margin: 50% auto;
+            font-size: 0.5333rem;
+            color: #ccc;
+            text-align: center;
           }
         }
-        .noData {
-          margin: 50% auto;
-          font-size: 0.5333rem;
-          color: #ccc;
-          text-align: center;
+        .treasure-item {
+          width: 100%;
+          font-size: 0.4rem;
+          display: flex;
+          justify-content: space-around;
+          margin-top: 0.1333rem;
+          .title_item {
+            width: 25%;
+            text-align: center;
+          }
+          .rankIcon {
+            width: 0.6333rem;
+            height: 0.6333rem;
+          }
+          .avatar-box,
+          .name,
+          .score,
+          .rank {
+            margin-top: 0.2133rem;
+            width: 25%;
+            text-align: center;
+            display: inline-block;
+          }
+          .avatar {
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%;
+          }
         }
       }
-    }
+    } // }
   }
 </style>

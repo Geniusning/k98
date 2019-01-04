@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-12-19 15:57:24
+ * @Last Modified time: 2019-01-04 19:07:46
  */
 
 import axios from 'axios'
@@ -598,9 +598,9 @@ api.statCalls = function () {
   })
 }
 //店长推荐预定
-api.bookingRecommend = function (recommendID) {
+api.convertRecommend = function (recommendID) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/bookingRecommend?recommendID=${recommendID}`)
+    axios.get(`/api/convertRecommend?recommendID=${recommendID}`)
       .then(res => {
         console.log(res)
         if (res.status == 200) {
@@ -801,6 +801,19 @@ api.loadGameScoreRanking = function (rankingType, count, cursor) {
   let pcursor = cursor || "";
   return new Promise((resolve, reject) => {
     axios.get(`/api/loadGameScoreRanking?rankingType=${rankingType}&count=${pcount}&cursor=${pcursor}`)
+      .then(res => {
+        if (res.status == 200) {
+          resolve(res.data)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
+//分享邀约记录创建
+api.createShareDaylog = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/createShareDaylog`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

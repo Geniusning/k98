@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2018-12-18 17:52:58
+ * @Last Modified time: 2019-01-04 11:28:20
  */
 import api from 'common/api'
 import Config from 'common/url'
@@ -89,7 +89,7 @@ util.timestampToTime = function (timestamp) {
   }
 }
 util.timestampToTimeNoLine = function (timestamp) {
-  if (typeof timestamp != "number") {  //如果传入的不是整型就提示
+  if (typeof timestamp != "number") { //如果传入的不是整型就提示
     console.error('传入的数据不是Number类型')
     return timestamp;
   }
@@ -116,6 +116,17 @@ util.timestampToTimeNoLine = function (timestamp) {
 
   }
 }
+util.returnDiscountType = (discountTypeNumber) => {
+  if (parseInt(discountTypeNumber) === 0) {
+    return "现金券"
+  } else if (parseInt(discountTypeNumber) === 1) {
+    return "实物券"
+  } else if (parseInt(discountTypeNumber) === 2) {
+    return "折扣券"
+  } else {
+    return "兑换券"
+  }
+}
 //获取微信jssdk
 util._getJssdkInfo = function (shareObj, url) {
     api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
@@ -135,7 +146,11 @@ util._getJssdkInfo = function (shareObj, url) {
             link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
             imgUrl: shareObj.imgUrl,
             success: () => {
-              console.log("分享成功");
+              api.createShareDaylog().then(res => {
+                if (res.errCode == 0) {
+                  alert('分享成功');
+                }
+              })
             }
           });
         });
