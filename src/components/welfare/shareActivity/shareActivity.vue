@@ -52,7 +52,7 @@ export default {
         link: `${Config.shareUrl}/#/shareActivity?activityID=${this.activityID}`,
         imgUrl: `${this.shopSettingInfo.image}`
       };
-      util._getJssdkInfo(shareObj, this.myShareUrl);
+      util._getJssdkInfo(shareObj, this.myShareUrl,20);
     } else {
       let shareObj = {
         title: "活动通知",
@@ -60,7 +60,7 @@ export default {
         link: `${Config.shareUrl}#/shareActivity?activityID=${this.activityID}`,
         imgUrl: `${this.shopSettingInfo.image}`
       };
-      util._getJssdkInfo(shareObj, this.myShareUrl);
+      util._getJssdkInfo(shareObj, this.myShareUrl,20);
     }
   },
   mounted() {

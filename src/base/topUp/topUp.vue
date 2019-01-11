@@ -33,37 +33,25 @@
               <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt class="giftIcon">
               <img v-else-if="item.id===3" src="../../assets/image/car.png" alt class="giftIcon">
               <img v-else src="../../assets/image/boat.png" alt class="giftIcon">
-              <p class="price">{{item.money}}</p>
+              <p class="price">积分:{{item.money}}</p>
             </li>
           </ul>
         </div>
         <div class="shopItemListpart vux-1px-b" v-if="recommentList.length>0">
           <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
           <ul class="list">
-            <li class="item" v-for="(item,index) in recommentList" :key="index" @click="sendShopItemGift">
-              <img :src="item.recommend.image" alt class="giftIcon">
-              <p class="price">9900</p>
+            <li class="item" v-for="(item,index) in recommentList" :key="index" @click="sendShopItemGift(item)">
+              <img :src="item.goods.image" alt class="giftIcon">
+              <p class="price">积分:{{item.goods.integral}}</p>
             </li>
           </ul>
         </div>
         <div class="entityGiftListpart">
           <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
           <ul class="list">
-            <li class="item">
-              <img src="../../assets/image/wawa1.png" alt class="giftIcon">
-              <p class="price">9900</p>
-            </li>
-            <li class="item">
-              <img src="../../assets/image/wawa2.png" alt class="giftIcon">
-              <p class="price">12800</p>
-            </li>
-            <li class="item">
-              <img src="../../assets/image/wawa3.png" alt class="giftIcon">
-              <p class="price">99889</p>
-            </li>
-            <li class="item">
-              <img src="../../assets/image/wawa4.png" alt class="giftIcon">
-              <p class="price">99999</p>
+            <li class="item" v-for="(item,index) in sendGiftList" :key="index" @click="sendJiFenGift(item)">
+              <img :src="item.goods.image" alt class="giftIcon">
+              <p class="price">积分:{{item.goods.integral}}</p>
             </li>
           </ul>
         </div>
@@ -72,22 +60,24 @@
       <div class="sendGiftPanelBox" v-else-if="panelIndex===2" key="sendGiftPanelBox">
         <div class="header">
           <img src="../../assets/image/giftBox.png" class="giftBoxIfon">
-          <p class="header_text">送出本份礼物需要消耗您{{giftInfo.recommend.originalPrice}}积分</p>
+          <p  class="header_text">消耗积分{{componentGiftInfo.goods.integral}}</p>
+          
           <div class="close" @click="closeIntegralPanel">X</div>
         </div>
         <div class="content">
           <div class="pictureBox">
-            <img :src="giftInfo.recommend.image" alt class="pictureBox_img">
+            <img :src="componentGiftInfo.goods.image" alt class="pictureBox_img">
           </div>
-          <div class="giftInfoBox">
-            <p class="title">{{giftInfo.recommend.name}}</p>
-            <p class="desc">{{giftInfo.recommend.subtopic}}</p>
-            <p class="limit">{{giftInfo.recommend.limit}}</p>
-            <p class="price">特惠 ￥{{giftInfo.recommend.discountPrice}}</p>
+          <div class="componentGiftInfoBox">
+            <p class="title">{{componentGiftInfo.goods.name}}</p>
+            <p class="desc">{{componentGiftInfo.goods.subtopic}}</p>
+            <p class="limit">{{componentGiftInfo.goods.limit}}</p>
+            <p class="price">特惠 ￥{{componentGiftInfo.goods.discountPrice}}</p>
           </div>
         </div>
         <div class="handle">
-          <button class="btn" @click="confirmShopItemGift(giftInfo.recommend.recommendID)">确认兑换</button>
+          <button v-if="componentConvertType===0 ||componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认兑换</button>
+          <button v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认赠送</button>
         </div>
       </div>
       <div class="successfullyBox" v-else="panelIndex===3" key="successfullyBox">
@@ -97,9 +87,9 @@
           <p class="successful_text">{{successfulText}}</p>
           <p class="gotoTopUpText" @click="gotoTopUp">去充值&gt;</p>
           <!-- <div class="myWelfare">
-                <img class="welIcon" src="../../assets/image/integralIcon.png" alt="">
-                <p>20324</p>
-              </div> -->
+                        <img class="welIcon" src="../../assets/image/integralIcon.png" alt="">
+                        <p>20324</p>
+                  </div>-->
         </div>
       </div>
     </transition>
@@ -117,6 +107,8 @@
     data() {
       return {
         panelIndex: null,
+        componentGiftInfo: "",
+        componentConvertType: null,
         successfulText: "操作成功",
         moneyList: [{
             "id": 1,
@@ -155,14 +147,12 @@
     },
     computed: {
       ...mapState(['giftList']),
-      ...mapGetters(['recommentList'])
+      ...mapGetters(['recommentList', "sendGiftList"])
     },
     created() {
-      console.log('this.friendId----------------', this.friendId);
-      console.log('this.giftInfo----------------', this.giftInfo);
       this.panelIndex = this.fatherPanelIndex;
-      console.log('this.panelIndex----------', this.panelIndex)
-      console.log('this.giftInfo------------', this.giftInfo)
+      this.componentGiftInfo = this.giftInfo;
+      this.componentConvertType = this.convertType;
     },
     mounted() {
       // console.log('this.friendId----------------', this.friendId);
@@ -172,6 +162,10 @@
       // console.log('this.giftInfo------------', this.giftInfo)
     },
     props: {
+      convertType: {
+        type: Number,
+        default: null,
+      },
       friendId: {
         type: String,
         default: null,
@@ -213,23 +207,62 @@
         })
       },
       //赠送店铺项目
-      sendShopItemGift() {
+      sendShopItemGift(goodsInfo) {
+        this.componentConvertType = 2;
+        this.componentGiftInfo = goodsInfo;
         this.panelIndex = 2;
-        this.successfulText = "赠送礼物成功"
+        this.successfulText = "赠送礼物成功";
+      },
+      //赠送积分换礼品项目
+      sendJiFenGift(goodsInfo) {
+        this.componentConvertType = 3;
+        this.componentGiftInfo = goodsInfo;
+        this.panelIndex = 2;
+        this.successfulText = "赠送礼物成功";
       },
       //确认赠送店铺项目
-      confirmShopItemGift(recommendID) {
-        api.convertRecommend(recommendID).then(res => {
-          console.log('兑换结果--------------', res);
-          if (res.errCode && res.errCode == 1021) {
-            this.successfulText = "您已兑换，兑换券已发放至你优惠券列表"
-          } else {
-            this.successfulText = "兑换成功，兑换券已发放至你优惠券列表"
-          }
-        }).catch(err => {
-          console.log(err)
-        });
-        alert('测试')
+      confirmShopItemGift(goodID) {
+        //店长推荐兑换
+        if (this.componentConvertType == 0) {
+          api.convertRecommend(goodID).then(res => {
+            console.log('店长推荐兑换结果--------------', res);
+            if (res.errCode && res.errCode == 1021) {
+              this.successfulText = "您已兑换，兑换券已发放至你优惠券列表"
+            } else if (res.errCode == 1029) {
+              this.successfulText = "积分不足，请点右下角前往充值"
+            } else {
+              this.successfulText = "兑换成功，兑换券已发放至你优惠券列表"
+            }
+          }).catch(err => {
+            console.log(err)
+          });
+        } else if (this.componentConvertType == 1) {
+          //积分换礼品兑换
+          api.convertGoods(goodID).then(res => {
+            console.log('积分换礼品兑换结果---------', res)
+            if (res.errCode && res.errCode == 1021) {
+              this.successfulText = "您已兑换，兑换券已发放至你优惠券列表"
+            } else if (res.errCode == 1029) {
+              this.successfulText = "积分不足，请点右下角前往充值"
+            } else {
+              this.successfulText = "兑换成功，兑换券已发放至你优惠券列表"
+            }
+          })
+        } else if (this.componentConvertType == 2) { //赠送店长推荐项目
+          api.sentRecommend(goodID, this.friendId).then(res => {
+            console.log('店长推荐赠送结果---------', res)
+            if (res.errCode == 1029) {
+              this.successfulText = "积分不足，请点右下角前往充值"
+            }
+          })
+        } else if (this.componentConvertType == 3) { //赠送积分换礼品项目
+          api.sentGoods(goodID, this.friendId).then(res => {
+            if (res.errCode == 1029) {
+              this.successfulText = "积分不足，请点右下角前往充值"
+            }
+            console.log('积分赠送结果---------', res)
+          })
+        }
         this.panelIndex = 3;
       },
       //   充值
@@ -379,12 +412,13 @@
           justify-content: space-around;
           padding: 0.1133rem 0.7rem;
           .item {
+            text-align: center;
             .giftIcon {
               width: 1rem;
               height: 1.2rem;
             }
             .price {
-              width: 1.2rem;
+              width: 1.4rem;
               text-align: center;
             }
           }
@@ -404,12 +438,13 @@
           justify-content: space-around;
           padding: 0.1133rem 0.7rem;
           .item {
+            text-align: center;
             .giftIcon {
               width: 1rem;
               height: 1rem;
             }
             .price {
-              width: 1rem;
+              width: 1.4rem;
               text-align: center;
             }
           }
@@ -429,12 +464,13 @@
           justify-content: space-around;
           padding: 0.1133rem 0.7rem;
           .item {
+            text-align: center;
             .giftIcon {
               width: 1rem;
               height: 1rem;
             }
             .price {
-              width: 1rem;
+              width: 1.4rem;
               text-align: center;
             }
           }
@@ -458,6 +494,9 @@
           width: 0.5667rem;
           height: 0.5667rem;
           text-align: center;
+          font-size: 0.4rem;
+          font-weight: 800;
+          color: #e59305;
         }
         .giftBoxIfon {
           width: 0.6rem;
@@ -481,7 +520,15 @@
             margin-right: 0.667rem;
           }
         }
+        .componentGiftInfoBox {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
         .giftInfoBox {
+          display: flex;
+          justify-content: space-between;
+          flex-direction: column;
           p {
             margin-bottom: 0.06rem;
           }
@@ -535,10 +582,13 @@
       .close {
         width: 0.4667rem;
         height: 0.4667rem;
-        text-align: right;
+        text-align: center;
         position: absolute;
-        top: 0.1333rem;
+        top: 0.2333rem;
         right: 0.1933rem;
+        font-size: 0.4rem;
+        font-weight: 800;
+        color: #e59305;
       }
       .integralIcon {
         margin-top: 0.2267rem;

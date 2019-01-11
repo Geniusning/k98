@@ -33,7 +33,8 @@ const state = {
     noCouponsFlag: true, //判断是否还有邀请有礼优惠券分享
     AdvertisingPhoto: [], //首页轮播图
     messType: "", //判断消息类型
-    recommentList: [] //店长推荐列表
+    recommentList: [], //店长推荐列表
+    sendGiftList:[],//积分兑换礼品列表
 }
 
 export default state

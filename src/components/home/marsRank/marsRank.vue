@@ -48,7 +48,7 @@
         </li>
         <li class="mars-item" v-for="(item,index) in friendList" :key="index">
           <div class="avatar-box">
-            <img :src="item.headImgURL" alt class="avatar">
+            <img :src="item.headImgURL?item.headImgURL:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt class="avatar">
           </div>
           <div class="name">{{item.nickName}}</div>
           <div class="score">{{item.score}}</div>

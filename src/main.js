@@ -30,8 +30,8 @@ new Vue({
         ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
     },
     created() {
-        // this.websock = new WebSocket(`${config.websocketUrl}?tk=${tk}`);
-        this.websock = new WebSocket(`${config.websocketUrl}`);
+        this.websock = new WebSocket(`${config.websocketUrl}?tk=${tk}`);
+        // this.websock = new WebSocket(`${config.websocketUrl}`);
         this.websock.binaryType = "arraybuffer";
         this.connect_websocket(this.websock);
         this.socket.onopen = this.websocketonopen;
@@ -43,6 +43,7 @@ new Vue({
         this._getUserInfo(); //获取用户信息
         this._loadStoreSetting(); //获取门店信息
         //this.getWeChatUrl(); //获取公众号地址
+        this._loadGoods(); //拉取积分换礼品列表
     },
     mounted() {},
     methods: {
@@ -104,12 +105,22 @@ new Vue({
             //上线通知
             else if(result.msgCode === 8){
                 this.judgeMessType('onlineNotice');
-            }   
+            } else if(result.msgCode === 9){
+                this.judgeMessType('shareGetIntegral');
+            }     
         },
         websocketclose(e) {
             //关闭
             console.log("connection closed (" + e.code + ")");
         },
+         //拉取积分换礼品列表
+      _loadGoods() {
+        api.loadGoods().then(res => {
+          console.log('积分换礼品列表------', res);
+          this.getSendGiftList(res);
+        })
+      },
+      //自动领取优惠券
         _acquireWaitGetCoupons() {
             let channel = 1 //channel为1是AI优惠券类型
             setTimeout(() => {
@@ -170,7 +181,8 @@ new Vue({
             getuserInfo: "GET_USERINFO", //获取用户信息
             getShopSetting: "GET_SHOPINFO", //获取门店信息
             getUrl: "GET_URL", //获取公众号地址
-            judgeMessType: "JUDGE_MESSTYPE" //判断消息类型
+            judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
+            getSendGiftList:"GET_SENDGIFTLIST" //获取积分换礼品列表
         }),
         ...mapActions({
             getFriendEvt: "get_FriendEvt"

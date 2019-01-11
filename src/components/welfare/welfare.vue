@@ -139,7 +139,6 @@
       };
     },
     created() {
-      // this._loadInviteWaitGetCoupon(); //判断优惠券是否已经领取过
       this._loadActivityInfo(); //获取活动通知
     },
     computed: {

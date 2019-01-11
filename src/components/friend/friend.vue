@@ -5,6 +5,12 @@
       <img src="../../assets/image/setting.png" alt @click="intoSetting">
     </div>
     <div class="stack-wrapper">
+      <div v-show="isFirstLoad">
+        <p class="intro_mfTips">绿灯闪烁表示好友在线哦，红灯表示离线</p>
+        <img src="../../assets/image/arrow left.png" alt class="arrow_left">
+        <img src="../../assets/image/Arrow Right.png" alt class="arrow_right">
+        <p class="arrow_desc">左右滑动可换人</p>
+      </div>
       <!-- 相册··················································begin -->
       <!-- 相册··················································end -->
       <stack ref="stack" :pages="someList" :stackinit="stackinit" @getMoreFriend="getMoreFriend" @showAblum="showAblum" @firstData="listenFirstdata">暂时没有好友</stack>
@@ -13,23 +19,29 @@
       </div>
     </div>
     <div class="control_wrapper">
-      <p class="control_guide" v-show="isFirstLoad" >下面按钮是与社群好友交互，对方同意后即可成为好友</p>
-      <div class="gifts" >
+      <!-- <p class="control_guide" v-show="isFirstLoad">互赞成为好友。
+            <br>下面分别是送礼、点赞、约Ta玩大话骰
+          </p> -->
+      <div class="gifts">
         <img src="../../assets/image/gift.png" @click="isGiftPanel=true" alt>
         <img src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt>
+        <p class="handleText" v-show="isFirstLoad">送礼成好友</p>
         <!-- <p>见面礼</p> -->
       </div>
-      <div class="thumbs"  v-if="!isFriend">
+      <div class="thumbs" v-if="!isFriend">
         <img src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt>
         <img src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
+        <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
       </div>
-      <div class="hello" v-else >
+      <div class="hello" v-else>
         <img src="../../assets/image/sayhi.png" @click="chat" alt>
-         <img src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
+        <img src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
+        <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
       </div>
-      <div class="playGame" >
+      <div class="playGame">
         <img src="../../assets/image/game.png" @click="playGame" alt>
         <img src="../../assets/image/game.png" v-show="isFirstLoad" class="guidePlayGame" alt>
+        <p class="handleText" v-show="isFirstLoad">约战大话骰</p>
         <!-- <p>玩一把</p> -->
       </div>
     </div>
@@ -89,13 +101,12 @@
     <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad" -->
     <div class="guide_bg" v-show="isFirstLoad" @click="isFirstLoad=false">
       <img class="thumb" src="../../assets/image/thumb.png" alt>
-      <p class="intro">请尽快完善信息，让更多人认识你哦！</p>
-      <p class="intro_mfTips">绿灯闪烁表示好友在线哦，赶紧去联系Ta吧</p>
+      <p class="intro">完善资料送福利，每天推3名星座匹配群友</p>
     </div>
     <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
     <!-- <transition name="fade">
-            <giftPanel v-show="isGiftPanel" @closeGiftPanel="closeGiftPanel"></giftPanel>
+                  <giftPanel v-show="isGiftPanel" @closeGiftPanel="closeGiftPanel"></giftPanel>
         </transition>-->
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
@@ -157,6 +168,7 @@
         currentIndex1: 0,
         currentIndex2: 0,
         isFirstLoad: false,
+        friendOnlineStatus: false,
         isIntegralPanel: false, //面板显示状态
         isGiftPanel: false, //礼物面板状态
         sexArr: [{
@@ -229,7 +241,7 @@
       ...mapGetters(["qrIsShow"]),
     },
     mounted() {
-      if (!this.userInfo.firstLoad) {
+      if (this.userInfo.firstLoad) {
         this.isFirstLoad = true;
       } else {
         this.isFirstLoad = false;
@@ -249,6 +261,9 @@
       },
       //标识进入过公众号
       _clearFirstLoadTag() {
+        if (!this.userInfo.firstLoad) {
+          return;
+        }
         api.clearFirstLoadTag().then(res => {
           console.log('标识进入过公众号---------------', res);
           this._getUserInfo();
@@ -316,6 +331,7 @@
       },
       listenFirstdata(data) {
         // 下面是传回父级的数据;
+        this.friendOnlineStatus = data.info.onlineL98Server; //好友在线状态
         console.log('滑动页面传回给父级数据：', data)
         this.friendId = data.info.openid;
         this.setChatFriend(data);
@@ -362,6 +378,14 @@
       },
       //玩游戏
       playGame() {
+        // if (!this.friendOnlineStatus) {
+        //   this.isShowEnvelope = true;
+        //   this.envelopeText = "该用户己离线，无法通知";
+        //   setTimeout(() => {
+        //     this.isShowEnvelope = false;
+        //   }, 2000);
+        //   return;
+        // }
         api.sentPlayGameMsg(this.friendId).then(res => {
           console.log('约战返回--------', res)
           if (res.errCode == 0) {
@@ -373,6 +397,13 @@
             }, 2000);
           } else if (res.errCode == 1023) {
             this.showQrcode(true);
+          } else if (res.errCode == 1022) {
+            this.isShowEnvelope = true;
+            this.envelopeText = "该用户己离线，无法通知";
+            setTimeout(() => {
+              this.isShowEnvelope = false;
+            }, 2000);
+            return;
           }
         })
       },
@@ -457,13 +488,14 @@
       padding: 0 1.6rem; // margin-top: -0.2667rem;
       box-sizing: border-box;
       position: relative;
-      .control_guide{
+      .control_guide {
         position: absolute;
         z-index: 9;
         color: #fff;
         font-size: 0.4rem;
-        left: 0.3rem;
-        bottom: 2.3333rem;
+        margin: 0 auto;
+        bottom: 2.8333rem;
+        text-align: center;
       }
       img {
         width: 1.6rem;
@@ -477,11 +509,31 @@
           top: 0.8667rem;
           left: 0;
         }
+        .handleText {
+          position: absolute;
+          z-index: 99999;
+          color: #fff;
+          font-weight: 600;
+          font-size: .4rem;
+          top: .2rem;
+          left: -.4rem;
+          width: 2.3333rem;
+        }
         .action();
       }
       .hello {
         position: relative;
-         .guideThumbs {
+        .handleText {
+          position: absolute;
+          z-index: 99999;
+          color: #fff;
+          font-weight: 600;
+          font-size: .4rem;
+          top: .2rem;
+          left: -.4rem;
+          width: 2.3333rem;
+        }
+        .guideThumbs {
           position: absolute;
           z-index: 10;
           top: 0.8667rem;
@@ -497,10 +549,30 @@
           top: 0.8667rem;
           left: 0;
         }
+        .handleText {
+          position: absolute;
+          z-index: 99999;
+          color: #fff;
+          font-weight: 600;
+          font-size: .4rem;
+          top: .2rem;
+          left: -.4rem;
+          width: 2.3333rem;
+        }
         .action();
       }
       .playGame {
         position: relative;
+        .handleText {
+          position: absolute;
+          z-index: 99999;
+          color: #fff;
+          font-weight: 600;
+          font-size: .4rem;
+          top: .2rem;
+          left: -.4rem;
+          width: 2.3333rem;
+        }
         .guidePlayGame {
           position: absolute;
           z-index: 10;
@@ -517,6 +589,63 @@
       height: 10.5333rem;
       list-style: none;
       pointer-events: none;
+      @keyframes leftMove {
+        0% {
+          transform: translateX(5px); //  opacity: 1;
+        }
+        50% {
+          transform: translateX(10px);
+        }
+        100% {
+          transform: translateX(5px);
+        }
+      }
+      @keyframes rightMove {
+        0% {
+          transform: translateX(-5px); //  opacity: 1;
+        }
+        50% {
+          transform: translateX(-10px);
+        }
+        100% {
+          transform: translateX(-5px);
+        }
+      }
+      .arrow_desc {
+        width: 100%;
+        text-align: center;
+        font-size: .45rem;
+        font-weight: 900;
+        position: absolute;
+        top: 3.8rem;
+        z-index: 99;
+        color: #fff;
+      }
+      .arrow_left {
+        position: absolute;
+        z-index: 99;
+        top: 3.5rem;
+        left: 0.3rem;
+        width: 1.3333rem;
+        animation: leftMove 1s linear infinite;
+      }
+      .arrow_right {
+        width: 1.3333rem;
+        position: absolute;
+        z-index: 99;
+        top: 3.5rem;
+        right: 0.3rem;
+        animation: rightMove 1s linear infinite;
+      }
+      .intro_mfTips {
+        position: absolute;
+        top: .4667rem;
+        left: 1.6rem;
+        color: #fff;
+        font-size: 0.4rem;
+        font-weight: 700;
+        z-index: 10;
+      }
       .ablum-wrapper {
         position: absolute;
         top: 100px;
@@ -573,12 +702,8 @@
         top: 0.4667rem;
         left: 2rem;
         color: #fff;
-      }
-      .intro_mfTips {
-        position: absolute;
-        top: 2.4667rem;
-        left: 2rem;
-        color: #fff;
+        font-size: 0.4rem;
+        font-weight: 700;
       }
     }
   } // 弹框礼物

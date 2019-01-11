@@ -30,8 +30,12 @@
         <!-- 望眼镜背景 -->
         <div class="telescope_wrapper">
           <div v-show="isFirstLoad" @click="isFirstLoad=false">
-            <img src="../../assets/image/finger.png" alt class="guideFinger">
-            <p class="guideText">点击找朋友，右边点击玩游戏</p>
+            <img src="../../assets/image/finger.png" alt class="leftguideFinger">
+            <p class="leftguideText">点击找朋友</p>
+          </div>
+          <div v-show="isFirstLoad" @click="isFirstLoad=false">
+            <img src="../../assets/image/finger.png" alt class="rightguideFinger">
+            <p class="rightguideText">去玩大话骰</p>
           </div>
           <img src="../../assets/image/telescope_bg.png" alt class="telescope_img">
           <div class="left_radius_box" ref="leftRadiusBox" @click="gotoFriend">
@@ -147,22 +151,22 @@
             <ul class="welfare_list" v-if="recommendList.length">
               <li class="item clearfix" v-for="(item,index) in recommendList" :key="index">
                 <div class="left">
-                  <img :src="item.recommend.image" alt class="shopPic">
+                  <img :src="item.goods.image" alt class="shopPic">
                 </div>
                 <div class="center">
-                  <p class="title">{{item.recommend.name}}</p>
-                  <p class="desc">{{item.recommend.subtopic}}</p>
-                  <p class="limit">{{item.recommend.limit}}</p>
+                  <p class="title">{{item.goods.name}}</p>
+                  <p class="desc">{{item.goods.subtopic}}</p>
+                  <p class="limit">{{item.goods.limit}}</p>
                   <p class="price">
-                    <!-- <span class="discount_p">消耗积分：{{item.recommend.discountPrice}}</span> -->
-                    <span class="discount_p">特惠￥{{item.recommend.discountPrice}}</span>
-                    <span class="origin_p">积分换 ${{item.recommend.originalPrice}}</span>
+                    <!-- <span class="discount_p">消耗积分：{{item.goods.discountPrice}}</span> -->
+                    <span class="discount_p">特惠￥{{item.goods.discountPrice}}</span>
+                    <span class="origin_p">积分换 ${{item.goods.integral}}</span>
                   </p>
                 </div>
                 <div class="right">
                   <div class="thunb_box">
-                    <span class="count fl">已订：{{item.convert.convertNumber}}</span>
-                    <div class="booking_btn" @click="freeBook(item.recommend.recommendID,index)">积分兑换</div>
+                    <!-- <span class="count fl">已订：{{item.convert.convertNumber}}</span> -->
+                    <div class="booking_btn" @click="freeBook(item.goods.ID,index)">积分兑换</div>
                   </div>
                   <!-- <div class="show_detail_btn">积分兑换</div> -->
                 </div>
@@ -222,7 +226,7 @@
       </x-dialog>
     </div>
     <!-- <img style="visibility:hidden" :src="shopSettingInfo.image" alt=""> -->
-    <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :giftInfo="recommendItemIndo" :fatherPanelIndex="fatherPanelIndex"></topUp>
+    <topUp :convertType="convertType" v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :giftInfo="recommendItemIndo" :fatherPanelIndex="fatherPanelIndex"></topUp>
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
     </transition>
@@ -277,6 +281,7 @@
             subtopic: '',
           },
         },
+        convertType:0,
         fatherPanelIndex: 2,
         showTelescopeFlag: true,
         circleList: [],
@@ -325,7 +330,7 @@
             link: Config.shareUrl + "#/home",
             imgUrl: `${this.shopSettingInfo.image}`
           };
-          util._getJssdkInfo(shareObj, this.myShareUrl);
+          util._getJssdkInfo(shareObj, this.myShareUrl,20);
         }
       }, 1000);
       // this.arrowTimer = setInterval(() => {
@@ -339,7 +344,7 @@
       ...mapState(["baseUrl", "friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo", "noCouponsFlag"]),
     },
     mounted() {
-      if (!this.userInfo.firstLoad) {
+      if (this.userInfo.firstLoad) {
         this.isFirstLoad = true;
       } else {
         this.isFirstLoad = false;
@@ -506,7 +511,6 @@
       freeBook(recommendID, index) {
         console.log('recommendID----------', recommendID)
         console.log('index----------', index)
-        var couponId = "";
         this.isGiftPanel = true;
         this.fatherPanelIndex = 2,
           console.log(this.fatherPanelIndex)
@@ -840,30 +844,58 @@
     height: 7rem;
     background-color: #fff;
     position: relative;
-    .guideFinger {
+    overflow: hidden;
+    .leftguideFinger {
       width: 2rem;
       height: 2rem;
       position: absolute;
       top: 2.5rem;
-      left: 1.6667rem;
+      left: 1.5667rem;
       z-index: 9;
       animation: bigAndSmall 1s linear infinite;
     }
-    .guideText{
+    .rightguideFinger{
+      width: 2rem;
+      height: 2rem;
+      position: absolute;
+      top: 2.5rem;
+      z-index: 9;
+      animation: bigAndSmall 1s linear infinite;
+      right: .7rem;
+    }
+    .leftguideText{
       position: absolute;
       top: 4.5rem;
-      left: 1.6667rem;
+      left: 1.4667rem;
       z-index: 9;
-      font-size: 0.5333rem;
+      font-size: 0.4rem;
       color: #fff;
+      padding: 0.1333rem;
+      font-weight: 800;
+      border: 1px solid #fff;
+      border-radius: 0.3333rem;
     }
+    .rightguideText{
+       position: absolute;
+      top: 4.5rem;
+      z-index: 9;
+      font-size: 0.4rem;
+      color: #fff;
+      right: .4rem;
+      padding: 0.1333rem;
+       font-weight: 800;
+      border: 1px solid #fff;
+      border-radius: 0.3333rem;
+    }
+    
     @keyframes rotateAn {
       0% {
-        transform: rotate(0deg); //  opacity: 1;
+        transform: rotate(0deg); 
+          opacity: 1;
       }
       99% {
         transform: rotate(180deg);
-        opacity: 1;
+         opacity: 1;
       }
       100% {
         transform: rotate(180deg);
@@ -884,7 +916,6 @@
         height: 3.4rem;
         border-radius: 50%;
         position: absolute;
-        overflow: hidden;
         .leftCirclePart,
         .rightCirclePart {
           position: absolute;
@@ -893,13 +924,12 @@
           top: 0;
         }
         .leftCirclePart {
-          left: -0.0267rem;
+          left: -0.0167rem;
+          border-radius: 50% 0 0 50%;
           overflow: hidden;
-          border-radius: 50% 0 0 50%; // background-color: pink;
         }
         .leftCirclePart::after {
-          // background-color: #f7d91f;
-          background: linear-gradient(top, #79b7f4, #2785f0);
+          background: linear-gradient(bottom, #9BCCF7, #2785f0);
           opacity: 1;
           display: block;
           content: "";
@@ -910,12 +940,11 @@
         }
         .rightCirclePart {
           right: 2px;
-          overflow: hidden;
           border-radius: 0 50% 50% 0;
+          overflow: hidden;
         }
         .rightCirclePart::after {
-          // background-color: #f7d91f;
-          background: linear-gradient(top, #79b7f4, #2785f0);
+          background: linear-gradient(bottom, #9BCCF7, #2785f0);
           opacity: 1;
           display: block;
           content: "";
@@ -945,7 +974,7 @@
       } // .left_radius {
       //   width: 0.04rem;
       //   height: 1.6rem;
-      //   background: linear-gradient(top, #79b7f4, #2785f0);
+        // background: linear-gradient(top, #9BCCF7, #2785f0);
       //   position: absolute;
       //   left: 50%;
       //   margin-left: -0.02rem;
@@ -976,13 +1005,12 @@
           top: 0;
         }
         .leftCirclePart {
-          left: -0.0167rem;
+          left: -0.0067rem;
+          border-radius: 50% 0 0 50%;
           overflow: hidden;
-          border-radius: 50% 0 0 50%; // background-color: pink;
         }
         .leftCirclePart::after {
-          // background-color: #f7d91f;
-          background: linear-gradient(top, #79b7f4, #2785f0);
+          background: linear-gradient(bottom, #9BCCF7, #2785f0);
           opacity: 1;
           display: block;
           content: "";
@@ -992,13 +1020,12 @@
           animation: rotateAn 2s 5s linear forwards;
         }
         .rightCirclePart {
-          right: 0.0267rem;
-          overflow: hidden;
+          right: 0.0367rem;
           border-radius: 0 50% 50% 0;
+          overflow: hidden;
         }
         .rightCirclePart::after {
-          // background-color: #f7d91f;
-          background: linear-gradient(top, #79b7f4, #2785f0);
+          background: linear-gradient(bottom, #9BCCF7, #2785f0);
           opacity: 1;
           display: block;
           content: "";
@@ -1029,7 +1056,6 @@
       .right_radius {
         width: 0.04rem;
         height: 1.6rem;
-        background: -webkit-linear-gradient(top, #79b7f4, #2785f0);
         position: absolute;
         right: 50%;
         margin-right: -0.02rem;

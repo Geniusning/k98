@@ -6,7 +6,7 @@
         <tab-item selected @on-item-click="onItemClick">未使用({{unuseCouponsLength}})</tab-item>
         <tab-item @on-item-click="onItemClick">已使用({{usedCouponsLength}})</tab-item>
         <tab-item @on-item-click="onItemClick">已过期({{timeOutListLength}})</tab-item>
-        <tab-item @on-item-click="onItemClick">已送礼({{timeOutListLength}})</tab-item>
+        <tab-item @on-item-click="onItemClick">已送礼({{songLiList.length}})</tab-item>
       </tab>
     </div>
     <!-- 温馨提示 -->
@@ -19,11 +19,22 @@
       <!-- 未使用 -->
       <ul class="no_user_list" v-show="tagIndex==0">
         <h3 class="noCouponTips" v-if="!unusedList.length">暂无优惠券</h3>
-        <li v-else class="item" v-for="(item,index) in unusedList" >
+        <li v-else class="item" v-for="(item,index) in unusedList">
           <div class="myleft">
             <p class="discount_type_text">{{item.coupon.type}}</p>
           </div>
           <div class="mycenter">
+            <div class="receiver_wrapper" v-if="item.coupon.receiverHeadImage">
+              <img :src="item.coupon.receiverHeadImage" alt="" class="receiver_avartar">
+              <span class="receiver_name">{{item.coupon.receiverName}} 收</span>
+            </div>
+            <div class="receiverProject_wrapper" v-if="item.coupon.integral">
+              <div class="integral_content">
+                <img src="../../assets/image/integralIcon.png" class="integral_icon">
+                <span class="integral_text">{{item.coupon.integral}}</span>
+              </div>
+              <img :src="item.coupon.image" class="project_img">
+            </div>
             <div class="discount_theme">计划浅唱新人礼包</div>
             <div class="discount_content">{{item.coupon.name}}</div>
             <div class="discount_limitAndTime">
@@ -35,15 +46,6 @@
             <p class="use_text">立即使用</p>
           </div>
         </li>
-        <!-- <li v-else class="item" v-for="(item,index) in unusedList" @click="selectDiscout(item.id)">
-              <div class="left1">
-                <p class="name">{{item.coupon.name}}</p>
-                <p class="time">{{item.coupon.time}}</p>
-              </div>
-              <div class="right1">
-                立即使用
-              </div>
-            </li> -->
       </ul>
       <!-- 已使用 -->
       <ul class="usered_list" v-show="tagIndex==1">
@@ -68,6 +70,37 @@
           </div>
           <div class="right1">
             已过期
+          </div>
+        </li>
+      </ul>
+      <!-- 已送礼 -->
+      <ul class="songLiList" v-show="tagIndex==3">
+        <h3 class="noCouponTips" v-if="!songLiList.length">暂无优惠券</h3>
+        <li v-else class="item" v-for="(item,index) in songLiList" :key="index">
+          <div class="myleft">
+            <p class="discount_type_text">{{item.coupon.type}}</p>
+          </div>
+          <div class="mycenter">
+            <div class="receiver_wrapper">
+              <img :src="item.coupon.receiverHeadImage" alt="" class="receiver_avartar">
+              <span class="receiver_name">{{item.coupon.receiverName}} 收</span>
+            </div>
+            <div class="receiverProject_wrapper">
+              <div class="integral_content">
+                <img src="../../assets/image/integralIcon.png" class="integral_icon">
+                <span class="integral_text">{{item.coupon.integral}}</span>
+              </div>
+              <img :src="item.coupon.image" class="project_img">
+            </div>
+            <div class="discount_theme">{{item.coupon.theme?item.coupon.theme:"新用户大礼包"}}</div>
+            <div class="discount_content">{{item.coupon.name}}</div>
+            <div class="discount_limitAndTime">
+              <p class="limit">{{item.coupon.limit}}</p>
+              <p class="time">有效期至:{{item.coupon.time}}</p>
+            </div>
+          </div>
+          <div class="myright">
+            <p class="use_text">已赠送</p>
           </div>
         </li>
       </ul>
@@ -104,7 +137,8 @@
         usedCouponsLength: 0,
         timeOutListLength: 0,
         usedList: [],
-        timeOutList: []
+        timeOutList: [],
+        songLiList: [],
       };
     },
     computed: {
@@ -138,6 +172,8 @@
           // });
           //过期优惠券
           this.distributeDiscount(res.expiredCoupos, this.timeOutList);
+          //已送礼优惠券
+          this.distributeDiscount(res.sentCoupos, this.songLiList);
           // res.expiredCoupos.forEach(element => {
           //   element.coupon.time = "过期时间：" + element.coupon.endTime;
           //   element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
@@ -154,20 +190,19 @@
               element.coupon.name = element.coupon.value + "元代金券";
               break;
             case 1:
-              element.coupon.name = "获得" + element.coupon.content;
+              element.coupon.name = element.coupon.content;
               break;
             case 2:
-              element.coupon.name = element.coupon.value + "折扣券";;
+              element.coupon.name = element.coupon.value;
               break;
             case 3:
-              element.coupon.name = element.coupon.content + "兑换券";;
+              element.coupon.name = element.coupon.content;
               break;
             default:
               break;
           }
           element.coupon.type = util.returnDiscountType(element.coupon.type);
           discountList.push(element)
-          console.log(discountList);
         });
       },
       //拉取未领取的优惠券（登录公众号优惠券，目前只有AI发送才有）
@@ -287,6 +322,41 @@
           margin-left: .1rem;
           flex: 1;
           color: #fff;
+          position: relative;
+          .receiver_wrapper {
+            position: absolute;
+            display: flex;
+            top: 0.0333rem;
+            left: 3rem;
+            .receiver_avartar {
+              width: 0.5333rem;
+              height: 0.5333rem;
+              border-radius: 50%;
+              margin-right: 0.1667rem;
+            }
+            .receiver_name {}
+          }
+          .receiverProject_wrapper {
+            position: absolute;
+            top: .1rem;
+            right: .3rem;
+            display: flex;
+            flex-direction: column;
+            .integral_content {
+              display: flex;
+              .integral_icon {
+                width: 0.4rem;
+                height: 0.4rem;
+                margin-right: 0.1067rem;
+              }
+              .integral_text {}
+            }
+            .project_img {
+              margin-top: 0.1667rem;
+              width: 1rem;
+              height: 0.8rem;
+            }
+          }
           .discount_theme {
             font-size: 0.3733rem;
           }
@@ -308,6 +378,96 @@
         .myright {
           width: 1.3rem;
           text-align: center;
+          box-sizing: border-box;
+          .use_text {
+            display: inline-block;
+            width: 0.4rem;
+            font-size: 0.45rem;
+            color: #D33700;
+            font-weight: 900
+          }
+        }
+      }
+      .songLiList {
+        overflow-y: auto;
+        .card("../../assets/image/songli_discount_bg.png", 0.5333rem);
+        .item {
+          display: flex;
+        }
+        .myleft {
+          width: 1.3rem;
+          text-align: center;
+          .discount_type_text {
+            display: inline-block;
+            width: 0.4rem;
+            padding-top: 0.2333rem;
+            font-size: 0.45rem;
+            color: #D33700;
+            font-weight: 900
+          }
+        }
+        .mycenter {
+          margin-left: .1rem;
+          flex: 1;
+          color: #fff;
+          position: relative;
+          .receiver_wrapper {
+            position: absolute;
+            display: flex;
+            top: 0.0333rem;
+            left: 3rem;
+            .receiver_avartar {
+              width: 0.5333rem;
+              height: 0.5333rem;
+              border-radius: 50%;
+              margin-right: 0.1667rem;
+            }
+            .receiver_name {}
+          }
+          .receiverProject_wrapper {
+            position: absolute;
+            top: .1rem;
+            right: .3rem;
+            display: flex;
+            flex-direction: column;
+            .integral_content {
+              display: flex;
+              .integral_icon {
+                width: 0.4rem;
+                height: 0.4rem;
+                margin-right: 0.1067rem;
+              }
+              .integral_text {}
+            }
+            .project_img {
+              margin-top: 0.1667rem;
+              width: 1rem;
+              height: 0.8rem;
+            }
+          }
+          .discount_theme {
+            font-size: 0.3733rem;
+          }
+          .discount_content {
+            margin-top: .3rem;
+            font-size: 0.45rem;
+            text-align: center;
+          }
+          .discount_limitAndTime {
+            margin-top: .4rem;
+            display: flex;
+            justify-content: space-between;
+            .limit {}
+            .time {
+              margin-left: 0.2667rem;
+            }
+          }
+        }
+        .myright {
+          width: 1.3rem;
+          text-align: center;
+          padding-top: 0.22rem;
+          box-sizing: border-box;
           .use_text {
             display: inline-block;
             width: 0.4rem;

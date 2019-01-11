@@ -83,17 +83,26 @@ export default {
   methods: {
     //选择上传生活照
     uploadLifePic(e) {
+      let _this = this;
       this.uploadAvatarShow = false;
       let file = e.target.files[0];
       this.lifePicName = file.name;
-      let _this = this;
-      let reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = function () {
-        _this.result = this.result;
+      console.log("file------",file)
+      lrz(e.target.files[0],{quality: 0.4}).then(compressedImg=>{
+        console.log("compressedImg---------",compressedImg);
         _this.showTailor = true;
-        _this.option.img = this.result;
-      };
+        _this.option.img = compressedImg.base64;
+      })
+      // console.log('压缩后的file------',file);
+      // let reader = new FileReader();
+      // reader.readAsDataURL(file);
+      // reader.onload = function () {
+      //   _this.result = this.result;
+      //   console.log(_this.result)
+ 
+      //   _this.showTailor = true;
+      //   _this.option.img = this.result;
+      // };
     },
     //确定生活照
     LifePicupComfirmBtn() {
@@ -116,7 +125,6 @@ export default {
     },
     //上传全部生活照
     uploadAllLifePicBtn() {
-      console.log(111)
       let lifeListParam = {
         lifePhotoURL: this.lifePhotoList
       }
@@ -149,6 +157,7 @@ export default {
       reader.readAsDataURL(file);
       reader.onload = function () {
         _this.result = this.result;
+        console.log(_this.result);
         _this.showTailor = true;
         _this.option.img = this.result;
       };

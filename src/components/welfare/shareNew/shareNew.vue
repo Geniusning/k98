@@ -15,6 +15,7 @@
           <p class="discout_type" v-if="item.coupon.type==0">现金券</p>
           <p class="discout_type" v-else-if="item.coupon.type==1">实物券</p>
           <p class="discout_type" v-else-if="item.coupon.type==2">折扣券</p>
+          <p class="discout_type" v-else-if="item.coupon.type==3">兑换券</p>
           <p class="discout_type" v-else>兑换券</p>
         </div>
         <div class="myright">
@@ -150,7 +151,7 @@
               link: `${Config.shareUrl}#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
               imgUrl: `${this.shopSettingInfo.image}`
             };
-            util._getJssdkInfo(shareObj, this.myShareUrl);
+            util._getJssdkInfo(shareObj, this.myShareUrl,20);
           } else {
             let shareObj = {
               title: "新人大礼包",
@@ -158,7 +159,7 @@
               link: Config.shareUrl + `#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
               imgUrl: `${this.shopSettingInfo.image}`
             };
-            util._getJssdkInfo(shareObj, this.myShareUrl);
+            util._getJssdkInfo(shareObj, this.myShareUrl,20);
           }
         })
       },

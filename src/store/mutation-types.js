@@ -1,5 +1,7 @@
 //获取店长推荐列表
 export const GET_RECOMMENTLIST = "GET_RECOMMENTLIST"
+//获取积分换礼品列表
+export const GET_SENDGIFTLIST = "GET_SENDGIFTLIST"
     //判断消息类型
 export const JUDGE_MESSTYPE = "JUDGE_MESSTYPE"
     //获得公众号地址

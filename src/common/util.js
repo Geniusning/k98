@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-01-04 11:28:20
+ * @Last Modified time: 2019-01-08 19:47:17
  */
 import api from 'common/api'
 import Config from 'common/url'
@@ -128,9 +128,11 @@ util.returnDiscountType = (discountTypeNumber) => {
   }
 }
 //获取微信jssdk
-util._getJssdkInfo = function (shareObj, url) {
+util._getJssdkInfo = function (shareObj, url, amount) {
+    amount = amount || 2
     api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
       .then(res => {
+        console.log(res)
         wx.config({
           //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
           appId: Config.appId,
@@ -146,9 +148,16 @@ util._getJssdkInfo = function (shareObj, url) {
             link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
             imgUrl: shareObj.imgUrl,
             success: () => {
+              //分享记录
               api.createShareDaylog().then(res => {
                 if (res.errCode == 0) {
-                  alert('分享成功');
+                  // alert('分享成功');
+                }
+              });
+              //分享获得积分
+              api.handselMoney(amount).then(res=>{
+                if(res.errCode ==1030){
+                  alert('分享已上限，每天最多分享5次获得积分');
                 }
               })
             }

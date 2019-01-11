@@ -7,7 +7,7 @@
           <h3 class="title ">
             我的财富：
           </h3>
-          <span class="money ">${{userInfo.money}}</span>
+          <span class="money" v-if="giftContent.length>0">${{giftContent[0].value}}</span>
         </div>
         <div class="title_content_item">
           <h3 class="title ">
@@ -43,7 +43,7 @@
         </ul>
         <p slot='pullup'>加载更多内容</p>
       </scroll>
-      <topUp v-show="isIntegralPanel" @closeIntegralPanel="closeIntegralPanel" :fatherPanelIndex="fatherPanelIndex"></topUp>
+      <topUp v-if="isIntegralPanel" @closeIntegralPanel="closeIntegralPanel" :fatherPanelIndex="fatherPanelIndex"></topUp>
       <!-- <div class="selectMoneyBox" v-show="isShowTreasure">
           <h2 class="titile">请选择充值的积分</h2>
           <p class="payInfo">1元兑换100积分，5元兑换500积分，10元兑换1000积分，15元兑换1500积分</p>
@@ -110,9 +110,9 @@
       ...mapState(['userInfo'])
     },
     created() {
-      this._loadWealthDetail();
-    },
+      },
     mounted() {
+      this._loadWealthDetail();
       //this._loadWealthDetail();
     },
     methods: {

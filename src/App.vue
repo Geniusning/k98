@@ -96,6 +96,11 @@
     methods: {
       showDetail() {
         switch (this.messType) {
+           case "shareGetIntegral":
+            this.$router.push({
+              name: `giftDetail`,
+            });
+            break;
           case "message":
             this.setChatFriend(this.dynamicFriendEvt.fromInfo);
             this.$router.push({
@@ -231,6 +236,9 @@
 </script>
 
 <style lang="less">
+html,body {
+   overflow: hidden;
+}
   @import "./assets/reset.css"; // @import "~vux/src/styles/reset.less";
   @import "~vux/src/styles/1px.less";
   @import "./assets/less/mixin.less";
@@ -283,7 +291,7 @@
     flex: 1;
     position: relative;
     .envelop-wrapper {
-      position: absolute;
+      position: fixed;
       width: 4rem;
       height: 2.2533rem;
       top: 2rem;

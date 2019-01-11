@@ -109,7 +109,7 @@
         <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
       </transition>
       <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
-      <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
+      <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
     </div>
   </transition>
 </template>
@@ -658,7 +658,7 @@
   @import "../../assets/less/chat.less";
   .chatRoom {
     position: fixed;
-    z-index: 9;
+    z-index: 7;
     top: 0;
     left: 0;
     right: 0;

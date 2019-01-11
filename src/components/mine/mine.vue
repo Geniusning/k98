@@ -50,29 +50,29 @@
       </div>
       <!-- 福利 -->
       <div class="welfare_wrapper">
-        <h2 class="jiFen_title">积分换礼品
+        <h2 class="jiFen_title">
+          积分换礼品
           <span class="star">#</span>
         </h2>
         <div class="welfare_content">
-          <ul class="welfare_list" v-if="recommendList.length">
-            <li class="item clearfix" v-for="(item,index) in recommendList" :key="index">
+          <ul class="welfare_list" v-if="sendGiftList.length">
+            <li class="item clearfix" v-for="(item,index) in sendGiftList" :key="index">
               <div class="left">
-                <img :src="item.recommend.image" alt class="shopPic">
+                <img :src="item.goods.image" alt class="shopPic">
               </div>
               <div class="center">
-                <p class="title">{{item.recommend.name}}</p>
-                <p class="desc">{{item.recommend.subtopic}}</p>
-                <p class="limit">{{item.recommend.limit}}</p>
+                <p class="title">{{item.goods.name}}</p>
+                <!-- <p class="limit">{{item.goods.limit}}</p> -->
                 <p class="price">
-                  <span class="discount_p">特惠{{item.recommend.discountPrice}}</span>
-                  <span class="origin_p">积分换 ${{item.recommend.originalPrice}}</span>
+                  <span class="discount_p">特惠{{item.goods.discountPrice}}</span>
+                  <span class="origin_p">积分换 ${{item.goods.integral}}</span>
                 </p>
               </div>
               <div class="right">
                 <div class="thunb_box clearfix">
                   <!-- <span class="count fl">已订：{{item.booking.bookingNumber}}</span> -->
                 </div>
-                <div class="show_detail" @click="freeBook(item.recommend.recommendID)">积分兑换</div>
+                <div class="show_detail" @click="convert(item.goods.ID,index)">积分兑换</div>
               </div>
             </li>
           </ul>
@@ -80,35 +80,36 @@
       </div>
       <!-- 我的标签 -->
       <!-- <div class="tag_wrapper">
-        <h2 class="tag_title">我的标签
-          <span class="star">#</span>
-        </h2>
-        <ul class="tag_list" v-if="userInfo.tags.length">
-          <ul class="tag_list" v-if="showTag">
-          <li v-for="(item,index) in tagList" :key="index" class="item">{{item}}</li>
-        </ul>
-        <p v-if="userInfo.tags.length">{{userInfo.tags}}</p>
-        <p v-else class="no_tags">
-          <span class="star">#</span>请在个人编辑里面设置标签，让朋友更了解你哦
-          <span class="star">#</span>
-        </p>
-      </div> -->
+          <h2 class="tag_title">我的标签
+            <span class="star">#</span>
+          </h2>
+          <ul class="tag_list" v-if="userInfo.tags.length">
+            <ul class="tag_list" v-if="showTag">
+            <li v-for="(item,index) in tagList" :key="index" class="item">{{item}}</li>
+          </ul>
+          <p v-if="userInfo.tags.length">{{userInfo.tags}}</p>
+          <p v-else class="no_tags">
+            <span class="star">#</span>请在个人编辑里面设置标签，让朋友更了解你哦
+            <span class="star">#</span>
+          </p>
+        </div>-->
       <!-- 个性签名 -->
       <!-- <div class="signature_wrapper">
-        <h2 class="signature_title">个性签名
-          <span class="star">#</span>
-        </h2>
-        <p class="signature" v-if="showTag">youare</p>
-        <p class="signature" v-if="userInfo.signature.length">{{userInfo.signature}}</p>
-        <p v-else class="no_signature">
-          <span class="star">#</span>请在个人编辑里面设置签名
-          <span class="star">#</span>
-        </p>
-      </div> -->
+          <h2 class="signature_title">个性签名
+            <span class="star">#</span>
+          </h2>
+          <p class="signature" v-if="showTag">youare</p>
+          <p class="signature" v-if="userInfo.signature.length">{{userInfo.signature}}</p>
+          <p v-else class="no_signature">
+            <span class="star">#</span>请在个人编辑里面设置签名
+            <span class="star">#</span>
+          </p>
+        </div>-->
       <!-- 分享赚积分 -->
       <div class="marketing_wrapper">
-      <!-- <div class="marketing_wrapper" v-show="userInfo.role"> -->
-        <h2 class="marketing_title">分享赚积分
+        <!-- <div class="marketing_wrapper" v-show="userInfo.role"> -->
+        <h2 class="marketing_title">
+          分享赚积分
           <span class="star">#</span>
         </h2>
         <ul class="marketing-list">
@@ -125,16 +126,17 @@
             <div class="marketing-right" @click="gameShare">分享-></div>
           </li>
           <!-- <li class="marketing-item">
-                  <div class="marketing-left">
-                    门店活动通知
-                  </div>
-                  <div class="marketing-right" @click="activetyShare">
-                    分享->
-                  </div>
+                    <div class="marketing-left">
+                      门店活动通知
+                    </div>
+                    <div class="marketing-right" @click="activetyShare">
+                      分享->
+                    </div>
             </li>-->
         </ul>
       </div>
     </div>
+    <topUp :convertType="convertType" v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :giftInfo="recommendItemIndo" :fatherPanelIndex="fatherPanelIndex"></topUp>
     <!-- 绑定手机弹框 -->
     <validate v-show="isShow"></validate>
     <router-view></router-view>
@@ -150,12 +152,14 @@
     Group,
     Toast
   } from "vux";
+  import topUp from 'base/topUp/topUp';
   import {
     mapState,
     mapGetters,
     mapMutations
   } from "vuex";
   import util from "common/util";
+  import url from "common/url";
   import api from "common/api";
   import Validate from "../../base/validatephone/validatephone";
   export default {
@@ -164,17 +168,20 @@
     },
     data() {
       return {
+        isGiftPanel: false,
         showTel: true,
         tags_show: false,
         show1: false,
         showToast: false,
         showTag: false,
         tagList: ["幽默", "搞笑", "多动症"],
-        recommendList:[]
+        // integralGoodList: [],
+         fatherPanelIndex: 2,
+         convertType:1,
       };
     },
     computed: {
-      ...mapState(["noCouponsFlag"]),
+      ...mapState(["noCouponsFlag","sendGiftList"]),
       ...mapGetters(["userInfo", "test", "isShow"])
     },
     created() {
@@ -182,35 +189,47 @@
       if (this.userInfo.tags) {
         this.tagList = this.userInfo.tags.split('、');
       }
-      this._loadRecommends();
+      // this._loadGoods();
     },
     methods: {
+      //监听充值面板状态
+      closeIntegralPanel(flag) {
+        console.log('面板状态-----------', flag);
+        this.isGiftPanel = flag;
+      },
       //进入富豪榜
-      intoWealthRanking(){
-         this.$router.push({
+      intoWealthRanking() {
+        this.$router.push({
           name: "treasureRank"
         })
       },
       //进入战胜榜
-      intoGameScoreRanking(){
-         this.$router.push({
+      intoGameScoreRanking() {
+        this.$router.push({
           name: "marsRank"
         })
       },
-      //店长推荐
-      _loadRecommends() {
-        api.loadRecommends().then(res => {
-          console.log('店长推荐数据---------------------', res)
-          this.recommendList = res.slice(0, 2);
-        })
+      // 兑换消耗积分
+      convert(goodId,index) {
+        this.isGiftPanel = true;
+        this.fatherPanelIndex = 2,
+          console.log('选中的礼品-----------------',this.sendGiftList[index])
+        this.recommendItemIndo = this.sendGiftList[index];
       },
+      //店长推荐
+      // _loadRecommends() {
+      //   api.loadRecommends().then(res => {
+      //     console.log('店长推荐数据---------------------', res)
+      //     this.integralGoodList = res.slice(0, 2);
+      //   })
+      // },
       activetyShare() {
         this.$router.push({
           name: "shareActivity"
         })
       },
       gameShare() {
-        window.location.href =`http://llwant.test.qianz.com/game/`;
+        window.location.href = `${config.shareUrl}/game/`;
       },
       inviteShare() {
         this.$router.push({
@@ -321,7 +340,8 @@
       XInput,
       Group,
       Toast,
-      Validate
+      Validate,
+      topUp
     }
   };
 </script>
@@ -329,7 +349,7 @@
 <style scoped lang="less">
   @import "../../assets/less/mixin.less";
   @import "../../assets/less/variable.less";
-  @import "../../assets/less/mine.less"; 
+  @import "../../assets/less/mine.less";
   .tag_box {
     position: relative;
     .close {
@@ -353,6 +373,7 @@
     .personInfo_wrapper {
       width: 100%;
       height: 5.4rem;
+      padding: .5rem 0;
       position: relative;
       .bg("../../assets/image/mine_bg.jpg");
       text-align: center;
@@ -481,8 +502,9 @@
       .welfare_wrapper {
         margin-top: 0.1333rem;
         background-color: #fff;
-        .jiFen_title{
+        .jiFen_title {
           padding-left: 0.4rem;
+          margin-bottom: 0.3rem;
           .title();
         }
         .welfare_content {
@@ -520,7 +542,7 @@
                   font-size: 0.2667rem;
                 }
                 .price {
-                  margin-top: 0.1rem;
+                  margin-top: 1.1rem;
                   .discount_p {
                     color: #ff3131;
                     font-size: 0.3467rem;
@@ -603,6 +625,7 @@
         padding: 0 0.4rem;
         background: #fff;
         .marketing_title {
+          margin-bottom: 0.3rem;
           .title();
         }
         .marketing-list {

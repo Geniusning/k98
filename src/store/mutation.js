@@ -7,6 +7,10 @@ const mutations = {
   [types.GET_RECOMMENTLIST](state, recommentList) {
     state.recommentList = recommentList;
   },
+  //获取积分换礼品列表
+  [types.GET_SENDGIFTLIST](state, sendGiftList) {
+    state.sendGiftList = sendGiftList;
+  },
   //判断消息类型
   [types.JUDGE_MESSTYPE](state, type) {
     state.messType = type;
@@ -144,10 +148,10 @@ const mutations = {
   },
   //更新好友事件消息框内容
   [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
-    console.log('mutation```````````````````', friendEvtObj)
-    // console.log('路由消息---------------------------：', router.history.current.name)
-    //聊天信封弹框不在对话框弹出
-    if (router.history.current.name === 'chat') {
+    // console.log('在线推送的信息```````````````````', friendEvtObj)
+    // console.log('当前正在聊天的对象---------------------------：', state.staticChatFriendObj)
+    //如果和本人聊天信封弹框不在对话框弹出
+    if (state.staticChatFriendObj.openid==friendEvtObj.content.fromInfo.openid) {
       return false;
     }
     switch (friendEvtObj.msgCode) {
@@ -186,6 +190,14 @@ const mutations = {
           lastMsg: {},
         };
         friendEvtObj.content.extMsg.lastMsg['msg'] = friendEvtObj.content.fromInfo.nickname + "上线,打个招呼？";
+        state.dynamicFriendEvt = friendEvtObj.content;
+        break;
+        case 9:
+        let shopSendText = friendEvtObj.content.extMsg
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+        };
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "分享发放福利"+shopSendText+"积分";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
       default:
