@@ -98,8 +98,11 @@
               <p class="message" v-if="item.gift.id==4">{{item.GiftGiverNickname}}送你一个跑车</p>
             </div>
           </div>
-          <div class="thumb_wrapper" @click="thanksTo(item.GiftGiverID)">
-            <p class="back_thumb vux-1px" style="margin-left:1rem">感谢</p>
+          <div class="thumb_wrapper clearfix" >
+            <div class="clearfix">
+              <p class=" back_thumb vux-1px fl reject ">拒绝</p>
+              <p class="back_thumb vux-1px" @click="thanksTo(item.GiftGiverID)">感谢</p>
+            </div>
             <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
               <p class="time_desc">2018-12-30 17:00</p>
             </div>

@@ -93,7 +93,7 @@ new Vue({
             //处理送礼
             else if (result.msgCode === 3) {
                 this.judgeMessType('gift')
-            } else if (result.msgCode === 4) {
+            } else if (result.msgCode === 4) {  //发布优惠券
                 this.judgeMessType('discount')
             }
             //处理约战事件
@@ -131,7 +131,10 @@ new Vue({
                             msgCode: 4,
                             content: {
                                 extMsg: {},
-                                fromInfo: null,
+                                fromInfo: {
+                                    openid:"",
+                                    headimgurl:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
+                                },
                             }
                         }
                         this.addFriendEvtObj(result);

@@ -27,18 +27,17 @@
         </div>
         <div class="giftListpart vux-1px-b">
           <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <p class="giftListpart_desc">虚拟礼物</p>
           <ul class="list">
-            <li class="item" v-for="(item,index) in giftList" :key="index" @click="sendGift(item.id)">
-              <img v-if="item.id===1" src="../../assets/image/beer.png" alt class="giftIcon">
-              <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt class="giftIcon">
-              <img v-else-if="item.id===3" src="../../assets/image/car.png" alt class="giftIcon">
-              <img v-else src="../../assets/image/boat.png" alt class="giftIcon">
+            <li class="item" v-for="(item,index) in componentGiftList" :key="index" @click="sendGift(item.id,index)">
+              <img :src="item.imgUrl" alt class="giftIcon">
               <p class="price">积分:{{item.money}}</p>
             </li>
           </ul>
         </div>
         <div class="shopItemListpart vux-1px-b" v-if="recommentList.length>0">
           <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <p class="giftListpart_desc">门店项目</p>
           <ul class="list">
             <li class="item" v-for="(item,index) in recommentList" :key="index" @click="sendShopItemGift(item)">
               <img :src="item.goods.image" alt class="giftIcon">
@@ -48,6 +47,7 @@
         </div>
         <div class="entityGiftListpart">
           <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <p class="giftListpart_desc">礼品商城</p>
           <ul class="list">
             <li class="item" v-for="(item,index) in sendGiftList" :key="index" @click="sendJiFenGift(item)">
               <img :src="item.goods.image" alt class="giftIcon">
@@ -60,8 +60,7 @@
       <div class="sendGiftPanelBox" v-else-if="panelIndex===2" key="sendGiftPanelBox">
         <div class="header">
           <img src="../../assets/image/giftBox.png" class="giftBoxIfon">
-          <p  class="header_text">消耗积分{{componentGiftInfo.goods.integral}}</p>
-          
+          <p class="header_text">消耗积分{{componentGiftInfo.goods.integral}}</p>
           <div class="close" @click="closeIntegralPanel">X</div>
         </div>
         <div class="content">
@@ -72,14 +71,19 @@
             <p class="title">{{componentGiftInfo.goods.name}}</p>
             <p class="desc">{{componentGiftInfo.goods.subtopic}}</p>
             <p class="limit">{{componentGiftInfo.goods.limit}}</p>
-            <p class="price">特惠 ￥{{componentGiftInfo.goods.discountPrice}}</p>
+            <p class="price" v-if="componentConvertType===0 ||componentConvertType===1||componentConvertType===2 ||componentConvertType===3">特惠 ￥{{componentGiftInfo.goods.discountPrice}}</p>
+            <p class="price" v-else>对方将收到{{componentGiftInfo.goods.integral}}积分</p>
           </div>
         </div>
         <div class="handle">
-          <button v-if="componentConvertType===0 ||componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认兑换</button>
-          <button v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认赠送</button>
+          <button v-if="componentConvertType===0 ||componentConvertType===1" class="btn " @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认兑换</button>
+          <button v-else class="btn " @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认赠送</button>
+          <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor">
+            <input type="checkbox" class="checkbox fl"><span class="scene-text fl">现场下单</span>
+          </div>
         </div>
       </div>
+      <!-- 成功送礼提示框 -->
       <div class="successfullyBox" v-else="panelIndex===3" key="successfullyBox">
         <div class="envelope">
           <div class="close" @click="closeIntegralPanel">X</div>
@@ -87,9 +91,9 @@
           <p class="successful_text">{{successfulText}}</p>
           <p class="gotoTopUpText" @click="gotoTopUp">去充值&gt;</p>
           <!-- <div class="myWelfare">
-                        <img class="welIcon" src="../../assets/image/integralIcon.png" alt="">
-                        <p>20324</p>
-                  </div>-->
+                                      <img class="welIcon" src="../../assets/image/integralIcon.png" alt="">
+                                      <p>20324</p>
+                                </div>-->
         </div>
       </div>
     </transition>
@@ -109,6 +113,7 @@
         panelIndex: null,
         componentGiftInfo: "",
         componentConvertType: null,
+        componentGiftList: [],
         successfulText: "操作成功",
         moneyList: [{
             "id": 1,
@@ -153,16 +158,43 @@
       this.panelIndex = this.fatherPanelIndex;
       this.componentGiftInfo = this.giftInfo;
       this.componentConvertType = this.convertType;
+      api.loadAllGift().then(res => {
+        if (res.errCode === 0) {
+          let TempGiftList = res.gifts;
+          this.componentGiftList = TempGiftList.map((item, index) => {
+            switch (index) {
+              case 0:
+                item.imgUrl = require('../../assets/image/beer.png');
+                item.name = "一杯啤酒"
+                return item;
+                break;
+              case 1:
+                item.imgUrl = require('../../assets/image/flower.png');
+                item.name = "一朵鲜花"
+                return item;
+                break;
+              case 2:
+                item.imgUrl = require('../../assets/image/hutui.png');
+                item.name = "一栋别墅"
+                return item;
+                break;
+              case 3:
+                item.imgUrl = require('../../assets/image/boat.png');
+                item.name = "一艘邮轮"
+                return item;
+                break;
+              default:
+                break;
+            }
+          })
+        }
+      })
+      console.log(this.componentGiftList);
     },
     mounted() {
-      // console.log('this.friendId----------------', this.friendId);
-      // console.log('this.giftInfo----------------', this.giftInfo);
-      // this.panelIndex = this.fatherPanelIndex;
-      // console.log('this.panelIndex----------',this.panelIndex)
-      // console.log('this.giftInfo------------', this.giftInfo)
     },
     props: {
-      convertType: {
+      convertType: { //是自己兑换还是送礼模式
         type: Number,
         default: null,
       },
@@ -177,6 +209,10 @@
       giftInfo: {
         type: Object,
         default: null,
+      },
+      isInDoor:{
+        type:Boolean,
+        default:false
       }
     },
     methods: {
@@ -189,23 +225,20 @@
         this.panelIndex = 0;
       },
       //发送礼物
-      sendGift(id) {
-        let params = {
-          giftID: parseInt(id),
-          to: this.friendId,
-        }
-        api.sendGift(params).then(res => {
-          console.log('赠送礼物返回结果', res);
-          if (res.errCode === 0) {
-            this.panelIndex = 3;
-            this.successfulText = "送礼成功"
-          } else if (res.errCode == 1023) {
-            this.showQrcode(true);
-          } else {
-            this.panelIndex = 0; //显示充值面板
+      sendGift(id, index) {
+        this.panelIndex = 2;
+        this.componentConvertType = 4;
+        let tempVirtualGift = {
+          goods: {
+            name: this.componentGiftList[index].name,
+            image: this.componentGiftList[index].imgUrl,
+            integral: this.componentGiftList[index].money,
+            ID: this.componentGiftList[index].id
           }
-        })
+        };
+        this.componentGiftInfo = tempVirtualGift;
       },
+      // converType 0:店长推荐，1:积分换礼品兑换 ,2:赠送店长推荐项目,3:赠送积分换礼品项目,4:虚拟礼物
       //赠送店铺项目
       sendShopItemGift(goodsInfo) {
         this.componentConvertType = 2;
@@ -236,8 +269,7 @@
           }).catch(err => {
             console.log(err)
           });
-        } else if (this.componentConvertType == 1) {
-          //积分换礼品兑换
+        } else if (this.componentConvertType == 1) { //积分换礼品兑换
           api.convertGoods(goodID).then(res => {
             console.log('积分换礼品兑换结果---------', res)
             if (res.errCode && res.errCode == 1021) {
@@ -261,6 +293,22 @@
               this.successfulText = "积分不足，请点右下角前往充值"
             }
             console.log('积分赠送结果---------', res)
+          })
+        } else if (this.componentConvertType == 4) { //赠送虚拟礼物
+          let params = {
+            giftID: parseInt(goodID),
+            to: this.friendId,
+          }
+          api.sendGift(params).then(res => {
+            console.log('赠送礼物返回结果', res);
+            if (res.errCode === 0) {
+              this.successfulText = "送礼成功"
+            } else if (res.errCode == 1023) {
+              this.showQrcode(true);
+            } else if(res.errCode==1029) {
+              this.successfulText = "积分不足，请点右下角前往充值"
+              //this.panelIndex = 0; //显示充值面板
+            }
           })
         }
         this.panelIndex = 3;
@@ -311,6 +359,20 @@
 
 <style scoped lang='less'>
   @import "../../assets/less/mixin.less";
+  .clearfix::after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    height: 0;
+    line-height: 0;
+    clear: both;
+  }
+  .fl {
+    float: left;
+  }
+  .fr {
+    float: right;
+  }
   .topUp_wrapper {
     position: fixed;
     top: 0;
@@ -407,6 +469,11 @@
           width: 0.6267rem;
           height: 0.6267rem;
         }
+        .giftListpart_desc{
+          position: absolute;
+          top: 0.1333rem;
+          color: #f2e252;
+        }
         .list {
           display: flex;
           justify-content: space-around;
@@ -415,7 +482,7 @@
             text-align: center;
             .giftIcon {
               width: 1rem;
-              height: 1.2rem;
+              height: 1rem;
             }
             .price {
               width: 1.4rem;
@@ -432,6 +499,11 @@
           bottom: 0.1333rem;
           width: 0.6267rem;
           height: 0.6267rem;
+        }
+        .giftListpart_desc{
+          position: absolute;
+          top: 0.1333rem;
+          color: #f2e252;
         }
         .list {
           display: flex;
@@ -458,6 +530,11 @@
           bottom: 0.1333rem;
           width: 0.6267rem;
           height: 0.6267rem;
+        }
+        .giftListpart_desc{
+          position: absolute;
+          top: 0.1333rem;
+          color: #f2e252;
         }
         .list {
           display: flex;
@@ -515,7 +592,7 @@
         .pictureBox {
           margin-left: 0.7rem;
           .pictureBox_img {
-            width: 2.5rem;
+            width: 2rem;
             height: 2rem;
             margin-right: 0.667rem;
           }
@@ -550,10 +627,26 @@
         width: 100%;
         text-align: center;
         padding-top: 0.3rem;
+        padding-bottom: 0.3rem;
+        position: relative;
         .btn {
           padding: 0.08rem 0.1067rem;
           border: none;
           background: -webkit-linear-gradient(top, #fcd502, #e59305);
+        }
+        .checkBox_scene {
+          position: absolute;
+          bottom: 0.4rem;
+          right: 0.6rem;
+          .checkbox {
+            width: 0.4rem;
+            height: 0.4rem;
+          }
+          .scene-text {
+            // padding-bottom: 0.11rem;
+            margin-left: 0.1333rem;
+            vertical-align: middle;
+          }
         }
       }
     }

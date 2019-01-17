@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-01-09 14:22:16
+ * @Last Modified time: 2019-01-15 11:16:11
  */
 
 import axios from 'axios'
@@ -385,6 +385,7 @@ api.loadAllGift = function (arenaID) {
   return new Promise((resolve, reject) => {
     axios.get(`/api/loadAllGift?tk=${tk}`)
       .then(res => {
+        console.log('虚拟礼物列表')
         if (res.status == 200) {
           resolve(res.data)
         }

@@ -103,7 +103,7 @@
       <img class="thumb" src="../../assets/image/thumb.png" alt>
       <p class="intro">完善资料送福利，每天推3名星座匹配群友</p>
     </div>
-    <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
+    <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
     <!-- <transition name="fade">
                   <giftPanel v-show="isGiftPanel" @closeGiftPanel="closeGiftPanel"></giftPanel>
@@ -171,6 +171,7 @@
         friendOnlineStatus: false,
         isIntegralPanel: false, //面板显示状态
         isGiftPanel: false, //礼物面板状态
+        isInDoor:false,//好友是否在线
         sexArr: [{
             id: 0,
             name: "男"
@@ -337,6 +338,7 @@
         this.setChatFriend(data);
         this.isFriend = data.isAlreadyFriend;
         this.xid = data.xid;
+        this.isInDoor = data.isInDoor
       },
       //获取更多朋友
       getMoreFriend() {

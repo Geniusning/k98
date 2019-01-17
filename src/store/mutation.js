@@ -114,7 +114,7 @@ const mutations = {
     state.msg_badgeCount = totalCount
 
     state.alreadyFriendList = tempData;
-    console.log('拉取好友-----------',state.alreadyFriendList)
+    console.log('拉取好友-----------', state.alreadyFriendList)
   },
   //获取新消息时重新排列消息列表，把最新的一项放到顶部
   [types.TO_TOP_MESSAGE](state, friendList) {
@@ -151,7 +151,19 @@ const mutations = {
     // console.log('在线推送的信息```````````````````', friendEvtObj)
     // console.log('当前正在聊天的对象---------------------------：', state.staticChatFriendObj)
     //如果和本人聊天信封弹框不在对话框弹出
-    if (state.staticChatFriendObj.openid==friendEvtObj.content.fromInfo.openid) {
+    if (!friendEvtObj.content.fromInfo) { //粗暴解决msgCode=4  无法推送的bug
+      friendEvtObj.content.extMsg = {
+        lastMsg: {},
+      };
+      friendEvtObj.content.fromInfo = {
+        openid:"",
+        headimgurl:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
+      }
+      friendEvtObj.content.extMsg.lastMsg['msg'] = "店长给你发优惠券啦";
+      state.dynamicFriendEvt = friendEvtObj.content;
+      return;
+    }
+    if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) {
       return false;
     }
     switch (friendEvtObj.msgCode) {
@@ -192,12 +204,12 @@ const mutations = {
         friendEvtObj.content.extMsg.lastMsg['msg'] = friendEvtObj.content.fromInfo.nickname + "上线,打个招呼？";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
-        case 9:
+      case 9:
         let shopSendText = friendEvtObj.content.extMsg
         friendEvtObj.content.extMsg = {
           lastMsg: {},
         };
-        friendEvtObj.content.extMsg.lastMsg['msg'] = "分享发放福利"+shopSendText+"积分";
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "分享发放福利" + shopSendText + "积分";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
       default:
@@ -212,10 +224,12 @@ const mutations = {
     state.friendEvtList = data.events
   },
   //获取好友送礼
-  [types.GET_FRIENDGIFTLIST](state, {data}) {
+  [types.GET_FRIENDGIFTLIST](state, {
+    data
+  }) {
     state.gift_badgeCount = data.length;
     state.friendGiftList = data;
-    console.log('收礼列表-----------------',state.friendGiftList)
+    console.log('收礼列表-----------------', state.friendGiftList)
   },
   //获取店长消息列表
   [types.GET_CAPTAINMESSAGELIST](state, {
@@ -243,8 +257,8 @@ const mutations = {
   },
   //设置候选人聊天的信息
   [types.SET_CHAT_FRIEND](state, data) {
-      state.staticChatFriendObj = data.info ? data.info : data
-      console.log('state.staticChatFriendObj-------------------',state.staticChatFriendObj);
+    state.staticChatFriendObj = data.info ? data.info : data
+    console.log('state.staticChatFriendObj-------------------', state.staticChatFriendObj);
   },
   //设置动态聊天朋友信息
   [types.GET_DYNAMICFRIENDOBJ](state, data) {
