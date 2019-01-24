@@ -55,8 +55,8 @@
               <img src="../../assets/image/chat_pic.png" alt>
               <input type="file" class="file" accept="image/*" @change="uploadImage">
             </li>
-            <li class="item fl" @click="playGame">
-              <img src="../../assets/image/game_chat.png" alt class="game">
+            <li class="item fl" @click="playGame" style="padding:.06rem">
+              <img src="../../assets/image/game.png" alt class="game" style="width:0.8069rem;height:0.8067rem">
             </li>
           </ul>
         </div>

@@ -35,7 +35,7 @@
               </div>
               <img :src="item.coupon.image" class="project_img">
             </div>
-            <div class="discount_theme">计划浅唱新人礼包</div>
+            <div class="discount_theme">{{item.coupon.theme?item.coupon.theme:"新人礼包"}}</div>
             <div class="discount_content">{{item.coupon.name}}</div>
             <div class="discount_limitAndTime">
               <p class="limit">{{item.coupon.limit}}</p>
@@ -334,7 +334,12 @@
               border-radius: 50%;
               margin-right: 0.1667rem;
             }
-            .receiver_name {}
+            .receiver_name {
+              width: 1.4rem;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+            }
           }
           .receiverProject_wrapper {
             position: absolute;
@@ -382,7 +387,7 @@
           .use_text {
             display: inline-block;
             width: 0.4rem;
-            font-size: 0.45rem;
+            font-size: 0.4rem;
             color: #D33700;
             font-weight: 900
           }
@@ -422,7 +427,12 @@
               border-radius: 50%;
               margin-right: 0.1667rem;
             }
-            .receiver_name {}
+            .receiver_name {
+                width: 1.4rem;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+            }
           }
           .receiverProject_wrapper {
             position: absolute;
@@ -471,7 +481,7 @@
           .use_text {
             display: inline-block;
             width: 0.4rem;
-            font-size: 0.45rem;
+            font-size: 0.4rem;
             color: #D33700;
             font-weight: 900
           }

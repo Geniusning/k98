@@ -89,6 +89,19 @@ export default {
                         this.isShowEnvelope = false;
                     }, 2000);
                 }
+                else if(res.errCode ===1){
+                     this.isShowEnvelope = true;
+                    this.envelopeText = "已核销完毕"
+                    setTimeout(() => {
+                        this.isShowEnvelope = false;
+                    }, 2000);
+                }else if(res.errCode ===1018){
+                     this.isShowEnvelope = true;
+                    this.envelopeText = "您已发起核销，请稍等"
+                    setTimeout(() => {
+                        this.isShowEnvelope = false;
+                    }, 2000);
+                }
             })
         }
     },

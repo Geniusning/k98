@@ -3,11 +3,10 @@
     <!-- logo -->
     <div class="logo-container">
       <div class="logo-wrapper">
-        <img :src="AdvertisingPhoto[1]" alt="" style=" width: 9.2rem;height: 2.8rem;">
+        <img v-if="AdvertisingPhoto.length>0" :src="AdvertisingPhoto[1]" alt="" style=" width: 9.2rem;height: 2.8rem;">
         <p class="reserve">
-          优惠进行中 预定热线<span class="tel">{{shopSettingInfo.phone}}</span>
+          优惠进行中 预定热线<span class="tel">{{shopSettingInfo.phone?shopSettingInfo.phone:'暂无上传号码'}}</span>
         </p>
-        <!-- <p class="shopName">{{shopSettingInfo.name}}</p> -->
       </div>
     </div>
     <!-- 分享有礼 -->
@@ -100,10 +99,10 @@
     <!-- 活动通知 -->
     <div class="activity-wrapper">
       <div class="title">活动通知</div>
-      <ul class="activityList">
-        <li class="item clearfix" v-for="item in activityNoticeList">
-          <img :src="item.image" alt="" class="pic fl">
-          <div class="fl">
+      <ul class="activityList" v-if="activityNoticeList.length>0">
+        <li class="item-active" v-for="(item,index) in activityNoticeList" :key="index">
+          <img :src="item.image" style="width:2.1333rem;height:2.1333rem" alt="" class="picActive">
+          <div class="desc_box">
             <p class="desc">
               {{item.content}}
             </p>
@@ -467,34 +466,39 @@
         margin: 0 auto;
       }
       .activityList {
-        .item {
+        .item-active {
           margin-top: 0.48rem;
           padding: 0 0.2667rem;
           display: flex;
+          justify-content: flex-start;
           position: relative;
-          .pic {
+          .picActive {
+            width: 2.1333rem;
             height: 2.1333rem;
           }
-          .desc {
-            margin-left: 0.2667rem;
-            font-size: 0.3133rem;
-            color: #333;
-          }
-          .detailBtnBox {
-            text-align: right;
-            position: absolute;
-            bottom: 0px;
-            right: 0.2667rem;
-            button {
-              border: none;
-              outline: none; // width: 1.4667rem;
-              padding: 0.08rem 0.1333rem;
-              padding: 0.0867rem 0;
-              text-align: center;
-              line-height: 0.5067rem;
-              background: #ffd800;
-              color: #fff;
-              border-radius: 0.08rem;
+          .desc_box{
+            flex: 1;
+            .desc {
+              margin-left: 0.2667rem;
+              font-size: 0.3133rem;
+              color: #333;
+            }
+            .detailBtnBox {
+              text-align: right;
+              position: absolute;
+              bottom: 0px;
+              right: 0.2667rem;
+              button {
+                border: none;
+                outline: none; // width: 1.4667rem;
+                padding: 0.08rem 0.1333rem;
+                padding: 0.0867rem 0;
+                text-align: center;
+                line-height: 0.5067rem;
+                background: #ffd800;
+                color: #fff;
+                border-radius: 0.08rem;
+              }
             }
           }
         }

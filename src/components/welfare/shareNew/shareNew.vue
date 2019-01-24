@@ -19,11 +19,11 @@
           <p class="discout_type" v-else>兑换券</p>
         </div>
         <div class="myright">
-          <div class="discount_theme">计划浅唱新人礼包</div>
+          <div class="discount_theme">{{item.coupon.theme?item.coupon.theme:"新人礼包"}}</div>
           <div class="discount_content">{{item.coupon.name}}</div>
           <div class="discount_limitAndTime">
             <p class="limit">{{item.coupon.limit}}</p>
-            <p class="time">有效期至:2012-12-22</p>
+            <p class="time">有效期至:{{item.coupon.endTime?item.coupon.endTime:'2019-02-22'}}</p>
           </div>
         </div>
       </li>
@@ -47,8 +47,8 @@
     </div>
     <!-- 操作 -->
     <div class="handle-container">
-      <img @click="back" class="btn" src="../../../assets/image/tuichu.png" alt>
-      <img @click="share" class="btn" src="../../../assets/image/fenxiang.png" alt>
+      <img @click="back" class="btn" src="../../../assets/image/get_discount_btn.png" alt>
+      <img @click="share" class="btn" src="../../../assets/image/share_discount_btn.png" alt>
     </div>
     <div class="bg" v-show="isShow_bg" @click="share">
       <img src="../../../assets/image/share.png" alt>
@@ -244,12 +244,11 @@
           text-align: center;
           .desc {
             width: 0.4rem;
-            width: 0.4rem;
             display: inline-block;
             width: 0.4rem;
-            font-size: 0.43rem;
+            font-size: 0.4rem;
             color: #D33700;
-            font-weight: 900
+            font-weight: 800
           }
         }
         .mycenter {

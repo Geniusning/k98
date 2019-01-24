@@ -17,11 +17,11 @@
           <p class="discout_type" v-else>兑换券</p>
         </div>
         <div class="myright">
-          <div class="discount_theme">计划浅唱新人礼包</div>
-          <div class="discount_content">{{sharedCoupon.coupon.type.name}}</div>
+          <div class="discount_theme">{{sharedCoupon.coupon.theme?sharedCoupon.coupon.theme:"新人礼包"}}</div>
+          <div class="discount_content">{{sharedCoupon.coupon.name}}</div>
           <div class="discount_limitAndTime">
-            <p class="limit">{{sharedCoupon.coupon.type.limit}}</p>
-            <p class="time">有效期至:{{sharedCoupon.coupon.time}}</p>
+            <p class="limit">{{sharedCoupon.coupon.limit}}</p>
+            <p class="time">有效期至:{{sharedCoupon.coupon.endTime}}</p>
           </div>
         </div>
       </li>
@@ -93,7 +93,7 @@
       };
     },
     created() {
-      alert(window.location.href);
+      // alert(window.location.href);
       let url = window.location.href;
       let urlSplitArr = url.split('CouponID=');
       this.shareUserID = url.slice(url.indexOf('shareUserID='), url.indexOf("&userACouponID")).split('shareUserID=')[1]
@@ -117,9 +117,12 @@
           shareUserID: this.shareUserID,
           userACouponID: this.userACouponID,
           userBCouponID: this.userBCouponID
+          // shareUserID: 'ohzRa0vhz8yEAs08VZv8lscGDN5A',
+          // userACouponID: '7eaf90b0-0456-4e3b-a780-2fa9c1791a06',
+          // userBCouponID: 'b1419e9f-6de9-437e-9d5b-9987d9ff02e4'
         };
         api.acquireInviteWaitGetCoupons(params).then(res => {
-          console.log(res)
+          console.log('res------------',res)
           if (res.errCode === 0) {
             let tempObj = res.aCoupon;
             switch (tempObj.coupon.type) {
@@ -233,14 +236,15 @@
         .myleft {
           width: 1.4rem;
           text-align: center;
+          box-sizing: border-box;
           .desc {
             width: 0.4rem;
             width: 0.4rem;
             display: inline-block;
             width: 0.4rem;
-            font-size: 0.43rem;
+            font-size: 0.4rem;
             color: #D33700;
-            font-weight: 900
+            font-weight: 800
           }
         }
         .mycenter {

@@ -1,11 +1,10 @@
 'use strict'
 // Template version: 1.2.4
 // see http://vuejs-templates.github.io/webpack for documentation.WYeT57QFXwQUvRB2FAhrXuD8sl97z0kVXtXbCA_tw-AWYzMfAf7zaYng8NZ5DmApbmJkew==     wTx9yVEH7YZ94ySgUpUZcJ6VQOWz-ZCNoWIMBeQKN2B3L9s_9J2Fn_zgiRi3ETZEOjdrkw==
-
 const path = require('path')
 
 // ------------------------------
-const myStupidToken1 = "6u8_cX398H3X6_roqlLIE0invSlW7U72B97PKv-8tj6ZkAr2SBKw_r51XeOfZHpUiOr-1A==";
+const myStupidToken1 = "vIM9VJu0YkcPmZcJIV80_q4wz9yUbp2QwlNnqeXJ8WKwbD0ddMLhbUT37ATEzNBKmMz7zA==";
 const myStupidToken2 = "jO5NAlEdOVeCr6z5vHJ6niuV39LL-VKgFJYbGWgreeLi7okCIaTTjQqCoAWz6SJoQ46FZQ=="
 
 const myStupidToken = myStupidToken1
@@ -19,7 +18,8 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             "/api": {
-                target: "http://singledog.qianz.com",
+                // target: "http://singledog.qianz.com",
+                target: "https://llwant1.qianz.com",
                 changeOrigin: true,
                 pathRewrite: function(path, req) {
                     return path + "&tk=" + myStupidToken

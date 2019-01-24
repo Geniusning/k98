@@ -7,7 +7,7 @@
           <h3 class="title ">
             我的财富：
           </h3>
-          <span class="money" v-if="giftContent.length>0">${{giftContent[0].value}}</span>
+          <span class="money">${{userInfo.money}}</span>
         </div>
         <div class="title_content_item">
           <h3 class="title ">

@@ -26,8 +26,8 @@
           <img src="../../assets/image/close-round.png" alt class="close" @click="closeIntegralPanel">
         </div>
         <div class="giftListpart vux-1px-b">
-          <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
-          <p class="giftListpart_desc">虚拟礼物</p>
+          <img v-show="componentGiftList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <p v-show="componentGiftList.length>0" class="giftListpart_desc">虚拟礼物</p>
           <ul class="list">
             <li class="item" v-for="(item,index) in componentGiftList" :key="index" @click="sendGift(item.id,index)">
               <img :src="item.imgUrl" alt class="giftIcon">
@@ -36,8 +36,8 @@
           </ul>
         </div>
         <div class="shopItemListpart vux-1px-b" v-if="recommentList.length>0">
-          <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
-          <p class="giftListpart_desc">门店项目</p>
+          <img v-show="recommentList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <p v-show="recommentList.length>0" class="giftListpart_desc">门店项目</p>
           <ul class="list">
             <li class="item" v-for="(item,index) in recommentList" :key="index" @click="sendShopItemGift(item)">
               <img :src="item.goods.image" alt class="giftIcon">
@@ -59,7 +59,8 @@
       <!-- 确认送礼物面板 -->
       <div class="sendGiftPanelBox" v-else-if="panelIndex===2" key="sendGiftPanelBox">
         <div class="header">
-          <img src="../../assets/image/giftBox.png" class="giftBoxIfon">
+          <img v-if="componentConvertType == 0 || componentConvertType == 1" src="../../assets/image/integralIcon.png" class="giftBoxIfon">
+          <img v-else src="../../assets/image/giftBox.png" class="giftBoxIfon">
           <p class="header_text">消耗积分{{componentGiftInfo.goods.integral}}</p>
           <div class="close" @click="closeIntegralPanel">X</div>
         </div>
@@ -76,12 +77,14 @@
           </div>
         </div>
         <div class="handle">
-          <button v-if="componentConvertType===0 ||componentConvertType===1" class="btn " @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认兑换</button>
-          <button v-else class="btn " @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认赠送</button>
+          <button v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认兑换</button>
+          <button v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认赠送</button>
           <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor">
-            <input type="checkbox" class="checkbox fl"><span class="scene-text fl">现场下单</span>
+            <input type="checkbox" class="checkbox fl">
+            <span class="scene-text fl">现场下单</span>
           </div>
         </div>
+        <div class="myMoney">我的积分:{{userInfo.money}}</div>
       </div>
       <!-- 成功送礼提示框 -->
       <div class="successfullyBox" v-else="panelIndex===3" key="successfullyBox">
@@ -89,12 +92,10 @@
           <div class="close" @click="closeIntegralPanel">X</div>
           <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
           <p class="successful_text">{{successfulText}}</p>
+          <p class="successful_desc">{{successful_desc}}</p>
           <p class="gotoTopUpText" @click="gotoTopUp">去充值&gt;</p>
-          <!-- <div class="myWelfare">
-                                      <img class="welIcon" src="../../assets/image/integralIcon.png" alt="">
-                                      <p>20324</p>
-                                </div>-->
         </div>
+        <div class="myMoney">我的积分:{{userInfo.money}}</div>
       </div>
     </transition>
   </div>
@@ -102,6 +103,7 @@
 
 <script type='text/ecmascript-6'>
   import api from "common/api";
+  import util from 'common/util'
   import {
     mapState,
     mapGetters,
@@ -114,7 +116,8 @@
         componentGiftInfo: "",
         componentConvertType: null,
         componentGiftList: [],
-        successfulText: "操作成功",
+        successfulText: "送礼失败",
+        successful_desc: "",
         moneyList: [{
             "id": 1,
             "name": "2",
@@ -151,13 +154,14 @@
       }
     },
     computed: {
-      ...mapState(['giftList']),
+      ...mapState(['giftList', 'userInfo']),
       ...mapGetters(['recommentList', "sendGiftList"])
     },
     created() {
       this.panelIndex = this.fatherPanelIndex;
       this.componentGiftInfo = this.giftInfo;
       this.componentConvertType = this.convertType;
+      console.log('this.componentConvertType------------', this.componentConvertType)
       api.loadAllGift().then(res => {
         if (res.errCode === 0) {
           let TempGiftList = res.gifts;
@@ -191,8 +195,7 @@
       })
       console.log(this.componentGiftList);
     },
-    mounted() {
-    },
+    mounted() {},
     props: {
       convertType: { //是自己兑换还是送礼模式
         type: Number,
@@ -210,9 +213,9 @@
         type: Object,
         default: null,
       },
-      isInDoor:{
-        type:Boolean,
-        default:false
+      isInDoor: {
+        type: Boolean,
+        default: false
       }
     },
     methods: {
@@ -244,14 +247,14 @@
         this.componentConvertType = 2;
         this.componentGiftInfo = goodsInfo;
         this.panelIndex = 2;
-        this.successfulText = "赠送礼物成功";
+        this.successfulText = "赠送礼物成功,扣除" + this.componentGiftInfo.goods.integral + "积分";
       },
       //赠送积分换礼品项目
       sendJiFenGift(goodsInfo) {
         this.componentConvertType = 3;
         this.componentGiftInfo = goodsInfo;
         this.panelIndex = 2;
-        this.successfulText = "赠送礼物成功";
+        this.successfulText = "赠送礼物成功,扣除" + this.componentGiftInfo.goods.integral + "积分";
       },
       //确认赠送店铺项目
       confirmShopItemGift(goodID) {
@@ -260,12 +263,15 @@
           api.convertRecommend(goodID).then(res => {
             console.log('店长推荐兑换结果--------------', res);
             if (res.errCode && res.errCode == 1021) {
-              this.successfulText = "您已兑换，兑换券已发放至你优惠券列表"
+              this.successfulText = "您已兑换"
             } else if (res.errCode == 1029) {
-              this.successfulText = "积分不足，请点右下角前往充值"
+              this.successfulText = "积分不足，请点右下角前往充值";
+              this.successful_desc = ``;
+              return;
             } else {
-              this.successfulText = "兑换成功，兑换券已发放至你优惠券列表"
+              this.successfulText = "兑换成功"
             }
+            this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入'我的卡券'`
           }).catch(err => {
             console.log(err)
           });
@@ -273,26 +279,41 @@
           api.convertGoods(goodID).then(res => {
             console.log('积分换礼品兑换结果---------', res)
             if (res.errCode && res.errCode == 1021) {
-              this.successfulText = "您已兑换，兑换券已发放至你优惠券列表"
+              this.successfulText = "您已兑换"
             } else if (res.errCode == 1029) {
               this.successfulText = "积分不足，请点右下角前往充值"
+              this.successful_desc = ``;
+              return;
+            } else if (res.errCode == 1023) {
+              this.showQrcode(true);
             } else {
-              this.successfulText = "兑换成功，兑换券已发放至你优惠券列表"
+              this.successfulText = "兑换成功"
             }
+            this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入'我的卡券'`
           })
         } else if (this.componentConvertType == 2) { //赠送店长推荐项目
           api.sentRecommend(goodID, this.friendId).then(res => {
             console.log('店长推荐赠送结果---------', res)
             if (res.errCode == 1029) {
-              this.successfulText = "积分不足，请点右下角前往充值"
+              this.successfulText = "积分不足，请点右下角前往充值";
+              this.successful_desc = ``;
+              return;
+            } else if (res.errCode == 1023) {
+              this.showQrcode(true);
             }
+            this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入对方'我的卡券'`
           })
         } else if (this.componentConvertType == 3) { //赠送积分换礼品项目
           api.sentGoods(goodID, this.friendId).then(res => {
             if (res.errCode == 1029) {
               this.successfulText = "积分不足，请点右下角前往充值"
+              this.successful_desc = ``;
+              return;
+            } else if (res.errCode == 1023) {
+              this.showQrcode(true);
             }
-            console.log('积分赠送结果---------', res)
+            this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入对方'我的卡券'`
+            // console.log('积分赠送结果---------', res)
           })
         } else if (this.componentConvertType == 4) { //赠送虚拟礼物
           let params = {
@@ -302,20 +323,22 @@
           api.sendGift(params).then(res => {
             console.log('赠送礼物返回结果', res);
             if (res.errCode === 0) {
-              this.successfulText = "送礼成功"
+              this.successfulText = "赠送礼物成功,扣除您" + this.componentGiftInfo.goods.integral + "积分"
             } else if (res.errCode == 1023) {
               this.showQrcode(true);
-            } else if(res.errCode==1029) {
+            } else if (res.errCode == 1029) {
               this.successfulText = "积分不足，请点右下角前往充值"
-              //this.panelIndex = 0; //显示充值面板
             }
           })
         }
-        this.panelIndex = 3;
+        api.getUserInfo("/api/loadUserInfo").then(res => {
+          this.getUserInfo(res);
+          this.panelIndex = 3;
+        })
       },
       //   充值
       payForCoin(id) {
-        //   console.log(id);
+          console.log(id);
         api.createOrder(id).then(res => {
           if (res.errCode === 0) {
             let resultInfo = res.data;
@@ -334,7 +357,7 @@
                 console.log(res);
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
                   // 使用以上方式判断前端返回,微信团队郑重提示：
-                  // alert("微信支付成功");
+                  alert("微信支付成功");
                   this.panelIndex = 0;
                   api.getUserInfo("/api/loadUserInfo").then(res => {
                       this.getUserInfo(res);
@@ -351,6 +374,7 @@
       },
       ...mapMutations({
         showQrcode: "SHOW_QRCODE", //暂时二维码
+        getUserInfo: "GET_USERINFO" //获取用户信息
       })
     },
     components: {}
@@ -469,7 +493,7 @@
           width: 0.6267rem;
           height: 0.6267rem;
         }
-        .giftListpart_desc{
+        .giftListpart_desc {
           position: absolute;
           top: 0.1333rem;
           color: #f2e252;
@@ -500,7 +524,7 @@
           width: 0.6267rem;
           height: 0.6267rem;
         }
-        .giftListpart_desc{
+        .giftListpart_desc {
           position: absolute;
           top: 0.1333rem;
           color: #f2e252;
@@ -531,7 +555,7 @@
           width: 0.6267rem;
           height: 0.6267rem;
         }
-        .giftListpart_desc{
+        .giftListpart_desc {
           position: absolute;
           top: 0.1333rem;
           color: #f2e252;
@@ -558,6 +582,7 @@
       width: 7.3333rem;
       height: 4.5rem;
       margin: 50% auto;
+      position: relative;
       .bg("../../assets/image/envelop.png");
       .header {
         display: flex;
@@ -600,7 +625,7 @@
         .componentGiftInfoBox {
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          justify-content: space-around;
         }
         .giftInfoBox {
           display: flex;
@@ -649,12 +674,17 @@
           }
         }
       }
+      .myMoney {
+        position: absolute;
+        left: 0.2333rem;
+        bottom: 0.3333rem;
+      }
     }
     .successfullyBox {
       width: 100%; // .envelope {
       margin: 50% auto;
-      width: 4.7333rem;
-      height: 3.0533rem;
+      width: 5.5rem;
+      height: 3.2533rem;
       .bg("../../assets/image/envelop.png");
       position: relative;
       .myWelfare {
@@ -691,14 +721,25 @@
       }
       .successful_text {
         margin-top: 0.2667rem;
-        font-size: 0.44rem;
+        font-size: 0.38rem;
         text-align: center;
+      }
+      .successful_desc {
+        margin-top: 0.1667rem;
+        font-size: 0.3rem;
+        text-align: center;
+        color: #8f8f8f;
       }
       .gotoTopUpText {
         position: absolute;
         bottom: 0.2533rem;
         right: 0.18rem;
       } // }
+      .myMoney {
+        position: absolute;
+        left: 0.2333rem;
+        bottom: 0.3333rem;
+      }
     }
   }
 </style>

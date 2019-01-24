@@ -6,8 +6,8 @@
         <div class="logo_wrapper">
           <img class="logo" :src="shopSettingInfo.image" alt>
           <!-- <p class="bar_name">{{shopSettingInfo.name}}</p> -->
-          <p class="bar_name">{{shopInfo.name}}</p>
-          <p class="bar_name" v-if="shopInfo.name1">{{shopInfo.name1}}</p>
+          <p class="bar_name">{{shopSettingInfo.name}}</p>
+          <!-- <p class="bar_name" v-if="shopInfo.name1">{{shopInfo.name1}}</p> -->
         </div>
       </div>
       <swiper :auto="true" class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
@@ -72,64 +72,64 @@
         </div>
         <!-- 游戏 -->
         <!-- <div class="game_wrapper">
-                          <div class="title clearfix ">
-                            <div class="fl">
-                              <img src="../../assets/image/game_icon.png" alt="" class="icon animations fl" ref="iconAnimation">
-                              <h2 class="dice_title">大话骰</h2>
-                              <span class="desc">排名赛进行中，不服来战...</span>
-                            </div>
-                            <div class="fr challengeGameBox">
-                              <span class="arrowRight" :class="{active:arrowIndex ==0}" >&gt;</span>
-                              <span class="arrowRight" :class="{active:arrowIndex ==1}" >&gt;</span>
-                              <span class="arrowRight" :class="{active:arrowIndex ==2}" >&gt;</span>
-                              <span class="arrowRight" :class="{active:arrowIndex ==3}" >&gt;</span>
-                              <span class="arrowRight" :class="{active:arrowIndex ==4}" >&gt;</span>
-                              <img src="../../assets/image/huangguan.png" class="huangguan" alt="" @click="playGame_rank">
-                            </div>
-                          </div>
-                          <ul class="game_list ">
-                            <li @click="playGame_friend">
-                              <img src="../../assets/image/haoyou.png" alt="" class="pic_game" onclick="return false">
-                              <img src="../../assets/image/nvlang.png" alt="" class="nvlang">
-                            </li>
-                            <li @click="playGame_challenge">
-                              <img src="../../assets/image/lingzhuo.png" alt="" class="pic_game" onclick="return false">
-                            </li>
-                          </ul>
-                </div>-->
+                                <div class="title clearfix ">
+                                  <div class="fl">
+                                    <img src="../../assets/image/game_icon.png" alt="" class="icon animations fl" ref="iconAnimation">
+                                    <h2 class="dice_title">大话骰</h2>
+                                    <span class="desc">排名赛进行中，不服来战...</span>
+                                  </div>
+                                  <div class="fr challengeGameBox">
+                                    <span class="arrowRight" :class="{active:arrowIndex ==0}" >&gt;</span>
+                                    <span class="arrowRight" :class="{active:arrowIndex ==1}" >&gt;</span>
+                                    <span class="arrowRight" :class="{active:arrowIndex ==2}" >&gt;</span>
+                                    <span class="arrowRight" :class="{active:arrowIndex ==3}" >&gt;</span>
+                                    <span class="arrowRight" :class="{active:arrowIndex ==4}" >&gt;</span>
+                                    <img src="../../assets/image/huangguan.png" class="huangguan" alt="" @click="playGame_rank">
+                                  </div>
+                                </div>
+                                <ul class="game_list ">
+                                  <li @click="playGame_friend">
+                                    <img src="../../assets/image/haoyou.png" alt="" class="pic_game" onclick="return false">
+                                    <img src="../../assets/image/nvlang.png" alt="" class="nvlang">
+                                  </li>
+                                  <li @click="playGame_challenge">
+                                    <img src="../../assets/image/lingzhuo.png" alt="" class="pic_game" onclick="return false">
+                                  </li>
+                                </ul>
+                      </div>-->
         <!-- 好友 -->
         <!-- <div class="friend_wrapper">
-                          <div class="title_content_fri clearfix">
-                            <div class="title clearfix">
-                              <img src="../../assets/image/footPrint.png" alt="" class="icon fl" onclick="return false">
-                              <h2 class="friend_title">找朋友</h2>
-                              <span class="desc">瞅瞅老友在干哈......</span>
-                            </div>
-                            <div class="more">
-                              <ul class="fri_list" v-show="friendList.length>3">
-                                <li class="item" v-for="(item,index) in friendIconList" :key="index">
-                                  <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-                                    class="min_avatar" onclick="return false">
-                                </li>
-                                <li class="item dotItem">
-                                  <span class="dot">...</span>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                          <div class="pic_content">
-                            <ul class="pic_list">
-                              <li @click="outFriend" class="out_fri">
-                                <span class="out_onlinePerson">{{outFriendNum}}人在线 ></span>
-                                <img src="../../assets/image/dianwai.png" alt="" class="friend_avatar_out" onclick="return false">
-                              </li>
-                                <li @click="intoFriend" class="inner_fri">
-                                <span class="inner_onlinePerson">{{inFriendNum}}人在线 ></span>
-                                <img src="../../assets/image/diannei.png" alt="" class="friend_avatar_inner" onclick="return false">
-                              </li>
-                            </ul>
-                          </div>
-                </div>-->
+                                <div class="title_content_fri clearfix">
+                                  <div class="title clearfix">
+                                    <img src="../../assets/image/footPrint.png" alt="" class="icon fl" onclick="return false">
+                                    <h2 class="friend_title">找朋友</h2>
+                                    <span class="desc">瞅瞅老友在干哈......</span>
+                                  </div>
+                                  <div class="more">
+                                    <ul class="fri_list" v-show="friendList.length>3">
+                                      <li class="item" v-for="(item,index) in friendIconList" :key="index">
+                                        <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                                          class="min_avatar" onclick="return false">
+                                      </li>
+                                      <li class="item dotItem">
+                                        <span class="dot">...</span>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <div class="pic_content">
+                                  <ul class="pic_list">
+                                    <li @click="outFriend" class="out_fri">
+                                      <span class="out_onlinePerson">{{outFriendNum}}人在线 ></span>
+                                      <img src="../../assets/image/dianwai.png" alt="" class="friend_avatar_out" onclick="return false">
+                                    </li>
+                                      <li @click="intoFriend" class="inner_fri">
+                                      <span class="inner_onlinePerson">{{inFriendNum}}人在线 ></span>
+                                      <img src="../../assets/image/diannei.png" alt="" class="friend_avatar_inner" onclick="return false">
+                                    </li>
+                                  </ul>
+                                </div>
+                      </div>-->
         <!-- 福利 -->
         <div class="welfare_wrapper">
           <div class="title_content_wel">
@@ -139,17 +139,16 @@
               <span class="desc">预订享优惠</span>
             </div>
             <div class="more fr">
-              <img src="../../assets/image/letter.gif" alt class="letter" @click="inToLetter">
+              <img src="../../assets/image/fuli.png" alt class="letter" v-show="noCouponsFlag" @click="toWelfare">
             </div>
           </div>
-          <div class="advertise_wrapper" v-if="show_advertise">
-            <img src="../../assets/image/advertise.png" alt class="advertise" onclick="return false">
-            <!-- <img src="http://llwant.test.qianz.com/download/file/5007c55f109d0ad7f840d3b2e4c5263c.png" alt="" class="advertise" > -->
-            <img src="../../assets/image/close_ad.png" alt class="close" @click="close_adtise">
-          </div>
+          <!-- <div class="advertise_wrapper" v-if="show_advertise">
+                  <img src="../../assets/image/advertise.png" alt class="advertise" onclick="return false">
+                  <img src="../../assets/image/close_ad.png" alt class="close" @click="close_adtise">
+                </div> -->
           <div class="welfare_content">
-            <ul class="welfare_list" v-if="recommendList.length">
-              <li class="item clearfix" v-for="(item,index) in recommendList" :key="index">
+            <ul class="welfare_list" v-if="recommentList.length">
+              <li class="item clearfix" v-for="(item,index) in recommentList" :key="index">
                 <div class="left">
                   <img :src="item.goods.image" alt class="shopPic">
                 </div>
@@ -176,43 +175,43 @@
         </div>
         <!-- 友商互推 -->
         <!-- <div class="welfare_wrapper">
-                          <div class="title_content_wel">
-                            <div class="title clearfix">
-                              <img src="../../assets/image/hutui.png" onclick="return false" alt="" class="icon fl">
-                              <h2 class="shop_title">友好商家</h2>
-                              <span class="desc">享会员优惠,交更多朋友</span>
-                            </div>
-                          </div>
-                          <div class="welfare_content">
-                            <ul class="welfare_list" v-if="recommendList.length">
-                              <li class="item clearfix" v-for="(item,index) in recommendList" :key="index" >
-                                <div class="left" >
-                                  <img src="../../assets/image/hutuishop1.png" alt="" class="shopPic">
-                                </div>
-                                <div class="center">
-                                  <p class="title">爱尚KTV</p>
-                                  <p class="desc">{{item.recommend.subtopic}}</p>
-                                  <p class="limit">{{item.recommend.limit}}</p>
-                                  <p class="price">
-                                    <span class="discount_p" style="font-size:.3rem">优惠券内容摘要：100元现金券</span>
-                                  </p>
-                                </div>
-                                <div class="right">
-                                  <div class="thunb_box clearfix">
-                                    <p class="count fl">&lt;.5km</p>
-                                  </div>
-                                  <div style="margin-left:.3rem" class="show_detail" @click="freeBook(item.recommend.recommendID)">
-                                    领取
+                                <div class="title_content_wel">
+                                  <div class="title clearfix">
+                                    <img src="../../assets/image/hutui.png" onclick="return false" alt="" class="icon fl">
+                                    <h2 class="shop_title">友好商家</h2>
+                                    <span class="desc">享会员优惠,交更多朋友</span>
                                   </div>
                                 </div>
-                              </li>
-                            </ul>
-                          </div>
-                </div>-->
+                                <div class="welfare_content">
+                                  <ul class="welfare_list" v-if="recommendList.length">
+                                    <li class="item clearfix" v-for="(item,index) in recommendList" :key="index" >
+                                      <div class="left" >
+                                        <img src="../../assets/image/hutuishop1.png" alt="" class="shopPic">
+                                      </div>
+                                      <div class="center">
+                                        <p class="title">爱尚KTV</p>
+                                        <p class="desc">{{item.recommend.subtopic}}</p>
+                                        <p class="limit">{{item.recommend.limit}}</p>
+                                        <p class="price">
+                                          <span class="discount_p" style="font-size:.3rem">优惠券内容摘要：100元现金券</span>
+                                        </p>
+                                      </div>
+                                      <div class="right">
+                                        <div class="thunb_box clearfix">
+                                          <p class="count fl">&lt;.5km</p>
+                                        </div>
+                                        <div style="margin-left:.3rem" class="show_detail" @click="freeBook(item.recommend.recommendID)">
+                                          领取
+                                        </div>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </div>
+                      </div>-->
       </div>
     </div>
-    <div class="fuli" @click="toWelfare" v-show="noCouponsFlag">
-      <img src="../../assets/image/fuli.png" alt class="pic_fuli">
+    <div class="kefu" @click="inToLetter">
+      <img src="../../assets/image/home_letter.png" alt class="pic_kefu">
     </div>
     <!-- 游戏框框 -->
     <div v-transfer-dom>
@@ -281,7 +280,7 @@
             subtopic: '',
           },
         },
-        convertType:0,
+        convertType: 0,
         fatherPanelIndex: 2,
         showTelescopeFlag: true,
         circleList: [],
@@ -330,7 +329,7 @@
             link: Config.shareUrl + "#/home",
             imgUrl: `${this.shopSettingInfo.image}`
           };
-          util._getJssdkInfo(shareObj, this.myShareUrl,20);
+          util._getJssdkInfo(shareObj, this.myShareUrl, 20);
         }
       }, 1000);
       // this.arrowTimer = setInterval(() => {
@@ -342,13 +341,9 @@
     },
     computed: {
       ...mapState(["baseUrl", "friendList", "inAndOutFriendCursor", "userInfo", "shareUrl", "shopSettingInfo", "noCouponsFlag"]),
+      ...mapGetters(['recommentList'])
     },
     mounted() {
-      if (this.userInfo.firstLoad) {
-        this.isFirstLoad = true;
-      } else {
-        this.isFirstLoad = false;
-      }
       this.getFriendList(); //获取候选人
       this._loadPublishArenas(); //拉取已经发布的比赛场
       this._loadFriendEvts(); //获取好友事件列表
@@ -357,7 +352,7 @@
       this._getInOutNum();
       //this._loadUserCoupons(); //用户获取优惠券
       //this._acquireWaitGetCoupons();//用户获取优惠券
-      this._loadRecommends(); //店长推荐数据
+      //this._loadRecommends(); //店长推荐数据
       this._loadAdvertisingPhoto(); //拉取首页轮播图
       this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
       this._loadInviteCombat(); //拉取约战列表
@@ -392,9 +387,12 @@
         window.location.href = `${Config.shareUrl}game`;
       },
       gotoFriend() {
-        util.routerTo("friend", this, {
-          routeParamNum: 0 //路由参数2为进入了场外
-        });
+        // util.routerTo("friend", this, {
+        //   routeParamNum: 0 //路由参数2为进入了场外
+        // });
+        this.$router.push({
+          path:'/friend?id=0'
+        })
       },
       //打电话
       callPhone() {
@@ -407,7 +405,7 @@
       //判断是否已经分享过优惠券 (福利优惠券)
       _loadInviteWaitGetCoupon() {
         api.loadInviteWaitGetCoupon().then(res => {
-          console.log('优惠券----------------------------------:', res)
+          console.log('邀新有礼优惠券----------------------------------:', res)
           if (res.errCode === 0 && res.coupons === null) {
             this.judgeInviteCoupon(false);
           }
@@ -450,14 +448,14 @@
         })
       },
       //获取店长推荐
-      _loadRecommends() {
-        api.loadRecommends().then(res => {
-          console.log('店长推荐数据---------------------', res)
-          this.recommendList = res.slice(0, 4);
-          let recomment = res.slice(0, 4)
-          this.getRecommentList(recomment);
-        })
-      },
+      // _loadRecommends() {
+      //   api.loadRecommends().then(res => {
+      //     console.log('店长推荐数据---------------------', res)
+      //     this.recommendList = res;
+      //     // let recomment = res.slice(0, 4)
+      //     this.getRecommentList(this.recommendList);
+      //   })
+      // },
       //拉取首页轮播图
       _loadAdvertisingPhoto() {
         api.loadAdvertisingPhoto().then(res => {
@@ -514,7 +512,7 @@
         this.isGiftPanel = true;
         this.fatherPanelIndex = 2,
           console.log(this.fatherPanelIndex)
-        this.recommendItemIndo = this.recommendList[index];
+        this.recommendItemIndo = this.recommentList[index];
         // api.convertRecommend(recommendID).then(res => {
         //   console.log('预定结果--------------', res);
         //   couponId = res.userCouponID;
@@ -632,6 +630,14 @@
       })
     },
     watch: {
+      userInfo: function(newvalue) {
+        console.log('newvalue--------------------', newvalue);
+        if (newvalue.firstLoad) {
+          this.isFirstLoad = true;
+        } else {
+          this.isFirstLoad = false;
+        }
+      },
       friendList: function(newValue) {
         let tempArr = this.friendList.map((item, index) => {
           return item.info;
@@ -736,10 +742,10 @@
       background-color: rgba(0, 0, 0, 0.3);
     }
     background: rgba(242, 242, 242, 1);
-    .fuli {
+    .kefu {
       position: fixed;
       bottom: 80px;
-      right: 1px;
+      right: 0.1333rem;
       animation: jump 1500ms linear 500ms infinite normal;
       @keyframes jump {
         10% {
@@ -752,9 +758,9 @@
           bottom: 80px;
         }
       }
-      .pic_fuli {
-        width: 60px;
-        height: 73px;
+      .pic_kefu {
+        width: 1rem;
+        height: 1rem;
       }
     }
   }
@@ -854,7 +860,7 @@
       z-index: 9;
       animation: bigAndSmall 1s linear infinite;
     }
-    .rightguideFinger{
+    .rightguideFinger {
       width: 2rem;
       height: 2rem;
       position: absolute;
@@ -863,7 +869,7 @@
       animation: bigAndSmall 1s linear infinite;
       right: .7rem;
     }
-    .leftguideText{
+    .leftguideText {
       position: absolute;
       top: 4.5rem;
       left: 1.4667rem;
@@ -875,27 +881,26 @@
       border: 1px solid #fff;
       border-radius: 0.3333rem;
     }
-    .rightguideText{
-       position: absolute;
+    .rightguideText {
+      position: absolute;
       top: 4.5rem;
       z-index: 9;
       font-size: 0.4rem;
       color: #fff;
       right: .4rem;
       padding: 0.1333rem;
-       font-weight: 800;
+      font-weight: 800;
       border: 1px solid #fff;
       border-radius: 0.3333rem;
     }
-    
     @keyframes rotateAn {
       0% {
-        transform: rotate(0deg); 
-          opacity: 1;
+        transform: rotate(0deg);
+        opacity: 1;
       }
       99% {
         transform: rotate(180deg);
-         opacity: 1;
+        opacity: 1;
       }
       100% {
         transform: rotate(180deg);
@@ -936,7 +941,7 @@
           width: 100%;
           height: 100%;
           transform-origin: right center;
-          animation: rotateAn 2s 5s linear forwards;
+          animation: rotateAn 2s 4s linear forwards;
         }
         .rightCirclePart {
           right: 2px;
@@ -951,7 +956,7 @@
           width: 100%;
           height: 100%;
           transform-origin: left center;
-          animation: rotateAn 2s 3s linear forwards;
+          animation: rotateAn 2s 2s linear forwards;
         }
       }
       .findFriend_text {
@@ -974,7 +979,7 @@
       } // .left_radius {
       //   width: 0.04rem;
       //   height: 1.6rem;
-        // background: linear-gradient(top, #9BCCF7, #2785f0);
+      // background: linear-gradient(top, #9BCCF7, #2785f0);
       //   position: absolute;
       //   left: 50%;
       //   margin-left: -0.02rem;
@@ -1017,7 +1022,7 @@
           width: 100%;
           height: 100%;
           transform-origin: right center;
-          animation: rotateAn 2s 5s linear forwards;
+          animation: rotateAn 2s 4s linear forwards;
         }
         .rightCirclePart {
           right: 0.0367rem;
@@ -1032,7 +1037,7 @@
           width: 100%;
           height: 100%;
           transform-origin: left center;
-          animation: rotateAn 2s 3s linear forwards;
+          animation: rotateAn 2s 2s linear forwards;
         }
       }
       .dahuashai_text {
@@ -1428,10 +1433,10 @@
       }
       .more {
         .letter {
-          margin-right: 0.45rem;
+          margin-right: 0.25rem;
           margin-top: 0.3rem;
-          width: 0.8333rem;
-          height: 0.6667rem;
+          width: 1.1rem;
+          height: 1.2rem;
         }
       }
     }

@@ -20,7 +20,6 @@ import Award from 'components/welfare/award/award'
 import ShareNew from 'components/welfare/ShareNew/ShareNew'
 import ShareActivity from 'components/welfare/shareActivity/shareActivity'
 import NewUserGetDiscount from 'components/welfare/newUserGetDiscount/newUserGetDiscount'
-// import ShareNewUsers from 'components/welfare/shareNewUsers/shareNewUsers'
 import GameRecord from 'components/welfare/gameRecord'
 import GameRecordDetail from 'components/welfare/gameRecordDetail'
 
@@ -110,16 +109,17 @@ export default new Router({
       path: '/shareActivity',
       name: 'shareActivity',
       component: ShareActivity,
+      meta: {
+        keepAlive: true
+      }
     },
-    // {
-    //     path: '/shareNewUsers',
-    //     name: 'shareNewUsers',
-    //     component: ShareNewUsers,
-    // },
     {
       path: '/newUserGetDiscount',
       name: 'newUserGetDiscount',
       component: NewUserGetDiscount,
+      meta: {
+        keepAlive: true
+      }
     },
     {
       path: '/mine',

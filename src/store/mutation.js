@@ -194,7 +194,7 @@ const mutations = {
         break;
       case 7:
         friendEvtObj.content.extMsg.lastMsg = {};
-        friendEvtObj.content.extMsg.lastMsg['msg'] = "你邀请的好友进入游戏啦";
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
       case 8:
