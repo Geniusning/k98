@@ -27,8 +27,8 @@
               :class="{'first':index==0,'second':index==1,'third':index==2}"
             >{{index+1}}</span>
             <div class="userInfo">
-              <img class="avatar" :src="item.headURI" alt>
-              <div class="username">{{item.teamName}}</div>
+              <img class="avatar" :src="item.headURI?item.headURI:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt>
+              <div class="username">{{item.teamName?item.teamName:(item.nick?item.nick:'无名')}}</div>
             </div>
             <span class="score">{{item.score}}</span>
             <span class="finishRound">{{item.finishRound*3}}</span>

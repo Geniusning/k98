@@ -22,7 +22,7 @@
         <li class="treasure-item-title">
           <p v-if="!allPeopleList.length" class="noData">暂无数据</p>
         </li>
-        <li class="mars-item" v-for="(item,index) in allPeopleList" :key="index">
+        <li class="mars-item"  v-for="(item,index) in allPeopleList" :key="index">
           <div class="avatar-box">
             <img :src="item.headImgURL" alt class="avatar">
           </div>
@@ -46,7 +46,7 @@
         <li class="treasure-item-title">
           <p v-if="!friendList.length" class="noData">暂无数据</p>
         </li>
-        <li class="mars-item" v-for="(item,index) in friendList" :key="index">
+        <li class="mars-item" :class="{own:userInfo.openid==item.openid}" v-for="(item,index) in friendList" :key="index">
           <div class="avatar-box">
             <img :src="item.headImgURL?item.headImgURL:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt class="avatar">
           </div>
@@ -93,6 +93,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
+import {mapState} from 'vuex';
   import {
     ButtonTab,
     ButtonTabItem
@@ -112,6 +113,10 @@
     },
     mounted() {
       this._loadGameScoreRanking()
+      this._loadGameAllPeopleRanking()
+    },
+    computed: {
+      ...mapState(['userInfo'])
     },
     methods: {
       _loadGameScoreRanking() {
@@ -123,13 +128,13 @@
           console.log('拉取好友排名----------', res);
         })
       },
-      _loadWealthAllPeopleRanking() {
+      _loadGameAllPeopleRanking() {
         let type = 'allPerson';
         let count = 20;
         api.loadGameScoreRanking(type, count, this.allPeopleCursor).then(res => {
-          console.log('财富全部排行信息----------------', res)
-          this.allPeopleList = res.wealthRanking.wealthInfos;
-          this.allPeopleCursor = res.wealthRanking.cursor;
+          console.log('战神榜全部排行信息----------------', res)
+          this.allPeopleList = res.scoreRanking.gameScoreInfos;
+          this.allPeopleCursor = res.scoreRanking.cursor;
         })
       },
       switchTabIndex0() {
@@ -179,13 +184,14 @@
       width: 100%;
       .marsList {
         width: 100%;
-        height: 100%;
         .mars-item-title {
           width: 100%;
           font-size: 0.4rem;
           display: flex;
           justify-content: space-around;
           .title_item {
+            // box-sizing: border-box;
+            // padding-top: 0.2667rem;
             width: 25%;
             text-align: center;
           }
@@ -195,10 +201,16 @@
           font-size: 0.4rem;
           display: flex;
           justify-content: space-around;
+          &.own{
+            background-color: #ffd800;
+            color: #fff;
+          }
           .title_item {
+          
             width: 25%;
             text-align: center;
             .rankIcon {
+              margin-top: 0.1667rem;
               width: 0.6333rem;
               height: 0.6333rem;
             }

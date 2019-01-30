@@ -20,8 +20,8 @@
     </div>
     <div class="control_wrapper">
       <!-- <p class="control_guide" v-show="isFirstLoad">互赞成为好友。
-            <br>下面分别是送礼、点赞、约Ta玩大话骰
-          </p> -->
+              <br>下面分别是送礼、点赞、约Ta玩大话骰
+            </p> -->
       <div class="gifts">
         <img src="../../assets/image/gift.png" @click="isGiftPanel=true" alt>
         <img src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt>
@@ -62,8 +62,13 @@
           <div class="dis_wrapper">
             <h3>范围:</h3>
             <ul class="dis_list">
-              <!-- <li><span>范围:</span></li> -->
               <li @click="chooseRange(index)" :class="{active:currentIndex2 == index}" v-for="(item,index) in rangeArr" :key="index">{{item.name}}</li>
+            </ul>
+          </div>
+          <div class="dis_wrapper">
+            <h3>等级:</h3>
+            <ul class="dis_list">
+              <li @click="chooseRange(index)" :class="{active:currentIndex2 == index}" v-for="(item,index) in rankList" :key="index">{{item.name}}</li>
             </ul>
           </div>
           <p class="confirm" @click="cancel">确定</p>
@@ -106,8 +111,8 @@
     <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
     <!-- <transition name="fade">
-                  <giftPanel v-show="isGiftPanel" @closeGiftPanel="closeGiftPanel"></giftPanel>
-        </transition>-->
+                    <giftPanel v-show="isGiftPanel" @closeGiftPanel="closeGiftPanel"></giftPanel>
+          </transition>-->
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
     </transition>
@@ -171,31 +176,44 @@
         friendOnlineStatus: false,
         isIntegralPanel: false, //面板显示状态
         isGiftPanel: false, //礼物面板状态
-        isInDoor:false,//好友是否在线
+        isInDoor: false, //好友是否在线
         sexArr: [{
             id: 0,
-            name: "男"
+            name: "全部"
           },
           {
             id: 1,
-            name: "女"
+            name: "男"
           },
           {
             id: 2,
-            name: "全部"
+            name: "女"
           }
         ],
         rangeArr: [{
             id: 0,
-            name: "场内"
+            name: "全部"
           },
           {
             id: 1,
-            name: "场外"
+            name: "店内"
           },
           {
             id: 2,
-            name: "全部"
+            name: "店外"
+          }
+        ],
+        rankList: [{
+            id: 0,
+            name: "财富榜"
+          },
+          {
+            id: 1,
+            name: "战神榜"
+          },
+          {
+            id: 2,
+            name: "好友数"
           }
         ],
         someList: [],
@@ -746,7 +764,7 @@
       margin-top: 1rem;
       h3 {
         text-align: left;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 600;
         color: #333;
         text-indent: 0.5333rem;
@@ -755,7 +773,7 @@
       .sex_list {
         display: flex;
         justify-content: flex-start;
-        padding: 0.4133rem 0.625rem 0.6rem; // margin-left: 1.875rem;
+        padding: 0.2133rem 0.625rem 0.3rem; // margin-left: 1.875rem;
         li {
           margin-right: 0.625rem;
           width: 1.7067rem;
@@ -775,7 +793,7 @@
       h3 {
         text-align: left;
         text-indent: 0.5333rem;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 600;
         color: #333;
         font-family: Arial, Helvetica, sans-serif;
@@ -783,7 +801,7 @@
       .dis_list {
         display: flex;
         justify-content: flex-start;
-        padding: 0.4133rem 0.625rem 0.6rem; // margin-left: 1.875rem;
+        padding: 0.2133rem 0.625rem 0.3rem; // margin-left: 1.875rem;
         li {
           margin-right: 0.625rem;
           width: 1.7067rem;

@@ -122,7 +122,7 @@
   // import {Selector,Group} from "vux";
   import util from "common/util";
   import api from "common/api";
-  import Config from 'common/url'
+  import Config from 'common/config'
   import {mapState,mapMutations} from "vuex";
   import Scroll from '../../base/scroll/scroll.vue'
   export default {
@@ -234,8 +234,6 @@
       // }
     },
     components: {
-      // Selector,
-      // Group,
       Scroll
     },
     watch: {
@@ -256,9 +254,10 @@
   }
   .rankList {
     // height: 4rem;
+    box-sizing: border-box;
     padding: 0 0.2667rem;
     .item {
-      margin-top: 0.4rem;
+      margin-top: 0.3rem;
       display: flex;
       justify-content: flex-start;
       .itemLeft {

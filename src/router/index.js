@@ -38,23 +38,33 @@ export default new Router({
       name: 'home',
       component: Home,
       meta: {
-        keepAlive: true
+        keepAlive: true,
+        title: "首页"
       }
     },
     {
       path: '/marsRank',
       name: 'marsRank',
       component: MarsRank,
+      meta: { 
+        title:"战神榜"
+       }
     },
     {
       path: '/treasureRank',
       name: 'treasureRank',
       component: TreasureRank,
+      meta: { 
+        title:"财富榜"
+       }
     },
     {
       path: "/gameRank",
       name: "gameRank",
-      component: GameRank
+      component: GameRank,
+      meta: { 
+        title:"比赛直播间"
+       }
     },
     {
       path: '/friend',
@@ -64,14 +74,18 @@ export default new Router({
         path: ':id',
         name: "personalInfo",
         component: PersonalInfo,
-      }, ]
-      // meta: { keepAlive: true }
+      }, ],
+      meta: {
+        title: "找朋友"
+      }
     },
     {
       path: '/message',
       name: 'message',
       component: Message,
-      // meta: { keepAlive: true },
+      meta: {
+        title: "消息"
+      },
       props: true,
       children: [{
         path: ":id",
@@ -84,6 +98,9 @@ export default new Router({
       path: '/welfare',
       name: 'welfare',
       component: Welfare,
+      meta: {
+        title: "福利"
+      },
       children: [{
         path: "award",
         name: "award",
@@ -98,19 +115,26 @@ export default new Router({
         path: ":id",
         name: "gameRecordDetail",
         component: GameRecordDetail,
-      }, ]
+      }, ],
+      meta: {
+        title: "游戏记录"
+      }
     },
     {
       path: '/shareNew',
       name: 'shareNew',
       component: ShareNew,
+      meta: {
+        title: "新人有礼"
+      }
     },
     {
       path: '/shareActivity',
       name: 'shareActivity',
       component: ShareActivity,
       meta: {
-        keepAlive: true
+        keepAlive: true,
+        title: "分享活动"
       }
     },
     {
@@ -118,7 +142,10 @@ export default new Router({
       name: 'newUserGetDiscount',
       component: NewUserGetDiscount,
       meta: {
-        keepAlive: true
+        keepAlive: true,
+        meta: {
+          title: "新人优惠券"
+        }
       }
     },
     {
@@ -126,7 +153,8 @@ export default new Router({
       name: 'mine',
       component: Mine,
       meta: {
-        keepAlive: true
+        keepAlive: true,
+        title: "我的"
       }
     },
     {
@@ -137,7 +165,10 @@ export default new Router({
         path: ":id",
         name: "cardDetail",
         component: cardDetail
-      }]
+      }],
+      meta: {
+        title: "优惠券"
+      }
     },
     {
       path: "/individual",
@@ -147,17 +178,27 @@ export default new Router({
         path: ':id',
         component: updateAvatar,
         name: "updateAvatar"
-      }]
+      }],
+      meta: {
+        title: "个人信息"
+      }
     },
     {
       path: "/game_detail",
       name: "gameDetail",
-      component: GameDetail
+      component: GameDetail,
+      meta: {
+        title: "比赛详情"
+      }
     },
     {
       path: '/gift_detail',
       name: 'giftDetail',
       component: GiftDetail,
-    }
+      meta: {
+        title: "积分详情"
+      }
+    },
+
   ]
 })

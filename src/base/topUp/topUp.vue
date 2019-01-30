@@ -477,7 +477,7 @@
         padding: 0.3rem;
         .desc {
           font-size: 0.4rem;
-          color: #f2e252;
+          color: #F7C600;
         }
         .close {
           width: 0.48rem;
@@ -496,7 +496,7 @@
         .giftListpart_desc {
           position: absolute;
           top: 0.1333rem;
-          color: #f2e252;
+          color: #F7C600;
         }
         .list {
           display: flex;
@@ -527,7 +527,7 @@
         .giftListpart_desc {
           position: absolute;
           top: 0.1333rem;
-          color: #f2e252;
+          color: #F7C600;
         }
         .list {
           display: flex;
@@ -558,7 +558,7 @@
         .giftListpart_desc {
           position: absolute;
           top: 0.1333rem;
-          color: #f2e252;
+          color: #F7C600;
         }
         .list {
           display: flex;

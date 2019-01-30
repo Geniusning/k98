@@ -28,7 +28,7 @@
 <script type='text/ecmascript-6'>
 import util from "common/util";
 import api from 'common/api';
-import Config from "common/url";
+import Config from "common/config";
 import { mapState } from "vuex";
 export default {
   data() {
@@ -70,37 +70,6 @@ export default {
     ...mapState(["shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl"])
   },
   methods: {
-    // _getJssdkInfo(shareObj, url) {
-    //   api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
-    //     .then(res => {
-    //       wx.config({
-    //         //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    //         appId: Config.appId,
-    //         timestamp: res.timestamp,
-    //         nonceStr: res.nonceStr,
-    //         signature: res.signature,
-    //         jsApiList: ["onMenuShareAppMessage"]
-    //       });
-    //       wx.ready(() => {
-    //         wx.onMenuShareAppMessage({
-    //           title: shareObj.title,
-    //           desc: shareObj.desc,
-    //           link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-    //           imgUrl: shareObj.imgUrl,
-    //           success: () => {
-    //             console.log("分享成功");
-    //           }
-    //         });
-    //       });
-    //       wx.error(function (res) {
-    //         console.log(res);
-    //         // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-    //       });
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    // },
     //加载活动详情
     _loadActivityDetail() {
       api.loadActivityDetail(this.activityID).then(res => {

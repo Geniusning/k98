@@ -114,7 +114,7 @@ const mutations = {
     state.msg_badgeCount = totalCount
 
     state.alreadyFriendList = tempData;
-    console.log('拉取好友-----------', state.alreadyFriendList)
+    // console.log('拉取好友-----------', state.alreadyFriendList)
   },
   //获取新消息时重新排列消息列表，把最新的一项放到顶部
   [types.TO_TOP_MESSAGE](state, friendList) {
@@ -148,26 +148,30 @@ const mutations = {
   },
   //更新好友事件消息框内容
   [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
-    // console.log('在线推送的信息```````````````````', friendEvtObj)
+
     // console.log('当前正在聊天的对象---------------------------：', state.staticChatFriendObj)
     //如果和本人聊天信封弹框不在对话框弹出
+
     if (!friendEvtObj.content.fromInfo) { //粗暴解决msgCode=4  无法推送的bug
       friendEvtObj.content.extMsg = {
         lastMsg: {},
       };
       friendEvtObj.content.fromInfo = {
-        openid:"",
-        headimgurl:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
+        openid: "",
+        headimgurl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
       }
       friendEvtObj.content.extMsg.lastMsg['msg'] = "店长给你发优惠券啦";
       state.dynamicFriendEvt = friendEvtObj.content;
       return;
     }
-    if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) {
-      return false;
-    }
     switch (friendEvtObj.msgCode) {
       case 1:
+        if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
+          return false;
+        }
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+        };
         friendEvtObj.content.extMsg.lastMsg['msg'] = "你有一条消息";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
@@ -193,9 +197,13 @@ const mutations = {
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
       case 7:
-        friendEvtObj.content.extMsg.lastMsg = {};
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+        };
+
         friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
         state.dynamicFriendEvt = friendEvtObj.content;
+        console.log('好友邀请你进游戏玩-----------', state.dynamicFriendEvt)
         break;
       case 8:
         friendEvtObj.content.extMsg = {
@@ -229,7 +237,7 @@ const mutations = {
   }) {
     state.gift_badgeCount = data.length;
     state.friendGiftList = data;
-    console.log('收礼列表-----------------', state.friendGiftList)
+    // console.log('收礼列表-----------------', state.friendGiftList)
   },
   //获取店长消息列表
   [types.GET_CAPTAINMESSAGELIST](state, {
@@ -240,9 +248,9 @@ const mutations = {
   //获取约战消息列表
   [types.GET_CHALLENGEGAMELIST](state, gameMessage) {
     state.challengeGameList.push(gameMessage);
-    console.log(state.challengeGameList)
+    // console.log(state.challengeGameList)
     state.game_badgeCount = state.challengeGameList.length;
-    console.log('约战条数---------', state.game_badgeCount)
+    // console.log('约战条数---------', state.game_badgeCount)
   },
   //清空约战列表
   [types.CLEAR_CHALLENGEGAMELIST](state) {

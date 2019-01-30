@@ -30,12 +30,12 @@
       <scroll class="scroll" :data="giftContent" @pullingUp="pullUpMoreData" :pullup="true">
         <ul class="gift_list">
           <li class="item vux-1px" v-for="(item,index) in giftContent" :key="index">
-            <span class="total">{{item.value}}</span>
+            <span class="total">${{item.value}}</span>
             <span class="name" :class="{minus:item.amount<0,plus:item.amount>0}">{{item.amount>0?'+'+item.amount:item.amount}}</span>
             <!-- <span class="name"  v-else>-3积分</span> -->
             <span class="content">{{item.content}}</span>
             <div class="avatar">
-              <img :src="item.headimgurl" class="gift_icon">
+              <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" class="gift_icon">
             </div>
             <span class="time">{{item.time}}</span>
           </li>
@@ -45,15 +45,15 @@
       </scroll>
       <topUp v-if="isIntegralPanel" @closeIntegralPanel="closeIntegralPanel" :fatherPanelIndex="fatherPanelIndex"></topUp>
       <!-- <div class="selectMoneyBox" v-show="isShowTreasure">
-          <h2 class="titile">请选择充值的积分</h2>
-          <p class="payInfo">1元兑换100积分，5元兑换500积分，10元兑换1000积分，15元兑换1500积分</p>
-          <ul class="moneyList">
-            <li class="itemMoney" :class="{active:index+1==moneyIndex}" @click="selectMoney(item.id,$event)" :data-money="item.money" v-for="(item,index) in moneyList">{{item.name}}</li>
-          </ul>
-        </div>
-        <div class="btn_content" v-show="isShowTreasure" @click="pay">
-          <span class="btn">充值</span>
-        </div>-->
+            <h2 class="titile">请选择充值的积分</h2>
+            <p class="payInfo">1元兑换100积分，5元兑换500积分，10元兑换1000积分，15元兑换1500积分</p>
+            <ul class="moneyList">
+              <li class="itemMoney" :class="{active:index+1==moneyIndex}" @click="selectMoney(item.id,$event)" :data-money="item.money" v-for="(item,index) in moneyList">{{item.name}}</li>
+            </ul>
+          </div>
+          <div class="btn_content" v-show="isShowTreasure" @click="pay">
+            <span class="btn">充值</span>
+          </div>-->
     </div>
   </div>
 </template>
@@ -74,33 +74,7 @@
         moneyIndex: 1,
         moneyInitValue: 5,
         fatherPanelIndex: 0,
-        // isShowTreasure: false,
         isIntegralPanel: false,
-        // moneyList: [{
-        //   "id": 1,
-        //   "name": "1元",
-        //   "money": 1,
-        //   "points": 10
-        // },
-        // {
-        //   "id": 2,
-        //   "name": "5元",
-        //   "money": 5,
-        //   "points": 50
-        // },
-        // {
-        //   "id": 3,
-        //   "name": "10元",
-        //   "money": 10,
-        //   "points": 100
-        // },
-        // {
-        //   "id": 4,
-        //   "name": "15元",
-        //   "money": 15,
-        //   "points": 150
-        // }
-        // ],
         giftContent: [],
         giftList: [],
         giftCursor: 0,
@@ -110,10 +84,12 @@
       ...mapState(['userInfo'])
     },
     created() {
-      },
+      api.getUserInfo("/api/loadUserInfo").then(res => {
+        this.getUserInfo(res);
+      })
+    },
     mounted() {
       this._loadWealthDetail();
-      //this._loadWealthDetail();
     },
     methods: {
       //上拉加载更多
@@ -215,14 +191,13 @@
           margin-right: 0.6667rem;
           box-sizing: border-box;
           display: flex;
-          .btn_chongzhi{
+          .btn_chongzhi {
             border: none;
             background-color: #999;
             color: #fff;
             font-weight: 700;
             border-radius: 0.1333rem;
             padding: 0 0.1333rem;
-
           }
         }
         .title {

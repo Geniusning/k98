@@ -132,7 +132,7 @@
     WechatEmotion as Emotion
   } from "vux";
   import Scroll from "../../base/scroll/scroll.vue";
-  import Url from "../../common/url.js";
+  import Url from "../../common/config.js";
   import api from "common/api.js";
   import util from "common/util.js";
   // import EXIF from "common/exif.js";
@@ -694,7 +694,7 @@
     }
     .chat_wrapper {
       flex: 1;
-      padding: 0.1333rem 0.3733rem 0.1333rem;
+      padding: 0.1333rem 0.3733rem 0rem;
       background: #eee;
       overflow-y: auto;
       position: relative;

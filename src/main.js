@@ -15,8 +15,7 @@ import {
   mapActions
 } from 'vuex'
 import api from './common/api'
-import config from './common/url'
-import Url from 'common/url.js'
+import config from './common/config'
 Vue.use(ToastPlugin)
 Vue.use(vuePicturePreview)
 FastClick.attach(document.body)
@@ -30,7 +29,7 @@ new Vue({
     ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
   },
   created() {
-    this.websock = new WebSocket(`${config.websocketUrl}?tk=${Url.tk}`);
+    this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
     // this.websock = new WebSocket(`${config.websocketUrl}`);
     this.websock.binaryType = "arraybuffer";
     this.connect_websocket(this.websock);
@@ -64,7 +63,7 @@ new Vue({
       //数据接收
       var decc = new TextDecoder("utf-8");
       let result = JSON.parse(decc.decode(e.data));
-      console.log('对方发来的信息-------------------------', result)
+      console.log('websocket推送消息-------------------------', result)
       this.addFriendEvtObj(result)
       //处理聊天消息
       if (result.msgCode === 1) {
@@ -117,7 +116,7 @@ new Vue({
     //拉取积分换礼品列表
     _loadGoods() {
       api.loadGoods().then(res => {
-        console.log('积分换礼品列表------', res);
+        // console.log('积分换礼品列表------', res);
         this.getSendGiftList(res.slice(0,4));
       })
     },
@@ -158,7 +157,7 @@ new Vue({
     //获取门店信息
     _loadStoreSetting() {
       api.loadStoreSetting().then(res => {
-        console.log('门店信息---------------------------------：', res)
+        // console.log('门店信息---------------------------------：', res)
         this.getShopSetting(res)
       })
     },
@@ -177,7 +176,7 @@ new Vue({
     //获取店长推荐
     _loadRecommends() {
       api.loadRecommends().then(res => {
-        console.log('店长推荐数据---------------------', res)
+        // console.log('店长推荐数据---------------------', res)
         this.recommendList = res;
         this.getRecommentList(this.recommendList);
       })
@@ -206,7 +205,7 @@ new Vue({
   watch: {
     //websocket推送的最新消息
     LastChatMsg: function (newValue) {
-      console.log('在main收到对方手来的消息------------------------------------：', newValue);
+      // console.log('在main收到对方手来的消息------------------------------------：', newValue);
       this.compareLastMsg(newValue)
     }
   },

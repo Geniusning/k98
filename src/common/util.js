@@ -2,10 +2,10 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-01-08 19:47:17
+ * @Last Modified time: 2019-01-30 16:55:28
  */
 import api from 'common/api'
-import Config from 'common/url'
+import Config from 'common/config.js'
 let util = {};
 //路由跳转
 util.routerTo = function (route, vm, param) {
@@ -135,7 +135,7 @@ util._getJssdkInfo = function (shareObj, url, amount) {
         console.log(res)
         wx.config({
           //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-          appId: Config.appId,
+          appId: res.appId,
           timestamp: res.timestamp,
           nonceStr: res.nonceStr,
           signature: res.signature,
@@ -151,7 +151,7 @@ util._getJssdkInfo = function (shareObj, url, amount) {
               //分享记录
               api.createShareDaylog().then(res => {
                 if (res.errCode == 0) {
-                  // alert('分享成功');
+                  
                 }
               });
               //分享获得积分

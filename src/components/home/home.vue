@@ -245,7 +245,7 @@
     XDialog
   } from "vux";
   import axios from "axios";
-  import Config from "common/url";
+  import Config from "common/config";
   import {
     mapMutations,
     mapActions,
@@ -293,7 +293,6 @@
         isShowEnvelope: false,
         envelopeText: "",
         demo01_list: [],
-        test1: "123",
         demo01_index: 0,
         data: [1, 2, 3],
         distance: "",
@@ -304,14 +303,11 @@
         isGiftPanel: false,
         hiddenTelescope: true,
         isFirstLoad: false,
-        shopInfo: {
-          name: "深圳市乐乐湾"
-        }
       };
     },
     created() {
       setTimeout(() => {
-        console.log('门店logo--------------------', this.shopSettingInfo.image)
+        // console.log('门店logo--------------------', this.shopSettingInfo.image)
         let _url = window.location.href;
         this.myShareUrl = _url.split('#')[0];
         if (util.isAndroid()) {
@@ -349,10 +345,7 @@
       this._loadFriendEvts(); //获取好友事件列表
       this.getFriendGift(); //获取好友送礼列表
       this.getAlreadyFriend(); //获取已经成为好友列表
-      this._getInOutNum();
-      //this._loadUserCoupons(); //用户获取优惠券
-      //this._acquireWaitGetCoupons();//用户获取优惠券
-      //this._loadRecommends(); //店长推荐数据
+      this._getInOutNum();//获取场内场外用户数
       this._loadAdvertisingPhoto(); //拉取首页轮播图
       this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
       this._loadInviteCombat(); //拉取约战列表
@@ -374,8 +367,6 @@
       //   this.openCircle();
       // }, 1000);
     },
-    activated() {},
-    deactivated() {},
     methods: {
       //监听充值面板状态
       closeIntegralPanel(flag) {
@@ -399,21 +390,20 @@
         // this.set(this.shopInfo, "name1", "hahaha")
         window.location.href = `tel://${this.shopSettingInfo.phone}`;
         api.statCalls().then(res => {
-          console.log('打电话记录------------------', res);
+          // console.log('打电话记录------------------', res);
         })
       },
       //判断是否已经分享过优惠券 (福利优惠券)
       _loadInviteWaitGetCoupon() {
         api.loadInviteWaitGetCoupon().then(res => {
-          console.log('邀新有礼优惠券----------------------------------:', res)
+          // console.log('邀新有礼优惠券----------------------------------:', res)
           if (res.errCode === 0 && res.coupons === null) {
             this.judgeInviteCoupon(false);
           }
         })
       },
-      //进入游戏初始页面
+      //进入游戏
       intoReadyGame() {
-        // this.$router.push({ name: "gameCompetion" });
         this.gameShow = false;
         window.location.href = `${Config.shareUrl}game/?gamePath=game2`;
       },
@@ -422,21 +412,21 @@
         this.gameShow = false;
       },
       // 随机场
-      playGame_challenge() {
-        let token = util.getCookie("tk");
-        window.location.href = `${Config.shareUrl}game/?gamePath=game1`;
-      },
+      // playGame_challenge() {
+      //   let token = util.getCookie("tk");
+      //   window.location.href = `${Config.shareUrl}game/?gamePath=game1`;
+      // },
       // 比赛场
-      playGame_rank() {
-        this.$router.push({
-          name: "gameCompetion"
-        })
-      },
+      // playGame_rank() {
+      //   this.$router.push({
+      //     name: "gameCompetion"
+      //   })
+      // },
       // 好友场
-      playGame_friend() {
-        let token = util.getCookie("tk");
-        window.location.href = `${Config.shareUrl}game/?gamePath=game3`;
-      },
+      // playGame_friend() {
+      //   let token = util.getCookie("tk");
+      //   window.location.href = `${Config.shareUrl}game/?gamePath=game3`;
+      // },
       //拉取已经发布的比赛场
       _loadPublishArenas() {
         api.loadPublishArenas().then(res => {
@@ -444,22 +434,13 @@
           if (reverseArr.length > 0) {
             this.gameShow = true;
           }
-          console.log('拉取已经发布的比赛场:', res)
+          // console.log('拉取已经发布的比赛场:', res)
         })
       },
-      //获取店长推荐
-      // _loadRecommends() {
-      //   api.loadRecommends().then(res => {
-      //     console.log('店长推荐数据---------------------', res)
-      //     this.recommendList = res;
-      //     // let recomment = res.slice(0, 4)
-      //     this.getRecommentList(this.recommendList);
-      //   })
-      // },
       //拉取首页轮播图
       _loadAdvertisingPhoto() {
         api.loadAdvertisingPhoto().then(res => {
-          console.log('轮播图-------------------------：', res)
+          // console.log('轮播图-------------------------：', res)
           this.getAdvertisingImg(res.adPhotoURL);
           this.$nextTick(() => {
             let swiperList = [];
@@ -477,7 +458,7 @@
       //拉取约战列表
       _loadInviteCombat() {
         api.loadInviteCombat().then(res => {
-          console.log('约战列表--------------', res);
+          // console.log('约战列表--------------', res);
           if (res.errCode == 0) {
             res.inviteCombatInfo.forEach(item => {
               let content = {
@@ -507,36 +488,12 @@
       },
       //免费预定
       freeBook(recommendID, index) {
-        console.log('recommendID----------', recommendID)
-        console.log('index----------', index)
+        // console.log('recommendID----------', recommendID)
+        // console.log('index----------', index)
         this.isGiftPanel = true;
         this.fatherPanelIndex = 2,
           console.log(this.fatherPanelIndex)
         this.recommendItemIndo = this.recommentList[index];
-        // api.convertRecommend(recommendID).then(res => {
-        //   console.log('预定结果--------------', res);
-        //   couponId = res.userCouponID;
-        //   if (res.errCode && res.errCode == 1021) {
-        //     this.isShowEnvelope = true;
-        //     this.envelopeText = "您己成功兑换,无需重复兑换"
-        //     setTimeout(() => {
-        //       this.isShowEnvelope = false;
-        //     }, 2000);
-        //   } else {
-        //     this.isShowEnvelope = true;
-        //     this.envelopeText = "成功兑换，到店请先到收银台扫码确认"
-        //     setTimeout(() => {
-        //       this.isShowEnvelope = false;
-        //     }, 2000);
-        //     this._loadRecommends(); //重新拉取店长推荐
-        //   }
-        //   //发起预订券核销
-        //   return api.launchSetOffUserCoupon(couponId);
-        // }).then(res => {
-        //   console.log('发起预定券核销结果-------------', res);
-        // }).catch(err => {
-        //   console.log(err)
-        // });
       },
       //关闭详情
       closeDialog() {
@@ -603,15 +560,7 @@
       showMoreWelfare() {
         util.routerTo("welfare", this);
       },
-      // //获取门店信息
-      // _loadStoreSetting() {
-      //   api.loadStoreSetting().then(res => {
-      //     console.log('门店信息---------------------------------：', res)
-      //     this.getShopSetting(res)
-      //   })
-      // },
       ...mapMutations({
-        //getShopSetting: "GET_SHOPINFO",                         //获取门店信息
         getPosition: "GET_POSITION",
         getFriend: "GET_FRIENDlIST",
         updateShareUrl: "UPDATE_SHAREURL",
@@ -631,7 +580,7 @@
     },
     watch: {
       userInfo: function(newvalue) {
-        console.log('newvalue--------------------', newvalue);
+        // console.log('newvalue--------------------', newvalue);
         if (newvalue.firstLoad) {
           this.isFirstLoad = true;
         } else {

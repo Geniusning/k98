@@ -11,8 +11,11 @@
         <div class="envelop-wrapper" v-if="isShowEnvelop" @click="showDetail">
           <img src="./assets/image/close_ad.png" alt class="close" @click.stop="close">
           <div class="top">
-            <img :src="dynamicFriendEvt.fromInfo?dynamicFriendEvt.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
-              alt class="avatar">
+            <img
+              :src="dynamicFriendEvt.fromInfo?dynamicFriendEvt.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+              alt
+              class="avatar"
+            >
             <div class="name">{{dynamicFriendEvt.fromInfo?dynamicFriendEvt.fromInfo.nickname:'店长'}}</div>
           </div>
           <div class="bottom">
@@ -20,7 +23,10 @@
             <!-- <p class="content">你试试我的眼的</p> -->
           </div>
           <div class="detail" v-if="messType !='onlineNotice'">&gt;&gt;详情</div>
-          <div class="detail" v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true ">&gt;&gt;去聊天</div>
+          <div
+            class="detail"
+            v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true "
+          >&gt;&gt;去聊天</div>
           <div class="detail" v-else>&gt;&gt;打招呼</div>
         </div>
       </transition>
@@ -36,353 +42,394 @@
 </template>
 
 <script>
-  import Tab from "./components/tab/tab.vue";
-  import qrCode from 'base/qrCode/qrCode';
-  import envelope from 'base/envelope/envelope';
-  import {
-    mapState,
-    mapGetters,
-    mapMutations
-  } from "vuex";
-  import util from "common/util";
-  import api from "common/api";
-  export default {
-    name: "app",
-    data() {
-      return {
-        isThrottle: true,
-        isShowEnvelop: false,
-        tabFlag: false,
-        selected: 0,
-        envelopeText: "",
-        isShowEnvelope: false
-      };
-    },
-    computed: {
-      ...mapState(["inputValue", "dynamicFriendEvt", "messType"]),
-      ...mapGetters(["qrIsShow"]),
-    },
-    created() {
-      console.log(this.$route.name);
-      if (
-        this.$route.name === "home" ||
-        this.$route.name === "friend" ||
-        this.$route.name === "message" ||
-        this.$route.name === "welfare" ||
-        this.$route.name === "mine"
-      ) {
-        this.tabFlag = true;
-      }
-      switch (this.$route.name) {
-        case "home":
-          this.selected = 0;
-          break;
-        case "friend":
-          this.selected = 1;
+import Tab from "./components/tab/tab.vue";
+import qrCode from 'base/qrCode/qrCode';
+import envelope from 'base/envelope/envelope';
+import {
+  mapState,
+  mapGetters,
+  mapMutations
+} from "vuex";
+import util from "common/util";
+import api from "common/api";
+export default {
+  name: "app",
+  data() {
+    return {
+      isThrottle: true,
+      isShowEnvelop: false,
+      tabFlag: false,
+      selected: 0,
+      envelopeText: "",
+      isShowEnvelope: false
+    };
+  },
+  computed: {
+    ...mapState(["inputValue", "dynamicFriendEvt", "messType"]),
+    ...mapGetters(["qrIsShow"]),
+  },
+  created() {
+    console.log(this.$route.name);
+    if (
+      this.$route.name === "home" ||
+      this.$route.name === "friend" ||
+      this.$route.name === "message" ||
+      this.$route.name === "welfare" ||
+      this.$route.name === "mine"
+    ) {
+      this.tabFlag = true;
+    }
+    switch (this.$route.name) {
+      case "home":
+        this.selected = 0;
+        break;
+      case "friend":
+        this.selected = 1;
+        break;
+      case "message":
+        this.selected = 2;
+        break;
+      case "welfare":
+        this.selected = 3;
+        break;
+      case "mine":
+        this.selected = 4;
+        break;
+      default:
+        break;
+    }
+  },
+  methods: {
+    showDetail() {
+      switch (this.messType) {
+        case "shareGetIntegral":
+          this.$router.push({
+            name: `giftDetail`,
+          });
           break;
         case "message":
-          this.selected = 2;
+          this.setChatFriend(this.dynamicFriendEvt.fromInfo);
+          this.$router.push({
+            path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
+          });
           break;
-        case "welfare":
-          this.selected = 3;
+        case "thumb":
+          this.$router.push({
+            name: `message`,
+            params: {
+              routeParamNum: 4
+            }
+          });
           break;
-        case "mine":
-          this.selected = 4;
+        case "playGame":
+          this.$router.push({
+            name: `message`,
+            params: {
+              routeParamNum: 2
+            }
+          });
+          break;
+        case "gift":
+          this.$router.push({
+            name: `message`,
+            params: {
+              routeParamNum: 3
+            }
+          });
+          break;
+        case "discount":
+          this.$router.push({
+            name: `card`,
+          });
+          break;
+        case "onlineNotice":
+          console.log(this.dynamicFriendEvt.fromInfo.nickname);
+          this.setChatFriend(this.dynamicFriendEvt.fromInfo);
+          if (this.dynamicFriendEvt.fromInfo.isAlreadyFriends) {
+            this.$router.push({
+              path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
+            });
+          } else {
+            api.makeFriend(this.xid).then(res => {
+              console.log(res);
+              if (res.errcode === 0) {
+                this.isShowEnvelope = true;
+                this.envelopeText = "飞奔个赞过去,等待对方回赞成为好友"
+                setTimeout(() => {
+                  this.isShowEnvelope = false;
+                }, 2000);
+              } else if (res.errcode === 1023) {
+                this.showQrcode(true);
+              } else {
+                this.isShowEnvelope = true;
+                this.envelopeText = "您已点赞了哦,等待对方回赞成为好友"
+                setTimeout(() => {
+                  this.isShowEnvelope = false;
+                }, 2000);
+              }
+            });
+          }
           break;
         default:
           break;
       }
+      this.isShowEnvelop = false;
     },
-    methods: {
-      showDetail() {
-        switch (this.messType) {
-           case "shareGetIntegral":
-            this.$router.push({
-              name: `giftDetail`,
-            });
-            break;
-          case "message":
-            this.setChatFriend(this.dynamicFriendEvt.fromInfo);
-            this.$router.push({
-              path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
-            });
-            break;
-          case "thumb":
-            this.$router.push({
-              name: `message`,
-              params: {
-                routeParamNum: 4
-              }
-            });
-            break;
-          case "playGame":
-            this.$router.push({
-              name: `message`,
-              params: {
-                routeParamNum: 2
-              }
-            });
-            break;
-          case "gift":
-            this.$router.push({
-              name: `message`,
-              params: {
-                routeParamNum: 3
-              }
-            });
-            break;
-          case "discount":
-            this.$router.push({
-              name: `card`,
-            });
-            break;
-          case "onlineNotice":
-            console.log(this.dynamicFriendEvt.fromInfo.nickname);
-            this.setChatFriend(this.dynamicFriendEvt.fromInfo);
-            if (this.dynamicFriendEvt.fromInfo.isAlreadyFriends) {
-              this.$router.push({
-                path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
-              });
-            } else {
-              api.makeFriend(this.xid).then(res => {
-                console.log(res);
-                if (res.errcode === 0) {
-                  this.isShowEnvelope = true;
-                  this.envelopeText = "飞奔个赞过去,等待对方回赞成为好友"
-                  setTimeout(() => {
-                    this.isShowEnvelope = false;
-                  }, 2000);
-                } else if (res.errcode === 1023) {
-                  this.showQrcode(true);
-                } else {
-                  this.isShowEnvelope = true;
-                  this.envelopeText = "您已点赞了哦,等待对方回赞成为好友"
-                  setTimeout(() => {
-                    this.isShowEnvelope = false;
-                  }, 2000);
-                }
-              });
-            }
-            break;
-          default:
-            break;
-        }
-        this.isShowEnvelop = false;
-      },
-      close() {
-        this.isShowEnvelop = false;
-      },
-      ...mapMutations({
-        // updateChatList: "UPDATE_CHATLIST",//更新聊天列表
-        setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
-        showQrcode: "SHOW_QRCODE", //展示二维码
-      })
+    close() {
+      this.isShowEnvelop = false;
     },
-    watch: {
-      dynamicFriendEvt: function() {
-        if (this.isThrottle) {
-          this.isShowEnvelop = true;
-          this.isThrottle = false;
-          setTimeout(() => {
-            this.isShowEnvelop = false;
-          }, 7000);
-          setTimeout(() => {
-            this.isThrottle = true;
-          }, 10000);
-        }
-      },
-      $route: function(newValue) {
-        //隐藏导航
-        if (
-          newValue.name == "home" ||
-          newValue.name == "friend" ||
-          newValue.name == "message" ||
-          newValue.name == "welfare" ||
-          newValue.name == "mine" ||
-          newValue.name === "gameRank"
-        ) {
-          this.tabFlag = true;
-        } else {
-          this.tabFlag = false;
-        }
-        //判断通过非点击tabbar栏切换选中状态
-        switch (newValue.name) {
-          case "home":
-            this.selected = 0;
-            break;
-          case "friend":
-            this.selected = 1;
-            break;
-          case "message":
-            this.selected = 2;
-            break;
-          case "welfare":
-            this.selected = 3;
-            break;
-          case "mine":
-            this.selected = 4;
-            break;
-          default:
-            break;
-        }
+    ...mapMutations({
+      // updateChatList: "UPDATE_CHATLIST",//更新聊天列表
+      setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
+      showQrcode: "SHOW_QRCODE", //展示二维码
+    })
+  },
+  watch: {
+    deep: true,
+    dynamicFriendEvt: function (newValue) {
+      console.log('新的dynamicFriendEvt--------', newValue);
+      if (this.isThrottle) {
+        this.isShowEnvelop = true;
+        this.isThrottle = false;
+        setTimeout(() => {
+          this.isShowEnvelop = false;
+        }, 7000);
+        setTimeout(() => {
+          this.isThrottle = true;
+        }, 10000);
       }
     },
-    components: {
-      Tab,
-      qrCode,
-      envelope
+    $route: function (newValue) {
+      //隐藏导航
+      if (
+        newValue.name == "home" ||
+        newValue.name == "friend" ||
+        newValue.name == "message" ||
+        newValue.name == "welfare" ||
+        newValue.name == "mine" ||
+        newValue.name === "gameRank"
+      ) {
+        this.tabFlag = true;
+      } else {
+        this.tabFlag = false;
+      }
+      //判断通过非点击tabbar栏切换选中状态
+      switch (newValue.name) {
+        case "home":
+          this.selected = 0;
+          document.title = newValue.meta.title;
+          break;
+        case "friend":
+          this.selected = 1;
+          document.title = newValue.meta.title;
+          break;
+        case "message":
+          this.selected = 2;
+          document.title = newValue.meta.title;
+          break;
+        case "welfare":
+          this.selected = 3;
+          document.title = newValue.meta.title;
+          break;
+        case "mine":
+          document.title = newValue.meta.title;
+          this.selected = 4;
+          break;
+        case "marsRank":
+          document.title = newValue.meta.title;
+          break;
+        case "treasureRank":
+          document.title = newValue.meta.title;
+          break;
+        case "gameRank":
+          document.title = newValue.meta.title;
+          break;
+        case "gameRecord":
+          document.title = newValue.meta.title;
+          break;
+        case "shareNew":
+          document.title = newValue.meta.title;
+          break;
+        case "shareActivity":
+          document.title = newValue.meta.title;
+          break;
+        case "newUserGetDiscount":
+          document.title = newValue.meta.title;
+          break;
+        case "card":
+          document.title = newValue.meta.title;
+          break;
+        case "individual":
+          document.title = newValue.meta.title;
+          break;
+        case "giftDetail":
+          document.title = newValue.meta.title;
+          break;
+        case "gameDetail":
+          document.title = newValue.meta.title;
+          break;
+        default:
+          break;
+      }
     }
-  };
+  },
+  components: {
+    Tab,
+    qrCode,
+    envelope
+  }
+};
 </script>
 
 <style lang="less">
-html,body {
-   overflow: hidden;
+html,
+body {
+  overflow: hidden;
 }
-  @import "./assets/reset.css"; // @import "~vux/src/styles/reset.less";
-  @import "~vux/src/styles/1px.less";
-  @import "./assets/less/mixin.less";
-  a:hover {
-    text-decoration: none !important;
-  }
-  .envelop-enter-active,
-  .envelop-leave-active {
-    transition: all 0.3s ease;
-  }
-  .envelop-enter {
-    transform: translate3d(-100%, 0, 0);
-  }
-  .envelop-leave-to {
-    transform: translate3d(-100%, 0, 0);
-  }
-  body,
-  html {
-    height: 100%;
-  }
-  #app {
-    overflow-x: hidden;
-    max-width: 10rem;
-    height: 100%;
-    box-sizing: border-box;
-    -webkit-display: flex;
-    -moz-display: flex;
-    -ms-display: flex;
-    -o-display: flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
-    -o-flex-direction: column;
-    flex-direction: column;
-    -webkit-justify-content: space-between;
-    -moz-justify-content: space-between;
-    -o-justify-content: space-between;
-    -ms-justify-content: space-between;
-    justify-content: space-between;
-  }
-  .top_wrapper {
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    -webkit-flex: 1;
-    -moz-flex: 1;
-    -ms-flex: 1;
-    -o-flex: 1;
-    flex: 1;
-    position: relative;
-    .envelop-wrapper {
-      position: fixed;
-      width: 4rem;
-      height: 2.2533rem;
-      top: 2rem;
-      background-image: url("./assets/image/envelop.png");
-      background-repeat: no-repeat;
-      background-size: contain;
-      padding: 0.1333rem;
-      z-index: 99999;
-      font-size: 0.3467rem;
-      .detail {
-        position: absolute;
-        bottom: 0.4rem;
-        right: 0.2rem;
-        color: orange;
+@import "./assets/reset.css"; // @import "~vux/src/styles/reset.less";
+@import "~vux/src/styles/1px.less";
+@import "./assets/less/mixin.less";
+a:hover {
+  text-decoration: none !important;
+}
+.envelop-enter-active,
+.envelop-leave-active {
+  transition: all 0.3s ease;
+}
+.envelop-enter {
+  transform: translate3d(-100%, 0, 0);
+}
+.envelop-leave-to {
+  transform: translate3d(-100%, 0, 0);
+}
+body,
+html {
+  height: 100%;
+}
+#app {
+  overflow-x: hidden;
+  max-width: 10rem;
+  height: 100%;
+  box-sizing: border-box;
+  -webkit-display: flex;
+  -moz-display: flex;
+  -ms-display: flex;
+  -o-display: flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  -o-flex-direction: column;
+  flex-direction: column;
+  -webkit-justify-content: space-between;
+  -moz-justify-content: space-between;
+  -o-justify-content: space-between;
+  -ms-justify-content: space-between;
+  justify-content: space-between;
+}
+.top_wrapper {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  -webkit-flex: 1;
+  -moz-flex: 1;
+  -ms-flex: 1;
+  -o-flex: 1;
+  flex: 1;
+  position: relative;
+  .envelop-wrapper {
+    position: fixed;
+    width: 4rem;
+    height: 2.2533rem;
+    top: 2rem;
+    background-image: url("./assets/image/envelop.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding: 0.1333rem;
+    z-index: 99999;
+    font-size: 0.3467rem;
+    .detail {
+      position: absolute;
+      bottom: 0.4rem;
+      right: 0.2rem;
+      color: orange;
+    }
+    .close {
+      position: absolute;
+      top: 0.2667rem;
+      right: 0.4rem;
+      width: 0.3333rem;
+      height: 0.3333rem;
+    }
+    .top {
+      display: flex;
+      margin: 0.1333rem;
+      .avatar {
+        width: 0.6667rem;
+        height: 0.6667rem;
+        border-radius: 50%;
+        margin-right: 0.2rem;
       }
-      .close {
-        position: absolute;
-        top: 0.2667rem;
-        right: 0.4rem;
-        width: 0.3333rem;
-        height: 0.3333rem;
+      .name {
+        width: 2rem;
+        padding-top: 0.1333rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
-      .top {
-        display: flex;
-        margin: 0.1333rem;
-        .avatar {
-          width: 0.6667rem;
-          height: 0.6667rem;
-          border-radius: 50%;
-          margin-right: 0.2rem;
-        }
-        .name {
-          width: 2rem;
-          padding-top: 0.1333rem;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-      }
-      .bottom {
-        margin-top: 0.2333rem;
-        .content {
-          padding-left: 0.1333rem;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
+    }
+    .bottom {
+      margin-top: 0.2333rem;
+      .content {
+        padding-left: 0.1333rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }
-  .bottom_wrapper {
-    height: 1.18rem;
-    max-width: 10rem;
-    position: relative; // .message_box {
-    //   position: absolute;
-    //   top: -1.85rem;
-    //   width: 100%;
-    //   height: 1.8667rem;
-    //   display: flex;
-    //   background: -webkit-linear-gradient(left, #ffba00, #ffd800);
-    //   .close {
-    //     position: absolute;
-    //     top: 0.4rem;
-    //     right: 0.4rem;
-    //     width: 0.4rem;
-    //     height: 0.4rem;
-    //   }
-    //   .avatar {
-    //     margin: 0.2933rem 0.2933rem 0 0.5333rem;
-    //     width: 1.3333rem;
-    //     height: 1.3333rem;
-    //     .pic {
-    //       width: 100%;
-    //       height: 100%;
-    //       border-radius: 50%;
-    //     }
-    //   }
-    //   .userInfo {
-    //     display: flex;
-    //     flex-direction: column;
-    //     justify-content: space-around;
-    //     padding: 0.3rem 0;
-    //     .name {
-    //       font-size: 0.4rem;
-    //       color: #fff;
-    //     }
-    //     .mess {
-    //       font-size: 0.3733rem;
-    //       color: #fff;
-    //     }
-    //   }
-    // }
-  }
+}
+.bottom_wrapper {
+  height: 1.18rem;
+  max-width: 10rem;
+  position: relative; // .message_box {
+  //   position: absolute;
+  //   top: -1.85rem;
+  //   width: 100%;
+  //   height: 1.8667rem;
+  //   display: flex;
+  //   background: -webkit-linear-gradient(left, #ffba00, #ffd800);
+  //   .close {
+  //     position: absolute;
+  //     top: 0.4rem;
+  //     right: 0.4rem;
+  //     width: 0.4rem;
+  //     height: 0.4rem;
+  //   }
+  //   .avatar {
+  //     margin: 0.2933rem 0.2933rem 0 0.5333rem;
+  //     width: 1.3333rem;
+  //     height: 1.3333rem;
+  //     .pic {
+  //       width: 100%;
+  //       height: 100%;
+  //       border-radius: 50%;
+  //     }
+  //   }
+  //   .userInfo {
+  //     display: flex;
+  //     flex-direction: column;
+  //     justify-content: space-around;
+  //     padding: 0.3rem 0;
+  //     .name {
+  //       font-size: 0.4rem;
+  //       color: #fff;
+  //     }
+  //     .mess {
+  //       font-size: 0.3733rem;
+  //       color: #fff;
+  //     }
+  //   }
+  // }
+}
 </style>
