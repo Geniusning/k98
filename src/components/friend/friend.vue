@@ -54,7 +54,7 @@
           <div class="sex_wrapper">
             <h3>性别:</h3>
             <ul class="sex_list">
-              <li @click="chooseSex(index)" :class="{active:currentIndex1 == index}" v-for="(item,index) in sexArr" :key="index">
+              <li @click="chooseSex(index)" :class="{active:currentIndexSex == index}" v-for="(item,index) in sexArr" :key="index">
                 <span>{{item.name}}</span>
               </li>
             </ul>
@@ -62,13 +62,13 @@
           <div class="dis_wrapper">
             <h3>范围:</h3>
             <ul class="dis_list">
-              <li @click="chooseRange(index)" :class="{active:currentIndex2 == index}" v-for="(item,index) in rangeArr" :key="index">{{item.name}}</li>
+              <li @click="chooseRange(index)" :class="{active:currentIndexRang == index}" v-for="(item,index) in rangeArr" :key="index">{{item.name}}</li>
             </ul>
           </div>
           <div class="dis_wrapper">
             <h3>等级:</h3>
             <ul class="dis_list">
-              <li @click="chooseRange(index)" :class="{active:currentIndex2 == index}" v-for="(item,index) in rankList" :key="index">{{item.name}}</li>
+              <li @click="chooseDegree(index)" :class="{active:currentIndexRank == index}" v-for="(item,index) in rankList" :key="index">{{item.name}}</li>
             </ul>
           </div>
           <p class="confirm" @click="cancel">确定</p>
@@ -170,8 +170,9 @@
         showFriendList: false,
         showToast: false,
         show_mask: true,
-        currentIndex1: 0,
-        currentIndex2: 0,
+        currentIndexSex: 0,
+        currentIndexRang: 0,
+        currentIndexRank:0,
         isFirstLoad: false,
         friendOnlineStatus: false,
         isIntegralPanel: false, //面板显示状态
@@ -429,10 +430,13 @@
       },
       // 性别选择
       chooseSex(index) {
-        this.currentIndex1 = index;
+        this.currentIndexSex = index;
       },
       chooseRange(index) {
-        this.currentIndex2 = index;
+        this.currentIndexRang = index;
+      },
+      chooseDegree(index){
+         this.currentIndexRank = index;
       },
       cancel() {
         this.showToast = false;

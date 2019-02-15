@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myStupidToken1 = "j-sNBDcW0eY-tlwLRrjAOSf2_BxaqAeCHhdYLWppsTJirbgrAIoKCnYkg6Tfy1meQKQEAg==";
+const myStupidToken1 = "LjD7k8ODkXRkBCF3Ubv76kTAqRePkaINxFgjiaIXELWG0c_ssr2-1_zwPWly3uL_jGKPug==";
 const myStupidToken2 = "jO5NAlEdOVeCr6z5vHJ6niuV39LL-VKgFJYbGWgreeLi7okCIaTTjQqCoAWz6SJoQ46FZQ=="
 
 const myStupidToken = myStupidToken1
@@ -18,8 +18,8 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             "/api": {
-                // target: "http://singledog.qianz.com",
-                target: "https://llwant1.qianz.com",
+                // target: "http://singledog.qianz.com", //闲雅新疆麻将
+                target: "https://llwant1.qianz.com", //老友一起玩吧
                 changeOrigin: true,
                 pathRewrite: function(path, req) {
                     return path + "&tk=" + myStupidToken

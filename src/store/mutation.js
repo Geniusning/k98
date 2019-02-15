@@ -179,7 +179,7 @@ const mutations = {
         friendEvtObj.content.extMsg = {
           lastMsg: {},
         };
-        friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你点赞啦";
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你点赞啦,希望和成为好友";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
       case 3:

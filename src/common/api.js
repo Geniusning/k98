@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-01-28 21:39:44
+ * @Last Modified time: 2019-01-31 17:18:03
  */
 
 import axios from 'axios'
@@ -850,9 +850,9 @@ api.convertGoods = function (goodId) {
   })
 }
 //分享获得积分
-api.handselMoney = function (amount) {
+api.shareToGetIntegral = function (amount,shareType) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/handselMoney?amount=${amount}`)
+    axios.get(Url.commonUrl + `/api/shareToGetIntegral?amount=${amount}&shareType=${shareType}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

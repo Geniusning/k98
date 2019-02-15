@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-01-30 16:55:28
+ * @Last Modified time: 2019-01-31 17:18:22
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -128,8 +128,9 @@ util.returnDiscountType = (discountTypeNumber) => {
   }
 }
 //获取微信jssdk
-util._getJssdkInfo = function (shareObj, url, amount) {
-    amount = amount || 2
+util._getJssdkInfo = function (shareObj, url, amount,shareType) {
+    shareType = shareType || 2;
+    amount = amount || 2;
     api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
       .then(res => {
         console.log(res)
@@ -155,7 +156,7 @@ util._getJssdkInfo = function (shareObj, url, amount) {
                 }
               });
               //分享获得积分
-              api.handselMoney(amount).then(res=>{
+              api.shareToGetIntegral(amount,shareType).then(res=>{
                 if(res.errCode ==1030){
                   alert('分享已上限，每天最多分享5次获得积分');
                 }

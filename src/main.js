@@ -29,8 +29,8 @@ new Vue({
     ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
   },
   created() {
-    this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
-    // this.websock = new WebSocket(`${config.websocketUrl}`);
+    // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
+    this.websock = new WebSocket(`${config.websocketUrl}`);
     this.websock.binaryType = "arraybuffer";
     this.connect_websocket(this.websock);
     this.socket.onopen = this.websocketonopen;

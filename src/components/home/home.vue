@@ -1468,8 +1468,8 @@
                 right: 0.0333rem;
               }
               .booking_btn {
-                width: 1.4667rem;
-                padding: 0.1067rem 0;
+                // width: 1.4667rem;
+                padding: 0.1067rem 0.1067rem;
                 text-align: center;
                 line-height: 0.5067rem;
                 background: -webkit-linear-gradient( left, #fff800, #fef200, #fccc00, #fbbc00);

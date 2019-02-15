@@ -588,8 +588,8 @@ export default {
               }
               .show_detail {
                 margin-top: 1.4rem;
-                width: 1.4667rem;
-                padding: 0.1067rem 0;
+                // width: 1.4667rem;
+                padding: 0.1067rem 0.1067rem;
                 text-align: center;
                 line-height: 0.5067rem; // background: @baseColor;
                 background: -webkit-linear-gradient(

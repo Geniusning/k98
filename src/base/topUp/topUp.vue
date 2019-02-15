@@ -579,7 +579,7 @@
       }
     }
     .sendGiftPanelBox {
-      width: 7.3333rem;
+      width: 8.3333rem;
       height: 4.5rem;
       margin: 50% auto;
       position: relative;
@@ -626,16 +626,12 @@
           display: flex;
           flex-direction: column;
           justify-content: space-around;
-        }
-        .giftInfoBox {
-          display: flex;
-          justify-content: space-between;
-          flex-direction: column;
           p {
             margin-bottom: 0.06rem;
           }
           .title {
             font-weight: 600;
+            font-size: 0.4rem;
           }
           .desc {
             color: #ccc;
@@ -644,10 +640,10 @@
             color: #ccc;
           }
           .price {
-            font-weight: 600;
+            // font-weight: 600;
+            
           }
-        }
-      }
+      }}
       .handle {
         width: 100%;
         text-align: center;
@@ -658,6 +654,7 @@
           padding: 0.08rem 0.1067rem;
           border: none;
           background: -webkit-linear-gradient(top, #fcd502, #e59305);
+          font-weight: 600;
         }
         .checkBox_scene {
           position: absolute;
@@ -669,6 +666,7 @@
           }
           .scene-text {
             // padding-bottom: 0.11rem;
+             font-weight: 600;
             margin-left: 0.1333rem;
             vertical-align: middle;
           }
@@ -678,13 +676,14 @@
         position: absolute;
         left: 0.2333rem;
         bottom: 0.3333rem;
+         color: #333;
+        font-weight: 600;
       }
     }
     .successfullyBox {
-      width: 100%; // .envelope {
       margin: 50% auto;
-      width: 5.5rem;
-      height: 3.2533rem;
+      width: 8.3333rem;
+      height: 3.6533rem;
       .bg("../../assets/image/envelop.png");
       position: relative;
       .myWelfare {
@@ -721,7 +720,8 @@
       }
       .successful_text {
         margin-top: 0.2667rem;
-        font-size: 0.38rem;
+        font-size: 0.42rem;
+        font-weight: 600;
         text-align: center;
       }
       .successful_desc {
@@ -739,6 +739,8 @@
         position: absolute;
         left: 0.2333rem;
         bottom: 0.3333rem;
+        color: #333;
+        font-weight: 600;
       }
     }
   }
