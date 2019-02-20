@@ -5,7 +5,7 @@
         <div class="coinBox_top vux-1px-b">
           <div class="integral_box">
             <img src="../../assets/image/integralIcon.png" alt="icon" class="integral">
-            <p class="integral_text">余额不足请充积分：</p>
+            <p class="integral_text">积分充值：</p>
           </div>
           <img src="../../assets/image/close-round.png" alt="icon" class="close" @click="closeIntegralPanel">
         </div>
@@ -27,31 +27,34 @@
         </div>
         <div class="giftListpart vux-1px-b">
           <img v-show="componentGiftList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
-          <p v-show="componentGiftList.length>0" class="giftListpart_desc">虚拟礼物</p>
+          <p v-show="componentGiftList.length>0" class="giftListpart_desc0">虚拟</p>
+          <p v-show="componentGiftList.length>0" class="giftListpart_desc1">礼物</p>
           <ul class="list">
             <li class="item" v-for="(item,index) in componentGiftList" :key="index" @click="sendGift(item.id,index)">
               <img :src="item.imgUrl" alt class="giftIcon">
-              <p class="price">积分:{{item.money}}</p>
+              <p class="price">{{item.money}}</p>
             </li>
           </ul>
         </div>
         <div class="shopItemListpart vux-1px-b" v-if="recommentList.length>0">
           <img v-show="recommentList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
-          <p v-show="recommentList.length>0" class="giftListpart_desc">门店项目</p>
+          <p v-show="recommentList.length>0" class="giftListpart_desc0">门店</p>
+          <p v-show="recommentList.length>0" class="giftListpart_desc1">项目</p>
           <ul class="list">
             <li class="item" v-for="(item,index) in recommentList" :key="index" @click="sendShopItemGift(item)">
               <img :src="item.goods.image" alt class="giftIcon">
-              <p class="price">积分:{{item.goods.integral}}</p>
+              <p class="price">{{item.goods.integral}}</p>
             </li>
           </ul>
         </div>
         <div class="entityGiftListpart">
-          <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
-          <p class="giftListpart_desc">礼品商城</p>
+          <img v-show="sendGiftList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <p v-show="sendGiftList.length>0" class="giftListpart_desc0">礼品</p>
+          <p v-show="sendGiftList.length>0" class="giftListpart_desc1">商城</p>
           <ul class="list">
             <li class="item" v-for="(item,index) in sendGiftList" :key="index" @click="sendJiFenGift(item)">
               <img :src="item.goods.image" alt class="giftIcon">
-              <p class="price">积分:{{item.goods.integral}}</p>
+              <p class="price">{{item.goods.integral}}</p>
             </li>
           </ul>
         </div>
@@ -383,6 +386,7 @@
 
 <style scoped lang='less'>
   @import "../../assets/less/mixin.less";
+  @import "../../assets/less/topUp.less";
   .clearfix::after {
     content: "";
     display: block;
@@ -407,13 +411,14 @@
     z-index: 100;
     .coinBox {
       width: 100%;
-      height: 4.48rem; // transform: translateY(50%);
+      height: 4.8rem; // transform: translateY(50%);
       margin: 50% auto;
-      background-color: #fff;
+      // background-color: #fff;
+      .bg('../../assets/image/envelop.png');
       .coinBox_top {
         display: flex;
         justify-content: space-between;
-        padding: 0.3333rem 0.36rem;
+        padding: 0.4333rem .4rem 0.2rem .4rem;
         .integral_box {
           display: flex;
           .integral {
@@ -461,20 +466,30 @@
               color: #ffdf03;
             }
             .moneyCount {
-              margin-top: 0.3rem;
+              // width: 1.2333rem;
+              padding: 0  0.1067rem;
+              // border: 1px solid #333;
+              margin-top: 0.2rem;
+              box-sizing: border-box;
             }
           }
         }
       }
     }
     .giftPanelBox {
-      margin: 50% auto;
-      background-color: #fff;
-      width: 100%; // height: 6.5rem;
+      margin: 47% auto;
+      // background-color: #fff;
+      // padding-top: 0.7333rem;
+      width: 100%; 
+      height: 6.8rem;
+      box-sizing: border-box;
+      .bg('../../assets/image/envelop.png');
+      // background-image: url('../../assets/image/envelop.png')
       .giftPanelBox_title {
         display: flex;
         justify-content: space-between;
-        padding: 0.3rem;
+        padding: 0.4rem 0.3rem .1rem .3rem;
+        box-sizing: border-box;
         .desc {
           font-size: 0.4rem;
           color: #F7C600;
@@ -486,18 +501,14 @@
       }
       .giftListpart {
         position: relative;
-        .integralIcon {
+        .close{
           position: absolute;
-          left: 0.1333rem;
-          bottom: 0.1333rem;
-          width: 0.6267rem;
-          height: 0.6267rem;
+          top: -.3rem;
+          right: 0.5667rem;
+          width: 0.48rem;
+          height: 0.48rem;
         }
-        .giftListpart_desc {
-          position: absolute;
-          top: 0.1333rem;
-          color: #F7C600;
-        }
+        .listTitleGroup();
         .list {
           display: flex;
           justify-content: space-around;
@@ -517,18 +528,7 @@
       }
       .shopItemListpart {
         position: relative;
-        .integralIcon {
-          position: absolute;
-          left: 0.1333rem;
-          bottom: 0.1333rem;
-          width: 0.6267rem;
-          height: 0.6267rem;
-        }
-        .giftListpart_desc {
-          position: absolute;
-          top: 0.1333rem;
-          color: #F7C600;
-        }
+        .listTitleGroup();
         .list {
           display: flex;
           justify-content: space-around;
@@ -548,18 +548,7 @@
       }
       .entityGiftListpart {
         position: relative;
-        .integralIcon {
-          position: absolute;
-          left: 0.1333rem;
-          bottom: 0.1333rem;
-          width: 0.6267rem;
-          height: 0.6267rem;
-        }
-        .giftListpart_desc {
-          position: absolute;
-          top: 0.1333rem;
-          color: #F7C600;
-        }
+        .listTitleGroup();
         .list {
           display: flex;
           justify-content: space-around;
@@ -707,7 +696,7 @@
         text-align: center;
         position: absolute;
         top: 0.2333rem;
-        right: 0.1933rem;
+        right: 0.2933rem;
         font-size: 0.4rem;
         font-weight: 800;
         color: #e59305;
@@ -733,7 +722,7 @@
       .gotoTopUpText {
         position: absolute;
         bottom: 0.2533rem;
-        right: 0.18rem;
+        right: 0.28rem;
       } // }
       .myMoney {
         position: absolute;

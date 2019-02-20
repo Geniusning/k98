@@ -339,12 +339,12 @@ html {
   position: relative;
   .envelop-wrapper {
     position: fixed;
-    width: 4rem;
-    height: 2.2533rem;
+    width: 5rem;
+    height: 2.5rem;
     top: 2rem;
     background-image: url("./assets/image/envelop.png");
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: 100% 100%;
     padding: 0.1333rem;
     z-index: 99999;
     font-size: 0.3467rem;

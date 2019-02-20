@@ -1,10 +1,11 @@
 <template>
   <div class="shareNew-wrapper" id="shareNew">
+    <img src="../../../assets/image/back.png" alt="" class="back-icon" @click="back2Welfare">
     <div class="shop-container" @click="goHome">
       <img class="logo" :src="shopSettingInfo.image" alt>
       <p class="bar_name">{{shopSettingInfo.name}}</p>
     </div>
-    <img src="../../../assets/image/shareLogo.jpg" alt class="sharePic">
+    <!-- <img src="../../../assets/image/shareLogo.jpg" alt class="sharePic"> -->
     <ul class="discount-container">
       <li class="item" v-for="(item,index) in couponList" :key="index">
         <div class="myleft">
@@ -40,11 +41,10 @@
             </li> -->
     </ul>
     <!-- 规则 -->
-    <div class="rule-container">
+    <!-- <div class="rule-container">
       <h3 class="title">活动规则：</h3>
       <p class="desc">分享优惠券给好友后，您的好友可以领取左侧的优惠券，您将获得右侧优惠券。</p>
-      <!-- <p class="time">活动时间：2018-08-12 至 2018-09-12</p> -->
-    </div>
+    </div> -->
     <!-- 操作 -->
     <div class="handle-container">
       <img @click="back" class="btn" src="../../../assets/image/get_discount_btn.png" alt>
@@ -78,6 +78,12 @@
       ...mapState(["shareUrl", "userInfo", "shopSettingInfo", "baseUrl"])
     },
     methods: {
+      //返回福利活动页面
+      back2Welfare(){
+        this.$router.push({
+          name:"welfare"
+        })
+      },
       //获取优惠券
       _loadInviteWaitGetCoupon() {
         api.loadInviteWaitGetCoupon().then(res => {
@@ -115,7 +121,7 @@
             let shareObj = {
               title: "新人大礼包",
               desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
-              link: `${Config.shareUrl}#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
+              link: `${this.shareUrl}#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
               imgUrl: `${this.shopSettingInfo.image}`
             };
             util._getJssdkInfo(shareObj, this.myShareUrl,20);
@@ -123,7 +129,7 @@
             let shareObj = {
               title: "新人大礼包",
               desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
-              link: Config.shareUrl + `#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
+              link: this.shareUrl + `#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}`,
               imgUrl: `${this.shopSettingInfo.image}`
             };
             util._getJssdkInfo(shareObj, this.myShareUrl,20);
@@ -165,6 +171,14 @@
     background-color: #ff5c01;
     padding-bottom: 1.3333rem;
     position: relative;
+    .bg('../../assets/image/shareNewer.png');
+    .back-icon{
+      position: absolute;
+      width: 0.8rem;
+      height: .8rem;
+      top: 0.5333rem;
+      right: 0.2333rem;
+    }
     .shop-container {
       position: absolute;
       display: flex;
@@ -196,12 +210,12 @@
     .discount-container {
       padding: 0 0.2667rem; // display: flex;
       // justify-content: space-between;
-      margin-top: -0.4rem;
+      margin-top: 8.4rem;
       box-sizing: border-box;
       position: relative;
       z-index: 1;
       .item {
-        margin-bottom: 0.2667rem;
+        margin-bottom: 0.6667rem;
         display: flex;
         height: 2.24rem;
         border-radius: 0.1333rem;
@@ -296,7 +310,7 @@
       .time {}
     }
     .handle-container {
-      margin-top: 0.333rem;
+      margin-top: 1rem;
       display: flex;
       justify-content: space-around;
       .btn {

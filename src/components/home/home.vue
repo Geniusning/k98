@@ -314,7 +314,7 @@
           let shareObj = {
             title: "发现一个好玩的地方",
             desc: "可以认识许多新朋友，打比赛。老板还特傻X，见人就发红包",
-            link: `${Config.shareUrl}#/home`,
+            link: `${this.shareUrl}#/home`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(shareObj, this.myShareUrl);
@@ -322,7 +322,7 @@
           let shareObj = {
             title: "发现一个好玩的地方",
             desc: "可以认识许多新朋友，打比赛。老板还特傻X，见人就发红包",
-            link: Config.shareUrl + "#/home",
+            link: this.shareUrl + "#/home",
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(shareObj, this.myShareUrl, 20);
@@ -375,7 +375,7 @@
       },
       //去游戏
       gotoPlay() {
-        window.location.href = `${Config.shareUrl}game`;
+        window.location.href = `${this.shareUrl}game`;
       },
       gotoFriend() {
         // util.routerTo("friend", this, {
@@ -405,7 +405,7 @@
       //进入游戏
       intoReadyGame() {
         this.gameShow = false;
-        window.location.href = `${Config.shareUrl}game/?gamePath=game2`;
+        window.location.href = `${this.shareUrl}game/?gamePath=game2`;
       },
       // 关闭游戏
       closeGame() {
@@ -414,7 +414,7 @@
       // 随机场
       // playGame_challenge() {
       //   let token = util.getCookie("tk");
-      //   window.location.href = `${Config.shareUrl}game/?gamePath=game1`;
+      //   window.location.href = `${this.shareUrl}game/?gamePath=game1`;
       // },
       // 比赛场
       // playGame_rank() {
@@ -425,7 +425,7 @@
       // 好友场
       // playGame_friend() {
       //   let token = util.getCookie("tk");
-      //   window.location.href = `${Config.shareUrl}game/?gamePath=game3`;
+      //   window.location.href = `${this.shareUrl}game/?gamePath=game3`;
       // },
       //拉取已经发布的比赛场
       _loadPublishArenas() {

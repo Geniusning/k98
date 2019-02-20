@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myStupidToken1 = "LjD7k8ODkXRkBCF3Ubv76kTAqRePkaINxFgjiaIXELWG0c_ssr2-1_zwPWly3uL_jGKPug==";
+const myStupidToken1 = "DqumlIsbKSfW3Vf2P6GSHAfkbECSijsxCFCT0sqHlpapwsKH8oYHPcuPeDTjnRuGippLEw==";
 const myStupidToken2 = "jO5NAlEdOVeCr6z5vHJ6niuV39LL-VKgFJYbGWgreeLi7okCIaTTjQqCoAWz6SJoQ46FZQ=="
 
 const myStupidToken = myStupidToken1

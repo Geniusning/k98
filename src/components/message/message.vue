@@ -104,7 +104,7 @@
               <p class="back_thumb vux-1px" @click="thanksTo(item.GiftGiverID)">感谢</p>
             </div>
             <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-              <p class="time_desc">2018-12-30 17:00</p>
+              <p class="time_desc">{{item.time}}</p>
             </div>
           </div>
         </li>
@@ -703,7 +703,7 @@
         padding-bottom: 6px;
         margin-bottom: 8px;
         .info_message {
-          width: 70%;
+          width: 65%;
           display: flex;
           font-size: 12px;
           .avatar {

@@ -49,7 +49,7 @@ export default {
       let shareObj = {
         title: "活动通知",
         desc: "本店最新活动，会员特权。点击查看",
-        link: `${Config.shareUrl}/#/shareActivity?activityID=${this.activityID}`,
+        link: `${this.shareUrl}/#/shareActivity?activityID=${this.activityID}`,
         imgUrl: `${this.shopSettingInfo.image}`
       };
       util._getJssdkInfo(shareObj, this.myShareUrl,20);
@@ -57,7 +57,7 @@ export default {
       let shareObj = {
         title: "活动通知",
         desc: "本店最新活动，会员特权。点击查看",
-        link: `${Config.shareUrl}#/shareActivity?activityID=${this.activityID}`,
+        link: `${this.shareUrl}#/shareActivity?activityID=${this.activityID}`,
         imgUrl: `${this.shopSettingInfo.image}`
       };
       util._getJssdkInfo(shareObj, this.myShareUrl,20);

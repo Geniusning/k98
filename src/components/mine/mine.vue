@@ -186,7 +186,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["noCouponsFlag", "sendGiftList"]),
+    ...mapState(["noCouponsFlag", "sendGiftList","shareUrl"]),
     ...mapGetters(["userInfo", "test", "isShow"])
   },
   created() {
@@ -243,7 +243,7 @@ export default {
       })
     },
     gameShare() {
-      window.location.href = `${config.shareUrl}/game/`;
+      window.location.href = `${this.shareUrl}/game/`;
     },
     inviteShare() {
       this.$router.push({

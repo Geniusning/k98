@@ -236,8 +236,11 @@ const mutations = {
     data
   }) {
     state.gift_badgeCount = data.length;
-    state.friendGiftList = data;
     // console.log('收礼列表-----------------', state.friendGiftList)
+    data.forEach(item=>{
+      item.time = util.timestampToTime(item.time);
+    })
+    state.friendGiftList = data;
   },
   //获取店长消息列表
   [types.GET_CAPTAINMESSAGELIST](state, {
@@ -247,6 +250,7 @@ const mutations = {
   },
   //获取约战消息列表
   [types.GET_CHALLENGEGAMELIST](state, gameMessage) {
+    // gameMessage = 
     state.challengeGameList.push(gameMessage);
     // console.log(state.challengeGameList)
     state.game_badgeCount = state.challengeGameList.length;

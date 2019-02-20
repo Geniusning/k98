@@ -749,7 +749,7 @@
   //弹框选择
   .select_wrapper {
     width: 8rem;
-    height: 7.8rem;
+    height: 8.1rem;
     .bg("../../assets/image/bg.png");
     position: relative; // padding: 0.625rem;
     .close {
