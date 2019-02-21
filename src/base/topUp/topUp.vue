@@ -477,11 +477,11 @@
       }
     }
     .giftPanelBox {
-      margin: 47% auto;
+      margin: 40% auto;
       // background-color: #fff;
       // padding-top: 0.7333rem;
       width: 100%; 
-      height: 6.8rem;
+      // height: 6.8rem;
       box-sizing: border-box;
       .bg('../../assets/image/envelop.png');
       // background-image: url('../../assets/image/envelop.png')
@@ -493,10 +493,12 @@
         .desc {
           font-size: 0.4rem;
           color: #F7C600;
+          margin-left: 0.1333rem;
         }
         .close {
           width: 0.48rem;
           height: 0.48rem;
+          margin-right: 0.1333rem;
         }
       }
       .giftListpart {
@@ -512,9 +514,10 @@
         .list {
           display: flex;
           justify-content: space-around;
-          padding: 0.1133rem 0.7rem;
+          padding: 0.1133rem 0.5rem 0.1133rem .9rem;
           .item {
             text-align: center;
+            border-radius: 0.1067rem;
             .giftIcon {
               width: 1rem;
               height: 1rem;
@@ -532,11 +535,12 @@
         .list {
           display: flex;
           justify-content: space-around;
-          padding: 0.1133rem 0.7rem;
+          padding: 0.1133rem 0.5rem 0.1133rem 1.1rem;
           .item {
             text-align: center;
+            border-radius: 0.1067rem;
             .giftIcon {
-              width: 1rem;
+              width: 1.4rem;
               height: 1rem;
             }
             .price {
@@ -548,15 +552,17 @@
       }
       .entityGiftListpart {
         position: relative;
+        padding-bottom: 0.3rem;
         .listTitleGroup();
         .list {
           display: flex;
           justify-content: space-around;
-          padding: 0.1133rem 0.7rem;
+          padding: 0.1133rem 0.5rem 0.1133rem 1.1rem;
           .item {
             text-align: center;
+            border-radius: 0.1067rem;
             .giftIcon {
-              width: 1rem;
+              width: 1.4rem;
               height: 1rem;
             }
             .price {
