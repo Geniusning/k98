@@ -146,6 +146,12 @@ const mutations = {
     }
     state.friendEvtList.push(friendEvtObj)
   },
+  //新增送礼弹框内容
+  [types.ADD_GIFTINFO](state,giftInfo){
+    console.log(giftInfo);
+    state.topUpGiftInfo.name = giftInfo.nameValue;    
+    state.topUpGiftInfo.type = giftInfo.typeValue;    
+  },
   //更新好友事件消息框内容
   [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
 
@@ -185,9 +191,11 @@ const mutations = {
       case 3:
         friendEvtObj.content.extMsg = {
           lastMsg: {},
+          goodInfo:friendEvtObj.content.extMsg
         };
         friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
         state.dynamicFriendEvt = friendEvtObj.content;
+        state.topUpGiftInfo = friendEvtObj.content.extMsg.goodInfo;
         break;
       case 4:
         friendEvtObj.content.extMsg = {

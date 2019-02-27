@@ -1,3 +1,5 @@
+//新增送礼弹框内容
+export const ADD_GIFTINFO = "ADD_GIFTINFO"
 //获取店长推荐列表
 export const GET_RECOMMENTLIST = "GET_RECOMMENTLIST"
 //获取积分换礼品列表

@@ -217,7 +217,6 @@
       .item {
         margin-bottom: 0.6667rem;
         display: flex;
-        height: 2.24rem;
         border-radius: 0.1333rem;
         .bg("../../assets/image/share_discount_bg.png");
         .myleft {

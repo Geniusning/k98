@@ -35,6 +35,7 @@ const state = {
     messType: "", //判断消息类型
     recommentList: [], //店长推荐列表
     sendGiftList:[],//积分兑换礼品列表
+    topUpGiftInfo:{}, //送礼弹框
 }
 
 export default state

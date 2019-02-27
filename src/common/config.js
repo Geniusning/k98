@@ -5,8 +5,8 @@ export default {
     // websocketUrl:"wss://singledog.qianz.com/api/ws",
     // appId: "wxb2fa3c446063ec19",
     /* 老友一起玩吧 */
-    appId: "wx2bbe97c9b7e6d747",
-    websocketUrl:"wss://llwant1.qianz.com/api/ws",
+    // appId: "wx2bbe97c9b7e6d747",
+    // websocketUrl:"wss://llwant1.qianz.com/api/ws",
     // shareUrl: "https://llwant1.qianz.com/",
-    tk:"idPabvEsvwCkU-HLqfb4h5yikfuUhZG68T9AnS4OJyivZhPcmPiHNEeWBAz4TdxKDthhFA=="
+    //  tk:"Vn_BUUbIZBJO8rlJQ3GhLf5enQg1CgyN4QR-15V9LKtNVxsEX0TevsnV7GJhahcnlNVXKw=="
 }

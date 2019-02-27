@@ -29,7 +29,6 @@
               </div>
             </div>
             <div class="info_time">
-              <!-- {{item.info.lastMsg.stime.slice(8,10)}} -->
               <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,10)==today?item.info.lastMsg.stime.slice(10,16):item.info.lastMsg.stime.slice(5,10):""}}</p>
             </div>
           </li>
@@ -41,7 +40,6 @@
         <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index">
           <div class="info_message">
             <div class="avatar">
-              <!-- <img :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/795ecd968a430f39.png'" alt=""> -->
               <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
               <!-- <i class="dot"></i> -->
             </div>
@@ -52,9 +50,6 @@
                 <{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
             </div>
           </div>
-          <!-- <div class="info_time">
-                   <p>下午11:11</p>
-                 </div> -->
         </li>
       </ul>
       <!-- 约战列表 -->

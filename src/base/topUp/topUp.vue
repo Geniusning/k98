@@ -575,7 +575,7 @@
     }
     .sendGiftPanelBox {
       width: 8.3333rem;
-      height: 4.5rem;
+      height: 4.7rem;
       margin: 50% auto;
       position: relative;
       .bg("../../assets/image/envelop.png");
@@ -729,6 +729,8 @@
         position: absolute;
         bottom: 0.2533rem;
         right: 0.28rem;
+        color: #F7C600;
+        text-decoration: underline;
       } // }
       .myMoney {
         position: absolute;

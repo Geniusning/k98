@@ -29,14 +29,14 @@ new Vue({
     ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
   },
   created() {
-    // let windowUrL = window.location.href;
-    // let index = windowUrL.indexOf('.com');
-    // let shareurl = windowUrL.slice(0,index);
-    // this.updateShareUrl(shareurl+'.com/');
-    // let websocketUrl = shareurl.slice(8);
-    // websocketUrl = `wss://${websocketUrl}.com/api/ws`
-    this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
-    // this.websock = new WebSocket(websocketUrl);
+    let windowUrL = window.location.href;
+    let index = windowUrL.indexOf('.com');
+    let shareurl = windowUrL.slice(0,index);
+    this.updateShareUrl(shareurl+'.com/');
+    let websocketUrl = shareurl.slice(8);
+    websocketUrl = `wss://${websocketUrl}.com/api/ws`
+    this.websock = new WebSocket(websocketUrl);
+    // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
     this.websock.binaryType = "arraybuffer";
     this.connect_websocket(this.websock);
     this.socket.onopen = this.websocketonopen;
