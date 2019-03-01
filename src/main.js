@@ -29,14 +29,14 @@ new Vue({
     ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
   },
   created() {
-    let windowUrL = window.location.href;
-    let index = windowUrL.indexOf('.com');
-    let shareurl = windowUrL.slice(0,index);
-    this.updateShareUrl(shareurl+'.com/');
-    let websocketUrl = shareurl.slice(8);
-    websocketUrl = `wss://${websocketUrl}.com/api/ws`
-    this.websock = new WebSocket(websocketUrl);
-    // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
+    // let windowUrL = window.location.href;
+    // let index = windowUrL.indexOf('.com');
+    // let shareurl = windowUrL.slice(0,index);
+    // this.updateShareUrl(shareurl+'.com/');
+    // let websocketUrl = shareurl.slice(8);
+    // websocketUrl = `wss://${websocketUrl}.com/api/ws`
+    // this.websock = new WebSocket(websocketUrl);   //以上生产环境
+    this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境
     this.websock.binaryType = "arraybuffer";
     this.connect_websocket(this.websock);
     this.socket.onopen = this.websocketonopen;
@@ -50,6 +50,7 @@ new Vue({
     //this.getWeChatUrl(); //获取公众号地址
     this._loadGoods(); //拉取积分换礼品列表
     this._loadRecommends();//获取店长推荐
+    this._loadMutualEvents() //统计约战送礼点赞
   },
   mounted() {},
   methods: {
@@ -187,6 +188,24 @@ new Vue({
         this.getRecommentList(this.recommendList);
       })
     },
+     //拉取约战、点赞、送礼列表
+     _loadMutualEvents() {
+      api.loadMutualEvents().then(res => {
+        if (res.errCode === 0) {
+          let mutualEventsObj = res.mutualEvents;
+          console.log(mutualEventsObj);
+          let mutualEventsList = [];
+          mutualEventsList = mutualEventsList.concat(mutualEventsObj.combatsEvents)
+          mutualEventsList = mutualEventsList.concat(mutualEventsObj.giftEvents)
+          mutualEventsList = mutualEventsList.concat(mutualEventsObj.friendEvents)
+          let count = mutualEventsList.length;
+          console.log('count--------',count)
+          this.CalcManualEventsCount(count);
+        }
+        this.addBange();
+        console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
+      })
+    },
     ...mapMutations({
       getRecommentList: "GET_RECOMMENTLIST", //获取店长推荐
       connect_websocket: "CONNECT_WEBSOCKET",
@@ -202,7 +221,8 @@ new Vue({
       getShopSetting: "GET_SHOPINFO", //获取门店信息
       getUrl: "GET_URL", //获取公众号地址
       judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
-      getSendGiftList: "GET_SENDGIFTLIST" //获取积分换礼品列表
+      getSendGiftList: "GET_SENDGIFTLIST", //获取积分换礼品列表
+      CalcManualEventsCount:"GET_ALLEVENTS_BADGECOUNT"//统计约战送礼点赞数量
     }),
     ...mapActions({
       getFriendEvt: "get_FriendEvt"

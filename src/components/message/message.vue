@@ -3,10 +3,10 @@
     <div class="title">
       <div class="btn_box clearfix">
         <div :class="{active:isShow==0}" class="fri_btn fl" @click="selectList(0)">好友</div>
-        <div :class="{active:isShow==1}" class="hello_btn fl" @click="selectList(1)">店长</div>
-        <div :class="{active:isShow==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)">约战<i class="dot" v-show="challengeGameList.length"></i></div>
-        <div :class="{active:isShow==3}" class="vux-1px-l hello_btn fl" @click="selectList(3)">送礼<i class="dot" v-show="friendGiftList.length"></i></div>
-        <div :class="{active:isShow==4}" class="system_btn fl" @click="selectList(4)">点赞<i class="dot" v-show="friendEvtList.length"></i></div>
+        <div :class="{active:isShow==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
+        <div :class="{active:isShow==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)">客服</div>
+        <!-- <div :class="{active:isShow==3}" class="vux-1px-l hello_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendGiftList.length"></i></div> -->
+        <div :class="{active:isShow==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendEvtList.length"></i></div>
       </div>
       <!-- <div class="dot" v-if="hello"></div> -->
     </div>
@@ -35,51 +35,47 @@
           <p v-if="!alreadyFriendList.length" class="noContent">暂无好友</p>
         </ul>
       </scroll>
-      <!-- 店长留言 -->
-      <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShow==1">
-        <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index">
+      <!-- 新朋友 -->
+      <ul class="newMessage_list" v-else-if="isShow===1">
+        <li class="item vux-1px-b" v-for="(item,index) in mutualEventsList" :key="index">
           <div class="info_message">
             <div class="avatar">
-              <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
-              <!-- <i class="dot"></i> -->
-            </div>
-            <div class="name_and_message">
-              <!-- <p class="name">{{item.info.nickname}}</p> -->
-              <p class="name">店长</p>
-              <p class="captainMessage">活动通知:
-                <{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <!-- 约战列表 -->
-      <ul class="newMessage_list" v-else-if="isShow===2">
-        <li class="item vux-1px-b" v-for="(item,index) in challengeGameList" :key="index">
-          <div class="info_message">
-            <div class="avatar">
-              <img :src="item.extMsg.headImgURL" alt="">
+              <img :src="item.from.headimgurl" alt="">
               <i class="dot"></i>
             </div>
             <div class="name_and_message">
-              <p class="name">{{item.extMsg.nickName}}</p>
-              <p class="message">{{item.extMsg.nickName}}邀请我玩把大话骰</p>
+              <p class="name">{{item.from.nickname}}</p>
+              <p class="message" style="color:green;font-weight:800" v-if="item.combatID">{{item.from.nickname}}邀请玩把大话骰</p>
+              <p class="message" style="color:#333" v-else-if="item.gift.id==1">{{item.from.nickname}}送你一个啤酒</p>
+              <p class="message" style="color:#333" v-else-if="item.gift.id==2">{{item.from.nickname}}送你一个鲜花</p>
+              <p class="message" style="color:#333" v-else-if="item.gift.id==3">{{item.from.nickname}}送你一个别墅</p>
+              <p class="message" style="color:#333" v-else-if="item.gift.id==4">{{item.from.nickname}}送你一个跑车</p>
+              <p class="message" v-else>{{item.from.nickname}}给你点个赞</p>
             </div>
           </div>
           <div class="thumb_wrapper">
-            <div class="clearfix">
-              <p class=" back_thumb vux-1px fl reject " @click="rejectGame(item.extMsg.combatID)">拒绝</p>
-              <p class=" back_thumb vux-1px fl" @click="playGame(item.extMsg.url,item.extMsg.combatID)">进入</p>
+            <div class="clearfix" v-if="item.combatID">
+              <p class=" back_thumb vux-1px fl reject " @click="rejectGame(item.combatID)">拒绝</p>
+              <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID)">进入</p>
+            </div>
+            <div class="clearfix" v-else-if="item.gift">
+              <p class=" back_thumb vux-1px fl reject " >拒绝</p>
+              <p class=" back_thumb vux-1px fl" @click="thanksTo(item.GiftGiverID)">感谢</p>
+            </div>
+            <div class="clearfix" v-else>
+              <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">飘过</p>
+              <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">回赞</p>
             </div>
             <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-              <p class="time_desc">{{item.extMsg.time}}</p>
+              <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
             </div>
           </div>
         </li>
-        <p v-if="!challengeGameList.length" class="noContent">暂无约战内容</p>
+        <p v-if="!mutualEventsList.length" class="noContent">暂无约战内容</p>
       </ul>
-      <!-- 送礼列表 -->
-      <ul class="newMessage_list" v-else-if="isShow===3">
-        <li class="item vux-1px-b" v-for="(item,index) in friendGiftList" :key="index">
+      <!-- 客服通知 -->
+      <ul class="newMessage_list" v-else-if="isShow===2">
+        <!-- <li class="item vux-1px-b" v-for="(item,index) in friendGiftList" :key="index">
           <div class="info_message">
             <div class="avatar">
               <img :src="item.GiftGiverHeadImgURL" alt="">
@@ -93,7 +89,7 @@
               <p class="message" v-if="item.gift.id==4">{{item.GiftGiverNickname}}送你一个跑车</p>
             </div>
           </div>
-          <div class="thumb_wrapper clearfix" >
+          <div class="thumb_wrapper clearfix">
             <div class="clearfix">
               <p class=" back_thumb vux-1px fl reject ">拒绝</p>
               <p class="back_thumb vux-1px" @click="thanksTo(item.GiftGiverID)">感谢</p>
@@ -103,118 +99,48 @@
             </div>
           </div>
         </li>
-        <p v-if="!friendGiftList.length" class="noContent">暂无送礼内容</p>
+        <p v-if="!friendGiftList.length" class="noContent">暂无送礼内容</p> -->
       </ul>
-      <!-- 点赞列表 -->
-      <ul class="newMessage_list" v-else-if="isShow===4">
-        <li class="item vux-1px-b" v-for="(item,index) in friendEvtList" :key="index">
+      <!-- 通知 -->
+      <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShow==3">
+        <!-- <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index">
           <div class="info_message">
             <div class="avatar">
-              <img :src="item.from.headimgurl" alt="">
-              <i class="dot"></i>
+              <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
             </div>
             <div class="name_and_message">
-              <p class="name">{{item.from.nickname}}</p>
-              <p class="message">/thumb给我一个赞</p>
+              <p class="name">店长</p>
+              <p class="captainMessage">活动通知:
+                <{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
             </div>
           </div>
-          <div class="thumb_wrapper" v-show="thumb_flag">
-            <div class="clearfix">
-              <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">飘过</p>
-              <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">回赞</p>
-            </div>
-            <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-              <p class="time_desc">2018-12-30 17:00</p>
-            </div>
-          </div>
-        </li>
-        <p v-if="!friendEvtList.length" class="noContent">暂无点赞内容</p>
+        </li> -->
       </ul>
-      <!-- 新朋友招呼 -->
-      <!-- <div class="message_list" v-else-if="isShow==1">
-          <tab bar-active-color="#ffd800" default-color="#999">
-            <tab-item selected @on-item-click="onItemClick" style='position:relative'>点赞<i class="dot" v-cloak v-show="friendEvtList.length"></i></tab-item>
-            <tab-item @on-item-click="onItemClick" style='position:relative'>送礼<i class="dot" v-cloak v-show="friendGiftList.length"></i></tab-item>
-            <tab-item @on-item-click="onItemClick" style='position:relative'>约战<i class="dot" v-cloak v-show="challengeGameList.length"></i></tab-item>
-          </tab>
-          <div class="newFriend_wrapper"> -->
-      <!-- 点赞 -->
-      <!-- <ul class="newMessage_list" v-if="greeting_flag===0">
-                <li class="item vux-1px-b" v-for="(item,index) in friendEvtList" :key="index">
-                  <div class="info_message">
-                    <div class="avatar">
-                      <img :src="item.from.headimgurl" alt="">
-                      <i class="dot"></i>
-                    </div>
-                    <div class="name_and_message">
-                      <p class="name">{{item.from.nickname}}</p>
-                      <p class="message">/thumb给我一个赞</p>
-                    </div>
-                  </div>
-                  <div class="thumb_wrapper" v-show="thumb_flag">
-                    <div class="clearfix">
-                      <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">飘过</p>
-                      <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">回赞</p>
-                    </div>
-                    <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-                      <p class="time_desc">2018-12-30 17:00</p>
-                    </div>
-                  </div>
-                </li>
-                <p v-if="!friendEvtList.length" class="noContent">暂无点赞内容</p>
-              </ul> -->
-      <!-- 送礼 -->
-      <!-- <ul class="newMessage_list" v-if="greeting_flag===1">
-                <li class="item vux-1px-b" v-for="(item,index) in friendGiftList" :key="index">
-                  <div class="info_message">
-                    <div class="avatar">
-                      <img :src="item.GiftGiverHeadImgURL" alt="">
-                      <i class="dot"></i>
-                    </div>
-                    <div class="name_and_message">
-                      <p class="name">{{item.GiftGiverNickname}}</p>
-                      <p class="message" v-if="item.gift.id==1">{{item.GiftGiverNickname}}送你一个啤酒</p>
-                      <p class="message" v-if="item.gift.id==2">{{item.GiftGiverNickname}}送你一个鲜花</p>
-                      <p class="message" v-if="item.gift.id==3">{{item.GiftGiverNickname}}送你一个别墅</p>
-                      <p class="message" v-if="item.gift.id==4">{{item.GiftGiverNickname}}送你一个跑车</p>
-                    </div>
-                  </div>
-                  <div class="thumb_wrapper" @click="thanksTo(item.GiftGiverID)">
-                    <p class="back_thumb vux-1px">感谢</p>
-                    <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-                      <p class="time_desc">2018-12-30 17:00</p>
-                    </div>
-                  </div>
-                </li>
-                <p v-if="!friendGiftList.length" class="noContent">暂无送礼内容</p>
-              </ul> -->
-      <!-- 游戏 -->
-      <!-- <ul class="newMessage_list" v-if="greeting_flag===2">
-                  <li class="item vux-1px-b" v-for="(item,index) in challengeGameList" :key="index">
-                    <div class="info_message">
-                      <div class="avatar">
-                        <img :src="item.extMsg.headImgURL" alt="">
-                        <i class="dot"></i>
-                      </div>
-                      <div class="name_and_message">
-                        <p class="name">{{item.extMsg.nickName}}</p>
-                        <p class="message">{{item.extMsg.nickName}}邀请我玩把大话骰</p>
-                      </div>
-                    </div>
-                    <div class="thumb_wrapper">
-                      <div class="clearfix">
-                        <p class=" back_thumb vux-1px fl reject " @click="rejectGame(item.extMsg.combatID)">拒绝</p>
-                        <p class=" back_thumb vux-1px fl" @click="playGame(item.extMsg.url,item.extMsg.combatID)">进入</p>
-                      </div>
-                      <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-                        <p class="time_desc">2018-12-30 17:00</p>
-                      </div>
-                    </div>
-                  </li>
-                  <p v-if="!challengeGameList.length" class="noContent">暂无约战内容</p>
-                </ul> -->
-      <!-- </div>
-        </div> -->
+      <!-- 点赞列表 -->
+      <!-- <ul class="newMessage_list" v-else-if="isShow===4">
+          <li class="item vux-1px-b" v-for="(item,index) in friendEvtList" :key="index">
+            <div class="info_message">
+              <div class="avatar">
+                <img :src="item.from.headimgurl" alt="">
+                <i class="dot"></i>
+              </div>
+              <div class="name_and_message">
+                <p class="name">{{item.from.nickname}}</p>
+                <p class="message">/thumb给我一个赞</p>
+              </div>
+            </div>
+            <div class="thumb_wrapper" v-show="thumb_flag">
+              <div class="clearfix">
+                <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">飘过</p>
+                <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">回赞</p>
+              </div>
+              <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
+                <p class="time_desc">2018-12-30 17:00</p>
+              </div>
+            </div>
+          </li>
+          <p v-if="!friendEvtList.length" class="noContent">暂无点赞内容</p>
+        </ul> -->
     </div>
     <!-- 回赞 -->
     <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask :text="text" :position="position"></toast>
@@ -250,7 +176,7 @@
         selected_num: 0,
         greeting_flag: 0,
         text: "", //回赞和拒绝文案
-        // friendList:[],
+        mutualEventsList: [],
         position: "default",
         thumb_flag: true, //回赞的box的flag
         showPositionValue: false //回赞的toast的flag
@@ -302,11 +228,12 @@
       } else {
         this.today = this.today.toString();
       }
+      this._loadMutualEvents();
     },
     mounted() {
       this._loadFriends(); //拉取好友
       this.getFriendGift(); //拉取好友送礼  
-      this.getCaptainMessList(); //获取店长信息            
+      this.getCaptainMessList(); //获取店长信      
     },
     destroyed() {
       // console.log("组件销毁");
@@ -334,6 +261,23 @@
       // 约战列表
       btn_thumb() {
         this.isShow = 4;
+      },
+      //拉取约战、点赞、送礼列表
+      _loadMutualEvents() {
+        api.loadMutualEvents().then(res => {
+          if (res.errCode === 0) {
+            let mutualEventsObj = res.mutualEvents;
+            console.log(mutualEventsObj);
+            this.mutualEventsList = this.mutualEventsList.concat(mutualEventsObj.combatsEvents)
+            this.mutualEventsList = this.mutualEventsList.concat(mutualEventsObj.giftEvents)
+            this.mutualEventsList = this.mutualEventsList.concat(mutualEventsObj.friendEvents)
+            this.CalcManualEventsCount(this.mutualEventsList.length);
+            this.mutualEventsList.forEach(item=>{
+              item.time = util.timestampToTimeNoLine(Number(item.time))
+            })
+          }
+          console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
+        })
       },
       //回赞事件
       backThumbClick(type, flag) {
@@ -378,8 +322,7 @@
           if (res.errCode == 0) {
             this.text = "已拒绝";
             this.showPositionValue = true;
-            this.clearChallengeGameList();
-            this._loadInviteCombat();
+            this._loadMutualEvents();
           }
         })
       },
@@ -397,8 +340,8 @@
           console.log('约战列表--------------', res);
           if (res.errCode == 0) {
             if (res.inviteCombatInfo.length == 0) {
-              this.clearChallengeGameList();
-              this.addBandge();
+              // this.clearChallengeGameList();
+              // this.addBandge();
             } else {
               res.inviteCombatInfo.forEach(item => {
                 let content = {
@@ -437,12 +380,13 @@
         });
       },
       ...mapMutations({
+        CalcManualEventsCount:"GET_ALLEVENTS_BADGECOUNT",//统计约战送礼点赞数量
         addBadgeCount: "ADD_BADGE", //动态变化未读消息数量
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         compareLastMsg: "COMPARE_LASTMESS", //推送最后的一个消息跟已有好友消息列表对比
         toTopFriend: "TO_TOP_MESSAGE", //把最新消息的置顶
         getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
-        clearChallengeGameList: "CLEAR_CHALLENGEGAMELIST",
+        // clearChallengeGameList: "CLEAR_CHALLENGEGAMELIST",//清空约战记录
         addBandge: "ADD_BADGE",
       }),
       ...mapActions({
@@ -504,7 +448,7 @@
     height: 1rem;
     .btn_box {
       .fri_btn {
-        width: 1.71rem;
+        width: 2rem;
         text-align: center;
         height: 0.8533rem;
         line-height: 0.8533rem;
@@ -524,7 +468,7 @@
         }
       }
       .hello_btn {
-        width: 1.71rem;
+        width: 2.2rem;
         text-align: center;
         height: 0.8533rem;
         line-height: 0.8533rem;
@@ -545,7 +489,7 @@
         }
       }
       .system_btn {
-        width: 1.71rem;
+        width: 2rem;
         text-align: center;
         height: 0.8533rem;
         line-height: 0.8533rem;
@@ -754,6 +698,7 @@
           }
           .reject {
             margin-right: 0.2rem;
+            margin-left: .4rem
           }
           .time {
             font-size: 0.3733rem;

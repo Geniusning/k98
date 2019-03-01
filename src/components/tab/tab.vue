@@ -61,7 +61,7 @@ export default {
   },
   watch: {
     badgeCount(newValue) {
-      // console.log(newValue);
+      console.log("badgeCount----------watch",newValue);
       this.count = (newValue > 0 ? newValue : "").toString();
     }
   },

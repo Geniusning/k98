@@ -348,7 +348,6 @@
       this._getInOutNum();//获取场内场外用户数
       this._loadAdvertisingPhoto(); //拉取首页轮播图
       this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
-      this._loadInviteCombat(); //拉取约战列表
       //监听摇色蛊动画
       // setInterval(() => {
       //   this.$refs.iconAnimation.className = "icon animations fl"
@@ -455,28 +454,6 @@
           })
         })
       },
-      //拉取约战列表
-      _loadInviteCombat() {
-        api.loadInviteCombat().then(res => {
-          // console.log('约战列表--------------', res);
-          if (res.errCode == 0) {
-            res.inviteCombatInfo.forEach(item => {
-              let content = {
-                extMsg: {
-                  combatID: item.combatID,
-                  headImgURL: item.headImgURL,
-                  inviterID: item.inviterID,
-                  nickName: item.nickName,
-                  url: item.url,
-                  time: util.timestampToTimeNoLine(item.score)
-                }
-              }
-              this.getChallengeGamelist(content);
-              this.addBandge();
-            })
-          }
-        })
-      },
       //获取好友事件
       _loadFriendEvts() {
         let cursor = 0;
@@ -567,8 +544,6 @@
         getFriend: "GET_FRIENDlIST", //获取候选人,
         judgeInviteCoupon: "JUDGE_INVITE_COUPON", //判断是否还有邀请有礼
         getAdvertisingImg: "GET_ADVERTISINGIMG", //获取首页轮播图
-        getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
-        addBandge: "ADD_BADGE",
         getRecommentList: "GET_RECOMMENTLIST"
       }),
       ...mapActions({

@@ -1,3 +1,5 @@
+//统计约战，送礼，点赞数量
+export const GET_ALLEVENTS_BADGECOUNT = "GET_ALLEVENTS_BADGECOUNT"
 //新增送礼弹框内容
 export const ADD_GIFTINFO = "ADD_GIFTINFO"
 //获取店长推荐列表

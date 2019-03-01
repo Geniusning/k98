@@ -566,9 +566,9 @@
     transition: all 0.4s;
   }
   .gift-Panel-enter {
-    transform: scale(1.5)
+    transform: scale(.1)
   }
   .gift-Panel-leave-to {
-    transform: scale(.2)
+    transform: scale(.1)
   }
 </style>

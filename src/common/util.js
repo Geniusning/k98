@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-01-31 17:18:22
+ * @Last Modified time: 2019-03-01 16:40:04
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -90,7 +90,7 @@ util.timestampToTime = function (timestamp) {
 }
 util.timestampToTimeNoLine = function (timestamp) {
   if (typeof timestamp != "number") { //如果传入的不是整型就提示
-    console.error('传入的数据不是Number类型')
+    // console.error('传入的数据不是Number类型')
     return timestamp;
   }
   timestamp = Number(timestamp);

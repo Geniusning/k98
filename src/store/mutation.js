@@ -265,14 +265,18 @@ const mutations = {
     // console.log('约战条数---------', state.game_badgeCount)
   },
   //清空约战列表
-  [types.CLEAR_CHALLENGEGAMELIST](state) {
-    state.challengeGameList = [];
-    state.game_badgeCount = state.challengeGameList.length;
+  // [types.CLEAR_CHALLENGEGAMELIST](state) {
+  //   state.game_badgeCount = state.challengeGameList.length;
+  // },
+  //统计约战，送礼，点赞数量
+  [types.GET_ALLEVENTS_BADGECOUNT](state,count){
+    state.manualEventsList_badgeCount = count
   },
   //所有类型的未读消息累加总的未读消息里面
   [types.ADD_BADGE](state) {
     let total = 0;
-    total = state.msg_badgeCount + state.event_badgeCount + state.gift_badgeCount + state.game_badgeCount;
+    total = state.msg_badgeCount + state.event_badgeCount + state.gift_badgeCount + state.game_badgeCount+state.manualEventsList_badgeCount;
+    console.log('total---------',total)
     state.badgeCount = total;
   },
   //设置候选人聊天的信息
