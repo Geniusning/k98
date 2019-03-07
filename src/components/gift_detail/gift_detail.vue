@@ -44,16 +44,7 @@
         <p slot='pullup'>加载更多内容</p>
       </scroll>
       <topUp v-if="isIntegralPanel" @closeIntegralPanel="closeIntegralPanel" :fatherPanelIndex="fatherPanelIndex"></topUp>
-      <!-- <div class="selectMoneyBox" v-show="isShowTreasure">
-            <h2 class="titile">请选择充值的积分</h2>
-            <p class="payInfo">1元兑换100积分，5元兑换500积分，10元兑换1000积分，15元兑换1500积分</p>
-            <ul class="moneyList">
-              <li class="itemMoney" :class="{active:index+1==moneyIndex}" @click="selectMoney(item.id,$event)" :data-money="item.money" v-for="(item,index) in moneyList">{{item.name}}</li>
-            </ul>
-          </div>
-          <div class="btn_content" v-show="isShowTreasure" @click="pay">
-            <span class="btn">充值</span>
-          </div>-->
+      <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
     </div>
   </div>
 </template>
@@ -63,10 +54,12 @@
   import util from 'common/util'
   import myHeader from "../../base/myheader/myheader";
   import Scroll from "../../base/scroll/scroll";
-  import topUp from 'base/topUp/topUp'
+  import topUp from 'base/topUp/topUp';
+    import qrCode from 'base/qrCode/qrCode';
   import {
     mapState,
-    mapMutations
+    mapMutations,
+    mapGetters
   } from 'vuex'
   export default {
     data() {
@@ -81,7 +74,8 @@
       };
     },
     computed: {
-      ...mapState(['userInfo'])
+      ...mapState(['userInfo']),
+      ...mapGetters(["qrIsShow"]),
     },
     created() {
       api.getUserInfo("/api/loadUserInfo").then(res => {
@@ -112,12 +106,16 @@
         let count = 20;
         api.loadWealthDetail(this.giftCursor, count).then(res => {
           console.log('礼物明细-----------------------------', res);
-          this.giftContent = this.giftContent.concat(res.wealthDetailRanking.details);
-          console.log('this.giftContent---------------', this.giftContent)
-          this.giftCursor = res.wealthDetailRanking.cursor;
-          this.giftContent.forEach(item => {
-            item.time = util.timestampToTimeNoLine(item.time);
-          })
+          if(res.errCode==0){
+            this.giftContent = this.giftContent.concat(res.wealthDetailRanking.details);
+            console.log('this.giftContent---------------', this.giftContent)
+            this.giftCursor = res.wealthDetailRanking.cursor;
+            this.giftContent.forEach(item => {
+              item.time = util.timestampToTimeNoLine(item.time);
+            })
+          }else if(res.errCode==1023){
+             this.showQrcode(true);
+          }
         })
       },
       // selectMoney(index, event) {
@@ -159,13 +157,15 @@
         });
       },
       ...mapMutations({
-        getUserInfo: "GET_USERINFO" //获取用户信息
+        getUserInfo: "GET_USERINFO", //获取用户信息
+         showQrcode: "SHOW_QRCODE", //展示二维码
       })
     },
     components: {
       myHeader,
       Scroll,
-      topUp
+      topUp,
+      qrCode
     }
   };
 </script>

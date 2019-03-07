@@ -342,8 +342,8 @@
     mounted() {
       this.getFriendList(); //获取候选人
       this._loadPublishArenas(); //拉取已经发布的比赛场
-      this._loadFriendEvts(); //获取好友事件列表
-      this.getFriendGift(); //获取好友送礼列表
+      //this._loadFriendEvts(); //获取好友事件列表
+      //this.getFriendGift(); //获取好友送礼列表
       this.getAlreadyFriend(); //获取已经成为好友列表
       this._getInOutNum();//获取场内场外用户数
       this._loadAdvertisingPhoto(); //拉取首页轮播图

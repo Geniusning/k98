@@ -353,10 +353,11 @@
         // 下面是传回父级的数据;
         this.friendOnlineStatus = data.info.onlineL98Server; //好友在线状态
         console.log('滑动页面传回给父级数据：', data)
-        this.friendId = data.info.openid;
+        let openId= data.info.openid;
+        this.friendId = openId;
         this.setChatFriend(data);
         this.isFriend = data.isAlreadyFriend;
-        this.xid = data.xid;
+        this.xid = openId;
         this.isInDoor = data.isInDoor
       },
       //获取更多朋友

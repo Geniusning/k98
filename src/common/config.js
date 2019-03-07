@@ -8,5 +8,5 @@ export default {
     // appId: "wx2bbe97c9b7e6d747",
     websocketUrl:"wss://llwant1.qianz.com/api/ws",
     shareUrl: "https://llwant1.qianz.com/",
-     tk:"Hi9SzL7phbkjjY_TMG5KHVwG_y-IrN05_RKhpLxLQRu3y_Q4Rz6F17Tuwa9qxndw8dhexQ=="
+     tk:"vlEzgd6MKGrTk1spi_HuhdpYu0LDIw-BJG_quFhwDgTAxSnZeMu9t4mpk_A_Rc2L4JgCvw=="
 }

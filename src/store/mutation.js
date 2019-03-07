@@ -139,25 +139,22 @@ const mutations = {
     state.badgeCount = state.msg_badgeCount + state.event_badgeCount
   },
   //增加推送点赞事件列表
-  [types.ADD_FRIENDEVTLIST](state, friendEvtList) {
-    let friendEvtObj = {
-      evtType: 1,
-      from: friendEvtList
-    }
-    state.friendEvtList.push(friendEvtObj)
-  },
+  // [types.ADD_FRIENDEVTLIST](state, friendEvtList) {
+  //   let friendEvtObj = {
+  //     evtType: 1,
+  //     from: friendEvtList
+  //   }
+  //   state.friendEvtList.push(friendEvtObj)
+  // },
   //新增送礼弹框内容
   [types.ADD_GIFTINFO](state,giftInfo){
     console.log(giftInfo);
-    state.topUpGiftInfo.name = giftInfo.nameValue;    
-    state.topUpGiftInfo.type = giftInfo.typeValue;    
+    state.topUpGiftInfo.content.extMsg.goodInfo.name = giftInfo.nameValue;    
+    state.topUpGiftInfo.content.extMsg.goodInfo.type = giftInfo.typeValue;    
   },
   //更新好友事件消息框内容
   [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
-
-    // console.log('当前正在聊天的对象---------------------------：', state.staticChatFriendObj)
     //如果和本人聊天信封弹框不在对话框弹出
-
     if (!friendEvtObj.content.fromInfo) { //粗暴解决msgCode=4  无法推送的bug
       friendEvtObj.content.extMsg = {
         lastMsg: {},
@@ -182,11 +179,14 @@ const mutations = {
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
       case 2:
+      console.log('点赞详情--------',friendEvtObj)
         friendEvtObj.content.extMsg = {
           lastMsg: {},
+          thumbInfo:friendEvtObj.content.extMsg
         };
         friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你点赞啦,希望和成为好友";
         state.dynamicFriendEvt = friendEvtObj.content;
+        state.topUpThumbInfo = friendEvtObj;
         break;
       case 3:
         friendEvtObj.content.extMsg = {
@@ -195,7 +195,8 @@ const mutations = {
         };
         friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
         state.dynamicFriendEvt = friendEvtObj.content;
-        state.topUpGiftInfo = friendEvtObj.content.extMsg.goodInfo;
+        console.log('friendEvtObj.content------',friendEvtObj.content)
+        state.topUpGiftInfo = friendEvtObj;
         break;
       case 4:
         friendEvtObj.content.extMsg = {
@@ -207,11 +208,12 @@ const mutations = {
       case 7:
         friendEvtObj.content.extMsg = {
           lastMsg: {},
+          gameInfo:friendEvtObj.content.extMsg
         };
-
         friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
         state.dynamicFriendEvt = friendEvtObj.content;
-        console.log('好友邀请你进游戏玩-----------', state.dynamicFriendEvt)
+        state.topUpGameInfo = friendEvtObj
+        console.log('好友邀请你进游戏玩-----------', friendEvtObj)
         break;
       case 8:
         friendEvtObj.content.extMsg = {
@@ -258,11 +260,8 @@ const mutations = {
   },
   //获取约战消息列表
   [types.GET_CHALLENGEGAMELIST](state, gameMessage) {
-    // gameMessage = 
     state.challengeGameList.push(gameMessage);
-    // console.log(state.challengeGameList)
     state.game_badgeCount = state.challengeGameList.length;
-    // console.log('约战条数---------', state.game_badgeCount)
   },
   //清空约战列表
   // [types.CLEAR_CHALLENGEGAMELIST](state) {
@@ -275,7 +274,8 @@ const mutations = {
   //所有类型的未读消息累加总的未读消息里面
   [types.ADD_BADGE](state) {
     let total = 0;
-    total = state.msg_badgeCount + state.event_badgeCount + state.gift_badgeCount + state.game_badgeCount+state.manualEventsList_badgeCount;
+    // state.gift_badgeCount + state.game_badgeCount+
+    total = state.msg_badgeCount + state.event_badgeCount +state.manualEventsList_badgeCount;
     console.log('total---------',total)
     state.badgeCount = total;
   },

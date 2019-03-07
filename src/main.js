@@ -29,14 +29,14 @@ new Vue({
     ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
   },
   created() {
-    // let windowUrL = window.location.href;
-    // let index = windowUrL.indexOf('.com');
-    // let shareurl = windowUrL.slice(0,index);
-    // this.updateShareUrl(shareurl+'.com/');
-    // let websocketUrl = shareurl.slice(8);
-    // websocketUrl = `wss://${websocketUrl}.com/api/ws`
-    // this.websock = new WebSocket(websocketUrl);   //以上生产环境
-    this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境
+    let windowUrL = window.location.href;
+    let index = windowUrL.indexOf('.com');
+    let shareurl = windowUrL.slice(0,index);
+    this.updateShareUrl(shareurl+'.com/');
+    let websocketUrl = shareurl.slice(8);
+    websocketUrl = `wss://${websocketUrl}.com/api/ws`
+    this.websock = new WebSocket(websocketUrl);   //以上生产环境
+    // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境
     this.websock.binaryType = "arraybuffer";
     this.connect_websocket(this.websock);
     this.socket.onopen = this.websocketonopen;
@@ -80,7 +80,7 @@ new Vue({
         let reg = new RegExp(message.lastMsg.from)
         if (reg.test(this.$route.path)) {
           let fromId = message.lastMsg.from;
-          //发送消息表示已读
+          //发送消息表示已读 
           api.sendMsgReaded(fromId).then(res => {
             if (res.errorCode == 0) {
               console.log('消息已读')
@@ -92,20 +92,23 @@ new Vue({
       //处理好友点赞事件
       else if (result.msgCode === 2) {
         console.log(result)
-        this.addFriendEvt(result.content.fromInfo) //往点赞列表新增一条数据
-        let cursor = 0
-        this.getFriendEvt(cursor);
+        this._loadMutualEvents();
+        //this.addFriendEvt(result.content.fromInfo) //往点赞列表新增一条数据
+        // let cursor = 0
+        // this.getFriendEvt(cursor);
         this.judgeMessType('thumb')
       }
       //处理送礼
       else if (result.msgCode === 3) {
+        this._loadMutualEvents();
         this.judgeMessType('gift')
       } else if (result.msgCode === 4) { //发布优惠券
         this.judgeMessType('discount')
       }
       //处理约战事件
       else if (result.msgCode === 7) {
-        this.getChallengeGamelist(result.content);
+        // this.getChallengeGamelist(result.content);
+        this._loadMutualEvents();
         this.addBange();
         this.judgeMessType('playGame')
       }
@@ -213,9 +216,9 @@ new Vue({
       updateValue: "UPDATE_INPUTVALUE",
       addBange: "ADD_BADGE",
       compareLastMsg: "COMPARE_LASTMESS",
-      addFriendEvt: "ADD_FRIENDEVTLIST", //新增好友事件列表
-      addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框
-      getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
+      //addFriendEvt: "ADD_FRIENDEVTLIST", //新增好友事件列表
+      addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
+      //getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
       updateShareUrl: "UPDATE_SHAREURL", //苹果分享地址
       getuserInfo: "GET_USERINFO", //获取用户信息
       getShopSetting: "GET_SHOPINFO", //获取门店信息
@@ -225,7 +228,7 @@ new Vue({
       CalcManualEventsCount:"GET_ALLEVENTS_BADGECOUNT"//统计约战送礼点赞数量
     }),
     ...mapActions({
-      getFriendEvt: "get_FriendEvt"
+      //getFriendEvt: "get_FriendEvt"
     })
   },
   watch: {

@@ -260,7 +260,6 @@
       this.listenScroll = true;
       this.today = new Date().getDate();
       this.today = new Date().getDate();
-      console.log(this.today);
       if (this.today < 10) {
         this.today = "0" + this.today;
       } else {
@@ -351,33 +350,6 @@
           }
         }, 400)
       },
-      //发送礼物
-      // sendGift(id) {
-      //   let params = {
-      //     giftID: parseInt(id),
-      //     to: this.staticChatFriendObj.openid,
-      //   }
-      //   api.sendGift(params).then(res => {
-      //     console.log(res);
-      //     if (res.errCode === 0) {
-      //       this.isShowEnvelope = true;
-      //       this.envelopeText = "赠送礼物成功"
-      //       setTimeout(() => {
-      //         this.isShowEnvelope = false;
-      //       }, 2000);
-      //       this.showToast_gift = false;
-      //     } else {
-      //       this.isShowEnvelope = true;
-      //       this.envelopeText = "余额不足，请充值"
-      //       setTimeout(() => {
-      //         this.isShowEnvelope = false;
-      //         this.$router.push({
-      //           name: "giftDetail"
-      //         })
-      //       }, 2000);
-      //     }
-      //   })
-      // },
       //获取聊天消息列表
       _getChatList() {
         let cursor = this.alreadyFriendListcursor;

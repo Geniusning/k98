@@ -37,6 +37,8 @@ const state = {
     recommentList: [], //店长推荐列表
     sendGiftList:[],//积分兑换礼品列表
     topUpGiftInfo:{}, //送礼弹框
+    topUpThumbInfo:{}, //点赞弹框
+    topUpGameInfo:{},  //游戏弹框
 }
 
 export default state

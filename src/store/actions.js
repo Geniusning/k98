@@ -45,12 +45,12 @@ const actions = {
     },
 
     // 获取好友点赞事件
-    get_FriendEvt({ commit, state }, cursor) {
-        api.loadFriendEvts(cursor).then(res => {
-            commit("GET_FRIENDEVTLIST", { data: res });
-            commit('ADD_BADGE');
-        })
-    },
+    // get_FriendEvt({ commit, state }, cursor) {
+    //     api.loadFriendEvts(cursor).then(res => {
+    //         commit("GET_FRIENDEVTLIST", { data: res });
+    //         commit('ADD_BADGE');
+    //     })
+    // },
     //获取好友送礼事件
     get_FriendGift({ commit, state }) {
         api.loadGiftsRecord().then(res => {

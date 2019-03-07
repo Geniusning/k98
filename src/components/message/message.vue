@@ -46,10 +46,11 @@
             <div class="name_and_message">
               <p class="name">{{item.from.nickname}}</p>
               <p class="message" style="color:green;font-weight:800" v-if="item.combatID">{{item.from.nickname}}邀请玩把大话骰</p>
-              <p class="message" style="color:#333" v-else-if="item.gift.id==1">{{item.from.nickname}}送你一个啤酒</p>
-              <p class="message" style="color:#333" v-else-if="item.gift.id==2">{{item.from.nickname}}送你一个鲜花</p>
-              <p class="message" style="color:#333" v-else-if="item.gift.id==3">{{item.from.nickname}}送你一个别墅</p>
-              <p class="message" style="color:#333" v-else-if="item.gift.id==4">{{item.from.nickname}}送你一个跑车</p>
+              <p class="message" style="color:#333" v-else-if="item.id==1">{{item.from.nickname}}送你一个啤酒</p>
+              <p class="message" style="color:#333" v-else-if="item.id==2">{{item.from.nickname}}送你一个鲜花</p>
+              <p class="message" style="color:#333" v-else-if="item.id==3">{{item.from.nickname}}送你一个别墅</p>
+              <p class="message" style="color:#333" v-else-if="item.id==4">{{item.from.nickname}}送你一个跑车</p>
+              <p class="message" style="color:#333" v-else-if="item.integral">{{item.from.nickname}}送你{{item.name}}</p>
               <p class="message" v-else>{{item.from.nickname}}给你点个赞</p>
             </div>
           </div>
@@ -59,8 +60,8 @@
               <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID)">进入</p>
             </div>
             <div class="clearfix" v-else-if="item.gift">
-              <p class=" back_thumb vux-1px fl reject " >拒绝</p>
-              <p class=" back_thumb vux-1px fl" @click="thanksTo(item.GiftGiverID)">感谢</p>
+              <p class=" back_thumb vux-1px fl reject" @click="respondForGift(item,false)" >拒绝</p>
+              <p class=" back_thumb vux-1px fl" @click="respondForGift(item,true)">感谢</p>
             </div>
             <div class="clearfix" v-else>
               <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">飘过</p>
@@ -71,7 +72,7 @@
             </div>
           </div>
         </li>
-        <p v-if="!mutualEventsList.length" class="noContent">暂无约战内容</p>
+        <p v-if="!mutualEventsList.length" class="noContent">暂无数据</p>
       </ul>
       <!-- 客服通知 -->
       <ul class="newMessage_list" v-else-if="isShow===2">
@@ -214,7 +215,8 @@
         "LastChatMsg",
         "friendGiftList",
         "captainMessageList",
-        "challengeGameList"
+        "challengeGameList",
+        "manualEventsList_badgeCount"
       ]),
       messageTime() {
         return
@@ -228,11 +230,11 @@
       } else {
         this.today = this.today.toString();
       }
-      this._loadMutualEvents();
+     
     },
     mounted() {
       this._loadFriends(); //拉取好友
-      this.getFriendGift(); //拉取好友送礼  
+      this._loadMutualEvents();//拉取送礼，约战，
       this.getCaptainMessList(); //获取店长信      
     },
     destroyed() {
@@ -268,28 +270,56 @@
           if (res.errCode === 0) {
             let mutualEventsObj = res.mutualEvents;
             console.log(mutualEventsObj);
+            this.mutualEventsList = []; //先清空
             this.mutualEventsList = this.mutualEventsList.concat(mutualEventsObj.combatsEvents)
             this.mutualEventsList = this.mutualEventsList.concat(mutualEventsObj.giftEvents)
             this.mutualEventsList = this.mutualEventsList.concat(mutualEventsObj.friendEvents)
             this.CalcManualEventsCount(this.mutualEventsList.length);
+            this.addBandge();
             this.mutualEventsList.forEach(item=>{
               item.time = util.timestampToTimeNoLine(Number(item.time))
+              if(item.gift){
+                item = Object.assign(item,item.gift)
+              }
             })
           }
           console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
         })
       },
+      //接受或拒接送礼
+      respondForGift(giftInfo,flag){
+        console.log('giftInfo----------------',giftInfo)
+        let giftType = giftInfo.integral?1:0;
+        let giftParam = {
+          agree:flag,   //是否接受
+          recordID:giftInfo.giftRecordID,   //送礼记录ID
+          fromID:giftInfo.from.openid,     //赠送者
+          respondType:giftType //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
+        }
+        api.respondForGift(giftParam).then(res=>{
+          console.log('送礼操作结果-------------------',res);
+          if(res.errCode==0){
+            if(flag){
+              this.text = "已感谢";
+            }else{
+               this.text = "已拒接";
+            }
+             //重新拉取约战，送礼，点赞列表
+            this._loadMutualEvents();
+             this.showPositionValue = true;
+          }
+        })
+      },
       //回赞事件
       backThumbClick(type, flag) {
         // let that = this;
-        var cursor = 0;
         api.giveBackThumb(type, flag).then(res => {
           // console.log(res);
           if (res.errcode === 0) {
             //重新拉取已经成为好友列表
             this._loadFriends();
-            //重新拉取好友事件
-            this.getFriendEvt(cursor);
+            //重新拉取约战，送礼，点赞列表
+            this._loadMutualEvents();
             if (flag == "yes") {
               this.text = "已回赞";
             } else {
@@ -306,7 +336,7 @@
           if (res.errCode == 0) {
             this.text = "已感谢对方";
             this.showPositionValue = true;
-            this.getFriendGift(); // 重新拉取送礼列表
+            this._loadMutualEvents(); // 重新拉取约战，送礼，点赞列表
             this._loadFriends(); //重新拉取已经成为好友列表
           }
         })
@@ -323,12 +353,13 @@
             this.text = "已拒绝";
             this.showPositionValue = true;
             this._loadMutualEvents();
+            this.addBandge();
           }
         })
       },
       clearHistory(combatID, url) {
         api.deleteInviteCombat(combatID).then(res => {
-          console.log('拒接结果-----------', res);
+          console.log('删除结果-----------', res);
           if (res.errCode == 0) {
             window.location.href = url;
           }
@@ -381,13 +412,12 @@
       },
       ...mapMutations({
         CalcManualEventsCount:"GET_ALLEVENTS_BADGECOUNT",//统计约战送礼点赞数量
-        addBadgeCount: "ADD_BADGE", //动态变化未读消息数量
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         compareLastMsg: "COMPARE_LASTMESS", //推送最后的一个消息跟已有好友消息列表对比
         toTopFriend: "TO_TOP_MESSAGE", //把最新消息的置顶
         getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
         // clearChallengeGameList: "CLEAR_CHALLENGEGAMELIST",//清空约战记录
-        addBandge: "ADD_BADGE",
+        addBandge: "ADD_BADGE",//动态变化未读消息数量
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
@@ -397,6 +427,10 @@
       })
     },
     watch: {
+      //监听约战通知，刷新送礼，约战，点赞列表
+      manualEventsList_badgeCount:function(){
+        this._loadMutualEvents();
+      },
       //监听最新的一条消息
       LastChatMsg: function(newValue) {
         // console.log('在消息列表收到对方手来的消息------------------------------------：',newValue);
@@ -533,7 +567,6 @@
     flex-grow: 1;
     overflow-y: auto;
     .message_list {
-      // margin-top: 10px;
       padding: 0 0.2667rem;
       .dot {
         .dot(0.1333rem, 0.4267rem);
@@ -559,25 +592,7 @@
               border-radius: 50%;
             }
             .dot {
-              .dot(0, 0); // position: absolute;
-              // top: 0;
-              // right: -0.1333rem;
-              // display: inline-block;
-              // text-align: center;
-              // background: #ff3b30;
-              // color: #fff;
-              // font-size: 14px;
-              // height: 16px;
-              // line-height: 16px;
-              // border-radius: 8px;
-              // padding: 0 4px;
-              // font-family: 'Courier New', Courier, monospace;
-              // background-clip: padding-box;
-              // vertical-align: middle;
-              // &.dot_singer {
-              //   width: 16px;
-              //   padding: 0;
-              // }
+              .dot(0, 0);
             }
           }
           .name_and_message {
@@ -606,8 +621,8 @@
               color: #666;
               width: 7rem;
               overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
+              // text-overflow: ellipsis;
+              // white-space: nowrap;
               height: 0.6667rem;
               font-size: 0.3467rem;
               margin-top: 0.4rem;
@@ -673,18 +688,21 @@
             .message {
               width: 5rem;
               color: #666;
-              height: 0.6667rem;
+              // height: 0.6667rem;
               font-size: 0.3467rem;
-              margin-top: 0.4rem;
+              margin-top: 0.2rem;
               overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
+              // text-overflow: ellipsis;
+              // white-space: nowrap;
             }
             .captainMessage {}
           }
         }
         .thumb_wrapper {
           flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
           .back_thumb {
             box-sizing: border-box;
             display: inline-block;

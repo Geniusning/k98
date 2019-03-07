@@ -12,18 +12,16 @@
                 <p class="desc">到店核销时 请出示此二维码或点击<span @click="lauchCheckOutCoupon" class="check">发起核销</span></p>
                 <!-- <img src="../../assets/image/QRcode.png" alt="" class="QR_pic"> -->
                 <canvas id="canvas" ref="canvas" style="width:220px;height:220px;"></canvas>
+                <div class="card_number">券码：1-01-000008</div>
             </div>
             <div class="infoMessage_wrapper">
                 <ul class="infoList">
                     <li class="item">
-                        <h3 class="title">使用说明</h3>
-                        <p class="desc">使用时段：{{couponObj.limit}} {{couponObj.startTime}}至{{couponObj.endTime}}</p>
-                    </li>
-                    <li class="item">
                         <h3 class="title">温馨提示</h3>
-                        <p class="desc">1.使用时，请出示此二维码供商家核销</p>
-                        <p class="desc">2.每张券仅限一人使用且只能使用一次</p>
-                        <p class="desc">3.提供免费wifi</p>
+                        <p class="desc">1.有效期：{{startTime}}至{{couponObj.endTime}}</p>
+                        <p class="desc">2.使用限制：{{couponObj.limit}}</p>
+                        <p class="desc">3.优惠卡券限本人使用，每次只能用一种优惠方式</p>
+                        <p class="desc">4.兑换门店项目或礼物请到收银台领取，不提供包邮业务</p>
                     </li>
                 </ul>
             </div>
@@ -48,9 +46,16 @@ export default {
             couponObj: {},
             isShowEnvelope: false,  //信封弹框判断
             envelopeText: "",
+            startTime:""
         };
     },
     mounted() {
+        let startTime = new Date();
+        let year = startTime.getFullYear();
+        let month = startTime.getMonth()+1;
+        let date = startTime.getDate();
+        this.startTime = `${year}-${month>10?month:'0'+month}-${date>10?date:'0'+date}`;
+        console.log(this.startTime)
         var canvas = ""
         this.$nextTick(function () {
             // DOM操作
@@ -159,6 +164,7 @@ export default {
   }
   .QRcode_wrapper {
     padding-top: 0.4rem;
+    padding-bottom: 0.2rem;
     margin-top: 0.2667rem; // height: 7.1333rem;
     width: 100%;
     background: #fff;
@@ -170,6 +176,7 @@ export default {
       font-size: 0.3733rem;
       color: #4b4b4b;
       .check {
+        font-size: .4rem;
         text-decoration: underline;
         color: red;
       }
@@ -178,6 +185,9 @@ export default {
       width: 4.7733rem;
       height: 4.7733rem;
       margin: 0.3067rem 2.5933rem;
+    }
+    .card_number{
+      font-size: .35rem;
     }
   }
   .infoMessage_wrapper {

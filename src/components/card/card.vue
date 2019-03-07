@@ -24,21 +24,27 @@
             <p class="discount_type_text">{{item.coupon.type}}</p>
           </div>
           <div class="mycenter">
-            <div class="receiver_wrapper" v-if="item.coupon.receiverHeadImage">
-              <img :src="item.coupon.receiverHeadImage" alt="" class="receiver_avartar">
-              <span class="receiver_name">{{item.coupon.receiverName}} 收</span>
-            </div>
-            <div class="receiverProject_wrapper" v-if="item.coupon.integral">
-              <div class="integral_content">
-                <img src="../../assets/image/integralIcon.png" class="integral_icon">
-                <span class="integral_text">{{item.coupon.integral}}</span>
+            <div class="discount_theme clearfix">
+              <div class="theme">
+                {{item.coupon.theme?item.coupon.theme:"新人礼包"}}
               </div>
-              <img :src="item.coupon.image" class="project_img">
+              <div class="receiver_wrapper" v-if="item.coupon.senderHeadImage">
+                <img :src="item.coupon.senderHeadImage" alt="" class="receiver_avartar">
+                <span class="receiver_name">{{item.coupon.senderName}}</span><span>送</span>
+              </div>
+              <!-- v-if="item.coupon.integral" -->
+              <div class="receiverProject_wrapper">
+                <div class="integral_content">
+                  1-01-0000001
+                  <!-- <img src="../../assets/image/integralIcon.png" class="integral_icon"> -->
+                  <!-- <span class="integral_text">{{item.coupon.integral}}</span> -->
+                </div>
+                <img v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
+              </div>
             </div>
-            <div class="discount_theme">{{item.coupon.theme?item.coupon.theme:"新人礼包"}}</div>
             <div class="discount_content">{{item.coupon.name}}</div>
             <div class="discount_limitAndTime">
-              <p class="limit">{{item.coupon.limit}}</p>
+              <div class="limit">积分:{{item.coupon.integral}} &nbsp;&nbsp;&nbsp;{{item.coupon.limit}}</div>
               <p class="time">有效期至:{{item.coupon.time}}</p>
             </div>
           </div>
@@ -81,21 +87,27 @@
             <p class="discount_type_text">{{item.coupon.type}}</p>
           </div>
           <div class="mycenter">
-            <div class="receiver_wrapper">
-              <img :src="item.coupon.receiverHeadImage" alt="" class="receiver_avartar">
-              <span class="receiver_name">{{item.coupon.receiverName}} 收</span>
-            </div>
-            <div class="receiverProject_wrapper">
-              <div class="integral_content">
-                <img src="../../assets/image/integralIcon.png" class="integral_icon">
-                <span class="integral_text">{{item.coupon.integral}}</span>
+            <div class="discount_theme clearfix">
+              <div class="theme">
+                {{item.coupon.theme?item.coupon.theme:"新人礼包"}}
               </div>
-              <img :src="item.coupon.image" class="project_img">
+              <div class="receiver_wrapper" v-if="item.coupon.receiverHeadImage">
+                <img :src="item.coupon.receiverHeadImage" alt="" class="receiver_avartar">
+                <span class="receiver_name">{{item.coupon.receiverName}}</span><span>收</span>
+              </div>
+              <!-- v-if="item.coupon.integral" -->
+              <div class="receiverProject_wrapper">
+                <div class="integral_content">
+                  1-01-0000001
+                  <!-- <img src="../../assets/image/integralIcon.png" class="integral_icon"> -->
+                  <!-- <span class="integral_text">{{item.coupon.integral}}</span> -->
+                </div>
+                <img v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
+              </div>
             </div>
-            <div class="discount_theme">{{item.coupon.theme?item.coupon.theme:"新用户大礼包"}}</div>
             <div class="discount_content">{{item.coupon.name}}</div>
             <div class="discount_limitAndTime">
-              <p class="limit">{{item.coupon.limit}}</p>
+              <div class="limit">积分:{{item.coupon.integral}} &nbsp;&nbsp;&nbsp;{{item.coupon.limit}}</div>
               <p class="time">有效期至:{{item.coupon.time}}</p>
             </div>
           </div>
@@ -185,6 +197,7 @@
       distributeDiscount(resDiscountList, discountList) {
         resDiscountList.forEach(element => {
           element.coupon.time = element.coupon.endTime;
+          element.getTime = util.timestampToTime(element.getTime);
           switch (element.coupon.type) {
             case 0:
               element.coupon.name = element.coupon.value + "元代金券";
@@ -193,7 +206,7 @@
               element.coupon.name = element.coupon.content;
               break;
             case 2:
-              element.coupon.name = element.coupon.value;
+              element.coupon.name = element.coupon.value + "折";
               break;
             case 3:
               element.coupon.name = element.coupon.content;
@@ -322,48 +335,85 @@
           margin-left: .1rem;
           flex: 1;
           color: #fff;
-          position: relative;
-          .receiver_wrapper {
-            position: absolute;
-            display: flex;
-            top: 0.0333rem;
-            left: 3rem;
-            .receiver_avartar {
-              width: 0.5333rem;
-              height: 0.5333rem;
-              border-radius: 50%;
-              margin-right: 0.1667rem;
-            }
-            .receiver_name {
-              width: 1.4rem;
-              text-overflow: ellipsis;
-              overflow: hidden;
-              white-space: nowrap;
-            }
-          }
-          .receiverProject_wrapper {
-            position: absolute;
-            top: .1rem;
-            right: .3rem;
-            display: flex;
-            flex-direction: column;
-            .integral_content {
-              display: flex;
-              .integral_icon {
-                width: 0.4rem;
-                height: 0.4rem;
-                margin-right: 0.1067rem;
-              }
-              .integral_text {}
-            }
-            .project_img {
-              margin-top: 0.1667rem;
-              width: 1rem;
-              height: 0.8rem;
-            }
-          }
+          position: relative; // .receiver_wrapper {
+          //   position: absolute;
+          //   display: flex;
+          //   top: 0.0333rem;
+          //   left: 3rem;
+          //   .receiver_avartar {
+          //     width: 0.5333rem;
+          //     height: 0.5333rem;
+          //     border-radius: 50%;
+          //     margin-right: 0.1667rem;
+          //   }
+          //   .receiver_name {
+          //     width: 1.4rem;
+          //     text-overflow: ellipsis;
+          //     overflow: hidden;
+          //     white-space: nowrap;
+          //   }
+          // }
+          // .receiverProject_wrapper {
+          //   position: absolute;
+          //   top: .1rem;
+          //   right: .3rem;
+          //   display: flex;
+          //   flex-direction: column;
+          //   .integral_content {
+          //     display: flex;
+          //     .integral_icon {
+          //       width: 0.4rem;
+          //       height: 0.4rem;
+          //       margin-right: 0.1067rem;
+          //     }
+          //     .integral_text {}
+          //   }
+          //   .project_img {
+          //     margin-top: 0.1667rem;
+          //     width: 1rem;
+          //     height: 0.8rem;
+          //   }
+          // }
           .discount_theme {
             font-size: 0.3733rem;
+            position: relative;
+            .theme,
+            .receiver_wrapper,
+            .receiverProject_wrapper {
+              float: left;
+            }
+            .theme {}
+            .receiver_wrapper {
+              margin-left: 0.6667rem;
+              .receiver_avartar {
+                width: 0.5333rem;
+                height: 0.5333rem;
+                border-radius: 50%;
+                margin-right: 0.1667rem;
+                float: left;
+              }
+              .receiver_name {
+                float: left;
+                max-width: 1.2rem;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+              }
+            }
+            .receiverProject_wrapper {
+              position: absolute;
+              right: 0.1333rem;
+              .integral_content {
+                font-size: 0.32rem;
+              }
+              .project_img {
+                position: absolute;
+                left: .6rem;
+                margin-top: 0.1667rem;
+                width: 1.3rem;
+                height: 1rem;
+              }
+            }
           }
           .discount_content {
             margin-top: .3rem;
@@ -416,47 +466,46 @@
           flex: 1;
           color: #fff;
           position: relative;
-          .receiver_wrapper {
-            position: absolute;
-            display: flex;
-            top: 0.0333rem;
-            left: 3rem;
-            .receiver_avartar {
-              width: 0.5333rem;
-              height: 0.5333rem;
-              border-radius: 50%;
-              margin-right: 0.1667rem;
-            }
-            .receiver_name {
-                width: 1.4rem;
-              text-overflow: ellipsis;
-              overflow: hidden;
-              white-space: nowrap;
-            }
-          }
-          .receiverProject_wrapper {
-            position: absolute;
-            top: .1rem;
-            right: .3rem;
-            display: flex;
-            flex-direction: column;
-            .integral_content {
-              display: flex;
-              .integral_icon {
-                width: 0.4rem;
-                height: 0.4rem;
-                margin-right: 0.1067rem;
-              }
-              .integral_text {}
-            }
-            .project_img {
-              margin-top: 0.1667rem;
-              width: 1rem;
-              height: 0.8rem;
-            }
-          }
           .discount_theme {
             font-size: 0.3733rem;
+            position: relative;
+            .theme,
+            .receiver_wrapper,
+            .receiverProject_wrapper {
+              float: left;
+            }
+            .theme {}
+            .receiver_wrapper {
+              margin-left: 0.6667rem;
+              .receiver_avartar {
+                width: 0.5333rem;
+                height: 0.5333rem;
+                border-radius: 50%;
+                margin-right: 0.1667rem;
+                float: left;
+              }
+              .receiver_name {
+                float: left;
+                max-width: 1.2rem;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+              }
+            }
+            .receiverProject_wrapper {
+              position: absolute;
+              right: 0.1333rem;
+              .integral_content {
+                font-size: 0.32rem;
+              }
+              .project_img {
+                position: absolute;
+                left: .6rem;
+                margin-top: 0.1667rem;
+                width: 1.3rem;
+                height: 1rem;
+              }
+            }
           }
           .discount_content {
             margin-top: .3rem;
