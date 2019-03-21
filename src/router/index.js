@@ -133,7 +133,7 @@ export default new Router({
       name: 'shareActivity',
       component: ShareActivity,
       meta: {
-        keepAlive: true,
+        // keepAlive: true,
         title: "分享活动"
       }
     },

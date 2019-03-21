@@ -30,7 +30,7 @@
           <p v-show="componentGiftList.length>0" class="giftListpart_desc0">虚拟</p>
           <p v-show="componentGiftList.length>0" class="giftListpart_desc1">礼物</p>
           <ul class="list">
-            <li class="item" v-for="(item,index) in componentGiftList" :key="index" @click="sendGift(item.id,index)">
+            <li class="item" v-for="(item,index) in componentGiftList" :key="index" @click="sendVirtualGift(item.id,index)">
               <img :src="item.imgUrl" alt class="giftIcon">
               <p class="price">{{item.money}}</p>
             </li>
@@ -80,12 +80,14 @@
           </div>
         </div>
         <div class="handle">
-          <button v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认兑换</button>
-          <button v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.ID)">确认赠送</button>
-          <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor">
-            <input type="checkbox" class="checkbox fl">
+          <!-- :class="{greyBtn:userInfo.money<giftIntegral}" -->
+          <button v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">{{userInfo.money>giftIntegral?'确认兑换':'积分不足,请充值'}}</button>
+          <button v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">{{userInfo.money>giftIntegral?'确认赠送':'余额不足,请充值'}}</button>
+          <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor && userInfo.money>giftIntegral ">
+            <input @change="onlineSendGift" type="checkbox" class="checkbox fl">
             <span class="scene-text fl">现场下单</span>
           </div>
+          <!-- <p class="gotoTopUpText" v-if="userInfo.money<giftIntegral" @click="gotoTopUp">去充值&gt;</p> -->
         </div>
         <div class="myMoney">我的积分:{{userInfo.money}}</div>
       </div>
@@ -93,9 +95,13 @@
       <div class="successfullyBox" v-else="panelIndex===3" key="successfullyBox">
         <div class="envelope">
           <div class="close" @click="closeIntegralPanel">X</div>
-          <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <div class="integralIcon_wrapper">
+            <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
+            <div class="integralIcon_text">消耗积分:{{componentGiftInfo.goods.integral}}</div>
+          </div>
           <p class="successful_text">{{successfulText}}</p>
           <p class="successful_desc">{{successful_desc}}</p>
+          <button @click="closeIntegralPanel" class="btn">确认</button>
           <p class="gotoTopUpText" @click="gotoTopUp">去充值&gt;</p>
         </div>
         <div class="myMoney">我的积分:{{userInfo.money}}</div>
@@ -163,6 +169,10 @@
     created() {
       this.panelIndex = this.fatherPanelIndex;
       this.componentGiftInfo = this.giftInfo;
+      console.log(this.componentGiftInfo)
+      if(this.componentGiftInfo){
+        this.giftIntegral = this.componentGiftInfo.goods.integral; //店长推荐和礼品商城
+      }
       this.componentConvertType = this.convertType;
       console.log('this.componentConvertType------------', this.componentConvertType)
       api.loadAllGift().then(res => {
@@ -196,7 +206,6 @@
           })
         }
       })
-      console.log(this.componentGiftList);
     },
     mounted() {},
     props: {
@@ -222,6 +231,11 @@
       }
     },
     methods: {
+      //现场送
+      onlineSendGift(e) {
+        console.log(e.target.checked)
+        console.log("触发现场送")
+      },
       closeIntegralPanel() {
         this.$emit("closeIntegralPanel", false);
         // this.panelIndex = 1;
@@ -230,18 +244,20 @@
       gotoTopUp() {
         this.panelIndex = 0;
       },
-      //发送礼物
-      sendGift(id, index) {
-        this.panelIndex = 2;
+      //发送虚拟礼物
+      sendVirtualGift(id, index) {
         this.componentConvertType = 4;
         let tempVirtualGift = {
           goods: {
             name: this.componentGiftList[index].name,
             image: this.componentGiftList[index].imgUrl,
             integral: this.componentGiftList[index].money,
-            ID: this.componentGiftList[index].id
+            id: this.componentGiftList[index].id
           }
         };
+        console.log("this.componentGiftList[index].money-----------", this.componentGiftList[index].money)
+        this.giftIntegral = this.componentGiftList[index].money;
+        this.panelIndex = 2;
         this.componentGiftInfo = tempVirtualGift;
       },
       // converType 0:店长推荐，1:积分换礼品兑换 ,2:赠送店长推荐项目,3:赠送积分换礼品项目,4:虚拟礼物
@@ -249,6 +265,8 @@
       sendShopItemGift(goodsInfo) {
         this.componentConvertType = 2;
         this.componentGiftInfo = goodsInfo;
+        console.log('this.componentGiftInfo----------', this.componentGiftInfo)
+        this.giftIntegral = goodsInfo.goods.integral;
         this.panelIndex = 2;
         this.successfulText = "赠送礼物成功,扣除" + this.componentGiftInfo.goods.integral + "积分";
       },
@@ -256,13 +274,18 @@
       sendJiFenGift(goodsInfo) {
         this.componentConvertType = 3;
         this.componentGiftInfo = goodsInfo;
+        console.log(":goodsInfo.integral--------", goodsInfo)
+        this.giftIntegral = goodsInfo.goods.integral
         this.panelIndex = 2;
         this.successfulText = "赠送礼物成功,扣除" + this.componentGiftInfo.goods.integral + "积分";
       },
       //确认赠送店铺项目
       confirmShopItemGift(goodID) {
-        //店长推荐兑换
-        if (this.componentConvertType == 0) {
+        if (this.userInfo.money < this.giftIntegral) { //当前积分少于项目消耗积分
+           this.panelIndex = 0
+           return
+        }
+        if (this.componentConvertType == 0) { //店长推荐兑换
           api.convertRecommend(goodID).then(res => {
             console.log('店长推荐兑换结果--------------', res);
             if (res.errCode && res.errCode == 1021) {
@@ -295,6 +318,8 @@
             this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入'我的卡券'`
           })
         } else if (this.componentConvertType == 2) { //赠送店长推荐项目
+        console.log('goodID------------',goodID)
+        console.log('this.friendId------------',this.friendId)
           api.sentRecommend(goodID, this.friendId).then(res => {
             console.log('店长推荐赠送结果---------', res)
             if (res.errCode == 1029) {
@@ -328,20 +353,24 @@
             if (res.errCode === 0) {
               this.successfulText = "赠送礼物成功,扣除您" + this.componentGiftInfo.goods.integral + "积分"
             } else if (res.errCode == 1023) {
-              this.showQrcode(true);
+              this.successfulText = "赠送礼物成功,扣除您" + this.componentGiftInfo.goods.integral + "积分"
+              setTimeout(() => {
+                this.showQrcode(true);
+              }, 700);
             } else if (res.errCode == 1029) {
               this.successfulText = "积分不足，请点右下角前往充值"
             }
           })
         }
         api.getUserInfo("/api/loadUserInfo").then(res => {
+          console.log("个人信息-------", res)
           this.getUserInfo(res);
           this.panelIndex = 3;
         })
       },
       //   充值
       payForCoin(id) {
-          console.log(id);
+        console.log(id);
         api.createOrder(id).then(res => {
           if (res.errCode === 0) {
             let resultInfo = res.data;
@@ -361,9 +390,9 @@
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   alert("微信支付成功");
-                  this.panelIndex = 0;
                   api.getUserInfo("/api/loadUserInfo").then(res => {
                       this.getUserInfo(res);
+                      this.panelIndex = 1;
                     })
                     .catch(err => {
                       console.log(err);
@@ -410,10 +439,8 @@
     background-color: rgba(0, 0, 0, 0.3);
     z-index: 100;
     .coinBox {
-      width: 100%;
-      height: 4.8rem; // transform: translateY(50%);
-      margin: 50% auto;
-      // background-color: #fff;
+      width: 100%; // height: 5rem; // transform: translateY(50%);
+      margin: 50% auto; // background-color: #fff;
       .bg('../../assets/image/envelop.png');
       .coinBox_top {
         display: flex;
@@ -422,8 +449,8 @@
         .integral_box {
           display: flex;
           .integral {
-            width: 0.8rem;
-            height: 0.8rem;
+            width: 0.7rem;
+            height: 0.7rem;
           }
           .integral_text {
             padding-top: 0.2667rem;
@@ -432,7 +459,7 @@
           }
         }
         .close {
-          padding-top: 0.1333rem;
+          // padding-top: 0.1333rem;
           width: 0.5333rem;
           height: 0.5333rem;
         }
@@ -444,6 +471,7 @@
           padding: 0 1.2rem 0 0.7rem;
           .coinItem {
             width: 0.9333rem;
+            box-sizing: border-box;
             .coin200 {
               width: 100%;
               margin-top: 0.96rem;
@@ -466,25 +494,23 @@
               color: #ffdf03;
             }
             .moneyCount {
-              // width: 1.2333rem;
-              padding: 0  0.1067rem;
-              // border: 1px solid #333;
-              margin-top: 0.2rem;
-              box-sizing: border-box;
+              width: 1rem;
+              border-radius: 0.1333rem;
+              text-align: center;
+              border: 1px solid #333;
+              margin-top: 0.7rem;
+              margin-bottom: 0.7rem;
             }
           }
         }
       }
     }
     .giftPanelBox {
-      margin: 40% auto;
-      // background-color: #fff;
+      margin: 40% auto; // background-color: #fff;
       // padding-top: 0.7333rem;
-      width: 100%; 
-      // height: 6.8rem;
+      width: 100%; // height: 6.8rem;
       box-sizing: border-box;
-      .bg('../../assets/image/envelop.png');
-      // background-image: url('../../assets/image/envelop.png')
+      .bg('../../assets/image/envelop.png'); // background-image: url('../../assets/image/envelop.png')
       .giftPanelBox_title {
         display: flex;
         justify-content: space-between;
@@ -503,7 +529,7 @@
       }
       .giftListpart {
         position: relative;
-        .close{
+        .close {
           position: absolute;
           top: -.3rem;
           right: 0.5667rem;
@@ -574,7 +600,7 @@
       }
     }
     .sendGiftPanelBox {
-      width: 8.3333rem;
+      width: 8.4rem;
       height: 4.7rem;
       margin: 50% auto;
       position: relative;
@@ -636,20 +662,33 @@
           }
           .price {
             // font-weight: 600;
-            
+            color: #656565
           }
-      }}
+        }
+      }
       .handle {
         width: 100%;
         text-align: center;
         padding-top: 0.3rem;
         padding-bottom: 0.3rem;
         position: relative;
+        // .gotoTopUpText {
+        //   position: absolute;
+        //   bottom: 0.13rem;
+        //   right: 0.28rem;
+        //   color: #F7C600;
+        //   text-decoration: underline;
+        // }
         .btn {
           padding: 0.08rem 0.1067rem;
           border: none;
           background: -webkit-linear-gradient(top, #fcd502, #e59305);
           font-weight: 600;
+          color: #333;
+        }
+        .greyBtn {
+          background: gray;
+          color: #333;
         }
         .checkBox_scene {
           position: absolute;
@@ -661,7 +700,7 @@
           }
           .scene-text {
             // padding-bottom: 0.11rem;
-             font-weight: 600;
+            font-weight: 600;
             margin-left: 0.1333rem;
             vertical-align: middle;
           }
@@ -671,14 +710,14 @@
         position: absolute;
         left: 0.2333rem;
         bottom: 0.3333rem;
-         color: #333;
+        color: #333;
         font-weight: 600;
       }
     }
     .successfullyBox {
       margin: 50% auto;
       width: 8.3333rem;
-      height: 3.6533rem;
+      height: 4.7rem;
       .bg("../../assets/image/envelop.png");
       position: relative;
       .myWelfare {
@@ -707,14 +746,23 @@
         font-weight: 800;
         color: #e59305;
       }
-      .integralIcon {
-        margin-top: 0.2267rem;
-        margin-left: 0.36rem;
-        width: 0.6rem;
-        height: 0.6rem;
+      .integralIcon_wrapper {
+        display: flex;
+        .integralIcon {
+          margin-top: 0.4267rem;
+          margin-left: 0.36rem;
+          width: 0.7rem;
+          height: 0.7rem;
+        }
+        .integralIcon_text {
+          box-sizing: border-box;
+          padding-top: 0.6333rem;
+          margin-left: 0.1333rem;
+          font-weight: 700;
+        }
       }
       .successful_text {
-        margin-top: 0.2667rem;
+        margin-top: .75rem;
         font-size: 0.42rem;
         font-weight: 600;
         text-align: center;
@@ -725,9 +773,23 @@
         text-align: center;
         color: #8f8f8f;
       }
+      .btn {
+        position: absolute;
+        bottom: .6rem;
+        left: 50%;
+        margin-left: -1rem;
+        width: 2rem;
+        text-align: center;
+        letter-spacing: 0.08rem;
+        padding: 0.08rem 0.1067rem;
+        border: none;
+        background: -webkit-linear-gradient(top, #fcd502, #e59305);
+        font-weight: 600;
+        color: #333;
+      }
       .gotoTopUpText {
         position: absolute;
-        bottom: 0.2533rem;
+        bottom: 0.33rem;
         right: 0.28rem;
         color: #F7C600;
         text-decoration: underline;

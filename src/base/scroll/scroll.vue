@@ -152,7 +152,6 @@
     },
     watch: {
       scrollHeight: function(newValue) {
-        // console.log("scrollNewvalue:", newValue);
         this.scroll.scrollTo(0, -newValue);
       },
       data(newValue) {

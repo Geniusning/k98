@@ -28,15 +28,21 @@ new Vue({
   computed: {
     ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
   },
+  data() {
+    return {
+      pingNumer:0,
+      timer:""
+    }
+  },
   created() {
-    let windowUrL = window.location.href;
-    let index = windowUrL.indexOf('.com');
-    let shareurl = windowUrL.slice(0,index);
-    this.updateShareUrl(shareurl+'.com/');
-    let websocketUrl = shareurl.slice(8);
-    websocketUrl = `wss://${websocketUrl}.com/api/ws`
-    this.websock = new WebSocket(websocketUrl);   //以上生产环境
-    // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境
+    // let windowUrL = window.location.href;
+    // let index = windowUrL.indexOf('.com');
+    // let shareurl = windowUrL.slice(0,index);
+    // this.updateShareUrl(shareurl+'.com/');
+    // let websocketUrl = shareurl.slice(8);
+    // websocketUrl = `wss://${websocketUrl}.com/api/ws`
+    // this.websock = new WebSocket(websocketUrl);     //以上生产环境
+    this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境
     this.websock.binaryType = "arraybuffer";
     this.connect_websocket(this.websock);
     this.socket.onopen = this.websocketonopen;
@@ -61,6 +67,13 @@ new Vue({
     },
     websocketonopen(e) {
       console.log("WebSocket连接成功");
+      this.timer = setInterval(() => {
+        this.websock.send({
+          msgCode:this.pingNumer,
+          content:null
+        });
+        this.pingNumer ++ ;
+      }, 60000);
     },
     websocketonerror(e) {
       //错误
@@ -68,10 +81,20 @@ new Vue({
     },
     websocketonmessage(e) {
       //数据接收
+      // console.log('测试websocket链接--------',e);
       var decc = new TextDecoder("utf-8");
       let result = JSON.parse(decc.decode(e.data));
       console.log('websocket推送消息-------------------------', result)
-      this.addFriendEvtObj(result)
+      if(result.msgCode!=25){
+        this.addFriendEvtObj(result)
+      }else {
+        console.log('fasong la ');
+        this.pingNumer = 0;
+        this.websock.send({
+          msgCode:result.msgCode+1,
+          content:null
+        })
+      }
       //处理聊天消息
       if (result.msgCode === 1) {
         let message = result.content.extMsg
@@ -107,7 +130,6 @@ new Vue({
       }
       //处理约战事件
       else if (result.msgCode === 7) {
-        // this.getChallengeGamelist(result.content);
         this._loadMutualEvents();
         this.addBange();
         this.judgeMessType('playGame')
@@ -116,17 +138,39 @@ new Vue({
       else if (result.msgCode === 8) {
         this.judgeMessType('onlineNotice');
       } else if (result.msgCode === 9) {
+      //分享获得积分通知
         this.judgeMessType('shareGetIntegral');
+      }else if (result.msgCode === 13) {  //对方操作回赞后返回结果通知
+        this.judgeMessType('backThumb');
+      }else if (result.msgCode === 14) { //对方操作收到礼物后返回结果通知
+        this.judgeMessType('successGift');
+      }else if (result.msgCode === 15) { //对方操作拒绝礼物后返回结果通知
+        this.judgeMessType('failGift');
+      }else if (result.msgCode === 16) {  //对方操作拒绝约占后返回结果通知
+        this.judgeMessType('rejectGame');
+      }else if (result.msgCode === 17) {   //对方在游戏操作打招呼返回结果通知
+        this.judgeMessType('gameSayHi');
       }
     },
     websocketclose(e) {
       //关闭
       console.log("connection closed (" + e.code + ")");
+      // if(this.pingNumer ==3){
+        // console.log("this.pingNumer的值---------",this.pingNumer)
+        // let windowUrL = window.location.href;
+        // let index = windowUrL.indexOf('.com');
+        // let shareurl = windowUrL.slice(0,index);
+        // this.updateShareUrl(shareurl+'.com/');
+        // let websocketUrl = shareurl.slice(8);
+        // websocketUrl = `wss://${websocketUrl}.com/api/ws`
+        // this.websock = new WebSocket(websocketUrl);     //以上生产环境
+        this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
+      // }
     },
     //拉取积分换礼品列表
     _loadGoods() {
       api.loadGoods().then(res => {
-        // console.log('积分换礼品列表------', res);
+        console.log('积分换礼品列表------', res);
         this.getSendGiftList(res.slice(0,4));
       })
     },
@@ -186,7 +230,7 @@ new Vue({
     //获取店长推荐
     _loadRecommends() {
       api.loadRecommends().then(res => {
-        // console.log('店长推荐数据---------------------', res)
+        console.log('店长推荐数据---------------------', res)
         this.recommendList = res;
         this.getRecommentList(this.recommendList);
       })

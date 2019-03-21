@@ -66,6 +66,9 @@ const mutations = {
       } else {
         item.info.sex = "女";
       }
+      let nowTimeStamp = Math.round(new Date().getTime()/1000);
+      let visitTime = nowTimeStamp - item.visitTime;
+      item.visitTime = util.calcOnlineTime(visitTime)
     });
   },
   //获取更多候选人数据
@@ -77,6 +80,9 @@ const mutations = {
       } else {
         item.info.sex = "女";
       }
+      let nowTimeStamp = Math.round(new Date().getTime()/1000);
+      let visitTime = nowTimeStamp - item.visitTime;
+      item.visitTime = util.calcOnlineTime(visitTime)
       state.friendList.push(item);
     });
   },
@@ -89,6 +95,9 @@ const mutations = {
       } else {
         item.info.sex = "女";
       }
+      let nowTimeStamp = Math.round(new Date().getTime()/1000);
+      let visitTime = nowTimeStamp - item.visitTime;
+      item.visitTime = util.calcOnlineTime(visitTime)
       state.friendList.push(item);
     });
   },
@@ -186,7 +195,7 @@ const mutations = {
         };
         friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你点赞啦,希望和成为好友";
         state.dynamicFriendEvt = friendEvtObj.content;
-        state.topUpThumbInfo = friendEvtObj;
+        state.friendList = friendEvtObj;
         break;
       case 3:
         friendEvtObj.content.extMsg = {
@@ -227,9 +236,47 @@ const mutations = {
         friendEvtObj.content.extMsg = {
           lastMsg: {},
         };
-        friendEvtObj.content.extMsg.lastMsg['msg'] = "分享发放福利" + shopSendText + "积分";
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "获得分享福利" + shopSendText + "积分";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
+      case 12 : //店长推荐和礼品商城
+      friendEvtObj.content.extMsg = {
+        lastMsg: {},
+        goodInfo:friendEvtObj.content.extMsg
+      };
+      friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
+      state.dynamicFriendEvt = friendEvtObj.content;
+      console.log('friendEvtObj.content------',friendEvtObj.content)
+      state.topUpGiftInfo = friendEvtObj;
+      break
+      case 13:
+      friendEvtObj.content.extMsg = {
+        lastMsg: {},
+      };
+      friendEvtObj.content.extMsg.lastMsg['msg'] = "回赞你成为好友啦";
+      state.dynamicFriendEvt = friendEvtObj.content;
+      break;
+      case 14:
+      friendEvtObj.content.extMsg = {
+        lastMsg: {},
+      };
+      friendEvtObj.content.extMsg.lastMsg['msg'] = "收了你的礼物啦";
+      state.dynamicFriendEvt = friendEvtObj.content;
+      break;
+      case 15:
+      friendEvtObj.content.extMsg = {
+        lastMsg: {},
+      };
+      friendEvtObj.content.extMsg.lastMsg['msg'] = "拒收了你的礼物";
+      state.dynamicFriendEvt = friendEvtObj.content;
+      break;
+      case 16:
+      friendEvtObj.content.extMsg = {
+        lastMsg: {},
+      };
+      friendEvtObj.content.extMsg.lastMsg['msg'] = "拒绝和你玩游戏";
+      state.dynamicFriendEvt = friendEvtObj.content;
+      break;
       default:
         break;
     }

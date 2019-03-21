@@ -49,7 +49,7 @@ export default {
     },
     _getQrCode(){
         api.loadAllQrcode().then(res=>{
-          // console.log('二维码-----------',res);
+          console.log('二维码-----------',res);
             this.qrUrl = res.urls[0];
         })
     },

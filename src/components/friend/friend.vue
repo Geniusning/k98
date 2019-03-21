@@ -78,7 +78,7 @@
     <!-- 点赞 -->
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask width="10em" :text="text" :position="position"></toast>
     <!-- 见面礼 -->
-    <div v-transfer-dom>
+    <!-- <div v-transfer-dom>
       <popup v-model="showToast_gift" position="bottom">
         <div class="position-vertical-demo">
           <div class="title vux-1px-b">
@@ -102,7 +102,7 @@
           </div>
         </div>
       </popup>
-    </div>
+    </div> -->
     <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad" -->
     <div class="guide_bg" v-show="isFirstLoad" @click="isFirstLoad=false">
       <img class="thumb" src="../../assets/image/thumb.png" alt>
@@ -110,9 +110,6 @@
     </div>
     <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
-    <!-- <transition name="fade">
-                    <giftPanel v-show="isGiftPanel" @closeGiftPanel="closeGiftPanel"></giftPanel>
-          </transition>-->
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
     </transition>
@@ -124,7 +121,6 @@
   import loading from "../../base/loading/loading";
   import envelope from 'base/envelope/envelope';
   import topUp from 'base/topUp/topUp';
-  import giftPanel from 'base/giftPanel/giftPanel';
   import qrCode from 'base/qrCode/qrCode';
   import util from "common/util";
   import api from "common/api";
@@ -313,34 +309,34 @@
         })
       },
       //发送礼物
-      sendGift(id) {
-        let params = {
-          giftID: parseInt(id),
-          to: this.friendId,
-        }
-        api.sendGift(params).then(res => {
-          console.log(res);
-          if (res.errCode === 0) {
-            this.isShowEnvelope = true;
-            this.envelopeText = "赠送礼物成功"
-            setTimeout(() => {
-              this.isShowEnvelope = false;
-            }, 2000);
-          } else if (res.errCode == 1023) {
-            this.showQrcode(true);
-          } else {
-            this.isIntegralPanel = true; //显示充值面板
-            // this.isShowEnvelope = true;
-            // this.envelopeText = "余额不足，请充值";
-            // setTimeout(() => {
-            //   this.isShowEnvelope = false;
-            //   this.$router.push({
-            //     name: "giftDetail"
-            //   })
-            // }, 2000);
-          }
-        })
-      },
+      // sendGift(id) {
+      //   let params = {
+      //     giftID: parseInt(id),
+      //     to: this.friendId,
+      //   }
+      //   api.sendGift(params).then(res => {
+      //     console.log(res);
+      //     if (res.errCode === 0) {
+      //       this.isShowEnvelope = true;
+      //       this.envelopeText = "赠送礼物成功"
+      //       setTimeout(() => {
+      //         this.isShowEnvelope = false;
+      //       }, 2000);
+      //     } else if (res.errCode == 1023) {
+      //       this.showQrcode(true);
+      //     } else {
+      //       this.envelopeText = "余额不足，请充值";
+      //       this.isIntegralPanel = true; //显示充值面板
+      //       // this.isShowEnvelope = true;
+      //       // setTimeout(() => {
+      //       //   this.isShowEnvelope = false;
+      //       //   this.$router.push({
+      //       //     name: "giftDetail"
+      //       //   })
+      //       // }, 2000);
+      //     }
+      //   })
+      // },
       // 监听点击相册
       showAblum(data) {
         console.log('监听点击相册------------------------------：', data);
@@ -400,14 +396,6 @@
       },
       //玩游戏
       playGame() {
-        // if (!this.friendOnlineStatus) {
-        //   this.isShowEnvelope = true;
-        //   this.envelopeText = "该用户己离线，无法通知";
-        //   setTimeout(() => {
-        //     this.isShowEnvelope = false;
-        //   }, 2000);
-        //   return;
-        // }
         api.sentPlayGameMsg(this.friendId).then(res => {
           console.log('约战返回--------', res)
           if (res.errCode == 0) {
@@ -472,7 +460,6 @@
       envelope,
       qrCode,
       topUp,
-      giftPanel
     }
   };
 </script>

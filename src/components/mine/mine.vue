@@ -64,7 +64,7 @@
                 <p class="title">{{item.goods.name}}</p>
                 <!-- <p class="limit">{{item.goods.limit}}</p> -->
                 <p class="price">
-                  <span class="discount_p">特惠{{item.goods.discountPrice}}</span>
+                  <span class="discount_p">原价￥{{item.goods.discountPrice}}</span>
                   <span class="origin_p">积分换 ${{item.goods.integral}}</span>
                 </p>
               </div>
@@ -540,6 +540,9 @@ export default {
             .center {
               float: left;
               margin-left: 0.2667rem;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
               .title {
                 font-size: 0.3733rem;
                 color: #333;
@@ -558,12 +561,12 @@ export default {
               .price {
                 margin-top: 1.1rem;
                 .discount_p {
-                  color: #ff3131;
+                  color: #333;
                   font-size: 0.3467rem;
                   margin-right: 0.4267rem;
                 }
                 .origin_p {
-                  color: #8f8f8f;
+                  color: red;
                   font-size: 0.3467rem;
                 }
               }

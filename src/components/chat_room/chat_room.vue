@@ -600,7 +600,8 @@
               chatListHeight += item.clientHeight
             })
             this.scrollHeight = chatListHeight;
-            console.log('父页面scrollHeight：', this.scrollHeight)
+            // this.$refs.listView.scrollTo(0,this.scrollHeight)
+            console.log('父页面scrollHeight：', this.scrollHeight);
           });
         }
       }

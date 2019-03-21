@@ -335,6 +335,9 @@
           margin-left: .1rem;
           flex: 1;
           color: #fff;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
           position: relative; // .receiver_wrapper {
           //   position: absolute;
           //   display: flex;
@@ -465,6 +468,9 @@
           margin-left: .1rem;
           flex: 1;
           color: #fff;
+           display: flex;
+          flex-direction: column;
+          justify-content: space-around;
           position: relative;
           .discount_theme {
             font-size: 0.3733rem;

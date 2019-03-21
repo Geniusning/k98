@@ -18,7 +18,7 @@
               <span class="line_word">店外</span>
             </div>
             <!-- <p class="makeFriTips">绿灯闪烁表示好友在线哦，赶紧去找朋友吧...</p> -->
-            <!-- <span class="time_desc" >20分钟前登录</span> -->
+            <span class="time_desc" >{{item.visitTime}}</span>
             <div class="avatarList-wrapper clearfix" @touchstart="showAlbum" v-if="Boolean(item.info.lifePhotoURL.lifePhotoURL)">
               <img src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
             </div>

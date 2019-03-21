@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-03-01 16:40:04
+ * @Last Modified time: 2019-03-12 14:21:38
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -115,6 +115,47 @@ util.timestampToTimeNoLine = function (timestamp) {
     return Y + M + D + h + m + s;
 
   }
+}
+//计算上线时间
+util.calcOnlineTime = function(visitime){
+  let day = Math.floor(visitime / 86400);
+  console.log(day)
+  if(visitime>60&&visitime<3600){
+    return Math.floor(visitime/60)+"分钟前上线"
+  }else if(visitime>3600&&visitime<86400){
+    return Math.floor(visitime/3600)+"小时前上线"
+  }else if(day>=1&&day<2){
+    return "1天前上线"
+  }else if(day>=2&&day<3){
+    return "2天前上线"
+  }else if(day>=3&&day<7){
+    return "3天前上线"
+  }else if(day>=7 && day<15){
+    return "7天前上线"
+  }else if(day >= 15 && day <30){
+    return "15天前上线"
+  }else if(day >= 30 && day<60){
+    return "30天前上线"
+  }else if(day >= 60){
+    return "60天前上线"
+  }else{
+    return "刚刚上线"
+  }
+  
+  
+  // else if(visitime<172800&&visitime>86400){
+  //   return "1天前上线"
+  // }else if (visitime<259200&&visitime>172800){
+  //   return "2天前上线"
+  // }else if(visitime<604800&&visitime>259200){
+  //   return "3天前上线"
+  // }else if(visitime<2592000&&visitime>604800){
+  //   return "7天前上线"
+  // }else if(visitime>2592000){
+  //   return "1个月前上线"
+  // }else{
+  //   return "刚刚上线"
+  // }
 }
 util.returnDiscountType = (discountTypeNumber) => {
   if (parseInt(discountTypeNumber) === 0) {

@@ -158,7 +158,7 @@
                   <p class="limit">{{item.goods.limit}}</p>
                   <p class="price">
                     <!-- <span class="discount_p">消耗积分：{{item.goods.discountPrice}}</span> -->
-                    <span class="discount_p">特惠￥{{item.goods.discountPrice}}</span>
+                    <span class="discount_p">原价￥{{item.goods.discountPrice}}</span>
                     <span class="origin_p">积分换 ${{item.goods.integral}}</span>
                   </p>
                 </div>
@@ -465,11 +465,8 @@
       },
       //免费预定
       freeBook(recommendID, index) {
-        // console.log('recommendID----------', recommendID)
-        // console.log('index----------', index)
         this.isGiftPanel = true;
         this.fatherPanelIndex = 2,
-          console.log(this.fatherPanelIndex)
         this.recommendItemIndo = this.recommentList[index];
       },
       //关闭详情
@@ -1395,6 +1392,9 @@
           .center {
             float: left;
             margin-left: 0.2667rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             .title {
               font-size: 0.3733rem;
               color: #333;
@@ -1413,12 +1413,12 @@
             .price {
               margin-top: 0.1rem;
               .discount_p {
-                color: #ff3131;
+                color: #333;
                 font-size: 0.3467rem;
                 margin-right: 0.4267rem;
               }
               .origin_p {
-                color: #8f8f8f;
+                color: red;
                 font-size: 0.3467rem;
               }
             }

@@ -205,6 +205,7 @@
       //拉取活动通知
       _loadActivityInfo() {
         api.loadActivityInfo().then(res => {
+          console.log("活动通知列表-------------",res)
           this.getActivityNoticeList(res.slice(0, 2));
         })
       },

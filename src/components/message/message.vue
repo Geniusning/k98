@@ -56,8 +56,8 @@
           </div>
           <div class="thumb_wrapper">
             <div class="clearfix" v-if="item.combatID">
-              <p class=" back_thumb vux-1px fl reject " @click="rejectGame(item.combatID)">拒绝</p>
-              <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID)">进入</p>
+              <p class=" back_thumb vux-1px fl reject " @click="rejectGame(item.combatID,item.from.openid)">免战</p>
+              <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID)">应战</p>
             </div>
             <div class="clearfix" v-else-if="item.gift">
               <p class=" back_thumb vux-1px fl reject" @click="respondForGift(item,false)" >拒绝</p>
@@ -346,8 +346,8 @@
         this.clearHistory(combatID, url)
       },
       //拒接游戏
-      rejectGame(combatID) {
-        api.deleteInviteCombat(combatID).then(res => {
+      rejectGame(combatID,openId) {
+        api.objectCombat(combatID,openId).then(res => {
           console.log('拒接结果-----------', res);
           if (res.errCode == 0) {
             this.text = "已拒绝";
@@ -605,6 +605,10 @@
               color: #333333;
               font-size: 0.4267rem;
               font-weight: 800;
+               width: 5rem;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
             .message {
               color: #666;
