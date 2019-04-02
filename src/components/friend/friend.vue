@@ -108,7 +108,9 @@
       <img class="thumb" src="../../assets/image/thumb.png" alt>
       <p class="intro">完善资料送福利，每天推3名星座匹配群友</p>
     </div>
-    <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
+    <keep-alive>
+      <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
+    </keep-alive>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
@@ -351,7 +353,7 @@
         console.log('滑动页面传回给父级数据：', data)
         let openId= data.info.openid;
         this.friendId = openId;
-        this.setChatFriend(data);
+        // this.setChatFriend(data);
         this.isFriend = data.isAlreadyFriend;
         this.xid = openId;
         this.isInDoor = data.isInDoor

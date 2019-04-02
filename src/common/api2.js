@@ -2,13 +2,25 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-03-21 15:15:51
+ * @Last Modified time: 2019-03-28 09:25:33
  */
 
 import axios from 'axios'
 import Url from './config'
 
 let api = {};
+//删除好友quitFriend
+api.quitFriend = function (openId) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/quitFriend?targetID=${openId}`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //获取用户信息
 api.getUserInfo = function (path) {
   return new Promise((resolve, reject) => {
@@ -728,22 +740,22 @@ api.loadInviteCombat = function () {
   })
 }
 //拒绝约战
-api.objectCombat = function (combatID,openId) {
+// api.objectCombat = function (combatID,openId) {
+//   return new Promise((resolve, reject) => {
+//     axios.get(`/api/objectCombat?combatID=${combatID}&openID=${openId}`)
+//       .then(res => {
+//         if (res.status == 200) {
+//           resolve(res.data)
+//         }
+//       }).catch(err => {
+//         reject(err)
+//       })
+//   })
+// }
+//约战
+api.responseCombat = function (params) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/objectCombat?combatID=${combatID}&openID=${openId}`)
-      .then(res => {
-        if (res.status == 200) {
-          resolve(res.data)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-  })
-}
-//删除约战记录
-api.deleteInviteCombat = function (combatID) {
-  return new Promise((resolve, reject) => {
-    axios.get(`/api/deleteCombat?combatID=${combatID}`)
+    axios.post(`/api/responseCombat`,params)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

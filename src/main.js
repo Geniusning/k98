@@ -53,16 +53,13 @@ new Vue({
     this._createQrcode(); //创建二维码
     this._getUserInfo(); //获取用户信息
     this._loadStoreSetting(); //获取门店信息
-    //this.getWeChatUrl(); //获取公众号地址
     this._loadGoods(); //拉取积分换礼品列表
     this._loadRecommends();//获取店长推荐
     this._loadMutualEvents() //统计约战送礼点赞
   },
-  mounted() {},
   methods: {
     getWeChatUrl() {
       let url = window.location.href.split('/#')[0];
-      // alert(url);
       this.getUrl(url);
     },
     websocketonopen(e) {
@@ -90,10 +87,10 @@ new Vue({
       }else {
         console.log('fasong la ');
         this.pingNumer = 0;
-        this.websock.send({
-          msgCode:result.msgCode+1,
-          content:null
-        })
+        // this.websock.send({
+        //   msgCode:result.msgCode+1,
+        //   content:null
+        // })
       }
       //处理聊天消息
       if (result.msgCode === 1) {
@@ -116,9 +113,6 @@ new Vue({
       else if (result.msgCode === 2) {
         console.log(result)
         this._loadMutualEvents();
-        //this.addFriendEvt(result.content.fromInfo) //往点赞列表新增一条数据
-        // let cursor = 0
-        // this.getFriendEvt(cursor);
         this.judgeMessType('thumb')
       }
       //处理送礼
@@ -155,16 +149,14 @@ new Vue({
     websocketclose(e) {
       //关闭
       console.log("connection closed (" + e.code + ")");
-      // if(this.pingNumer ==3){
-        // console.log("this.pingNumer的值---------",this.pingNumer)
-        // let windowUrL = window.location.href;
-        // let index = windowUrL.indexOf('.com');
-        // let shareurl = windowUrL.slice(0,index);
-        // this.updateShareUrl(shareurl+'.com/');
-        // let websocketUrl = shareurl.slice(8);
-        // websocketUrl = `wss://${websocketUrl}.com/api/ws`
-        // this.websock = new WebSocket(websocketUrl);     //以上生产环境
-        this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
+        let windowUrL = window.location.href;
+        let index = windowUrL.indexOf('.com');
+        let shareurl = windowUrL.slice(0,index);
+        this.updateShareUrl(shareurl+'.com/');
+        let websocketUrl = shareurl.slice(8);
+        websocketUrl = `wss://${websocketUrl}.com/api/ws`
+        this.websock = new WebSocket(websocketUrl);     //以上生产环境
+        // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
       // }
     },
     //拉取积分换礼品列表

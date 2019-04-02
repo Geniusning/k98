@@ -66,7 +66,7 @@ const mutations = {
       } else {
         item.info.sex = "女";
       }
-      let nowTimeStamp = Math.round(new Date().getTime()/1000);
+      let nowTimeStamp = Math.round(new Date().getTime() / 1000);
       let visitTime = nowTimeStamp - item.visitTime;
       item.visitTime = util.calcOnlineTime(visitTime)
     });
@@ -80,7 +80,7 @@ const mutations = {
       } else {
         item.info.sex = "女";
       }
-      let nowTimeStamp = Math.round(new Date().getTime()/1000);
+      let nowTimeStamp = Math.round(new Date().getTime() / 1000);
       let visitTime = nowTimeStamp - item.visitTime;
       item.visitTime = util.calcOnlineTime(visitTime)
       state.friendList.push(item);
@@ -95,7 +95,7 @@ const mutations = {
       } else {
         item.info.sex = "女";
       }
-      let nowTimeStamp = Math.round(new Date().getTime()/1000);
+      let nowTimeStamp = Math.round(new Date().getTime() / 1000);
       let visitTime = nowTimeStamp - item.visitTime;
       item.visitTime = util.calcOnlineTime(visitTime)
       state.friendList.push(item);
@@ -123,7 +123,7 @@ const mutations = {
     state.msg_badgeCount = totalCount
 
     state.alreadyFriendList = tempData;
-    // console.log('拉取好友-----------', state.alreadyFriendList)
+    console.log('拉取好友-----------', state.alreadyFriendList)
   },
   //获取新消息时重新排列消息列表，把最新的一项放到顶部
   [types.TO_TOP_MESSAGE](state, friendList) {
@@ -156,10 +156,10 @@ const mutations = {
   //   state.friendEvtList.push(friendEvtObj)
   // },
   //新增送礼弹框内容
-  [types.ADD_GIFTINFO](state,giftInfo){
+  [types.ADD_GIFTINFO](state, giftInfo) {
     console.log(giftInfo);
-    state.topUpGiftInfo.content.extMsg.goodInfo.name = giftInfo.nameValue;    
-    state.topUpGiftInfo.content.extMsg.goodInfo.type = giftInfo.typeValue;    
+    state.topUpGiftInfo.content.extMsg.goodInfo.extInfo.name = giftInfo.nameValue;
+    state.topUpGiftInfo.content.extMsg.goodInfo.extInfo.type = giftInfo.typeValue;
   },
   //更新好友事件消息框内容
   [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
@@ -176,6 +176,7 @@ const mutations = {
       state.dynamicFriendEvt = friendEvtObj.content;
       return;
     }
+    // debugger
     switch (friendEvtObj.msgCode) {
       case 1:
         if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
@@ -183,28 +184,34 @@ const mutations = {
         }
         friendEvtObj.content.extMsg = {
           lastMsg: {},
+          allInfo: friendEvtObj.content.extMsg
         };
-        friendEvtObj.content.extMsg.lastMsg['msg'] = "你有一条消息";
-        state.dynamicFriendEvt = friendEvtObj.content;
+        // friendEvtObj.content.extMsg.lastMsg['msg'] = "你有一条消息";
+        // state.dynamicFriendEvt = friendEvtObj.content;
+        state.allMutatualInfo = friendEvtObj
+        console.log('msgCode为1的消息----------------', state.allMutatualInfo)
         break;
       case 2:
-      console.log('点赞详情--------',friendEvtObj)
+        console.log('点赞详情--------', friendEvtObj)
         friendEvtObj.content.extMsg = {
           lastMsg: {},
-          thumbInfo:friendEvtObj.content.extMsg
+          thumbInfo: friendEvtObj.content.extMsg
         };
         friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你点赞啦,希望和成为好友";
-        state.dynamicFriendEvt = friendEvtObj.content;
-        state.friendList = friendEvtObj;
+        // state.dynamicFriendEvt = friendEvtObj.content;
+        state.topUpThumbInfo = friendEvtObj;
         break;
       case 3:
+        if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
+          return false;
+        }
         friendEvtObj.content.extMsg = {
           lastMsg: {},
-          goodInfo:friendEvtObj.content.extMsg
+          goodInfo: friendEvtObj.content.extMsg
         };
-        friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
-        state.dynamicFriendEvt = friendEvtObj.content;
-        console.log('friendEvtObj.content------',friendEvtObj.content)
+        // friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
+        // state.dynamicFriendEvt = friendEvtObj.content;
+        console.log('friendEvtObj.content------', friendEvtObj.content)
         state.topUpGiftInfo = friendEvtObj;
         break;
       case 4:
@@ -214,17 +221,23 @@ const mutations = {
         friendEvtObj.content.extMsg.lastMsg['msg'] = "店长给你发优惠券啦";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
-      case 7:
+      case 7: //约你游戏
+      if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
+        return false;
+      }
         friendEvtObj.content.extMsg = {
           lastMsg: {},
-          gameInfo:friendEvtObj.content.extMsg
+          gameInfo: friendEvtObj.content.extMsg
         };
-        friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
-        state.dynamicFriendEvt = friendEvtObj.content;
+        // friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
+        // state.dynamicFriendEvt = friendEvtObj.content;
         state.topUpGameInfo = friendEvtObj
         console.log('好友邀请你进游戏玩-----------', friendEvtObj)
         break;
       case 8:
+        if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
+          return false;
+        }
         friendEvtObj.content.extMsg = {
           lastMsg: {},
         };
@@ -239,44 +252,44 @@ const mutations = {
         friendEvtObj.content.extMsg.lastMsg['msg'] = "获得分享福利" + shopSendText + "积分";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
-      case 12 : //店长推荐和礼品商城
-      friendEvtObj.content.extMsg = {
-        lastMsg: {},
-        goodInfo:friendEvtObj.content.extMsg
-      };
-      friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
-      state.dynamicFriendEvt = friendEvtObj.content;
-      console.log('friendEvtObj.content------',friendEvtObj.content)
-      state.topUpGiftInfo = friendEvtObj;
-      break
+      case 12: //店长推荐和礼品商城
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+          goodInfo: friendEvtObj.content.extMsg
+        };
+        // friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
+        // state.dynamicFriendEvt = friendEvtObj.content;
+        console.log('friendEvtObj.content------', friendEvtObj.content)
+        state.topUpGiftInfo = friendEvtObj;
+        break
       case 13:
-      friendEvtObj.content.extMsg = {
-        lastMsg: {},
-      };
-      friendEvtObj.content.extMsg.lastMsg['msg'] = "回赞你成为好友啦";
-      state.dynamicFriendEvt = friendEvtObj.content;
-      break;
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+        };
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "回赞你成为好友啦";
+        state.dynamicFriendEvt = friendEvtObj.content;
+        break;
       case 14:
-      friendEvtObj.content.extMsg = {
-        lastMsg: {},
-      };
-      friendEvtObj.content.extMsg.lastMsg['msg'] = "收了你的礼物啦";
-      state.dynamicFriendEvt = friendEvtObj.content;
-      break;
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+        };
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "收了你的礼物啦";
+        state.dynamicFriendEvt = friendEvtObj.content;
+        break;
       case 15:
-      friendEvtObj.content.extMsg = {
-        lastMsg: {},
-      };
-      friendEvtObj.content.extMsg.lastMsg['msg'] = "拒收了你的礼物";
-      state.dynamicFriendEvt = friendEvtObj.content;
-      break;
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+        };
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "拒收了你的礼物";
+        state.dynamicFriendEvt = friendEvtObj.content;
+        break;
       case 16:
-      friendEvtObj.content.extMsg = {
-        lastMsg: {},
-      };
-      friendEvtObj.content.extMsg.lastMsg['msg'] = "拒绝和你玩游戏";
-      state.dynamicFriendEvt = friendEvtObj.content;
-      break;
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+        };
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "拒绝和你玩游戏";
+        state.dynamicFriendEvt = friendEvtObj.content;
+        break;
       default:
         break;
     }
@@ -294,7 +307,7 @@ const mutations = {
   }) {
     state.gift_badgeCount = data.length;
     // console.log('收礼列表-----------------', state.friendGiftList)
-    data.forEach(item=>{
+    data.forEach(item => {
       item.time = util.timestampToTime(item.time);
     })
     state.friendGiftList = data;
@@ -315,15 +328,15 @@ const mutations = {
   //   state.game_badgeCount = state.challengeGameList.length;
   // },
   //统计约战，送礼，点赞数量
-  [types.GET_ALLEVENTS_BADGECOUNT](state,count){
+  [types.GET_ALLEVENTS_BADGECOUNT](state, count) {
     state.manualEventsList_badgeCount = count
   },
   //所有类型的未读消息累加总的未读消息里面
   [types.ADD_BADGE](state) {
     let total = 0;
     // state.gift_badgeCount + state.game_badgeCount+
-    total = state.msg_badgeCount + state.event_badgeCount +state.manualEventsList_badgeCount;
-    console.log('total---------',total)
+    total = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount;
+    console.log('total---------', total)
     state.badgeCount = total;
   },
   //设置候选人聊天的信息

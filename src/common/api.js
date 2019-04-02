@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-03-21 15:00:23
+ * @Last Modified time: 2019-04-01 16:15:35
  */
 
 import axios from 'axios'
@@ -10,6 +10,18 @@ import Url from './config'
 
 let api = {};
 // let tk = "6nWCjZcSLAgxEBBNkYwl8Dxg5Rze8H9PKwWZionHypxeTQ3OO93NHDGncZAsZK92cIypOw=="
+//测试删除好友quitFriend
+api.quitFriend = function (openId) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/quitFriend?tk=${Url.tk}&targetID=${openId}`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //获取用户信息
 api.getUserInfo = function () {
   return new Promise((resolve, reject) => {
@@ -706,7 +718,7 @@ api.loadManagerNoticeInfo = function () {
 //约战
 api.sentPlayGameMsg = function (toUserID) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/sentPlayGameInvite?${Url.tk}&toUserID=${toUserID}`)
+    axios.get(`/api/sentPlayGameInvite?tk=${Url.tk}&toUserID=${toUserID}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -719,7 +731,7 @@ api.sentPlayGameMsg = function (toUserID) {
 //拉取约战列表
 api.loadInviteCombat = function () {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/loadInviteCombat?${Url.tk}`)
+    axios.get(`/api/loadInviteCombat?tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -730,23 +742,23 @@ api.loadInviteCombat = function () {
   })
 }
 //拒绝约战
-api.objectCombat = function (combatID,openid) {
+// api.objectCombat = function (combatID,openid) {
+//   return new Promise((resolve, reject) => {
+//     axios.get(`/api/objectCombat?combatID=${combatID}&tk=${Url.tk}&openID=${openid}`)
+//       .then(res => {
+//         if (res.status == 200) {
+//           console.log('拒绝约占')
+//           resolve(res.data)
+//         }
+//       }).catch(err => {
+//         reject(err)
+//       })
+//   })
+// }
+//约战
+api.responseCombat = function (params) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/objectCombat?combatID=${combatID}&${Url.tk}&openID=${openid}`)
-      .then(res => {
-        if (res.status == 200) {
-          console.log('拒绝约占')
-          resolve(res.data)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-  })
-}
-//删除约战记录
-api.deleteInviteCombat = function (combatID) {
-  return new Promise((resolve, reject) => {
-    axios.get(`/api/deleteCombat?combatID=${combatID}`)
+    axios.post(`/api/responseCombat?tk=${Url.tk}`,params)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -759,7 +771,7 @@ api.deleteInviteCombat = function (combatID) {
 //获取手机验证码
 api.getVerifyCode = function (phoneNumbers) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/getVerifyCode?phoneNumbers=${phoneNumbers}&${Url.tk}`)
+    axios.get(`/api/getVerifyCode?phoneNumbers=${phoneNumbers}&tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -772,7 +784,7 @@ api.getVerifyCode = function (phoneNumbers) {
 //发送手机验证码
 api.checkVerifyCode = function (phoneNumbers, vCode) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/checkVerifyCode?phoneNumbers=${phoneNumbers}&vCode=${vCode}&${Url.tk}`)
+    axios.get(`/api/checkVerifyCode?phoneNumbers=${phoneNumbers}&vCode=${vCode}&tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

@@ -339,11 +339,11 @@ export default {
         }
       });
       //核对员工电话
-      // api.verifyPhoneNumber(this.phone).then(res => {
-      //   console.log('核对员工电话结果-------------------',res);
-      //  }).catch(err => {
-      //   console.log(err);
-      // })
+      api.verifyPhoneNumber(this.phone).then(res => {
+        console.log('核对员工电话结果-------------------',res);
+       }).catch(err => {
+        console.log(err);
+      })
 
     },
     ...mapMutations({

@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-03-12 14:21:38
+ * @Last Modified time: 2019-03-25 14:49:12
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -119,7 +119,6 @@ util.timestampToTimeNoLine = function (timestamp) {
 //计算上线时间
 util.calcOnlineTime = function(visitime){
   let day = Math.floor(visitime / 86400);
-  console.log(day)
   if(visitime>60&&visitime<3600){
     return Math.floor(visitime/60)+"分钟前上线"
   }else if(visitime>3600&&visitime<86400){

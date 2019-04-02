@@ -26,37 +26,97 @@
         </div>
       </transition>
       <transition name="gift-Panel" mode="out-in">
-        <div class="topUpGiftInfo-wrapper" v-if="isShowGiftPanel">
+        <div class="topUpGiftInfo-wrapper" v-if="isShowGiftPanel && allMutatualInfo_temp.isAlreadyFriends">
           <div class="topUpGiftInfo-top">
             <div class="img">
-              <img v-if="(topUpGiftInfo.msgCode == 3|| topUpGiftInfo.msgCode ==12) && giftFlag" class="giftAvatar" :src="topUpGiftInfo.content.fromInfo?topUpGiftInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
-                alt>
-              <img v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag" class="giftAvatar" :src="topUpThumbInfo.content.fromInfo?topUpThumbInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
-                alt>
-              <img v-else="topUpGameInfo.msgCode == 7 && gameFlag" class="giftAvatar" :src="topUpGameInfo.content.fromInfo?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+              <img class="giftAvatar" :src="allMutatualInfo_temp.headimgurl?allMutatualInfo_temp.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
                 alt>
             </div>
             <div class="name">
-              <p class="name" v-if="(topUpGiftInfo.msgCode == 3|| topUpGiftInfo.msgCode ==12) && giftFlag">{{topUpGiftInfo.content.fromInfo?topUpGiftInfo.content.fromInfo.nickname:'店长'}}送您一份礼物</p>
-              <p class="name" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">{{topUpThumbInfo.content.fromInfo?topUpThumbInfo.content.fromInfo.nickname:'朋友'}}给你点赞了</p>
-              <p class="name" v-else="topUpGameInfo.msgCode == 7 && gameFlag">{{topUpGameInfo.content.fromInfo?topUpGameInfo.content.fromInfo.nickname:'朋友'}}约你玩大话骰</p>
+              <p class="name" v-if="allMutatualInfo_temp.type == 3 && giftFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'店长'}}送您一份礼物</p>
+              <p class="name" v-else="allMutatualInfo_temp.type == 4 && gameFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'朋友'}}约你玩大话骰</p>
             </div>
-            <img @click.stop="closeGiftPanel" src="./assets/image/close-round.png" alt class="gift_close">
+            <!-- <img @click.stop="closeGiftPanel" src="./assets/image/close-round.png" alt class="gift_close"> -->
           </div>
           <div class="topUpGiftInfo-middle">
-            <div class="partition_zone" v-if="(topUpGiftInfo.msgCode == 3|| topUpGiftInfo.msgCode ==12)&& giftFlag">
+            <div class="partition_zone" v-if="allMutatualInfo_temp.type == 3 && giftFlag">
               <div class="topUpGiftInfo_left">
-                <img class="giftImg" v-if="topUpGiftInfo.content.extMsg.goodInfo.type==='beer'" src="./assets/image/beer.png" alt>
-                <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.type==='flower'" src="./assets/image/flower.png" alt>
-                <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.type==='house'" src="./assets/image/hutui.png" alt>
-                <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.type==='boat'" src="./assets/image/boat.png" alt>
-                <img class="giftImg" v-else :src="topUpGiftInfo.content.extMsg.goodInfo.image" alt>
+                <img class="giftImg" v-if="allMutatualInfo_temp.name==='beer'" src="./assets/image/beer.png" alt>
+                <img class="giftImg" v-else-if="allMutatualInfo_temp.name==='flower'" src="./assets/image/flower.png" alt>
+                <img class="giftImg" v-else-if="allMutatualInfo_temp.name==='house'" src="./assets/image/hutui.png" alt>
+                <img class="giftImg" v-else-if="allMutatualInfo_temp.name==='car'" src="./assets/image/boat.png" alt>
+                <img class="giftImg" v-else :src="allMutatualInfo_temp.image" alt>
               </div>
               <div class="topUpGiftInfo_right">
-                <p class="desc title_desc">{{topUpGiftInfo.content.extMsg.goodInfo.name}}</p>
-                <p class="desc">{{topUpGiftInfo.content.extMsg.goodInfo.subtopic?topUpGiftInfo.content.extMsg.goodInfo.subtopic:'土豪赠送'}}</p>
-                <p class="desc">{{topUpGiftInfo.content.extMsg.goodInfo.limit?topUpGiftInfo.content.extMsg.goodInfo.limit:""}}</p>
-                <p class="desc title_desc">积分：{{topUpGiftInfo.content.extMsg.goodInfo.integral?topUpGiftInfo.content.extMsg.goodInfo.integral:topUpGiftInfo.content.extMsg.goodInfo.money}}</p>
+                <div>
+                  <p v-if="allMutatualInfo_temp.name=='beer'" class="desc title_desc">啤酒</p>
+                  <p v-else-if="allMutatualInfo_temp.name=='flower'" class="desc title_desc">鲜花</p>
+                  <p v-else-if="allMutatualInfo_temp.name=='house'" class="desc title_desc">别墅</p>
+                  <p v-else-if="allMutatualInfo_temp.name=='car'" class="desc title_desc">邮轮</p>
+                  <p v-else class="desc title_desc">{{allMutatualInfo_temp.name}}</p>
+                </div>
+                <p class="desc">{{allMutatualInfo_temp.subtopic?allMutatualInfo_temp.subtopic:'土豪赠送'}}</p>
+                <p class="desc">{{allMutatualInfo_temp.limit?allMutatualInfo_temp.limit:""}}</p>
+                <p class="desc title_desc">积分：{{allMutatualInfo_temp.integral?allMutatualInfo_temp.integral:allMutatualInfo_temp.money}}</p>
+              </div>
+            </div>
+            <div class="partition_zone" v-else="allMutatualInfo_temp.type == 4 && gameFlag">
+              <div class="topUpGiftInfo_left">
+                <img style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
+              </div>
+              <div class="topUpGiftInfo_right">
+                <p class="desc title_desc">{{allMutatualInfo_temp.combatID?'已在房间等你':'约你玩游戏啦'}}</p>
+                <p class="desc title_sub_desc">{{allMutatualInfo_temp.combatID?'不见不散':'赶紧开房pk吧'}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="topUpGiftInfo-bottom">
+            <div class="bottom_partition" v-if="allMutatualInfo_temp.type == 3 && giftFlag">
+              <div class="handleBtn" @click="respondForGift(allMutatualInfo_temp,false)">拒收</div>
+              <div class="handleBtn" @click="respondForGift(allMutatualInfo_temp,true)">感谢</div>
+              <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
+                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                <span class="scene-text fl">加好友</span>
+              </div>
+            </div>
+            <div class="bottom_partition" v-else="allMutatualInfo_temp.type == 4 && gameFlag">
+              <div class="handleBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
+              <div class="handleBtn" @click="respondForGame(allMutatualInfo_temp)">应战</div>
+            </div>
+          </div>
+        </div>
+        <div class="topUpGiftInfo-wrapper" v-else-if="isShowGiftPanel && !isAlreadyFriend">
+          <div class="topUpGiftInfo-top">
+            <div class="img">
+              <img class="giftAvatar" v-if="topUpGiftInfo.msgCode ==3" :src="topUpGiftInfo.content.fromInfo.headimgurl?topUpGiftInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                alt>
+               <img class="giftAvatar" v-if="topUpThumbInfo.msgCode ==2" :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                alt>
+              <img class="giftAvatar" v-else-if="topUpGameInfo.msgCode ==7" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                alt>
+            </div>
+            <div class="name">
+              <p class="name" v-if="topUpGiftInfo.msgCode == 3 && giftFlag">{{topUpGiftInfo.content.fromInfo.nickname?topUpGiftInfo.content.fromInfo.nickname:'店长'}}送您一份礼物</p>
+              <p class="name" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">{{topUpThumbInfo.content.fromInfo?topUpThumbInfo.content.fromInfo.nickname:'朋友'}}给你点赞了</p>
+              <p class="name" v-else-if="topUpGameInfo.msgCode == 7 && gameFlag">{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:'朋友'}}约你玩大话骰</p>
+            </div>
+          </div>
+          <div class="topUpGiftInfo-middle">
+            <div class="partition_zone" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">
+              <div class="topUpGiftInfo_left">
+                <img class="giftImg" v-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='beer'" src="./assets/image/beer.png" alt>
+                <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='flower'" src="./assets/image/flower.png" alt>
+                <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='house'" src="./assets/image/hutui.png" alt>
+                <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='car'" src="./assets/image/boat.png" alt>
+                <img class="giftImg" v-else :src="topUpGiftInfo.content.extMsg.goodInfo.extInfo.image" alt>
+              </div>
+              <div class="topUpGiftInfo_right">
+                <div>
+                  <p class="desc title_desc">{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.name}}</p>
+                </div>
+                <p class="desc">{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.subtopic?topUpGiftInfo.content.extMsg.goodInfo.extInfo.subtopic:'土豪赠送'}}</p>
+                <p class="desc">{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.limit?topUpGiftInfo.content.extMsg.goodInfo.extInfo.limit:""}}</p>
+                <p class="desc title_desc">积分：{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.integral?topUpGiftInfo.content.extMsg.goodInfo.extInfo.integral:topUpGiftInfo.content.extMsg.goodInfo.extInfo.money}}</p>
               </div>
             </div>
             <div class="partition_zone" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
@@ -64,10 +124,10 @@
                 <img style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/thumb_gift.png" alt>
               </div>
               <div class="topUpGiftInfo_right">
-                <p class="desc title_desc">回赞成好友...</p>
+                <p class="desc title_desc thumb_text">回赞成好友...</p>
               </div>
             </div>
-            <div class="partition_zone" v-else="topUpGameInfo.msgCode == 7 && gameFlag">
+            <div class="partition_zone" v-else-if="topUpGameInfo.msgCode == 7 && gameFlag">
               <div class="topUpGiftInfo_left">
                 <img style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
               </div>
@@ -78,24 +138,25 @@
             </div>
           </div>
           <div class="topUpGiftInfo-bottom">
-            <div class="bottom_partition" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12 )&& giftFlag">
-              <div class="handleBtn" @click="respondForGift(topUpGiftInfo,false)">拒收</div>
-              <div class="handleBtn" @click="respondForGift(topUpGiftInfo,true)">感谢</div>
-              <!-- <div class="checkBox_scene clearfix">
-                <input  type="checkbox" class="checkbox fl">
+            <div class="bottom_partition" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">
+              <div class="handleBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,false)">拒收</div>
+              <div class="handleBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,true)">感谢</div>
+              <div class="checkBox_scene clearfix" v-if="topUpGiftInfo.content.fromInfo.isAlreadyFriends">
+                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
                 <span class="scene-text fl">加好友</span>
-              </div> -->
+              </div>
             </div>
             <div class="bottom_partition" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
               <div class="handleBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'no')">飘过</div>
               <div class="handleBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'yes')">回赞</div>
             </div>
-            <div class="bottom_partition" v-else="topUpGameInfo.msgCode == 7 && gameFlag">
-              <div class="handleBtn" @click="rejectForGame(topUpGameInfo.content.extMsg.gameInfo)">免战</div>
-              <div class="handleBtn" @click="respondForGame(topUpGameInfo.content.extMsg.gameInfo)">应战</div>
+            <div class="bottom_partition" v-else-if="topUpGameInfo.msgCode == 7 && gameFlag">
+              <div class="handleBtn" @click="no_Become_Friend_rejectForGame(topUpGameInfo.content)">免战</div>
+              <div class="handleBtn" @click="no_Become_Friend_respondForGame(topUpGameInfo.content)">应战</div>
             </div>
           </div>
         </div>
+        <!-- <img @click.stop="closeGiftPanel" src="./assets/image/close-round.png" alt class="gift_close"> -->
       </transition>
     </div>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
@@ -132,11 +193,14 @@
         isShowEnvelope: false,
         giftFlag: true,
         thumbFlag: true,
-        gameFlag: true
+        gameFlag: true,
+        isMakeFriendBool: true,
+        allMutatualInfo_temp: {},
+        isAlreadyFriend:false
       };
     },
     computed: {
-      ...mapState(["inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo", "topUpThumbInfo", "topUpGameInfo"]),
+      ...mapState(["inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo", "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo"]),
       ...mapGetters(["qrIsShow"]),
     },
     created() {
@@ -171,6 +235,11 @@
       }
     },
     methods: {
+      //加好友
+      onlineSendGift(e) {
+        console.log(e.target.checked)
+        this.isMakeFriendBool = e.target.checked
+      },
       showDetail() {
         switch (this.messType) {
           case "shareGetIntegral":
@@ -242,6 +311,12 @@
             }
             break;
           default:
+            this.$router.push({
+              name: `message`,
+              params: {
+                routeParamNum: 0
+              }
+            });
             break;
         }
         this.isShowEnvelop = false;
@@ -255,29 +330,100 @@
           }
         });
       },
-      respondForGift(giftInfo, flag) {
+      //未成为好友的送礼回复
+      no_Become_Friend_respondForGift(giftInfo, flag) {
         console.log('giftInfo----------------', giftInfo)
-        let giftType = giftInfo.content.extMsg.goodInfo.integral ? 1 : 0;
         let giftParam = {
           agree: flag, //是否接受
-          recordID: giftInfo.content.extMsg.goodInfo.recordID, //送礼记录ID
-          fromID: giftInfo.content.fromInfo.openid, //赠送者
-          respondType: giftType //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
+          recordID: giftInfo.extMsg.goodInfo.extInfo.recordID, //送礼记录ID
+          fromID: giftInfo.fromInfo.openid, //赠送者
+          respondType: giftInfo.extMsg.goodInfo.msgType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
+          isMakeFriend: this.isMakeFriendBool,
         }
         api.respondForGift(giftParam).then(res => {
           console.log('送礼操作结果-------------------', res);
           if (res.errCode == 0) {
             //重新拉取约战，送礼，点赞列表
-            this._loadMutualEvents();
+            // this._loadMutualEvents();
+            this.isMakeFriendBool = true;
           }
         });
         this.isShowGiftPanel = false;
       },
-      //接受游戏
+      //已成为好友的送礼回复
+      respondForGift(giftInfo, flag) {
+        console.log('giftInfo----------------', giftInfo)
+        let giftParam = {
+          agree: flag, //是否接受
+          recordID: giftInfo.recordID, //送礼记录ID
+          fromID: giftInfo.openid, //赠送者
+          respondType: giftInfo.msgType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
+          isMakeFriend: this.isMakeFriendBool,
+          // chatMsgID: giftInfo.isAlreadyFriends?giftInfo.id:""
+          chatMsgID: giftInfo.id
+        }
+        api.respondForGift(giftParam).then(res => {
+          console.log('送礼操作结果-------------------', res);
+          if (res.errCode == 0) {
+            //重新拉取约战，送礼，点赞列表
+            // this._loadMutualEvents();
+            this.isMakeFriendBool = true;
+          }
+        });
+        this.isShowGiftPanel = false;
+      },
+      //未成为好友拒绝游戏
+      no_Become_Friend_rejectForGame(gameInfo) {
+        console.log('no_Become_Friend_rejectForGame_gameInfo-----------', gameInfo)
+        let params = {
+          agree: false, //是否接受
+          combatID: gameInfo.extMsg.gameInfo.combatID,
+          fromID: gameInfo.fromInfo.openid,
+        }
+        console.log(params)
+        api.responseCombat(params).then(res => {
+          console.log(res)
+          if (res.errCode == 0) {
+            this.isShowGiftPanel = false;
+            console.log('删除结果-----------', res);
+          }
+        })
+      },
+      //未成为好友接受游戏
+      no_Become_Friend_respondForGame(gameInfo) {
+        console.log('no_Become_Friend_respondForGame_gameInfo-----------', gameInfo)
+        let params = {
+          agree: true, //是否接受
+          combatID: gameInfo.extMsg.gameInfo.combatID,
+          fromID: gameInfo.fromInfo.openid,
+        }
+        if (params.combatID) {
+          //约战
+          api.responseCombat(params).then(res => {
+            console.log(res)
+            if (res.errCode == 0) {
+              console.log('删除结果-----------', res);
+              window.location.href = gameInfo.url;
+            }
+          })
+        } else {
+          //应战
+          window.location.href = gameInfo.url
+        }
+      },
+      //成为好友后接受游戏
       respondForGame(gameInfo) {
+        console.log('respondForGame_gameInfo-----------', gameInfo)
+        let params = {
+          agree: true, //是否接受
+          combatID: gameInfo.combatID,
+          fromID: gameInfo.openid,
+          chatMsgID: gameInfo.id
+        }
         if (gameInfo.combatID) {
           //约战
-          api.deleteInviteCombat(gameInfo.combatID).then(res => {
+          api.responseCombat(params).then(res => {
+            console.log(res)
             if (res.errCode == 0) {
               console.log('删除结果-----------', res);
               window.location.href = gameInfo.url;
@@ -290,20 +436,21 @@
       },
       //拒绝游戏
       rejectForGame(gameInfo) {
-        console.log(gameInfo)
-        // if (gameInfo.combatID) {
-          //应战拒绝
-          api.objectCombat(gameInfo.combatID,gameInfo.inviterID).then(res => {
-            console.log(res)
-            if (res.errCode == 0) {
-              this.isShowGiftPanel = false;
-              console.log('删除结果-----------', res);
-            }
-          })
-        // } else {
-        //   //约战拒绝
-        //   this.isShowGiftPanel = false;
-        // }
+        console.log('rejectForGame_gameInfo0-----------', gameInfo)
+        let params = {
+          agree: false, //是否接受
+          combatID: gameInfo.combatID,
+          fromID: gameInfo.openid,
+          chatMsgID: gameInfo.id
+        }
+        console.log(params)
+        api.responseCombat(params).then(res => {
+          console.log(res)
+          if (res.errCode == 0) {
+            this.isShowGiftPanel = false;
+            console.log('删除结果-----------', res);
+          }
+        })
       },
       //拉取约战、点赞、送礼列表
       _loadMutualEvents() {
@@ -329,6 +476,13 @@
       closeGiftPanel() {
         this.isShowGiftPanel = false;
       },
+      //判断弹框布尔值
+      judgeEveryBool(isShowGiftPanel,gameFlag,giftFlag,thumbFlag){
+          this.isShowGiftPanel = isShowGiftPanel;
+          this.gameFlag = gameFlag;
+          this.giftFlag = giftFlag;
+          this.thumbFlag = thumbFlag;
+        },
       ...mapMutations({
         // updateChatList: "UPDATE_CHATLIST",//更新聊天列表
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
@@ -353,15 +507,48 @@
           }, 10000);
         }
       },
+      allMutatualInfo: function(newValue) {
+        let contentStruct = newValue.content.extMsg.allInfo.lastMsg;
+        let fromImfo = newValue.content.fromInfo;
+        this.isShowGiftPanel = true;
+        this.isAlreadyFriend = true;
+        this.allMutatualInfo_temp = {
+          openid: fromImfo.openid,
+          type: contentStruct.type,
+          nickname: fromImfo.nickname,
+          headimgurl: fromImfo.headimgurl,
+          id: contentStruct.id ? contentStruct.id : "",
+          isAgree: contentStruct.chatExtMsg.isAgree,
+          name: contentStruct.chatExtMsg.extMsg.name ? contentStruct.chatExtMsg.extMsg.name : "",
+          isAlreadyFriends: fromImfo.isAlreadyFriends,
+          limit: contentStruct.chatExtMsg.extMsg.limit ? contentStruct.chatExtMsg.extMsg.limit : "",
+          image: contentStruct.chatExtMsg.extMsg.image ? contentStruct.chatExtMsg.extMsg.image : "",
+          msgType: contentStruct.chatExtMsg.msgType,
+          isHandled: contentStruct.chatExtMsg.isHandled,
+          couponID: contentStruct.chatExtMsg.extMsg.couponID ? contentStruct.chatExtMsg.extMsg.couponID : "",
+          integral: contentStruct.chatExtMsg.extMsg.integral ? contentStruct.chatExtMsg.extMsg.integral : "",
+          recordID: contentStruct.chatExtMsg.extMsg.recordID ? contentStruct.chatExtMsg.extMsg.recordID : "",
+          subtopic: contentStruct.chatExtMsg.extMsg.subtopic ? contentStruct.chatExtMsg.extMsg.subtopic : "",
+          money: contentStruct.chatExtMsg.extMsg.money ? contentStruct.chatExtMsg.extMsg.money : "",
+          combatID: contentStruct.chatExtMsg.extMsg.combatID ? contentStruct.chatExtMsg.extMsg.combatID : "",
+          headImgURL: contentStruct.chatExtMsg.extMsg.headImgURL ? contentStruct.chatExtMsg.extMsg.headImgURL : "",
+          inviterID: contentStruct.chatExtMsg.extMsg.inviterID ? contentStruct.chatExtMsg.extMsg.inviterID : "",
+          // nickName:contentStruct.chatExtMsg.extMsg.nickName?contentStruct.chatExtMsg.extMsg.nickName:"",
+          url: contentStruct.chatExtMsg.extMsg.url ? contentStruct.chatExtMsg.extMsg.url : "",
+        }
+        console.log("allMutatualInfo---------------------", this.allMutatualInfo_temp);
+        if (this.allMutatualInfo_temp.type == 3) {
+          this.giftFlag = true;
+          this.gameFlag = false;
+        } else if (this.allMutatualInfo_temp.type == 4) {
+          this.giftFlag = false;
+          this.gameFlag = true;
+        }
+      },
       topUpGiftInfo: function(newValue) {
         console.log('topUpGiftInfo----------', newValue)
-        this.isShowEnvelop = false;
-        this.isShowGiftPanel = true;
-        this.giftFlag = true;
-        this.thumbFlag = false;
-        this.gameFlag = false;
-        console.log(newValue.content.extMsg.goodInfo.name)
-        switch (newValue.content.extMsg.goodInfo.name) {
+        this.judgeEveryBool(true,false,true,false);
+        switch (newValue.content.extMsg.goodInfo.extInfo.name) {
           case 'beer':
             this.addGiftInfo({
               nameValue: "啤酒",
@@ -393,19 +580,11 @@
       },
       topUpThumbInfo: function(newValue) {
         console.log('topUpThumbInfo-------------', newValue)
-        this.isShowEnvelop = false;
-        this.isShowGiftPanel = true;
-         this.thumbFlag = true;
-        this.giftFlag = false;
-        this.gameFlag = false;
+        this.judgeEveryBool(true,false,false,true);
       },
       topUpGameInfo: function(newValue) {
         console.log('topUpGameInfo-------------', newValue)
-        this.isShowEnvelop = false;
-        this.isShowGiftPanel = true;
-        this.gameFlag = true;
-        this.giftFlag = false;
-        this.thumbFlag = false;
+        this.judgeEveryBool(true,true,false,false);
       },
       $route: function(newValue) {
         //隐藏导航
@@ -649,6 +828,9 @@
           }
           .topUpGiftInfo_right {
             // margin-top: 0.14rem;
+            .thumb_text{
+font-size: 0.4467rem;
+            }
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -665,7 +847,7 @@
             }
             .title_sub_desc {
               color: #5B5B5B;
-              font-size: 0.32rem;
+              font-size: 0.3467rem;
               font-weight: 600
             }
           }
@@ -678,21 +860,21 @@
           margin-top: 0.1667rem;
           padding: 0 1rem;
           padding-bottom: 0.3333rem;
-          position: relative; 
-           .checkBox_scene{
+          position: relative;
+          .checkBox_scene {
             position: absolute;
             bottom: 0.2667rem;
             right: 0.2867rem;
             .checkbox {
-            width: 0.4rem;
-            height: 0.4rem;
-            vertical-align:middle
-          }
-          .scene-text {
-            font-weight: 600;
-            padding-bottom: 0.0533rem;
-            vertical-align:middle
-          }
+              width: 0.4rem;
+              height: 0.4rem;
+              vertical-align: middle
+            }
+            .scene-text {
+              font-weight: 600;
+              padding-bottom: 0.0533rem;
+              vertical-align: middle
+            }
           }
         }
         .handleBtn {

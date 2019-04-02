@@ -14,23 +14,55 @@
         <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
         <scroll ref="listView" class="chat_content" :scrollHeight="scrollHeight" :scrollToDomElement="scrollToDomElement" :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
           <ul class="chat_list" ref="chatList">
-            <li class="clearfix" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" v-for="(item,index) in componentChatList">
-              <div class="person_box">
-                <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
-                <img :src="staticChatFriendObj.headimgurl" alt class="avatar" v-if="item.friend">
-                <img :src="userInfo.headimgurl" alt class="avatar" v-else>
+            <li class="clearfix chatListItem" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" v-for="(item,index) in componentChatList">
+              <div v-if="item.type==1" class="message_wrapper">
+                <div class="person_box">
+                  <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
+                  <img :src="staticChatFriendObj.headimgurl" alt class="avatar" v-if="item.friend">
+                  <img :src="userInfo.headimgurl" alt class="avatar" v-else>
+                </div>
+                <div class="message_box">
+                  <span v-show="item.type===1" class="arrow"></span>
+                  <p class="message" v-if="item.type===1" v-html="item.message"></p>
+                  <img v-else :src="item.message" @load="onImgLoaded" alt class="messRecordPic" @click="showBigPic(item.message)" ref="picture">
+                </div>
               </div>
-              <div class="message_box">
-                <span v-show="item.type===1" class="arrow"></span>
-                <p class="message" v-if="item.type===1" v-html="item.message"></p>
-                <img v-else :src="item.message" @load="onImgLoaded" alt class="messRecordPic" @click="showBigPic(item.message)" ref="picture">
+              <div v-else-if="item.type==3" class="gift_wrapper">
+                <p class="giftRecord_time">{{item.time}}</p>
+                <div>
+                  <div v-if="item.isHandled">
+                    <p v-if="item.from==userInfo.openid" class="giftRecord_test received">{{staticChatFriendObj.nickname}}{{item.isAgree?"感谢送的礼物，很喜欢":"无功不受禄，不好意思收礼"}}</p>
+                    <p v-else class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?"感谢送的礼物，很喜欢":"无功不受禄，不好意思收礼"}}</p>
+                  </div>
+                  <div v-else>
+                    <div>
+                      <p v-if="item.from==userInfo.openid" class="giftRecord_test no_received">{{userInfo.nickname}}送{{staticChatFriendObj.nickname}}一份精美礼物</p>
+                      <p v-else class="giftRecord_test no_received">{{staticChatFriendObj.nickname}}送{{userInfo.nickname}}一份精美礼物<span @click="respondForGift(item,false)" class="no">拒收</span><span @click="respondForGift(item,true)" class="yes">感谢</span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-else-if="item.type==4" class="gift_wrapper">
+                <p class="giftRecord_time">{{item.time}}</p>
+                <div>
+                  <div v-if="item.isHandled">
+                    <p v-if="item.from==userInfo.openid" class="giftRecord_test received">{{staticChatFriendObj.nickname}}{{item.isAgree?"应战了大话骰游戏":"免战大话骰比赛，改天有空再玩"}}</p>
+                    <p v-else class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?"应战了大话骰游戏":"免战大话骰比赛，改天有空再玩"}}</p>
+                  </div>
+                  <div v-else>
+                    <div>
+                       <p v-if="item.from==userInfo.openid" class="giftRecord_test no_received">{{userInfo.nickname}}约{{staticChatFriendObj.nickname}}玩一把游戏</p>
+                       <p v-else class="giftRecord_test no_received">{{staticChatFriendObj.nickname}}约{{userInfo.nickname}}玩一把游戏<span @click="rejectForGame(item)" class="no">免战</span><span @click="respondForGame(item)" class="yes">应战</span></p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </li>
           </ul>
         </scroll>
         <!-- <div class="loading-container" v-show="isLoading">
-                        <loading></loading>
-              </div>-->
+                                                <loading></loading>
+                                </div>-->
       </div>
       <div class="input_wrapper">
         <div class="input_area clearfix">
@@ -54,6 +86,9 @@
             <li class="item fl">
               <img src="../../assets/image/chat_pic.png" alt>
               <input type="file" class="file" accept="image/*" @change="uploadImage">
+            </li>
+            <li class="item fl">
+              <img src="../../assets/image/hei.png" alt @click="laHei(true)">
             </li>
             <li class="item fl" @click="playGame" style="padding:.06rem">
               <img src="../../assets/image/game.png" alt class="game" style="width:0.8069rem;height:0.8067rem">
@@ -80,36 +115,50 @@
       </div>
       <!-- 送礼 -->
       <!-- <div v-transfer-dom>
-              <popup v-model="showToast_gift" position="bottom">
-                <div class="position-vertical-demo">
-                  <div class="title vux-1px-b">
-                    <span>送个小礼，就是好朋友</span>
-                    <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
-                  </div>
-                  <div class="gift_list">
-                    <ul class="list clearfix">
-                      <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
-                        <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
-                        <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
-                        <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
-                        <img v-else src="../../assets/image/car.png" alt="" class="car">
-                        <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
-                        <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
-                        <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
-                        <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
-                        <p class="gift_price">￥{{item.money}}</p>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </popup>
-            </div>-->
+                                      <popup v-model="showToast_gift" position="bottom">
+                                        <div class="position-vertical-demo">
+                                          <div class="title vux-1px-b">
+                                            <span>送个小礼，就是好朋友</span>
+                                            <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
+                                          </div>
+                                          <div class="gift_list">
+                                            <ul class="list clearfix">
+                                              <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
+                                                <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
+                                                <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
+                                                <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
+                                                <img v-else src="../../assets/image/car.png" alt="" class="car">
+                                                <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
+                                                <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
+                                                <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
+                                                <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
+                                                <p class="gift_price">￥{{item.money}}</p>
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </div>
+                                      </popup>
+                              </div>-->
+      <!-- 删除警告 -->
+      <transition name="appear">
+        <div class="warning_bg" v-if="showLaHeiPanel">
+          <div class="warning_wrapper">
+            <p class="warningText">确定拉黑好友吗</p>
+            <div class="btnBox">
+              <button class="yes" @click="quitFriend">确定</button>
+              <button class="no" @click="laHei(false)">取消</button>
+            </div>
+          </div>
+        </div>
+      </transition>
       <!-- 信封弹框 -->
       <transition name="appear">
         <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
       </transition>
       <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
-      <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
+      <keep-alive>
+        <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
+      </keep-alive>
     </div>
   </transition>
 </template>
@@ -161,6 +210,7 @@
         fatherPanelIndex: 1,
         isGiftPanel: false,
         friendId: "",
+        showLaHeiPanel: false,
         expressionList: [
           "您好，很高兴可以成为好朋友",
           "过来喝一杯？",
@@ -297,6 +347,96 @@
       ...mapGetters(["qrIsShow", "LastChatMsg"]),
     },
     methods: {
+      //接受或拒绝礼物
+      respondForGift(giftInfo, flag) {
+        console.log('giftInfo----------------', giftInfo)
+        let giftParam = {
+          agree: flag, //是否接受
+          recordID: giftInfo.recordID, //送礼记录ID
+          fromID: giftInfo.from, //赠送者
+          respondType: giftInfo.msgType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
+          chatMsgID: giftInfo.chatMsgID
+        }
+        api.respondForGift(giftParam).then(res => {
+          console.log('送礼操作结果-------------------', res);
+          if (res.errCode == 0) {
+            this.componentChatList.forEach(item => {
+              if (giftParam.chatMsgID == item.chatMsgID) {
+                item.isHandled = true
+                if (giftParam.agree) {
+                  item.isAgree = true;
+                } else {
+                  item.isAgree = false;
+                }
+              }
+              this.$refs.listView.refresh()
+            })
+          }
+        });
+      },
+      //接受游戏
+      respondForGame(gameInfo) {
+        console.log('gameInfo-----------', gameInfo)
+        let params = {
+          agree: true, //是否接受
+          combatID: gameInfo.combatID,
+          fromID: gameInfo.from,
+          chatMsgID: gameInfo.chatMsgID
+        }
+        if (gameInfo.combatID) {
+          //约战
+          api.responseCombat(params).then(res => {
+            console.log(res)
+            if (res.errCode == 0) {
+              console.log('删除结果-----------', res);
+              window.location.href = gameInfo.url;
+            }
+          })
+        } else {
+          //应战
+          window.location.href = gameInfo.url
+        }
+      },
+      //拒绝游戏
+      rejectForGame(gameInfo) {
+        console.log('gameInfo0-----------', gameInfo)
+        let params = {
+          agree: false, //是否接受
+          combatID: gameInfo.combatID,
+          fromID: gameInfo.from,
+          chatMsgID: gameInfo.chatMsgID
+        }
+        console.log(params)
+        api.responseCombat(params).then(res => {
+          console.log(res)
+          if (res.errCode == 0) {
+            this.componentChatList.forEach(item => {
+              if (params.chatMsgID == item.chatMsgID) {
+                item.isHandled = true
+                if (params.agree) {
+                  item.isAgree = true;
+                } else {
+                  item.isAgree = false;
+                }
+              }
+            })
+            this.$refs.listView.refresh()
+            console.log('删除结果-----------', res);
+          }
+        })
+      },
+      laHei(flag) {
+        this.showLaHeiPanel = flag;
+      },
+      //删除好友
+      quitFriend() {
+        api.quitFriend(this.staticChatFriendObj.openid).then(res => {
+          console.log("删除结果-------", res)
+          this.$router.push({
+            name: "message"
+          })
+        })
+      },
       //监听充值面板状态
       closeIntegralPanel(flag) {
         console.log('面板状态-----------', flag);
@@ -319,7 +459,7 @@
         })
       },
       onImgLoaded() {
-        console.log('图片加载完成了')
+        console.log('图片加载完成了') 
         this.$refs.listView.refresh();
       },
       // 选择表情
@@ -364,10 +504,42 @@
               message: item.content,
               friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
               type: item.type,
-              time: util.timestampToTime(item.stime)
+              time: util.timestampToTime(item.stime),
+              chatExtMsg: item.type == 3 ? item.chatExtMsg.extMsg : "",
+              from: item.from,
+              chatMsgID: item.id,
+              isAgree: item.chatExtMsg ? item.chatExtMsg.isAgree : "",
+              isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : "",
+              msgType: item.chatExtMsg ? item.chatExtMsg.msgType : '',
+              couponID: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.couponID:"") : '',
+              recordID: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.recordID:"") : '',
+              name: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.name:"") : '',
+              combatID: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.combatID:"") : '',
+              inviterID: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.inviterID:"") : '',
+              url: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.url:"") : '',
             });
           }
+          console.log('聊天记录-------', this.componentChatList)
+          this.componentChatList.forEach(item => {
+            switch (item.chatExtMsg?item.chatExtMsg.name:"") {
+              case "beer":
+                item.chatExtMsg.name = "啤酒"
+                break;
+              case "flower":
+                item.chatExtMsg.name = "鲜花"
+                break;
+              case "house":
+                item.chatExtMsg.name = "别墅"
+                break;
+              case "car":
+                item.chatExtMsg.name = "邮轮"
+                break;
+              default:
+                break;
+            }
+          })
           this.$refs.listView.finishPullDown();
+          this.$refs.listView.refresh()
         });
       },
       //发送消息事件
@@ -435,6 +607,7 @@
                   type: 2,
                   time: util.timestampToTime(new Date().getTime())
                 });
+                this.$refs.listView.refresh()
               })
               .catch(err => {
                 console.log(err);
@@ -443,6 +616,7 @@
           .catch(function(err) {
             vm.$toast("压缩图片失败");
           });
+
       },
       //展示大图片
       showBigPic(pic) {
@@ -463,33 +637,43 @@
         }
         let cursor = this.alreadyFriendListcursor;
         // this.isLoading = true;
-        api
-          .getFriendMessList(cursor, this.staticChatFriendObj.openid)
-          .then(res => {
-            console.log(res);
-            if (!res.messages.length) {
-              //如果有新消息才更改游标
-              return;
-            }
-            this.endCursor = res.cursor;
-            this.changeCursor(res.cursor);
-            //this.isLoading = false; //加载loading
-            this.isscroll = false; //判断下拉刷新
-            let resultMessList = res.messages;
-            var i;
-            for (i = resultMessList.length - 1; i >= 0; i--) {
-              let item = resultMessList[i];
-              this.componentChatList.unshift({
-                message: item.content,
-                friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
-                time: util.timestampToTime(item.stime),
-                type: item.type
-              });
-            }
-            this.$refs.listView.finishPullDown();
-            this.$refs.listView.scrollTo(0, 0, 1000);
-            // this.$refs.listView.disable();
-          });
+        api.getFriendMessList(cursor, this.staticChatFriendObj.openid).then(res => {
+          console.log(res);
+          if (!res.messages.length) {
+            //如果有新消息才更改游标
+            return;
+          }
+          this.endCursor = res.cursor;
+          this.changeCursor(res.cursor);
+          //this.isLoading = false; //加载loading
+          this.isscroll = false; //判断下拉刷新
+          let resultMessList = res.messages;
+          var i;
+          for (i = resultMessList.length - 1; i >= 0; i--) {
+            let item = resultMessList[i];
+            this.componentChatList.unshift({
+              message: item.content,
+              friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
+              type: item.type,
+              time: util.timestampToTime(item.stime),
+              chatExtMsg: item.type == 3 ? item.chatExtMsg.extMsg : "",
+              from: item.from,
+              chatMsgID: item.id,
+              isAgree: item.chatExtMsg ? item.chatExtMsg.isAgree : '',
+              isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : '',
+              msgType: item.chatExtMsg ? item.chatExtMsg.msgType : '',
+              couponID: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.couponID:"") : '',
+              recordID: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.recordID:"") : '',
+              name: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.name:"") : '',
+              combatID: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.combatID:"") : '',
+              inviterID: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.inviterID:"") : '',
+              url: item.chatExtMsg ? (item.chatExtMsg.extMsg?item.chatExtMsg.extMsg.url:"") : '',
+            });
+          }
+          this.$refs.listView.finishPullDown();
+          this.$refs.listView.scrollTo(0, 0, 1000);
+          this.$refs.listView.refresh();
+        });
       },
       getIndex(val) {
         console.log("getIndex--------------------------:", val);
@@ -513,6 +697,7 @@
       //返回
       goBack() {
         this.$router.go(-1);
+        this.setChatFriend({});
       },
       //返回主页
       goHome() {
@@ -561,6 +746,7 @@
         this.isscroll = true; //允许动态滚动到最底部记录
       },
       ...mapMutations({
+         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         updateChatList: "UPDATE_CHATLIST",
         showQrcode: "SHOW_QRCODE", //暂时二维码
         updateValue: "UPDATE_INPUTVALUE",
@@ -571,16 +757,29 @@
     watch: {
       LastChatMsg: function(newValue) {
         console.log('在聊天页面收到对方发来的消息-------------------------------：', newValue);
+        let messageInfo = newValue.lastMsg;
         if (newValue.lastMsg.from == this.staticChatFriendObj.openid) {
           //判断是否是进入时原来的两个人进行聊天
           console.log('我进来了')
           this.componentChatList.push({
-            message: newValue.lastMsg.content,
-            friend: newValue.lastMsg.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
-            type: newValue.lastMsg.type,
-            time: newValue.lastMsg.stime
+            message: messageInfo.content ? messageInfo.content : "",
+            friend: messageInfo.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
+            from: messageInfo.from,
+            type: messageInfo.type, //1 聊天消息 2.图标，3.送礼，4.约战
+            time: messageInfo.stime,
+            chatMsgID: messageInfo.id,
+            isAgree: messageInfo.chatExtMsg ? messageInfo.chatExtMsg.isAgree : '',
+            isHandled: messageInfo.chatExtMsg ? messageInfo.chatExtMsg.isHandled : '',
+            msgType: messageInfo.chatExtMsg ? messageInfo.chatExtMsg.msgType : '',
+            couponID: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg?messageInfo.chatExtMsg.extMsg.couponID:"") : '',
+            recordID: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg?messageInfo.chatExtMsg.extMsg.recordID:"") : '',
+            name: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg?messageInfo.chatExtMsg.extMsg.name:"") : '',
+            combatID: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg?messageInfo.chatExtMsg.extMsg.combatID:"") : '',
+            inviterID: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg?messageInfo.chatExtMsg.extMsg.inviterID:"") : '',
+            url: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg?messageInfo.chatExtMsg.extMsg.url:"") : '',
           });
           console.log('聊天记录-------------', this.componentChatList)
+          this.$refs.listView.refresh();
         }
       },
       input_value: function(newValue, oldValue) {
@@ -667,7 +866,7 @@
     }
     .chat_wrapper {
       flex: 1;
-      padding: 0.1333rem 0.3733rem 0rem;
+      padding: 0 0.3733rem;
       background: #eee;
       overflow-y: auto;
       position: relative;
@@ -687,8 +886,11 @@
       .chat_content {
         height: 100%;
         .chat_list {
+          .chatListItem{
+            padding:0.4rem 0;
+            box-sizing: border-box;
+          }
           .friend {
-            margin-bottom: 0.4667rem;
             .chatList(left, #fff);
             .arrow {
               .arrowDot(#fff);
@@ -700,7 +902,6 @@
           }
           .mine {
             width: 100%;
-            margin-bottom: 0.4667rem;
             .chatList(right, #ffd800);
             .arrow {
               .arrowDot(#ffd800);
@@ -711,6 +912,43 @@
             }
             .messRecordPic {
               width: 1.8rem;
+            }
+          }
+          .gift_wrapper {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .giftRecord_test {
+              max-width: 100%;
+              display: inline-block;
+              padding: 0.08rem 0.1067rem;
+              background: rgba(0, 0, 0, 0.2);
+              border-radius: 0.08rem;
+              color: #fff;
+              .yes {
+                text-decoration: underline;
+                color: red;
+                font-size: 0.4rem;
+                font-weight: 800;
+              }
+              .no {
+                margin-left: 0.4333rem;
+                margin-right: 0.4333rem;
+                text-decoration: underline;
+                color: red;
+                font-size: 0.4rem;
+                font-weight: 800;
+              }
+            }
+            .received {}
+            .no_received {
+              background: rgba(0, 0, 0, 0.5);
+              max-width: 100%;
+            }
+            .giftRecord_time {
+              display: inline-block;
+              color: rgb(34, 26, 26);
             }
           }
         }
@@ -811,6 +1049,48 @@
             color: #333;
             background: #eee;
             text-indent: 0.4667rem;
+          }
+        }
+      }
+    }
+    .warning_bg {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0; // background-color: rgba(0, 0, 0, 0.3);
+      .warning_wrapper {
+        background-image: url("../../assets/image/envelop.png");
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        margin-left: -3rem;
+        margin-top: -1rem;
+        width: 6rem;
+        height: 3rem;
+        box-sizing: border-box;
+        padding-top: 0.66rem;
+        .warningText {
+          width: 100%;
+          text-align: center;
+          color: #333;
+          font-size: 0.4333rem;
+          font-weight: 800;
+        }
+        .btnBox {
+          margin-top: .5rem;
+          text-align: center;
+          display: flex;
+          justify-content: space-around;
+          padding: 0 0.4rem;
+          .yes,
+          .no {
+            border: none;
+            border-radius: 0.1067rem;
+            padding: 0.2067rem 0.3333rem;
+            background-color: #ffd800;
           }
         }
       }

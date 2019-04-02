@@ -4,7 +4,7 @@
     <div class="personInfo_wrapper">
       <div class="person_info">
         <img :src="userInfo.headimgurl" alt class="avatar">
-        <p class="name">{{userInfo.nickname||'小龙女'}}</p>
+        <p class="name">{{userInfo.nickname||'游客'}}</p>
         <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->
         <span class="bindTel" @click="showTelBind" v-if="!userInfo.phone">绑定手机</span>
         <span class="bindTel1" v-else>{{userInfo.phone}}</span>
@@ -243,7 +243,7 @@ export default {
       })
     },
     gameShare() {
-      window.location.href = `${this.shareUrl}/game/`;
+      window.location.href = `${this.shareUrl}/game/game3`;
     },
     inviteShare() {
       this.$router.push({
@@ -255,18 +255,6 @@ export default {
         name: "home"
       })
     },
-    // chooseImage() {
-    //   console.log("images");
-    //   wx.chooseImage({
-    //     count: 1, // 默认9
-    //     sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-    //     sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-    //     success: function (res) {
-    //       var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-    //       console.log(localIds);
-    //     }
-    //   });
-    // },
     //查看优惠券
     checkDiscout() {
       util.routerTo("card", this);

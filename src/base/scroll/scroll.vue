@@ -67,7 +67,7 @@
     mounted() {
       setTimeout(() => {
         this._initScroll();
-      }, 17);
+      }, 20);
     },
     methods: {
       _initScroll() {
@@ -156,8 +156,7 @@
       },
       data(newValue) {
         let len = newValue.length;
-        // console.log('scrollData---------------------', this.data);
-        // console.log('scroll里面的聊天数量：',len);
+        console.log('scrollData---------------------', this.data);
         this.$emit("getIndex", len);
         setTimeout(() => {
           this.refresh();

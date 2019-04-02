@@ -75,7 +75,7 @@
             <p class="title">{{componentGiftInfo.goods.name}}</p>
             <p class="desc">{{componentGiftInfo.goods.subtopic}}</p>
             <p class="limit">{{componentGiftInfo.goods.limit}}</p>
-            <p class="price" v-if="componentConvertType===0 ||componentConvertType===1||componentConvertType===2 ||componentConvertType===3">特惠 ￥{{componentGiftInfo.goods.discountPrice}}</p>
+            <p class="price" v-if="componentConvertType===0 ||componentConvertType===1||componentConvertType===2 ||componentConvertType===3">原价￥{{componentGiftInfo.goods.discountPrice}}&nbsp;&nbsp;&nbsp;<span style="color:red">积分换${{componentGiftInfo.goods.integral}}</span></p>
             <p class="price" v-else>对方将收到{{componentGiftInfo.goods.integral}}积分</p>
           </div>
         </div>
@@ -238,7 +238,7 @@
       },
       closeIntegralPanel() {
         this.$emit("closeIntegralPanel", false);
-        // this.panelIndex = 1;
+        this.panelIndex = 1;
       },
       // 前往充值
       gotoTopUp() {
@@ -652,7 +652,7 @@
           }
           .title {
             font-weight: 600;
-            font-size: 0.4rem;
+            font-size: 0.41rem;
           }
           .desc {
             color: #ccc;
