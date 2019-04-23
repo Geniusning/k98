@@ -31,7 +31,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations,mapGetters } from "vuex";
 import { Tabbar, TabbarItem } from "vux";
 export default {
   name: "tab",
@@ -39,7 +39,7 @@ export default {
     return {
       active: false,
       index: 0,
-      count: "",
+      // count: "",
       friendUlr: "/friend?id=0"
     };
   },
@@ -51,7 +51,10 @@ export default {
   },
   created() {},
   computed: {
-    ...mapState(["badgeCount"])
+    ...mapGetters(["badgeCount"]),
+    count(){
+      return (this.badgeCount > 0 ? this.badgeCount : "").toString()
+    }
   },
   mounted() {},
   methods: {
@@ -60,10 +63,10 @@ export default {
     }
   },
   watch: {
-    badgeCount(newValue) {
-      console.log("badgeCount----------watch",newValue);
-      this.count = (newValue > 0 ? newValue : "").toString();
-    }
+    // badgeCount(newValue) {
+    //   console.log("badgeCount----------watch",newValue);
+    //   this.count = (newValue > 0 ? newValue : "").toString();
+    // }
   },
   components: {
     Tabbar,

@@ -106,8 +106,8 @@
           </p>
       </div>-->
       <!-- 分享赚积分 -->
-      <div class="marketing_wrapper">
-        <!-- <div class="marketing_wrapper" v-show="userInfo.role"> -->
+      <!-- <div class="marketing_wrapper"> -->
+        <div class="marketing_wrapper" v-show="userInfo.role">
         <h2 class="marketing_title">
           分享赚积分
           <span class="star">#</span>
@@ -125,14 +125,6 @@
             <div class="marketing-left">大话争霸赛</div>
             <div class="marketing-right" @click="gameShare">分享-></div>
           </li>
-          <!-- <li class="marketing-item">
-                    <div class="marketing-left">
-                      门店活动通知
-                    </div>
-                    <div class="marketing-right" @click="activetyShare">
-                      分享->
-                    </div>
-          </li>-->
         </ul>
       </div>
     </div>

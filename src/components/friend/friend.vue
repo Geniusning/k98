@@ -354,6 +354,7 @@
         let openId= data.info.openid;
         this.friendId = openId;
         // this.setChatFriend(data);
+        this.friendInfo = data;
         this.isFriend = data.isAlreadyFriend;
         this.xid = openId;
         this.isInDoor = data.isInDoor
@@ -393,7 +394,8 @@
       chat() {
         // util.routerTo("chat", this);
         this.$router.push({
-          path: `/message/${this.friendId}`
+          path: `/message/${this.friendId}`,
+          query:this.friendInfo
         });
       },
       //玩游戏

@@ -52,7 +52,7 @@
               <p class="message" style="color:#333" v-else-if="item.id==3">{{item.from.nickname}}送你一个别墅</p>
               <p class="message" style="color:#333" v-else-if="item.id==4">{{item.from.nickname}}送你一个跑车</p>
               <p class="message" style="color:#333" v-else-if="item.integral">{{item.from.nickname}}送你{{item.name}}</p>
-              <p class="message" v-else>{{item.from.nickname}}给你点个赞</p>
+              <p class="message" v-else>{{item.from.nickname}}给你点赞,请求加好友</p>
             </div>
           </div>
           <div class="thumb_wrapper">
@@ -65,12 +65,16 @@
               <p class=" back_thumb vux-1px fl" @click="respondForGift(item,true)">感谢</p>
             </div>
             <div class="clearfix" v-else>
-              <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">飘过</p>
-              <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">回赞</p>
+              <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">拒绝</p>
+              <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">接受</p>
             </div>
             <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
               <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
             </div>
+          </div>
+          <div class="checkBox_scene clearfix" v-show="!item.evtType">
+                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                <span class="scene-text fl">加好友</span>
           </div>
         </li>
         <p v-if="!mutualEventsList.length" class="noContent">暂无数据</p>
@@ -105,7 +109,7 @@
       </ul>
       <!-- 通知 -->
       <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShow==3">
-        <!-- <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index">
+        <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index">
               <div class="info_message">
                 <div class="avatar">
                   <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
@@ -116,7 +120,7 @@
                     <{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
                 </div>
               </div>
-            </li> -->
+            </li>
       </ul>
       <!-- 点赞列表 -->
       <!-- <ul class="newMessage_list" v-else-if="isShow===4">
@@ -153,7 +157,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
-  import api from "common/api";
+  import api from "common/api"
   import Scroll from 'base/scroll/scroll'
   import {
     mapMutations,
@@ -181,7 +185,8 @@
         mutualEventsList: [],
         position: "default",
         thumb_flag: true, //回赞的box的flag
-        showPositionValue: false //回赞的toast的flag
+        showPositionValue: false, //回赞的toast的flag
+        isMakeFriendBool:true,
       };
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
@@ -237,6 +242,11 @@
       // console.log("组件销毁");
     },
     methods: {
+      //勾选是否加好友
+      onlineSendGift(e) {
+        console.log(e.target.checked)
+        this.isMakeFriendBool = e.target.checked
+      },
       selectList(index) {
         this.isShow = index;
       },
@@ -270,7 +280,8 @@
           agree: flag, //是否接受
           recordID: giftInfo.giftRecordID, //送礼记录ID
           fromID: giftInfo.from.openid, //赠送者
-          respondType: giftType //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
+          respondType: giftType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
+          isMakeFriend: this.isMakeFriendBool,
         }
         api.respondForGift(giftParam).then(res => {
           console.log('送礼操作结果-------------------', res);
@@ -359,33 +370,33 @@
         })
       },
       //拉取约战列表
-      _loadInviteCombat() {
-        api.loadInviteCombat().then(res => {
-          console.log('约战列表--------------', res);
-          if (res.errCode == 0) {
-            if (res.inviteCombatInfo.length == 0) {
-              // this.clearChallengeGameList();
-              // this.addBandge();
-            } else {
-              res.inviteCombatInfo.forEach(item => {
-                let content = {
-                  extMsg: {
-                    combatID: item.combatID,
-                    headImgURL: item.headImgURL,
-                    inviterID: item.inviterID,
-                    nickName: item.nickName,
-                    url: item.url,
-                    time: util.timestampToTimeNoLine(item.score)
-                  }
-                };
-                console.log('```````````````````````````````````', content)
-                this.getChallengeGamelist(content);
-                this.addBandge();
-              })
-            }
-          }
-        })
-      },
+      // _loadInviteCombat() {
+      //   api.loadInviteCombat().then(res => {
+      //     console.log('约战列表--------------', res);
+      //     if (res.errCode == 0) {
+      //       if (res.inviteCombatInfo.length == 0) {
+      //         // this.clearChallengeGameList();
+      //         // this.addBandge();
+      //       } else {
+      //         res.inviteCombatInfo.forEach(item => {
+      //           let content = {
+      //             extMsg: {
+      //               combatID: item.combatID,
+      //               headImgURL: item.headImgURL,
+      //               inviterID: item.inviterID,
+      //               nickName: item.nickName,
+      //               url: item.url,
+      //               time: util.timestampToTimeNoLine(item.score)
+      //             }
+      //           };
+      //           console.log('```````````````````````````````````', content)
+      //           this.getChallengeGamelist(content);
+      //           this.addBandge();
+      //         })
+      //       }
+      //     }
+      //   })
+      // },
       //拉取好友
       _loadFriends() {
         let cursor = 0;
@@ -408,14 +419,14 @@
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         compareLastMsg: "COMPARE_LASTMESS", //推送最后的一个消息跟已有好友消息列表对比
         toTopFriend: "TO_TOP_MESSAGE", //把最新消息的置顶
-        getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
+        //getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
         // clearChallengeGameList: "CLEAR_CHALLENGEGAMELIST",//清空约战记录
         addBandge: "ADD_BADGE", //动态变化未读消息数量
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
         getFriendEvt: "get_FriendEvt", //加载好友事件类型
-        getFriendGift: "get_FriendGift", //获取好友送礼事件
+        //getFriendGift: "get_FriendGift", //获取好友送礼事件
         getCaptainMessList: "get_captainMessageList" //获取店长信息
       })
     },
@@ -598,7 +609,7 @@
               color: #333333;
               font-size: 0.4267rem;
               font-weight: 800;
-              width: 5rem;
+              width: 3rem;
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
@@ -651,6 +662,7 @@
     //   margin-top: 0.35rem;
     .newMessage_list {
       .item {
+        position: relative;
         display: flex;
         justify-content: space-between;
         box-sizing: border-box;
@@ -686,6 +698,10 @@
               color: #333333;
               font-size: 0.4267rem;
               font-weight: 800;
+              width: 3rem;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
             .message {
               width: 5rem;
@@ -723,6 +739,21 @@
             color: #999;
             padding-right: 0.2667rem;
           }
+        }
+        .checkBox_scene{
+          position: absolute;
+          right: 3.2rem;
+          top: .3rem;
+            .checkbox {
+              width: 0.4rem;
+              height: 0.4rem;
+              vertical-align: middle
+            }
+            .scene-text {
+              font-weight: 600;
+              padding-bottom: 0.0533rem;
+              vertical-align: middle
+            }
         }
       }
       .noContent {

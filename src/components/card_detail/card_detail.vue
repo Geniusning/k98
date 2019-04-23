@@ -176,7 +176,7 @@ export default {
       font-size: 0.3733rem;
       color: #4b4b4b;
       .check {
-        font-size: .4rem;
+        font-size: .5rem;
         text-decoration: underline;
         color: red;
       }
@@ -187,7 +187,8 @@ export default {
       margin: 0.3067rem 2.5933rem;
     }
     .card_number{
-      font-size: .35rem;
+      font-size: .4rem;
+    letter-spacing: .16rem;
     }
   }
   .infoMessage_wrapper {

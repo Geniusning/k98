@@ -52,12 +52,12 @@ const actions = {
     //     })
     // },
     //获取好友送礼事件
-    get_FriendGift({ commit, state }) {
-        api.loadGiftsRecord().then(res => {
-            commit("GET_FRIENDGIFTLIST", { data: res.giftRecord });
-            commit('ADD_BADGE');
-        })
-    },
+    // get_FriendGift({ commit, state }) {
+    //     api.loadGiftsRecord().then(res => {
+    //         commit("GET_FRIENDGIFTLIST", { data: res.giftRecord });
+    //         commit('ADD_BADGE');
+    //     })
+    // },
     //获取店长消息
     get_captainMessageList({ commit }) {
         api.loadManagerNoticeInfo().then(res => {

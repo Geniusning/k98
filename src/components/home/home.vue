@@ -314,7 +314,7 @@
           let shareObj = {
             title: "发现一个好玩的地方",
             desc: "可以认识许多新朋友，打比赛。老板还特傻X，见人就发红包",
-            link: `${this.shareUrl}#/home`,
+            link: `${this.shareUrl}/#/home?visitType=4`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(shareObj, this.myShareUrl);
@@ -322,7 +322,7 @@
           let shareObj = {
             title: "发现一个好玩的地方",
             desc: "可以认识许多新朋友，打比赛。老板还特傻X，见人就发红包",
-            link: this.shareUrl + "#/home",
+            link: `${this.shareUrl}/#/home?visitType=4`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(shareObj, this.myShareUrl, 20);
@@ -410,22 +410,6 @@
       closeGame() {
         this.gameShow = false;
       },
-      // 随机场
-      // playGame_challenge() {
-      //   let token = util.getCookie("tk");
-      //   window.location.href = `${this.shareUrl}game/?gamePath=game1`;
-      // },
-      // 比赛场
-      // playGame_rank() {
-      //   this.$router.push({
-      //     name: "gameCompetion"
-      //   })
-      // },
-      // 好友场
-      // playGame_friend() {
-      //   let token = util.getCookie("tk");
-      //   window.location.href = `${this.shareUrl}game/?gamePath=game3`;
-      // },
       //拉取已经发布的比赛场
       _loadPublishArenas() {
         api.loadPublishArenas().then(res => {
@@ -455,10 +439,10 @@
         })
       },
       //获取好友事件
-      _loadFriendEvts() {
-        let cursor = 0;
-        this.getFriendEvt(cursor);
-      },
+      // _loadFriendEvts() {
+      //   let cursor = 0;
+      //   this.getFriendEvt(cursor);
+      // },
       //关闭广告
       close_adtise() {
         this.show_advertise = false;
@@ -527,7 +511,7 @@
       //进入店长信箱
       inToLetter() {
         util.routerTo("message", this, {
-          routeParamNum: 1 //路由参数2表示从店长信箱进入店长留言
+          routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
         });
       },
       // 更多福利
@@ -541,13 +525,13 @@
         getFriend: "GET_FRIENDlIST", //获取候选人,
         judgeInviteCoupon: "JUDGE_INVITE_COUPON", //判断是否还有邀请有礼
         getAdvertisingImg: "GET_ADVERTISINGIMG", //获取首页轮播图
-        getRecommentList: "GET_RECOMMENTLIST"
+        getRecommentList: "GET_RECOMMENTLIST",
       }),
       ...mapActions({
-        getFriendEvt: "get_FriendEvt", //获取好友事件
+        //getFriendEvt: "get_FriendEvt", //获取好友事件
         getAlreadyFriend: "get_alreadyFriendList", //获取已经成为好友事件
         getFriendList: "get_Friendlist",
-        getFriendGift: "get_FriendGift" //获取好友送礼事件
+        //getFriendGift: "get_FriendGift" //获取好友送礼事件
       })
     },
     watch: {
@@ -1152,7 +1136,7 @@
         width: 0.8267rem;
         height: 0.8267rem;
         position: relative;
-        z-index: 10;
+        z-index: 5;
       }
     }
   } // 好友

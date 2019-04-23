@@ -131,21 +131,21 @@ const mutations = {
   },
   //推送最后的一个消息跟已有好友消息列表对比
   [types.COMPARE_LASTMESS](state, lastMsgFrom) {
-    // console.log('COMPARE_LASTMESS:```````````````````````````````````', lastMsgFrom)
+    console.log('COMPARE_LASTMESS:```````````````````````````````````', lastMsgFrom)
     let totalCount = 0;
     state.alreadyFriendList.forEach(item => {
-      if (lastMsgFrom.lastMsg.from === item.info.openid) {
-        // debugger
-        let tempTime = util.timestampToTime(lastMsgFrom.lastMsg.stime)
+      if (lastMsgFrom.allInfo.lastMsg.from === item.info.openid) {
+        let tempTime = util.timestampToTime(lastMsgFrom.allInfo.lastMsg.stime)
         console.log('time--------------', tempTime)
-        item.info.lastMsg = lastMsgFrom.lastMsg
+        item.info.lastMsg = lastMsgFrom.allInfo.lastMsg
         item.info.lastMsg.stime = tempTime
-        item.info.unReadMsgCount = lastMsgFrom.count;
+        item.info.unReadMsgCount = lastMsgFrom.allInfo.count;
       }
       totalCount += item.info.unReadMsgCount //累计未读消息   
     })
     state.msg_badgeCount = totalCount;
     state.badgeCount = state.msg_badgeCount + state.event_badgeCount
+    console.log("COMPARE_LASTMESS-------------state.badgeCount", state.badgeCount)
   },
   //增加推送点赞事件列表
   // [types.ADD_FRIENDEVTLIST](state, friendEvtList) {
@@ -179,17 +179,23 @@ const mutations = {
     // debugger
     switch (friendEvtObj.msgCode) {
       case 1:
-        if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
-          return false;
-        }
         friendEvtObj.content.extMsg = {
           lastMsg: {},
           allInfo: friendEvtObj.content.extMsg
         };
-        // friendEvtObj.content.extMsg.lastMsg['msg'] = "你有一条消息";
-        // state.dynamicFriendEvt = friendEvtObj.content;
-        state.allMutatualInfo = friendEvtObj
-        console.log('msgCode为1的消息----------------', state.allMutatualInfo)
+        if (friendEvtObj.content.extMsg.allInfo.lastMsg.chatExtMsg) {
+          state.allMutatualInfo = friendEvtObj
+          console.log('msgCode为1的消息----------------', state.allMutatualInfo)
+        }
+        if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
+          return false;
+        }
+        if (friendEvtObj.content.extMsg.allInfo.lastMsg.type == 1) { //判断是否是聊天消息
+          friendEvtObj.content.extMsg.lastMsg['msg'] = friendEvtObj.content.fromInfo.nickname + "发你一条消息";
+          state.dynamicFriendEvt = friendEvtObj.content;
+          return
+        }
+
         break;
       case 2:
         console.log('点赞详情--------', friendEvtObj)
@@ -221,10 +227,17 @@ const mutations = {
         friendEvtObj.content.extMsg.lastMsg['msg'] = "店长给你发优惠券啦";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
+      case 6:
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+        };
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "店长发布活动啦";
+        state.dynamicFriendEvt = friendEvtObj.content;
+        break;
       case 7: //约你游戏
-      if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
-        return false;
-      }
+        if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
+          return false;
+        }
         friendEvtObj.content.extMsg = {
           lastMsg: {},
           gameInfo: friendEvtObj.content.extMsg
@@ -295,23 +308,23 @@ const mutations = {
     }
   },
   //获取好友事件
-  [types.GET_FRIENDEVTLIST](state, {
-    data
-  }) {
-    state.event_badgeCount = data.events.length //获取未读好友事件数量
-    state.friendEvtList = data.events
-  },
-  //获取好友送礼
-  [types.GET_FRIENDGIFTLIST](state, {
-    data
-  }) {
-    state.gift_badgeCount = data.length;
-    // console.log('收礼列表-----------------', state.friendGiftList)
-    data.forEach(item => {
-      item.time = util.timestampToTime(item.time);
-    })
-    state.friendGiftList = data;
-  },
+  // [types.GET_FRIENDEVTLIST](state, {
+  //   data
+  // }) {
+  //   state.event_badgeCount = data.events.length //获取未读好友事件数量
+  //   state.friendEvtList = data.events
+  // },
+  // //获取好友送礼
+  // [types.GET_FRIENDGIFTLIST](state, {
+  //   data
+  // }) {
+  //   state.gift_badgeCount = data.length;
+  //   // console.log('收礼列表-----------------', state.friendGiftList)
+  //   data.forEach(item => {
+  //     item.time = util.timestampToTime(item.time);
+  //   })
+  //   state.friendGiftList = data;
+  // },
   //获取店长消息列表
   [types.GET_CAPTAINMESSAGELIST](state, {
     data
@@ -319,10 +332,10 @@ const mutations = {
     state.captainMessageList = data;
   },
   //获取约战消息列表
-  [types.GET_CHALLENGEGAMELIST](state, gameMessage) {
-    state.challengeGameList.push(gameMessage);
-    state.game_badgeCount = state.challengeGameList.length;
-  },
+  // [types.GET_CHALLENGEGAMELIST](state, gameMessage) {
+  //   state.challengeGameList.push(gameMessage);
+  //   state.game_badgeCount = state.challengeGameList.length;
+  // },
   //清空约战列表
   // [types.CLEAR_CHALLENGEGAMELIST](state) {
   //   state.game_badgeCount = state.challengeGameList.length;
@@ -336,7 +349,6 @@ const mutations = {
     let total = 0;
     // state.gift_badgeCount + state.game_badgeCount+
     total = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount;
-    console.log('total---------', total)
     state.badgeCount = total;
   },
   //设置候选人聊天的信息
@@ -353,7 +365,7 @@ const mutations = {
   },
   //更新聊天列表
   [types.UPDATE_CHATLIST](state, obj) {
-    // console.log('state.LastChatMsg：```````````````````````````````````````', obj)
+    console.log('state.LastChatMsg：```````````````````````````````````````', obj)
     state.LastChatMsg = obj
   },
   //更新聊天输入框

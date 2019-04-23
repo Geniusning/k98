@@ -29,7 +29,7 @@
 import util from "common/util";
 import api from 'common/api';
 import Config from "common/config";
-import { mapState } from "vuex";
+import { mapState,mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -49,7 +49,7 @@ export default {
       let shareObj = {
         title: "活动通知",
         desc: "本店最新活动，会员特权。点击查看",
-        link: `${this.shareUrl}/#/shareActivity?activityID=${this.activityID}`,
+        link: `${this.shareUrl}/#/shareActivity?activityID=${this.activityID}&visitType=6`,
         imgUrl: `${this.shopSettingInfo.image}`
       };
       util._getJssdkInfo(shareObj, this.myShareUrl,20);
@@ -57,7 +57,7 @@ export default {
       let shareObj = {
         title: "活动通知",
         desc: "本店最新活动，会员特权。点击查看",
-        link: `${this.shareUrl}#/shareActivity?activityID=${this.activityID}`,
+        link: `${this.shareUrl}#/shareActivity?activityID=${this.activityID}&visitType=6`,
         imgUrl: `${this.shopSettingInfo.image}`
       };
       util._getJssdkInfo(shareObj, this.myShareUrl,20);
@@ -67,7 +67,7 @@ export default {
     this._loadActivityDetail();
   },
   computed: {
-    ...mapState(["shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl"])
+    ...mapState(["socket","shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl"])
   },
   methods: {
     //加载活动详情
@@ -89,7 +89,7 @@ export default {
     },
     share() {
       this.isShow_bg = !this.isShow_bg;
-    }
+    },
   },
   components: {}
 };

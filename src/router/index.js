@@ -86,7 +86,7 @@ export default new Router({
       meta: {
         title: "消息"
       },
-      props: true,
+      // props: true,
       children: [{
         path: ":id",
         name: "chat",

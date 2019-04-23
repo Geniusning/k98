@@ -155,7 +155,7 @@ export default {
   }
   .notice-wrapper {
     width: 8.8rem;
-    height: 1.4667rem;
+    height: 10%;
     position: relative;
     box-sizing: border-box;
     padding: 0.3433rem 0.2667rem;
@@ -193,7 +193,7 @@ export default {
   }
   .scroll-wrapper {
     width: 8.8rem;
-    height: 12.88rem;
+    height: 85%;
     // .bg("../../assets/image/player_bg.png");
     margin: 0.2933rem auto 0;
     border-radius: 0.32rem;
@@ -214,7 +214,7 @@ export default {
       }
     }
     .scrollList {
-      height: 12rem;
+      height: 94%;
       overflow: hidden;
       .userList {
         .userItem {

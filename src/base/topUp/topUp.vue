@@ -22,7 +22,7 @@
       <!-- 选择送礼物的面板 -->
       <div class="giftPanelBox" v-else-if="panelIndex===1" key="giftPanelBox">
         <div class="giftPanelBox_title vux-1px-b">
-          <p class="desc">手指抖一抖，就是好朋友</p>
+          <p class="desc">请选择赠送对方的礼物</p>
           <img src="../../assets/image/close-round.png" alt class="close" @click="closeIntegralPanel">
         </div>
         <div class="giftListpart vux-1px-b">

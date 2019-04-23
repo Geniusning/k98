@@ -4,6 +4,7 @@
        <div class="back_content fl" @click="goBack">
          <img src="../../assets/image/back_chat.png" alt="" class="backArrow">
        </div>
+       <img @click="goHome" src="../../assets/image/chat_home.png" alt="" class="backHome">  
        <h3 class="title fl">{{title}}</h3>
      </div>
  </div>
@@ -25,6 +26,11 @@ export default {
     return {};
   },
   methods: {
+    goHome(){
+      this.$router.push({
+        name:"home"
+      })
+    },
     goBack() {
       this.$router.go(-1);
     }
@@ -37,9 +43,17 @@ export default {
 @import "../../assets/less/variable.less";
 .nav_wrapper {
   background: #fff;
+  position: relative;
   // padding: 0 0.4rem;
   box-sizing: border-box;
   // height: 1.1733rem;
+  .backHome{
+    position: absolute;
+    width: .7rem;
+    height: .7rem;
+    right: 0.3667rem;
+    top: 0.2333rem;
+  }
   .back_content {
     padding: 0 0.4rem;
     box-sizing: border-box;

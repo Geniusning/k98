@@ -30,19 +30,34 @@ new Vue({
   },
   data() {
     return {
-      pingNumer:0,
-      timer:""
+      pingNumer: 0,
+      timer: "",
+      visitType: 1
     }
   },
   created() {
-    // let windowUrL = window.location.href;
-    // let index = windowUrL.indexOf('.com');
-    // let shareurl = windowUrL.slice(0,index);
-    // this.updateShareUrl(shareurl+'.com/');
-    // let websocketUrl = shareurl.slice(8);
-    // websocketUrl = `wss://${websocketUrl}.com/api/ws`
-    // this.websock = new WebSocket(websocketUrl);     //以上生产环境
-    this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境
+    switch (this.$route.name) {
+      case "home":
+        this.visitType = 0
+        break;
+      case "shareNew":
+        this.visitType = 4
+        break;
+      case "shareActivity":
+        this.visitType = 5
+        break;
+      default:
+        break;
+    }
+    let windowUrL = window.location.href;
+    let index = windowUrL.indexOf('.com');
+    let shareurl = windowUrL.slice(0,index);
+    this.updateShareUrl(shareurl+'.com/');
+    let websocketUrl = shareurl.slice(8);
+    websocketUrl = `wss://${websocketUrl}.com/api/ws?visitType=${this.visitType}`
+    this.websock = new WebSocket(websocketUrl);     //以上生产环境
+    // console.log("路由--------", this.$route.name)
+    // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境
     this.websock.binaryType = "arraybuffer";
     this.connect_websocket(this.websock);
     this.socket.onopen = this.websocketonopen;
@@ -54,7 +69,7 @@ new Vue({
     this._getUserInfo(); //获取用户信息
     this._loadStoreSetting(); //获取门店信息
     this._loadGoods(); //拉取积分换礼品列表
-    this._loadRecommends();//获取店长推荐
+    this._loadRecommends(); //获取店长推荐
     this._loadMutualEvents() //统计约战送礼点赞
   },
   methods: {
@@ -66,10 +81,10 @@ new Vue({
       console.log("WebSocket连接成功");
       this.timer = setInterval(() => {
         this.websock.send({
-          msgCode:this.pingNumer,
-          content:null
+          msgCode: this.pingNumer,
+          content: null
         });
-        this.pingNumer ++ ;
+        this.pingNumer++;
       }, 60000);
     },
     websocketonerror(e) {
@@ -82,9 +97,9 @@ new Vue({
       var decc = new TextDecoder("utf-8");
       let result = JSON.parse(decc.decode(e.data));
       console.log('websocket推送消息-------------------------', result)
-      if(result.msgCode!=25){
+      if (result.msgCode != 25) {
         this.addFriendEvtObj(result)
-      }else {
+      } else {
         console.log('fasong la ');
         this.pingNumer = 0;
         // this.websock.send({
@@ -121,6 +136,8 @@ new Vue({
         this.judgeMessType('gift')
       } else if (result.msgCode === 4) { //发布优惠券
         this.judgeMessType('discount')
+      } else if (result.msgCode === 6) {
+        this.judgeMessType('activity')
       }
       //处理约战事件
       else if (result.msgCode === 7) {
@@ -132,38 +149,38 @@ new Vue({
       else if (result.msgCode === 8) {
         this.judgeMessType('onlineNotice');
       } else if (result.msgCode === 9) {
-      //分享获得积分通知
+        //分享获得积分通知
         this.judgeMessType('shareGetIntegral');
-      }else if (result.msgCode === 13) {  //对方操作回赞后返回结果通知
+      } else if (result.msgCode === 13) { //对方操作回赞后返回结果通知
         this.judgeMessType('backThumb');
-      }else if (result.msgCode === 14) { //对方操作收到礼物后返回结果通知
+      } else if (result.msgCode === 14) { //对方操作收到礼物后返回结果通知
         this.judgeMessType('successGift');
-      }else if (result.msgCode === 15) { //对方操作拒绝礼物后返回结果通知
+      } else if (result.msgCode === 15) { //对方操作拒绝礼物后返回结果通知
         this.judgeMessType('failGift');
-      }else if (result.msgCode === 16) {  //对方操作拒绝约占后返回结果通知
+      } else if (result.msgCode === 16) { //对方操作拒绝约占后返回结果通知
         this.judgeMessType('rejectGame');
-      }else if (result.msgCode === 17) {   //对方在游戏操作打招呼返回结果通知
+      } else if (result.msgCode === 17) { //对方在游戏操作打招呼返回结果通知
         this.judgeMessType('gameSayHi');
       }
     },
     websocketclose(e) {
       //关闭
       console.log("connection closed (" + e.code + ")");
-        let windowUrL = window.location.href;
-        let index = windowUrL.indexOf('.com');
-        let shareurl = windowUrL.slice(0,index);
-        this.updateShareUrl(shareurl+'.com/');
-        let websocketUrl = shareurl.slice(8);
-        websocketUrl = `wss://${websocketUrl}.com/api/ws`
-        this.websock = new WebSocket(websocketUrl);     //以上生产环境
-        // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
+      let windowUrL = window.location.href;
+      let index = windowUrL.indexOf('.com');
+      let shareurl = windowUrL.slice(0, index);
+      this.updateShareUrl(shareurl + '.com/');
+      let websocketUrl = shareurl.slice(8);
+      websocketUrl = `wss://${websocketUrl}.com/api/ws`
+      this.websock = new WebSocket(websocketUrl); //以上生产环境
+      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
       // }
     },
     //拉取积分换礼品列表
     _loadGoods() {
       api.loadGoods().then(res => {
         console.log('积分换礼品列表------', res);
-        this.getSendGiftList(res.slice(0,4));
+        this.getSendGiftList(res.slice(0, 4));
       })
     },
     //自动领取优惠券
@@ -211,8 +228,8 @@ new Vue({
     _createQrcode() {
       api.loadAllQrcode().then(res => { //没有创建过二维码才创建
         if (!res.urls.length || !res.urls) {
-          api.createQrcode().then(res=>{
-              console.log('创建二维码接口--------',res);
+          api.createQrcode().then(res => {
+            console.log('创建二维码接口--------', res);
           });
           console.log('进来创建二维码了')
         }
@@ -227,8 +244,8 @@ new Vue({
         this.getRecommentList(this.recommendList);
       })
     },
-     //拉取约战、点赞、送礼列表
-     _loadMutualEvents() {
+    //拉取约战、点赞、送礼列表
+    _loadMutualEvents() {
       api.loadMutualEvents().then(res => {
         if (res.errCode === 0) {
           let mutualEventsObj = res.mutualEvents;
@@ -238,7 +255,7 @@ new Vue({
           mutualEventsList = mutualEventsList.concat(mutualEventsObj.giftEvents)
           mutualEventsList = mutualEventsList.concat(mutualEventsObj.friendEvents)
           let count = mutualEventsList.length;
-          console.log('count--------',count)
+          console.log('count--------', count)
           this.CalcManualEventsCount(count);
         }
         this.addBange();
@@ -255,13 +272,13 @@ new Vue({
       //addFriendEvt: "ADD_FRIENDEVTLIST", //新增好友事件列表
       addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
       //getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
-      updateShareUrl: "UPDATE_SHAREURL", //苹果分享地址
+      updateShareUrl: "UPDATE_SHAREURL", //分享地址
       getuserInfo: "GET_USERINFO", //获取用户信息
       getShopSetting: "GET_SHOPINFO", //获取门店信息
       getUrl: "GET_URL", //获取公众号地址
       judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
       getSendGiftList: "GET_SENDGIFTLIST", //获取积分换礼品列表
-      CalcManualEventsCount:"GET_ALLEVENTS_BADGECOUNT"//统计约战送礼点赞数量
+      CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT" //统计约战送礼点赞数量
     }),
     ...mapActions({
       //getFriendEvt: "get_FriendEvt"

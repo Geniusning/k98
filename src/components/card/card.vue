@@ -230,7 +230,9 @@
       },
       //返回上一页
       goBack() {
-        this.$router.go(-1);
+        this.$router.push({
+          name:"card"
+        });
       },
       //进入优惠券详情
       selectDiscout(id) {

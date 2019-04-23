@@ -39,7 +39,7 @@ const state = {
     topUpGiftInfo:{}, //送礼弹框
     topUpThumbInfo:{}, //点赞弹框
     topUpGameInfo:{},  //游戏弹框
-    allMutatualInfo:{} //送礼、约战、点赞 结构体
+    allMutatualInfo:{}, //送礼、约战、点赞 结构体
 }
 
 export default state
