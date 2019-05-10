@@ -116,7 +116,7 @@
             let shareObj = {
               title: "新人大礼包",
               desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
-              link: `${this.shareUrl}#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}&visitType=5`,
+              link: `${this.shareUrl}/#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}&visitType=5`,
               imgUrl: `${this.shopSettingInfo.image}`
             };
             util._getJssdkInfo(shareObj, this.myShareUrl, 20);
@@ -124,7 +124,7 @@
             let shareObj = {
               title: "新人大礼包",
               desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
-              link: this.shareUrl + `#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}&visitType=5`,
+              link: this.shareUrl + `/#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}&visitType=5`,
               imgUrl: `${this.shopSettingInfo.image}`
             };
             util._getJssdkInfo(shareObj, this.myShareUrl, 20);

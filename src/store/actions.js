@@ -1,25 +1,17 @@
-import axios from 'axios';
-import api from 'common/api'
-import util from "common/util";
 
+import api from 'common/api'
 const actions = {
     //获取候选人列表
-    get_Friendlist({
-        commit,
-        state
-    }, params) {
-        api.getFriendList(params).then(res => {
+    get_Friendlist({commit,state}, cursor,sex) {
+        api.getFriendList(cursor,sex).then(res => {
             console.log('候选人数据：·····················', res);
             commit("CHANGE_FRIENDlISTCURSOR", res.cursor);
             commit("GET_FRIENDlIST", res);
         })
     },
     //获取更多候选人信息
-    get_moreFriendList({
-        commit,
-        state
-    }, params) {
-        api.getFriendList(params).then(res => {
+    get_moreFriendList({commit,state}, cursor,sex) {
+        api.getFriendList(cursor,sex).then(res => {
             console.log('更多候选人数据：·····················', res);
             if (res.cursor == 0) {
                 commit("get_LESSTHAN10FRIENDLIST", res.candidates);
@@ -31,10 +23,7 @@ const actions = {
         })
     },
     //获取已经成为好友列表
-    get_alreadyFriendList({
-        commit,
-        state
-    }, cursor) {
+    get_alreadyFriendList({commit,state}, cursor) {
         api.loadFriends().then(res => {
             // console.log(res)
             commit('GET_ALREADYFRIENDEVTLIST', {

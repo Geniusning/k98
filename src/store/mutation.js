@@ -46,6 +46,8 @@ const mutations = {
   },
   //获取用户数据
   [types.GET_USERINFO](state, userinfo) {
+    state.loadFriendSexType = userinfo.sex === 1 ? "1" : "2"
+    console.log("state.loadFriendSexType-------------",state.loadFriendSexType)
     userinfo.sex = userinfo.sex === 1 ? "男" : "女"
     state.userInfo = userinfo;
   },
@@ -55,7 +57,7 @@ const mutations = {
   },
   //获取候选人数据
   [types.GET_FRIENDlIST](state, data) {
-    // console.log(data.candidates)
+    console.log("获取候选人数据",data)
     if (data.candidates.length == 0) {
       return
     }
@@ -66,6 +68,7 @@ const mutations = {
       } else {
         item.info.sex = "女";
       }
+     
       let nowTimeStamp = Math.round(new Date().getTime() / 1000);
       let visitTime = nowTimeStamp - item.visitTime;
       item.visitTime = util.calcOnlineTime(visitTime)
@@ -81,14 +84,14 @@ const mutations = {
         item.info.sex = "女";
       }
       let nowTimeStamp = Math.round(new Date().getTime() / 1000);
-      let visitTime = nowTimeStamp - item.visitTime;
+     let visitTime = nowTimeStamp - item.visitTime;
       item.visitTime = util.calcOnlineTime(visitTime)
       state.friendList.push(item);
     });
   },
   //获取不足10个候选人数据
-  [types.get_LESSTHAN10FRIENDLIST](state, data) {
-    // console.log('获取不足10个候选人数据：', data);
+  [types.GET_LESSTHAN10FRIENDLIST](state, data) {
+    console.log('获取不足10个候选人数据：', data);
     data.forEach(item => {
       if (item.info.sex == 1) {
         item.info.sex = "男";
@@ -101,10 +104,16 @@ const mutations = {
       state.friendList.push(item);
     });
   },
+  //改变拉取候选人性别参数
+  [types.CHANGESEXTYPE](state,sex){
+    state.loadFriendSexType = sex;
+  },
+  //测试
+  // [types.TESTSEXTYPE](state,flag){
+  //   state.tampSexFlag = flag
+  // },
   //获取已经成为好友列表
-  [types.GET_ALREADYFRIENDEVTLIST](state, {
-    data
-  }) {
+  [types.GET_ALREADYFRIENDEVTLIST](state, {data}) {
     var totalCount = 0;
     // console.log(data)
     let tempData = [];

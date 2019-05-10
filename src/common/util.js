@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-03-25 14:49:12
+ * @Last Modified time: 2019-05-08 16:06:04
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -64,6 +64,10 @@ util.GetOpenIdByCode = function (code) {
 }
 //时间戳转化成地址  格式xxxx-xx-xx xx-xx-xx
 util.timestampToTime = function (timestamp) {
+  // console.log("timestamp----------------",timestamp)
+  if (typeof timestamp == "string") {
+    return timestamp
+  }
   timestamp = Number(timestamp);
   // console.log(timestamp.toString().length)
   if (timestamp.toString().length > 11) {
@@ -74,6 +78,7 @@ util.timestampToTime = function (timestamp) {
     var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
     var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
     var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
+    // console.log("处理后的时间----------",Y + M + D + h + m + s)
     return Y + M + D + h + m + s;
   } else {
     var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
@@ -83,7 +88,7 @@ util.timestampToTime = function (timestamp) {
     var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
     var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
     var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
-    // console.log(Y)
+    // console.log("处理后的时间----------",Y + M + D + h + m + s)
     return Y + M + D + h + m + s;
 
   }
@@ -117,44 +122,17 @@ util.timestampToTimeNoLine = function (timestamp) {
   }
 }
 //计算上线时间
-util.calcOnlineTime = function(visitime){
+util.calcOnlineTime = function (visitime) {
   let day = Math.floor(visitime / 86400);
-  if(visitime>60&&visitime<3600){
-    return Math.floor(visitime/60)+"分钟前上线"
-  }else if(visitime>3600&&visitime<86400){
-    return Math.floor(visitime/3600)+"小时前上线"
-  }else if(day>=1&&day<2){
-    return "1天前上线"
-  }else if(day>=2&&day<3){
-    return "2天前上线"
-  }else if(day>=3&&day<7){
-    return "3天前上线"
-  }else if(day>=7 && day<15){
-    return "7天前上线"
-  }else if(day >= 15 && day <30){
-    return "15天前上线"
-  }else if(day >= 30 && day<60){
-    return "30天前上线"
-  }else if(day >= 60){
-    return "60天前上线"
-  }else{
+  if (visitime > 60 && visitime < 3600) {
+    return Math.floor(visitime / 60) + "分钟前上线"
+  } else if (visitime > 3600 && visitime < 86400) {
+    return Math.floor(visitime / 3600) + "小时前上线"
+  } else if (day<=366 && day>=1) {
+    return Math.ceil(day) + "天前上线"
+  } else {
     return "刚刚上线"
   }
-  
-  
-  // else if(visitime<172800&&visitime>86400){
-  //   return "1天前上线"
-  // }else if (visitime<259200&&visitime>172800){
-  //   return "2天前上线"
-  // }else if(visitime<604800&&visitime>259200){
-  //   return "3天前上线"
-  // }else if(visitime<2592000&&visitime>604800){
-  //   return "7天前上线"
-  // }else if(visitime>2592000){
-  //   return "1个月前上线"
-  // }else{
-  //   return "刚刚上线"
-  // }
 }
 util.returnDiscountType = (discountTypeNumber) => {
   if (parseInt(discountTypeNumber) === 0) {
@@ -168,12 +146,12 @@ util.returnDiscountType = (discountTypeNumber) => {
   }
 }
 //获取微信jssdk
-util._getJssdkInfo = function (shareObj, url, amount,shareType) {
+util._getJssdkInfo = function (shareObj, url, amount, shareType) {
     shareType = shareType || 2;
     amount = amount || 2;
     api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
       .then(res => {
-        console.log(res)
+        console.log("获取微信jssdk---------",res)
         wx.config({
           //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
           appId: res.appId,
@@ -190,14 +168,10 @@ util._getJssdkInfo = function (shareObj, url, amount,shareType) {
             imgUrl: shareObj.imgUrl,
             success: () => {
               //分享记录
-              api.createShareDaylog().then(res => {
-                if (res.errCode == 0) {
-                  
-                }
-              });
+              api.createShareDaylog().then(res => {});
               //分享获得积分
-              api.shareToGetIntegral(amount,shareType).then(res=>{
-                if(res.errCode ==1030){
+              api.shareToGetIntegral(amount, shareType).then(res => {
+                if (res.errCode == 1030) {
                   alert('分享已上限，每天最多分享5次获得积分');
                 }
               })

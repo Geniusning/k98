@@ -235,7 +235,7 @@ export default {
       })
     },
     gameShare() {
-      window.location.href = `${this.shareUrl}/game/game3`;
+      window.location.href = `${this.shareUrl}game`;
     },
     inviteShare() {
       this.$router.push({

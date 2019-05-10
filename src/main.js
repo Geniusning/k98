@@ -5,19 +5,15 @@ import FastClick from 'fastclick'
 import App from './App'
 import store from './store/index'
 import router from './router/index'
-import vuePicturePreview from 'vue-picture-preview'
+// import vuePicturePreview from 'vue-picture-preview'
 import {
   ToastPlugin
 } from 'vux'
-import {
-  mapMutations,
-  mapState,
-  mapActions
-} from 'vuex'
+import {mapMutations,mapState,mapActions} from 'vuex'
 import api from './common/api'
 import config from './common/config'
 Vue.use(ToastPlugin)
-Vue.use(vuePicturePreview)
+// Vue.use(vuePicturePreview)
 FastClick.attach(document.body)
 Vue.config.productionTip = false
 
@@ -32,10 +28,11 @@ new Vue({
     return {
       pingNumer: 0,
       timer: "",
-      visitType: 1
+      visitType: 0
     }
   },
   created() {
+    console.log("路由--------", this.$route)
     switch (this.$route.name) {
       case "home":
         this.visitType = 0
@@ -56,7 +53,6 @@ new Vue({
     let websocketUrl = shareurl.slice(8);
     websocketUrl = `wss://${websocketUrl}.com/api/ws?visitType=${this.visitType}`
     this.websock = new WebSocket(websocketUrl);     //以上生产环境
-    // console.log("路由--------", this.$route.name)
     // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境
     this.websock.binaryType = "arraybuffer";
     this.connect_websocket(this.websock);

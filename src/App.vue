@@ -5,7 +5,7 @@
         <router-view v-if="$route.meta.keepAlive"></router-view>
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive"></router-view>
-      <lg-preview></lg-preview>
+      <!-- <lg-preview></lg-preview> -->
       <transition name="envelop">
         <div class="envelop-wrapper" v-if="isShowEnvelop">
           <img src="./assets/image/close_ad.png" alt class="close" @click.stop="close">
@@ -415,12 +415,12 @@
             console.log(res)
             if (res.errCode == 0) {
               console.log('删除结果-----------', res);
-              window.location.href = gameInfo.url;
+              window.location.href = gameInfo.extMsg.gameInfo.url;
             }
           })
         } else {
           //应战
-          window.location.href = gameInfo.url
+          window.location.href = gameInfo.extMsg.gameInfo.url;
         }
       },
       //成为好友后接受游戏

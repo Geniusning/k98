@@ -4,6 +4,7 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const vuxLoader = require('vux-loader')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 function resolve(dir) {
   return path.join(__dirname, '../', dir)
@@ -68,6 +69,12 @@ let webpackConfig = {
         }
       }
     ]
+  },
+  externals:{
+    "vue":"Vue",
+    "axios":"axios",
+    "vue-router":"VueRouter",
+    "vuex": "Vuex"
   }
 }
 
@@ -91,6 +98,7 @@ module.exports = vuxLoader.merge(webpackConfig, {
           }
         }
       }
-    }
+    },
+    new UglifyJsPlugin()
   ]
 })

@@ -4,10 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myStupidToken1 = "O0rxQ5vhT02-7r1HuQSROGNyOJVkwHUGPSJ1Er1YsQoJZ_3OMytmKXPliPzKdBsZxuqjBA==";
-const myStupidToken2 = "jO5NAlEdOVeCr6z5vHJ6niuV39LL-VKgFJYbGWgreeLi7okCIaTTjQqCoAWz6SJoQ46FZQ=="
-
-const myStupidToken = myStupidToken1
+const myToken = "9s63G_CvI61IHvFMaomZwN37VJGx61MaiLLdllUOJMM3cE9dCDPjLnVWRWHaxzVXPJ0B3g==";
     // ------------------------------
 
 module.exports = {
@@ -22,7 +19,7 @@ module.exports = {
                 target: "https://llwant1.qianz.com", //老友一起玩吧
                 changeOrigin: true,
                 pathRewrite: function(path, req) {
-                    return path + "&tk=" + myStupidToken
+                    return path + "&tk=" + myToken
                 }
             },
         },

@@ -1,4 +1,7 @@
 
+// export const TESTSEXTYPE  = "TESTSEXTYPE"
+//修改请求候选人男女标识
+export const CHANGESEXTYPE = "CHANGESEXTYPE"
 //统计约战，送礼，点赞数量
 export const GET_ALLEVENTS_BADGECOUNT = "GET_ALLEVENTS_BADGECOUNT"
 //新增送礼弹框内容
@@ -37,7 +40,7 @@ export const GET_FRIENDlIST = "GET_FRIENDlIST"
 export const GET_MOREFRIENDlIST = "GET_MOREFRIENDlIST"
 
 //获取不足10个候选人数据
-export const get_LESSTHAN10FRIENDLIST = "get_LESSTHAN10FRIENDLIST"
+export const GET_LESSTHAN10FRIENDLIST = "GET_LESSTHAN10FRIENDLIST"
 
 //获取好友点赞列表
 export const GET_FRIENDEVTLIST = "GET_FRIENDEVTLIST"

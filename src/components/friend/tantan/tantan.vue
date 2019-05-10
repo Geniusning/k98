@@ -18,7 +18,7 @@
               <span class="line_word">店外</span>
             </div>
             <!-- <p class="makeFriTips">绿灯闪烁表示好友在线哦，赶紧去找朋友吧...</p> -->
-            <span class="time_desc" >{{item.visitTime}}</span>
+            <span class="time_desc">{{item.visitTime}}</span>
             <div class="avatarList-wrapper clearfix" @touchstart="showAlbum" v-if="Boolean(item.info.lifePhotoURL.lifePhotoURL)">
               <img src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
             </div>
@@ -59,6 +59,7 @@
 </template>
 <script>
   import detectPrefixes from "./tantan.js";
+  import util from 'common/util'
   import {
     mapGetters,
     mapState
@@ -117,7 +118,7 @@
     },
     computed: {
       ...mapGetters(["friendList"]),
-      ...mapState(["friendListCursor", "userInfo"]),
+      ...mapState(["friendListCursor", "userInfo","tampSexFlag"]),
       // 划出面积比例
       offsetRatio() {
         let width = this.$el.offsetWidth;
@@ -225,7 +226,8 @@
         this.temporaryData.lastZindex = 20;
         // 循环currentPage
         console.log('this.temporaryData.currentPage：', this.temporaryData.currentPage)
-        if (this.temporaryData.currentPage == this.pages.length - 2 && this.friendListCursor != 0) {
+        if (this.temporaryData.currentPage == this.pages.length - 3 && this.friendListCursor != 0) {
+        // if (this.temporaryData.currentPage == this.pages.length - 3 && this.tampSexFlag) {
           this.$emit('getMoreFriend');
         }
         this.temporaryData.currentPage = this.temporaryData.currentPage === this.pages.length - 1 ? 0 : this.temporaryData.currentPage + 1;

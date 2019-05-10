@@ -18,6 +18,7 @@
               <div v-if="item.type==1" class="message_wrapper">
                 <div class="person_box">
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
+                  <!-- <h2 class="name">{{item.time}}</h2> -->
                   <img :src="staticChatFriendObj.headimgurl" alt class="avatar" v-if="item.friend">
                   <img :src="userInfo.headimgurl" alt class="avatar" v-else>
                 </div>

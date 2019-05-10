@@ -601,7 +601,9 @@
     }
     .sendGiftPanelBox {
       width: 8.4rem;
-      height: 4.7rem;
+      // height: 4.7rem;
+      padding-bottom: 0.2333rem;
+      box-sizing: border-box;
       margin: 50% auto;
       position: relative;
       .bg("../../assets/image/envelop.png");
