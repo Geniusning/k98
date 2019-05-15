@@ -25,8 +25,7 @@ import GameRecordDetail from 'components/welfare/gameRecordDetail'
 
 
 Vue.use(Router)
-
-export default new Router({
+const router  =  new Router({
   // mode: 'history',
   routes: [{
       path: '/',
@@ -36,7 +35,7 @@ export default new Router({
     {
       path: '/home',
       name: 'home',
-      component: (resolve)=>require(['../components/home/home.vue'],resolve),
+      component:()=>import('../components/home/home.vue'),
       meta: {
         keepAlive: true,
         title: "首页"
@@ -45,7 +44,7 @@ export default new Router({
     {
       path: '/marsRank',
       name: 'marsRank',
-      component: (resolve)=>require(['../components/home/marsRank/marsRank.vue'],resolve),
+      component:()=>import('../components/home/marsRank/marsRank.vue'),
       meta: { 
         title:"战神榜"
        }
@@ -53,7 +52,7 @@ export default new Router({
     {
       path: '/treasureRank',
       name: 'treasureRank',
-      component: (resolve)=>require(['../components/home/treasureRank/treasureRank.vue'],resolve),
+      component:()=>import('../components/home/treasureRank/treasureRank.vue'),
       meta: { 
         title:"财富榜"
        }
@@ -61,7 +60,7 @@ export default new Router({
     {
       path: "/gameRank",
       name: "gameRank",
-      component: (resolve)=>require(['../components/home/GameRank/GameRank.vue'],resolve),
+      component:()=>import('../components/home/GameRank/GameRank.vue'),
       meta: { 
         title:"比赛直播间"
        }
@@ -69,20 +68,21 @@ export default new Router({
     {
       path: '/friend',
       name: 'friend',
-      component: (resolve)=>require(['../components/friend/friend.vue'],resolve),
+      component: ()=>import('../components/friend/friend.vue'),
       children: [{
         path: ':id',
         name: "personalInfo",
-        component: (resolve)=>require(['../components/friend/personalInfo/personalInfo.vue'],resolve),
+        component: ()=>import('../components/friend/personalInfo/personalInfo.vue'),
       }, ],
       meta: {
+        keepAlive: true,
         title: "找朋友"
       }
     },
     {
       path: '/message',
       name: 'message',
-      component: (resolve)=>require(['../components/message/message.vue'],resolve),
+      component: ()=>import('../components/message/message.vue'),
       meta: {
         title: "消息"
       },
@@ -91,13 +91,15 @@ export default new Router({
         path: ":id",
         name: "chat",
         component: Chat,
-        // meta: { keepAlive: true }
+        meta: { 
+          title: "聊天"
+         }
       }, ]
     },
     {
       path: '/welfare',
       name: 'welfare',
-      component: (resolve)=>require(['../components/welfare/welfare.vue'],resolve),
+      component: ()=>import('../components/welfare/welfare.vue'),
       meta: {
         title: "福利"
       },
@@ -110,11 +112,11 @@ export default new Router({
     {
       path: '/gameRecord',
       name: 'gameRecord',
-      component: (resolve)=>require(['../components/welfare/gameRecord.vue'],resolve),
+      component: ()=>import('../components/welfare/gameRecord.vue'),
       children: [{
         path: ":id",
         name: "gameRecordDetail",
-        component: (resolve)=>require(['../components/welfare/gameRecordDetail.vue'],resolve),
+        component: ()=>import('../components/welfare/gameRecordDetail.vue'),
       }, ],
       meta: {
         title: "游戏记录"
@@ -131,7 +133,7 @@ export default new Router({
     {
       path: '/shareActivity',
       name: 'shareActivity',
-      component: (resolve)=>require(['../components/welfare/shareActivity/shareActivity.vue'],resolve),
+      component: ()=>import('../components/welfare/shareActivity/shareActivity.vue'),
       meta: {
         // keepAlive: true,
         title: "分享活动"
@@ -140,7 +142,7 @@ export default new Router({
     {
       path: '/newUserGetDiscount',
       name: 'newUserGetDiscount',
-      component: (resolve)=>require(['../components/welfare/newUserGetDiscount/newUserGetDiscount.vue'],resolve),
+      component: ()=>import('../components/welfare/newUserGetDiscount/newUserGetDiscount.vue'),
       meta: {
         keepAlive: true,
         title: "新人优惠券"
@@ -149,7 +151,7 @@ export default new Router({
     {
       path: '/mine',
       name: 'mine',
-      component: (resolve)=>require(['../components/mine/mine.vue'],resolve),
+      component: ()=>import('../components/mine/mine.vue'),
       meta: {
         keepAlive: true,
         title: "我的"
@@ -158,11 +160,11 @@ export default new Router({
     {
       path: '/card',
       name: 'card',
-      component: (resolve)=>require(['../components/card/card.vue'],resolve),
+      component: ()=>import('../components/card/card.vue'),
       children: [{
         path: ":id",
         name: "cardDetail",
-        component: (resolve)=>require(['../components/card_detail/card_detail.vue'],resolve),
+        component: ()=>import('../components/card_detail/card_detail.vue'),
       }],
       meta: {
         title: "优惠券"
@@ -171,10 +173,10 @@ export default new Router({
     {
       path: "/individual",
       name: "individual",
-      component: (resolve)=>require(['../components/individual/individual.vue'],resolve),
+      component: ()=>import('../components/individual/individual.vue'),
       children: [{
         path: ':id',
-        component: (resolve)=>require(['../components/individual/updateAvatar.vue'],resolve),
+        component: ()=>import('../components/individual/updateAvatar.vue'),
         name: "updateAvatar"
       }],
       meta: {
@@ -184,7 +186,7 @@ export default new Router({
     {
       path: "/game_detail",
       name: "gameDetail",
-      component: (resolve)=>require(['../components/game_detail/game_detail.vue'],resolve),
+      component: ()=>import('../components/game_detail/game_detail.vue'),
       meta: {
         title: "比赛详情"
       }
@@ -192,7 +194,7 @@ export default new Router({
     {
       path: '/gift_detail',
       name: 'giftDetail',
-      component: (resolve)=>require(['../components/gift_detail/gift_detail.vue'],resolve),
+      component: ()=>import('../components/gift_detail/gift_detail.vue'),
       meta: {
         title: "积分详情"
       }
@@ -200,3 +202,8 @@ export default new Router({
 
   ]
 })
+router.beforeEach((to, from,next) => {  //动态设置页面标题
+  window.document.title = to.meta.title
+  next()
+})
+export default router

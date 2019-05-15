@@ -334,6 +334,15 @@
       ...mapGetters(['recommentList'])
     },
     mounted() {
+      console.log("this.loadFriendSexType",this.userInfo)
+      let params = {
+        mySex: this.userInfo.sex == "男"?1:2,
+        cursor: 0,
+        sex: 0,
+        range: 0,
+        sortType: 0
+      }
+      this.getAllCommunityFriend(params)//获取群友
       this._loadPublishArenas(); //拉取已经发布的比赛场
       //this._loadFriendEvts(); //获取好友事件列表
       //this.getFriendGift(); //获取好友送礼列表6
@@ -356,14 +365,7 @@
       // }, 1000);
     },
     activated() {
-        let params = {
-        mySex: Number(this.loadFriendSexType),
-        cursor: 0,
-        sex: "",
-        range: "",
-        sortType: 0
-      }
-      this.getAllCommunityFriend(params)//获取群友
+      
       this.getAlreadyFriend(); //获取已经成为好友列表
       this._getInOutNum(); //获取场内场外用户数
       this._loadAdvertisingPhoto(); //拉取首页轮播图

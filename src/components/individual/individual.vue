@@ -325,6 +325,7 @@ export default {
       let param = decc.encode(strUserInfoParam);
       //保存信息
       api.savePersonalInfo(param).then(res => {
+        console.log(res)
         if (res.errorCode === 0) {
           api.getUserInfo("/api/loadUserInfo").then(res => {
             console.log(res);

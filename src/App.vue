@@ -89,7 +89,7 @@
             <div class="topUpGiftInfo-wrapper" v-else-if="isShowGiftPanel && !isAlreadyFriend">
               <div class="topUpGiftInfo-top">
                 <div class="img">
-                  <img class="giftAvatar" v-if="topUpGiftInfo.msgCode ==3" :src="topUpGiftInfo.content.fromInfo.headimgurl?topUpGiftInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                  <img class="giftAvatar" v-if="topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12" :src="topUpGiftInfo.content.fromInfo.headimgurl?topUpGiftInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
                     alt>
                   <img class="giftAvatar" v-if="topUpThumbInfo.msgCode ==2" :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
                     alt>
@@ -97,7 +97,7 @@
                     alt>
                 </div>
                 <div class="name">
-                  <p class="name" v-if="topUpGiftInfo.msgCode == 3 && giftFlag">{{topUpGiftInfo.content.fromInfo.nickname?topUpGiftInfo.content.fromInfo.nickname:'店长'}}送您一份礼物</p>
+                  <p class="name" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">{{topUpGiftInfo.content.fromInfo.nickname?topUpGiftInfo.content.fromInfo.nickname:'店长'}}送您一份礼物</p>
                   <p class="name" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">{{topUpThumbInfo.content.fromInfo?topUpThumbInfo.content.fromInfo.nickname:'朋友'}}给你点赞了</p>
                   <p class="name" v-else-if="topUpGameInfo.msgCode == 7 && gameFlag">{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:'朋友'}}约你玩大话骰</p>
                 </div>
@@ -517,7 +517,7 @@
           }, 7000);
           setTimeout(() => {
             this.isThrottle = true;
-          }, 10000);
+          }, 8000);
         }
       },
       allMutatualInfo: function(newValue) {
@@ -617,57 +617,20 @@
         switch (newValue.name) {
           case "home":
             this.selected = 0;
-            document.title = newValue.meta.title;
             break;
           case "friend":
             this.selected = 1;
-            document.title = newValue.meta.title;
             break;
           case "message":
             this.selected = 2;
-            document.title = newValue.meta.title;
             break;
           case "welfare":
             this.selected = 3;
-            document.title = newValue.meta.title;
             break;
           case "mine":
-            document.title = newValue.meta.title;
             this.selected = 4;
             break;
-          case "marsRank":
-            document.title = newValue.meta.title;
-            break;
-          case "treasureRank":
-            document.title = newValue.meta.title;
-            break;
-          case "gameRank":
-            document.title = newValue.meta.title;
-            break;
-          case "gameRecord":
-            document.title = newValue.meta.title;
-            break;
-          case "shareNew":
-            document.title = newValue.meta.title;
-            break;
-          case "shareActivity":
-            document.title = newValue.meta.title;
-            break;
-          case "newUserGetDiscount":
-            document.title = newValue.meta.title;
-            break;
-          case "card":
-            document.title = newValue.meta.title;
-            break;
-          case "individual":
-            document.title = newValue.meta.title;
-            break;
-          case "giftDetail":
-            document.title = newValue.meta.title;
-            break;
-          case "gameDetail":
-            document.title = newValue.meta.title;
-            break;
+         
           default:
             break;
         }

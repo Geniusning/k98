@@ -6,17 +6,20 @@ import App from './App'
 import store from './store/index'
 import router from './router/index'
 // import vuePicturePreview from 'vue-picture-preview'
-import {
-  ToastPlugin
-} from 'vux'
+import {ToastPlugin} from 'vux'
 import {mapMutations,mapState,mapActions} from 'vuex'
 import api from './common/api'
 import config from './common/config'
+import VueBus from './common/bus'
 Vue.use(ToastPlugin)
+Vue.use(VueBus)
 // Vue.use(vuePicturePreview)
 FastClick.attach(document.body)
 Vue.config.productionTip = false
-
+router.afterEach((to,from,next)=>{
+  window.scrollTo(0,0)
+  console.log("滚动了吗")
+})
 /* eslint-disable no-new */
 new Vue({
   router,
@@ -49,20 +52,20 @@ new Vue({
     let windowUrL = window.location.href;
     let index = windowUrL.indexOf('.com');
     let shareurl = windowUrL.slice(0,index);
-    this.updateShareUrl(shareurl+'.com/');
     let websocketUrl = shareurl.slice(8);
-    websocketUrl = `wss://${websocketUrl}.com/api/ws?visitType=${this.visitType}`
-    this.websock = new WebSocket(websocketUrl);     //以上生产环境
+    this.connectUrl = `wss://${websocketUrl}.com/api/ws?visitType=${this.visitType}`
+    this.websock = new WebSocket(this.connectUrl);     //以上生产环境
     // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境
+    this.updateShareUrl(shareurl+'.com/');//设置全局分享时的域名
     this.websock.binaryType = "arraybuffer";
     this.connect_websocket(this.websock);
     this.socket.onopen = this.websocketonopen;
     this.socket.onerror = this.websocketonerror;
     this.socket.onmessage = this.websocketonmessage;
     this.socket.onclose = this.websocketclose;
+    this._getUserInfo(); //获取用户信息
     this._acquireWaitGetCoupons(); //判断是否已经领取AI优惠券
     this._createQrcode(); //创建二维码
-    this._getUserInfo(); //获取用户信息
     this._loadStoreSetting(); //获取门店信息
     this._loadGoods(); //拉取积分换礼品列表
     this._loadRecommends(); //获取店长推荐
@@ -81,7 +84,12 @@ new Vue({
           content: null
         });
         this.pingNumer++;
-      }, 60000);
+        if(this.pingNumer == 3){
+          this.websock = new WebSocket(this.connectUrl); //以上生产环境
+          this.connect_websocket(this.websock);
+        }
+        console.log("this.pingNumer",this.pingNumer)
+      }, 50000);
     },
     websocketonerror(e) {
       //错误
@@ -98,10 +106,6 @@ new Vue({
       } else {
         console.log('fasong la ');
         this.pingNumer = 0;
-        // this.websock.send({
-        //   msgCode:result.msgCode+1,
-        //   content:null
-        // })
       }
       //处理聊天消息
       if (result.msgCode === 1) {
@@ -157,20 +161,15 @@ new Vue({
         this.judgeMessType('rejectGame');
       } else if (result.msgCode === 17) { //对方在游戏操作打招呼返回结果通知
         this.judgeMessType('gameSayHi');
+      }else if (result.msgCode === 18) { //对方在游戏操作打招呼返回结果通知
+        this.judgeMessType('rejectThumb');
       }
     },
     websocketclose(e) {
       //关闭
-      console.log("connection closed (" + e.code + ")");
-      let windowUrL = window.location.href;
-      let index = windowUrL.indexOf('.com');
-      let shareurl = windowUrL.slice(0, index);
-      this.updateShareUrl(shareurl + '.com/');
-      let websocketUrl = shareurl.slice(8);
-      websocketUrl = `wss://${websocketUrl}.com/api/ws`
-      this.websock = new WebSocket(websocketUrl); //以上生产环境
-      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`);
-      // }
+      console.log("websocket关闭-----------",e)
+      this.websock = new WebSocket(this.connectUrl); //以上生产环境
+      this.connect_websocket(this.websock);
     },
     //拉取积分换礼品列表
     _loadGoods() {

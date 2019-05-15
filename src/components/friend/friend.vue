@@ -9,27 +9,34 @@
         <p class="intro_mfTips">绿灯闪烁表示好友在线哦，红灯表示离线</p>
         <img src="../../assets/image/arrow left.png" alt class="arrow_left">
         <img src="../../assets/image/Arrow Right.png" alt class="arrow_right">
-        <p class="arrow_desc">左右滑动可换人</p>
+        <p class="arrow_desc">左右滑动可换人,右滑表示喜欢哦</p>
       </div>
       <!-- 相册··················································begin -->
       <!-- 相册··················································end -->
-      <stack ref="stack" :pages="someList" :stackinit="stackinit" @getMoreFriend="sonGetMoreFriend" @showAblum="showAblum" @firstData="listenFirstdata">暂时没有好友</stack>
+      <stack ref="stack" :pages="someList" :visible="visible" :currentIndex="currentPage"
+       @getMoreFriend="sonGetMoreFriend" 
+       @heartBeat="thumbHeartBeat" 
+       @showAblum="showAblum" 
+       @firstData="listenFirstdata"
+       >
+       暂时没有好友</stack>
       <div class="loading-container" v-show="!someList.length">
         <loading></loading>
       </div>
     </div>
     <div class="control_wrapper">
       <!-- <p class="control_guide" v-show="isFirstLoad">互赞成为好友。
-                    <br>下面分别是送礼、点赞、约Ta玩大话骰
-                  </p> -->
+                        <br>下面分别是送礼、点赞、约Ta玩大话骰
+                      </p> -->
       <div class="gifts">
         <img src="../../assets/image/gift.png" @click="isGiftPanel=true" alt>
         <img src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt>
         <p class="handleText" v-show="isFirstLoad">送礼成好友</p>
         <!-- <p>见面礼</p> -->
       </div>
-      <div class="thumbs" v-if="!isFriend">
-        <img src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt>
+      <!--  -->
+      <div class="thumbs" v-if="!isFriend" >
+        <img ref="thumbHeartBeat" src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt>
         <img src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
         <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
       </div>
@@ -54,7 +61,7 @@
           <div class="sex_wrapper">
             <h3>性别:</h3>
             <ul class="sex_list">
-              <li @click="chooseSex(index)" :class="{active:currentIndexSex == index}" v-for="(item,index) in sexArr" :key="index">
+              <li @click="chooseSex(item.id)" :class="{active:sexType == index}" v-for="(item,index) in sexArr" :key="index">
                 <span>{{item.name}}</span>
               </li>
             </ul>
@@ -62,16 +69,16 @@
           <div class="dis_wrapper">
             <h3>范围:</h3>
             <ul class="dis_list">
-              <li @click="chooseRange(index)" :class="{active:currentIndexRang == index}" v-for="(item,index) in rangeArr" :key="index">{{item.name}}</li>
+              <li @click="chooseRange(item.id)" :class="{active:rangeType == index}" v-for="(item,index) in rangeArr" :key="index">{{item.name}}</li>
             </ul>
           </div>
           <div class="dis_wrapper">
             <h3>等级:</h3>
             <ul class="dis_list">
-              <li @click="chooseDegree(index)" :class="{active:currentIndexRank == index}" v-for="(item,index) in rankList" :key="index">{{item.name}}</li>
+              <li @click="chooseDegree(item.id,index)" :class="{active:currentSortIndex == index}" v-for="(item,index) in rankList" :key="index">{{item.name}}</li>
             </ul>
           </div>
-          <p class="confirm" @click="cancel">确定</p>
+          <p class="confirm" @click="getSortedFriend">确定</p>
         </div>
       </x-dialog>
     </div>
@@ -79,30 +86,30 @@
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask width="10em" :text="text" :position="position"></toast>
     <!-- 见面礼 -->
     <!-- <div v-transfer-dom>
-            <popup v-model="showToast_gift" position="bottom">
-              <div class="position-vertical-demo">
-                <div class="title vux-1px-b">
-                  <span>手指抖一抖，就是好朋友</span>
-                  <img src="../../assets/image/close-round.png" alt class="close" @click="close_gift">
-                </div>
-                <div class="gift_list">
-                  <ul class="list clearfix">
-                    <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
-                      <img v-if="item.id===1" src="../../assets/image/beer.png" alt class="beer">
-                      <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt class="flower">
-                      <img v-else-if="item.id===3" src="../../assets/image/house.png" alt class="house">
-                      <img v-else src="../../assets/image/car.png" alt class="car">
-                      <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
-                      <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
-                      <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
-                      <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
-                      <p class="gift_price">￥{{item.money}}</p>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </popup>
-          </div> -->
+                <popup v-model="showToast_gift" position="bottom">
+                  <div class="position-vertical-demo">
+                    <div class="title vux-1px-b">
+                      <span>手指抖一抖，就是好朋友</span>
+                      <img src="../../assets/image/close-round.png" alt class="close" @click="close_gift">
+                    </div>
+                    <div class="gift_list">
+                      <ul class="list clearfix">
+                        <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
+                          <img v-if="item.id===1" src="../../assets/image/beer.png" alt class="beer">
+                          <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt class="flower">
+                          <img v-else-if="item.id===3" src="../../assets/image/house.png" alt class="house">
+                          <img v-else src="../../assets/image/car.png" alt class="car">
+                          <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
+                          <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
+                          <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
+                          <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
+                          <p class="gift_price">￥{{item.money}}</p>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </popup>
+              </div> -->
     <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad" -->
     <div class="guide_bg" v-show="isFirstLoad" @click="isFirstLoad=false">
       <img class="thumb" src="../../assets/image/thumb.png" alt>
@@ -156,6 +163,10 @@
             title: 'pic2'
           }
         ],
+        sortType: 0, //排序类型
+        currentSortIndex:null,
+        sexType: 0, //性别类型
+        rangeType: 0, //店内外类型
         fatherPanelIndex: 1,
         showToast_gift: false,
         text: "",
@@ -168,9 +179,6 @@
         showFriendList: false,
         showToast: false,
         show_mask: true,
-        currentIndexSex: 0,
-        currentIndexRang: 0,
-        currentIndexRank: 0,
         isFirstLoad: false,
         friendOnlineStatus: false,
         isIntegralPanel: false, //面板显示状态
@@ -203,50 +211,61 @@
           }
         ],
         rankList: [{
-            id: 0,
+            id: 1,
             name: "财富榜"
           },
           {
-            id: 1,
+            id: 2,
             name: "战神榜"
           },
           {
-            id: 2,
+            id: 3,
             name: "好友数"
           }
         ],
         someList: [],
         friendId: "",
-        stackinit: {
+
           visible: 3,
-          currentPage: 0
-        },
-        xid: "",
-        setType: 0
+          currentPage: 0,
       };
     },
     //路由判断，判断是场内还是场外1场内2场外
-    beforeRouteEnter(to, from, next) {
-      console.log(to);
-      if (to.query.id === "0") {
-        next(vm => {
-          console.log("loadFriendSexType-----------", vm.loadFriendSexType)
-          let param = {
-            mySex: Number(vm.loadFriendSexType),
-            cursor: 0,
-            sex: "",
-            range: "",
-            sortType: 0
-          }
-          vm.getAllCommunityFriend(param)
-        });
-      }
-    },
+    // beforeRouteEnter(to, from, next) {
+    //   console.log(to);
+    //   if (to.query.id === "0") {
+    //     next(vm => {
+    //       console.log("loadFriendSexType-----------", vm.loadFriendSexType)
+    //       let param = {
+    //         mySex: Number(vm.loadFriendSexType),
+    //         cursor: 0,
+    //         sex: vm.sexType,
+    //         range: vm.rangeType,
+    //         sortType: vm.sortType
+    //       }
+    //       vm.getAllCommunityFriend(param)
+    //     });
+    //   }
+    // },
     computed: {
       ...mapState(["friendList", "inAndOutFriendCursor", "friendListCursor", "giftList", "userInfo", "loadFriendSexType"]),
       ...mapGetters(["qrIsShow"]),
     },
+    created() {
+      this.$bus.on("add",num=>{
+        console.log("busNum---------",num)
+      })
+    },
     mounted() {
+       let param = {
+            mySex: Number(this.loadFriendSexType),
+            cursor: 0,
+            sex: this.sexType,
+            range: this.rangeType,
+            sortType: this.sortType
+          }
+          this.getAllCommunityFriend(param)
+      console.log(this.friendList)
       if (this.userInfo.firstLoad) {
         this.isFirstLoad = true;
       } else {
@@ -317,7 +336,7 @@
       listenFirstdata(data) {
         // 下面是传回父级的数据;
         this.friendOnlineStatus = data.info.onlineL98Server; //好友在线状态
-        // console.log('滑动页面传回给父级数据：', data)
+        console.log('滑动页面传回给父级数据：', data)
         let openId = data.info.openid;
         this.friendId = openId;
         // this.setChatFriend(data);
@@ -325,6 +344,15 @@
         this.isFriend = data.isAlreadyFriend;
         this.xid = openId;
         this.isInDoor = data.isInDoor;
+      },
+      //监听右滑心跳
+      thumbHeartBeat(data){
+        console.log("heartBeat--------------")
+        console.log()
+        this.$refs.thumbHeartBeat.className = "heartBeat"
+        setTimeout(() => {
+           this.$refs.thumbHeartBeat.className = ""
+        }, 500);
       },
       //获取更多朋友
       sonGetMoreFriend() {
@@ -335,12 +363,11 @@
         let params = {
           mySex: Number(this.loadFriendSexType),
           cursor: this.friendListCursor,
-          sex: "",
-          range: "",
-          sortType: 0
+          sex: this.sexType,
+          range: this.rangeType,
+          sortType: this.sortType
         }
         api.getFriendList(params).then(res => {
-          console.log('更多异性候选人数据：·····················', res);
           if (res.cursor == 0) {
             // this.setType++
             // console.log("setType--------",this.setType)
@@ -365,7 +392,7 @@
       },
       //点赞
       giveThumb(position) {
-        this.position = position;
+        // this.position = position;
         api.makeFriend(this.xid).then(res => {
           console.log(res);
           if (res.errcode === 0) {
@@ -422,16 +449,37 @@
       },
       // 性别选择
       chooseSex(index) {
-        this.currentIndexSex = index;
+        this.sexType = index;
       },
       chooseRange(index) {
-        this.currentIndexRang = index;
+        this.rangeType = index;
+
       },
-      chooseDegree(index) {
-        this.currentIndexRank = index;
+      chooseDegree(id,index) {
+        this.sortType = id;
+        this.currentSortIndex = index
+
       },
-      cancel() {
-        this.showToast = false;
+      getSortedFriend() {
+        this.changeFriendCursor(0);
+        this.currentPage++;
+        this.visible = 3;
+        let params = {
+          mySex: Number(this.loadFriendSexType),
+          cursor: this.friendListCursor,
+          sex: this.sexType,
+          range: this.rangeType,
+          sortType: this.sortType
+        }
+        api.getFriendList(params).then(res => {
+          console.log('拉取排序后的候选人：·····················', res);
+          this.changeFriendCursor(res.cursor)
+          this.getFriend(res)
+          this.showToast = false;
+        })
+      },
+      cancel(){
+         this.showToast = false;
       },
       ...mapActions({
         // getFriendList: "get_Friendlist", //获取候选人
@@ -508,6 +556,17 @@
       padding: 0 1.6rem; // margin-top: -0.2667rem;
       box-sizing: border-box;
       position: relative;
+       @keyframes bigAndSmall {
+      0% {
+        transform: scale(1); //  opacity: 1;
+      }
+      50% {
+        transform: scale(1.3);
+      }
+      100% {
+        transform: rotate(1);
+      }
+    }
       .control_guide {
         position: absolute;
         z-index: 9;
@@ -520,6 +579,11 @@
       img {
         width: 1.6rem;
         height: 1.6rem;
+        // .thumbs{
+        //   }
+      }
+      .heartBeat{
+        animation: bigAndSmall .3s linear 1;
       }
       .thumbs {
         position: relative;
@@ -645,7 +709,7 @@
         position: absolute;
         z-index: 99;
         top: 3.5rem;
-        left: 0.3rem;
+        left: -.3rem;
         width: 1.3333rem;
         animation: leftMove 1s linear infinite;
       }
@@ -654,7 +718,7 @@
         position: absolute;
         z-index: 99;
         top: 3.5rem;
-        right: 0.3rem;
+        right: -.3rem;
         animation: rightMove 1s linear infinite;
       }
       .intro_mfTips {
@@ -745,7 +809,8 @@
   //弹框选择
   .select_wrapper {
     width: 8rem;
-    height: 8.1rem;
+    // height: 8.1rem;
+    padding-bottom: 0.1867rem;
     .bg("../../assets/image/bg.png");
     position: relative; // padding: 0.625rem;
     .close {

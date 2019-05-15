@@ -26,6 +26,7 @@
               <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
                 alt="暂无头像">
               <img src="../../../assets/image/friend_icon.png" alt="" class="friend_icon" v-show="item.isAlreadyFriend">
+              <img src="../../../assets/image/like1.png" alt="" class="friend_icon" v-show="alreadySendThumbFlag">
             </div>
             <p class="name">{{item.info.nickname}}</p>
           </div>
@@ -59,6 +60,7 @@
 </template>
 <script>
   import detectPrefixes from "./tantan.js";
+  import api from "common/api";
   import util from 'common/util'
   import {
     mapGetters,
@@ -70,6 +72,14 @@
         type: Object,
         default: []
       },
+      visible:{
+        type:Number,
+        default:3
+      },
+      currentIndex:{
+        type:Number,
+        default:0
+      },
       pages: {
         type: Array,
         default: []
@@ -79,14 +89,14 @@
       return {
         // propData: this.pages,
         // isFriend:false,
-        intervalNumber: 8,
+        // intervalNumber: 8,
         tempArr: "二傻子、聪明、有远见",
         sign: "生活不止眼前的苟且，还有诗和远方的田野",
         basicdata: {
           start: {},
           end: {}
         },
-        temporaryData: {
+        //: {
           prefixes: detectPrefixes(),
           offsetY: "",
           poswidth: 0,
@@ -96,60 +106,85 @@
           lastZindex: "",
           rotate: 0,
           lastRotate: 0,
-          visible: this.stackinit.visible,
+          visible: this.visible,
           tracking: false,
           animation: false,
-          currentPage: this.stackinit.currentPage || 0,
+          currentPage: this.currentIndex || 0,
           opacity: 1,
           lastOpacity: 0,
           swipe: false,
-          zIndex: 10
-        },
+          zIndex: 10,
+          alreadySendThumbFlag:null,
+        // },
       };
     },
     watch: {
+      currentIndex(val){
+        this.currentPage = 0 //条件筛选群友后重置群友第一个游标
+      },
       pages(newValue) {
-        console.log('候选人数据----------------------------------------', newValue)
+        console.log('子组件候选人数据----------------------------------------', newValue)
         let data = newValue[0];
+        this.friendData = newValue[0]
         if (newValue.length <= 10) { //粗暴解决多次触发监听导致给父组件传递数据
           this.$emit("firstData", data);
         }
       }
     },
     computed: {
-      ...mapGetters(["friendList"]),
+      // ...mapGetters(["friendList"]),
       ...mapState(["friendListCursor", "userInfo","tampSexFlag"]),
       // 划出面积比例
       offsetRatio() {
         let width = this.$el.offsetWidth;
         let height = this.$el.offsetHeight;
-        let offsetWidth = width - Math.abs(this.temporaryData.poswidth);
-        let offsetHeight = height - Math.abs(this.temporaryData.posheight);
+        let offsetWidth = width - Math.abs(this.poswidth);
+        let offsetHeight = height - Math.abs(this.posheight);
         let ratio = 1 - offsetWidth * offsetHeight / (width * height) || 0;
         return ratio > 1 ? 1 : ratio;
       },
       // 划出宽度比例
       offsetWidthRatio() {
         let width = this.$el.offsetWidth;
-        let offsetWidth = width - Math.abs(this.temporaryData.poswidth);
+        let offsetWidth = width - Math.abs(this.poswidth);
         let ratio = 1 - offsetWidth / width || 0;
         return ratio;
       },
     },
     methods: {
+      //点赞
+      giveThumb(position) {
+        // this.position = position;
+        let xid = this.friendData.info.openid
+        api.makeFriend(xid).then(res => {
+          console.log("api.makeFriend(xid)-----------",res);
+          if (res.errcode === 0) {
+             this.alreadySendThumbFlag = false,
+            this.$emit("heartBeat", this.friendData);
+          } else if (res.errcode === 1023) {
+            this.showQrcode(true);
+          } else if(res.errcode==1001) {
+            this.alreadySendThumbFlag = true
+          }else if (res.errcode==1002){
+            this.alreadySendThumbFlag = false
+          }
+        });
+      },
       //点击相册
       showAlbum() {
+        const num  =1
+        this.$bus.emit("add",num)
         this.$emit('showAblum', this.friendData ? this.friendData : this.pages[0]);
       },
       touchstart(e) {
-        if (this.temporaryData.tracking) {
+        if (this.tracking) {
           return;
         }
         // 是否为touch
         if (e.type === "touchstart") {
           this.startX = e.touches[0].clientX;
           if (e.touches.length > 1) {
-            this.temporaryData.tracking = false;
+            this.tracking = false;
             return;
           } else {
             // 记录起始位置
@@ -159,7 +194,7 @@
             this.basicdata.end.x = e.targetTouches[0].clientX;
             this.basicdata.end.y = e.targetTouches[0].clientY;
             // offsetY在touch事件中没有，只能自己计算
-            this.temporaryData.offsetY =
+            this.offsetY =
               e.targetTouches[0].pageY - this.$el.offsetParent.offsetTop;
           }
           // pc操作
@@ -169,16 +204,16 @@
           this.basicdata.start.y = e.clientY;
           this.basicdata.end.x = e.clientX;
           this.basicdata.end.y = e.clientY;
-          this.temporaryData.offsetY = e.offsetY;
+          this.offsetY = e.offsetY;
         }
-        this.temporaryData.tracking = true;
-        this.temporaryData.animation = false;
+        this.tracking = true;
+        this.animation = false;
       },
       touchmove(e) {
         // 记录滑动位置
         this.endX = e.touches[0].clientX;
         this.distant = this.endX - this.startX;
-        if (this.temporaryData.tracking && !this.temporaryData.animation) {
+        if (this.tracking && !this.animation) {
           if (e.type === "touchmove") {
             this.basicdata.end.x = e.targetTouches[0].clientX;
             this.basicdata.end.y = e.targetTouches[0].clientY;
@@ -188,50 +223,50 @@
             this.basicdata.end.y = e.clientY;
           }
           // 计算滑动值
-          this.temporaryData.poswidth = this.basicdata.end.x - this.basicdata.start.x;
-          this.temporaryData.posheight = this.basicdata.end.y - this.basicdata.start.y;
+          this.poswidth = this.basicdata.end.x - this.basicdata.start.x;
+          this.posheight = this.basicdata.end.y - this.basicdata.start.y;
           let rotateDirection = this.rotateDirection();
           let angleRatio = this.angleRatio();
-          this.temporaryData.rotate = rotateDirection * this.offsetWidthRatio * 15 * angleRatio;
+          this.rotate = rotateDirection * this.offsetWidthRatio * 15 * angleRatio;
         }
       },
       touchend(e, item) {
-        this.temporaryData.tracking = false;
-        this.temporaryData.animation = true;
+        this.tracking = false;
+        this.animation = true;
         // 滑动结束，触发判断
         // 判断划出面积是否大于0.01
         if (this.offsetRatio >= 0.15) {
           // 计算划出后最终位置
           let ratio = Math.abs(
-            this.temporaryData.posheight / this.temporaryData.poswidth
+            this.posheight / this.poswidth
           );
-          this.temporaryData.poswidth = this.temporaryData.poswidth >= 0 ? this.temporaryData.poswidth + 200 : this.temporaryData.poswidth - 200;
-          this.temporaryData.posheight = this.temporaryData.posheight >= 0 ? Math.abs(this.temporaryData.poswidth * ratio) : -Math.abs(this.temporaryData.poswidth * ratio);
-          this.temporaryData.opacity = 0;
-          this.temporaryData.swipe = true;
+          this.poswidth = this.poswidth >= 0 ? this.poswidth + 200 : this.poswidth - 200;
+          this.posheight = this.posheight >= 0 ? Math.abs(this.poswidth * ratio) : -Math.abs(this.poswidth * ratio);
+          this.opacity = 0;
+          this.swipe = true;
           this.nextTick();
           // 不满足条件则滑入
         } else {
-          this.temporaryData.poswidth = 0;
-          this.temporaryData.posheight = 0;
-          this.temporaryData.swipe = false;
-          this.temporaryData.rotate = 0;
+          this.poswidth = 0;
+          this.posheight = 0;
+          this.swipe = false;
+          this.rotate = 0;
         }
       },
       nextTick() {
         // 记录最终滑动距离
-        this.temporaryData.lastPosWidth = this.temporaryData.poswidth;
-        this.temporaryData.lastPosHeight = this.temporaryData.posheight;
-        this.temporaryData.lastRotate = this.temporaryData.rotate;
-        this.temporaryData.lastZindex = 20;
+        this.lastPosWidth = this.poswidth;
+        this.lastPosHeight = this.posheight;
+        this.lastRotate = this.rotate;
+        this.lastZindex = 20;
         // 循环currentPage
-        console.log('this.temporaryData.currentPage：', this.temporaryData.currentPage)
-        if (this.temporaryData.currentPage == this.pages.length - 3 && this.friendListCursor != 0) {
-        // if (this.temporaryData.currentPage == this.pages.length - 3 && this.tampSexFlag) {
+        console.log('this.currentPage：', this.currentPage)
+        if (this.currentPage == this.pages.length - 3 && this.friendListCursor != 0) {
+        // if (this.currentPage == this.pages.length - 3 && this.tampSexFlag) {
           this.$emit('getMoreFriend');
         }
-        this.temporaryData.currentPage = this.temporaryData.currentPage === this.pages.length - 1 ? 0 : this.temporaryData.currentPage + 1;
-        this.friendData = this.pages[this.temporaryData.currentPage];
+        this.currentPage = this.currentPage === this.pages.length - 1 ? 0 : this.currentPage + 1;
+        this.friendData = this.pages[this.currentPage];
         this.$emit("firstData", this.friendData);
         let signList = [
           "努力吧,别把自己的青春铺张在爱情上",
@@ -241,88 +276,95 @@
         ];
         let index = Math.floor(Math.random() * 4);
         this.sign = signList[index];
-        // console.log(this.temporaryData.currentPage);
-        // let index = this.temporaryData.currentPage;
+        if(this.distant>0){
+          console.log("往右划")
+          this.giveThumb()
+        }else{
+          console.log("往左滑")
+           this.alreadySendThumbFlag = false
+        }
+        // console.log(this.currentPage);
+        // let index = this.currentPage;
         // if (this.distant > 0) {
-        //   this.temporaryData.currentPage =
-        //     this.temporaryData.currentPage === this.pages.length - 1
+        //   this.currentPage =
+        //     this.currentPage === this.pages.length - 1
         //       ? 0
-        //       : this.temporaryData.currentPage + 1;
-        //   let friendData_right = this.pages[this.temporaryData.currentPage];
+        //       : this.currentPage + 1;
+        //   let friendData_right = this.pages[this.currentPage];
         //   this.$emit("firstData", friendData_right);
         // } else {
         //   // currentPage切x 换，整体dom进行变化，把第一层滑动置最低
-        //   this.temporaryData.currentPage =
-        //     this.temporaryData.currentPage === 0
+        //   this.currentPage =
+        //     this.currentPage === 0
         //       ? this.pages.length - 1
-        //       : this.temporaryData.currentPage - 1;
-        //   let friendData_left = this.pages[this.temporaryData.currentPage];
+        //       : this.currentPage - 1;
+        //   let friendData_left = this.pages[this.currentPage];
         //   this.$emit("firstData", friendData_left);
         // }
         this.$nextTick(() => {
-          this.temporaryData.poswidth = 0;
-          this.temporaryData.posheight = 0;
-          this.temporaryData.opacity = 1;
-          this.temporaryData.rotate = 0;
+          this.poswidth = 0;
+          this.posheight = 0;
+          this.opacity = 1;
+          this.rotate = 0;
         });
       },
       prevTick() {
         // 记录最终滑动距离
-        this.temporaryData.lastPosWidth = this.temporaryData.poswidth;
-        this.temporaryData.lastPosHeight = this.temporaryData.posheight;
-        this.temporaryData.lastRotate = this.temporaryData.rotate;
-        this.temporaryData.lastZindex = 20;
+        this.lastPosWidth = this.poswidth;
+        this.lastPosHeight = this.posheight;
+        this.lastRotate = this.rotate;
+        this.lastZindex = 20;
         // 循环currentPage
-        console.log(this.temporaryData.currentPage);
-        this.temporaryData.currentPage = this.temporaryData.currentPage === this.pages.length - 1 ? 0 : this.temporaryData.currentPage - 1;
+        console.log(this.currentPage);
+        this.currentPage = this.currentPage === this.pages.length - 1 ? 0 : this.currentPage - 1;
         // currentPage切换，整体dom进行变化，把第一层滑动置最低
         this.$nextTick(() => {
-          this.temporaryData.poswidth = 0;
-          this.temporaryData.posheight = 0;
-          this.temporaryData.opacity = 1;
-          this.temporaryData.rotate = 0;
+          this.poswidth = 0;
+          this.posheight = 0;
+          this.opacity = 1;
+          this.rotate = 0;
         });
       },
       // prev() {
-      //   this.temporaryData.tracking = false;
-      //   this.temporaryData.animation = true;
+      //   this.tracking = false;
+      //   this.animation = true;
       //   // 计算划出后最终位置
       //   let width = this.$el.offsetWidth;
-      //   this.temporaryData.poswidth = -width;
-      //   this.temporaryData.posheight = 0;
-      //   this.temporaryData.opacity = 0;
-      //   this.temporaryData.rotate = "-3";
-      //   this.temporaryData.swipe = true;
+      //   this.poswidth = -width;
+      //   this.posheight = 0;
+      //   this.opacity = 0;
+      //   this.rotate = "-3";
+      //   this.swipe = true;
       //   this.nextTick();
       // },
       // next() {
-      //   this.temporaryData.tracking = false;
-      //   this.temporaryData.animation = true;
+      //   this.tracking = false;
+      //   this.animation = true;
       //   // 计算划出后最终位置
       //   let width = this.$el.offsetWidth;
-      //   this.temporaryData.poswidth = width;
-      //   this.temporaryData.posheight = 0;
-      //   this.temporaryData.opacity = 0;
-      //   this.temporaryData.rotate = "3";
-      //   this.temporaryData.swipe = true;
+      //   this.poswidth = width;
+      //   this.posheight = 0;
+      //   this.opacity = 0;
+      //   this.rotate = "3";
+      //   this.swipe = true;
       //   this.nextTick();
       // },
       onTransitionEnd(index) {
         let lastPage =
-          this.temporaryData.currentPage === 0 ? this.pages.length - 1 : this.temporaryData.currentPage - 1;
+          this.currentPage === 0 ? this.pages.length - 1 : this.currentPage - 1;
         // dom发生变化正在执行的动画滑动序列已经变为上一层
-        if (this.temporaryData.swipe && index === lastPage) {
-          this.temporaryData.animation = true;
-          this.temporaryData.lastPosWidth = 0;
-          this.temporaryData.lastPosHeight = 0;
-          this.temporaryData.lastOpacity = 0;
-          this.temporaryData.lastRotate = 0;
-          this.temporaryData.swipe = false;
-          this.temporaryData.lastZindex = -1;
+        if (this.swipe && index === lastPage) {
+          this.animation = true;
+          this.lastPosWidth = 0;
+          this.lastPosHeight = 0;
+          this.lastOpacity = 0;
+          this.lastRotate = 0;
+          this.swipe = false;
+          this.lastZindex = -1;
         }
       },
       rotateDirection() {
-        if (this.temporaryData.poswidth <= 0) {
+        if (this.poswidth <= 0) {
           return -1;
         } else {
           return 1;
@@ -330,13 +372,13 @@
       },
       angleRatio() {
         let height = this.$el.offsetHeight;
-        let offsetY = this.temporaryData.offsetY;
+        let offsetY = this.offsetY;
         let ratio = -1 * (2 * offsetY / height - 1);
         return ratio || 0;
       },
       inStack(index, currentPage) {
         let stack = [];
-        let visible = this.temporaryData.visible;
+        let visible = this.visible;
         let length = this.pages.length;
         for (let i = 0; i < visible; i++) {
           if (currentPage + i < length) {
@@ -349,13 +391,13 @@
       },
       // 非首页样式切换
       transform(index) {
-        let currentPage = this.temporaryData.currentPage;
+        let currentPage = this.currentPage;
         let length = this.pages.length;
         let lastPage =
           currentPage === 0 ? this.pages.length - 1 : currentPage - 1;
         let style = {};
-        let visible = this.temporaryData.visible;
-        if (index === this.temporaryData.currentPage) {
+        let visible = this.visible;
+        if (index === this.currentPage) {
           return;
         }
         if (this.inStack(index, currentPage)) {
@@ -363,16 +405,16 @@
           style["opacity"] = "1";
           style["transform"] = "translate3D(0,0," + -1 * 60 * (perIndex - this.offsetRatio) + "px" + ")";
           style["zIndex"] = visible - perIndex;
-          if (!this.temporaryData.tracking) {
-            style[this.temporaryData.prefixes.transition + "TimingFunction"] = "ease";
-            style[this.temporaryData.prefixes.transition + "Duration"] = 300 + "ms";
+          if (!this.tracking) {
+            style[this.prefixes.transition + "TimingFunction"] = "ease";
+            style[this.prefixes.transition + "Duration"] = 300 + "ms";
           }
         } else if (index === lastPage) {
-          style["transform"] = "translate3D(" + this.temporaryData.lastPosWidth + "px" + "," + this.temporaryData.lastPosHeight + "px" + ",0px) " + "rotate(" + this.temporaryData.lastRotate + "deg)";
-          style["opacity"] = this.temporaryData.lastOpacity;
-          style["zIndex"] = this.temporaryData.lastZindex;
-          style[this.temporaryData.prefixes.transition + "TimingFunction"] = "ease";
-          style[this.temporaryData.prefixes.transition + "Duration"] = 300 + "ms";
+          style["transform"] = "translate3D(" + this.lastPosWidth + "px" + "," + this.lastPosHeight + "px" + ",0px) " + "rotate(" + this.lastRotate + "deg)";
+          style["opacity"] = this.lastOpacity;
+          style["zIndex"] = this.lastZindex;
+          style[this.prefixes.transition + "TimingFunction"] = "ease";
+          style[this.prefixes.transition + "Duration"] = 300 + "ms";
         } else {
           style["zIndex"] = "-1";
           style["transform"] = "translate3D(0,0," + -1 * visible * 60 + "px" + ")";
@@ -381,16 +423,16 @@
       },
       // 首页样式切换
       transformIndex(index) {
-        if (index === this.temporaryData.currentPage) {
+        if (index === this.currentPage) {
           let style = {};
-          style["transform"] = "translate3D(" + this.temporaryData.poswidth + "px" + "," + this.temporaryData.posheight + "px" + ",0px) " + "rotate(" + this.temporaryData.rotate + "deg)";
-          style["opacity"] = this.temporaryData.opacity;
+          style["transform"] = "translate3D(" + this.poswidth + "px" + "," + this.posheight + "px" + ",0px) " + "rotate(" + this.rotate + "deg)";
+          style["opacity"] = this.opacity;
           style["zIndex"] = 10;
-          if (this.temporaryData.animation) {
-            style[this.temporaryData.prefixes.transition + "TimingFunction"] =
+          if (this.animation) {
+            style[this.prefixes.transition + "TimingFunction"] =
               "ease";
-            style[this.temporaryData.prefixes.transition + "Duration"] =
-              (this.temporaryData.animation ? 100 : 0) + "ms";
+            style[this.prefixes.transition + "Duration"] =
+              (this.animation ? 100 : 0) + "ms";
           }
           return style;
         }

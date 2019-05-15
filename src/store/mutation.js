@@ -57,7 +57,6 @@ const mutations = {
   },
   //获取候选人数据
   [types.GET_FRIENDlIST](state, data) {
-    console.log("获取候选人数据",data)
     if (data.candidates.length == 0) {
       return
     }
@@ -310,6 +309,13 @@ const mutations = {
           lastMsg: {},
         };
         friendEvtObj.content.extMsg.lastMsg['msg'] = "拒绝和你玩游戏";
+        state.dynamicFriendEvt = friendEvtObj.content;
+        break;
+      case 18:
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+        };
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "拒收你的好友请求";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
       default:

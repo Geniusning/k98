@@ -27,7 +27,7 @@
                   <p class="message" v-if="item.type===1" v-html="item.message"></p>
                 </div>
               </div>
-               <div v-if="item.type==2" class="message_wrapper">
+              <div v-if="item.type==2" class="message_wrapper">
                 <div class="person_box">
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
                   <img :src="staticChatFriendObj.headimgurl" alt class="avatar" v-if="item.friend">
@@ -35,20 +35,51 @@
                 </div>
                 <div class="message_box">
                   <span v-show="item.type===2" class="arrow" style="background:none"></span>
-                  <img  :src="item.message" @load="onImgLoaded" alt class="messRecordPic" @click="showBigPic(item.message)" ref="picture">
+                  <img :src="item.message" @load="onImgLoaded" alt class="messRecordPic" @click="showBigPic(item.message)" ref="picture">
                 </div>
               </div>
               <div v-else-if="item.type==3" class="gift_wrapper">
                 <p class="giftRecord_time">{{item.time}}</p>
                 <div>
                   <div v-if="item.isHandled">
-                    <p v-if="item.from==userInfo.openid" class="giftRecord_test received">{{staticChatFriendObj.nickname}}{{item.isAgree?"感谢送的礼物，很喜欢":"无功不受禄，不好意思收礼"}}</p>
-                    <p v-else class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?"感谢送的礼物，很喜欢":"无功不受禄，不好意思收礼"}}</p>
+                    <p v-if="item.from==userInfo.openid" class="giftRecord_test received">{{staticChatFriendObj.nickname}}{{item.isAgree?(item.chatExtMsg.type?"感谢送的礼物,已存入他的卡券":"感谢送的礼物,已存入,他的积分"):"无功不受禄，不好意思收礼"}}</p>
+                    <p v-else class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?(item.chatExtMsg.type?"感谢送的礼物,已存入我的卡券":"感谢送的礼物,已存入,我的积分"):"无功不受禄，不好意思收礼"}}</p>
                   </div>
                   <div v-else>
                     <div>
-                      <p v-if="item.from==userInfo.openid" class="giftRecord_test no_received">{{userInfo.nickname}}送{{staticChatFriendObj.nickname}}一份精美礼物</p>
-                      <p v-else class="giftRecord_test no_received">{{staticChatFriendObj.nickname}}送{{userInfo.nickname}}一份精美礼物<span @click="respondForGift(item,false)" class="no">拒收</span><span @click="respondForGift(item,true)" class="yes">感谢</span></p>
+                      <div class="myGifoInfo" :class="{'friendPanel':item.friend,'minePanel':!item.friend}" v-if="item.from==userInfo.openid">
+                        <p class="giftRecord_test giftText">{{userInfo.nickname}}送{{staticChatFriendObj.nickname}}一份精美礼物</p>
+                        <div class="gift">
+                          <div class="giftImg">
+                            <img v-if="item.chatExtMsg.image" :src="item.chatExtMsg.image" alt="">
+                            <img class="giftImg" v-else-if="item.name==='beer'" src="../../assets/image/beer.png" alt>
+                            <img class="giftImg" v-else-if="item.name==='flower'" src="../../assets/image/flower.png" alt>
+                            <img class="giftImg" v-else-if="item.name==='house'" src="../../assets/image/hutui.png" alt>
+                            <img class="giftImg" v-else-if="item.name==='car'" src="../../assets/image/boat.png" alt>
+                          </div>
+                          <div class="giftDesc">
+                            <p class="giftName">{{item.chatExtMsg.name}}</p>
+                            <p class="giftIntegral">{{item.chatExtMsg.integral?item.chatExtMsg.integral:item.chatExtMsg.money}}积分</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="myGifoInfo" :class="{'friendPanel':item.friend,'minePanel':!item.friend}" v-else>
+                        <p class="giftRecord_test giftText">{{staticChatFriendObj.nickname}}送{{userInfo.nickname}}一份精美礼物</p>
+                        <div class="gift">
+                          <div class="giftImg">
+                            <img v-if="item.chatExtMsg.image" :src="item.chatExtMsg.image" alt="">
+                            <img class="giftImg" v-else-if="item.name==='beer'" src="../../assets/image/beer.png" alt>
+                            <img class="giftImg" v-else-if="item.name==='flower'" src="../../assets/image/flower.png" alt>
+                            <img class="giftImg" v-else-if="item.name==='house'" src="../../assets/image/hutui.png" alt>
+                            <img class="giftImg" v-else-if="item.name==='car'" src="../../assets/image/boat.png" alt>
+                          </div>
+                          <div class="giftDesc">
+                            <p class="giftName">{{item.chatExtMsg.name}}</p>
+                            <p class="giftIntegral">{{item.chatExtMsg.integral?item.chatExtMsg.integral:item.chatExtMsg.money}}积分</p>
+                          </div>
+                        </div>
+                        <p class="giftRecord_test giftText"><span @click="respondForGift(item,false)" class="no">拒收</span><span @click="respondForGift(item,true)" class="yes">感谢</span></p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -63,7 +94,7 @@
                   <div v-else>
                     <div>
                       <p v-if="item.from==userInfo.openid" class="giftRecord_test no_received">{{userInfo.nickname}}约{{staticChatFriendObj.nickname}}玩一把游戏</p>
-                      <p v-else class="giftRecord_test no_received">{{staticChatFriendObj.nickname}}约{{userInfo.nickname}}玩一把游戏<span @click="rejectForGame(item)" class="no">免战</span><span @click="respondForGame(item)" class="yes">应战</span></p>
+                      <p v-else class="giftRecord_test no_received">{{staticChatFriendObj.nickname}}约{{userInfo.nickname}}玩一把游戏<span @click="rejectForGame(item)" class="noGame">免战</span><span @click="respondForGame(item)" class="yesGame">应战</span></p>
                     </div>
                   </div>
                 </div>
@@ -72,8 +103,8 @@
           </ul>
         </scroll>
         <!-- <div class="loading-container" v-show="isLoading">
-                                                      <loading></loading>
-                                      </div>-->
+                                                        <loading></loading>
+                                        </div>-->
       </div>
       <div class="input_wrapper">
         <div class="input_area clearfix">
@@ -126,30 +157,30 @@
       </div>
       <!-- 送礼 -->
       <!-- <div v-transfer-dom>
-                                            <popup v-model="showToast_gift" position="bottom">
-                                              <div class="position-vertical-demo">
-                                                <div class="title vux-1px-b">
-                                                  <span>送个小礼，就是好朋友</span>
-                                                  <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
+                                              <popup v-model="showToast_gift" position="bottom">
+                                                <div class="position-vertical-demo">
+                                                  <div class="title vux-1px-b">
+                                                    <span>送个小礼，就是好朋友</span>
+                                                    <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
+                                                  </div>
+                                                  <div class="gift_list">
+                                                    <ul class="list clearfix">
+                                                      <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
+                                                        <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
+                                                        <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
+                                                        <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
+                                                        <img v-else src="../../assets/image/car.png" alt="" class="car">
+                                                        <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
+                                                        <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
+                                                        <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
+                                                        <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
+                                                        <p class="gift_price">￥{{item.money}}</p>
+                                                      </li>
+                                                    </ul>
+                                                  </div>
                                                 </div>
-                                                <div class="gift_list">
-                                                  <ul class="list clearfix">
-                                                    <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
-                                                      <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
-                                                      <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
-                                                      <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
-                                                      <img v-else src="../../assets/image/car.png" alt="" class="car">
-                                                      <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
-                                                      <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
-                                                      <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
-                                                      <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
-                                                      <p class="gift_price">￥{{item.money}}</p>
-                                                    </li>
-                                                  </ul>
-                                                </div>
-                                              </div>
-                                            </popup>
-                                    </div>-->
+                                              </popup>
+                                      </div>-->
       <!-- 删除警告 -->
       <transition name="appear">
         <div class="warning_bg" v-show="showLaHeiPanel">
@@ -333,7 +364,7 @@
       });
     },
     activated() {
-      if(!(JSON.stringify(this.$route.query)==="{}")){
+      if (!(JSON.stringify(this.$route.query) === "{}")) {
         this.setChatFriend(this.$route.query.info);
       }
       this._getChatList(); //前端暂时获取聊天记录
@@ -370,7 +401,7 @@
           respondType: giftInfo.msgType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
           chatMsgID: giftInfo.chatMsgID
         }
-        console.log('giftParam------------',giftParam)
+        console.log('giftParam------------', giftParam)
         api.respondForGift(giftParam).then(res => {
           console.log('送礼操作结果-------------------', res);
           if (res.errCode == 0) {
@@ -772,7 +803,7 @@
       LastChatMsg: function(newValue) {
         console.log('在聊天页面收到对方发来的消息-------------------------------：', newValue);
         let messageInfo = newValue.allInfo.lastMsg;
-        if(messageInfo.type ==3 ||messageInfo.type ==4){  //如果是送礼和约战则不在聊天框显示
+        if (messageInfo.type == 3 || messageInfo.type == 4) { //如果是送礼和约战则不在聊天框显示
           return
         }
         if (messageInfo.from == this.staticChatFriendObj.openid) {
@@ -930,36 +961,82 @@
           }
           .messRecordPic {
             width: 1.8rem;
-             height: 2rem;
+            height: 2rem;
           }
           .gift_wrapper {
             text-align: left;
             display: flex;
             flex-direction: column;
             align-items: center;
-            .giftRecord_test {
-              max-width: 100%;
-              display: inline-block;
-              padding: 0.08rem 0.1067rem;
-              background: rgba(0, 0, 0, 0.2);
-              border-radius: 0.08rem;
-              color: #fff;
-              .yes {
-                text-decoration: underline;
-                color: red;
-                font-size: 0.4rem;
-                font-weight: 800;
+            .myGifoInfo {
+              &.friendPanel{
+                background: #ffffff;
               }
-              .no {
-                margin-left: 0.4333rem;
-                margin-right: 0.4333rem;
-                text-decoration: underline;
-                color: red;
-                font-size: 0.4rem;
-                font-weight: 800;
+              &.minePanel{
+                background: #FFD800;
+              }
+              border-radius: 0.08rem;
+              color: #333;
+              box-sizing: border-box;
+              padding: 0.1667rem 0.1333rem;
+              .gift {
+                margin-top: 0.2333rem;
+                margin-bottom: 0.1333rem;
+                display: flex;
+                justify-content: space-around;
+                .giftImg {
+                  img {
+                    width: 1.1rem;
+                    height: 1.1rem;
+                  }
+                }
+                .giftDesc {
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                  .giftName {}
+                  .giftIntegral {}
+                }
               }
             }
-            .received {}
+            .giftRecord_test {
+              width: 100%;
+              display: inline-block;
+              padding: 0.08rem 0.1067rem;
+              border-radius: 0.08rem;
+              color: #fff;
+              text-align: center;
+              box-sizing: border-box;
+              &.giftText{
+                color: #333;
+              }
+              .yes,.no {
+                 border-radius: 0.1rem;
+                  box-sizing: border-box;
+                  letter-spacing: 0.08rem;
+                  font-weight: 600;
+                  color: #333;
+                  padding: 0.1333rem 0.4rem;
+                  background: -webkit-linear-gradient(top, #fedc00, #e39300);
+              }
+              .no {
+                margin-right: 0.8333rem;
+              }
+              .yesGame,.noGame {
+                  border-radius: 0.1rem;
+                  text-decoration: underline;
+                  color: red;
+                  font-size: 0.4rem;
+                  font-weight: 700;
+              }
+              .noGame {
+                margin-left: 0.8667rem;
+                margin-right: 0.2667rem;
+              }
+            }
+            .received {
+              background: rgba(0, 0, 0, 0.2);
+            }
             .no_received {
               background: rgba(0, 0, 0, 0.5);
               max-width: 100%;

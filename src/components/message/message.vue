@@ -57,16 +57,16 @@
           </div>
           <div class="thumb_wrapper">
             <div class="clearfix" v-if="item.combatID">
-              <p class=" back_thumb vux-1px fl reject " @click="rejectGame(item.combatID,item.from.openid)">免战</p>
+              <p class=" back_thumb vux-1px fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
               <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
             </div>
             <div class="clearfix" v-else-if="item.gift">
-              <p class=" back_thumb vux-1px fl reject" @click="respondForGift(item,false)">拒绝</p>
-              <p class=" back_thumb vux-1px fl" @click="respondForGift(item,true)">感谢</p>
+              <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
+              <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
             </div>
             <div class="clearfix" v-else>
-              <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">拒绝</p>
-              <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">接受</p>
+              <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no')">拒绝</p>
+              <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes')">接受</p>
             </div>
             <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
               <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
@@ -242,6 +242,12 @@
       // console.log("组件销毁");
     },
     methods: {
+      //删除点赞，约战，送礼列表
+      removeEventList(index){
+        this.mutualEventsList.splice(index,1)
+         //重新拉取约战，送礼，点赞列表
+          this._loadMutualEvents();
+      },
       //勾选是否加好友
       onlineSendGift(e) {
         console.log(e.target.checked)
@@ -255,11 +261,15 @@
         api.loadMutualEvents().then(res => {
           if (res.errCode === 0) {
             let mutualEventsObj = res.mutualEvents;
-            console.log(mutualEventsObj);
-            this.mutualEventsList = []; //先清空
-            this.mutualEventsList = this.mutualEventsList.concat(mutualEventsObj.combatsEvents)
-            this.mutualEventsList = this.mutualEventsList.concat(mutualEventsObj.giftEvents)
-            this.mutualEventsList = this.mutualEventsList.concat(mutualEventsObj.friendEvents)
+            let tempEventList = [];
+            console.log("mutualEventsObj------------",mutualEventsObj);
+            // this.mutualEventsList = []; //先清空
+            tempEventList = tempEventList.concat(mutualEventsObj.combatsEvents)
+            tempEventList = tempEventList.concat(mutualEventsObj.giftEvents)
+            tempEventList = tempEventList.concat(mutualEventsObj.friendEvents)
+            this.mutualEventsList = tempEventList.sort((a,b)=>{
+              return b.time-a.time
+            })
             this.CalcManualEventsCount(this.mutualEventsList.length);
             this.addBandge();
             this.mutualEventsList.forEach(item => {
@@ -273,7 +283,7 @@
         })
       },
       //接受或拒接送礼
-      respondForGift(giftInfo, flag) {
+      respondForGift(index,giftInfo, flag) {
         console.log('giftInfo----------------', giftInfo)
         let giftType = giftInfo.integral ? 1 : 0;
         let giftParam = {
@@ -292,13 +302,14 @@
               this.text = "已拒接";
             }
             //重新拉取约战，送礼，点赞列表
-            this._loadMutualEvents();
+            // this._loadMutualEvents();
             this.showPositionValue = true;
           }
         })
+        this.removeEventList(index)
       },
       //回赞事件
-      backThumbClick(type, flag) {
+      backThumbClick(index,type, flag) {
         // let that = this;
         api.giveBackThumb(type, flag).then(res => {
           // console.log(res);
@@ -306,7 +317,7 @@
             //重新拉取已经成为好友列表
             this._loadFriends();
             //重新拉取约战，送礼，点赞列表
-            this._loadMutualEvents();
+            // this._loadMutualEvents();
             if (flag == "yes") {
               this.text = "已回赞";
             } else {
@@ -315,19 +326,21 @@
             this.showPositionValue = true;
           }
         });
+        this.removeEventList(index)
       },
       //感谢事件
-      thanksTo(giftGiverId) {
-        api.thanksForGit(giftGiverId).then(res => {
-          console.log('感谢后的结果---------------', res);
-          if (res.errCode == 0) {
-            this.text = "已感谢对方";
-            this.showPositionValue = true;
-            this._loadMutualEvents(); // 重新拉取约战，送礼，点赞列表
-            this._loadFriends(); //重新拉取已经成为好友列表
-          }
-        })
-      },
+      // thanksTo(index,giftGiverId) {
+      //   api.thanksForGit(giftGiverId).then(res => {
+      //     console.log('感谢后的结果---------------', res);
+      //     if (res.errCode == 0) {
+      //       this.text = "已感谢对方";
+      //       this.showPositionValue = true;
+      //       this._loadMutualEvents(); // 重新拉取约战，送礼，点赞列表
+      //       this._loadFriends(); //重新拉取已经成为好友列表
+      //     }
+      //   })
+      //   this.removeEventList(index)
+      // },
       //进入游戏
       playGame(url, combatID, openId) {
         let params = {
@@ -345,7 +358,7 @@
         })
       },
       //拒接游戏
-      rejectGame(combatID, openId) {
+      rejectGame(index,combatID, openId) {
         let params = {
           agree: false,
           combatID: combatID,
@@ -356,10 +369,10 @@
           if (res.errCode == 0) {
             this.text = "已拒绝";
             this.showPositionValue = true;
-            this._loadMutualEvents();
             this.addBandge();
           }
         })
+        this.removeEventList(index)
       },
       clearHistory(combatID, url) {
         api.deleteInviteCombat(combatID).then(res => {

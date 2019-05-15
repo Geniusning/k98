@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-05-10 16:38:11
+ * @Last Modified time: 2019-05-13 18:21:08
  */
 
 import axios from 'axios'
@@ -22,7 +22,7 @@ api.quitFriend = function (openId) {
   })
 }
 //获取用户信息
-api.getUserInfo = function (path) {
+api.getUserInfo = function () {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/loadUserInfo`).then(res => {
       if (res.status == 200) {
