@@ -142,20 +142,9 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import {
-  XDialog,
-  XButton,
-  TransferDomDirective as TransferDom,
-  XInput,
-  Group,
-  Toast
-} from "vux";
+import {XDialog,XButton,TransferDomDirective as TransferDom,XInput,Group,Toast,XSwitch} from "vux";
 import topUp from 'base/topUp/topUp';
-import {
-  mapState,
-  mapGetters,
-  mapMutations
-} from "vuex";
+import {mapState,mapGetters,mapMutations} from "vuex";
 import util from "common/util";
 import url from "common/config";
 import api from "common/api";
@@ -335,7 +324,8 @@ export default {
     Group,
     Toast,
     Validate,
-    topUp
+    topUp,
+    XSwitch
   }
 };
 </script>
@@ -344,6 +334,9 @@ export default {
 @import "../../assets/less/mixin.less";
 @import "../../assets/less/variable.less";
 @import "../../assets/less/mine.less";
+.weui-cells{
+ font-size: 16px; 
+}
 .tag_box {
   position: relative;
   .close {
@@ -429,6 +422,7 @@ export default {
     display: flex;
     flex-direction: column;
     position: relative;
+    background-color: #f4f4f4;
     .userInfo_wrapper {
       height: 1.8667rem;
       background: #fff;
@@ -624,7 +618,6 @@ export default {
     }
     .marketing_wrapper {
       // height: 6rem;
-      margin-top: 0.1333rem;
       padding: 0 0.4rem;
       background: #fff;
       .marketing_title {

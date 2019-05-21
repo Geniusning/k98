@@ -369,7 +369,7 @@
       this.getAlreadyFriend(); //获取已经成为好友列表
       this._getInOutNum(); //获取场内场外用户数
       this._loadAdvertisingPhoto(); //拉取首页轮播图
-      this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
+      //this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
     },
     methods: {
       //监听充值面板状态
@@ -398,14 +398,14 @@
         })
       },
       //判断是否已经分享过优惠券 (福利优惠券)
-      _loadInviteWaitGetCoupon() {
-        api.loadInviteWaitGetCoupon().then(res => {
-          // console.log('邀新有礼优惠券----------------------------------:', res)
-          if (res.errCode === 0 && res.coupons === null) {
-            this.judgeInviteCoupon(false);
-          }
-        })
-      },
+      // _loadInviteWaitGetCoupon() {
+      //   api.loadInviteWaitGetCoupon().then(res => {
+      //     console.log('邀新有礼优惠券----------------------------------:', res)
+      //     if (res.errCode === 0 && res.coupons === null) {
+      //       this.judgeInviteCoupon(false);
+      //     }
+      //   })
+      // },
       //进入游戏
       intoReadyGame() {
         this.gameShow = false;

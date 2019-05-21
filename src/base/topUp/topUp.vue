@@ -30,7 +30,7 @@
           <p v-show="componentGiftList.length>0" class="giftListpart_desc0">虚拟</p>
           <p v-show="componentGiftList.length>0" class="giftListpart_desc1">礼物</p>
           <ul class="list">
-            <li class="item" v-for="(item,index) in componentGiftList" :key="index" @click="sendVirtualGift(item.id,index)">
+            <li class="item" v-for="(item,index) in componentGiftList" :key="index" @click="sendVirtualGift(item.id,index,item)">
               <img :src="item.imgUrl" alt class="giftIcon">
               <p class="price">{{item.money}}</p>
             </li>
@@ -112,12 +112,9 @@
 
 <script type='text/ecmascript-6'>
   import api from "common/api";
-  import util from 'common/util'
-  import {
-    mapState,
-    mapGetters,
-    mapMutations
-  } from 'vuex'
+  import util from 'common/util';
+  import Bus from 'common/bus.js'
+  import {mapState,mapGetters,mapMutations} from 'vuex'
   export default {
     data() {
       return {
@@ -245,7 +242,8 @@
         this.panelIndex = 0;
       },
       //发送虚拟礼物
-      sendVirtualGift(id, index) {
+      sendVirtualGift(id, index,giftInfo) {
+        this.VirtualGiftInfo = giftInfo;
         this.componentConvertType = 4;
         let tempVirtualGift = {
           goods: {
@@ -255,7 +253,6 @@
             id: this.componentGiftList[index].id
           }
         };
-        console.log("this.componentGiftList[index].money-----------", this.componentGiftList[index].money)
         this.giftIntegral = this.componentGiftList[index].money;
         this.panelIndex = 2;
         this.componentGiftInfo = tempVirtualGift;
@@ -263,18 +260,18 @@
       // converType 0:店长推荐，1:积分换礼品兑换 ,2:赠送店长推荐项目,3:赠送积分换礼品项目,4:虚拟礼物
       //赠送店铺项目
       sendShopItemGift(goodsInfo) {
+        this.entityGoodInfo = goodsInfo;
         this.componentConvertType = 2;
         this.componentGiftInfo = goodsInfo;
-        console.log('this.componentGiftInfo----------', this.componentGiftInfo)
         this.giftIntegral = goodsInfo.goods.integral;
         this.panelIndex = 2;
         this.successfulText = "赠送礼物成功,扣除" + this.componentGiftInfo.goods.integral + "积分";
       },
       //赠送积分换礼品项目
       sendJiFenGift(goodsInfo) {
+        this.entityGoodInfo = goodsInfo;
         this.componentConvertType = 3;
         this.componentGiftInfo = goodsInfo;
-        console.log(":goodsInfo.integral--------", goodsInfo)
         this.giftIntegral = goodsInfo.goods.integral
         this.panelIndex = 2;
         this.successfulText = "赠送礼物成功,扣除" + this.componentGiftInfo.goods.integral + "积分";
@@ -318,8 +315,6 @@
             this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入'我的卡券'`
           })
         } else if (this.componentConvertType == 2) { //赠送店长推荐项目
-        console.log('goodID------------',goodID)
-        console.log('this.friendId------------',this.friendId)
           api.sentRecommend(goodID, this.friendId).then(res => {
             console.log('店长推荐赠送结果---------', res)
             if (res.errCode == 1029) {
@@ -328,7 +323,9 @@
               return;
             } else if (res.errCode == 1023) {
               this.showQrcode(true);
+              return
             }
+            Bus.$emit("giftInfo",this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入对方'我的卡券'`
           })
         } else if (this.componentConvertType == 3) { //赠送积分换礼品项目
@@ -339,7 +336,9 @@
               return;
             } else if (res.errCode == 1023) {
               this.showQrcode(true);
+              return
             }
+            Bus.$emit("giftInfo",this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入对方'我的卡券'`
             // console.log('积分赠送结果---------', res)
           })
@@ -352,10 +351,12 @@
             console.log('赠送礼物返回结果', res);
             if (res.errCode === 0) {
               this.successfulText = "赠送礼物成功,扣除您" + this.componentGiftInfo.goods.integral + "积分"
+               Bus.$emit("VirtualGiftInfo",this.VirtualGiftInfo);
             } else if (res.errCode == 1023) {
               this.successfulText = "赠送礼物成功,扣除您" + this.componentGiftInfo.goods.integral + "积分"
               setTimeout(() => {
                 this.showQrcode(true);
+                return
               }, 700);
             } else if (res.errCode == 1029) {
               this.successfulText = "积分不足，请点右下角前往充值"

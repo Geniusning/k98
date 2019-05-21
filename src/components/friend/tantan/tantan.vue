@@ -125,7 +125,7 @@
       pages(newValue) {
         console.log('子组件候选人数据----------------------------------------', newValue)
         let data = newValue[0];
-        this.friendData = newValue[0]
+        this.backToParentData = data
         if (newValue.length <= 10) { //粗暴解决多次触发监听导致给父组件传递数据
           this.$emit("firstData", data);
         }
@@ -159,21 +159,20 @@
         api.makeFriend(xid).then(res => {
           console.log("api.makeFriend(xid)-----------",res);
           if (res.errcode === 0) {
-             this.alreadySendThumbFlag = false,
+            
             this.$emit("heartBeat", this.friendData);
           } else if (res.errcode === 1023) {
             this.showQrcode(true);
-          } else if(res.errcode==1001) {
+          } else if(res.errcode==1001) { //已经点赞过了
             this.alreadySendThumbFlag = true
-          }else if (res.errcode==1002){
-            this.alreadySendThumbFlag = false
+          }else if (res.errcode==1002){ //已经是朋友了
+           this.alreadySendThumbFlag = false
           }
         });
       },
       //点击相册
       showAlbum() {
         const num  =1
-        this.$bus.emit("add",num)
         this.$emit('showAblum', this.friendData ? this.friendData : this.pages[0]);
       },
       touchstart(e) {
@@ -265,9 +264,10 @@
         // if (this.currentPage == this.pages.length - 3 && this.tampSexFlag) {
           this.$emit('getMoreFriend');
         }
-        this.currentPage = this.currentPage === this.pages.length - 1 ? 0 : this.currentPage + 1;
         this.friendData = this.pages[this.currentPage];
-        this.$emit("firstData", this.friendData);
+        this.currentPage = this.currentPage === this.pages.length - 1 ? 0 : this.currentPage + 1;
+        this.backToParentData = this.pages[this.currentPage];
+        this.$emit("firstData", this.backToParentData);
         let signList = [
           "努力吧,别把自己的青春铺张在爱情上",
           "兄弟虽然我们是在网络中相遇",
@@ -277,8 +277,12 @@
         let index = Math.floor(Math.random() * 4);
         this.sign = signList[index];
         if(this.distant>0){
-          console.log("往右划")
-          this.giveThumb()
+          console.log("往右划朋友信息-------",this.friendData)
+          if(!this.friendData.isAlreadyFriend){ //不是朋友才右滑点赞
+            this.giveThumb()
+          }else{
+            this.alreadySendThumbFlag = false
+          }
         }else{
           console.log("往左滑")
            this.alreadySendThumbFlag = false

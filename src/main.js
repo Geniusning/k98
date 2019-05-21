@@ -6,20 +6,20 @@ import App from './App'
 import store from './store/index'
 import router from './router/index'
 // import vuePicturePreview from 'vue-picture-preview'
-import {ToastPlugin} from 'vux'
-import {mapMutations,mapState,mapActions} from 'vuex'
+import {
+  ToastPlugin
+} from 'vux'
+import {
+  mapMutations,
+  mapState,
+  mapActions
+} from 'vuex'
 import api from './common/api'
 import config from './common/config'
-import VueBus from './common/bus'
 Vue.use(ToastPlugin)
-Vue.use(VueBus)
 // Vue.use(vuePicturePreview)
 FastClick.attach(document.body)
 Vue.config.productionTip = false
-router.afterEach((to,from,next)=>{
-  window.scrollTo(0,0)
-  console.log("滚动了吗")
-})
 /* eslint-disable no-new */
 new Vue({
   router,
@@ -31,7 +31,9 @@ new Vue({
     return {
       pingNumer: 0,
       timer: "",
-      visitType: 0
+      visitType: 0,
+      limitTimes: 0,
+      lockReconnect: null
     }
   },
   created() {
@@ -49,72 +51,102 @@ new Vue({
       default:
         break;
     }
-    let windowUrL = window.location.href;
-    let index = windowUrL.indexOf('.com');
-    let shareurl = windowUrL.slice(0,index);
-    let websocketUrl = shareurl.slice(8);
-    this.connectUrl = `wss://${websocketUrl}.com/api/ws?visitType=${this.visitType}`
-    this.websock = new WebSocket(this.connectUrl);     //以上生产环境
-    // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境
-    this.updateShareUrl(shareurl+'.com/');//设置全局分享时的域名
-    this.websock.binaryType = "arraybuffer";
-    this.connect_websocket(this.websock);
-    this.socket.onopen = this.websocketonopen;
-    this.socket.onerror = this.websocketonerror;
-    this.socket.onmessage = this.websocketonmessage;
-    this.socket.onclose = this.websocketclose;
-    this._getUserInfo(); //获取用户信息
-    this._acquireWaitGetCoupons(); //判断是否已经领取AI优惠券
-    this._createQrcode(); //创建二维码
-    this._loadStoreSetting(); //获取门店信息
-    this._loadGoods(); //拉取积分换礼品列表
-    this._loadRecommends(); //获取店长推荐
-    this._loadMutualEvents() //统计约战送礼点赞
+    this.createWebsocket() //创建长链接
+    this.getUserInfo(); //获取用户信息
+    this.acquireWaitGetCoupons(); //判断是否已经领取AI优惠券
+    this.createQrcode(); //创建二维码
+    this.loadStoreSetting(); //获取门店信息
+    this.loadGoods(); //拉取积分换礼品列表
+    this.loadRecommends(); //获取店长推荐
+    this.loadMutualEvents() //统计约战送礼点赞
   },
   methods: {
+    //创建长连接
+    createWebsocket() {
+      let windowUrL = window.location.href;
+      let index = windowUrL.indexOf('.com');
+      let shareurl = windowUrL.slice(0,index);
+      let websocketUrl = shareurl.slice(8);
+      this.connectUrl = `wss://${websocketUrl}.com/api/ws?visitType=${this.visitType}`
+      this.websock = new WebSocket(this.connectUrl);
+      this.updateShareUrl(shareurl+'.com/');//设置全局分享时的域名 
+      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
+      this.websock.binaryType = "arraybuffer";
+      this._initWebsocket()
+    },
+    //初始化长连接
+    _initWebsocket() {
+      this.websock.onopen = this._websocketonopen;
+      this.websock.onerror = this._websocketonerror;
+      this.websock.onmessage = this._websocketonmessage;
+      this.websock.onclose = this._websocketclose
+    },
+    //重连长链接
+    reconnectWebsocket() {
+      if (this.lockReconnect) {
+        return
+      }
+      this.lockReconnect = true;
+      clearTimeout(this.timerReconnect)
+      if (this.limitTimes < 6) {
+        this.timerReconnect = setTimeout(() => {
+          this.createWebsocket()
+          this.lockReconnect = false;
+        }, 5000);
+        this.limitTimes++
+      }
+    },
     getWeChatUrl() {
       let url = window.location.href.split('/#')[0];
       this.getUrl(url);
     },
-    websocketonopen(e) {
+    _websocketonopen(e) {
       console.log("WebSocket连接成功");
       this.timer = setInterval(() => {
-        this.websock.send({
-          msgCode: this.pingNumer,
-          content: null
-        });
-        this.pingNumer++;
-        if(this.pingNumer == 3){
-          this.websock = new WebSocket(this.connectUrl); //以上生产环境
-          this.connect_websocket(this.websock);
+        let msg = {
+          ops: 25,
         }
-        console.log("this.pingNumer",this.pingNumer)
+        var decc = new TextEncoder()
+        this.websock.send(decc.encode((JSON.stringify(msg)))); //给服务器发送ping
+        this.pingNumer++;
+        console.log("this.pingNumer", this.pingNumer)
+        if (this.pingNumer > 5) { //发送三次无响应后重连
+          this.reconnectWebsocket()
+          clearTimeout(this.timer)
+        }
       }, 50000);
     },
-    websocketonerror(e) {
+    _websocketonerror(e) {
       //错误
       console.log("WebSocket连接发生错误");
+      this.reconnectWebsocket() //重连
     },
-    websocketonmessage(e) {
+    _websocketonmessage(e) {
       //数据接收
       // console.log('测试websocket链接--------',e);
       var decc = new TextDecoder("utf-8");
       let result = JSON.parse(decc.decode(e.data));
-      console.log('websocket推送消息-------------------------', result)
-      if (result.msgCode != 25) {
-        this.addFriendEvtObj(result)
-      } else {
-        console.log('fasong la ');
+      console.log('websocket接受消息-------------------------', result)
+      if (result.ops == 25) {
+        let msg = {
+          ops: 26,
+        }
+        this.websock.send(JSON.stringify(msg)); //给服务器发送ping
         this.pingNumer = 0;
+        console.log('客户端发送pong心跳----', this.pingNumer);
+      } else if (result.ops == 26) {
+        this.pingNumer = 0;
+      } else {
+        this.addFriendEvtObj(result)
       }
       //处理聊天消息
       if (result.msgCode === 1) {
-        let message = result.content.extMsg
+        var message = result.content.extMsg
         this.appendLastMsg(message);
         // // 判断是否在聊天页面；是在聊天页面返回from给服务器表示消息已读
-        let reg = new RegExp(message.lastMsg.from)
+        let reg = new RegExp(message.allInfo.lastMsg.from)
         if (reg.test(this.$route.path)) {
-          let fromId = message.lastMsg.from;
+          let fromId = message.allInfo.lastMsg.from;
           //发送消息表示已读 
           api.sendMsgReaded(fromId).then(res => {
             if (res.errorCode == 0) {
@@ -127,12 +159,12 @@ new Vue({
       //处理好友点赞事件
       else if (result.msgCode === 2) {
         console.log(result)
-        this._loadMutualEvents();
+        this.loadMutualEvents();
         this.judgeMessType('thumb')
       }
       //处理送礼
       else if (result.msgCode === 3) {
-        this._loadMutualEvents();
+        this.loadMutualEvents();
         this.judgeMessType('gift')
       } else if (result.msgCode === 4) { //发布优惠券
         this.judgeMessType('discount')
@@ -141,7 +173,7 @@ new Vue({
       }
       //处理约战事件
       else if (result.msgCode === 7) {
-        this._loadMutualEvents();
+        this.loadMutualEvents();
         this.addBange();
         this.judgeMessType('playGame')
       }
@@ -161,25 +193,37 @@ new Vue({
         this.judgeMessType('rejectGame');
       } else if (result.msgCode === 17) { //对方在游戏操作打招呼返回结果通知
         this.judgeMessType('gameSayHi');
-      }else if (result.msgCode === 18) { //对方在游戏操作打招呼返回结果通知
+      } else if (result.msgCode === 18) { //对方在游戏操作打招呼返回结果通知
         this.judgeMessType('rejectThumb');
       }
     },
-    websocketclose(e) {
+    _strToBinary(str) {
+      var result = [];
+      var list = str.split("");
+      for (var i = 0; i < list.length; i++) {
+        if (i != 0) {
+          result.push(" ");
+        }
+        var item = list[i];
+        var binaryStr = item.charCodeAt().toString(2);
+        result.push(binaryStr);
+      }
+      return result.join("");
+    },
+    _websocketclose(e) {
       //关闭
-      console.log("websocket关闭-----------",e)
-      this.websock = new WebSocket(this.connectUrl); //以上生产环境
-      this.connect_websocket(this.websock);
+      console.log("websocket关闭-----------", e)
+      this.reconnectWebsocket() //重连
     },
     //拉取积分换礼品列表
-    _loadGoods() {
+    loadGoods() {
       api.loadGoods().then(res => {
         console.log('积分换礼品列表------', res);
         this.getSendGiftList(res.slice(0, 4));
       })
     },
     //自动领取优惠券
-    _acquireWaitGetCoupons() {
+    acquireWaitGetCoupons() {
       let channel = 1 //channel为1是AI优惠券类型
       setTimeout(() => {
         api.acquireWaitGetCoupons(channel).then(res => {
@@ -204,7 +248,7 @@ new Vue({
       }, 10000);
     },
     // 获取用户信息
-    _getUserInfo() {
+    getUserInfo() {
       api.getUserInfo().then(res => {
         console.log('个人信息-------------------------：', res);
         this.getuserInfo(res);
@@ -213,14 +257,14 @@ new Vue({
       });
     },
     //获取门店信息
-    _loadStoreSetting() {
+    loadStoreSetting() {
       api.loadStoreSetting().then(res => {
-        // console.log('门店信息---------------------------------：', res)
+        console.log('门店信息---------------------------------：', res)
         this.getShopSetting(res)
       })
     },
     //创建二维码
-    _createQrcode() {
+    createQrcode() {
       api.loadAllQrcode().then(res => { //没有创建过二维码才创建
         if (!res.urls.length || !res.urls) {
           api.createQrcode().then(res => {
@@ -232,7 +276,7 @@ new Vue({
       });
     },
     //获取店长推荐
-    _loadRecommends() {
+    loadRecommends() {
       api.loadRecommends().then(res => {
         console.log('店长推荐数据---------------------', res)
         this.recommendList = res;
@@ -240,7 +284,7 @@ new Vue({
       })
     },
     //拉取约战、点赞、送礼列表
-    _loadMutualEvents() {
+    loadMutualEvents() {
       api.loadMutualEvents().then(res => {
         if (res.errCode === 0) {
           let mutualEventsObj = res.mutualEvents;

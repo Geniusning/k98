@@ -17,7 +17,7 @@
           <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList">
             <div class="info_message">
               <div class="avatar">
-                <img :src="item.info.headimgurl?item.info.headimgurl:'http://i1.bvimg.com/643118/795ecd968a430f39.png'" alt="">
+                <img :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="">
                 <i class="dot" v-cloak v-show="item.info.unReadMsgCount>0"></i>
                 <!-- <i class="dot" v-cloak v-show="item.info.unReadMsgCount">{{item.info.unReadMsgCount}}</i> -->
               </div>
@@ -41,7 +41,7 @@
         <li class="item vux-1px-b" v-for="(item,index) in mutualEventsList" :key="index">
           <div class="info_message">
             <div class="avatar">
-              <img :src="item.from.headimgurl" alt="">
+              <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="">
               <i class="dot"></i>
             </div>
             <div class="name_and_message">
@@ -72,7 +72,7 @@
               <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
             </div>
           </div>
-          <div class="checkBox_scene clearfix" v-show="!item.evtType">
+          <div class="checkBox_scene clearfix" v-show="item.integral">
                 <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
                 <span class="scene-text fl">加好友</span>
           </div>
@@ -244,9 +244,11 @@
     methods: {
       //删除点赞，约战，送礼列表
       removeEventList(index){
-        this.mutualEventsList.splice(index,1)
+        // this.mutualEventsList.splice(index,1)
+        this._loadFriends();
+        // this.addBandge();
          //重新拉取约战，送礼，点赞列表
-          this._loadMutualEvents();
+        this._loadMutualEvents();
       },
       //勾选是否加好友
       onlineSendGift(e) {
@@ -296,6 +298,7 @@
         api.respondForGift(giftParam).then(res => {
           console.log('送礼操作结果-------------------', res);
           if (res.errCode == 0) {
+            this.removeEventList(index)
             if (flag) {
               this.text = "已感谢";
             } else {
@@ -306,7 +309,6 @@
             this.showPositionValue = true;
           }
         })
-        this.removeEventList(index)
       },
       //回赞事件
       backThumbClick(index,type, flag) {
@@ -315,7 +317,7 @@
           // console.log(res);
           if (res.errcode === 0) {
             //重新拉取已经成为好友列表
-            this._loadFriends();
+            this.removeEventList(index)
             //重新拉取约战，送礼，点赞列表
             // this._loadMutualEvents();
             if (flag == "yes") {
@@ -326,7 +328,6 @@
             this.showPositionValue = true;
           }
         });
-        this.removeEventList(index)
       },
       //感谢事件
       // thanksTo(index,giftGiverId) {
@@ -368,11 +369,11 @@
           console.log('拒接结果-----------', res);
           if (res.errCode == 0) {
             this.text = "已拒绝";
+            this.removeEventList(index)
             this.showPositionValue = true;
             this.addBandge();
           }
         })
-        this.removeEventList(index)
       },
       clearHistory(combatID, url) {
         api.deleteInviteCombat(combatID).then(res => {

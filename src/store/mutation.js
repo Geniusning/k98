@@ -315,8 +315,21 @@ const mutations = {
         friendEvtObj.content.extMsg = {
           lastMsg: {},
         };
-        friendEvtObj.content.extMsg.lastMsg['msg'] = "拒收你的好友请求";
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "拒绝你的好友请求";
         state.dynamicFriendEvt = friendEvtObj.content;
+        break;
+        case 19: //约你再战游戏
+        if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
+          return false;
+        }
+        friendEvtObj.content.extMsg = {
+          lastMsg: {},
+          gameInfo: friendEvtObj.content.extMsg
+        };
+        // friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
+        // state.dynamicFriendEvt = friendEvtObj.content;
+        state.topUpGameInfo = friendEvtObj
+        console.log('好友邀请你进游戏玩-----------', friendEvtObj)
         break;
       default:
         break;

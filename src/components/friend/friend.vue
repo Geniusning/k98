@@ -210,7 +210,8 @@
             name: "店外"
           }
         ],
-        rankList: [{
+        rankList: [
+         {
             id: 1,
             name: "财富榜"
           },
@@ -250,11 +251,6 @@
     computed: {
       ...mapState(["friendList", "inAndOutFriendCursor", "friendListCursor", "giftList", "userInfo", "loadFriendSexType"]),
       ...mapGetters(["qrIsShow"]),
-    },
-    created() {
-      this.$bus.on("add",num=>{
-        console.log("busNum---------",num)
-      })
     },
     mounted() {
        let param = {

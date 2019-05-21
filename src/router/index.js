@@ -177,7 +177,10 @@ const router  =  new Router({
       children: [{
         path: ':id',
         component: ()=>import('../components/individual/updateAvatar.vue'),
-        name: "updateAvatar"
+        name: "updateAvatar",
+        meta: {
+          title: "修改头像"
+        }
       }],
       meta: {
         title: "个人信息"
