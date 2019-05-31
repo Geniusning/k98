@@ -1,8 +1,8 @@
 <template>
   <div id="friend" class="friend">
     <div class="nav">
-      <img src="../../assets/image/select.png" alt @click="showToast=true">
-      <img src="../../assets/image/setting.png" alt @click="intoSetting">
+      <img onclick="return false" src="../../assets/image/select.png" alt @click="showToast=true">
+      <img onclick="return false" src="../../assets/image/setting.png" alt @click="intoSetting">
     </div>
     <div class="stack-wrapper">
       <div v-show="isFirstLoad">
@@ -29,25 +29,25 @@
                         <br>下面分别是送礼、点赞、约Ta玩大话骰
                       </p> -->
       <div class="gifts">
-        <img src="../../assets/image/gift.png" @click="isGiftPanel=true" alt>
-        <img src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt>
+        <img onclick="return false" src="../../assets/image/gift.png" @click="isGiftPanel=true" alt>
+        <img onclick="return false" src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt>
         <p class="handleText" v-show="isFirstLoad">送礼成好友</p>
         <!-- <p>见面礼</p> -->
       </div>
       <!--  -->
       <div class="thumbs" v-if="!isFriend" >
-        <img ref="thumbHeartBeat" src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt>
-        <img src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
+        <img onclick="return false" ref="thumbHeartBeat" src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt>
+        <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
         <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
       </div>
       <div class="hello" v-else>
-        <img src="../../assets/image/sayhi.png" @click="chat" alt>
-        <img src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
+        <img onclick="return false" src="../../assets/image/sayhi.png" @click="chat" alt>
+        <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
         <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
       </div>
       <div class="playGame">
-        <img src="../../assets/image/game.png" @click="playGame" alt>
-        <img src="../../assets/image/game.png" v-show="isFirstLoad" class="guidePlayGame" alt>
+        <img onclick="return false" src="../../assets/image/game.png" @click="playGame" alt>
+        <img onclick="return false" src="../../assets/image/game.png" v-show="isFirstLoad" class="guidePlayGame" alt>
         <p class="handleText" v-show="isFirstLoad">约战大话骰</p>
         <!-- <p>玩一把</p> -->
       </div>
@@ -56,7 +56,7 @@
     <div v-transfer-dom>
       <x-dialog v-model="showToast" class="dialog-demo">
         <div class="select_wrapper">
-          <img src="../../assets/image/close.png" alt class="close" @click="cancel">
+          <img onclick="return false" src="../../assets/image/close.png" alt class="close" @click="cancel">
           <p class="select_title">条件筛选</p>
           <div class="sex_wrapper">
             <h3>性别:</h3>
@@ -84,44 +84,21 @@
     </div>
     <!-- 点赞 -->
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask width="10em" :text="text" :position="position"></toast>
-    <!-- 见面礼 -->
-    <!-- <div v-transfer-dom>
-                <popup v-model="showToast_gift" position="bottom">
-                  <div class="position-vertical-demo">
-                    <div class="title vux-1px-b">
-                      <span>手指抖一抖，就是好朋友</span>
-                      <img src="../../assets/image/close-round.png" alt class="close" @click="close_gift">
-                    </div>
-                    <div class="gift_list">
-                      <ul class="list clearfix">
-                        <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
-                          <img v-if="item.id===1" src="../../assets/image/beer.png" alt class="beer">
-                          <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt class="flower">
-                          <img v-else-if="item.id===3" src="../../assets/image/house.png" alt class="house">
-                          <img v-else src="../../assets/image/car.png" alt class="car">
-                          <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
-                          <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
-                          <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
-                          <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
-                          <p class="gift_price">￥{{item.money}}</p>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </popup>
-              </div> -->
     <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad" -->
     <div class="guide_bg" v-show="isFirstLoad" @click="isFirstLoad=false">
-      <img class="thumb" src="../../assets/image/thumb.png" alt>
+      <img onclick="return false" class="thumb" src="../../assets/image/thumb.png" alt>
       <p class="intro">完善资料送福利，每天推3名星座匹配群友</p>
     </div>
     <keep-alive>
-      <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
+      <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
     </keep-alive>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
     </transition>
+    <keep-alive>
+      <lifePhote v-show="showAblumFlag" @closeAlbum="closeAlbum"></lifePhote>
+    </keep-alive>
     <router-view></router-view>
   </div>
 </template>
@@ -133,20 +110,9 @@
   import qrCode from 'base/qrCode/qrCode';
   import util from "common/util";
   import api from "common/api";
-  import {
-    mapState,
-    mapActions,
-    mapMutations,
-    mapGetters
-  } from "vuex";
-  import {
-    Toast,
-    TransferDom,
-    Popup,
-    XDialog,
-    XButton,
-    Scroller
-  } from "vux";
+  import lifePhote from './personalInfo/personalInfo'
+  import {mapState,mapActions,mapMutations,mapGetters} from "vuex";
+  import {Toast,TransferDom,Popup,XDialog,XButton,Scroller} from "vux";
   export default {
     // el: "#stack",
     directives: {
@@ -163,6 +129,7 @@
             title: 'pic2'
           }
         ],
+        showAblumFlag:false,//展示生活照
         sortType: 0, //排序类型
         currentSortIndex:null,
         sexType: 0, //性别类型
@@ -321,13 +288,19 @@
           }
         })
       },
+      //监听关闭相册
+      closeAlbum(flag){
+        console.log(flag);
+        this.showAblumFlag = flag;
+      },
       // 监听点击相册
       showAblum(data) {
         console.log('监听点击相册------------------------------：', data);
+        this.showAblumFlag = true;
         this.changeUserLifeImgList(data.info.lifePhotoURL.lifePhotoURL);
-        this.$router.push({
-          path: `/friend/${data.info.openid}`,
-        })
+        // this.$router.push({
+        //   path: `/friend/${data.info.openid}`,
+        // })
       },
       listenFirstdata(data) {
         // 下面是传回父级的数据;
@@ -365,21 +338,7 @@
         }
         api.getFriendList(params).then(res => {
           if (res.cursor == 0) {
-            // this.setType++
-            // console.log("setType--------",this.setType)
-            // if(this.setType==2){
-            //   this.textSexType(false)
-            //   return
-            // }
-            // if (this.loadFriendSexType === "1") {
-            //   this.changeSexType("2")
-            // } else {
-            //   this.changeSexType("1")
-            // }
-            // this.getLessThan10friendList(res.candidates);
-            // this.MutationGetMoreFriendList(res.candidates);
             this.changeFriendCursor(res.cursor);
-            // this.getMoreFriendList(this.friendListCursor, this.loadFriendSexType);
             return false;
           }
           this.changeFriendCursor(res.cursor);
@@ -482,7 +441,6 @@
         // getMoreFriendList: "get_moreFriendList" //获取更多候选人
       }),
       ...mapMutations({
-        // textSexType:"TESTSEXTYPE",//测试
         changeSexType: "CHANGESEXTYPE", //改变拉取候选人性别参数
         MutationGetMoreFriendList: "GET_MOREFRIENDlIST", //获取更多候选人
         getLessThan10friendList: "GET_LESSTHAN10FRIENDLIST", //获取少于10个候选人
@@ -512,6 +470,7 @@
       envelope,
       qrCode,
       topUp,
+      lifePhote
     }
   };
 </script>

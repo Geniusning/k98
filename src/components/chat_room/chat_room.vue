@@ -3,11 +3,11 @@
     <div id="chat" class="chatRoom">
       <div class="chat_nav">
         <div class="back_box">
-          <img src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
+          <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
         </div>
         <div class="name">{{staticChatFriendObj.nickname}}</div>
         <div class="backHome_box">
-          <img src="../../assets/image/chat_home.png" alt class="home" @click="goHome">
+          <img onclick="return false" src="../../assets/image/chat_home.png" alt class="home" @click="goHome">
         </div>
       </div>
       <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
@@ -19,8 +19,9 @@
                 <div class="person_box">
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
                   <!-- <h2 class="name">{{item.time}}</h2> -->
-                  <img :src="staticChatFriendObj.headimgurl" alt class="avatar" v-if="item.friend">
-                  <img :src="userInfo.headimgurl" alt class="avatar" v-else>
+                  <img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                    alt class="avatar" v-if="item.friend">
+                  <img onclick="return false" :src="userInfo.headimgurl" alt class="avatar" v-else>
                 </div>
                 <div class="message_box">
                   <span v-show="item.type===1" class="arrow"></span>
@@ -42,8 +43,18 @@
                 <p class="giftRecord_time">{{item.time}}</p>
                 <div>
                   <div v-if="item.isHandled">
-                    <p v-if="item.from==userInfo.openid" class="giftRecord_test received">{{staticChatFriendObj.nickname}}{{item.isAgree?(item.chatExtMsg.type?"感谢送的礼物,门店项目及礼物~已存入'他的卡券'":"感谢送的礼物,虚拟礼物~已存入'他的积分'"):"无功不受禄，不好意思收礼"}}</p>
-                    <p v-else class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?(item.chatExtMsg.type?"感谢送的礼物,门店项目及礼物~已存入'我的卡券'":"感谢送的礼物,虚拟礼物~已存入'我的积分'"):"无功不受禄，不好意思收礼"}}</p>
+                    <div v-if="item.from==userInfo.openid">
+                      <p v-if="item.chatExtMsg.type==0" class="giftRecord_test received">{{staticChatFriendObj.nickname}}{{item.isAgree?"收到实物礼品~存入卡券包~到店领取":"无功不受禄，不好意思收礼"}}</p>
+                      <p v-else-if="item.chatExtMsg.type==1" class="giftRecord_test received">{{staticChatFriendObj.nickname}}{{item.isAgree?"收到门店项目券,已存入卡券包,到店使用":"无功不受禄，不好意思收礼"}}</p>
+                      <p v-else class="giftRecord_test received">{{staticChatFriendObj.nickname}}{{item.isAgree?"收礼并表谢意,虚拟礼品存入积分,见'积分明细'":"无功不受禄，不好意思收礼"}}</p>
+                    </div>
+                    <div v-else>
+                      <p v-if="item.chatExtMsg.type==0" class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?"收到实物礼品~存入卡券包~到店领取":"无功不受禄，不好意思收礼"}}</p>
+                      <p v-else-if="item.chatExtMsg.type==1" class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?"收到门店项目券,已存入卡券包,到店使用":"无功不受禄，不好意思收礼"}}</p>
+                      <p v-else class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?"收礼并表谢意,虚拟礼品存入积分，见'积分明细'":"无功不受禄，不好意思收礼"}}</p>
+                    </div>
+                    <!-- <p v-if="item.from==userInfo.openid" class="giftRecord_test received">{{staticChatFriendObj.nickname}}{{item.isAgree?(item.chatExtMsg.type?"收礼并表谢意,门店项目及礼物~已存入'他的卡券'":"感谢送的礼物,虚拟礼物~已存入'他的积分'"):"无功不受禄，不好意思收礼"}}</p>
+                      <p v-else class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?(item.chatExtMsg.type?"收礼并表谢意,门店项目及礼物~已存入'我的卡券'":"感谢送的礼物,虚拟礼物~已存入'我的积分'"):"无功不受禄，不好意思收礼"}}</p> -->
                   </div>
                   <div v-else>
                     <div>
@@ -51,11 +62,11 @@
                         <p class="giftRecord_test giftText">{{userInfo.nickname}}送{{staticChatFriendObj.nickname}}一份精美礼物</p>
                         <div class="gift">
                           <div class="giftImg">
-                            <img v-if="item.chatExtMsg.image" :src="item.chatExtMsg.image" alt="">
-                            <img class="giftImg" v-else-if="item.name==='beer'" src="../../assets/image/beer.png" alt>
-                            <img class="giftImg" v-else-if="item.name==='flower'" src="../../assets/image/flower.png" alt>
-                            <img class="giftImg" v-else-if="item.name==='house'" src="../../assets/image/hutui.png" alt>
-                            <img class="giftImg" v-else-if="item.name==='car'" src="../../assets/image/boat.png" alt>
+                            <img onclick="return false" v-if="item.chatExtMsg.image" :src="item.chatExtMsg.image" alt="">
+                            <img onclick="return false" class="giftImg" v-else-if="item.name==='beer'" src="../../assets/image/beer.png" alt>
+                            <img onclick="return false" class="giftImg" v-else-if="item.name==='flower'" src="../../assets/image/flower.png" alt>
+                            <img onclick="return false" class="giftImg" v-else-if="item.name==='house'" src="../../assets/image/hutui.png" alt>
+                            <img onclick="return false" class="giftImg" v-else-if="item.name==='car'" src="../../assets/image/boat.png" alt>
                           </div>
                           <div class="giftDesc">
                             <p class="giftName">{{item.chatExtMsg.name}}</p>
@@ -67,11 +78,11 @@
                         <p class="giftRecord_test giftText">{{staticChatFriendObj.nickname}}送{{userInfo.nickname}}一份精美礼物</p>
                         <div class="gift">
                           <div class="giftImg">
-                            <img v-if="item.chatExtMsg.image" :src="item.chatExtMsg.image" alt="">
-                            <img class="giftImg" v-else-if="item.name==='beer'" src="../../assets/image/beer.png" alt>
-                            <img class="giftImg" v-else-if="item.name==='flower'" src="../../assets/image/flower.png" alt>
-                            <img class="giftImg" v-else-if="item.name==='house'" src="../../assets/image/hutui.png" alt>
-                            <img class="giftImg" v-else-if="item.name==='car'" src="../../assets/image/boat.png" alt>
+                            <img onclick="return false" v-if="item.chatExtMsg.image" :src="item.chatExtMsg.image" alt="">
+                            <img onclick="return false" class="giftImg" v-else-if="item.name==='beer'" src="../../assets/image/beer.png" alt>
+                            <img onclick="return false" class="giftImg" v-else-if="item.name==='flower'" src="../../assets/image/flower.png" alt>
+                            <img onclick="return false" class="giftImg" v-else-if="item.name==='house'" src="../../assets/image/hutui.png" alt>
+                            <img onclick="return false" class="giftImg" v-else-if="item.name==='car'" src="../../assets/image/boat.png" alt>
                           </div>
                           <div class="giftDesc">
                             <p class="giftName">{{item.chatExtMsg.name}}</p>
@@ -103,8 +114,8 @@
           </ul>
         </scroll>
         <!-- <div class="loading-container" v-show="isLoading">
-                                                            <loading></loading>
-                                            </div>-->
+                                                                <loading></loading>
+                                                </div>-->
       </div>
       <div class="input_wrapper">
         <div class="input_area clearfix">
@@ -117,23 +128,23 @@
         <div class="select_area">
           <ul class="selectList clearfix">
             <li class="item fl">
-              <img src="../../assets/image/chat_emotion.png" alt @click="show_emotion">
+              <img onclick="return false" src="../../assets/image/chat_emotion.png" alt @click="show_emotion">
             </li>
             <li class="item fl">
-              <img src="../../assets/image/message_chat.png" alt @click="show_expression">
+              <img onclick="return false" src="../../assets/image/message_chat.png" alt @click="show_expression">
             </li>
             <li class="item fl" @click="showToastGift">
-              <img src="../../assets/image/chat_gift.png" alt>
+              <img onclick="return false" src="../../assets/image/chat_gift.png" alt>
             </li>
             <li class="item fl">
-              <img src="../../assets/image/chat_pic.png" alt>
+              <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
               <input type="file" class="file" accept="image/*" @change="uploadImage">
             </li>
             <li class="item fl">
-              <img src="../../assets/image/hei.png" alt @click="laHei(true)">
+              <img onclick="return false" src="../../assets/image/hei.png" alt @click="laHei(true)">
             </li>
             <li class="item fl" @click="playGame" style="padding:.06rem">
-              <img src="../../assets/image/game.png" alt class="game" style="width:0.8069rem;height:0.8067rem">
+              <img onclick="return false" src="../../assets/image/game.png" alt class="game" style="width:0.8069rem;height:0.8067rem">
             </li>
           </ul>
         </div>
@@ -142,7 +153,7 @@
             <swiper-item class="black">
               <grid :show-vertical-dividers="true" :cols="8">
                 <div @click="selectEmtion(item.name)" v-for="item in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.2rem">
-                  <img :src="item.num" alt>
+                  <img onclick="return false" :src="item.num" alt>
                 </div>
               </grid>
             </swiper-item>
@@ -157,30 +168,30 @@
       </div>
       <!-- 送礼 -->
       <!-- <div v-transfer-dom>
-                                                  <popup v-model="showToast_gift" position="bottom">
-                                                    <div class="position-vertical-demo">
-                                                      <div class="title vux-1px-b">
-                                                        <span>送个小礼，就是好朋友</span>
-                                                        <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
-                                                      </div>
-                                                      <div class="gift_list">
-                                                        <ul class="list clearfix">
-                                                          <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
-                                                            <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
-                                                            <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
-                                                            <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
-                                                            <img v-else src="../../assets/image/car.png" alt="" class="car">
-                                                            <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
-                                                            <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
-                                                            <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
-                                                            <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
-                                                            <p class="gift_price">￥{{item.money}}</p>
-                                                          </li>
-                                                        </ul>
-                                                      </div>
-                                                    </div>
-                                                  </popup>
-                                          </div>-->
+                                                      <popup v-model="showToast_gift" position="bottom">
+                                                        <div class="position-vertical-demo">
+                                                          <div class="title vux-1px-b">
+                                                            <span>送个小礼，就是好朋友</span>
+                                                            <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
+                                                          </div>
+                                                          <div class="gift_list">
+                                                            <ul class="list clearfix">
+                                                              <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
+                                                                <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
+                                                                <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
+                                                                <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
+                                                                <img v-else src="../../assets/image/car.png" alt="" class="car">
+                                                                <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
+                                                                <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
+                                                                <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
+                                                                <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
+                                                                <p class="gift_price">￥{{item.money}}</p>
+                                                              </li>
+                                                            </ul>
+                                                          </div>
+                                                        </div>
+                                                      </popup>
+                                              </div>-->
       <!-- 删除警告 -->
       <transition name="appear">
         <div class="warning_bg" v-show="showLaHeiPanel">
@@ -199,7 +210,7 @@
       </transition>
       <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
       <keep-alive>
-        <topUp v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
+        <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
       </keep-alive>
     </div>
   </transition>
@@ -267,15 +278,15 @@
         flag: false,
         input_value: "",
         autofocus: false,
-        emotionList: [{
-            name: "[微笑]",
-            num: "/static/face/1.gif"
-            // num:1
-          },
-          {
-            name: "[色]",
-            num: "/static/face/2.gif"
-          },
+        emotionList: [
+          // {
+          //   name: "[微笑]",
+          //   num: "/static/face/1.gif"
+          // },
+          // {
+          //   name: "[色]",
+          //   num: "/static/face/2.gif"
+          // },
           {
             name: "[大哭]",
             num: "/static/face/3.gif"
@@ -284,14 +295,14 @@
             name: "[嘻嘻]",
             num: "/static/face/4.gif"
           },
-          {
-            name: "[偷笑]",
-            num: "/static/face/5.gif"
-          },
-          {
-            name: "[大笑]",
-            num: "/static/face/6.gif"
-          },
+          // {
+          //   name: "[偷笑]",
+          //   num: "/static/face/5.gif"
+          // },
+          // {
+          //   name: "[大笑]",
+          //   num: "/static/face/6.gif"
+          // },
           {
             name: "[晕]",
             num: "/static/face/7.gif"
@@ -300,18 +311,18 @@
             name: "[再见]",
             num: "/static/face/8.gif"
           },
-          {
-            name: "[抠鼻]",
-            num: "/static/face/9.gif"
-          },
-          {
-            name: "[委屈]",
-            num: "/static/face/10.gif"
-          },
-          {
-            name: "[抱抱]",
-            num: "/static/face/11.gif"
-          },
+          // {
+          //   name: "[抠鼻]",
+          //   num: "/static/face/9.gif"
+          // },
+          // {
+          //   name: "[委屈]",
+          //   num: "/static/face/10.gif"
+          // },
+          // {
+          //   name: "[抱抱]",
+          //   num: "/static/face/11.gif"
+          // },
           {
             name: "[爱心]",
             num: "/static/face/12.gif"
@@ -332,14 +343,14 @@
             name: "[玫瑰]",
             num: "/static/face/16.gif"
           },
-          {
-            name: "[亲亲]",
-            num: "/static/face/17.gif"
-          },
-          {
-            name: "[难过]",
-            num: "/static/face/18.gif"
-          }
+          // {
+          //   name: "[亲亲]",
+          //   num: "/static/face/17.gif"
+          // },
+          // {
+          //   name: "[难过]",
+          //   num: "/static/face/18.gif"
+          // }
         ],
         chatListIndex: 0,
         componentChatList: [],
@@ -366,9 +377,9 @@
       });
     },
     activated() {
-      if(!localStorage.getItem('friendInfo')){
+      if (!localStorage.getItem('friendInfo')) {
         localStorage.setItem('friendInfo', JSON.stringify(this.staticChatFriendObj));
-      }else{
+      } else {
         let friendInfo = JSON.parse(localStorage.getItem('friendInfo'));
         this.setChatFriend(friendInfo)
       }
@@ -393,8 +404,23 @@
           }
         })
       })
-      Bus.$on("giftInfo", (giftInfo) => {
-        console.log("聊天页面bus的实体礼物--------", giftInfo)
+      Bus.$on("giftInfoRecomend", (giftInfo) => {
+        console.log("聊天页面bus的实体推荐礼物--------", giftInfo)
+        this.componentChatList.push({
+          time: util.timestampToTime(new Date().getTime()),
+          isHandled: false,
+          friend: 0,
+          type: 3,
+          from: this.userInfo.openid,
+          chatExtMsg: {
+            image: giftInfo.goods.image,
+            name: giftInfo.goods.name,
+            integral: giftInfo.goods.integral
+          }
+        })
+      })
+      Bus.$on("giftInfoJiFen", (giftInfo) => {
+        console.log("聊天页面bus的实体积分礼物--------", giftInfo)
         this.componentChatList.push({
           time: util.timestampToTime(new Date().getTime()),
           isHandled: false,
@@ -410,6 +436,7 @@
       })
     },
     deactivated() {
+      Bus.$off();
       localStorage.removeItem('friendInfo');
       this.endCursor = null;
       this.componentChatList = [];
@@ -466,7 +493,7 @@
           combatID: gameInfo.combatID,
           fromID: gameInfo.from,
           chatMsgID: gameInfo.chatMsgID,
-          isAgainPlay:false,
+          isAgainPlay: false,
         }
         if (gameInfo.combatID) {
           //约战
@@ -490,7 +517,7 @@
           combatID: gameInfo.combatID,
           fromID: gameInfo.from,
           chatMsgID: gameInfo.chatMsgID,
-          isAgainPlay:false,
+          isAgainPlay: false,
         }
         console.log(params)
         api.responseCombat(params).then(res => {
@@ -767,7 +794,7 @@
         });
       },
       getIndex(val) {
-        console.log("getIndex--------------------------:", val);
+        // console.log("getIndex--------------------------:", val);
         this.chatListIndex = val;
       },
       //监听滚动
@@ -873,7 +900,7 @@
             inviterID: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg ? messageInfo.chatExtMsg.extMsg.inviterID : "") : '',
             url: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg ? messageInfo.chatExtMsg.extMsg.url : "") : '',
           });
-          console.log('聊天记录-------------', this.componentChatList)
+          // console.log('聊天记录-------------', this.componentChatList)
           this.$refs.listView.refresh();
         }
       },
@@ -885,7 +912,7 @@
         }
       },
       chatListIndex: function(newValue) {
-        console.log('父页面的chatListIndex：', newValue)
+        // console.log('父页面的chatListIndex：', newValue)
         if (this.isscroll) {
           this.$nextTick(function() {
             let childNodes = this.$refs.chatList.childNodes;
@@ -895,7 +922,7 @@
             })
             this.scrollHeight = chatListHeight;
             // this.$refs.listView.scrollTo(0,this.scrollHeight)
-            console.log('父页面scrollHeight：', this.scrollHeight);
+            // console.log('父页面scrollHeight：', this.scrollHeight);
           });
         }
       }

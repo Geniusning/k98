@@ -26,11 +26,11 @@ import GameRecordDetail from 'components/welfare/gameRecordDetail'
 
 Vue.use(Router)
 const router  =  new Router({
-  // mode: 'history',
+  base: '/k98',
+  mode: 'history',
   routes: [{
       path: '/',
       redirect: "/home",
-
     },
     {
       path: '/home',
@@ -69,11 +69,14 @@ const router  =  new Router({
       path: '/friend',
       name: 'friend',
       component: ()=>import('../components/friend/friend.vue'),
-      children: [{
-        path: ':id',
-        name: "personalInfo",
-        component: ()=>import('../components/friend/personalInfo/personalInfo.vue'),
-      }, ],
+      // children: [{
+      //   path: ':id',
+      //   name: "personalInfo",
+      //   component: ()=>import('../components/friend/personalInfo/personalInfo.vue'),
+      //   meta: {
+      //     title: "生活照"
+      //   }
+      // }, ],
       meta: {
         keepAlive: true,
         title: "找朋友"
@@ -101,7 +104,8 @@ const router  =  new Router({
       name: 'welfare',
       component: ()=>import('../components/welfare/welfare.vue'),
       meta: {
-        title: "福利"
+        title: "福利",
+        keepAlive: true,
       },
       children: [{
         path: "award",
@@ -164,6 +168,9 @@ const router  =  new Router({
       children: [{
         path: ":id",
         name: "cardDetail",
+        meta: {
+          title: "优惠券"
+        },
         component: ()=>import('../components/card_detail/card_detail.vue'),
       }],
       meta: {

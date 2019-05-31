@@ -5,7 +5,7 @@
           <x-dialog v-model="isShow" class="dialog-demo">
             <div  class="bindTel_wrapper">
               <h3 class="title">请绑定手机号</h3>
-              <img src="../../assets/image/close.png" alt="" class="close" @click="cancel">
+              <img onclick="return false" src="../../assets/image/close.png" alt="" class="close" @click="cancel">
               <div class="validate_box">
                 <input type="text" class="phone" v-model="phoneNum" placeholder="请输入手机号">
                 <input type="text" class="validate" v-model="vcode" placeholder="请输入验证码">

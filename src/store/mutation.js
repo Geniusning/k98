@@ -440,6 +440,10 @@ const mutations = {
   [types.GET_ADVERTISINGIMG](state, AdvertisingPhoto) {
     state.AdvertisingPhoto = AdvertisingPhoto;
   },
+  //修改配对成功弹框显示
+  [types.CHANGEFRIENDPANELFLAG](state,flag){
+    state.friendPanelFlag = flag;
+  },
   //测试
   [types.TEST](state, test) {
     state.test = test

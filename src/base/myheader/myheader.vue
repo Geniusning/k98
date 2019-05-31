@@ -2,9 +2,9 @@
  <div>
      <div class="nav_wrapper clearfix" :style="{background:bg}">
        <div class="back_content fl" @click="goBack">
-         <img src="../../assets/image/back_chat.png" alt="" class="backArrow">
+         <img onclick="return false" src="../../assets/image/back_chat.png" alt="" class="backArrow">
        </div>
-       <img @click="goHome" src="../../assets/image/chat_home.png" alt="" class="backHome">  
+       <img onclick="return false" @click="goHome" src="../../assets/image/chat_home.png" alt="" class="backHome">  
        <h3 class="title fl">{{title}}</h3>
      </div>
  </div>

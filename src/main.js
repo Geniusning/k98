@@ -31,26 +31,21 @@ new Vue({
     return {
       pingNumer: 0,
       timer: "",
-      visitType: 0,
       limitTimes: 0,
       lockReconnect: null
     }
   },
-  created() {
+  mounted() {
     console.log("路由--------", this.$route)
-    switch (this.$route.name) {
-      case "home":
-        this.visitType = 0
-        break;
-      case "shareNew":
-        this.visitType = 4
-        break;
-      case "shareActivity":
-        this.visitType = 5
-        break;
-      default:
-        break;
+    var img = document.getElementsByTagName("img")
+    console.log(img)
+    for(var i=0;i<img.length;i++){
+      img[i].addEventListener("click",function(e){
+        console.log("img")
+        e.preventDefault();
+      })
     }
+    this._loadAdvertisingPhoto(); //拉取首页轮播图
     this.createWebsocket() //创建长链接
     this.getUserInfo(); //获取用户信息
     this.acquireWaitGetCoupons(); //判断是否已经领取AI优惠券
@@ -67,7 +62,7 @@ new Vue({
       let index = windowUrL.indexOf('.com');
       let shareurl = windowUrL.slice(0,index);
       let websocketUrl = shareurl.slice(8);
-      this.connectUrl = `wss://${websocketUrl}.com/api/ws?visitType=${this.visitType}`
+      this.connectUrl = `wss://${websocketUrl}.com/api/ws`
       this.websock = new WebSocket(this.connectUrl);
       this.updateShareUrl(shareurl+'.com/');//设置全局分享时的域名 
       // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
@@ -95,6 +90,13 @@ new Vue({
         }, 5000);
         this.limitTimes++
       }
+    },
+    _loadAdvertisingPhoto() {
+      api.loadAdvertisingPhoto().then(res => {
+        console.log('轮播图-------------------------：', res.adPhotoURL)
+        this.getAdvertisingImg(res.adPhotoURL);
+      
+      })
     },
     getWeChatUrl() {
       let url = window.location.href.split('/#')[0];
@@ -308,6 +310,7 @@ new Vue({
       updateValue: "UPDATE_INPUTVALUE",
       addBange: "ADD_BADGE",
       compareLastMsg: "COMPARE_LASTMESS",
+      getAdvertisingImg: "GET_ADVERTISINGIMG", //获取首页轮播图
       //addFriendEvt: "ADD_FRIENDEVTLIST", //新增好友事件列表
       addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
       //getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表

@@ -173,7 +173,7 @@
       //点击相册
       showAlbum() {
         const num  =1
-        this.$emit('showAblum', this.friendData ? this.friendData : this.pages[0]);
+        this.$emit('showAblum', this.backToParentData ? this.backToParentData : this.pages[0]);
       },
       touchstart(e) {
         if (this.tracking) {
@@ -267,6 +267,8 @@
         this.friendData = this.pages[this.currentPage];
         this.currentPage = this.currentPage === this.pages.length - 1 ? 0 : this.currentPage + 1;
         this.backToParentData = this.pages[this.currentPage];
+        console.log("this.friendData----------",this.friendData)
+        console.log("this.backToParentData----------",this.backToParentData)
         this.$emit("firstData", this.backToParentData);
         let signList = [
           "努力吧,别把自己的青春铺张在爱情上",

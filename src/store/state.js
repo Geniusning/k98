@@ -41,7 +41,7 @@ const state = {
     topUpGameInfo:{},  //游戏弹框
     allMutatualInfo:{}, //送礼、约战、点赞 结构体
     loadFriendSexType:"", //拉取候选人性别参数
-    //tampSexFlag:true //临时切换男女参数变量
+    // friendPanelFlag:true //配对成功弹框
 }
 
 export default state

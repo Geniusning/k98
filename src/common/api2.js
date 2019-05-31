@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-05-10 16:38:26
+ * @Last Modified time: 2019-05-30 10:57:54
  */
 
 import axios from 'axios'
@@ -429,9 +429,9 @@ api.sendGift = function (params) {
   })
 }
 //拉取待领取的邀请有礼优惠券
-api.loadInviteWaitGetCoupon = function () {
+api.loadInviteCoupon = function () {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/loadInviteWaitGetCoupon?tk=${Url.tk}`)
+    axios.get(`/api/loadInviteCoupon?tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -971,9 +971,9 @@ api.loadAllQrcode = function () {
   })
 }
 //分享有礼领取优惠券
-api.receiveCouponByID = function (couponID) {
+api.acquireInviteCoupon = function (couponID,type) {
 return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/receiveCouponByID?tk=${Url.tk}&couponID=${couponID}`)
+    axios.get(Url.commonUrl + `/api/acquireInviteCoupon?tk=${Url.tk}&couponID=${couponID}&abCoupon=${type}`)
       .then(res => {
         if (res.status == 200) {
           // console.log('拉取二维码--------', res)

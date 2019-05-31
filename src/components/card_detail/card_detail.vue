@@ -12,7 +12,7 @@
                 <p class="desc">到店核销时 请出示此二维码或点击<span @click="lauchCheckOutCoupon" class="check">发起核销</span></p>
                 <!-- <img src="../../assets/image/QRcode.png" alt="" class="QR_pic"> -->
                 <canvas id="canvas" ref="canvas" style="width:220px;height:220px;"></canvas>
-                <div class="card_number">券码：1-01-000008</div>
+                <div class="card_number">券码：{{couponObj.codeNum}}</div>
             </div>
             <div class="infoMessage_wrapper">
                 <ul class="infoList">
@@ -34,6 +34,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
+  import util from "common/util";
 import myHeader from "../../base/myheader/myheader";
 import QRcode from 'qrcode';
 import api from 'common/api';
@@ -67,6 +68,10 @@ export default {
                 console.log(res)
                 this.qrUrl = res.verifyURL;
                 this.couponObj = res.userCoupon.coupon;
+                this.couponObj["codeNum"] = 
+                 util.prefixZero(this.couponObj.type,1)+"-"+
+                 util.prefixZero(this.couponObj.batch,3)+"-"+
+                 util.prefixZero(this.couponObj.acquireNum,7)
                 QRcode.toCanvas(canvas, this.qrUrl, (error) => {
                     if (error) {
                         console.log(error)
@@ -189,6 +194,7 @@ export default {
     .card_number{
       font-size: .4rem;
     letter-spacing: .16rem;
+    text-align: center;
     }
   }
   .infoMessage_wrapper {

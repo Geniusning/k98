@@ -4,15 +4,15 @@
       <div class="coinBox" v-if="panelIndex===0" key="coinBox">
         <div class="coinBox_top vux-1px-b">
           <div class="integral_box">
-            <img src="../../assets/image/integralIcon.png" alt="icon" class="integral">
+            <img onclick="return false" src="../../assets/image/integralIcon.png" alt="icon" class="integral">
             <p class="integral_text">积分充值：</p>
           </div>
-          <img src="../../assets/image/close-round.png" alt="icon" class="close" @click="closeIntegralPanel">
+          <img onclick="return false" src="../../assets/image/close-round.png" alt="icon" class="close" @click="closeIntegralPanel">
         </div>
         <div class="coinBox_bottom">
           <ul class="coinList">
             <li class="coinItem" v-for="(item,index) in moneyList" :key="item.id" @click="payForCoin(item.id)">
-              <img :src="item.imgUrl" alt :class="item.iconClass">
+              <img onclick="return false" :src="item.imgUrl" alt :class="item.iconClass">
               <p class="intergral">{{item.points}}</p>
               <p class="moneyCount">￥{{item.name}}</p>
             </li>
@@ -23,37 +23,37 @@
       <div class="giftPanelBox" v-else-if="panelIndex===1" key="giftPanelBox">
         <div class="giftPanelBox_title vux-1px-b">
           <p class="desc">请选择赠送对方的礼物</p>
-          <img src="../../assets/image/close-round.png" alt class="close" @click="closeIntegralPanel">
+          <img onclick="return false" src="../../assets/image/close-round.png" alt class="close" @click="closeIntegralPanel">
         </div>
         <div class="giftListpart vux-1px-b">
-          <img v-show="componentGiftList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <img onclick="return false" v-show="componentGiftList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
           <p v-show="componentGiftList.length>0" class="giftListpart_desc0">虚拟</p>
           <p v-show="componentGiftList.length>0" class="giftListpart_desc1">礼物</p>
           <ul class="list">
             <li class="item" v-for="(item,index) in componentGiftList" :key="index" @click="sendVirtualGift(item.id,index,item)">
-              <img :src="item.imgUrl" alt class="giftIcon">
+              <img onclick="return false" :src="item.imgUrl" alt class="giftIcon">
               <p class="price">{{item.money}}</p>
             </li>
           </ul>
         </div>
         <div class="shopItemListpart vux-1px-b" v-if="recommentList.length>0">
-          <img v-show="recommentList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <img onclick="return false" v-show="recommentList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
           <p v-show="recommentList.length>0" class="giftListpart_desc0">门店</p>
           <p v-show="recommentList.length>0" class="giftListpart_desc1">项目</p>
           <ul class="list">
             <li class="item" v-for="(item,index) in recommentList" :key="index" @click="sendShopItemGift(item)">
-              <img :src="item.goods.image" alt class="giftIcon">
+              <img onclick="return false" :src="item.goods.image" alt class="giftIcon">
               <p class="price">{{item.goods.integral}}</p>
             </li>
           </ul>
         </div>
         <div class="entityGiftListpart">
-          <img v-show="sendGiftList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
+          <img onclick="return false" v-show="sendGiftList.length>0" src="../../assets/image/integralIcon.png" alt class="integralIcon">
           <p v-show="sendGiftList.length>0" class="giftListpart_desc0">礼品</p>
           <p v-show="sendGiftList.length>0" class="giftListpart_desc1">商城</p>
           <ul class="list">
             <li class="item" v-for="(item,index) in sendGiftList" :key="index" @click="sendJiFenGift(item)">
-              <img :src="item.goods.image" alt class="giftIcon">
+              <img onclick="return false" :src="item.goods.image" alt class="giftIcon">
               <p class="price">{{item.goods.integral}}</p>
             </li>
           </ul>
@@ -62,14 +62,14 @@
       <!-- 确认送礼物面板 -->
       <div class="sendGiftPanelBox" v-else-if="panelIndex===2" key="sendGiftPanelBox">
         <div class="header">
-          <img v-if="componentConvertType == 0 || componentConvertType == 1" src="../../assets/image/integralIcon.png" class="giftBoxIfon">
-          <img v-else src="../../assets/image/giftBox.png" class="giftBoxIfon">
+          <img onclick="return false" v-if="componentConvertType == 0 || componentConvertType == 1" src="../../assets/image/integralIcon.png" class="giftBoxIfon">
+          <img onclick="return false" v-else src="../../assets/image/giftBox.png" class="giftBoxIfon">
           <p class="header_text">消耗积分{{componentGiftInfo.goods.integral}}</p>
           <div class="close" @click="closeIntegralPanel">X</div>
         </div>
         <div class="content">
           <div class="pictureBox">
-            <img :src="componentGiftInfo.goods.image" alt class="pictureBox_img">
+            <img onclick="return false" :src="componentGiftInfo.goods.image" alt class="pictureBox_img">
           </div>
           <div class="componentGiftInfoBox">
             <p class="title">{{componentGiftInfo.goods.name}}</p>
@@ -96,7 +96,7 @@
         <div class="envelope">
           <div class="close" @click="closeIntegralPanel">X</div>
           <div class="integralIcon_wrapper">
-            <img src="../../assets/image/integralIcon.png" alt class="integralIcon">
+            <img onclick="return false" src="../../assets/image/integralIcon.png" alt class="integralIcon">
             <div class="integralIcon_text">消耗积分:{{componentGiftInfo.goods.integral}}</div>
           </div>
           <p class="successful_text">{{successfulText}}</p>
@@ -325,7 +325,7 @@
               this.showQrcode(true);
               return
             }
-            Bus.$emit("giftInfo",this.entityGoodInfo);
+            Bus.$emit("giftInfoRecomend",this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入对方'我的卡券'`
           })
         } else if (this.componentConvertType == 3) { //赠送积分换礼品项目
@@ -338,7 +338,7 @@
               this.showQrcode(true);
               return
             }
-            Bus.$emit("giftInfo",this.entityGoodInfo);
+            Bus.$emit("giftInfoJiFen",this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入对方'我的卡券'`
             // console.log('积分赠送结果---------', res)
           })
@@ -375,7 +375,7 @@
         api.createOrder(id).then(res => {
           if (res.errCode === 0) {
             let resultInfo = res.data;
-            console.log(resultInfo);
+            console.log("resultInfo----------",resultInfo);
             let _this = this;
             WeixinJSBridge.invoke(
               "getBrandWCPayRequest", {
@@ -387,7 +387,7 @@
                 "paySign": resultInfo.paySign //微信签名
               },
               (res) => {
-                console.log(res);
+                console.log("WeixinJSBridge.invoke-res",res);
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   alert("微信支付成功");

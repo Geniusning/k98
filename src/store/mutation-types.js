@@ -1,5 +1,7 @@
 
 // export const TESTSEXTYPE  = "TESTSEXTYPE"
+//更改配对成功标识符
+export const CHANGEFRIENDPANELFLAG = "CHANGEFRIENDPANELFLAG"
 //修改请求候选人男女标识
 export const CHANGESEXTYPE = "CHANGESEXTYPE"
 //统计约战，送礼，点赞数量

@@ -6,11 +6,12 @@
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive"></router-view>
       <!-- <lg-preview></lg-preview> -->
+      <!-- 左侧信封弹 -->
       <transition name="envelop">
         <div class="envelop-wrapper" v-if="isShowEnvelop">
-          <img src="./assets/image/close_ad.png" alt class="close" @click.stop="close">
+          <img onclick="return false" src="./assets/image/close_ad.png" alt class="close" @click.stop="close">
           <div class="top">
-            <img :src="dynamicFriendEvt.fromInfo.headimgurl?dynamicFriendEvt.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+            <img onclick="return false" :src="dynamicFriendEvt.fromInfo.headimgurl?dynamicFriendEvt.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
               alt class="avatar">
             <div class="name">{{dynamicFriendEvt.fromInfo.nickname?dynamicFriendEvt.fromInfo.nickname:'店长'}}</div>
           </div>
@@ -31,7 +32,7 @@
           <div class="topUpGiftInfo-wrapper" v-if="isShowGiftPanel && allMutatualInfo_temp.isAlreadyFriends">
             <div class="topUpGiftInfo-top">
               <div class="img">
-                <img class="giftAvatar" :src="allMutatualInfo_temp.headimgurl?allMutatualInfo_temp.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                <img onclick="return false" class="giftAvatar" :src="allMutatualInfo_temp.headimgurl?allMutatualInfo_temp.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
                   alt>
               </div>
               <div class="name">
@@ -42,11 +43,11 @@
             <div class="topUpGiftInfo-middle">
               <div class="partition_zone" v-if="allMutatualInfo_temp.type == 3 && giftFlag">
                 <div class="topUpGiftInfo_left">
-                  <img class="giftImg" v-if="allMutatualInfo_temp.name==='beer'" src="./assets/image/beer.png" alt>
-                  <img class="giftImg" v-else-if="allMutatualInfo_temp.name==='flower'" src="./assets/image/flower.png" alt>
-                  <img class="giftImg" v-else-if="allMutatualInfo_temp.name==='house'" src="./assets/image/hutui.png" alt>
-                  <img class="giftImg" v-else-if="allMutatualInfo_temp.name==='car'" src="./assets/image/boat.png" alt>
-                  <img class="giftImg" v-else :src="allMutatualInfo_temp.image" alt>
+                  <img onclick="return false" class="giftImg" v-if="allMutatualInfo_temp.name==='beer'" src="./assets/image/beer.png" alt>
+                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='flower'" src="./assets/image/flower.png" alt>
+                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='house'" src="./assets/image/hutui.png" alt>
+                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='car'" src="./assets/image/boat.png" alt>
+                  <img onclick="return false" class="giftImg" v-else :src="allMutatualInfo_temp.image" alt>
                 </div>
                 <div class="topUpGiftInfo_right">
                   <div>
@@ -63,7 +64,7 @@
               </div>
               <div class="partition_zone" v-else="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class="topUpGiftInfo_left">
-                  <img style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
+                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
                 </div>
                 <div class="topUpGiftInfo_right">
                   <p class="desc title_desc">{{allMutatualInfo_temp.combatID?'已在房间等你':'约你玩游戏啦'}}</p>
@@ -162,7 +163,7 @@
           <div class="topUpGiftInfo-wrapper" v-else-if="topUpGameInfo.msgCode==19">
             <div class="topUpGiftInfo-top">
               <div class="img">
-                <img class="giftAvatar" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                <img onclick="return false" class="giftAvatar" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
                   alt>
               </div>
               <div class="name">
@@ -172,7 +173,7 @@
             <div class="topUpGiftInfo-middle">
               <div class="partition_zone">
                 <div class="topUpGiftInfo_left">
-                  <img style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
+                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
                 </div>
                 <div class="topUpGiftInfo_right">
                   <p class="desc title_desc">已在房间等你 约你再战300局</p>
@@ -188,11 +189,13 @@
           </div>
         </transition>
       </div>
+      <friendPanel v-if="friendPanelFlag"></friendPanel>
     </div>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
     </transition>
+    <!-- 底部导航栏 -->
     <div class="bottom_wrapper" v-if="tabFlag">
       <tab :selected="selected"></tab>
     </div>
@@ -203,6 +206,7 @@
   import Tab from "./components/tab/tab.vue";
   import qrCode from 'base/qrCode/qrCode';
   import envelope from 'base/envelope/envelope';
+  import friendPanel from 'base/becomeFriendPanel/becomeFriendPanel'
   import {
     mapState,
     mapGetters,
@@ -231,7 +235,7 @@
       };
     },
     computed: {
-      ...mapState(["inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo", "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo"]),
+      ...mapState(["friendPanelFlag","inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo", "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo"]),
       ...mapGetters(["qrIsShow"]),
     },
     created() {
@@ -360,7 +364,7 @@
         }
         this.isShowEnvelop = false;
       },
-       //拉取好友
+      //拉取好友
       _loadFriends() {
         let cursor = 0;
         this.getAlreadyFriendList(cursor);
@@ -461,44 +465,43 @@
       //成为好友后接受游戏
       respondForGame(game) {
         console.log('respondForGame_gameInfo-----------', game)
-        var params ={}
+        var params = {}
         var gameUrl = ""
         if (this.topUpGameInfo.msgCode == 19) {
           gameUrl = game.extMsg.gameInfo.url;
           window.location.href = gameUrl;
           return false;
         } else {
-           params = {
+          params = {
             agree: true, //是否接受
             combatID: game.combatID,
             fromID: game.openid,
             chatMsgID: game.id,
             IsAgainPlay: false
           }
-          gameUrl =  game.url
+          gameUrl = game.url
         }
-          //约战
-          api.responseCombat(params).then(res => {
-            console.log(res)
-            if (res.errCode == 0) {
-              console.log('删除结果-----------', res);
-              window.location.href = gameUrl;
-            }
-          })
-     
+        //约战
+        api.responseCombat(params).then(res => {
+          console.log(res)
+          if (res.errCode == 0) {
+            console.log('删除结果-----------', res);
+            window.location.href = gameUrl;
+          }
+        })
       },
       //拒绝游戏
       rejectForGame(gameInfo) {
         console.log('rejectForGame_gameInfo0-----------', gameInfo)
-        var params ={}
-         if (this.topUpGameInfo.msgCode == 19) { //再战弹框
-           params = {
-           agree: false, //是否接受
+        var params = {}
+        if (this.topUpGameInfo.msgCode == 19) { //再战弹框
+          params = {
+            agree: false, //是否接受
             fromID: gameInfo.fromInfo.openid,
             IsAgainPlay: true
           }
         } else {
-         params = {
+          params = {
             agree: false, //是否接受
             combatID: gameInfo.combatID,
             fromID: gameInfo.openid,
@@ -687,7 +690,8 @@
     components: {
       Tab,
       qrCode,
-      envelope
+      envelope,
+      friendPanel
     }
   };
 </script>
@@ -723,20 +727,8 @@
     max-width: 10rem;
     height: 100%;
     box-sizing: border-box;
-    -webkit-display: flex;
-    -moz-display: flex;
-    -ms-display: flex;
-    -o-display: flex;
     display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
-    -o-flex-direction: column;
     flex-direction: column;
-    -webkit-justify-content: space-between;
-    -moz-justify-content: space-between;
-    -o-justify-content: space-between;
-    -ms-justify-content: space-between;
     justify-content: space-between;
   }
   .top_wrapper {

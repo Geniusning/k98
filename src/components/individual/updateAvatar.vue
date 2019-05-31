@@ -4,7 +4,7 @@
             <my-header title="修改头像"></my-header>
             <div class="avatar-wrapper vux-1px-t vux-1px-b">
                 <div class="pic-box">
-                    <img :src="userInfo.headimgurl" alt="" class="pic_avatar" ref="avatar">
+                    <img :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="" class="pic_avatar" ref="avatar">
                 </div>
                 <div class="file-box">
                     <p class="text">更换头像</p>

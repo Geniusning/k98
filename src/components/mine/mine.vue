@@ -3,13 +3,13 @@
     <!-- 个人信息 -->
     <div class="personInfo_wrapper">
       <div class="person_info">
-        <img :src="userInfo.headimgurl" alt class="avatar">
+        <img onclick="return false" :src="userInfo.headimgurl" alt class="avatar">
         <p class="name">{{userInfo.nickname||'游客'}}</p>
         <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->
         <span class="bindTel" @click="showTelBind" v-if="!userInfo.phone">绑定手机</span>
         <span class="bindTel1" v-else>{{userInfo.phone}}</span>
       </div>
-      <img @click="edit_individual" src="../../assets/image/setting.png" alt class="edit">
+      <img onclick="return false" @click="edit_individual" src="../../assets/image/setting.png" alt class="edit">
     </div>
     <div class="content">
       <!-- 我的信息 -->
@@ -35,15 +35,15 @@
       <div class="discount_wrapper">
         <ul class="discount_list">
           <li class="item vux-1px-r" @click="checkDiscout">
-            <img src="../../assets/image/discount.png" alt class="pic_discount">
+            <img onclick="return false" src="../../assets/image/discount.png" alt class="pic_discount">
             <p class="discount_name">我的卡券</p>
           </li>
           <li class="item vux-1px-r" @click="giftDetal">
-            <img src="../../assets/image/yingxiangli.png" alt class="pic_discount">
+            <img onclick="return false" src="../../assets/image/yingxiangli.png" alt class="pic_discount">
             <p class="discount_name">积分明细</p>
           </li>
           <li class="item" @click="gameDetal">
-            <img src="../../assets/image/game_mine.png" alt class="pic_discount">
+            <img onclick="return false" src="../../assets/image/game_mine.png" alt class="pic_discount">
             <p class="discount_name">游戏明细</p>
           </li>
         </ul>
@@ -58,7 +58,7 @@
           <ul class="welfare_list" v-if="sendGiftList.length">
             <li class="item clearfix" v-for="(item,index) in sendGiftList" :key="index">
               <div class="left">
-                <img :src="item.goods.image" alt class="shopPic">
+                <img onclick="return false" :src="item.goods.image" alt class="shopPic">
               </div>
               <div class="center">
                 <p class="title">{{item.goods.name}}</p>

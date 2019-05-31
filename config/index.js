@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "8RTMuRwPDLPz8a8_OeA1qc--2Xb8lDdxngqBedxKwWccTQdM3lfhylw4-5d4JmS_tNYOHQ==";
+const myToken = "Mjr6mfNKxtD2J3idU03F1ora5pXVEUdKbB6lrQ5MWVzhWaTOSl0U25O3faA1qQgAkSFecA==";
     // ------------------------------
 
 module.exports = {
@@ -69,7 +69,7 @@ module.exports = {
         // Paths
         assetsRoot: path.resolve(__dirname, '../dist'),
         assetsSubDirectory: 'static',
-        assetsPublicPath: './',
+        assetsPublicPath: '/',
 
         /**
          * Source Maps

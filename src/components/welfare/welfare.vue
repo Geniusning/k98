@@ -3,7 +3,7 @@
     <!-- logo -->
     <div class="logo-container">
       <div class="logo-wrapper">
-        <img v-if="AdvertisingPhoto.length>0" :src="AdvertisingPhoto[1]" alt style=" width: 9.2rem;height: 2.8rem;">
+        <img onclick="return false" v-if="AdvertisingPhoto.length>0" :src="AdvertisingPhoto[1]" alt style=" width: 9.2rem;height: 2.8rem;">
         <p class="reserve">
           优惠进行中 预定热线
           <span class="tel">{{shopSettingInfo.phone?shopSettingInfo.phone:'暂无上传号码'}}</span>
@@ -12,7 +12,7 @@
     </div>
     <!-- 分享有礼 -->
     <div class="share-wrapper" v-show="noCouponsFlag">
-      <img @click="shareNewFriend" src="../../assets/image/share_enter.png" class="shareEnter" alt>
+      <img onclick="return false" @click="shareNewFriend" src="../../assets/image/share_enter.png" class="shareEnter" alt>
     </div>
     <!-- 大话骰动态 -->
     <div class="game-wrapper">
@@ -69,7 +69,7 @@
                              <ul class="rankList">
                               <li class="item" v-for="(item,index) in rankList2">
                                 <div class="itemLeft">
-                                  <img :src="item.imgUrl" alt="" class="avatar">
+                                  <img onclick="return false" :src="item.imgUrl" alt="" class="avatar">
                                   <p class="name">{{item.name}}{{item.content}}</p>
                                 </div>
                                 <div class="itemright">
@@ -82,7 +82,7 @@
                              <ul class="rankList">
                               <li class="item" v-for="(item,index) in rankList2">
                                 <div class="itemLeft">
-                                  <img :src="item.imgUrl" alt="" class="avatar">
+                                  <img onclick="return false" :src="item.imgUrl" alt="" class="avatar">
                                   <p class="name">{{item.name}}{{item.content}}</p>
                                 </div>
                                 <div class="itemright">
@@ -101,7 +101,7 @@
         <div class="title"><span class="title_text">活动通知</span></div>
         <ul class="activityList" v-if="activityNoticeList.length>0">
           <li class="item-active" v-for="(item,index) in activityNoticeList" :key="index">
-            <img :src="item.image" style="width:2.8533rem;height:2.1333rem" alt class="picActive">
+            <img onclick="return false" :src="item.image" style="width:2.8533rem;height:2.1333rem" alt class="picActive">
             <div class="desc_box">
               <p class="desc">{{item.content}}</p>
               <div class="detailBtnBox">

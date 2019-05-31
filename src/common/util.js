@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-05-08 16:06:04
+ * @Last Modified time: 2019-05-31 11:47:33
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -146,8 +146,7 @@ util.returnDiscountType = (discountTypeNumber) => {
   }
 }
 //获取微信jssdk
-util._getJssdkInfo = function (shareObj, url, amount, shareType) {
-    shareType = shareType || 2;
+util._getJssdkInfo = function (shareObj, url, amount,fn) {
     amount = amount || 2;
     api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
       .then(res => {
@@ -170,11 +169,8 @@ util._getJssdkInfo = function (shareObj, url, amount, shareType) {
               //分享记录
               api.createShareDaylog().then(res => {});
               //分享获得积分
-              api.shareToGetIntegral(amount, shareType).then(res => {
-                if (res.errCode == 1030) {
-                  alert('分享已上限，每天最多分享5次获得积分');
-                }
-              })
+              fn()
+              
             }
           });
         });
@@ -211,5 +207,14 @@ util._getJssdkInfo = function (shareObj, url, amount, shareType) {
     if (isiOS) {
       return false;
     }
+  }
+
+  util.prefixZero = function(num,n){
+    var len = num.toString().length;
+    while(len < n) {
+        num = "0" + num;
+        len++;
+    }
+    return num;
   }
 export default util

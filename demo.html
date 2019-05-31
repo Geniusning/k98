@@ -84,32 +84,23 @@ k
 </head>
 
 <body>
-  <nav class="right">
-    <a href="#">Home</a>
-    <a href="#" class="selected">Projects</a>
-    <a href="#">About</a>
-  </nav>
-  <main>
-    Content area
-  </main>
-  <script>
-    var list = [1, 2, 3]
-    var list2 = [4, 5, 6]
-    var list3 = [7, 8, 9]
-    let totalList = []
-    totalList.concat(list)
-    // totalList.concat(list2)
-    // totalList.concat(list3)
-    // console.log(totalList)
-    var obj = {
-      name: 'liuning'
-    }
-    obj = Object.assign({
-      age: 13
-    }, obj)
-    console.log(obj)
-
-  </script>
+    <div>你是我的眼</div>
 </body>
-
+<script>
+  // let url = "https://llwant1.qianz.com/k98/game"
+  // var gameurl = url.split("k98")
+  // console.log(gameurl[0])
+  // console.log(new Array[5].join(0))
+  
+function pad(num, n) {
+    var len = num.toString().length;
+    while(len < n) {
+        num = "0" + num;
+        len++;
+    }
+    return num;
+  }
+  var num = pad(1,7)
+  console.log(num)
+</script>
 </html>

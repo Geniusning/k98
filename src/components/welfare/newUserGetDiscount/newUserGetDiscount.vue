@@ -25,33 +25,6 @@
           </div>
         </div>
       </li>
-       <!-- <li class="item">
-        <div class="myleft">
-          <p class="desc">恭喜获赠</p>
-        </div>
-        <div class="mycenter">
-          <p class="discout_type" >兑换券</p>
-        </div>
-        <div class="myright">
-          <div class="discount_theme">计划浅唱新人礼包</div>
-          <div class="discount_content">你是我的眼</div>
-          <div class="discount_limitAndTime">
-            <p class="limit">周一使用</p>
-            <p class="time">有效期至:2019-11-11</p>
-          </div>
-        </div>
-      </li> -->
-      <!-- <li class="item" v-if="sharedCoupon.coupon">
-          <div class="item-left">
-            <p v-if="sharedCoupon.coupon.type===0" class="title">现金券</p>
-            <p v-else-if="sharedCoupon.coupon.type===1" class="title">实物券</p>
-            <p v-else="sharedCoupon.coupon.type===2" class="title">折扣券</p>
-          </div>
-          <div class="item-right">
-            <div class="discount-content">{{sharedCoupon.coupon.content}}</div>
-            <div class="discount-limitCondition">{{sharedCoupon.coupon.limit}}</div>
-          </div>
-        </li> -->
     </ul>
     <!-- 规则 -->
     <div class="rule-container">
@@ -89,7 +62,6 @@
         shareUserID: "",
         sharedCoupon: {},
         QRcodeUrl: ""
-        // picUrl:"http://i1.bvimg.com/643118/5091c94a86646498.jpg"
       };
     },
     created() {

@@ -265,7 +265,7 @@
             let mutualEventsObj = res.mutualEvents;
             let tempEventList = [];
             console.log("mutualEventsObj------------",mutualEventsObj);
-            // this.mutualEventsList = []; //先清空
+            this.mutualEventsList = []; //先清空
             tempEventList = tempEventList.concat(mutualEventsObj.combatsEvents)
             tempEventList = tempEventList.concat(mutualEventsObj.giftEvents)
             tempEventList = tempEventList.concat(mutualEventsObj.friendEvents)
@@ -281,7 +281,7 @@
               }
             })
           }
-          console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
+          // console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
         })
       },
       //接受或拒接送礼

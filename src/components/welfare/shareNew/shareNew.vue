@@ -2,42 +2,47 @@
 <template>
   <div class="shareNew_wrapper">
     <div class="shareNew-box" id="shareNew">
-      <img src="../../../assets/image/back.png" alt="" class="back-icon" @click="back2Welfare">
+      <div class="back-icon" @click="back2Welfare">
+        <img class="backIconImg" onclick="return false" src="../../../assets/image/white_home.png" alt=""  >
+        <p style="font-size:14px;color:#fff">了解商家</p>
+      </div>
       <div class="shop-container" @click="goHome">
-        <img class="logo" :src="shopSettingInfo.image" alt>
+        <img onclick="return false" class="logo" :src="shopSettingInfo.image" alt>
         <p class="bar_name">{{shopSettingInfo.name}}</p>
       </div>
-      <!-- <img src="../../../assets/image/shareLogo.jpg" alt class="sharePic"> -->
+      <!-- <img onclick="return false" src="../../../assets/image/shareLogo.jpg" alt class="sharePic"> -->
       <ul class="discount-container">
         <li class="item" v-for="(item,index) in couponList" :key="index">
           <div class="myleft">
-            <p class="desc" v-if="index==0">好友获赠</p>
+            <p class="desc" v-if="index==0">新人获赠</p>
             <p class="desc" v-else>分享获赠</p>
           </div>
           <div class="mycenter">
-            <p class="discout_type" v-if="item.coupon.type==0">现金券</p>
-            <p class="discout_type" v-else-if="item.coupon.type==1">实物券</p>
-            <p class="discout_type" v-else-if="item.coupon.type==2">折扣券</p>
-            <p class="discout_type" v-else-if="item.coupon.type==3">兑换券</p>
+            <p class="discout_type" v-if="item.type==0">现金券</p>
+            <p class="discout_type" v-else-if="item.type==1">实物券</p>
+            <p class="discout_type" v-else-if="item.type==2">折扣券</p>
+            <p class="discout_type" v-else-if="item.type==3">兑换券</p>
+            <p class="discout_type" v-else-if="item.type==4">满减券</p>
             <p class="discout_type" v-else>兑换券</p>
           </div>
           <div class="myright">
-            <div class="discount_theme">{{item.coupon.theme?item.coupon.theme:"新人礼包"}}</div>
-            <div class="discount_content">{{item.coupon.name}}</div>
+            <div class="discount_theme">{{item.theme?item.theme:"新人礼包"}}</div>
+            <div class="discount_content">{{item.name}}</div>
             <div class="discount_limitAndTime">
-              <p class="limit">{{item.coupon.limit}}</p>
-              <p class="time">有效期至:{{item.coupon.endTime?item.coupon.endTime:'2019-02-22'}}</p>
+              <p class="limit">{{item.limit}}</p>
+              <p class="time">有效期至:{{item.endTime?item.endTime:'2030-02-22'}}</p>
             </div>
           </div>
         </li>
       </ul>
       <div class="handle-container">
-        <img @click="receiveCouponByID(couponList[0].coupon.couponID)" class="btn" src="../../../assets/image/get_discount_btn.png" alt>
-        <img @click="share" class="btn" src="../../../assets/image/share_discount_btn.png" alt>
+        <img onclick="return false" @click="receiveACouponByID(couponList[0].couponID,'a')" class="btn" src="../../../assets/image/get_discount_btn.png" alt>
+        <img onclick="return false" @click="share" class="btn" src="../../../assets/image/share_discount_btn.png" alt>
       </div>
       <div class="bg" v-show="isShow_bg" @click="share">
-        <img src="../../../assets/image/share.png" alt>
+        <img onclick="return false" src="../../../assets/image/share.png" alt>
         <p class="shareText">点击“...”分享好友</p>
+        <p class="shareText">首次分享获得优惠券</p>
       </div>
     </div>
   </div>
@@ -56,32 +61,44 @@
       };
     },
     created() {
-      this._loadInviteWaitGetCoupon();
+     
+    },
+    mounted() {
+      this._loadInviteCoupon();
     },
     computed: {
       ...mapState(["shareUrl", "userInfo", "shopSettingInfo", "baseUrl"])
     },
     methods: {
       //领取优惠券
-      receiveCouponByID(couponId) {
-        api.receiveCouponByID(couponId).then(res => {
+      receiveACouponByID(couponId,type) {
+        api.acquireInviteCoupon(couponId,type).then(res => {
           console.log('领取结果------------', res);
           if (res.errCode === 0) {
             this.$vux.toast.show({
               text: '领取成功'
             })
+          }else if(res.errCode==1036){
+            this.$vux.toast.text("您是老客户，不能领新人礼包。可以通过'分享'好友获得优惠券")
+          }else if (res.errCode==1035){  // 已经领取过le
+             this.$vux.toast.text("您已领取过啦")
+          }else if(res.errCode==1010){ //   优惠券删除了
+            this.$vux.toast.text("您来的太迟了，活动已结束")
+          }else if(res.errCode ==1017){
+            this.$vux.toast.text("您来的太迟了，优惠券发完啦")
           }
         })
       },
       //返回福利活动页面
       back2Welfare() {
         this.$router.push({
-          name: "welfare"
+          name: "home"
         })
       },
       //获取优惠券
-      _loadInviteWaitGetCoupon() {
-        api.loadInviteWaitGetCoupon().then(res => {
+      _loadInviteCoupon() {
+        api.loadInviteCoupon().then(res => {
+          console.log("获取优惠券---------",res)
           if (!res.coupons) {
             return false
           }
@@ -90,20 +107,24 @@
             tempArr[0] = res.coupons.aCoupon;
             tempArr[1] = res.coupons.bCoupon
           }
+          console.log("tempArr------",tempArr)
           tempArr.forEach((element) => {
-            switch (element.coupon.type) {
+            switch (element.type) {
               case 0:
-                element.coupon.name = element.coupon.value + "元代金券";
+                element.name = element.value + "元代金券";
                 break;
               case 1:
-                element.coupon.name = element.coupon.content;
+                element.name = element.content;
                 break;
               case 2:
-                element.coupon.name = element.coupon.value + "折扣券";;
+                element.name = element.value + "折扣券";
                 break;
               case 3:
-                element.coupon.name = element.coupon.content + "兑换券";;
+                element.name = element.content + "兑换券";
                 break;
+              case 4:
+                element.name = element.content;
+              break;
               default:
                 break;
             }
@@ -112,23 +133,31 @@
           this.couponList = tempArr;
           let _url = window.location.href;
           this.myShareUrl = _url.split('#')[0];
-          if (util.isAndroid()) {
-            let shareObj = {
-              title: "新人大礼包",
-              desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
-              link: `${this.shareUrl}/#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}&visitType=5`,
-              imgUrl: `${this.shopSettingInfo.image}`
-            };
-            util._getJssdkInfo(shareObj, this.myShareUrl, 20);
-          } else {
-            let shareObj = {
-              title: "新人大礼包",
-              desc: "哥们有空过来玩玩。不知老板是热情还是傻X，见人就发红包",
-              link: this.shareUrl + `/#/newUserGetDiscount?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}&visitType=5`,
-              imgUrl: `${this.shopSettingInfo.image}`
-            };
-            util._getJssdkInfo(shareObj, this.myShareUrl, 20);
-          }
+          setTimeout(() => {
+            if (util.isAndroid()) {
+              let shareObj = {
+                title: "新人大礼包",
+                desc: `抢了${this.shopSettingInfo.AliasName}一份新人礼包，转送给你，有空去瞅瞅`,
+                link: `${this.shareUrl}k98/shareNew?visitType=4`,
+                imgUrl: `${this.shopSettingInfo.image}`
+              };
+              // ?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}&visitType=5
+              util._getJssdkInfo(shareObj, this.myShareUrl, 20,  ()=>{
+                this.receiveACouponByID(this.couponList[1].couponID,'b')
+               });
+            } else {
+              let shareObj = {
+                title: "新人大礼包",
+                desc: `抢了${this.shopSettingInfo.AliasName}一份新人礼包，转送给你，有空去瞅瞅`,
+                link: `${this.shareUrl}k98/shareNew?visitType=4`,
+                imgUrl: `${this.shopSettingInfo.image}`
+              };
+             
+              util._getJssdkInfo(shareObj, this.myShareUrl, 20,  ()=>{
+                 this.receiveACouponByID(this.couponList[1].couponID,'b')
+               });
+            }
+          }, 1000);
         })
       },
       goHome() {
@@ -161,21 +190,32 @@
   .shareNew_wrapper {
     height: 100%;
     overflow-y: auto;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #FF5C01;
     .shareNew-box {
       width: 100%;
       height: 100%;
       box-sizing: border-box;
-      background-color: #ff5c01;
-      padding-bottom: 1.3333rem;
+      // padding-bottom: 1.3333rem;
       position: absolute;
       .bg('../../assets/image/shareNewer.png');
+      background-size: cover;
       .back-icon {
+        display:flex;
+        flex-direction:column;
+        align-items: center;
         position: absolute;
-        width: 0.8rem;
-        height: .8rem;
-        top: 0.5333rem;
+        width: 1.6rem;
+        top: 0.3333rem;
         right: 0.2333rem;
+        .backIconImg{
+          width: 0.7rem;
+          height: .7rem;
+        }
       }
       .shop-container {
         position: absolute;
@@ -197,7 +237,7 @@
           color: #f4f4f4;
           float: left;
           font-family: "PingFang-SC-Regular";
-          font-size: 14px;
+          font-size: 16px;
           font-weight: bold;
         }
       }
@@ -324,16 +364,17 @@
         bottom: 0;
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 999;
+        text-align: right;
         img {
           width: 100px;
           height: 100px;
-          position: fixed;
-          right: 0;
+          position: relative;
+          right: -0.3333rem;
         }
         .shareText {
-          font-size: 0.7rem;
+          font-size: 0.6rem;
           color: #fff;
-          position: fixed;
+          // position: fixed;
           top: 110px;
           right: 0;
         }

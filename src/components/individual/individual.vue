@@ -4,11 +4,11 @@
     <!-- <scroll> -->
     <div class="scrollBox vux-1px-t">
       <!-- 上传头像 -->
-      <div class="avatar_wrapper clearfix" @click="updateAvatar">
-        <img :src="userInfo.headimgurl" alt="" class="pic_avatar fl" ref="avatar">
-        <div class="upload">
+      <div class="avatar_wrapper clearfix" >
+        <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="" class="pic_avatar fl" ref="avatar">
+        <div @click="updateAvatar" class="upload">
           <p class="upload_title">更换头像、生活照</p>
-          <img src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
+          <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
         </div>
       </div>
       <div class="tailor_wrapper" v-if="showTailor">
@@ -20,11 +20,11 @@
       <!-- <div class="select_list_wrapper">
             <h3>候选头像</h3>
               <ul class="avatar_lsit">
-                  <li><img src="../../assets/image/avatar3.jpg" alt=""></li>
-                  <li><img src="../../assets/image/avatar2.jpg" alt=""></li>
-                  <li><img src="../../assets/image/avatar.jpg" alt=""></li>
-                  <li><img src="../../assets/image/avatar.jpg" alt=""></li>
-                  <li><img src="../../assets/image/avatar2.jpg" alt=""></li>
+                  <li><img onclick="return false" src="../../assets/image/avatar3.jpg" alt=""></li>
+                  <li><img onclick="return false" src="../../assets/image/avatar2.jpg" alt=""></li>
+                  <li><img onclick="return false" src="../../assets/image/avatar.jpg" alt=""></li>
+                  <li><img onclick="return false" src="../../assets/image/avatar.jpg" alt=""></li>
+                  <li><img onclick="return false" src="../../assets/image/avatar2.jpg" alt=""></li>
               </ul>
           </div> -->
       <!-- 修改信息 -->
@@ -37,17 +37,17 @@
           <li class="item vux-1px-b" @click="showPopupPickerSex=true">
             <span class="item_name">性别</span>
             <input type="text" class="input_name" v-model="gender" disabled>
-            <img src="../../assets/image/arrow_right.png" alt="" class="arrow_right">
+            <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrow_right">
           </li>
           <li class="item vux-1px-b" @click="showPopupPickerC=true">
             <span class="item_name">星座</span>
             <input type="text" class="input_name" v-model="constellation" disabled>
-            <img src="../../assets/image/arrow_right.png" alt="" class="arrow_right">
+            <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrow_right">
           </li>
           <li class="item vux-1px-b">
             <span class="item_name">标签</span>
             <input type="text" class="input_name" v-model="signatureList">
-            <img src="../../assets/image/add.png" alt="" class="add" @click="showTag">
+            <img onclick="return false" src="../../assets/image/add.png" alt="" class="add" @click="showTag">
           </li>
           <li class="item vux-1px-b">
             <span class="item_name">手机</span>
@@ -67,12 +67,12 @@
               <ul class="authority_list">
                 <li style="font-size: 0.3733rem;" class="authorItem">
                   <group style="padding:0">
-                    <x-switch title="我要隐身，上线不通知好友" :value-map="['0', '1']" v-model="cloaking"></x-switch>
+                    <x-switch title="我要隐身，上线不通知好友" :value-map="[false, true]" @on-change="stealth" v-model="isStealth"></x-switch>
                   </group>
                 </li>
                 <li style="font-size: 0.3733rem;" class="authorItem">
                   <group>
-                    <x-switch title="我要清静，好友上线不通知我" :value-map="['0', '1']" v-model="noNotify"></x-switch>
+                    <x-switch title="我要清静，好友上线不通知我" :value-map="[false, true]" @on-change="changeQuiet" v-model="isQuiet"></x-switch>
                   </group>
                 </li>
               </ul>
@@ -93,7 +93,7 @@
         <div class="tag_wrapper">
           <h2 class="signatureTitle">个性标签</h2>
           <div class="close_tabBox" @click="closeTag">
-            <img src="../../assets/image/close.png" alt="" class="close">
+            <img onclick="return false" src="../../assets/image/close.png" alt="" class="close">
           </div>
           <h3 class="title">最多选五个标签</h3>
           <ul class="tag_list clearfix" ref="tagList">
@@ -104,7 +104,7 @@
           <div class="DIY_tag clearfix">
             <h3 class="title">自定义标签</h3>
             <input type="text" class="diy_input fl" maxlength="4" v-model="diyTag">
-            <img src="../../assets/image/plus.png" alt="" class="plus fl" @click="plusTag">
+            <img onclick="return false" src="../../assets/image/plus.png" alt="" class="plus fl" @click="plusTag">
           </div>
           <div class="selected_wrapper">
             <h3 class="title">已选择标签</h3>
@@ -145,8 +145,8 @@
     },
     data() {
       return {
-        cloaking:"",
-        noNotify:"",
+        isStealth:null,
+        isQuiet:null,
         signatureList: "",
         title: "最多选5个",
         diyTag: "",
@@ -211,11 +211,20 @@
       this.constellation = this.userInfo.constellation;
       this.signatureList = this.userInfo.tags;
       this.phone = this.userInfo.phone;
-      this.signature = this.userInfo.signature ?
-        this.userInfo.signature :
-        this.signature;
+      this.isStealth = this.userInfo.isStealth;
+      this.isQuiet = this.userInfo.isQuiet;
+      this.signature = this.userInfo.signature?this.userInfo.signature :this.signature;
     },
     methods: {
+      //隐身状态 上线不通知好友
+      stealth(e){
+        console.log(e)
+        this.isStealth = e
+      },
+      //安静状态，不接受好友的上线通知
+      changeQuiet(e){
+        this.isQuiet =e
+      },
       blurAdjust() {
         window.scrollTo(0, 0);
       },
@@ -328,7 +337,9 @@
           constellation: this.constellation,
           tags: this.signatureList,
           phone: this.phone,
-          signature: this.signature
+          signature: this.signature,
+          isStealth:this.isStealth,
+          isQuiet:this.isQuiet
         };
         let strUserInfoParam = JSON.stringify(userInfoParam);
         let decc = new TextEncoder("utf-8");

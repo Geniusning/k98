@@ -29,17 +29,17 @@
                 {{item.coupon.theme?item.coupon.theme:"新人礼包"}}
               </div>
               <div class="receiver_wrapper" v-if="item.coupon.senderHeadImage">
-                <img :src="item.coupon.senderHeadImage" alt="" class="receiver_avartar">
+                <img onclick="return false" :src="item.coupon.senderHeadImage" alt="" class="receiver_avartar">
                 <span class="receiver_name">{{item.coupon.senderName}}</span><span>送</span>
               </div>
               <!-- v-if="item.coupon.integral" -->
               <div class="receiverProject_wrapper">
                 <div class="integral_content">
-                  1-01-0000001
-                  <!-- <img src="../../assets/image/integralIcon.png" class="integral_icon"> -->
+                  {{item.coupon.codeNum}}
+                  <!-- <img onclick="return false" src="../../assets/image/integralIcon.png" class="integral_icon"> -->
                   <!-- <span class="integral_text">{{item.coupon.integral}}</span> -->
                 </div>
-                <img v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
+                <img onclick="return false" v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
               </div>
             </div>
             <div class="discount_content">{{item.coupon.name}}</div>
@@ -92,17 +92,17 @@
                 {{item.coupon.theme?item.coupon.theme:"新人礼包"}}
               </div>
               <div class="receiver_wrapper" v-if="item.coupon.receiverHeadImage">
-                <img :src="item.coupon.receiverHeadImage" alt="" class="receiver_avartar">
+                <img onclick="return false" :src="item.coupon.receiverHeadImage" alt="" class="receiver_avartar">
                 <span class="receiver_name">{{item.coupon.receiverName}}</span><span>收</span>
               </div>
               <!-- v-if="item.coupon.integral" -->
               <div class="receiverProject_wrapper">
                 <div class="integral_content">
                   1-01-0000001
-                  <!-- <img src="../../assets/image/integralIcon.png" class="integral_icon"> -->
+                  <!-- <img onclick="return false" src="../../assets/image/integralIcon.png" class="integral_icon"> -->
                   <!-- <span class="integral_text">{{item.coupon.integral}}</span> -->
                 </div>
-                <img v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
+                <img onclick="return false" v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
               </div>
             </div>
             <div class="discount_content">{{item.coupon.name}}</div>
@@ -196,6 +196,10 @@
       },
       distributeDiscount(resDiscountList, discountList) {
         resDiscountList.forEach(element => {
+          element.coupon.codeNum = 
+          util.prefixZero(element.coupon.type,1)+"-"+
+          util.prefixZero(element.coupon.batch,3)+"-"+
+          util.prefixZero(element.coupon.acquireNum,7)
           element.coupon.time = element.coupon.endTime;
           element.getTime = util.timestampToTime(element.getTime);
           switch (element.coupon.type) {
@@ -209,6 +213,9 @@
               element.coupon.name = element.coupon.value + "折";
               break;
             case 3:
+              element.coupon.name = element.coupon.content;
+              break;
+             case 4:
               element.coupon.name = element.coupon.content;
               break;
             default:
