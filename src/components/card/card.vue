@@ -158,13 +158,23 @@
       ...mapState(["userInfo"])
     },
     created() {
-      this._acquireWaitGetCoupons() //获取优惠券
+      this._loadUserAllCoupon() //获取优惠券
+    },
+    beforeRouteUpdate(to, from, next) {
+      if (from.name === "cardDetail") {
+        this._loadUserAllCoupon() //获取优惠券
+      }
+      next();
     },
     methods: {
       //获取优惠券
       _loadUserAllCoupon() {
         api.loadUserAllCoupon().then(res => {
           console.log("优惠券：", res);
+          this.unusedList = [];
+          this.usedList = [];
+          this.timeOutList = [];
+          this.songLiList = [];
           this.unuseCouponsLength = res.unuseCoupons.length;
           this.usedCouponsLength = res.usedCoupos.length;
           this.timeOutListLength = res.expiredCoupos.length;
@@ -195,50 +205,41 @@
         });
       },
       distributeDiscount(resDiscountList, discountList) {
-        resDiscountList.forEach(element => {
-          element.coupon.codeNum = 
-          util.prefixZero(element.coupon.type,1)+"-"+
-          util.prefixZero(element.coupon.batch,3)+"-"+
-          util.prefixZero(element.coupon.acquireNum,7)
-          element.coupon.time = element.coupon.endTime;
-          element.getTime = util.timestampToTime(element.getTime);
-          switch (element.coupon.type) {
-            case 0:
-              element.coupon.name = element.coupon.value + "元代金券";
-              break;
-            case 1:
-              element.coupon.name = element.coupon.content;
-              break;
-            case 2:
-              element.coupon.name = element.coupon.value + "折";
-              break;
-            case 3:
-              element.coupon.name = element.coupon.content;
-              break;
-             case 4:
-              element.coupon.name = element.coupon.content;
-              break;
-            default:
-              break;
-          }
-          element.coupon.type = util.returnDiscountType(element.coupon.type);
-          discountList.push(element)
-        });
-      },
-      //拉取未领取的优惠券（登录公众号优惠券，目前只有AI发送才有）
-      _acquireWaitGetCoupons() {
-        let channel = 1 //channel为1是AI优惠券类型
-        api.acquireWaitGetCoupons(channel).then(res => {
-          console.log("AI优惠券------------------------------", res);
-          this._loadUserAllCoupon();
-        }).catch(err => {
-          console.log(err)
-        })
+          // let tempDiscountList = []
+          resDiscountList.forEach(element => {
+            element.coupon.codeNum =
+              util.prefixZero(element.coupon.type, 1) + "-" +
+              util.prefixZero(element.coupon.batch, 3) + "-" +
+              util.prefixZero(element.coupon.acquireNum, 7)
+            element.coupon.time = element.coupon.endTime;
+            element.getTime = util.timestampToTime(element.getTime);
+            switch (element.coupon.type) {
+              case 0:
+                element.coupon.name = element.coupon.value + "元代金券";
+                break;
+              case 1:
+                element.coupon.name = element.coupon.content;
+                break;
+              case 2:
+                element.coupon.name = element.coupon.value + "折";
+                break;
+              case 3:
+                element.coupon.name = element.coupon.content;
+                break;
+              case 4:
+                element.coupon.name = element.coupon.content;
+                break;
+              default:
+                break;
+            }
+            element.coupon.type = util.returnDiscountType(element.coupon.type);
+            discountList.push(element)
+          });
       },
       //返回上一页
       goBack() {
         this.$router.push({
-          name:"card"
+          name: "card"
         });
       },
       //进入优惠券详情
@@ -347,45 +348,7 @@
           display: flex;
           flex-direction: column;
           justify-content: space-around;
-          position: relative; // .receiver_wrapper {
-          //   position: absolute;
-          //   display: flex;
-          //   top: 0.0333rem;
-          //   left: 3rem;
-          //   .receiver_avartar {
-          //     width: 0.5333rem;
-          //     height: 0.5333rem;
-          //     border-radius: 50%;
-          //     margin-right: 0.1667rem;
-          //   }
-          //   .receiver_name {
-          //     width: 1.4rem;
-          //     text-overflow: ellipsis;
-          //     overflow: hidden;
-          //     white-space: nowrap;
-          //   }
-          // }
-          // .receiverProject_wrapper {
-          //   position: absolute;
-          //   top: .1rem;
-          //   right: .3rem;
-          //   display: flex;
-          //   flex-direction: column;
-          //   .integral_content {
-          //     display: flex;
-          //     .integral_icon {
-          //       width: 0.4rem;
-          //       height: 0.4rem;
-          //       margin-right: 0.1067rem;
-          //     }
-          //     .integral_text {}
-          //   }
-          //   .project_img {
-          //     margin-top: 0.1667rem;
-          //     width: 1rem;
-          //     height: 0.8rem;
-          //   }
-          // }
+          position: relative;
           .discount_theme {
             font-size: 0.3733rem;
             position: relative;
@@ -477,7 +440,7 @@
           margin-left: .1rem;
           flex: 1;
           color: #fff;
-           display: flex;
+          display: flex;
           flex-direction: column;
           justify-content: space-around;
           position: relative;
@@ -559,75 +522,6 @@
         overflow-y: auto;
         .card("../../assets/image/past.png", 0.7333rem);
       }
-    } // .discount_wrapper {
-    //   padding: 0px 0.25rem;
-    //   margin: 0.1rem auto;
-    //   .discount_list {
-    //     //   width: 21.875rem;
-    //     li {
-    //       width: 8.75rem;
-    //       height: 1.75rem;
-    //       margin: 0 auto;
-    //       // border: 1px solid #ccc;
-    //       margin-bottom: 0.5rem;
-    //       text-align: center;
-    //       .wrapper {
-    //         width: 100%;
-    //         height: 100%;
-    //         display: flex;
-    //         background: #fff;
-    //         border-radius: 8px;
-    //         .content {
-    //           flex: 1;
-    //           border-radius: 8px 0 0 8px;
-    //           box-shadow: -2px 2px 2px #ccc;
-    //           background: #fff;
-    //           display: flex;
-    //           flex-direction: column;
-    //           justify-content: space-around;
-    //           .title {
-    //             height: 20px;
-    //           }
-    //           .time {
-    //             height: 20px;
-    //           }
-    //         }
-    //         .split-line {
-    //           position: relative;
-    //           flex: 0 0 0;
-    //           border-left: 2px dashed #eee;
-    //           margin: 0 5px 0 3px;
-    //           background: #fff;
-    //         }
-    //         .split-line:before,
-    //         .split-line:after {
-    //           content: "";
-    //           position: absolute;
-    //           width: 16px;
-    //           height: 8px;
-    //           background: #eee;
-    //           left: -9px;
-    //           z-index: 1;
-    //         }
-    //         .split-line:before {
-    //           border-radius: 0 0 8px 8px;
-    //           top: 0;
-    //         }
-    //         .split-line:after {
-    //           border-radius: 8px 8px 0 0;
-    //           bottom: 0;
-    //         }
-    //         .tip {
-    //           display: flex;
-    //           flex-direction: column;
-    //           justify-content: space-around;
-    //           border-radius: 0 8px 8px 0;
-    //           box-shadow: 2px 2px 2px #ccc;
-    //           background: #fff;
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    }
   }
 </style>

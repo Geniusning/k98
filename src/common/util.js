@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-05-31 11:47:33
+ * @Last Modified time: 2019-06-06 10:25:28
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -147,7 +147,6 @@ util.returnDiscountType = (discountTypeNumber) => {
 }
 //获取微信jssdk
 util._getJssdkInfo = function (shareObj, url, amount,fn) {
-    amount = amount || 2;
     api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
       .then(res => {
         console.log("获取微信jssdk---------",res)
@@ -169,7 +168,7 @@ util._getJssdkInfo = function (shareObj, url, amount,fn) {
               //分享记录
               api.createShareDaylog().then(res => {});
               //分享获得积分
-              fn()
+              fn(amount)
               
             }
           });

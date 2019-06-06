@@ -92,15 +92,11 @@ k
   // console.log(gameurl[0])
   // console.log(new Array[5].join(0))
   
-function pad(num, n) {
-    var len = num.toString().length;
-    while(len < n) {
-        num = "0" + num;
-        len++;
-    }
-    return num;
-  }
-  var num = pad(1,7)
-  console.log(num)
+ var date ="2018-01-01"
+
+ var timeStamp = new Date(date)
+ console.log("2018时间戳------",timeStamp.getTime())
+
+ console.log("现在时间戳-------",new Date("2018-01-02").getTime())
 </script>
 </html>

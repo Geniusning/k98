@@ -73,9 +73,9 @@
       ...mapState(["socket", "shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl"])
     },
     methods: {
-      //分享获得优惠券
-      shareGetJifen() {
-        api.shareToGetIntegral(amount, 2).then(res => {
+      //分享获得积分
+      shareGetJifen(amount) {
+        api.shareToGetIntegral(amount).then(res => {
           if (res.errCode == 1030) {
             alert('分享已上限，每天最多分享5次获得积分');
           }

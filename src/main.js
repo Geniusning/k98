@@ -36,19 +36,9 @@ new Vue({
     }
   },
   mounted() {
-    console.log("路由--------", this.$route)
-    var img = document.getElementsByTagName("img")
-    console.log(img)
-    for(var i=0;i<img.length;i++){
-      img[i].addEventListener("click",function(e){
-        console.log("img")
-        e.preventDefault();
-      })
-    }
     this._loadAdvertisingPhoto(); //拉取首页轮播图
     this.createWebsocket() //创建长链接
     this.getUserInfo(); //获取用户信息
-    this.acquireWaitGetCoupons(); //判断是否已经领取AI优惠券
     this.createQrcode(); //创建二维码
     this.loadStoreSetting(); //获取门店信息
     this.loadGoods(); //拉取积分换礼品列表
@@ -223,31 +213,6 @@ new Vue({
         console.log('积分换礼品列表------', res);
         this.getSendGiftList(res.slice(0, 4));
       })
-    },
-    //自动领取优惠券
-    acquireWaitGetCoupons() {
-      let channel = 1 //channel为1是AI优惠券类型
-      setTimeout(() => {
-        api.acquireWaitGetCoupons(channel).then(res => {
-          console.log("AI优惠券------------------------------", res);
-          if (res.coupons.length > 0) {
-            let result = {
-              msgCode: 4,
-              content: {
-                extMsg: {},
-                fromInfo: {
-                  openid: "",
-                  headimgurl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
-                },
-              }
-            }
-            this.addFriendEvtObj(result);
-            this.judgeMessType('discount');
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      }, 10000);
     },
     // 获取用户信息
     getUserInfo() {

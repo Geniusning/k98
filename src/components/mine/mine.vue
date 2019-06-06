@@ -106,8 +106,8 @@
           </p>
       </div>-->
       <!-- 分享赚积分 -->
-      <!-- <div class="marketing_wrapper"> -->
-        <div class="marketing_wrapper" v-show="userInfo.role">
+      <div class="marketing_wrapper">
+        <!-- <div class="marketing_wrapper" v-show="userInfo.role"> -->
         <h2 class="marketing_title">
           分享赚积分
           <span class="star">#</span>

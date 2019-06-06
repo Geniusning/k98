@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: nicky
- * @Last Modified time: 2019-05-30 10:57:44
+ * @Last Modified time: 2019-06-06 14:47:48
  */
 
 import axios from 'axios'
@@ -296,9 +296,9 @@ api.loadUserCoupons = function (channel) {
   })
 }
 //拉取未领取的优惠券（登录公众号弹出优惠券，目前只有AI发送才有）
-api.acquireWaitGetCoupons = function (channel) {
+api.acquireWaitGetCoupons = function (condition) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/acquireWaitGetCoupons?channel=${channel}`)
+    axios.get(Url.commonUrl + `/api/acquireWaitGetCoupons?condition=${condition}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
