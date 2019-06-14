@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "ZLTqR7H-9zlguJaD7aoh254xCIgacWBLlSO8EBMZ3kishMbHii1rKuzioafwUoIBVsseJw==";
+const myToken = "VlUuTKPfpwvNAuQ6bQ6qMQXm353CGLOSLTZV7AkNGar67tSNJ5Tt4hshE4ZzocnRWuv95g==";
     // ------------------------------
 
 module.exports = {
@@ -15,8 +15,8 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             "/api": {
-                // target: "http://singledog.qianz.com", //闲雅新疆麻将
-                target: "https://llwant1.qianz.com", //老友一起玩吧
+                target: "https://singledog.qianz.com", //中心
+                // target: "https://llwant1.qianz.com", //老友一起玩吧
                 changeOrigin: true,
                 pathRewrite: function(path, req) {
                     return path + "&tk=" + myToken

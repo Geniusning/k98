@@ -5,7 +5,7 @@
           <x-dialog v-model="qrIsShow" class="dialog-demo">
             <div  class="bindTel_wrapper">
               <h3 class="title">{{title}}</h3>
-              <img src="../../assets/image/close.png" alt="" class="close" @click="cancel">
+              <img onclick="return false" src="../../assets/image/close.png" alt="" class="close" @click="cancel">
               <div class="validate_box">
                   <img :src="qrUrl" alt="" class="qrCode">
                   <p class="desc">长按关注享受会员特权：领福利、交朋友</p>

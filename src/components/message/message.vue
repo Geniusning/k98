@@ -65,8 +65,8 @@
               <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
             </div>
             <div class="clearfix" v-else>
-              <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no')">拒绝</p>
-              <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes')">接受</p>
+              <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
+              <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
             </div>
             <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
               <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
@@ -311,11 +311,14 @@
         })
       },
       //回赞事件
-      backThumbClick(index,type, flag) {
+      backThumbClick(index,type, flag,fromInfo) {
         // let that = this;
+        this.fromUserInfo = fromInfo
         api.giveBackThumb(type, flag).then(res => {
-          // console.log(res);
+          console.log("回赞事件----------",res);
           if (res.errcode === 0) {
+            this.setChatFriend(fromInfo)
+            this.chanageFriendPanelFlag(true)
             //重新拉取已经成为好友列表
             this.removeEventList(index)
             //重新拉取约战，送礼，点赞列表
@@ -429,6 +432,7 @@
         });
       },
       ...mapMutations({
+        chanageFriendPanelFlag:"CHANGEFRIENDPANELFLAG",//显示好友匹配成功弹框
         CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         compareLastMsg: "COMPARE_LASTMESS", //推送最后的一个消息跟已有好友消息列表对比

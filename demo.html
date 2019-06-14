@@ -87,7 +87,11 @@ k
     <div>你是我的眼</div>
 </body>
 <script>
-  // let url = "https://llwant1.qianz.com/k98/game"
+  // let url = "https://llwant1.qianz.com/?code=34563456546745&state=STATE"
+  var reg = new RegExp("(^|&)" + "code" + "=([^&]*)(&|$)");
+  var r = "?code=235235436&state=STATE".substr(1).match(reg);
+  console.log(r)
+  console.log(window.location)
   // var gameurl = url.split("k98")
   // console.log(gameurl[0])
   // console.log(new Array[5].join(0))
@@ -98,5 +102,10 @@ k
  console.log("2018时间戳------",timeStamp.getTime())
 
  console.log("现在时间戳-------",new Date("2018-01-02").getTime())
+
+ let str = "l love you "
+ if(true){
+   console.log(str)
+ }
 </script>
 </html>

@@ -72,7 +72,7 @@
                 </li>
                 <li style="font-size: 0.3733rem;" class="authorItem">
                   <group>
-                    <x-switch title="我要清静，好友上线不通知我" :value-map="[false, true]" @on-change="changeQuiet" v-model="isQuiet"></x-switch>
+                    <x-switch title="我要静静，好友上线不通知我" :value-map="[false, true]" @on-change="changeQuiet" v-model="isQuiet"></x-switch>
                   </group>
                 </li>
               </ul>

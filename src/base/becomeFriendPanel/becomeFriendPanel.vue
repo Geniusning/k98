@@ -3,28 +3,28 @@
      <div class="bg_wrapper">
          <div class="top_part">
             <h2 class="congratulation_title">~ 恭  喜 ~</h2>
-            <h6 class="sub_title">您与美女互赞成为好友啦</h6>
+            <h6 class="sub_title">您与{{staticChatFriendObj.nickname}}互赞成为好友啦</h6>
             <img onclick="return false" @click="close" class="closeBtn" src="../../assets/image/close.png" alt="">
          </div>
          <div class="middle_part">
             <div class="avatar_wrapper">
                 <img class="avatar_left" :src="userInfo.headimgurl" alt="">
-                <img class="avatar_right" src="../../assets/image/avatar2.jpg" alt="">
+                <img class="avatar_right" :src="staticChatFriendObj.headimgurl" alt="">
                 <img class="connetion_tie" src="../../assets/image/connection_tie.png" alt="">
             </div>
          </div>
          <div class="bottom_part">
             <ul class="handleList_wrapper">
                 <li class="handle_btn handle_btn_gift">
-                    <img  class="icon " src="../../assets/image/gift_bg.png" alt="">
+                    <img onclick="return false"  class="icon " src="../../assets/image/gift_bg.png" alt="" @click="sendGift">
                     <!-- <p class="desc">见面礼</p> -->
                 </li>
                 <li class="handle_btn handle_btn_sayhi">
-                    <img class="icon" src="../../assets/image/sayhi_bg.png" alt="">
+                    <img onclick="return false" class="icon" src="../../assets/image/sayhi_bg.png" alt="" @click="chat">
                     <!-- <p class="desc">去聊聊</p> -->
                 </li>
                 <li class="handle_btn handle_btn_game">
-                    <img class="icon" src="../../assets/image/game_bg.png" alt="">
+                    <img onclick="return false" class="icon" src="../../assets/image/game_bg.png" alt="" @click="playGame">
                     <!-- <p class="desc">玩一把</p> -->
                 </li>
                 <!-- <li class="close_wrapper" @click="close">
@@ -33,29 +33,83 @@
             </ul>
          </div>
      </div>
+     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
+     <transition name="appear">
+      <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
+     </transition>
+     <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="staticChatFriendObj.openid" :fatherPanelIndex="fatherPanelIndex"></topUp>
  </div>
 </template>
 <script type='text/ecmascript-6'>
-import {mapMutations,mapState} from 'vuex'
+import {mapMutations,mapState,mapGetters} from 'vuex'
+import topUp from 'base/topUp/topUp';
+import api from "common/api";
+ import qrCode from 'base/qrCode/qrCode';
+  import envelope from 'base/envelope/envelope';
  export default {
    data () {
      return {
-
+          isGiftPanel: false, //礼物面板状态
+          fatherPanelIndex: 1,
+          isShowEnvelope:false,
+          envelopeText:""
      }
    },
    computed: {
-       ...mapState(["userInfo"])
+       ...mapState(["userInfo","staticChatFriendObj"]),
+       ...mapGetters(["qrIsShow"]),
    },
    methods: {
        close(){
            this.changeFriPanelFlag(false)
        },
+    //监听送礼面板状态
+      closeIntegralPanel(flag) {
+        console.log('面板状态-----------', flag);
+        this.isGiftPanel = flag;
+      },
+       sendGift(){
+           this.isGiftPanel = true
+           console.log("见面礼")
+       },
+       chat(){
+          this.changeFriPanelFlag(false)
+          this.$router.push({
+          path: `/message/${this.staticChatFriendObj.openid}`
+        });
+       },
+         //玩游戏
+      playGame() {
+        api.sentPlayGameMsg(this.staticChatFriendObj.openid).then(res => {
+          console.log('约战返回--------', res)
+          if (res.errCode == 0) {
+            // this.text = "您已发出邀请  等待对方的回应";
+            this.isShowEnvelope = true;
+            this.envelopeText = "您已发出邀请  等待对方的回应"
+            setTimeout(() => {
+              this.isShowEnvelope = false;
+            }, 2000);
+          } else if (res.errCode == 1023) {
+            this.showQrcode(true);
+          } else if (res.errCode == 1022) {
+            this.isShowEnvelope = true;
+            this.envelopeText = "该用户己离线，无法通知";
+            setTimeout(() => {
+              this.isShowEnvelope = false;
+            }, 2000);
+            return;
+          }
+        })
+      },
        ...mapMutations({
-           changeFriPanelFlag:"CHANGEFRIENDPANELFLAG"
+           showQrcode: "SHOW_QRCODE", //展示二维码
+           changeFriPanelFlag:"CHANGEFRIENDPANELFLAG" //更改匹配成功flag
        })
    },
    components: {
-
+      topUp,
+      qrCode,
+      envelope
    }
  }
 </script>
@@ -70,7 +124,7 @@ import {mapMutations,mapState} from 'vuex'
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 99999;
+    z-index: 9999;
     box-sizing: border-box;
     .bg_wrapper{
         // display: flex;

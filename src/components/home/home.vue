@@ -40,7 +40,7 @@
           <img onclick="return false" src="../../assets/image/telescope_bg.png" alt class="telescope_img">
           <div class="left_radius_box" ref="leftRadiusBox" @click="gotoFriend">
             <!-- <div class="online_person">{{outFriendNum+inFriendNum}}人在线 &gt;</div> -->
-            <img src="../../assets/image/findFriend (2).png" alt="" class="online_person">
+            <img onclick="return false" src="../../assets/image/findFriend (2).png" alt="" class="online_person">
             <div class="leftCircle" v-if="hiddenTelescope">
               <div class="leftCirclePart" ref="leftCirclePart"></div>
               <div class="rightCirclePart"></div>
@@ -49,7 +49,7 @@
           </div>
           <div class="right_radius_box" ref="rightRadiusBox" @click="gotoPlay">
             <!-- <div class="online_player">5人在玩 &gt;</div> -->
-            <img src="../../assets/image/intoPlay.png" alt="" class="online_player">
+            <img onclick="return false" src="../../assets/image/intoPlay.png" alt="" class="online_player">
             <div class="rightCircle" v-if="hiddenTelescope">
               <div class="leftCirclePart"></div>
               <div class="rightCirclePart"></div>
@@ -217,7 +217,9 @@
     <div v-transfer-dom>
       <x-dialog v-model="gameShow" class="dialog-gameBegin">
         <div class="game-box">
-          <img onclick="return false" src="../../assets/image/gameBegin.jpg" alt class="gameBegin" @click="intoReadyGame">
+          <img onclick="return false" class="gameFriend" src="../../assets/image/zuJu.png" alt="" @click="intoFriendGame">
+          <img onclick="return false" class="gotoPlay" src="../../assets/image/gotoPlay.png" alt="" @click="intoReadyGame">
+          <img onclick="return false" src="../../assets/image/gameBegin.jpg" alt class="gameBegin">
         </div>
         <div @click="closeGame">
           <img onclick="return false" src="../../assets/image/gameClose.png" alt class="close">
@@ -442,6 +444,10 @@
       //     }
       //   })
       // },
+      intoFriendGame(){
+        window.location.href = `${this.gameUrl}game/?gamePath=game3`;
+        this.gameShow = false;
+      },
       //进入游戏
       intoReadyGame() {
         this.gameShow = false;
@@ -454,6 +460,7 @@
       //拉取已经发布的比赛场
       _loadPublishArenas() {
         api.loadPublishArenas().then(res => {
+          console.log("拉取发布的比赛---------",res)
           var reverseArr = res.arenaInfos.reverse();
           if (reverseArr.length > 0) {
             this.gameShow = true;
@@ -696,6 +703,18 @@
   // 弹框游戏开始
   .dialog-gameBegin {
     .game-box {
+      position: relative;
+      .gameFriend,.gotoPlay{
+        width: 2.4rem;
+        position: absolute;
+        bottom: 0.58rem;
+      }
+      .gameFriend{
+        left: 1.9667rem;
+      }
+      .gotoPlay{
+        right: .5rem;
+      }
       .gameBegin {
         width: 8.1867rem;
         height: 7.2rem;

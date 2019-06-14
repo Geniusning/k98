@@ -150,8 +150,8 @@
                 </div>
               </div>
               <div class="bottom_partition" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
-                <div class="handleBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'no')">拒绝</div>
-                <div class="handleBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'yes')">接受</div>
+                <div class="handleBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'no',topUpThumbInfo.content.fromInfo)">拒绝</div>
+                <div class="handleBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'yes',topUpThumbInfo.content.fromInfo)">接受</div>
               </div>
               <div class="bottom_partition" v-else-if="(topUpGameInfo.msgCode == 7|| topUpGiftInfo.msgCode==19) && gameFlag">
                 <div class="handleBtn" @click="no_Become_Friend_rejectForGame(topUpGameInfo.content)">免战</div>
@@ -189,8 +189,8 @@
           </div>
         </transition>
       </div>
-      <friendPanel v-if="friendPanelFlag"></friendPanel>
     </div>
+    <friendPanel v-if="friendPanelFlag"></friendPanel>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
@@ -370,9 +370,11 @@
         this.getAlreadyFriendList(cursor);
       },
       //回赞事件
-      backThumbClick(type, flag) {
+      backThumbClick(type, flag,fromInfo) {
+        this.changeFriPanelFlag(true);
         api.giveBackThumb(type, flag).then(res => {
           if (res.errcode === 0) {
+            this.setChatFriend(fromInfo)
             this._loadMutualEvents();
             this._loadFriends();
             this.isShowGiftPanel = false;
@@ -547,6 +549,7 @@
       },
       ...mapMutations({
         // updateChatList: "UPDATE_CHATLIST",//更新聊天列表
+        changeFriPanelFlag:"CHANGEFRIENDPANELFLAG", //更改匹配成功flag
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         showQrcode: "SHOW_QRCODE", //展示二维码
         addGiftInfo: "ADD_GIFTINFO",
@@ -730,6 +733,14 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+  }
+  .whole_mask{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
   }
   .top_wrapper {
     overflow-y: auto;

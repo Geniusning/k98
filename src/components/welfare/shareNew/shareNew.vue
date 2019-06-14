@@ -1,4 +1,4 @@
-@modify date 2019-03-07 11:18:31
+
 <template>
   <div class="shareNew_wrapper">
     <div class="shareNew-box" id="shareNew">
@@ -6,6 +6,7 @@
         <img class="backIconImg" onclick="return false" src="../../../assets/image/white_home.png" alt=""  >
         <p style="font-size:14px;color:#fff">了解商家</p>
       </div>
+      <img class="shareImg" src="../../../assets/image/shareLogo.jpg" alt="">
       <div class="shop-container" @click="goHome">
         <img onclick="return false" class="logo" :src="shopSettingInfo.image" alt>
         <p class="bar_name">{{shopSettingInfo.name}}</p>
@@ -188,21 +189,22 @@
 <style scoped lang='less'>
   @import "../../../assets/less/mixin.less";
   .shareNew_wrapper {
-    height: 100%;
-    overflow-y: auto;
+    // height: 100%;
+    overflow: auto;
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     right: 0;
-    background-color: #FF5C01;
+    background-color: #FF9A0A;
     .shareNew-box {
       width: 100%;
       height: 100%;
+      overflow-y: scroll;
       box-sizing: border-box;
-      // padding-bottom: 1.3333rem;
+      padding-bottom: 0.5333rem;
       position: absolute;
-      .bg('../../assets/image/shareNewer.png');
+      // .bg('../../assets/image/shareNewer.png');
       background-size: cover;
       .back-icon {
         display:flex;
@@ -216,6 +218,10 @@
           width: 0.7rem;
           height: .7rem;
         }
+      }
+      .shareImg{
+        width: 100%;
+        height: 9rem;
       }
       .shop-container {
         position: absolute;
@@ -248,7 +254,7 @@
       .discount-container {
         padding: 0 0.2667rem; // display: flex;
         // justify-content: space-between;
-        margin-top: 8.4rem;
+        margin-top: -0.1333rem;
         box-sizing: border-box;
         position: relative;
         z-index: 1;
