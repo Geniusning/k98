@@ -5,18 +5,16 @@ import FastClick from 'fastclick'
 import App from './App'
 import store from './store/index'
 import router from './router/index'
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer'
+
 // import vuePicturePreview from 'vue-picture-preview'
-import {
-  ToastPlugin
-} from 'vux'
-import {
-  mapMutations,
-  mapState,
-  mapActions
-} from 'vuex'
+import {ToastPlugin} from 'vux'
+import {mapMutations,mapState,mapActions} from 'vuex'
 import api from './common/api'
 import config from './common/config'
 Vue.use(ToastPlugin)
+Vue.use(Viewer)
 // Vue.use(vuePicturePreview)
 FastClick.attach(document.body)
 Vue.config.productionTip = false

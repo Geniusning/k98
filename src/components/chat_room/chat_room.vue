@@ -1,4 +1,4 @@
-<template>
+<template>        
   <transition name="fade">
     <div id="chat" class="chatRoom">
       <div class="chat_nav">
@@ -34,9 +34,9 @@
                   <img :src="staticChatFriendObj.headimgurl" alt class="avatar" v-if="item.friend">
                   <img :src="userInfo.headimgurl" alt class="avatar" v-else>
                 </div>
-                <div class="message_box">
+                <div class="message_box" v-viewer>
                   <span v-show="item.type===2" class="arrow" style="background:none"></span>
-                  <img :src="item.message" @load="onImgLoaded" alt class="messRecordPic" @click="showBigPic(item.message)" ref="picture">
+                  <img :src="item.message" @load="onImgLoaded" alt class="messRecordPic"  ref="picture">
                 </div>
               </div>
               <div v-else-if="item.type==3" class="gift_wrapper">
@@ -166,32 +166,6 @@
           </ul>
         </div>
       </div>
-      <!-- 送礼 -->
-      <!-- <div v-transfer-dom>
-                                                      <popup v-model="showToast_gift" position="bottom">
-                                                        <div class="position-vertical-demo">
-                                                          <div class="title vux-1px-b">
-                                                            <span>送个小礼，就是好朋友</span>
-                                                            <img src="../../assets/image/close-round.png" alt="" class="close" @click="close_gift">
-                                                          </div>
-                                                          <div class="gift_list">
-                                                            <ul class="list clearfix">
-                                                              <li class="item" v-for="(item,index) in giftList" @click="sendGift(item.id)" :key="item.id">
-                                                                <img v-if="item.id===1" src="../../assets/image/beer.png" alt="" class="beer">
-                                                                <img v-else-if="item.id===2" src="../../assets/image/flower.png" alt="" class="flower">
-                                                                <img v-else-if="item.id===3" src="../../assets/image/house.png" alt="" class="house">
-                                                                <img v-else src="../../assets/image/car.png" alt="" class="car">
-                                                                <p v-if="item.name==='beer'" class="gift_name">{{item.name==='beer'?'啤酒':"礼物"}}</p>
-                                                                <p v-else-if="item.name==='flower'" class="gift_name">{{item.name==='flower'?'鲜花':"礼物"}}</p>
-                                                                <p v-else-if="item.name==='house'" class="gift_name gift_name_houseAndCar">{{item.name==='house'?'别墅':"礼物"}}</p>
-                                                                <p v-else class="gift_name gift_name_houseAndCar">{{item.name==='car'?'跑车':"礼物"}}</p>
-                                                                <p class="gift_price">￥{{item.money}}</p>
-                                                              </li>
-                                                            </ul>
-                                                          </div>
-                                                        </div>
-                                                      </popup>
-                                              </div>-->
       <!-- 删除警告 -->
       <transition name="appear">
         <div class="warning_bg" v-show="showLaHeiPanel">

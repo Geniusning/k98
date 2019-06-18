@@ -301,6 +301,8 @@
       };
     },
     created() {
+      var devicePixelRatio = window.devicePixelRatio;
+      console.log("devicePixelRatio----",devicePixelRatio)
       // this.arrowTimer = setInterval(() => {
       //   this.arrowIndex++;
       //   if (this.arrowIndex == 5) {

@@ -509,7 +509,8 @@
     .giftPanelBox {
       margin: 40% auto; // background-color: #fff;
       // padding-top: 0.7333rem;
-      width: 100%; // height: 6.8rem;
+      // width: 100%;
+      width: 9.3333rem;
       box-sizing: border-box;
       .bg('../../assets/image/envelop.png'); // background-image: url('../../assets/image/envelop.png')
       .giftPanelBox_title {
