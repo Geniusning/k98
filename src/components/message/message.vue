@@ -318,12 +318,12 @@
           console.log("回赞事件----------",res);
           if (res.errcode === 0) {
             this.setChatFriend(fromInfo)
-            this.chanageFriendPanelFlag(true)
             //重新拉取已经成为好友列表
             this.removeEventList(index)
             //重新拉取约战，送礼，点赞列表
             // this._loadMutualEvents();
             if (flag == "yes") {
+              this.chanageFriendPanelFlag(true)
               this.text = "已回赞";
             } else {
               this.text = "已拒绝";

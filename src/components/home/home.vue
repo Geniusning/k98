@@ -303,6 +303,7 @@
     created() {
       var devicePixelRatio = window.devicePixelRatio;
       console.log("devicePixelRatio----",devicePixelRatio)
+      alert(document.cookie)
       // this.arrowTimer = setInterval(() => {
       //   this.arrowIndex++;
       //   if (this.arrowIndex == 5) {

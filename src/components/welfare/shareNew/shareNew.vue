@@ -62,9 +62,10 @@
       };
     },
     created() {
-     
+      alert(document.cookie)
     },
     mounted() {
+     
       this._loadInviteCoupon();
     },
     computed: {

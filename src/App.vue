@@ -371,13 +371,15 @@
       },
       //回赞事件
       backThumbClick(type, flag,fromInfo) {
-        this.changeFriPanelFlag(true);
         api.giveBackThumb(type, flag).then(res => {
           if (res.errcode === 0) {
             this.setChatFriend(fromInfo)
             this._loadMutualEvents();
             this._loadFriends();
             this.isShowGiftPanel = false;
+            if(flag=="yes"){
+              this.changeFriPanelFlag(true);
+            }
           }
         });
       },

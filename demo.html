@@ -86,7 +86,7 @@ k
 <body>
     <div>你是我的眼</div>
 </body>
-<script src="./static//flexible.js"></script>
+<!-- <script src="./static//flexible.js"></script> -->
 <script>
   // let url = "https://llwant1.qianz.com/?code=34563456546745&state=STATE"
   var reg = new RegExp("(^|&)" + "code" + "=([^&]*)(&|$)");
@@ -96,18 +96,26 @@ k
   // var gameurl = url.split("k98")
   // console.log(gameurl[0])
   // console.log(new Array[5].join(0))
-  
- var date ="2018-01-01"
+  let str = "tk=2345;_dig=235"
+  let arr = str.split(";")
+  console.log(arr)
+  arr.forEach(item=>{
+    let tkname = item.split("=")[0]
+    if(tkname=="tk"){
+      console.log(item.split("=")[1])
+    }
+  })
+//  var date ="2018-01-01"
 
- var timeStamp = new Date(date)
- console.log("2018时间戳------",timeStamp.getTime())
+//  var timeStamp = new Date(date)
+//  console.log("2018时间戳------",timeStamp.getTime())
 
- console.log("现在时间戳-------",new Date("2018-01-02").getTime())
+//  console.log("现在时间戳-------",new Date("2018-01-02").getTime())
 
- let str = "l love you "
- if(true){
-   console.log(str)
- }
- console.log("http://asdagfg/game".split("#")[0])
+//  let str = "l love you "
+//  if(true){
+//    console.log(str)
+//  }
+//  console.log("http://asdagfg/game".split("#")[0])
 </script>
 </html>
