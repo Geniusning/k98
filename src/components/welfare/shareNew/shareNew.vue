@@ -62,16 +62,30 @@
       };
     },
     created() {
-      alert(document.cookie)
+
+      
     },
     mounted() {
-     
+      // let cookie = document.cookie.split("=")[1]
+      // document.cookie ="tk="+cookie
+      // alert("设置后的cookie"+document.cookie)
       this._loadInviteCoupon();
     },
     computed: {
       ...mapState(["shareUrl", "userInfo", "shopSettingInfo", "baseUrl"])
     },
     methods: {
+      getTkCookie(){
+      alert(document.cookie)
+      let arr = document.cookie.split(";")
+      arr.forEach(item=>{
+        let tkname = item.split("=")[0]
+        if(tkname=="tk"){
+          // alert("tk="+item.split("=")[1])
+          return item.split("=")[1]
+        }
+      })
+    },
       //领取优惠券
       receiveACouponByID(couponId,type) {
         api.acquireInviteCoupon(couponId,type).then(res => {
