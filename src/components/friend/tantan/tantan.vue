@@ -22,6 +22,8 @@
             <div class="avatarList-wrapper clearfix" @touchstart="showAlbum" v-if="Boolean(item.info.lifePhotoURL.lifePhotoURL)">
               <img src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
             </div>
+            <img v-show="like && currentLikeIndex==index" class='like' src="../../../assets/image/like1.png">
+            <img v-show="dislike && currentLikeIndex==index" class='dislike' src="../../../assets/image/thumbs-o-up2.png">
             <div class="avatar_box">
               <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
                 alt="暂无头像">
@@ -87,6 +89,9 @@
     },
     data() {
       return {
+        like:false,
+        dislike:false,
+        currentLikeIndex:0,
         // propData: this.pages,
         // isFriend:false,
         // intervalNumber: 8,
@@ -121,6 +126,7 @@
     watch: {
       currentIndex(val){
         this.currentPage = 0 //条件筛选群友后重置群友第一个游标
+        this.currentLikeIndex = 0  //条件筛选群友后重置喜欢图标显示index
       },
       pages(newValue) {
         console.log('子组件候选人数据----------------------------------------', newValue)
@@ -207,6 +213,8 @@
         }
         this.tracking = true;
         this.animation = false;
+        
+        this.startDistant = e.targetTouches[0].screenX
       },
       touchmove(e) {
         // 记录滑动位置
@@ -228,8 +236,17 @@
           let angleRatio = this.angleRatio();
           this.rotate = rotateDirection * this.offsetWidthRatio * 15 * angleRatio;
         }
+        this.movingDistant = e.targetTouches[0].screenX
+        if(this.movingDistant-this.startDistant>0){
+          this.like = true
+          this.dislike = false
+        }else{
+          this.dislike = true
+          this.like = false
+        }
+       
       },
-      touchend(e, item) {
+      touchend(e) {
         this.tracking = false;
         this.animation = true;
         // 滑动结束，触发判断
@@ -251,6 +268,10 @@
           this.swipe = false;
           this.rotate = 0;
         }
+        this.like = false;
+        this.dislike = false;
+        
+        
       },
       nextTick() {
         // 记录最终滑动距离
@@ -264,11 +285,14 @@
         // if (this.currentPage == this.pages.length - 3 && this.tampSexFlag) {
           this.$emit('getMoreFriend');
         }
+        if(this.currentPage+1 == this.pages.length){
+          this.currentLikeIndex = -1
+        }
         this.friendData = this.pages[this.currentPage];
         this.currentPage = this.currentPage === this.pages.length - 1 ? 0 : this.currentPage + 1;
         this.backToParentData = this.pages[this.currentPage];
-        console.log("this.friendData----------",this.friendData)
-        console.log("this.backToParentData----------",this.backToParentData)
+        // console.log("this.friendData----------",this.friendData)
+        // console.log("this.backToParentData----------",this.backToParentData)
         this.$emit("firstData", this.backToParentData);
         let signList = [
           "努力吧,别把自己的青春铺张在爱情上",
@@ -278,15 +302,20 @@
         ];
         let index = Math.floor(Math.random() * 4);
         this.sign = signList[index];
+        console.log("currentLikeIndex---------",this.currentLikeIndex)
+        this.currentLikeIndex++
+        console.log("this pages.length--------",this.pages.length)
         if(this.distant>0){
-          console.log("往右划朋友信息-------",this.friendData)
+          // console.log("往右划朋友信息-------",this.friendData)
           if(!this.friendData.isAlreadyFriend){ //不是朋友才右滑点赞
             this.giveThumb()
+            this.like = true;
           }else{
             this.alreadySendThumbFlag = false
           }
         }else{
           console.log("往左滑")
+          this.dislike = true;
            this.alreadySendThumbFlag = false
         }
         // console.log(this.currentPage);
@@ -413,14 +442,14 @@
           style["zIndex"] = visible - perIndex;
           if (!this.tracking) {
             style[this.prefixes.transition + "TimingFunction"] = "ease";
-            style[this.prefixes.transition + "Duration"] = 300 + "ms";
+            style[this.prefixes.transition + "Duration"] = 400 + "ms";
           }
         } else if (index === lastPage) {
           style["transform"] = "translate3D(" + this.lastPosWidth + "px" + "," + this.lastPosHeight + "px" + ",0px) " + "rotate(" + this.lastRotate + "deg)";
           style["opacity"] = this.lastOpacity;
           style["zIndex"] = this.lastZindex;
           style[this.prefixes.transition + "TimingFunction"] = "ease";
-          style[this.prefixes.transition + "Duration"] = 300 + "ms";
+          style[this.prefixes.transition + "Duration"] = 400 + "ms";
         } else {
           style["zIndex"] = "-1";
           style["transform"] = "translate3D(0,0," + -1 * visible * 60 + "px" + ")";
@@ -489,13 +518,7 @@
       width: 100%;
       height: 7.1733rem;
       position: relative;
-      text-align: center; // .makeFriTips {
-      //   position: absolute;
-      //   top: 0.1rem;
-      //   left: 1.4rem;
-      //   // background: rgba(0, 0, 0, 0.4);
-      //   color: #ccc;
-      // }
+      text-align: center; 
       .time_desc {
         position: absolute;
         top: 0.4rem;
@@ -508,6 +531,21 @@
         box-sizing: border-box;
         padding: 0.1rem;
         z-index: 10000;
+      }
+      .like{
+          width: 1.0667rem;
+          height: 1.0667rem;
+          position: absolute;
+          top: 1.2rem;
+          left: .3rem;
+          
+        }
+      .dislike{
+          width: 1.0667rem;
+          height: 1.0667rem;
+          position: absolute;
+          top: 1.2rem;
+          right: .3rem;
       }
       .avatarList-wrapper {
         position: absolute;

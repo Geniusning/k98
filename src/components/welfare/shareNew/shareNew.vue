@@ -62,8 +62,7 @@
       };
     },
     created() {
-
-      
+      alert("cookie="+document.cookie)      
     },
     mounted() {
       // let cookie = document.cookie.split("=")[1]

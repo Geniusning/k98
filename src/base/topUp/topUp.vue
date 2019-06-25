@@ -5,7 +5,7 @@
         <div class="coinBox_top vux-1px-b">
           <div class="integral_box">
             <img onclick="return false" src="../../assets/image/integralIcon.png" alt="icon" class="integral">
-            <p class="integral_text">积分充值：</p>
+            <p class="integral_text">积分充值：<span v-if="showOweText">尚欠积分:{{Math.abs(userInfo.money-componentGiftInfo.goods.integral)}}</span></p>
           </div>
           <img onclick="return false" src="../../assets/image/close-round.png" alt="icon" class="close" @click="closeIntegralPanel">
         </div>
@@ -64,7 +64,7 @@
         <div class="header">
           <img onclick="return false" v-if="componentConvertType == 0 || componentConvertType == 1" src="../../assets/image/integralIcon.png" class="giftBoxIfon">
           <img onclick="return false" v-else src="../../assets/image/giftBox.png" class="giftBoxIfon">
-          <p class="header_text">消耗积分{{componentGiftInfo.goods.integral}}</p>
+          <p class="header_text">消耗积分{{componentGiftInfo.goods.integral}} &nbsp;&nbsp;&nbsp;我的积分:{{userInfo.money}}</p>
           <div class="close" @click="closeIntegralPanel">X</div>
         </div>
         <div class="content">
@@ -89,7 +89,7 @@
           </div>
           <!-- <p class="gotoTopUpText" v-if="userInfo.money<giftIntegral" @click="gotoTopUp">去充值&gt;</p> -->
         </div>
-        <div class="myMoney">我的积分:{{userInfo.money}}</div>
+        <div class="myMoney" v-if="userInfo.money-componentGiftInfo.goods.integral>0?false:true">尚欠积分:{{Math.abs(userInfo.money-componentGiftInfo.goods.integral)}}</div>
       </div>
       <!-- 成功送礼提示框 -->
       <div class="successfullyBox" v-else="panelIndex===3" key="successfullyBox">
@@ -97,14 +97,14 @@
           <div class="close" @click="closeIntegralPanel">X</div>
           <div class="integralIcon_wrapper">
             <img onclick="return false" src="../../assets/image/integralIcon.png" alt class="integralIcon">
-            <div class="integralIcon_text">消耗积分:{{componentGiftInfo.goods.integral}}</div>
+            <div class="integralIcon_text">消耗积分:{{componentGiftInfo.goods.integral}} &nbsp;&nbsp;&nbsp;我的积分:{{userInfo.money}}</div>
           </div>
           <p class="successful_text">{{successfulText}}</p>
           <p class="successful_desc">{{successful_desc}}</p>
           <button @click="closeIntegralPanel" class="btn">确认</button>
           <p class="gotoTopUpText" @click="gotoTopUp">去充值&gt;</p>
         </div>
-        <div class="myMoney">我的积分:{{userInfo.money}}</div>
+        <!-- <div class="myMoney">我的积分:{{userInfo.money}}</div> -->
       </div>
     </transition>
   </div>
@@ -114,10 +114,15 @@
   import api from "common/api";
   import util from 'common/util';
   import Bus from 'common/bus.js'
-  import {mapState,mapGetters,mapMutations} from 'vuex'
+  import {
+    mapState,
+    mapGetters,
+    mapMutations
+  } from 'vuex'
   export default {
     data() {
       return {
+        showOweText: false,
         panelIndex: null,
         componentGiftInfo: "",
         componentConvertType: null,
@@ -167,7 +172,7 @@
       this.panelIndex = this.fatherPanelIndex;
       this.componentGiftInfo = this.giftInfo;
       console.log(this.componentGiftInfo)
-      if(this.componentGiftInfo){
+      if (this.componentGiftInfo) {
         this.giftIntegral = this.componentGiftInfo.goods.integral; //店长推荐和礼品商城
       }
       this.componentConvertType = this.convertType;
@@ -242,7 +247,7 @@
         this.panelIndex = 0;
       },
       //发送虚拟礼物
-      sendVirtualGift(id, index,giftInfo) {
+      sendVirtualGift(id, index, giftInfo) {
         this.VirtualGiftInfo = giftInfo;
         this.componentConvertType = 4;
         let tempVirtualGift = {
@@ -279,9 +284,11 @@
       //确认赠送店铺项目
       confirmShopItemGift(goodID) {
         if (this.userInfo.money < this.giftIntegral) { //当前积分少于项目消耗积分
-           this.panelIndex = 0
-           return
+          this.panelIndex = 0
+          this.showOweText = true;
+          return
         }
+        this.showOweText = false;
         if (this.componentConvertType == 0) { //店长推荐兑换
           api.convertRecommend(goodID).then(res => {
             console.log('店长推荐兑换结果--------------', res);
@@ -293,6 +300,7 @@
               return;
             } else {
               this.successfulText = "兑换成功"
+              this.refreshUserInfo()
             }
             this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入'我的卡券'`
           }).catch(err => {
@@ -310,6 +318,7 @@
             } else if (res.errCode == 1023) {
               this.showQrcode(true);
             } else {
+              this.refreshUserInfo()
               this.successfulText = "兑换成功"
             }
             this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入'我的卡券'`
@@ -324,8 +333,10 @@
             } else if (res.errCode == 1023) {
               this.showQrcode(true);
               return
+            }else{
+              this.refreshUserInfo()
             }
-            Bus.$emit("giftInfoRecomend",this.entityGoodInfo);
+            Bus.$emit("giftInfoRecomend", this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入对方'我的卡券'`
           })
         } else if (this.componentConvertType == 3) { //赠送积分换礼品项目
@@ -337,8 +348,10 @@
             } else if (res.errCode == 1023) {
               this.showQrcode(true);
               return
+            }else if(res.errCode==0){
+              this.refreshUserInfo()
             }
-            Bus.$emit("giftInfoJiFen",this.entityGoodInfo);
+            Bus.$emit("giftInfoJiFen", this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入对方'我的卡券'`
             // console.log('积分赠送结果---------', res)
           })
@@ -350,8 +363,9 @@
           api.sendGift(params).then(res => {
             console.log('赠送礼物返回结果', res);
             if (res.errCode === 0) {
+              this.refreshUserInfo()
               this.successfulText = "赠送礼物成功,扣除您" + this.componentGiftInfo.goods.integral + "积分"
-               Bus.$emit("VirtualGiftInfo",this.VirtualGiftInfo);
+              Bus.$emit("VirtualGiftInfo", this.VirtualGiftInfo);
             } else if (res.errCode == 1023) {
               this.successfulText = "赠送礼物成功,扣除您" + this.componentGiftInfo.goods.integral + "积分"
               setTimeout(() => {
@@ -363,6 +377,8 @@
             }
           })
         }
+      },
+      refreshUserInfo() {
         api.getUserInfo("/api/loadUserInfo").then(res => {
           console.log("个人信息-------", res)
           this.getUserInfo(res);
@@ -375,7 +391,7 @@
         api.createOrder(id).then(res => {
           if (res.errCode === 0) {
             let resultInfo = res.data;
-            console.log("resultInfo----------",resultInfo);
+            console.log("resultInfo----------", resultInfo);
             let _this = this;
             WeixinJSBridge.invoke(
               "getBrandWCPayRequest", {
@@ -387,7 +403,7 @@
                 "paySign": resultInfo.paySign //微信签名
               },
               (res) => {
-                console.log("WeixinJSBridge.invoke-res",res);
+                console.log("WeixinJSBridge.invoke-res", res);
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   alert("微信支付成功");
@@ -602,8 +618,7 @@
       }
     }
     .sendGiftPanelBox {
-      width: 8.4rem;
-      // height: 4.7rem;
+      width: 8.4rem; // height: 4.7rem;
       padding-bottom: 0.2333rem;
       box-sizing: border-box;
       margin: 50% auto;
@@ -675,8 +690,7 @@
         text-align: center;
         padding-top: 0.3rem;
         padding-bottom: 0.3rem;
-        position: relative;
-        // .gotoTopUpText {
+        position: relative; // .gotoTopUpText {
         //   position: absolute;
         //   bottom: 0.13rem;
         //   right: 0.28rem;
@@ -762,7 +776,8 @@
           box-sizing: border-box;
           padding-top: 0.6333rem;
           margin-left: 0.1333rem;
-          font-weight: 700;
+          font-size: 0.35rem;
+          color: #333;
         }
       }
       .successful_text {

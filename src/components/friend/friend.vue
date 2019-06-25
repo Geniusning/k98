@@ -416,6 +416,7 @@
 
       },
       getSortedFriend() {
+        
         this.changeFriendCursor(0);
         this.currentPage++;
         this.visible = 3;

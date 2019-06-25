@@ -1,5 +1,7 @@
 <template>
   <div id="message" class="message_wrapper">
+    <div class="mask" v-if="showFriendInfoFlag">
+    </div>
     <div class="title">
       <div class="btn_box clearfix">
         <div :class="{active:isShow==0}" class="fri_btn fl" @click="selectList(0)">好友</div>
@@ -17,7 +19,8 @@
           <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList">
             <div class="info_message">
               <div class="avatar">
-                <img :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="">
+                <img :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                  alt="">
                 <i class="dot" v-cloak v-show="item.info.unReadMsgCount>0"></i>
                 <!-- <i class="dot" v-cloak v-show="item.info.unReadMsgCount">{{item.info.unReadMsgCount}}</i> -->
               </div>
@@ -41,7 +44,8 @@
         <li class="item vux-1px-b" v-for="(item,index) in mutualEventsList" :key="index">
           <div class="info_message">
             <div class="avatar">
-              <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="">
+              <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                alt="">
               <i class="dot"></i>
             </div>
             <div class="name_and_message">
@@ -56,15 +60,16 @@
             </div>
           </div>
           <div class="thumb_wrapper">
-            <div class="clearfix" v-if="item.combatID">
+            <div class="clearfix backThumbBox" v-if="item.combatID">
               <p class=" back_thumb vux-1px fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
               <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
             </div>
-            <div class="clearfix" v-else-if="item.gift">
+            <div class="clearfix backThumbBox" v-else-if="item.gift">
               <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
               <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
             </div>
-            <div class="clearfix" v-else>
+            <div class="clearfix " v-else>
+              <p class=" back_thumb vux-1px fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
               <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
               <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
             </div>
@@ -73,83 +78,64 @@
             </div>
           </div>
           <div class="checkBox_scene clearfix" v-show="item.integral">
-                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                <span class="scene-text fl">加好友</span>
+            <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+            <span class="scene-text fl">加好友</span>
           </div>
         </li>
         <p v-if="!mutualEventsList.length" class="noContent">暂无数据</p>
       </ul>
       <!-- 客服通知 -->
       <ul class="newMessage_list" v-else-if="isShow===2">
-        <!-- <li class="item vux-1px-b" v-for="(item,index) in friendGiftList" :key="index">
-              <div class="info_message">
-                <div class="avatar">
-                  <img :src="item.GiftGiverHeadImgURL" alt="">
-                  <i class="dot"></i>
-                </div>
-                <div class="name_and_message">
-                  <p class="name">{{item.GiftGiverNickname}}</p>
-                  <p class="message" v-if="item.gift.id==1">{{item.GiftGiverNickname}}送你一个啤酒</p>
-                  <p class="message" v-if="item.gift.id==2">{{item.GiftGiverNickname}}送你一个鲜花</p>
-                  <p class="message" v-if="item.gift.id==3">{{item.GiftGiverNickname}}送你一个别墅</p>
-                  <p class="message" v-if="item.gift.id==4">{{item.GiftGiverNickname}}送你一个跑车</p>
-                </div>
-              </div>
-              <div class="thumb_wrapper clearfix">
-                <div class="clearfix">
-                  <p class=" back_thumb vux-1px fl reject ">拒绝</p>
-                  <p class="back_thumb vux-1px" @click="thanksTo(item.GiftGiverID)">感谢</p>
-                </div>
-                <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-                  <p class="time_desc">{{item.time}}</p>
-                </div>
-              </div>
-            </li>
-            <p v-if="!friendGiftList.length" class="noContent">暂无送礼内容</p> -->
       </ul>
       <!-- 通知 -->
       <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShow==3">
         <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index">
-              <div class="info_message">
-                <div class="avatar">
-                  <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
-                </div>
-                <div class="name_and_message">
-                  <p class="name">店长</p>
-                  <p class="captainMessage">活动通知:
-                    <{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
-                </div>
-              </div>
-            </li>
+          <div class="info_message">
+            <div class="avatar">
+              <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
+            </div>
+            <div class="name_and_message">
+              <p class="name">店长</p>
+              <p class="captainMessage">活动通知:
+                <{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
+            </div>
+          </div>
+        </li>
       </ul>
-      <!-- 点赞列表 -->
-      <!-- <ul class="newMessage_list" v-else-if="isShow===4">
-              <li class="item vux-1px-b" v-for="(item,index) in friendEvtList" :key="index">
-                <div class="info_message">
-                  <div class="avatar">
-                    <img :src="item.from.headimgurl" alt="">
-                    <i class="dot"></i>
-                  </div>
-                  <div class="name_and_message">
-                    <p class="name">{{item.from.nickname}}</p>
-                    <p class="message">/thumb给我一个赞</p>
-                  </div>
-                </div>
-                <div class="thumb_wrapper" v-show="thumb_flag">
-                  <div class="clearfix">
-                    <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(item.evtID,'no')">飘过</p>
-                    <p class=" back_thumb vux-1px fl" @click="backThumbClick(item.evtID,'yes')">回赞</p>
-                  </div>
-                  <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-                    <p class="time_desc">2018-12-30 17:00</p>
-                  </div>
-                </div>
-              </li>
-              <p v-if="!friendEvtList.length" class="noContent">暂无点赞内容</p>
-            </ul> -->
     </div>
     <!-- 回赞 -->
     <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask :text="text" :position="position"></toast>
+    <!-- 查看好友详细信息 -->
+    <div class="stack-item" v-if="showFriendInfoFlag">
+      <div style="height:100%" class="stack_content">
+        <div class="big_box">
+          <div class="img_content">
+            <div class="avatar_box">
+              <img class="avatar" :src="friendInfo.from.headimgurl?friendInfo.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                alt="暂无头像">
+            </div>
+            <p class="name">{{friendInfo.from.nickname}}</p>
+          </div>
+          <div class="userInfo_wrapper">
+            <div class="userBox clearfix">
+              <img src="../../assets/image/male.png" alt="" class="sex sex_male" v-if="friendInfo.from.sex=='男'">
+              <img src="../../assets/image/female.png" alt="" class="sex sex_female" v-else>
+              <span class="constellation">{{friendInfo.from.constellation?friendInfo.from.constellation.slice(0,3):"水瓶座"}}</span>
+              <span class="friend">好友 {{friendInfo.from.numOfFriends?friendInfo.from.numOfFriends:0}}</span>
+              <span class="gift">富豪榜 {{friendInfo.from.wealthRanking}}</span>
+              <span class="thumb">战神榜 {{friendInfo.from.gameScoreRanking}}</span>
+            </div>
+            <div class="tag_wrapper">
+              <span v-for="(item,index) in friendInfo.from.tags?friendInfo.from.tags.split('、'):''" :key="index">{{item}}</span>
+            </div>
+            <div class="signature_wrapper">
+              <p class="word">个性签名：{{friendInfo.from.signature?friendInfo.from.signature:sign}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <img @click="close" src="../../assets/image/close.png" class="close" alt="">
+    </div>
     <keep-alive>
       <router-view></router-view>
     </keep-alive>
@@ -186,7 +172,9 @@
         position: "default",
         thumb_flag: true, //回赞的box的flag
         showPositionValue: false, //回赞的toast的flag
-        isMakeFriendBool:true,
+        isMakeFriendBool: true,
+        friendInfo: {},
+        showFriendInfoFlag: false
       };
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
@@ -242,12 +230,20 @@
       // console.log("组件销毁");
     },
     methods: {
+      //瞅瞅他好友信息
+      showFriendInfo(userInfo) {
+        this.showFriendInfoFlag = true;
+        this.friendInfo = userInfo
+      },
+      close() {
+        this.showFriendInfoFlag = false;
+      },
       //删除点赞，约战，送礼列表
-      removeEventList(index){
+      removeEventList(index) {
         // this.mutualEventsList.splice(index,1)
         this._loadFriends();
         // this.addBandge();
-         //重新拉取约战，送礼，点赞列表
+        //重新拉取约战，送礼，点赞列表
         this._loadMutualEvents();
       },
       //勾选是否加好友
@@ -264,13 +260,13 @@
           if (res.errCode === 0) {
             let mutualEventsObj = res.mutualEvents;
             let tempEventList = [];
-            console.log("mutualEventsObj------------",mutualEventsObj);
+            console.log("mutualEventsObj------------", mutualEventsObj);
             this.mutualEventsList = []; //先清空
             tempEventList = tempEventList.concat(mutualEventsObj.combatsEvents)
             tempEventList = tempEventList.concat(mutualEventsObj.giftEvents)
             tempEventList = tempEventList.concat(mutualEventsObj.friendEvents)
-            this.mutualEventsList = tempEventList.sort((a,b)=>{
-              return b.time-a.time
+            this.mutualEventsList = tempEventList.sort((a, b) => {
+              return b.time - a.time
             })
             this.CalcManualEventsCount(this.mutualEventsList.length);
             this.addBandge();
@@ -281,11 +277,11 @@
               }
             })
           }
-          // console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
+          console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
         })
       },
       //接受或拒接送礼
-      respondForGift(index,giftInfo, flag) {
+      respondForGift(index, giftInfo, flag) {
         console.log('giftInfo----------------', giftInfo)
         let giftType = giftInfo.integral ? 1 : 0;
         let giftParam = {
@@ -311,11 +307,11 @@
         })
       },
       //回赞事件
-      backThumbClick(index,type, flag,fromInfo) {
+      backThumbClick(index, type, flag, fromInfo) {
         // let that = this;
         this.fromUserInfo = fromInfo
         api.giveBackThumb(type, flag).then(res => {
-          console.log("回赞事件----------",res);
+          console.log("回赞事件----------", res);
           if (res.errcode === 0) {
             this.setChatFriend(fromInfo)
             //重新拉取已经成为好友列表
@@ -362,7 +358,7 @@
         })
       },
       //拒接游戏
-      rejectGame(index,combatID, openId) {
+      rejectGame(index, combatID, openId) {
         let params = {
           agree: false,
           combatID: combatID,
@@ -432,7 +428,7 @@
         });
       },
       ...mapMutations({
-        chanageFriendPanelFlag:"CHANGEFRIENDPANELFLAG",//显示好友匹配成功弹框
+        chanageFriendPanelFlag: "CHANGEFRIENDPANELFLAG", //显示好友匹配成功弹框
         CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         compareLastMsg: "COMPARE_LASTMESS", //推送最后的一个消息跟已有好友消息列表对比
@@ -491,11 +487,184 @@
   @import "../../assets/less/base.less";
   @import "../../assets/less/mixin.less";
   @import "../../assets/less/variable.less";
+  @import "../../assets/less/tantan.less";
   @import "../../assets/less/message_common.less";
+  .mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .4);
+    z-index: 7;
+  }
   .message_wrapper {
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
+    .stack-item {
+      position: absolute;
+      z-index: 8;
+      top: 10%;
+      left: 10%;
+      right: 10%;
+      bottom: 30%;
+      margin: auto;
+        .close {
+          position: absolute;
+          z-index: 7;
+          width: 0.8rem;
+          left: 50%;
+          margin-left: -.4rem;
+          bottom: -1rem
+        }
+      .stack_content {
+        .big_box {
+          background: #fff;
+          .img_content {
+            width: 100%;
+            height: 7.1733rem;
+            position: relative;
+            text-align: center;
+            .avatar_box {
+              box-sizing: border-box;
+              width: 5rem;
+              height: 5rem;
+              border-radius: 50%; // padding: 0.1rem;
+              border: 0.1067rem solid #f1f1f1;
+              position: absolute;
+              margin: 1.4rem auto 0.5rem;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              .avatar {
+                display: block;
+                position: absolute;
+                top: 0.15rem;
+                left: 0.15rem;
+                width: 4.5333rem;
+                height: 4.5333rem;
+                border-radius: 50%;
+              }
+              .friend_icon {
+                width: 0.84rem;
+                height: 0.84rem;
+                position: absolute;
+                bottom: 0;
+                right: 0.8rem;
+              }
+            }
+            .name {
+              position: absolute;
+              width: 100%;
+              text-align: center;
+              height: 0.6133rem;
+              top: 6.7rem; // left: 3.4167rem;
+              z-index: 10000;
+              font-size: 0.4533rem;
+              font-weight: 700;
+              color: #232323;
+            }
+          }
+          .userInfo_wrapper {
+            margin-top: 0.7133rem;
+            padding-left: 0.4533rem;
+            padding-bottom: 0.2667rem;
+            .userBox {
+              .username {
+                text-align: left;
+                text-indent: 0.375rem;
+                font-size: 0.4rem;
+                float: left;
+                font-weight: 700;
+                color: #ff7900;
+                margin-right: 0.2rem;
+              }
+              .sex {
+                float: left;
+                display: inline-block;
+                text-align: center;
+                border-radius: 2px;
+                color: #fff;
+                margin-top: 0.04rem;
+                margin-right: 0.2333rem;
+              }
+              .sex_male {
+                width: 0.5233rem;
+                height: 0.5033rem;
+                margin-top: 0.12rem;
+              }
+              .sex_female {
+                width: 0.5333rem;
+                height: 0.5333rem;
+              }
+              .constellation {
+                .userInfo(#c579ff);
+              }
+              .thumb {
+                box-sizing: border-box;
+                padding-top: 0.03rem;
+                .userInfo(#61d78b);
+                .thumb_samll {
+                  width: 0.2933rem;
+                  height: 0.2933rem;
+                  position: absolute;
+                  top: 0.12rem;
+                  left: 0.15rem;
+                }
+              }
+              .friend {
+                box-sizing: border-box;
+                padding-top: 0.03rem;
+                .userInfo(#ffd800);
+                .friend_samll {
+                  width: 0.3733rem;
+                  height: 0.3733rem;
+                  vertical-align: -0.0267rem;
+                }
+              }
+              .gift {
+                box-sizing: border-box;
+                padding-top: 0.04rem;
+                .userInfo(#ee8232);
+                .gift_small {
+                  width: 0.2833rem;
+                  height: 0.2833rem;
+                  position: absolute;
+                  top: 0.12rem;
+                  left: 0.2rem;
+                }
+              }
+            }
+            .tag_wrapper {
+              text-align: left;
+              color: #666;
+              font-family: "PingFang-SC-Medium";
+              margin-top: 0.24rem;
+              span {
+                display: inline-block;
+                padding: 0.0533rem 0.09rem;
+                border: 1px solid #bebebe;
+                border-radius: 0.0533rem;
+                color: #a5a5a5;
+                font-size: 0.32rem;
+                margin-right: 0.1333rem;
+              }
+            }
+            .signature_wrapper {
+              margin-top: 0.3233rem;
+              .word {
+                color: #808080;
+                text-align: left;
+                font-size: 0.3467rem;
+              }
+            }
+          }
+        }
+      }
+    }
   }
   .title {
     text-align: center;
@@ -662,7 +831,7 @@
           font-size: 0.3733rem;
           color: #999;
           position: relative;
-          .deleteBtn{
+          .deleteBtn {
             position: absolute;
             right: 0.2667rem;
             bottom: 0.2667rem
@@ -689,7 +858,7 @@
         padding-bottom: 6px;
         margin-bottom: 8px;
         .info_message {
-          width: 65%;
+          width: 52%;
           display: flex;
           font-size: 12px;
           .avatar {
@@ -737,6 +906,11 @@
           display: flex;
           flex-direction: column;
           justify-content: space-around;
+          .backThumbBox {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 0.2633rem;
+          }
           .back_thumb {
             box-sizing: border-box;
             display: inline-block;
@@ -746,11 +920,11 @@
             font-size: 0.3467rem;
             color: #999;
             border-radius: 0.2667rem;
-            margin-right: 0.1333rem;
+            margin-right: 0.1rem;
           }
           .reject {
-            margin-right: 0.2rem;
-            margin-left: .4rem
+            margin-right: 0.1rem;
+            margin-left: .1rem
           }
           .time {
             font-size: 0.3733rem;
@@ -758,20 +932,20 @@
             padding-right: 0.2667rem;
           }
         }
-        .checkBox_scene{
+        .checkBox_scene {
           position: absolute;
           right: 3.2rem;
           top: .3rem;
-            .checkbox {
-              width: 0.4rem;
-              height: 0.4rem;
-              vertical-align: middle
-            }
-            .scene-text {
-              font-weight: 600;
-              padding-bottom: 0.0533rem;
-              vertical-align: middle
-            }
+          .checkbox {
+            width: 0.4rem;
+            height: 0.4rem;
+            vertical-align: middle
+          }
+          .scene-text {
+            font-weight: 600;
+            padding-bottom: 0.0533rem;
+            vertical-align: middle
+          }
         }
       }
       .noContent {
