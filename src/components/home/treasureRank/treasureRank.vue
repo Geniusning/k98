@@ -4,7 +4,7 @@
       <my-header title="财富榜" ref="header"></my-header>
       <div class="tabBox vux-1px-t">
         <button-tab v-model="tabIndex">
-          <button-tab-item @on-item-click="switchTabIndex0">社群排名</button-tab-item>
+          <button-tab-item @on-item-click="switchTabIndex0">十大富豪榜</button-tab-item>
           <button-tab-item @on-item-click="switchTabIndex1">好友排名</button-tab-item>
         </button-tab>
       </div>
@@ -162,7 +162,7 @@ export default {
       let count = 20;
       api.loadWealthRanking(type, count, this.allPeopleCursor).then(res => {
         console.log('财富全部排行信息----------------', res)
-        this.allPeopleList = res.wealthRanking.wealthInfos;
+        this.allPeopleList = res.wealthRanking.wealthInfos.slice(0,10);
         this.allPeopleCursor = res.wealthRanking.cursor;
       })
     },

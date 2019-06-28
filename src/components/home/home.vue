@@ -24,6 +24,7 @@
           <div class="tel">
             <a href="javascript:void(0);">
               <img onclick="return false" src="../../assets/image/call.png" alt @click="callPhone">
+              <!-- <img onclick="return false" src="../../assets/image/avatar2.jpg" alt @click="callPhone"> -->
             </a>
           </div>
         </div>

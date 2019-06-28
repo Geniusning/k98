@@ -1,6 +1,7 @@
 <template>
   <div id="message" class="message_wrapper">
     <div class="mask" v-if="showFriendInfoFlag">
+      <img @click="close" src="../../assets/image/close.png" class="close" alt="">
     </div>
     <div class="title">
       <div class="btn_box clearfix">
@@ -134,7 +135,6 @@
           </div>
         </div>
       </div>
-      <img @click="close" src="../../assets/image/close.png" class="close" alt="">
     </div>
     <keep-alive>
       <router-view></router-view>
@@ -503,6 +503,12 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    .close {
+      width: 0.8rem;
+      position: absolute;
+      top: 0.3rem;
+      right: 0.2667rem
+    }
     .stack-item {
       position: absolute;
       z-index: 8;
@@ -511,15 +517,9 @@
       right: 10%;
       bottom: 30%;
       margin: auto;
-        .close {
-          position: absolute;
-          z-index: 7;
-          width: 0.8rem;
-          left: 50%;
-          margin-left: -.4rem;
-          bottom: -1rem
-        }
+      text-align: center;
       .stack_content {
+        margin-bottom: 20px;
         .big_box {
           background: #fff;
           .img_content {
