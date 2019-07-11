@@ -1,7 +1,7 @@
 <template>
   <div id="mine" class="mine">
     <!-- 个人信息 -->
-    <div class="personInfo_wrapper">
+    <div class="personInfo_content">
       <div class="person_info">
         <img onclick="return false" :src="userInfo.headimgurl" alt class="avatar">
         <p class="name">{{userInfo.nickname||'游客'}}</p>
@@ -357,9 +357,9 @@ export default {
   background: #f4f4f4;
   display: flex;
   flex-direction: column;
-  .personInfo_wrapper {
+  .personInfo_content {
     width: 100%;
-    height: 5.4rem;
+    height: 20%;
     padding: 0.5rem 0;
     position: relative;
     .bg("../../assets/image/mine_bg.jpg");
@@ -423,6 +423,7 @@ export default {
     flex-direction: column;
     position: relative;
     background-color: #f4f4f4;
+    height: 70%;
     .userInfo_wrapper {
       height: 1.8667rem;
       background: #fff;
@@ -471,7 +472,7 @@ export default {
       height: 2.4rem;
       background-color: #fff;
       .discount_list {
-        padding-top: 0.3467rem;
+        padding: 0.1467rem;
         display: flex;
         justify-content: space-around;
         .item {

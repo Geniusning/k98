@@ -22,8 +22,8 @@
             <div class="avatarList-wrapper clearfix" @touchstart="showAlbum" v-if="Boolean(item.info.lifePhotoURL.lifePhotoURL)">
               <img src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
             </div>
-            <img v-show="like && currentLikeIndex==index" class='like' src="../../../assets/image/like1.png">
-            <img v-show="dislike && currentLikeIndex==index" class='dislike' src="../../../assets/image/thumbs-o-up2.png">
+            <img v-show="like && currentLikeIndex==index" class='like' src="../../../assets/image/tantan_thumb.png">
+            <img v-show="dislike && currentLikeIndex==index" class='dislike' src="../../../assets/image/tantan_close.png">
             <div class="avatar_box">
               <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
                 alt="暂无头像">
@@ -533,16 +533,16 @@
         z-index: 10000;
       }
       .like{
-          width: 1.0667rem;
-          height: 1.0667rem;
+          width: 1.5667rem;
+          height: 1.5667rem;
           position: absolute;
           top: 1.2rem;
           left: .3rem;
           
         }
       .dislike{
-          width: 1.0667rem;
-          height: 1.0667rem;
+          width: 1.5667rem;
+          height: 1.5667rem;
           position: absolute;
           top: 1.2rem;
           right: .3rem;

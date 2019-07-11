@@ -42,46 +42,48 @@
       </scroll>
       <!-- 新朋友 -->
       <ul class="newMessage_list" v-else-if="isShow===1">
-        <li class="item vux-1px-b" v-for="(item,index) in mutualEventsList" :key="index">
-          <div class="info_message">
-            <div class="avatar">
-              <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-                alt="">
-              <i class="dot"></i>
+        <li class="item " v-for="(item,index) in mutualEventsList" :key="index">
+          <!-- <div class="blank vux-1px-b" v-if="item.from.headimgurl"> -->
+            <div class="info_message">
+              <div class="avatar">
+                <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                  alt="">
+                <i class="dot"></i>
+              </div>
+              <div class="name_and_message">
+                <p class="name">{{item.from.nickname}}</p>
+                <p class="message" style="color:green;font-weight:800" v-if="item.combatID">{{item.from.nickname}}邀请玩把大话骰</p>
+                <p class="message" style="color:#333" v-else-if="item.id==1">{{item.from.nickname}}送你一个啤酒</p>
+                <p class="message" style="color:#333" v-else-if="item.id==2">{{item.from.nickname}}送你一个鲜花</p>
+                <p class="message" style="color:#333" v-else-if="item.id==3">{{item.from.nickname}}送你一个别墅</p>
+                <p class="message" style="color:#333" v-else-if="item.id==4">{{item.from.nickname}}送你一个跑车</p>
+                <p class="message" style="color:#333" v-else-if="item.integral">{{item.from.nickname}}送你{{item.name}}</p>
+                <p class="message" v-else>{{item.from.nickname}}给你点赞,请求加好友</p>
+              </div>
             </div>
-            <div class="name_and_message">
-              <p class="name">{{item.from.nickname}}</p>
-              <p class="message" style="color:green;font-weight:800" v-if="item.combatID">{{item.from.nickname}}邀请玩把大话骰</p>
-              <p class="message" style="color:#333" v-else-if="item.id==1">{{item.from.nickname}}送你一个啤酒</p>
-              <p class="message" style="color:#333" v-else-if="item.id==2">{{item.from.nickname}}送你一个鲜花</p>
-              <p class="message" style="color:#333" v-else-if="item.id==3">{{item.from.nickname}}送你一个别墅</p>
-              <p class="message" style="color:#333" v-else-if="item.id==4">{{item.from.nickname}}送你一个跑车</p>
-              <p class="message" style="color:#333" v-else-if="item.integral">{{item.from.nickname}}送你{{item.name}}</p>
-              <p class="message" v-else>{{item.from.nickname}}给你点赞,请求加好友</p>
+            <div class="thumb_wrapper">
+              <div class="clearfix backThumbBox" v-if="item.combatID">
+                <p class=" back_thumb vux-1px fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
+                <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
+              </div>
+              <div class="clearfix backThumbBox" v-else-if="item.gift">
+                <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
+                <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
+              </div>
+              <div class="clearfix " v-else>
+                <p class=" back_thumb vux-1px fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
+                <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
+                <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
+              </div>
+              <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
+                <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
+              </div>
             </div>
-          </div>
-          <div class="thumb_wrapper">
-            <div class="clearfix backThumbBox" v-if="item.combatID">
-              <p class=" back_thumb vux-1px fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
-              <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
+            <div class="checkBox_scene clearfix" v-show="item.integral">
+              <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+              <span class="scene-text fl">加好友</span>
             </div>
-            <div class="clearfix backThumbBox" v-else-if="item.gift">
-              <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
-              <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
-            </div>
-            <div class="clearfix " v-else>
-              <p class=" back_thumb vux-1px fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
-              <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
-              <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
-            </div>
-            <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-              <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
-            </div>
-          </div>
-          <div class="checkBox_scene clearfix" v-show="item.integral">
-            <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-            <span class="scene-text fl">加好友</span>
-          </div>
+          <!-- </div> -->
         </li>
         <p v-if="!mutualEventsList.length" class="noContent">暂无数据</p>
       </ul>
@@ -174,11 +176,13 @@
         showPositionValue: false, //回赞的toast的flag
         isMakeFriendBool: true,
         friendInfo: {},
-        showFriendInfoFlag: false
+        showFriendInfoFlag: false,
+        sign: "爱情陷阱"
       };
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
     beforeRouteEnter(to, from, next) {
+      
       if (to.params.routeParamNum === 1) {
         next(vm => {
           vm.isShow = 1;
@@ -239,7 +243,7 @@
         this.showFriendInfoFlag = false;
       },
       //删除点赞，约战，送礼列表
-      removeEventList(index) {
+      removeEventList() {
         // this.mutualEventsList.splice(index,1)
         this._loadFriends();
         // this.addBandge();
@@ -294,7 +298,7 @@
         api.respondForGift(giftParam).then(res => {
           console.log('送礼操作结果-------------------', res);
           if (res.errCode == 0) {
-            this.removeEventList(index)
+            this.removeEventList()
             if (flag) {
               this.text = "已感谢";
             } else {
@@ -312,10 +316,11 @@
         this.fromUserInfo = fromInfo
         api.giveBackThumb(type, flag).then(res => {
           console.log("回赞事件----------", res);
-          if (res.errcode === 0) {
+          if (res.errCode === 0) {
             this.setChatFriend(fromInfo)
             //重新拉取已经成为好友列表
-            this.removeEventList(index)
+            this.removeEventList()
+            console.log("jinlaile")
             //重新拉取约战，送礼，点赞列表
             // this._loadMutualEvents();
             if (flag == "yes") {
@@ -368,7 +373,7 @@
           console.log('拒接结果-----------', res);
           if (res.errCode == 0) {
             this.text = "已拒绝";
-            this.removeEventList(index)
+            this.removeEventList()
             this.showPositionValue = true;
             this.addBandge();
           }
@@ -850,101 +855,105 @@
     .newMessage_list {
       .item {
         position: relative;
-        display: flex;
-        justify-content: space-between;
+        // display: flex;
+        // justify-content: space-between;
         box-sizing: border-box;
         box-sizing: border-box;
         padding-top: 0.1867rem;
-        padding-bottom: 6px;
         margin-bottom: 8px;
-        .info_message {
-          width: 52%;
+        .blank {
+          padding-bottom: 6px;
           display: flex;
-          font-size: 12px;
-          .avatar {
-            margin-right: 6px;
-            width: 1.4133rem;
-            height: 1.4133rem;
-            position: relative;
-            img {
+          justify-content: space-between;
+          .info_message {
+            width: 52%;
+            display: flex;
+            font-size: 12px;
+            .avatar {
+              margin-right: 6px;
               width: 1.4133rem;
               height: 1.4133rem;
-              border-radius: 50%;
+              position: relative;
+              img {
+                width: 1.4133rem;
+                height: 1.4133rem;
+                border-radius: 50%;
+              }
+              .dot {
+                .dot(0, 0);
+              }
             }
-            .dot {
-              .dot(0, 0);
+            .name_and_message {
+              box-sizing: border-box;
+              padding-left: 0.3233rem;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              .name {
+                color: #333333;
+                font-size: 0.4267rem;
+                font-weight: 800;
+                width: 3rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+              .message {
+                width: 5rem;
+                color: #666; // height: 0.6667rem;
+                font-size: 0.3467rem;
+                margin-top: 0.2rem;
+                overflow: hidden; // text-overflow: ellipsis;
+                // white-space: nowrap;
+              }
+              .captainMessage {}
             }
           }
-          .name_and_message {
-            box-sizing: border-box;
-            padding-left: 0.3233rem;
+          .thumb_wrapper {
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            .name {
-              color: #333333;
-              font-size: 0.4267rem;
-              font-weight: 800;
-              width: 3rem;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
+            justify-content: space-around;
+            .backThumbBox {
+              display: flex;
+              justify-content: flex-end;
+              padding-right: 0.2633rem;
             }
-            .message {
-              width: 5rem;
-              color: #666; // height: 0.6667rem;
+            .back_thumb {
+              box-sizing: border-box;
+              display: inline-block;
+              width: 1.3333rem;
+              padding: 0.0567rem 0;
+              text-align: center; // .border-1px(@baseColor);
               font-size: 0.3467rem;
-              margin-top: 0.2rem;
-              overflow: hidden; // text-overflow: ellipsis;
-              // white-space: nowrap;
+              color: #999;
+              border-radius: 0.2667rem;
+              margin-right: 0.1rem;
             }
-            .captainMessage {}
+            .reject {
+              margin-right: 0.1rem;
+              margin-left: .1rem
+            }
+            .time {
+              font-size: 0.3733rem;
+              color: #999;
+              padding-right: 0.2667rem;
+            }
           }
-        }
-        .thumb_wrapper {
-          flex-grow: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-around;
-          .backThumbBox {
-            display: flex;
-            justify-content: flex-end;
-            padding-right: 0.2633rem;
-          }
-          .back_thumb {
-            box-sizing: border-box;
-            display: inline-block;
-            width: 1.3333rem;
-            padding: 0.0567rem 0;
-            text-align: center; // .border-1px(@baseColor);
-            font-size: 0.3467rem;
-            color: #999;
-            border-radius: 0.2667rem;
-            margin-right: 0.1rem;
-          }
-          .reject {
-            margin-right: 0.1rem;
-            margin-left: .1rem
-          }
-          .time {
-            font-size: 0.3733rem;
-            color: #999;
-            padding-right: 0.2667rem;
-          }
-        }
-        .checkBox_scene {
-          position: absolute;
-          right: 3.2rem;
-          top: .3rem;
-          .checkbox {
-            width: 0.4rem;
-            height: 0.4rem;
-            vertical-align: middle
-          }
-          .scene-text {
-            font-weight: 600;
-            padding-bottom: 0.0533rem;
-            vertical-align: middle
+          .checkBox_scene {
+            position: absolute;
+            right: 3.2rem;
+            top: .3rem;
+            .checkbox {
+              width: 0.4rem;
+              height: 0.4rem;
+              vertical-align: middle
+            }
+            .scene-text {
+              font-weight: 600;
+              padding-bottom: 0.0533rem;
+              vertical-align: middle
+            }
           }
         }
       }
