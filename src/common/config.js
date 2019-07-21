@@ -7,6 +7,6 @@ export default {
     /* 老友一起玩吧 */
     // appId: "wx2bbe97c9b7e6d747",
     // websocketUrl:"wss://llwant1.qianz.com/api/ws",
-    // shareUrl: "https://llwant1.qianz.com/",
-    tk:"LeCZZANRBaEHyhAbFQ1udRjZjmaDZ9MP1u5fpmls2bFMSLSaLfYWwcvRwC3WcPGGaJ54zQ=="
+    // shareUrl: "https://llwant1.qianz.com/ LQWfh1XAwSHjGbixUFPapooRrYDXNgV7hJXk2XC4kHO36akDKFfFPElQArWF5_U6Ra84ug==",
+    tk:"S_Pqu4svS8rNmf4Xa0euN6x8MVX2LuAhhEh1JsbV6-8uAWKNBeCkao3Zy1HEjgrwHpz7Lg=="
 }

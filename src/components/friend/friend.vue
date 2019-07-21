@@ -110,6 +110,7 @@
   import qrCode from 'base/qrCode/qrCode';
   import util from "common/util";
   import api from "common/api";
+  import Bus from 'common/bus.js'
   import lifePhote from './personalInfo/personalInfo'
   import {mapState,mapActions,mapMutations,mapGetters} from "vuex";
   import {Toast,TransferDom,Popup,XDialog,XButton,Scroller} from "vux";
@@ -119,7 +120,9 @@
       TransferDom
     },
     data() {
+      
       return {
+        isAlreadyFriend:false,  
         imgs: [{
             url: 'http://covteam.u.qiniudn.com/ka2.jpg',
             title: 'pic1'
@@ -236,6 +239,14 @@
       }
       this._clearFirstLoadTag(); //标识已经进入过公众号
       this._loadAllGift();
+    },
+    activated(){
+      console.log("进入找朋友页面")
+      console.log("好友列表--------------",this.someList)
+      Bus.$on("changeFriendConnetion",(openid)=>{
+        this.isFriend = true
+       this.changeFriIcon(openid)
+      })
     },
     methods: {
       //拉取候选人
@@ -442,6 +453,7 @@
         // getMoreFriendList: "get_moreFriendList" //获取更多候选人
       }),
       ...mapMutations({
+        changeFriIcon:"CHANGEFRIENDICON",//回赞后更改好友页面图标
         changeSexType: "CHANGESEXTYPE", //改变拉取候选人性别参数
         MutationGetMoreFriendList: "GET_MOREFRIENDlIST", //获取更多候选人
         getLessThan10friendList: "GET_LESSTHAN10FRIENDLIST", //获取少于10个候选人

@@ -155,8 +155,7 @@
                 desc: `抢了${this.shopSettingInfo.AliasName}一份新人礼包，转送给你，有空去瞅瞅`,
                 link: `${this.shareUrl}k98/shareNew?visitType=4`,
                 imgUrl: `${this.shopSettingInfo.image}`
-              };
-              // ?shareUserID=${this.userInfo.openid}&userACouponID=${this.couponList[0].id}&userBCouponID=${this.couponList[1].id}&visitType=5
+              }
               util._getJssdkInfo(shareObj, this.myShareUrl, 20,  ()=>{
                 this.receiveACouponByID(this.couponList[1].couponID,'b')
                });

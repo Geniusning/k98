@@ -55,6 +55,14 @@ const mutations = {
   [types.GET_POSITION](state, position) {
     state.position = position
   },
+  //更新好友图标
+  [types.CHANGEFRIENDICON](state,openid){
+    state.friendList.forEach(item=>{
+      if(item.info.openid===openid){
+        item.isAlreadyFriend = true
+      }
+    })
+  },
   //获取候选人数据
   [types.GET_FRIENDlIST](state, data) {
     if (data.candidates.length == 0) {
@@ -301,7 +309,7 @@ const mutations = {
         friendEvtObj.content.extMsg = {
           lastMsg: {},
         };
-        friendEvtObj.content.extMsg.lastMsg['msg'] = "拒收了你的礼物";
+        friendEvtObj.content.extMsg.lastMsg['msg'] = "拒收了你的礼物,积分已退回给您";
         state.dynamicFriendEvt = friendEvtObj.content;
         break;
       case 16:

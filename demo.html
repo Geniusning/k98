@@ -1,123 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <style>
-    body {
-      padding: 40px;
-      font: 130%/2 Frutiger LT Std, sans-serif;
-    }
-
-    nav {
-      position: relative;
-      z-index: 1;
-      padding-left: 1em;
-    }
-
-    nav>a {
-      position: relative;
-      display: inline-block;
-      padding: .3em 1em 0;
-      color: inherit;
-      text-decoration: none;
-      margin: 0 -.3em;
-    }
-
-    nav>a::before,
-    main {
-      border: .1em solid rgba(0, 0, 0, .4);
-    }
-
-    nav a::before {
-      content: '';
-      /* To generate the box */
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: -1;
-      border-bottom: none;
-      border-radius: .5em .5em 0 0;
-      background: #ccc linear-gradient(hsla(0, 0%, 100%, .6), hsla(0, 0%, 100%, 0));
-      box-shadow: 0 .15em white inset;
-      transform: scale(1.1, 1.3) perspective(.5em) rotateX(5deg);
-      transform-origin: bottom;
-    }
-
-    nav a.selected {
-      z-index: 2;
-    }
-
-    nav a.selected::before {
-      background-color: #eee;
-      margin-bottom: -.08em;
-    }
-
-    main {
-      display: block;
-      margin-bottom: 1em;
-      background: #eee;
-      padding: 1em;
-      border-radius: .15em;
-    }
-
-    nav.left>a::before {
-      transform: scale(1.2, 1.3) perspective(.5em) rotateX(5deg);
-      transform-origin: bottom left;
-    }
-
-    nav.right {
-      padding-left: 2em;
-    }
-k
-    nav.right>a::before {
-      transform: scale(1.2, 1.3) perspective(.5em) rotateX(5deg);
-      transform-origin: bottom right;
-    }
-
-  </style>
+<title>chat</title>
+<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
 </head>
-
+<style type="text/css">
+.message{
+    height:200px;
+    width:200px;
+    overflow-y: auto;	
+}
+</style>
 <body>
-    <div>你是我的眼</div>
+    <div class="message">
+        <!-- <p class='msg'>666</p> -->
+    </div>
+    <input type="text" name="text" id="text">
+    <button id="btn">发送</button>
 </body>
-<!-- <script src="./static//flexible.js"></script> -->
-<script>
-  // let url = "https://llwant1.qianz.com/?code=34563456546745&state=STATE"
-  var reg = new RegExp("(^|&)" + "code" + "=([^&]*)(&|$)");
-  var r = "?code=235235436&state=STATE".substr(1).match(reg);
-  console.log(r)
-  console.log(window.location)
-  // var gameurl = url.split("k98")
-  // console.log(gameurl[0])
-  // console.log(new Array[5].join(0))
-  console.log([1,2,3].indexOf(1))
-  console.log([1,2,3].indexOf(4))
-  // let str = "tk=2345"
-  // let arr = str.split(";")
-  // console.log(arr)
-  // arr.forEach(item=>{
-  //   let tkname = item.split("=")[0]
-  //   if(tkname=="tk"){
-  //     console.log(item.split("=")[1])
-  //   }
-  // })
-//  var date ="2018-01-01"
-
-//  var timeStamp = new Date(date)
-//  console.log("2018时间戳------",timeStamp.getTime())
-
-//  console.log("现在时间戳-------",new Date("2018-01-02").getTime())
-
-//  let str = "l love you "
-//  if(true){
-//    console.log(str)
-//  }
-//  console.log("http://asdagfg/game".split("#")[0])
-</script>
 </html>
+<script type="text/javascript">
+//发送消息
+ $("#btn").click(function(){
+     var text = $('#text').val();
+     var html = "<p class='msg'>"+text+"</p>";
+     $(".message").append(html);
+     $('#text').val('');
+     console.log($('.message').children("p:last-child")[0])
+     setTimeout(function () {
+         ($('.message').children("p:last-child")[0]).scrollIntoView();
+     },100);
+
+ })
+
+</script>

@@ -110,7 +110,7 @@ new Vue({
         var decc = new TextEncoder()
         this.websock.send(decc.encode((JSON.stringify(msg)))); //给服务器发送ping
         this.pingNumer++;
-        console.log("this.pingNumer", this.pingNumer)
+        // console.log("this.pingNumer", this.pingNumer)
         if (this.pingNumer > 5) { //发送三次无响应后重连
           this.reconnectWebsocket()
           clearTimeout(this.timer)
@@ -127,14 +127,14 @@ new Vue({
       // console.log('测试websocket链接--------',e);
       var decc = new TextDecoder("utf-8");
       let result = JSON.parse(decc.decode(e.data));
-      console.log('websocket接受消息-------------------------', result)
+      // console.log('websocket接受消息-------------------------', result)
       if (result.ops == 25) {
         let msg = {
           ops: 26,
         }
         this.websock.send(JSON.stringify(msg)); //给服务器发送ping
         this.pingNumer = 0;
-        console.log('客户端发送pong心跳----', this.pingNumer);
+        // console.log('客户端发送pong心跳----', this.pingNumer);
       } else if (result.ops == 26) {
         this.pingNumer = 0;
       } else {

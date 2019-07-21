@@ -17,7 +17,7 @@
       <!-- 好友 -->
       <scroll :data='alreadyFriendList' class="friendScrollList" v-if="isShow==0">
         <ul class="message_list" style="margin-top:0.4rem">
-          <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList">
+          <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList" :key="index">
             <div class="info_message">
               <div class="avatar">
                 <img :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
@@ -43,7 +43,8 @@
       <!-- 新朋友 -->
       <ul class="newMessage_list" v-else-if="isShow===1">
         <li class="item " v-for="(item,index) in mutualEventsList" :key="index">
-          <!-- <div class="blank vux-1px-b" v-if="item.from.headimgurl"> -->
+          <!-- v-if="item.from.headimgurl" -->
+          <div class="blank vux-1px-b" >
             <div class="info_message">
               <div class="avatar">
                 <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
@@ -83,7 +84,7 @@
               <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
               <span class="scene-text fl">加好友</span>
             </div>
-          <!-- </div> -->
+          </div>
         </li>
         <p v-if="!mutualEventsList.length" class="noContent">暂无数据</p>
       </ul>
@@ -99,8 +100,7 @@
             </div>
             <div class="name_and_message">
               <p class="name">店长</p>
-              <p class="captainMessage">活动通知:
-                <{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
+              <p class="captainMessage">活动通知:{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
             </div>
           </div>
         </li>
@@ -147,6 +147,7 @@
 <script type='text/ecmascript-6'>
   import api from "common/api"
   import Scroll from 'base/scroll/scroll'
+  import Bus from 'common/bus.js'
   import {
     mapMutations,
     mapActions,
@@ -312,19 +313,20 @@
       },
       //回赞事件
       backThumbClick(index, type, flag, fromInfo) {
-        // let that = this;
+        console.log(fromInfo)
         this.fromUserInfo = fromInfo
         api.giveBackThumb(type, flag).then(res => {
           console.log("回赞事件----------", res);
           if (res.errCode === 0) {
             this.setChatFriend(fromInfo)
             //重新拉取已经成为好友列表
-            this.removeEventList()
+            this.removeEventList()   
             console.log("jinlaile")
             //重新拉取约战，送礼，点赞列表
             // this._loadMutualEvents();
             if (flag == "yes") {
               this.chanageFriendPanelFlag(true)
+              Bus.$emit("changeFriendConnetion",fromInfo.openid)
               this.text = "已回赞";
             } else {
               this.text = "已拒绝";

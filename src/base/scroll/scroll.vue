@@ -143,6 +143,9 @@
       scrollTo() {
         this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
       },
+      scrollBy() {
+        this.scroll && this.scroll.scrollBy.apply(this.scroll, arguments);
+      },
       scrollToElement() {
         this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
       }
@@ -152,6 +155,7 @@
     },
     watch: {
       scrollHeight: function(newValue) {
+        console.log("scrollHeight------",newValue)
         this.scroll.scrollTo(0, -newValue);
       },
       data(newValue) {

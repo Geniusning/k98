@@ -37,7 +37,7 @@
               </div>
               <div class="name">
                 <p class="name" v-if="allMutatualInfo_temp.type == 3 && giftFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'店长'}}送您一份礼物</p>
-                <p class="name" v-else="allMutatualInfo_temp.type == 4 && gameFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'朋友'}}约你玩大话骰</p>
+                <p class="name" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'朋友'}}约你玩大话骰</p>
               </div>
             </div>
             <div class="topUpGiftInfo-middle">
@@ -62,7 +62,7 @@
                   <p class="desc title_desc">积分：{{allMutatualInfo_temp.integral?allMutatualInfo_temp.integral:allMutatualInfo_temp.money}}</p>
                 </div>
               </div>
-              <div class="partition_zone" v-else="allMutatualInfo_temp.type == 4 && gameFlag">
+              <div class="partition_zone" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class="topUpGiftInfo_left">
                   <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
                 </div>
@@ -81,7 +81,7 @@
                   <span class="scene-text fl">加好友</span>
                 </div>
               </div>
-              <div class="bottom_partition" v-else="allMutatualInfo_temp.type == 4 && gameFlag">
+              <div class="bottom_partition" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class="handleBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
                 <div class="handleBtn" @click="respondForGame(allMutatualInfo_temp)">应战</div>
               </div>
@@ -215,6 +215,7 @@
   } from "vuex";
   import util from "common/util";
   import api from "common/api";
+  import Bus from 'common/bus.js';
   export default {
     name: "app",
     data() {
@@ -372,13 +373,14 @@
       //回赞事件
       backThumbClick(type, flag,fromInfo) {
         api.giveBackThumb(type, flag).then(res => {
-          if (res.errcode === 0) {
+          if (res.errCode === 0) {
             this.setChatFriend(fromInfo)
             this._loadMutualEvents();
             this._loadFriends();
             this.isShowGiftPanel = false;
             if(flag=="yes"){
               this.changeFriPanelFlag(true);
+              Bus.$emit("changeFriendConnetion",fromInfo.openid)
             }
           }
         });

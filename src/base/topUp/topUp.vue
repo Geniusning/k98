@@ -11,7 +11,7 @@
         </div>
         <div class="coinBox_bottom">
           <ul class="coinList">
-            <li class="coinItem" v-for="(item,index) in moneyList" :key="item.id" @click="payForCoin(item.id)">
+            <li class="coinItem" v-for="item in moneyList" :key="item.id" @click="payForCoin(item.id)">
               <img onclick="return false" :src="item.imgUrl" alt :class="item.iconClass">
               <p class="intergral">{{item.points}}</p>
               <p class="moneyCount">￥{{item.name}}</p>
@@ -92,7 +92,7 @@
         <div class="myMoney" v-if="userInfo.money-componentGiftInfo.goods.integral>0?false:true">尚欠积分:{{Math.abs(userInfo.money-componentGiftInfo.goods.integral)}}</div>
       </div>
       <!-- 成功送礼提示框 -->
-      <div class="successfullyBox" v-else="panelIndex===3" key="successfullyBox">
+      <div class="successfullyBox" v-else-if="panelIndex===3" key="successfullyBox">
         <div class="envelope">
           <div class="close" @click="closeIntegralPanel">X</div>
           <div class="integralIcon_wrapper">

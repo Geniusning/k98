@@ -1,6 +1,6 @@
 <template>
   <ul class="stack" v-show="pages.length">
-    <li class="stack-item" v-for="(item, index) in pages" :style="[transformIndex(index),transform(index)]" @touchmove.prevent="touchmove" @touchstart.prevent="touchstart" @touchend.prevent="touchend" @mousedown.prevent="touchstart" @mouseup.prevent="touchend"
+    <li class="stack-item" v-for="(item, index) in pages" :key="index" :style="[transformIndex(index),transform(index)]" @touchmove.prevent="touchmove" @touchstart.prevent="touchstart" @touchend.prevent="touchend" @mousedown.prevent="touchstart" @mouseup.prevent="touchend"
       @mousemove.prevent="touchmove" @mouseout.prevent="touchend" @webkit-transition-end="onTransitionEnd(index)" @transitionend="onTransitionEnd(index)">
       <div style="height:100%" class="stack_content">
         <div class="big_box">

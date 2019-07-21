@@ -12,9 +12,9 @@
       </div>
       <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
         <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
-        <scroll ref="listView" class="chat_content" :scrollHeight="scrollHeight" :scrollToDomElement="scrollToDomElement" :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
+        <scroll ref="listView" class="chat_content" :scrollHeight="scrollHeight"  :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
           <ul class="chat_list" ref="chatList">
-            <li class="clearfix chatListItem" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" v-for="(item,index) in componentChatList">
+            <li class="clearfix chatListItem" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" :key="index" v-for="(item,index) in componentChatList">
               <div v-if="item.type==1" class="message_wrapper">
                 <div class="person_box">
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
@@ -152,7 +152,7 @@
           <swiper :auto="false" height="130px" :show-dots="false">
             <swiper-item class="black">
               <grid :show-vertical-dividers="true" :cols="8">
-                <div @click="selectEmtion(item.name)" v-for="item in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.2rem">
+                <div @click="selectEmtion(item.name)" :key="index" v-for="(item,index) in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.2rem">
                   <img onclick="return false" :src="item.num" alt>
                 </div>
               </grid>
@@ -230,8 +230,8 @@
         isShowEnvelope: false, //信封弹框判断
         envelopeText: "", //信封弹框内容
         showPreview: false,
-        scrollHeight: 0,
-        scrollToDomElement: "",
+        scrollHeight: 500,
+        // scrollToDomElement: "",
         pullDownRefresh: true,
         expressionShow: false,
         fatherPanelIndex: 1,
@@ -333,7 +333,6 @@
       };
     },
     created() {
-      console.log(111111)
       this.listenScroll = true;
       this.today = new Date().getDate();
       this.today = new Date().getDate();
@@ -350,6 +349,9 @@
         }
       });
     },
+    mounted(){
+       this._getChatList(); //前端获取聊天记录
+    },
     activated() {
       if (!localStorage.getItem('friendInfo')) {
         localStorage.setItem('friendInfo', JSON.stringify(this.staticChatFriendObj));
@@ -360,7 +362,7 @@
       if (!(JSON.stringify(this.$route.query) === "{}")) {
         this.setChatFriend(this.$route.query.info);
       }
-      this._getChatList(); //前端暂时获取聊天记录
+      this._getChatList(); //前端获取聊天记录
       this._loadAllGift(); //获取礼物
       this.friendId = this.$route.params.id;
       Bus.$on("VirtualGiftInfo", (giftInfo) => {
@@ -631,13 +633,21 @@
                 break;
             }
           })
+          setTimeout(() => {
+            let childNodes = this.$refs.chatList.childNodes;
+            let chatListHeight = 0;
+            childNodes.forEach(item => {
+              chatListHeight += item.clientHeight
+            })
+            this.scrollHeight = chatListHeight;
+          }, 100);
           this.$refs.listView.finishPullDown();
           this.$refs.listView.refresh()
         });
       },
       //发送消息事件
       send() {
-        window.scrollTo(0, 0);
+        // window.scrollTo(0, 0);
         //  this.blurAdjust();
         if (!this.input_value) {
           return;
@@ -670,11 +680,13 @@
         let decc1 = new TextEncoder("utf-8");
         let result = decc1.encode(textMessObj);
         api.postFriendMess(result).then(res => {
-          console.log('发送消息成功:`````````````````````````````````````````', res);
-          this.emotionShow = false;
+          // console.log('发送消息成功:`````````````````````````````````````````', res);
+        this.emotionShow = false;
+        this.expressionShow = false;
+        let childNodes = this.$refs.chatList.childNodes;
+        this.$refs.listView.scrollBy(0,-(childNodes[0].clientHeight));
         });
-        this.$refs.listView.refresh();
-        this.input_value = "";
+        this.input_value = "";     
         // document.getElementById("send_message").focus();
       },
       // 发送图片
@@ -768,8 +780,8 @@
         });
       },
       getIndex(val) {
+        // this.chatListIndex = val;
         // console.log("getIndex--------------------------:", val);
-        this.chatListIndex = val;
       },
       //监听滚动
       myscroll(pos) {
@@ -856,7 +868,6 @@
         }
         if (messageInfo.from == this.staticChatFriendObj.openid) {
           //判断是否是进入时原来的两个人进行聊天
-          console.log('我进来了')
           this.componentChatList.push({
             message: messageInfo.content ? messageInfo.content : "",
             friend: messageInfo.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
@@ -875,7 +886,12 @@
             url: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg ? messageInfo.chatExtMsg.extMsg.url : "") : '',
           });
           // console.log('聊天记录-------------', this.componentChatList)
-          this.$refs.listView.refresh();
+          setTimeout(() => {
+            let childNodes = this.$refs.chatList.childNodes;
+            console.log("LastChatMsg_childNodes-------------",childNodes) 
+            this.$refs.listView.scrollBy(0,-(childNodes[0].clientHeight));
+          }, 100);
+          // this.$refs.listView.refresh();
         }
       },
       input_value: function(newValue, oldValue) {
@@ -885,21 +901,20 @@
           this.flag = false;
         }
       },
-      chatListIndex: function(newValue) {
-        // console.log('父页面的chatListIndex：', newValue)
-        if (this.isscroll) {
-          this.$nextTick(function() {
-            let childNodes = this.$refs.chatList.childNodes;
-            let chatListHeight = 0;
-            childNodes.forEach(item => {
-              chatListHeight += item.clientHeight
-            })
-            this.scrollHeight = chatListHeight;
-            // this.$refs.listView.scrollTo(0,this.scrollHeight)
-            // console.log('父页面scrollHeight：', this.scrollHeight);
-          });
-        }
-      }
+      // chatListIndex: function(newValue) {
+      //   if (this.isscroll) {
+      //     this.$nextTick(function() {
+      //       let childNodes = this.$refs.chatList.childNodes;
+      //       console.log(childNodes)
+      //       let chatListHeight = 0;
+      //       childNodes.forEach(item => {
+      //         chatListHeight += item.clientHeight
+      //       })
+      //       this.scrollHeight = chatListHeight;
+      //       console.log('父页面scrollHeight：', this.scrollHeight);
+      //     });
+      //   }
+      // }
     },
     components: {
       XHeader,
