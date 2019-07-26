@@ -19,7 +19,7 @@
             </div>
             <!-- <p class="makeFriTips">绿灯闪烁表示好友在线哦，赶紧去找朋友吧...</p> -->
             <span class="time_desc">{{item.visitTime}}</span>
-            <div class="avatarList-wrapper clearfix" @touchstart="showAlbum" v-if="Boolean(item.info.lifePhotoURL.lifePhotoURL)">
+            <div class="avatarList-wrapper clearfix" @touchstart="showAlbum" v-if="item.info.lifePhotoURL.lifePhotoURL &&item.info.lifePhotoURL.lifePhotoURL.length>0">
               <img src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
             </div>
             <img v-show="like && currentLikeIndex==index" class='like' src="../../../assets/image/tantan_thumb.png">
@@ -29,6 +29,7 @@
                 alt="暂无头像">
               <img src="../../../assets/image/friend_icon.png" alt="" class="friend_icon" v-show="item.isAlreadyFriend">
               <img src="../../../assets/image/like1.png" alt="" class="friend_icon" v-show="alreadySendThumbFlag">
+              <p class="friend_icon" style="right:-1rem;bottom:-0.5rem;width:100px;color:#333;font-weight:700" v-show="item.info.onlineDiceServer">对战中</p>
             </div>
             <p class="name">{{item.info.nickname}}</p>
           </div>

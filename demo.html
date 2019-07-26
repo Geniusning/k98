@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>chat</title>
-<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+    <title>chat</title>
+    <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
 </head>
 <style type="text/css">
-.message{
-    height:200px;
-    width:200px;
-    overflow-y: auto;	
-}
+    .message {
+        height: 200px;
+        width: 200px;
+        overflow-y: auto;
+    }
 </style>
+
 <body>
     <div class="message">
         <!-- <p class='msg'>666</p> -->
@@ -18,19 +20,28 @@
     <input type="text" name="text" id="text">
     <button id="btn">发送</button>
 </body>
+
 </html>
 <script type="text/javascript">
-//发送消息
- $("#btn").click(function(){
-     var text = $('#text').val();
-     var html = "<p class='msg'>"+text+"</p>";
-     $(".message").append(html);
-     $('#text').val('');
-     console.log($('.message').children("p:last-child")[0])
-     setTimeout(function () {
-         ($('.message').children("p:last-child")[0]).scrollIntoView();
-     },100);
+    //发送消息
+    $("#btn").click(function() {
+        var text = $('#text').val();
+        var html = "<p class='msg'>" + text + "</p>";
+        $(".message").append(html);
+        $('#text').val('');
+        console.log($('.message').children("p:last-child")[0])
+        setTimeout(function() {
+            ($('.message').children("p:last-child")[0]).scrollIntoView();
+        }, 100);
+    })
+    var a = 2;
 
- })
-
+    function test1() {
+        let a = 1;
+        return function() {
+            let a = 4
+            console.log(a)
+        }
+    }
+    test1()()
 </script>

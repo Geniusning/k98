@@ -10,7 +10,7 @@
           <!-- <p class="bar_name" v-if="shopInfo.name1">{{shopInfo.name1}}</p> -->
         </div>
       </div>
-      <swiper :auto="true" class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
+      <swiper :show-dots="false" :auto="true" class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
       <div class="shadowLeft"></div>
       <div class="shadowRight"></div>
     </div>
@@ -371,7 +371,7 @@
           };
           util._getJssdkInfo(shareObj, this.myShareUrl, 20, this.shareGetJifen);
         }
-      }, 1000);
+      }, 100);
       this.getAlreadyFriend(); //获取已经成为好友列表
       this._getInOutNum(); //获取场内场外用户数
       //this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
