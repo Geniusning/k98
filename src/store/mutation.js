@@ -462,6 +462,10 @@ const mutations = {
     [types.CHANGEFRIENDPANELFLAG](state, flag) {
         state.friendPanelFlag = flag;
     },
+    //l98功能开关设置
+    [types.L98OTHERSETTING](state,otherSetting){
+        state.l98Setting = otherSetting
+    },
     //测试
     [types.TEST](state, test) {
         state.test = test

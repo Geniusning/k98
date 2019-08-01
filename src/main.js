@@ -35,7 +35,7 @@ new Vue({
     },
     mounted() {
         // alert(document.cookie)
-        this._loadAdvertisingPhoto(); //拉取首页轮播图
+        this.loadAdvertisingPhoto(); //拉取首页轮播图
         this.createWebsocket() //创建长链接
         this.getUserInfo(); //获取用户信息
         this.createQrcode(); //创建二维码
@@ -43,7 +43,7 @@ new Vue({
         this.loadGoods(); //拉取积分换礼品列表
         this.loadRecommends(); //获取店长推荐
         this.loadMutualEvents() //统计约战送礼点赞
-
+        this.loadL98otherSetting() //加载控制开关
     },
     methods: {
         //创建长连接
@@ -82,7 +82,14 @@ new Vue({
                 this.limitTimes++
             }
         },
-        _loadAdvertisingPhoto() {
+        //加载L98控制开关信息
+        loadL98otherSetting(){
+            api.loadL98otherSetting().then(res=>{
+                console.log("控制开关--------",res)
+                this.LoadL98Setting(res)
+            })
+        },
+        loadAdvertisingPhoto() {
             api.loadAdvertisingPhoto().then(res => {
                 console.log('轮播图-------------------------：', res.adPhotoURL)
                 this.getAdvertisingImg(res.adPhotoURL);
@@ -287,7 +294,8 @@ new Vue({
             getUrl: "GET_URL", //获取公众号地址
             judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
             getSendGiftList: "GET_SENDGIFTLIST", //获取积分换礼品列表
-            CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT" //统计约战送礼点赞数量
+            CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
+            LoadL98Setting:"L98OTHERSETTING"  //加载功能控制开关
         }),
         ...mapActions({
             //getFriendEvt: "get_FriendEvt"

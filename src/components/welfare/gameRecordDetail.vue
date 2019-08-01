@@ -52,12 +52,24 @@
         api.loadArenaTopRank(arenaID, topNumber).then(res => {
           console.log('比赛排名详细信息------------------', res)
           if (res.errCode == 0) {
-            this.gameList = res.userRanks;
+            this.gameList = this._nomalizeGameList(res.userRanks) ;
             this.ownRank = res.ownRank
           }
         }).catch(err => {
           console.log(err)
         })
+      },
+      _nomalizeGameList(list){
+        let gameList = []
+        list.forEach(item=>{
+          if(item.headURI.indexOf("http") === -1){
+            let imgUrl = item.headURI.slice(18)
+            item.headURI = require(`../../assets/image/${imgUrl}.png`)
+          }
+          gameList.push(item)
+        })
+        console.log("gameList------------",gameList)
+        return gameList
       }
     },
     components: {

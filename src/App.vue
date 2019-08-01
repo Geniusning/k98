@@ -26,12 +26,12 @@
           </div>
         </div>
       </transition>
-      <!-- 回房通知 -->
-      <div class="backToGame_wrapper" v-if="showBackToGame">
+      <!-- 回房通知 " -->
+      <div class="backToGame_wrapper"  v-if="showBackToGame" >
         <p class="backToGame_text">您有未完成对战，对手还在等您</p>
         <div class="btn_wrapper">
           <button class="reject_btn" @click="rejectBacToGame">放弃</button>
-          <button class="back_btn" @click="goBackGame">回房</button>
+          <button class="back_btn" @click="goBackGame">再战</button>
         </div>
       </div>
       <div class="mask_bg" v-if="isShowGiftPanel">
@@ -798,30 +798,32 @@
     position: relative;
   }
   .backToGame_wrapper{
-    width: 5.4rem;
-    height: 2.5rem;
+    width: 8.4rem;
+    height: 4.6933rem;
     background-image: url("./assets/image/envelop.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
     position: fixed;
     z-index: 9999;
-    top: 7rem;
+    top: 6rem;
     left: 50%;
-    transform: translateX(-2.9rem);
+    transform: translateX(-4.5rem);
     padding: 0 0.2667rem;
     .backToGame_text{
       width: 100%;
-      padding-top: 0.7333rem;
-       text-align: center;
+      padding-top: 1.2rem;
+      text-align: center;
       color: #333;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 16px;
     }
     .btn_wrapper{
       display: flex;
       justify-content: space-around;
-      margin-top: 0.4rem;
+      margin-top: 1.4rem;
+      padding: 0 1rem;
       .reject_btn,.back_btn{
+        width: 1.8667rem;
         border: none;
         background: -webkit-linear-gradient(top, #fcd502, #e59305);
         padding: 0.1rem 0.1667rem;

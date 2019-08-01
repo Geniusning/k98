@@ -410,6 +410,8 @@
               this.isShowEnvelope = false;
             }, 2000);
             return;
+          }else if(res.errCode == 1089){
+             this.$vux.toast.text('每天限3次约战机会。当天已用完，明天再来', 'middle')
           }
         })
       },

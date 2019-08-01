@@ -2,17 +2,28 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: liuning
- * @Last Modified time: 2019-07-03 18:51:37
+ * @Last Modified time: 2019-07-30 16:11:50
  */
 
 import axios from 'axios'
 import Url from './config'
-
 let api = {};
+//拉取设置信息
+api.loadL98otherSetting = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadL98otherSetting?tk=${Url.tk}`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //加载回房信息
 api.loadLastRoomInfo = function () {
   return new Promise((resolve, reject) => {
-    axios.get('https://singledog.qianz.com/' + `loadLastRoomInfo?tk=${Url.tk}`).then(res => {
+    axios.get("https://singledog.qianz.com/" + `loadLastRoomInfo?tk=${Url.tk}`).then(res => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -75,7 +86,7 @@ api.getFriendList = function (params) {
 //请求加好友
 api.makeFriend = function (xid) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + "/api/makeFriend?targetID=" + xid).then(res => {
+    axios.post(Url.commonUrl + `/api/makeFriend?targetID=` + xid).then(res => {
       if (res.status == 200) {
         resolve(res.data)
       }

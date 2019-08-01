@@ -167,7 +167,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["noCouponsFlag", "sendGiftList","shareUrl"]),
+    ...mapState(["noCouponsFlag", "sendGiftList","shareUrl","l98Setting"]),
     ...mapGetters(["userInfo", "test", "isShow"])
   },
   created() {
@@ -206,6 +206,10 @@ export default {
     },
     // 兑换消耗积分
     convert(goodId, index) {
+      if(!this.l98Setting.giftItemConvertOpen){
+        this.$vux.toast.text('商家未开通本功能', 'middle')
+        return
+      }
       this.isGiftPanel = true;
       this.fatherPanelIndex = 2,
         console.log('选中的礼品-----------------', this.sendGiftList[index])

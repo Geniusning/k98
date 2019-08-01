@@ -25,7 +25,7 @@
                 </div>
                 <div class="message_box">
                   <span v-show="item.type===1" class="arrow"></span>
-                  <p class="message" v-if="item.type===1" v-html="item.message"></p>
+                  <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message"></p>
                 </div>
               </div>
               <div v-if="item.type==2" class="message_wrapper">

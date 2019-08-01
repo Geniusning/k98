@@ -477,8 +477,8 @@
     .activity-wrapper {
       // margin: 0.2667rem;
       background-color: #f1f1f1;
-      // padding-top: 0.32rem;
-      height: 6.6667rem;
+      padding-bottom: 0.22rem;
+      // height: 6.6667rem;
       .title {
         width: 4.32rem;
         height: 0.8rem;

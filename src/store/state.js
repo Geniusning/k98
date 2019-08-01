@@ -1,4 +1,5 @@
 const state = {
+    l98Setting:{},//C端功能控制
     baseUrl: "", //公众号地址
     isShow: false, //控住手机验证码弹框
     qrIsShow: false, //控制关注二维码弹框

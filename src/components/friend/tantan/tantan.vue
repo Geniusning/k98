@@ -6,50 +6,53 @@
         <div class="big_box">
           <div class="img_content">
             <div class="icon_box" v-if="item.isInDoor">
-              <img src="../../../assets/image/online.png" alt="" class="icon">
-              <img v-if="item.info.onlineL98Server || item.info.onlineDiceServer" src="../../../assets/image/dot_green.png" alt="" class="dot bling">
-              <img v-else src="../../../assets/image/dot_red.png" alt="" class="dot bling">
+              <img onclick="return false" src="../../../assets/image/online.png" alt="" class="icon">
+              <img onclick="return false" v-if="item.info.onlineL98Server || item.info.onlineDiceServer" src="../../../assets/image/dot_green.png" alt="" class="dot bling">
+              <img onclick="return false" v-else src="../../../assets/image/dot_red.png" alt="" class="dot bling">
               <span class="line_word">店内</span>
             </div>
             <div class="icon_box" v-else>
-              <img src="../../../assets/image/outline.png" alt="" class="icon">
-              <img v-if="item.info.onlineL98Server || item.info.onlineDiceServer" src="../../../assets/image/dot_green.png" alt="" class="dot bling">
-              <img v-else src="../../../assets/image/dot_red.png" alt="" class="dot bling">
+              <img onclick="return false" src="../../../assets/image/outline.png" alt="" class="icon">
+              <img onclick="return false" v-if="item.info.onlineL98Server || item.info.onlineDiceServer" src="../../../assets/image/dot_green.png" alt="" class="dot bling">
+              <img onclick="return false" v-else src="../../../assets/image/dot_red.png" alt="" class="dot bling">
               <span class="line_word">店外</span>
             </div>
             <!-- <p class="makeFriTips">绿灯闪烁表示好友在线哦，赶紧去找朋友吧...</p> -->
             <span class="time_desc">{{item.visitTime}}</span>
             <div class="avatarList-wrapper clearfix" @touchstart="showAlbum" v-if="item.info.lifePhotoURL.lifePhotoURL &&item.info.lifePhotoURL.lifePhotoURL.length>0">
-              <img src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
+              <img onclick="return false" src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
             </div>
-            <img v-show="like && currentLikeIndex==index" class='like' src="../../../assets/image/tantan_thumb.png">
-            <img v-show="dislike && currentLikeIndex==index" class='dislike' src="../../../assets/image/tantan_close.png">
+            <img onclick="return false" v-show="like && currentLikeIndex==index" class='like' src="../../../assets/image/tantan_thumb.png">
+            <img onclick="return false" v-show="dislike && currentLikeIndex==index" class='dislike' src="../../../assets/image/tantan_close.png">
             <div class="avatar_box">
-              <img class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+              <img onclick="return false" class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
                 alt="暂无头像">
-              <img src="../../../assets/image/friend_icon.png" alt="" class="friend_icon" v-show="item.isAlreadyFriend">
-              <img src="../../../assets/image/like1.png" alt="" class="friend_icon" v-show="alreadySendThumbFlag">
-              <p class="friend_icon" style="right:-1rem;bottom:-0.5rem;width:100px;color:#333;font-weight:700" v-show="item.info.onlineDiceServer">对战中</p>
+              <img onclick="return false" src="../../../assets/image/friend_icon.png" alt="" class="friend_icon" v-show="item.isAlreadyFriend">
+              <img onclick="return false" src="../../../assets/image/like1.png" alt="" class="friend_icon" v-show="alreadySendThumbFlag">
+              <!-- <p class="friend_icon" style="right:-1rem;bottom:-0.5rem;width:100px;color:#333;font-weight:700" v-show="item.info.onlineDiceServer">对战中</p> -->
             </div>
             <p class="name">{{item.info.nickname}}</p>
           </div>
           <!-- 个人信息 -->
           <div class="userInfo_wrapper">
             <div class="userBox clearfix">
-              <img src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex=='男'">
-              <img src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
+              <img onclick="return false" src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex=='男'">
+              <img onclick="return false" src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
               <!-- <span class="online" :style="{background:item.info.online==='好友'?'red':'gray'}">{{item.info.online}}</span> -->
               <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
               <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>
               <!-- <img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">{{item.info.gift?item.info.gift:56}} -->
               <span class="gift">富豪榜 {{item.info.wealthRanking}}</span>
               <!-- <img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">{{item.info.thumb?item.info.thumb:99}} -->
-              <span class="thumb">战神榜 {{item.info.gameScoreRanking}}</span>
+              <span class="thumb">战神榜 {{item.info.gameScoreRanking}}
+                <img onclick="return false" class="battle" v-if="item.info.isQuiet"  src="../../../assets/image/mianZhan.png" alt="">
+                <img onclick="return false" class="battle" v-if="item.info.onlineDiceServer"  src="../../../assets/image/battle.png" alt="">
+              </span>
             </div>
             <div class="tag_wrapper">
               <span v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')" :key="index">{{item}}</span>
               <!-- <span>招人爱</span>
-                  <span>大胃王</span> -->
+                      <span>大胃王</span> -->
             </div>
             <div class="signature_wrapper">
               <!-- <p class="word">生活不止眼前的苟且，还有诗和远方的田野</p> -->
@@ -75,13 +78,13 @@
         type: Object,
         default: []
       },
-      visible:{
-        type:Number,
-        default:3
+      visible: {
+        type: Number,
+        default: 3
       },
-      currentIndex:{
-        type:Number,
-        default:0
+      currentIndex: {
+        type: Number,
+        default: 0
       },
       pages: {
         type: Array,
@@ -90,9 +93,11 @@
     },
     data() {
       return {
-        like:false,
-        dislike:false,
-        currentLikeIndex:0,
+        limitTimes:10,
+        limitFlag:true,
+        like: false,
+        dislike: false,
+        currentLikeIndex: 0,
         // propData: this.pages,
         // isFriend:false,
         // intervalNumber: 8,
@@ -103,31 +108,31 @@
           end: {}
         },
         //: {
-          prefixes: detectPrefixes(),
-          offsetY: "",
-          poswidth: 0,
-          posheight: 0,
-          lastPosWidth: "",
-          lastPosHeight: "",
-          lastZindex: "",
-          rotate: 0,
-          lastRotate: 0,
-          visible: this.visible,
-          tracking: false,
-          animation: false,
-          currentPage: this.currentIndex || 0,
-          opacity: 1,
-          lastOpacity: 0,
-          swipe: false,
-          zIndex: 10,
-          alreadySendThumbFlag:null,
+        prefixes: detectPrefixes(),
+        offsetY: "",
+        poswidth: 0,
+        posheight: 0,
+        lastPosWidth: "",
+        lastPosHeight: "",
+        lastZindex: "",
+        rotate: 0,
+        lastRotate: 0,
+        visible: this.visible,
+        tracking: false,
+        animation: false,
+        currentPage: this.currentIndex || 0,
+        opacity: 1,
+        lastOpacity: 0,
+        swipe: false,
+        zIndex: 10,
+        alreadySendThumbFlag: null,
         // },
       };
     },
     watch: {
-      currentIndex(val){
+      currentIndex(val) {
         this.currentPage = 0 //条件筛选群友后重置群友第一个游标
-        this.currentLikeIndex = 0  //条件筛选群友后重置喜欢图标显示index
+        this.currentLikeIndex = 0 //条件筛选群友后重置喜欢图标显示index
       },
       pages(newValue) {
         console.log('子组件候选人数据----------------------------------------', newValue)
@@ -140,7 +145,7 @@
     },
     computed: {
       // ...mapGetters(["friendList"]),
-      ...mapState(["friendListCursor", "userInfo","tampSexFlag"]),
+      ...mapState(["friendListCursor", "userInfo", "tampSexFlag"]),
       // 划出面积比例
       offsetRatio() {
         let width = this.$el.offsetWidth;
@@ -164,22 +169,22 @@
         // this.position = position;
         let xid = this.friendData.info.openid
         api.makeFriend(xid).then(res => {
-          console.log("api.makeFriend(xid)-----------",res);
+          this.limitTimes--
+          console.log("api.makeFriend(xid)-----------", res);
           if (res.errcode === 0) {
-            
             this.$emit("heartBeat", this.friendData);
           } else if (res.errcode === 1023) {
             this.showQrcode(true);
-          } else if(res.errcode==1001) { //已经点赞过了
+          } else if (res.errcode == 1001) { //已经点赞过了
             this.alreadySendThumbFlag = true
-          }else if (res.errcode==1002){ //已经是朋友了
-           this.alreadySendThumbFlag = false
+          } else if (res.errcode == 1002) { //已经是朋友了
+            this.alreadySendThumbFlag = false
           }
         });
       },
       //点击相册
       showAlbum() {
-        const num  =1
+        const num = 1
         this.$emit('showAblum', this.backToParentData ? this.backToParentData : this.pages[0]);
       },
       touchstart(e) {
@@ -214,7 +219,6 @@
         }
         this.tracking = true;
         this.animation = false;
-        
         this.startDistant = e.targetTouches[0].screenX
       },
       touchmove(e) {
@@ -238,14 +242,13 @@
           this.rotate = rotateDirection * this.offsetWidthRatio * 15 * angleRatio;
         }
         this.movingDistant = e.targetTouches[0].screenX
-        if(this.movingDistant-this.startDistant>0){
+        if (this.movingDistant - this.startDistant > 0) {
           this.like = true
           this.dislike = false
-        }else{
+        } else {
           this.dislike = true
           this.like = false
         }
-       
       },
       touchend(e) {
         this.tracking = false;
@@ -271,10 +274,15 @@
         }
         this.like = false;
         this.dislike = false;
-        
-        
       },
       nextTick() {
+        //虚假每天限制20次
+        if(this.limitTimes<1){
+            if(this.limitFlag){
+              this.limitFlag = !this.limitFlag
+              this.$vux.toast.text('每天限20次点赞交友机会。当天已用完，明天再来', 'middle')
+            }
+        }
         // 记录最终滑动距离
         this.lastPosWidth = this.poswidth;
         this.lastPosHeight = this.posheight;
@@ -283,10 +291,10 @@
         // 循环currentPage
         console.log('this.currentPage：', this.currentPage)
         if (this.currentPage == this.pages.length - 3 && this.friendListCursor != 0) {
-        // if (this.currentPage == this.pages.length - 3 && this.tampSexFlag) {
+          // if (this.currentPage == this.pages.length - 3 && this.tampSexFlag) {
           this.$emit('getMoreFriend');
         }
-        if(this.currentPage+1 == this.pages.length){
+        if (this.currentPage + 1 == this.pages.length) {
           this.currentLikeIndex = -1
         }
         this.friendData = this.pages[this.currentPage];
@@ -303,21 +311,21 @@
         ];
         let index = Math.floor(Math.random() * 4);
         this.sign = signList[index];
-        console.log("currentLikeIndex---------",this.currentLikeIndex)
+        console.log("currentLikeIndex---------", this.currentLikeIndex)
         this.currentLikeIndex++
-        console.log("this pages.length--------",this.pages.length)
-        if(this.distant>0){
+          console.log("this pages.length--------", this.pages.length)
+        if (this.distant > 0) {
           // console.log("往右划朋友信息-------",this.friendData)
-          if(!this.friendData.isAlreadyFriend){ //不是朋友才右滑点赞
+          if (!this.friendData.isAlreadyFriend) { //不是朋友才右滑点赞
             this.giveThumb()
             this.like = true;
-          }else{
+          } else {
             this.alreadySendThumbFlag = false
           }
-        }else{
+        } else {
           console.log("往左滑")
           this.dislike = true;
-           this.alreadySendThumbFlag = false
+          this.alreadySendThumbFlag = false
         }
         // console.log(this.currentPage);
         // let index = this.currentPage;
@@ -519,7 +527,7 @@
       width: 100%;
       height: 7.1733rem;
       position: relative;
-      text-align: center; 
+      text-align: center;
       .time_desc {
         position: absolute;
         top: 0.4rem;
@@ -533,20 +541,19 @@
         padding: 0.1rem;
         z-index: 10000;
       }
-      .like{
-          width: 1.5667rem;
-          height: 1.5667rem;
-          position: absolute;
-          top: 1.2rem;
-          left: .3rem;
-          
-        }
-      .dislike{
-          width: 1.5667rem;
-          height: 1.5667rem;
-          position: absolute;
-          top: 1.2rem;
-          right: .3rem;
+      .like {
+        width: 1.5667rem;
+        height: 1.5667rem;
+        position: absolute;
+        top: 1.2rem;
+        left: .3rem;
+      }
+      .dislike {
+        width: 1.5667rem;
+        height: 1.5667rem;
+        position: absolute;
+        top: 1.2rem;
+        right: .3rem;
       }
       .avatarList-wrapper {
         position: absolute;
@@ -655,6 +662,7 @@
       margin-top: 0.7133rem;
       padding-left: 0.4533rem;
       .userBox {
+        position: relative;
         .username {
           text-align: left;
           text-indent: 0.375rem;
@@ -688,6 +696,16 @@
         .thumb {
           box-sizing: border-box;
           padding-top: 0.03rem;
+          display: inline-block;
+          position: relative;
+          .battle {
+            width: 0.7733rem;
+            height: 0.7867rem;
+            position: absolute;
+            top: -0.6rem;
+            right: -0.5rem;
+            z-index: 2;
+          }
           .userInfo(#61d78b);
           .thumb_samll {
             width: 0.2933rem;

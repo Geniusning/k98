@@ -1,5 +1,7 @@
 
 // export const TESTSEXTYPE  = "TESTSEXTYPE"
+//C端功能控制
+export const L98OTHERSETTING = "L98OTHERSETTING"
 //回赞成功后更新好友页面图标显示
 export const CHANGEFRIENDICON = "CHANGEFRIENDICON"
 //更改配对成功标识符

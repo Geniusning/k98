@@ -78,13 +78,25 @@ export default {
       let count = 20;
       api.LoadGameScoreDetail(this.gameCursor,count).then(res => {
         console.log('游戏详情-------------------', res);
-        this.gameContent =this.gameContent.concat(res.coupon.details);
+        this.gameContent =this.gameContent.concat(this._nomalizeGameList(res.coupon.details));
         this.gameCursor = res.coupon.cursor;
         this.gameContent.forEach(item => {
           item.time = util.timestampToTimeNoLine(item.time);
         })
       })
-    }
+    },
+    _nomalizeGameList(list){
+        let gameList = []
+        list.forEach(item=>{
+          if(item.headimgurl.indexOf("http") === -1){
+            let imgUrl = item.headimgurl.slice(18)
+            item.headimgurl = require(`../../assets/image/${imgUrl}.png`)
+          }
+          gameList.push(item)
+        })
+        console.log("gameList------------",gameList)
+        return gameList
+      }
   },
   components: {
     myHeader,

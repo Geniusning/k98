@@ -165,7 +165,8 @@
       }
     },
     computed: {
-      ...mapState(['giftList', 'userInfo']),
+    
+      ...mapState(['giftList', 'userInfo',"l98Setting"]),
       ...mapGetters(['recommentList', "sendGiftList"])
     },
     created() {
@@ -388,6 +389,10 @@
       //   充值
       payForCoin(id) {
         console.log(id);
+        if(!this.l98Setting.integralConvertOpen){
+          this.$vux.toast.text('商家未开通本功能', 'middle')
+          return
+        }
         api.createOrder(id).then(res => {
           if (res.errCode === 0) {
             let resultInfo = res.data;

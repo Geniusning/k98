@@ -1,18 +1,33 @@
 /*
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
- * @Last Modified by: nicky
- * @Last Modified time: 2019-06-06 14:47:48
+ * @Last Modified by: liuning
+ * @Last Modified time: 2019-07-29 18:01:48
  */
 
 import axios from 'axios'
 import Url from './config'
+let windowUrL = window.location.href;
+let index = windowUrL.indexOf('.com');
+let shareurl = windowUrL.slice(0, index)+".com/"
 
 let api = {};
+//拉取设置信息
+api.loadL98otherSetting = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadL98otherSetting`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //加载回房信息
 api.loadLastRoomInfo = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/loadLastRoomInfo`).then(res => {
+    axios.get(shareurl + `/loadLastRoomInfo`).then(res => {
       if (res.status == 200) {
         resolve(res.data)
       }

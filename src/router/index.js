@@ -121,6 +121,9 @@ const router  =  new Router({
         path: ":id",
         name: "gameRecordDetail",
         component: ()=>import('../components/welfare/gameRecordDetail.vue'),
+        meta: {
+          title: "排名详情"
+        }
       }, ],
       meta: {
         title: "游戏记录"
