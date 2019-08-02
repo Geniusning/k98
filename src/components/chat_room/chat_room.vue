@@ -655,7 +655,7 @@
       //发送消息事件
       send() {
         this.sendingTimes ++
-        if(this.sendingTimes>3){
+        if(this.sendingTimes>20){
           this.$vux.toast.text('朋友一直未回复，稍后再发送吧', 'middle')
           return
         }
@@ -875,6 +875,7 @@
     watch: {
       LastChatMsg: function(newValue) {
         console.log('在聊天页面收到对方发来的消息-------------------------------：', newValue);
+        this.sendingTimes = 0; //清空限制连续发送消息次数
         let messageInfo = newValue.allInfo.lastMsg;
         if (messageInfo.type == 3 || messageInfo.type == 4) { //如果是送礼和约战则不在聊天框显示
           return

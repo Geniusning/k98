@@ -93,7 +93,7 @@
     },
     data() {
       return {
-        limitTimes:10,
+        limitTimes:20,
         limitFlag:true,
         like: false,
         dislike: false,
