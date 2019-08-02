@@ -227,6 +227,7 @@
     },
     data() {
       return {
+        sendingTimes:0,
         isShowEnvelope: false, //信封弹框判断
         envelopeText: "", //信封弹框内容
         showPreview: false,
@@ -350,15 +351,17 @@
       });
     },
     mounted(){
-       this._getChatList(); //前端获取聊天记录
+      //  this._getChatList(); //前端获取聊天记录
     },
     activated() {
-      if (!localStorage.getItem('friendInfo')) {
+      console.log(this.staticChatFriendObj)
+      if (!localStorage.getItem('friendInfo')) { //解决微信内置浏览器刷新获得好友信息
         localStorage.setItem('friendInfo', JSON.stringify(this.staticChatFriendObj));
       } else {
         let friendInfo = JSON.parse(localStorage.getItem('friendInfo'));
         this.setChatFriend(friendInfo)
       }
+      this.sendingTimes = localStorage.getItem(this.staticChatFriendObj.openid)?localStorage.getItem(this.staticChatFriendObj.openid):0   //获取发送给当前好友信息次数
       if (!(JSON.stringify(this.$route.query) === "{}")) {
         this.setChatFriend(this.$route.query.info);
       }
@@ -413,7 +416,9 @@
     },
     deactivated() {
       Bus.$off();
-      localStorage.removeItem('friendInfo');
+      localStorage.setItem(this.staticChatFriendObj.openid, this.sendingTimes); //保存对应好友发送信息次数
+      this.setChatFriend({});//清除vuex里面保存的聊天好友对象
+      localStorage.removeItem('friendInfo');//清除缓存中对应的好友信息，避免每次进入聊天页面都是同一个好友
       this.endCursor = null;
       this.componentChatList = [];
       let cursor = 0;
@@ -550,6 +555,8 @@
             }, 2000);
           } else if (res.errCode == 1023) {
             this.showQrcode(true);
+          }else if(res.errCode == 1089){
+             this.$vux.toast.text('每天限20次约战机会。当天已用完，明天再来', 'middle')
           }
         })
       },
@@ -647,6 +654,11 @@
       },
       //发送消息事件
       send() {
+        this.sendingTimes ++
+        if(this.sendingTimes>3){
+          this.$vux.toast.text('朋友一直未回复，稍后再发送吧', 'middle')
+          return
+        }
         // window.scrollTo(0, 0);
         //  this.blurAdjust();
         if (!this.input_value) {
@@ -654,14 +666,10 @@
         }
         //字符串转表情icon
         for (var i = 0; i < this.emotionList.length; i++) {
-          // debugger;
           if (this.input_value.indexOf(this.emotionList[i].name) !== -1) {
             var reg = /\[.*\]/;
             console.log(this.input_value.match(reg)[0]);
-            this.input_value = this.input_value.replace(
-              reg,
-              `<img src=${this.emotionList[i].num} style="vertical-align: -6px;">`
-            );
+            this.input_value = this.input_value.replace(reg,`<img src=${this.emotionList[i].num} style="vertical-align: -6px;">`);
           }
         }
         //把自己发送的内容加到聊天列表里面
@@ -674,7 +682,8 @@
         let messObj = {
           To: this.staticChatFriendObj.openid,
           Content: this.input_value,
-          type: 1
+          type: 1,
+          // from:
         };
         let textMessObj = JSON.stringify(messObj);
         let decc1 = new TextEncoder("utf-8");
@@ -691,6 +700,11 @@
       },
       // 发送图片
       uploadImage(e) {
+        this.sendingTimes ++
+        if(this.sendingTimes>3){
+          this.$vux.toast.text('朋友一直未回复，稍后再发送吧', 'middle')
+          return
+        }
         if (!e.target.files[0]) {
           return;
         }
@@ -802,7 +816,6 @@
       goBack() {
         this.showLaHeiPanel = false;
         this.$router.go(-1);
-        this.setChatFriend({});
       },
       //返回主页
       goHome() {
