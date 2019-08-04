@@ -96,10 +96,10 @@
           <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in clientServiceList" :key="index">
             <div class="info_message" >
               <div class="avatar">
-                <img src="../../assets/image/home_letter.png" alt="">
+                <img :src="item.headimgurl?item.headimgurl:clientImg" alt="">
               </div>
               <div class="name_and_message">
-                <p class="name">{{item.name}}</p>
+                <p class="name">{{item.name?item.name:item.nickname}}</p>
                 <p class="captainMessage">进入查看留言内容</p>
               </div>
             </div>
@@ -170,6 +170,7 @@
   export default {
     data() {
       return {
+        clientImg:require("../../assets/image/home_letter.png"),
         color: "#ffd800",
         hello: false,
         isShow: 0, //最上面tab切换
@@ -445,13 +446,19 @@
       },
       //发起聊天
       chat(item) {
-        if(!item.openid){
+        var isStaffOrClient = false
+        if(item.name && item.phone){
           item["openid"] = item.phone
           item["nickname"] = item.name
+          isStaffOrClient = true
         }
         this.setChatFriend(item);
         this.$router.push({
-          path: `/message/${this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:item.phone}`
+          name:"chat",
+          params: { 
+            isClient: isStaffOrClient,
+            id:this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:item.phone
+          }
         });
       },
       ...mapMutations({

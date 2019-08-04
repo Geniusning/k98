@@ -321,7 +321,12 @@
           case "message":
             this.setChatFriend(this.dynamicFriendEvt.fromInfo);
             this.$router.push({
-              path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
+              // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
+              name:"chat",
+              params: { 
+                isClient: false,
+                id:this.dynamicFriendEvt.fromInfo.openid
+              }
             });
             break;
           case "thumb":

@@ -227,6 +227,7 @@
     },
     data() {
       return {
+        isStaffOrClient:false,
         sendingTimes:0,
         isShowEnvelope: false, //信封弹框判断
         envelopeText: "", //信封弹框内容
@@ -350,9 +351,6 @@
         }
       });
     },
-    mounted(){
-      //  this._getChatList(); //前端获取聊天记录
-    },
     activated() {
       console.log(this.staticChatFriendObj)
       if (!localStorage.getItem('friendInfo')) { //解决微信内置浏览器刷新获得好友信息
@@ -367,7 +365,9 @@
       }
       this._getChatList(); //前端获取聊天记录
       this._loadAllGift(); //获取礼物
+      console.log(this.$route)
       this.friendId = this.$route.params.id;
+      this.isStaffOrClient = this.$route.params.isClient
       Bus.$on("VirtualGiftInfo", (giftInfo) => {
         console.log("聊天页面bus的虚拟礼物--------", giftInfo)
         this.componentChatList.push({
@@ -652,6 +652,12 @@
           this.$refs.listView.refresh()
         });
       },
+      //成为浏览者
+      addCommenter(phone,who){
+        api.addCommenter(phone,who).then(res=>{
+          console.log("成为留言者--------",res)
+        })
+      },
       //发送消息事件
       send() {
         this.sendingTimes ++
@@ -683,20 +689,24 @@
           To: this.staticChatFriendObj.openid,
           Content: this.input_value,
           type: 1,
-          // from:
+          from:this.userInfo.iphone
         };
         let textMessObj = JSON.stringify(messObj);
         let decc1 = new TextEncoder("utf-8");
         let result = decc1.encode(textMessObj);
         api.postFriendMess(result).then(res => {
-          // console.log('发送消息成功:`````````````````````````````````````````', res);
+          console.log('发送消息成功:`````````````````````````````````````````', res);
         this.emotionShow = false;
         this.expressionShow = false;
         let childNodes = this.$refs.chatList.childNodes;
         this.$refs.listView.scrollBy(0,-(childNodes[0].clientHeight));
+        if(this.isStaffOrClient){
+          this.addCommenter(this.staticChatFriendObj.openid,this.userInfo.openid)
+        }
         });
+       
         this.input_value = "";     
-        // document.getElementById("send_message").focus();
+        // document.getElementById("send_message").focus();   this.addCommenter()
       },
       // 发送图片
       uploadImage(e) {

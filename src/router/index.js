@@ -91,7 +91,7 @@ const router  =  new Router({
       },
       // props: true,
       children: [{
-        path: ":id",
+        path: "chat",
         name: "chat",
         component: Chat,
         meta: { 
