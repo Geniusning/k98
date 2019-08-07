@@ -23,6 +23,7 @@ const state = {
     event_badgeCount: 0, //好友事件未读消息
     gift_badgeCount: 0, //送礼事件未读消息
     game_badgeCount: 0, //约战事件未读消息
+    client_badgeCount:0,// 客服未读消息
     manualEventsList_badgeCount:0,//约战，送礼，点赞未读消息数量
     staticChatFriendObj: {}, //拉取列表时候的聊天对象信息
     chatFriendObj_id: "", //动态获取聊天对象的id

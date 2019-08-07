@@ -1,5 +1,7 @@
 
 // export const TESTSEXTYPE  = "TESTSEXTYPE"
+//统计客服未读消息数量
+export const GETCLIENTUNREADCOUNT = "GETCLIENTUNREADCOUNT"
 //C端功能控制
 export const L98OTHERSETTING = "L98OTHERSETTING"
 //回赞成功后更新好友页面图标显示

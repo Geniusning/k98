@@ -34,7 +34,6 @@ new Vue({
         }
     },
     mounted() {
-        // alert(document.cookie)
         this.loadAdvertisingPhoto(); //拉取首页轮播图
         this.createWebsocket() //创建长链接
         this.getUserInfo(); //获取用户信息

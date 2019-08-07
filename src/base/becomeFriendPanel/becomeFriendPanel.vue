@@ -73,10 +73,17 @@ import api from "common/api";
            console.log("见面礼")
        },
        chat(){
-          this.changeFriPanelFlag(false)
           this.$router.push({
-          path: `/message/${this.staticChatFriendObj.openid}`
+            name:"chat",
+            params: { 
+                isClient: false,
+                id:this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:item.phone
+            }
         });
+          this.changeFriPanelFlag(false)
+        //   this.$router.push({
+        //   path: `/message/${this.staticChatFriendObj.openid}`
+        // });
        },
          //玩游戏
       playGame() {

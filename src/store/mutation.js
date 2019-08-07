@@ -386,6 +386,10 @@ const mutations = {
     // [types.CLEAR_CHALLENGEGAMELIST](state) {
     //   state.game_badgeCount = state.challengeGameList.length;
     // },
+    //统计客服未读数量
+    [types.GETCLIENTUNREADCOUNT](state,count){
+        state.client_badgeCount = count
+    },
     //统计约战，送礼，点赞数量
     [types.GET_ALLEVENTS_BADGECOUNT](state, count) {
         state.manualEventsList_badgeCount = count
@@ -394,7 +398,7 @@ const mutations = {
     [types.ADD_BADGE](state) {
         let total = 0;
         // state.gift_badgeCount + state.game_badgeCount+
-        total = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount;
+        total = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount+state.client_badgeCount;
         state.badgeCount = total;
     },
     //设置候选人聊天的信息

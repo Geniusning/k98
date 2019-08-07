@@ -212,9 +212,9 @@
             </div>-->
       </div>
     </div>
-    <div class="kefu" @click="inToLetter">
+    <!-- <div class="kefu" @click="inToLetter">
       <img onclick="return false" src="../../assets/image/home_letter.png" alt class="pic_kefu" />
-    </div>
+    </div> -->
     <!-- 游戏框框 -->
     <div v-transfer-dom>
       <x-dialog v-model="gameShow" class="dialog-gameBegin">
@@ -222,6 +222,12 @@
           <img onclick="return false" class="gameFriend" src="../../assets/image/zuJu.png" alt @click="intoFriendGame" />
           <img onclick="return false" class="gotoPlay" src="../../assets/image/gotoPlay.png" alt @click="intoReadyGame" />
           <img onclick="return false" src="../../assets/image/gameBegin.jpg" alt class="gameBegin" />
+          <div class="game_giftInfo">
+            <p class="giftInfo" style="font-weight:700">比赛奖品</p>
+            <p class="giftInfo">第一名：{{game_giftInfo.firstPrize.content}}</p>
+            <p class="giftInfo">第二名：{{game_giftInfo.secondPrize.content}}</p>
+            <p class="giftInfo">第三名：{{game_giftInfo.thirdPrize.content}}</p>
+          </div>
         </div>
         <div @click="closeGame">
           <img onclick="return false" src="../../assets/image/gameClose.png" alt class="close" />
@@ -266,6 +272,11 @@
     },
     data() {
       return {
+        game_giftInfo:{
+          firstPrize:{},
+          secondPrize:{},
+          thirdPrize:{}
+        },
         recommendItemIndo: {
           convert: {},
           coupInfo: {},
@@ -358,7 +369,7 @@
           let shareObj = {
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
-            link: `${this.shareUrl}k98/home?visitType=4`,
+            link: `${this.shareUrl}k98/home?visitType=3`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(shareObj, this.myShareUrl, 20, this.shareGetJifen);
@@ -366,7 +377,7 @@
           let shareObj = {
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
-            link: `${this.shareUrl}k98/home?visitType=4`,
+            link: `${this.shareUrl}k98/home?visitType=3`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(shareObj, this.myShareUrl, 20, this.shareGetJifen);
@@ -474,6 +485,7 @@
           console.log("拉取发布的比赛---------", res)
           var reverseArr = res.arenaInfos.reverse();
           if (reverseArr.length > 0) {
+            this.game_giftInfo = reverseArr[0]
             this.gameShow = true;
           }
           // console.log('拉取已经发布的比赛场:', res)
@@ -616,11 +628,11 @@
         });
       },
       //进入店长信箱
-      inToLetter() {
-        util.routerTo("message", this, {
-          routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
-        });
-      },
+      // inToLetter() {
+      //   util.routerTo("message", this, {
+      //     routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
+      //   });
+      // },
       // 更多福利
       showMoreWelfare() {
         util.routerTo("welfare", this);
@@ -741,6 +753,17 @@
   .dialog-gameBegin {
     .game-box {
       position: relative;
+      .game_giftInfo{
+        text-align: left;
+        position: absolute;
+        top: 1.3rem;
+        right: 1.2rem;
+        .giftInfo{
+          color: #fff;
+          font-size: 14px;
+          margin-bottom: 0.2333rem;
+        }
+      }
       .gameFriend,
       .gotoPlay {
         width: 2.4rem;
@@ -775,27 +798,27 @@
       background-color: rgba(0, 0, 0, 0.3);
     }
     background: rgba(242, 242, 242, 1);
-    .kefu {
-      position: fixed;
-      bottom: 80px;
-      right: 0.1333rem;
-      animation: jump 1500ms linear 500ms infinite normal;
-      @keyframes jump {
-        10% {
-          bottom: 80px;
-        }
-        50% {
-          bottom: 75px;
-        }
-        100% {
-          bottom: 80px;
-        }
-      }
-      .pic_kefu {
-        width: 1rem;
-        height: 1rem;
-      }
-    }
+    // .kefu {
+    //   position: fixed;
+    //   bottom: 80px;
+    //   right: 0.1333rem;
+    //   animation: jump 1500ms linear 500ms infinite normal;
+    //   @keyframes jump {
+    //     10% {
+    //       bottom: 80px;
+    //     }
+    //     50% {
+    //       bottom: 75px;
+    //     }
+    //     100% {
+    //       bottom: 80px;
+    //     }
+    //   }
+    //   .pic_kefu {
+    //     width: 1rem;
+    //     height: 1rem;
+    //   }
+    // }
   }
   .dialog_wrapper {
     width: 7.8667rem;

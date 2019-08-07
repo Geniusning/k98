@@ -219,7 +219,7 @@
     //   }
     // },
     computed: {
-      ...mapState(["friendList", "inAndOutFriendCursor", "friendListCursor", "giftList", "userInfo", "loadFriendSexType"]),
+      ...mapState(["friendList", "inAndOutFriendCursor", "friendListCursor", "giftList", "userInfo", "loadFriendSexType","staticChatFriendObj"]),
       ...mapGetters(["qrIsShow"]),
     },
     mounted() {
@@ -385,10 +385,20 @@
       //发起聊天
       chat() {
         // util.routerTo("chat", this);
-        this.$router.push({
-          path: `/message/${this.friendId}`,
-          query: this.friendInfo
+        console.log("jinrula")
+      this.setChatFriend(this.friendInfo);
+      this.$router.push({
+          name:"chat",
+          params: { 
+            isClient: false,
+            id:this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:item.phone
+          }
         });
+        // console.log()
+        // this.$router.push({
+        //   path: `/message/${this.friendId}`,
+        //   query: this.friendInfo
+        // });
       },
       //玩游戏
       playGame() {

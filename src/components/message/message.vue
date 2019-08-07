@@ -7,7 +7,7 @@
       <div class="btn_box clearfix">
         <div :class="{active:isShow==0}" class="fri_btn fl" @click="selectList(0)">好友</div>
         <div :class="{active:isShow==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
-        <div :class="{active:isShow==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)">客服</div>
+        <div :class="{active:isShow==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{userInfo.role?"用户留言":"值班客服"}}</div>
         <!-- <div :class="{active:isShow==3}" class="vux-1px-l hello_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendGiftList.length"></i></div> -->
         <div :class="{active:isShow==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendEvtList.length"></i></div>
       </div>
@@ -41,7 +41,7 @@
         </ul>
       </scroll>
       <!-- 新朋友 -->
-      <scroll v-else-if="isShow===1">
+      <scroll :data='mutualEventsList' v-else-if="isShow===1">
         <ul class="newMessage_list" >
           <li class="item " v-for="(item,index) in mutualEventsList" :key="index">
             <!-- v-if="item.from.headimgurl" -->
@@ -93,10 +93,11 @@
       <!-- 客服通知 -->
       <srcoll :data="clientServiceList" v-else-if="isShow===2">
         <ul class="message_list" >
-          <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in clientServiceList" :key="index">
+          <li class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
             <div class="info_message" >
               <div class="avatar">
                 <img :src="item.headimgurl?item.headimgurl:clientImg" alt="">
+                <i class="dot" v-cloak v-show="item.unReadMsgCount && client_badgeCount"></i>
               </div>
               <div class="name_and_message">
                 <p class="name">{{item.name?item.name:item.nickname}}</p>
@@ -190,7 +191,7 @@
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
     beforeRouteEnter(to, from, next) {
-      
+      console.log("l路由判断---------------")
       if (to.params.routeParamNum === 1) {
         next(vm => {
           vm.isShow = 1;
@@ -209,6 +210,14 @@
         });
       }
     },
+    beforeRouteUpdate(to,from,next){
+      console.log("组件更新-to--------",to)
+      console.log("组件更新-from--------",from)
+      if(from.name==="clientChat"){
+         this.loadClientServiceList()
+      }
+      next()
+    },
     computed: {
       ...mapState([
         "friendEvtList",
@@ -219,7 +228,8 @@
         "captainMessageList",
         "challengeGameList",
         "manualEventsList_badgeCount",
-        "userInfo"
+        "userInfo",
+        "client_badgeCount"
       ]),
       messageTime() {
         return
@@ -247,9 +257,15 @@
       //加载客服列表
       loadClientServiceList(){
         let phone = this.userInfo.phone?this.userInfo.phone:"7777"
+        var unReadCount = 0;
         api.loadClientServiceList(phone).then(res=>{
           console.log("客服列表-------------",res)
           this.clientServiceList = res
+          this.clientServiceList.forEach(client=>{
+            unReadCount += client.unReadMsgCount
+          })
+          this.getClientUnreadCount(unReadCount)
+          this.addBandge()
         })
       },
       //瞅瞅他好友信息
@@ -352,19 +368,6 @@
           }
         });
       },
-      //感谢事件
-      // thanksTo(index,giftGiverId) {
-      //   api.thanksForGit(giftGiverId).then(res => {
-      //     console.log('感谢后的结果---------------', res);
-      //     if (res.errCode == 0) {
-      //       this.text = "已感谢对方";
-      //       this.showPositionValue = true;
-      //       this._loadMutualEvents(); // 重新拉取约战，送礼，点赞列表
-      //       this._loadFriends(); //重新拉取已经成为好友列表
-      //     }
-      //   })
-      //   this.removeEventList(index)
-      // },
       //进入游戏
       playGame(url, combatID, openId) {
         let params = {
@@ -406,34 +409,6 @@
           }
         })
       },
-      //拉取约战列表
-      // _loadInviteCombat() {
-      //   api.loadInviteCombat().then(res => {
-      //     console.log('约战列表--------------', res);
-      //     if (res.errCode == 0) {
-      //       if (res.inviteCombatInfo.length == 0) {
-      //         // this.clearChallengeGameList();
-      //         // this.addBandge();
-      //       } else {
-      //         res.inviteCombatInfo.forEach(item => {
-      //           let content = {
-      //             extMsg: {
-      //               combatID: item.combatID,
-      //               headImgURL: item.headImgURL,
-      //               inviterID: item.inviterID,
-      //               nickName: item.nickName,
-      //               url: item.url,
-      //               time: util.timestampToTimeNoLine(item.score)
-      //             }
-      //           };
-      //           console.log('```````````````````````````````````', content)
-      //           this.getChallengeGamelist(content);
-      //           this.addBandge();
-      //         })
-      //       }
-      //     }
-      //   })
-      // },
       //拉取好友
       _loadFriends() {
         let cursor = 0;
@@ -444,19 +419,29 @@
         this.greeting_flag = index;
         console.log(index);
       },
-      //发起聊天
-      chat(item) {
-        var isStaffOrClient = false
-        if(item.name && item.phone){
-          item["openid"] = item.phone
-          item["nickname"] = item.name
-          isStaffOrClient = true
+      //发起客服聊天
+      clientChat(item){
+        var isClientFlag = true
+        if(item.wxOpenID){//用户进入
+          item["openid"] = item.wxOpenID
+          isClientFlag = false
         }
+        this.setChatFriend(item);
+        this.$router.push({
+          name:"clientChat",
+          params: { 
+            isClient: isClientFlag,
+            id:this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:item.phone
+          }
+        });
+      },
+      //发起好友聊天
+      chat(item) {
         this.setChatFriend(item);
         this.$router.push({
           name:"chat",
           params: { 
-            isClient: isStaffOrClient,
+            isClient: false,
             id:this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:item.phone
           }
         });
@@ -470,6 +455,7 @@
         //getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
         // clearChallengeGameList: "CLEAR_CHALLENGEGAMELIST",//清空约战记录
         addBandge: "ADD_BADGE", //动态变化未读消息数量
+        getClientUnreadCount:"GETCLIENTUNREADCOUNT",//客服未读消息数量
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表

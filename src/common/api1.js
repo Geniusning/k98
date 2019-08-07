@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: liuning
- * @Last Modified time: 2019-07-29 18:01:48
+ * @Last Modified time: 2019-08-06 12:09:13
  */
 
 import axios from 'axios'
@@ -12,10 +12,21 @@ let index = windowUrL.indexOf('.com');
 let shareurl = windowUrL.slice(0, index)+".com/"
 
 let api = {};
-//成为留言者
-api.addCommenter = function (phone,who) {
+api.loadChatMsgCliSer = function (cursor,who,loadCount) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/addCommenter?phone=${phone}&who=${who}`).then(res => {
+    axios.get(Url.commonUrl + `/api/loadChatMsgCliSer?cursor=${cursor}&who=${who}&loadCount=${loadCount}`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//成为留言者
+api.addCommenter = function (CliSerOpenID) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/addCommenter?CliSerOpenID=${CliSerOpenID}`).then(res => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -175,13 +186,37 @@ api.loadFriends = function (cursor) {
     })
   })
 }
-
+//发送客服消息
+api.sendChatMsgCliSer = function (param) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + `/api/sendChatMsgCliSer`, param).then((res) => {
+      // console.log(res)
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //发送聊天消息
 api.postFriendMess = function (param) {
   return new Promise((resolve, reject) => {
     // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     axios.post(Url.commonUrl + "/api/sendChatMsg", param).then((res) => {
       console.log(res)
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//发送客服聊天图片
+api.sendImageCliSer = function (openId, fileName, param) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + `/api/sendImageCliSer?to=${openId}&fileName=${fileName}`, param).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -218,7 +253,19 @@ api.getFriendMessList = function (cursor, who) {
       })
   })
 }
-
+//标记客服消息已读
+api.setMsgReadCliSer = function (who) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/setMsgReadCliSer?who=${who}`)
+      .then(res => {
+        if (res.status == 200) {
+          resolve(res.data)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
 //标记用户已读
 api.sendMsgReaded = function (who) {
   return new Promise((resolve, reject) => {

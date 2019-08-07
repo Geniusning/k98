@@ -19,15 +19,15 @@
             <p class="content">{{dynamicFriendEvt.extMsg.lastMsg.msg}}</p>
             <!-- <p class="content">你试试我的眼的</p> -->
           </div>
-          <div @click="showDetail">
-            <div class="detail" v-if="messType !='onlineNotice'">&gt;&gt;详情</div>
-            <div class="detail" v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true ">&gt;&gt;去聊天</div>
-            <div class="detail" v-else>&gt;&gt;打招呼</div>
-          </div>
+          <!-- <div @click="showDetail">
+              <div class="detail" v-if="messType !='onlineNotice'">&gt;&gt;详情</div>
+              <div class="detail" v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true ">&gt;&gt;去聊天</div>
+              <div class="detail" v-else>&gt;&gt;打招呼</div>
+            </div> -->
         </div>
       </transition>
       <!-- 回房通知 " -->
-      <div class="backToGame_wrapper"  v-if="showBackToGame" >
+      <div class="backToGame_wrapper" v-if="showBackToGame">
         <p class="backToGame_text">您有未完成对战，对手还在等您</p>
         <div class="btn_wrapper">
           <button class="reject_btn" @click="rejectBacToGame">放弃</button>
@@ -197,6 +197,9 @@
           </div>
         </transition>
       </div>
+      <div class="kefu" @click="inToLetter">
+        <img onclick="return false" src="./assets/image/home_letter.png" alt class="pic_kefu" />
+      </div>
     </div>
     <friendPanel v-if="friendPanelFlag"></friendPanel>
     <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
@@ -228,8 +231,8 @@
     name: "app",
     data() {
       return {
-        notifyUserIdList:[],
-        showBackToGame:false,
+        notifyUserIdList: [],
+        showBackToGame: false,
         isThrottle: true,
         isShowEnvelop: false,
         isShowGiftPanel: false,
@@ -246,7 +249,7 @@
       };
     },
     computed: {
-      ...mapState(["friendPanelFlag","inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo", "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo"]),
+      ...mapState(["friendPanelFlag", "inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo", "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo"]),
       ...mapGetters(["qrIsShow"]),
     },
     created() {
@@ -280,32 +283,37 @@
           break;
       }
     },
-    mounted(){
-       this.loadLastRoomInfo() //加载回房信息
+    mounted() {
+      this.loadLastRoomInfo() //加载回房信息
     },
     methods: {
-    //拒绝回房
-    rejectBacToGame(){
-       this.showBackToGame = false
-    },
-    goBackGame(){
-      window.location.href = `https://singledog.qianz.com/game/?gamePath=${this.gamePath}&roomID=${this.roomID}`
-    },
-       //加载游戏回房信息
-    loadLastRoomInfo(){
-      var cacheRoomId = localStorage.getItem("backRoomId") || ""
-      api.loadLastRoomInfo().then(res=>{
-        console.log("回房信息--------",res)
-        if(res.roomID){
-          this.roomID = res.roomID
-          this.gamePath = res.gamePath
-          if(cacheRoomId != this.roomID){
-            this.showBackToGame = true
-            localStorage.setItem("backRoomId",this.roomID)
+       inToLetter() {
+        util.routerTo("message", this, {
+          routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
+        });
+      },
+      //拒绝回房
+      rejectBacToGame() {
+        this.showBackToGame = false
+      },
+      goBackGame() {
+        window.location.href = `https://singledog.qianz.com/game/?gamePath=${this.gamePath}&roomID=${this.roomID}`
+      },
+      //加载游戏回房信息
+      loadLastRoomInfo() {
+        var cacheRoomId = localStorage.getItem("backRoomId") || ""
+        api.loadLastRoomInfo().then(res => {
+          console.log("回房信息--------", res)
+          if (res.roomID) {
+            this.roomID = res.roomID
+            this.gamePath = res.gamePath
+            if (cacheRoomId != this.roomID) {
+              this.showBackToGame = true
+              localStorage.setItem("backRoomId", this.roomID)
+            }
           }
-        }
-      })
-    },
+        })
+      },
       //加好友
       onlineSendGift(e) {
         console.log(e.target.checked)
@@ -322,10 +330,10 @@
             this.setChatFriend(this.dynamicFriendEvt.fromInfo);
             this.$router.push({
               // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
-              name:"chat",
-              params: { 
+              name: "chat",
+              params: {
                 isClient: false,
-                id:this.dynamicFriendEvt.fromInfo.openid
+                id: this.dynamicFriendEvt.fromInfo.openid
               }
             });
             break;
@@ -411,16 +419,16 @@
         this.getAlreadyFriendList(cursor);
       },
       //回赞事件
-      backThumbClick(type, flag,fromInfo) {
+      backThumbClick(type, flag, fromInfo) {
         api.giveBackThumb(type, flag).then(res => {
           if (res.errCode === 0) {
             this.setChatFriend(fromInfo)
             this._loadMutualEvents();
             this._loadFriends();
             this.isShowGiftPanel = false;
-            if(flag=="yes"){
+            if (flag == "yes") {
               this.changeFriPanelFlag(true);
-              Bus.$emit("changeFriendConnetion",fromInfo.openid)
+              Bus.$emit("changeFriendConnetion", fromInfo.openid)
             }
           }
         });
@@ -593,7 +601,7 @@
       },
       ...mapMutations({
         // updateChatList: "UPDATE_CHATLIST",//更新聊天列表
-        changeFriPanelFlag:"CHANGEFRIENDPANELFLAG", //更改匹配成功flag
+        changeFriPanelFlag: "CHANGEFRIENDPANELFLAG", //更改匹配成功flag
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         showQrcode: "SHOW_QRCODE", //展示二维码
         addGiftInfo: "ADD_GIFTINFO",
@@ -608,41 +616,41 @@
       deep: true,
       dynamicFriendEvt: function(newValue) {
         this.isShowEnvelop = false
-        this.isThrottle = false 
+        this.isThrottle = false
         console.log('新的dynamicFriendEvt--------', newValue);
-        if(newValue.notifyType===8){
+        if (newValue.notifyType === 8) {
           let onlineUser = newValue.fromInfo
-          let hasUser 
+          let hasUser
           //判断待通知用户列表里面是否有当前上线的用户
-          this.notifyUserIdList.forEach(user=>{
-            if(user.openid === onlineUser.openid){
+          this.notifyUserIdList.forEach(user => {
+            if (user.openid === onlineUser.openid) {
               hasUser = true
             }
           })
           //如果待通知用户列表里面没有当前上线用户，则把当前上线用户push进待通知用户列表,并记录当前上戏时间
-          if(!hasUser){
+          if (!hasUser) {
             this.isThrottle = true
             onlineUser["loginTime"] = new Date().getTime()
             this.notifyUserIdList.push(onlineUser)
           }
           //如果待通知用户列表里面有当前上线用户，则判断距上次上线时间是否超过300秒，超过300秒，信封弹框
-          if(hasUser){
-            let notifyUser = this.notifyUserIdList.filter(user=>{
+          if (hasUser) {
+            let notifyUser = this.notifyUserIdList.filter(user => {
               return user.openid === onlineUser.openid
             })
-            let isMore300s = (new Date().getTime()-notifyUser[0].loginTime)>300000
-            if(isMore300s){
-                this.isThrottle = true
-                this.notifyUserIdList.forEach(user=>{  //重新设置登录时间
-                  if(user.openid==onlineUser.openid){
-                    user["loginTime"] = new Date().getTime()
-                  }
-                })
-            }else{
-               this.isThrottle = false
+            let isMore300s = (new Date().getTime() - notifyUser[0].loginTime) > 300000
+            if (isMore300s) {
+              this.isThrottle = true
+              this.notifyUserIdList.forEach(user => { //重新设置登录时间
+                if (user.openid == onlineUser.openid) {
+                  user["loginTime"] = new Date().getTime()
+                }
+              })
+            } else {
+              this.isThrottle = false
             }
           }
-        }else{
+        } else {
           this.isThrottle = true
         }
         if (this.isThrottle) {
@@ -802,7 +810,7 @@
     justify-content: space-between;
     position: relative;
   }
-  .backToGame_wrapper{
+  .backToGame_wrapper {
     width: 8.4rem;
     height: 4.6933rem;
     background-image: url("./assets/image/envelop.png");
@@ -814,7 +822,7 @@
     left: 50%;
     transform: translateX(-4.5rem);
     padding: 0 0.2667rem;
-    .backToGame_text{
+    .backToGame_text {
       width: 100%;
       padding-top: 1.2rem;
       text-align: center;
@@ -822,24 +830,23 @@
       font-weight: 700;
       font-size: 16px;
     }
-    .btn_wrapper{
+    .btn_wrapper {
       display: flex;
       justify-content: space-around;
       margin-top: 1.4rem;
       padding: 0 1rem;
-      .reject_btn,.back_btn{
+      .reject_btn,
+      .back_btn {
         width: 1.8667rem;
         border: none;
         background: -webkit-linear-gradient(top, #fcd502, #e59305);
         padding: 0.1rem 0.1667rem;
         font-weight: 600;
-      }
-      // .back_btn{
-         
+      } // .back_btn{
       // }
     }
   }
-  .whole_mask{
+  .whole_mask {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -1028,6 +1035,27 @@
         }
       }
     }
+    .kefu {
+      position: fixed;
+      bottom: 80px;
+      right: 0.1333rem;
+      animation: jump 1500ms linear 500ms infinite normal;
+      @keyframes jump {
+        10% {
+          bottom: 80px;
+        }
+        50% {
+          bottom: 75px;
+        }
+        100% {
+          bottom: 80px;
+        }
+      }
+      .pic_kefu {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
   }
   .bottom_wrapper {
     height: 1.18rem;
@@ -1082,7 +1110,7 @@
   .gift-Panel-leave-to {
     transform: scale(0.1);
   }
-    .envelop-enter-active,
+  .envelop-enter-active,
   .envelop-leave-active {
     transition: all 0.3s ease;
   }
