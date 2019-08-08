@@ -800,7 +800,7 @@
       },
       //监听滚动
       myscroll(pos) {
-        // console.log(pos);
+        console.log(pos);
       },
       tagScroll() {
         window.scrollTo(0, 0);

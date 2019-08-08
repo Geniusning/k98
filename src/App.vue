@@ -197,7 +197,7 @@
           </div>
         </transition>
       </div>
-      <div class="kefu" @click="inToLetter">
+      <div v-show="showClientServiceIconFlag" class="kefu" @click="inToLetter">
         <img onclick="return false" src="./assets/image/home_letter.png" alt class="pic_kefu" />
       </div>
     </div>
@@ -245,7 +245,8 @@
         gameFlag: true,
         isMakeFriendBool: true,
         allMutatualInfo_temp: {},
-        isAlreadyFriend: false
+        isAlreadyFriend: false,
+        showClientServiceIconFlag:true
       };
     },
     computed: {
@@ -740,6 +741,11 @@
         this.judgeEveryBool(true, true, false, false);
       },
       $route: function(newValue) {
+        if(newValue.name == "message"){ //控制客服图标显示
+          this.showClientServiceIconFlag = false
+        }else{
+          this.showClientServiceIconFlag = true
+        }
         //隐藏导航
         if (
           newValue.name == "home" ||

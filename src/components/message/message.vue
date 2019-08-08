@@ -35,6 +35,9 @@
             </div>
             <div class="info_time">
               <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,10)==today?item.info.lastMsg.stime.slice(10,16):item.info.lastMsg.stime.slice(5,10):""}}</p>
+              <img src="../../assets/image/dot_green.png" v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="online_dot">
+              <span v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="friendStatus">{{item.isInDoor?"店内":"店外"}}</span>
+              <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}</span>
             </div>
           </li>
           <p v-if="!alreadyFriendList.length" class="noContent">暂无好友</p>
@@ -42,10 +45,10 @@
       </scroll>
       <!-- 新朋友 -->
       <scroll :data='mutualEventsList' v-else-if="isShow===1">
-        <ul class="newMessage_list" >
+        <ul class="newMessage_list">
           <li class="item " v-for="(item,index) in mutualEventsList" :key="index">
             <!-- v-if="item.from.headimgurl" -->
-            <div class="blank vux-1px-b" >
+            <div class="blank vux-1px-b">
               <div class="info_message">
                 <div class="avatar">
                   <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
@@ -87,26 +90,29 @@
               </div>
             </div>
           </li>
-          <p v-if="!mutualEventsList.length" class="noContent">暂无数据</p>
+          <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
         </ul>
       </scroll>
       <!-- 客服通知 -->
       <srcoll :data="clientServiceList" v-else-if="isShow===2">
-        <ul class="message_list" >
+        <ul class="message_list">
           <li class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
-            <div class="info_message" >
+            <div class="info_message">
               <div class="avatar">
                 <img :src="item.headimgurl?item.headimgurl:clientImg" alt="">
                 <i class="dot" v-cloak v-show="item.unReadMsgCount && client_badgeCount"></i>
               </div>
               <div class="name_and_message">
-                <p class="name">{{item.name?item.name:item.nickname}}</p>
-                <p class="captainMessage">进入查看留言内容</p>
+                <p class="name">{{item.nickname?item.nickname:"客服小哥"}}</p>
+                <p class="captainMessage">{{userInfo.role?"请查看用户留言消息":"欢迎光临! 请留言，我将尽快回复您"}}</p>
+                <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
+                <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
+                <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum" >{{`${item.deskCode}`}}</span>
               </div>
             </div>
           </li>
+          <p v-if="!clientServiceList.length" class="noContent">暂无客服上班</p>
         </ul>
-
       </srcoll>
       <!-- 通知 -->
       <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShow==3">
@@ -121,6 +127,7 @@
             </div>
           </div>
         </li>
+        <p v-if="!captainMessageList.length" class="noContent">暂无系统通知消息</p>
       </ul>
     </div>
     <!-- 回赞 -->
@@ -165,13 +172,24 @@
   import api from "common/api"
   import Scroll from 'base/scroll/scroll'
   import Bus from 'common/bus.js'
-  import {mapMutations,mapActions,mapGetters,mapState} from "vuex";
-  import {Tab,TabItem,ButtonTab,ButtonTabItem,Toast} from "vux";
+  import {
+    mapMutations,
+    mapActions,
+    mapGetters,
+    mapState
+  } from "vuex";
+  import {
+    Tab,
+    TabItem,
+    ButtonTab,
+    ButtonTabItem,
+    Toast
+  } from "vux";
   import util from 'common/util'
   export default {
     data() {
       return {
-        clientImg:require("../../assets/image/home_letter.png"),
+        clientImg: require("../../assets/image/home_letter.png"),
         color: "#ffd800",
         hello: false,
         isShow: 0, //最上面tab切换
@@ -186,7 +204,7 @@
         friendInfo: {},
         showFriendInfoFlag: false,
         sign: "爱情陷阱",
-        clientServiceList:[]
+        clientServiceList: []
       };
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
@@ -210,11 +228,11 @@
         });
       }
     },
-    beforeRouteUpdate(to,from,next){
-      console.log("组件更新-to--------",to)
-      console.log("组件更新-from--------",from)
-      if(from.name==="clientChat"){
-         this.loadClientServiceList()
+    beforeRouteUpdate(to, from, next) {
+      console.log("组件更新-to--------", to)
+      console.log("组件更新-from--------", from)
+      if (from.name === "clientChat") {
+        this.loadClientServiceList()
       }
       next()
     },
@@ -243,27 +261,43 @@
       } else {
         this.today = this.today.toString();
       }
+    
+      //this.isShow = this.getQueryString("routeParamNum")
     },
     mounted() {
       this._loadFriends(); //拉取好友
       this._loadMutualEvents(); //拉取送礼，约战，
       this.getCaptainMessList(); //获取店长信  
       this.loadClientServiceList() //加载客服列表  
+      //this.isShow = this.getQueryString("routeParamNum")
     },
     destroyed() {
       // console.log("组件销毁");
     },
     methods: {
+      getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+      },
       //加载客服列表
-      loadClientServiceList(){
-        let phone = this.userInfo.phone?this.userInfo.phone:"7777"
+      loadClientServiceList() {
+        let phone = this.userInfo.phone ? this.userInfo.phone : "7777"
         var unReadCount = 0;
-        api.loadClientServiceList(phone).then(res=>{
-          console.log("客服列表-------------",res)
-          this.clientServiceList = res
-          this.clientServiceList.forEach(client=>{
+        api.loadClientServiceList(phone).then(res => {
+          console.log("客服列表-------------", res)
+          var tempArr = res
+          tempArr.forEach((client,index) => {
             unReadCount += client.unReadMsgCount
+            if(client.deskCode!=0){
+              client.deskCode = util.prefixZero(client.deskCode,3)
+            }
+            if(client.unReadMsgCount>0){  //把未读消息放到数组前面
+              var item = tempArr.splice(index,1)
+              tempArr.unshift(item[0])
+            }
           })
+          this.clientServiceList = tempArr
           this.getClientUnreadCount(unReadCount)
           this.addBandge()
         })
@@ -353,13 +387,13 @@
           if (res.errCode === 0) {
             this.setChatFriend(fromInfo)
             //重新拉取已经成为好友列表
-            this.removeEventList()   
+            this.removeEventList()
             console.log("jinlaile")
             //重新拉取约战，送礼，点赞列表
             // this._loadMutualEvents();
             if (flag == "yes") {
               this.chanageFriendPanelFlag(true)
-              Bus.$emit("changeFriendConnetion",fromInfo.openid)
+              Bus.$emit("changeFriendConnetion", fromInfo.openid)
               this.text = "已回赞";
             } else {
               this.text = "已拒绝";
@@ -420,18 +454,18 @@
         console.log(index);
       },
       //发起客服聊天
-      clientChat(item){
+      clientChat(item) {
         var isClientFlag = true
-        if(item.wxOpenID){//用户进入
+        if (item.wxOpenID) { //用户进入
           item["openid"] = item.wxOpenID
           isClientFlag = false
         }
         this.setChatFriend(item);
         this.$router.push({
-          name:"clientChat",
-          params: { 
+          name: "clientChat",
+          params: {
             isClient: isClientFlag,
-            id:this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:item.phone
+            id: this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : item.phone
           }
         });
       },
@@ -439,10 +473,10 @@
       chat(item) {
         this.setChatFriend(item);
         this.$router.push({
-          name:"chat",
-          params: { 
+          name: "chat",
+          params: {
             isClient: false,
-            id:this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:item.phone
+            id: this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : item.phone
           }
         });
       },
@@ -455,7 +489,7 @@
         //getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
         // clearChallengeGameList: "CLEAR_CHALLENGEGAMELIST",//清空约战记录
         addBandge: "ADD_BADGE", //动态变化未读消息数量
-        getClientUnreadCount:"GETCLIENTUNREADCOUNT",//客服未读消息数量
+        getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
@@ -812,6 +846,35 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
+           .online_dot{
+            width: 0.4rem;
+            position: absolute;
+            bottom: 0.48rem;
+            right: 1.8rem;
+            color: #333;
+            font-weight: 600;
+          }
+          .friendStatus {
+            display: inline-block;
+            width: 1.4rem;
+            position: absolute;
+            bottom: 0.5rem;
+            color: #333;
+            right: 0.3rem;
+            font-size: 15px;
+          }
+          .roomNum{
+            position: absolute;
+            bottom: 0.55rem;
+            color: #333;
+            right: 0rem;
+            display: inline-block;
+            padding: 0rem 0.1067rem;
+            line-height: .3rem;;
+            border: 1px solid #333;
+            font-size: 11px;
+          }
             .name {
               color: #333333;
               font-size: 0.4267rem;
@@ -851,6 +914,34 @@
           font-size: 0.3733rem;
           color: #999;
           position: relative;
+          .online_dot{
+            width: 0.4rem;
+            position: absolute;
+            bottom: 0.48rem;
+            right: 1.8rem;
+            color: #333;
+            font-weight: 600;
+          }
+          .friendStatus {
+            display: inline-block;
+            width: 1.4rem;
+            position: absolute;
+            bottom: 0.5rem;
+            color: #333;
+            right: 0.3rem;
+            font-size: 15px;
+          }
+          .roomNum{
+            position: absolute;
+            bottom: 0.55rem;
+            color: #333;
+            right: 0rem;
+            display: inline-block;
+            padding: 0rem 0.1067rem;
+            line-height: .3rem;;
+            border: 1px solid #333;
+            font-size: 11px;
+          }
           .deleteBtn {
             position: absolute;
             right: 0.2667rem;
@@ -869,8 +960,7 @@
     //   margin-top: 0.35rem;
     .newMessage_list {
       .item {
-        position: relative;
-        // display: flex;
+        position: relative; // display: flex;
         // justify-content: space-between;
         box-sizing: border-box;
         box-sizing: border-box;
@@ -882,97 +972,96 @@
           display: flex;
           justify-content: space-between;
         }
-          .info_message {
-            width: 52%;
-            display: flex;
-            font-size: 12px;
-            .avatar {
-              margin-right: 6px;
+        .info_message {
+          width: 52%;
+          display: flex;
+          font-size: 12px;
+          .avatar {
+            margin-right: 6px;
+            width: 1.4133rem;
+            height: 1.4133rem;
+            position: relative;
+            img {
               width: 1.4133rem;
               height: 1.4133rem;
-              position: relative;
-              img {
-                width: 1.4133rem;
-                height: 1.4133rem;
-                border-radius: 50%;
-              }
-              .dot {
-                .dot(0, 0);
-              }
+              border-radius: 50%;
             }
-            .name_and_message {
-              box-sizing: border-box;
-              padding-left: 0.3233rem;
-              display: flex;
-              flex-direction: column;
-              justify-content: space-between;
-              .name {
-                color: #333333;
-                font-size: 0.4267rem;
-                font-weight: 800;
-                width: 3rem;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              }
-              .message {
-                width: 5rem;
-                color: #666; // height: 0.6667rem;
-                font-size: 0.3467rem;
-                margin-top: 0.2rem;
-                overflow: hidden; // text-overflow: ellipsis;
-                // white-space: nowrap;
-              }
-              .captainMessage {}
+            .dot {
+              .dot(0, 0);
             }
           }
-          .thumb_wrapper {
-            flex-grow: 1;
+          .name_and_message {
+            box-sizing: border-box;
+            padding-left: 0.3233rem;
             display: flex;
             flex-direction: column;
-            justify-content: space-around;
-            .backThumbBox {
-              display: flex;
-              justify-content: flex-end;
-              padding-right: 0.2633rem;
+            justify-content: space-between;
+            .name {
+              color: #333333;
+              font-size: 0.4267rem;
+              font-weight: 800;
+              width: 3rem;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
-            .back_thumb {
-              box-sizing: border-box;
-              display: inline-block;
-              width: 1.3333rem;
-              padding: 0.0567rem 0;
-              text-align: center; // .border-1px(@baseColor);
+            .message {
+              width: 5rem;
+              color: #666; // height: 0.6667rem;
               font-size: 0.3467rem;
-              color: #999;
-              border-radius: 0.2667rem;
-              margin-right: 0.1rem;
+              margin-top: 0.2rem;
+              overflow: hidden; // text-overflow: ellipsis;
+              // white-space: nowrap;
             }
-            .reject {
-              margin-right: 0.1rem;
-              margin-left: .1rem
-            }
-            .time {
-              font-size: 0.3733rem;
-              color: #999;
-              padding-right: 0.2667rem;
-            }
+            .captainMessage {}
           }
-          .checkBox_scene {
-            position: absolute;
-            right: 3.2rem;
-            top: .3rem;
-            .checkbox {
-              width: 0.4rem;
-              height: 0.4rem;
-              vertical-align: middle
-            }
-            .scene-text {
-              font-weight: 600;
-              padding-bottom: 0.0533rem;
-              vertical-align: middle
-            }
+        }
+        .thumb_wrapper {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          .backThumbBox {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 0.2633rem;
           }
-        // }
+          .back_thumb {
+            box-sizing: border-box;
+            display: inline-block;
+            width: 1.3333rem;
+            padding: 0.0567rem 0;
+            text-align: center; // .border-1px(@baseColor);
+            font-size: 0.3467rem;
+            color: #999;
+            border-radius: 0.2667rem;
+            margin-right: 0.1rem;
+          }
+          .reject {
+            margin-right: 0.1rem;
+            margin-left: .1rem
+          }
+          .time {
+            font-size: 0.3733rem;
+            color: #999;
+            padding-right: 0.2667rem;
+          }
+        }
+        .checkBox_scene {
+          position: absolute;
+          right: 3.2rem;
+          top: .3rem;
+          .checkbox {
+            width: 0.4rem;
+            height: 0.4rem;
+            vertical-align: middle
+          }
+          .scene-text {
+            font-weight: 600;
+            padding-bottom: 0.0533rem;
+            vertical-align: middle
+          }
+        } // }
       }
       .noContent {
         width: 100%;

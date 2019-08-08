@@ -5,7 +5,7 @@
         <div class="back_box">
           <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
         </div>
-        <div class="name">{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:staticChatFriendObj.name}}</div>
+        <div class="name">{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:"客服小哥"}}</div>
         <div class="backHome_box">
           <img onclick="return false" src="../../assets/image/chat_home.png" alt class="home" @click="goHome">
         </div>

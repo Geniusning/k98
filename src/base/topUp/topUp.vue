@@ -11,8 +11,8 @@
         </div>
         <div class="coinBox_bottom">
           <ul class="coinList">
-            <li class="coinItem" v-for="item in moneyList" :key="item.id" @click="payForCoin(item.id)">
-              <img onclick="return false" :src="item.imgUrl" alt :class="item.iconClass">
+            <li class="coinItem" v-for="(item,index) in moneyList" :key="item.id" @click="payForCoin(item.id,index)">
+              <img onclick="return false" :src="item.imgUrl" :class="[item.iconClass,{bigAndSamll:index===clickIndex}]">
               <p class="intergral">{{item.points}}</p>
               <p class="moneyCount">￥{{item.name}}</p>
             </li>
@@ -122,6 +122,7 @@
   export default {
     data() {
       return {
+        clickIndex:null,
         showOweText: false,
         panelIndex: null,
         componentGiftInfo: "",
@@ -165,7 +166,6 @@
       }
     },
     computed: {
-    
       ...mapState(['giftList', 'userInfo',"l98Setting"]),
       ...mapGetters(['recommentList', "sendGiftList"])
     },
@@ -387,12 +387,16 @@
         })
       },
       //   充值
-      payForCoin(id) {
+      payForCoin(id,index) {
         console.log(id);
         if(!this.l98Setting.integralConvertOpen){
           this.$vux.toast.text('商家未开通本功能', 'middle')
           return
         }
+        this.clickIndex = index;
+        setTimeout(() => {
+          this.clickIndex = null;
+        }, 500);
         api.createOrder(id).then(res => {
           if (res.errCode === 0) {
             let resultInfo = res.data;
@@ -468,6 +472,8 @@
         display: flex;
         justify-content: space-between;
         padding: 0.4333rem .4rem 0.2rem .4rem;
+        height: 1.4667rem;
+        box-sizing: border-box;
         .integral_box {
           display: flex;
           .integral {
@@ -482,6 +488,7 @@
         }
         .close {
           // padding-top: 0.1333rem;
+          padding: 0.1333rem;
           width: 0.5333rem;
           height: 0.5333rem;
         }
@@ -494,6 +501,10 @@
           .coinItem {
             width: 0.9333rem;
             box-sizing: border-box;
+            .bigAndSamll{
+             transition: all .5s linear;
+             transform: scale(.5)
+            }
             .coin200 {
               width: 100%;
               margin-top: 0.96rem;

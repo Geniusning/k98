@@ -38,12 +38,10 @@
             <div class="userBox clearfix">
               <img onclick="return false" src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex=='男'">
               <img onclick="return false" src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
-              <!-- <span class="online" :style="{background:item.info.online==='好友'?'red':'gray'}">{{item.info.online}}</span> -->
+
               <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
               <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>
-              <!-- <img src="../../../assets/image/gifts_small.png" alt="" class="gift_small">{{item.info.gift?item.info.gift:56}} -->
               <span class="gift">富豪榜 {{item.info.wealthRanking}}</span>
-              <!-- <img src="../../../assets/image/thumb_small.png" alt="" class="thumb_samll">{{item.info.thumb?item.info.thumb:99}} -->
               <span class="thumb">战神榜 {{item.info.gameScoreRanking}}
                 <img onclick="return false" class="battle" v-if="item.info.isQuiet"  src="../../../assets/image/mianZhan.png" alt="">
                 <img onclick="return false" class="battle" v-if="item.info.onlineDiceServer"  src="../../../assets/image/battle.png" alt="">

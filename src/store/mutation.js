@@ -134,6 +134,10 @@ const mutations = {
             } else {
                 tempData.push(item)
             }
+            if(item.info.deskCode!=0){
+                item.info.deskCode = util.prefixZero(item.info.deskCode,3)
+                // console.log(item.deskCode)
+            }
             totalCount += item.info.unReadMsgCount //累计未读消息
         })
         state.msg_badgeCount = totalCount

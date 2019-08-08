@@ -25,8 +25,17 @@
 </html>
 <script type="text/javascript">
   //发送消息
+  var str = "?id=1234&phone=214"
+ 
+function getQueryString(name) {
+	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+	var r = window.location.search.substr(1).match(reg);
+	if (r != null) return unescape(r[2]); return null;
+}
+
   $("#btn").click(function () {
     closeWebPage()
+
     // var text = $('#text').val();
     // var html = "<p class='msg'>" + text + "</p>";
     // $(".message").append(html);

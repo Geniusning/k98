@@ -428,7 +428,7 @@
       shareGetJifen(amount) {
         api.shareToGetIntegral(amount).then(res => {
           if (res.errCode == 1030) {
-            alert('分享已上限，每天最多分享5次获得积分');
+            alert('分享已上限，每天最多分享2次获得积分');
           }
         })
       },
