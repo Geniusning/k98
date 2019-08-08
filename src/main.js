@@ -82,9 +82,9 @@ new Vue({
             }
         },
         //加载L98控制开关信息
-        loadL98otherSetting(){
-            api.loadL98otherSetting().then(res=>{
-                console.log("控制开关--------",res)
+        loadL98otherSetting() {
+            api.loadL98otherSetting().then(res => {
+                console.log("控制开关--------", res)
                 this.LoadL98Setting(res)
             })
         },
@@ -294,7 +294,7 @@ new Vue({
             judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
             getSendGiftList: "GET_SENDGIFTLIST", //获取积分换礼品列表
             CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
-            LoadL98Setting:"L98OTHERSETTING"  //加载功能控制开关
+            LoadL98Setting: "L98OTHERSETTING" //加载功能控制开关
         }),
         ...mapActions({
             //getFriendEvt: "get_FriendEvt"

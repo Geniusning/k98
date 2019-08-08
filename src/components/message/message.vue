@@ -229,8 +229,6 @@
       }
     },
     beforeRouteUpdate(to, from, next) {
-      console.log("组件更新-to--------", to)
-      console.log("组件更新-from--------", from)
       if (from.name === "clientChat") {
         this.loadClientServiceList()
       }
@@ -261,15 +259,22 @@
       } else {
         this.today = this.today.toString();
       }
-    
-      //this.isShow = this.getQueryString("routeParamNum")
+  
     },
     mounted() {
       this._loadFriends(); //拉取好友
       this._loadMutualEvents(); //拉取送礼，约战，
       this.getCaptainMessList(); //获取店长信  
       this.loadClientServiceList() //加载客服列表  
-      //this.isShow = this.getQueryString("routeParamNum")
+      // this.isShow = this.getQueryString("routeParamNum")
+      this.isShow = 2
+      console.log(this.isShow)
+    },
+    updated(){
+       if(this.isShow==2){
+         this.isShow===2
+         console.log(this.isShow)
+       }
     },
     destroyed() {
       // console.log("组件销毁");
@@ -289,7 +294,7 @@
           var tempArr = res
           tempArr.forEach((client,index) => {
             unReadCount += client.unReadMsgCount
-            if(client.deskCode!=0){
+            if(client.deskCode!=0 && client.deskCode){
               client.deskCode = util.prefixZero(client.deskCode,3)
             }
             if(client.unReadMsgCount>0){  //把未读消息放到数组前面
