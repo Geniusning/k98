@@ -1,8 +1,8 @@
 /*
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
- * @Last Modified by: nicky
- * @Last Modified time: 2019-06-06 10:25:28
+ * @Last Modified by: liuning
+ * @Last Modified time: 2019-08-09 11:32:18
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -206,8 +206,14 @@ util._getJssdkInfo = function (shareObj, url, amount,fn) {
     if (isiOS) {
       return false;
     }
+  },
+  util.sortByKey = function(key){
+    return function(obj1,obj2){
+      var v1 = obj1[key]
+      var v2 = obj2[key]
+      return v2-v1
+    }
   }
-
   util.prefixZero = function(num,n){
     var len = num.toString().length;
     while(len < n) {

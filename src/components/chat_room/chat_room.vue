@@ -682,8 +682,8 @@
           time: util.timestampToTime(new Date().getTime())
         });
         let messObj = {
-          To: this.staticChatFriendObj.openid,
-          Content: this.input_value,
+          to: this.staticChatFriendObj.openid,
+          content: this.input_value,
           type: 1,
         };
         let textMessObj = JSON.stringify(messObj);

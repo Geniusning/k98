@@ -46,12 +46,12 @@
           </li>
           <li class="item vux-1px-b">
             <span class="item_name">标签</span>
-            <input type="text" class="input_name" v-model="signatureList">
+            <input type="text" class="input_name" v-model="signatureList" disabled >
             <img onclick="return false" src="../../assets/image/add.png" alt="" class="add" @click="showTag">
           </li>
           <li class="item vux-1px-b">
             <span class="item_name">手机</span>
-            <input type="text" class="input_name" v-model="phone">
+            <input type="text" class="input_name" v-model="phone" @blur="blurAdjust"> 
           </li>
           <li class="item_last vux-1px-b">
             <span class="item_name signature">个性签名</span>

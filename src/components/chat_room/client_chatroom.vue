@@ -31,7 +31,7 @@
               <div v-if="item.type==2" class="message_wrapper">
                 <div class="person_box">
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
-                  <img :src="staticChatFriendObj.headimgurl" alt class="avatar" v-if="item.friend">
+                  <img :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:clientImg" alt class="avatar" v-if="item.friend">
                   <img :src="userInfo.headimgurl" alt class="avatar" v-else>
                 </div>
                 <div class="message_box" v-viewer>
@@ -83,26 +83,6 @@
           </ul>
         </div>
       </div>
-      <!-- 删除警告 -->
-      <!-- <transition name="appear">
-        <div class="warning_bg" v-show="showLaHeiPanel">
-          <div class="warning_wrapper">
-            <p class="warningText">确定拉黑好友吗</p>
-            <div class="btnBox">
-              <button class="yes" @click="quitFriend">确定</button>
-              <button class="no" @click="laHei(false)">取消</button>
-            </div>
-          </div>
-        </div>
-      </transition> -->
-      <!-- 信封弹框 -->
-      <!-- <transition name="appear">
-        <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
-      </transition> -->
-      <!-- <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode> -->
-      <!-- <keep-alive>
-        <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
-      </keep-alive> -->
     </div>
   </transition>
 </template>
@@ -147,7 +127,7 @@
       return {
         clientImg:require("../../assets/image/home_letter.png"),
         alreadyClientListCursor:0,
-        isStaffOrClient:false,
+        isClientFlag:false,
         sendingTimes:0,
         isShowEnvelope: false, //信封弹框判断
         envelopeText: "", //信封弹框内容
@@ -158,7 +138,7 @@
         expressionShow: false,
         fatherPanelIndex: 1,
         isGiftPanel: false,
-        friendId: "",
+        // friendId: "",
         expressionList:[],
         // showToast_gift: false,
         show: false,
@@ -169,14 +149,6 @@
         input_value: "",
         autofocus: false,
         emotionList: [
-          // {
-          //   name: "[微笑]",
-          //   num: "/static/face/1.gif"
-          // },
-          // {
-          //   name: "[色]",
-          //   num: "/static/face/2.gif"
-          // },
           {
             name: "[大哭]",
             num: "/static/face/3.gif"
@@ -236,23 +208,24 @@
           });
         }
       });
+      this.isClientFlag = this.$route.params.isClient
     },
     activated() {
-      console.log(this.staticChatFriendObj)
-      console.log(this.$route)
+      console.log("this.staticChatFriendOb-----j",this.staticChatFriendObj)
       if (!(JSON.stringify(this.$route.query) === "{}")) {
         this.setChatFriend(this.$route.query.info);
       }
       this.setMsgReadCliSer();//标识已读
-      this._loadChatMsgCliSer(); //获取客服聊天记录 
+      this.loadChatMsgCliSer(); //获取客服聊天记录 
     
-      this.friendId = this.$route.params.id;
-      this.isStaffOrClient = this.$route.params.isClient
-      if(this.isStaffOrClient){
+      // this.friendId = this.$route.params.id;
+      this.isClientFlag = this.$route.params.isClient
+      console.log("this.$route-------------",this.$route)
+      if(this.isClientFlag){
         this.expressionList =   [
           "客官，有啥吩咐？",
           "过来玩么？要不帮您订个台？",
-          "向您推荐几样本店的好东西",
+          "请对本店的出品和服务提个意见，以便我们更好服务您",
           "请关注本店，平时有空可上网店交朋友，玩大话骰"
         ]
       }else{
@@ -286,9 +259,15 @@
     methods: {
       //标记客服消息已读
       setMsgReadCliSer(){
-        api.setMsgReadCliSer(this.staticChatFriendObj.openid).then(res=>{
-          console.log("客服消息已读------",res)
-        })
+        if(this.isClientFlag){
+          api.setMsgReadCliSer(this.userInfo.openid,this.staticChatFriendObj.CliSerID).then(res=>{
+            console.log("客服消息已读------",res)
+          })
+        }else{
+          api.setMsgReadCliSer(this.staticChatFriendObj.CliSerID,this.userInfo.openid).then(res=>{
+            console.log("客服消息已读------",res)
+          })
+        }
       },
       onImgLoaded() {
         console.log('图片加载完成了')
@@ -327,8 +306,16 @@
         }, 400)
       },
       //获取客服聊天消息记录列表
-      _loadChatMsgCliSer(){
-        api.loadChatMsgCliSer(this.alreadyClientListCursor,this.staticChatFriendObj.openid,10).then(res=>{
+      loadChatMsgCliSer(){
+        console.log("加载留言记录时this.isClientFlag--------",this.isClientFlag)
+        if(this.isClientFlag){ //客服账号  加载聊天列表
+          this._getChatMsgCliList(this.staticChatFriendObj.openid,this.staticChatFriendObj.CliSerID)
+        }else{//用户账号  加载聊天列表
+          this._getChatMsgCliList(this.staticChatFriendObj.CliSerID,this.userInfo.openid)
+        }  
+      },
+      _getChatMsgCliList(to,from){
+         api.loadChatMsgCliSer(this.alreadyClientListCursor,to,from,20).then(res=>{
           var resultMessList = res.messages
           this.clientList = res.messages
           console.log("客服聊天信息-----------", res)
@@ -344,9 +331,7 @@
               chatMsgID: item.id,
             });
           }
-         
         })
-
         setTimeout(() => {
             let childNodes = this.$refs.chatList.childNodes;
             let chatListHeight = 0;
@@ -359,8 +344,8 @@
           }, 100);
       },
       //成为留言者
-      addCommenter(CliSerOpenID){
-        api.addCommenter(CliSerOpenID).then(res=>{
+      addCommenter(){
+        api.addCommenter().then(res=>{
           // console.log("成为留言者--------",res)
         })
       },
@@ -387,9 +372,10 @@
           time: util.timestampToTime(new Date().getTime())
         });
         let messObj = {
-          To: this.staticChatFriendObj.openid,
-          Content: this.input_value,
+          to:this.isClientFlag?this.staticChatFriendObj.openid:this.staticChatFriendObj.CliSerID,
+          content: this.input_value,
           type: 1,
+          from:this.isClientFlag?this.staticChatFriendObj.CliSerID:this.userInfo.openid
         };
         let textMessObj = JSON.stringify(messObj);
         let decc1 = new TextEncoder("utf-8");
@@ -401,8 +387,8 @@
         if(this.clientList.length>5){
           this.$refs.listView.scrollBy(0,-(childNodes[0].clientHeight+2));
         }
-        if(this.clientList.length===0 && !this.isStaffOrClient){
-          this.addCommenter(this.staticChatFriendObj.wxOpenID)
+        if(this.clientList.length===0 && !this.isClientFlag){
+          this.addCommenter()
         }
         });
         this.input_value = "";     
@@ -410,10 +396,13 @@
       },
       // 发送图片
       uploadImage(e) {
+        
         if (!e.target.files[0]) {
           return;
         }
+        console.log("点击发送图片")
         let vm = this;
+        console.log(vm.staticChatFriendObj)
         lrz(e.target.files[0], {
             quality: 0.1
           }).then(function(rst) {
@@ -424,20 +413,30 @@
             }
             let filename = rst.origin.name;
             let dataURL = rst.file;
-            api.sendImageCliSer(vm.staticChatFriendObj.openid, filename, dataURL).then(res => {
-                vm.componentChatList.push({
-                  message: res.content,
-                  friend: 0,
-                  type: 2,
-                  time: util.timestampToTime(new Date().getTime())
-                });
-                vm.$refs.listView.refresh()
-              })
-              .catch(err => {
-                console.log(err);
-              });
-          })
-          .catch(function(err) {
+            if(vm.isClientFlag){
+              console.log(vm.staticChatFriendObj)
+              api.sendImageCliSer(vm.staticChatFriendObj.openid,vm.staticChatFriendObj.CliSerID, filename, dataURL).then(res => {
+                console.log("图片发送--------",res)
+                  vm.componentChatList.push({
+                    message: res.content,
+                    friend: 0,
+                    type: 2,
+                    time: util.timestampToTime(new Date().getTime())
+                  });
+                  vm.$refs.listView.refresh()
+                })
+            }else{
+              api.sendImageCliSer(vm.staticChatFriendObj.CliSerID,vm.userInfo.openid, filename, dataURL).then(res => {
+                  vm.componentChatList.push({
+                    message: res.content,
+                    friend: 0,
+                    type: 2,
+                    time: util.timestampToTime(new Date().getTime())
+                  });
+                  vm.$refs.listView.refresh()
+                })
+            }
+          }).catch(function(err) {
             vm.$toast("压缩图片失败");
           });
       },

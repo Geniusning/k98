@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: liuning
- * @Last Modified time: 2019-08-07 18:04:04
+ * @Last Modified time: 2019-08-09 16:39:05
  */
 
 import axios from 'axios'
@@ -12,9 +12,9 @@ let index = windowUrL.indexOf('.com');
 let shareurl = windowUrL.slice(0, index)+".com/"
 
 let api = {};
-api.loadChatMsgCliSer = function (cursor,who,loadCount) {
+api.loadChatMsgCliSer = function (cursor,aTalker,bTalker,loadCount) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadChatMsgCliSer?cursor=${cursor}&who=${who}&loadCount=${loadCount}`).then(res => {
+    axios.get(Url.commonUrl + `/api/loadChatMsgCliSer?cursor=${cursor}&to=${aTalker}&from=${bTalker}&loadCount=${loadCount}`).then(res => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -24,9 +24,9 @@ api.loadChatMsgCliSer = function (cursor,who,loadCount) {
   })
 }
 //成为留言者
-api.addCommenter = function (CliSerOpenID) {
+api.addCommenter = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/addCommenter?CliSerOpenID=${CliSerOpenID}`).then(res => {
+    axios.get(Url.commonUrl + `/api/addCommenter`).then(res => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -214,9 +214,9 @@ api.postFriendMess = function (param) {
   })
 }
 //发送客服聊天图片
-api.sendImageCliSer = function (openId, fileName, param) {
+api.sendImageCliSer = function (openId,from,fileName, param) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/sendImageCliSer?to=${openId}&fileName=${fileName}`, param).then((res) => {
+    axios.post(Url.commonUrl + `/api/sendImageCliSer?to=${openId}&from=${from}&fileName=${fileName}`, param).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -254,9 +254,9 @@ api.getFriendMessList = function (cursor, who) {
   })
 }
 //标记客服消息已读
-api.setMsgReadCliSer = function (who) {
+api.setMsgReadCliSer = function (aTalker,bTalker) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/setMsgReadCliSer?who=${who}`)
+    axios.get(Url.commonUrl + `/api/setMsgReadCliSer?to=${aTalker}&from=${bTalker}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

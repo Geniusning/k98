@@ -408,7 +408,7 @@ const mutations = {
     //设置候选人聊天的信息
     [types.SET_CHAT_FRIEND](state, data) {
         state.staticChatFriendObj = data.info ? data.info : data
-        console.log('state.staticChatFriendObj-------------------', state.staticChatFriendObj);
+        // console.log('state.staticChatFriendObj-------------------', state.staticChatFriendObj);
     },
     //设置动态聊天朋友信息
     [types.GET_DYNAMICFRIENDOBJ](state, data) {

@@ -7,7 +7,7 @@
       <div class="btn_box clearfix">
         <div :class="{active:isShow==0}" class="fri_btn fl" @click="selectList(0)">好友</div>
         <div :class="{active:isShow==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
-        <div :class="{active:isShow==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{userInfo.role?"用户留言":"值班客服"}}</div>
+        <div :class="{active:isShow==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"值班客服":"用户留言"}}</div>
         <!-- <div :class="{active:isShow==3}" class="vux-1px-l hello_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendGiftList.length"></i></div> -->
         <div :class="{active:isShow==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendEvtList.length"></i></div>
       </div>
@@ -95,7 +95,22 @@
       </scroll>
       <!-- 客服通知 -->
       <srcoll :data="clientServiceList" v-else-if="isShow===2">
-        <ul class="message_list">
+        <ul v-if="isClientListFlag"  class="message_list">
+          <li class="item vux-1px-b" @click="ChatToClient" >
+            <div class="info_message">
+              <div class="avatar">
+                <img :src="clientImg" alt="">
+                <i class="dot" v-cloak v-show="clientObj.unReadMsgCount && client_badgeCount"></i>
+              </div>
+              <div class="name_and_message">
+                <p class="name">客服小哥</p>
+                <p class="captainMessage">欢迎光临! 请留言，我将尽快回复您</p>
+                <p class="time"> {{clientObj.lastMsg?clientObj.lastMsg.stime.slice(8,10)==today?clientObj.lastMsg.stime.slice(10,16):clientObj.lastMsg.stime.slice(5,10):""}}</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <ul v-else class="message_list">
           <li class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
             <div class="info_message">
               <div class="avatar">
@@ -105,14 +120,16 @@
               <div class="name_and_message">
                 <p class="name">{{item.nickname?item.nickname:"客服小哥"}}</p>
                 <p class="captainMessage">{{userInfo.role?"请查看用户留言消息":"欢迎光临! 请留言，我将尽快回复您"}}</p>
+                <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p>
                 <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
                 <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
                 <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum" >{{`${item.deskCode}`}}</span>
               </div>
             </div>
           </li>
-          <p v-if="!clientServiceList.length" class="noContent">暂无客服上班</p>
+          <p v-show="!clientServiceList.length" class="noContent">未有访客留言</p>
         </ul>
+     
       </srcoll>
       <!-- 通知 -->
       <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShow==3">
@@ -189,6 +206,10 @@
   export default {
     data() {
       return {
+        isClientListFlag:false,
+        clientTitleFlag:false,
+        clientObj:{},
+        customerObj:{},
         clientImg: require("../../assets/image/home_letter.png"),
         color: "#ffd800",
         hello: false,
@@ -270,12 +291,6 @@
       this.isShow = 2
       console.log(this.isShow)
     },
-    updated(){
-       if(this.isShow==2){
-         this.isShow===2
-         console.log(this.isShow)
-       }
-    },
     destroyed() {
       // console.log("组件销毁");
     },
@@ -290,21 +305,35 @@
         let phone = this.userInfo.phone ? this.userInfo.phone : "7777"
         var unReadCount = 0;
         api.loadClientServiceList(phone).then(res => {
-          console.log("客服列表-------------", res)
-          var tempArr = res
-          tempArr.forEach((client,index) => {
-            unReadCount += client.unReadMsgCount
-            if(client.deskCode!=0 && client.deskCode){
-              client.deskCode = util.prefixZero(client.deskCode,3)
+          console.log("客服----------------",res)
+          if(res.CliSerID && !res.uerInfos){
+            this.isClientListFlag = true
+            this.clientTitleFlag = true
+            this.clientObj = res
+          }else{
+            this.customerObj = res
+            var tempArr = res.uerInfos
+            if(tempArr.length>0){
+              tempArr.forEach((client,index) => {
+                unReadCount += client.unReadMsgCount
+                if(client.lastMsg){
+                  client["stime"] = client.lastMsg.stime
+                  client.lastMsg.stime = util.timestampToTime(client.lastMsg.stime)
+                }
+                if(client.deskCode!=0 && client.deskCode){
+                  client.deskCode = util.prefixZero(client.deskCode,3)
+                }
+                if(client.unReadMsgCount>0){  //把未读消息放到数组前面
+                  var item = tempArr.splice(index,1)
+                  tempArr.unshift(item[0])
+                }
+              })
+              this.clientServiceList = tempArr
+              console.log("客服列表-------------", this.clientServiceList)
+              this.getClientUnreadCount(unReadCount)
+              this.addBandge()
             }
-            if(client.unReadMsgCount>0){  //把未读消息放到数组前面
-              var item = tempArr.splice(index,1)
-              tempArr.unshift(item[0])
-            }
-          })
-          this.clientServiceList = tempArr
-          this.getClientUnreadCount(unReadCount)
-          this.addBandge()
+          }
         })
       },
       //瞅瞅他好友信息
@@ -458,19 +487,26 @@
         this.greeting_flag = index;
         console.log(index);
       },
-      //发起客服聊天
-      clientChat(item) {
-        var isClientFlag = true
-        if (item.wxOpenID) { //用户进入
-          item["openid"] = item.wxOpenID
-          isClientFlag = false
-        }
-        this.setChatFriend(item);
+      //向客服发消息
+      ChatToClient(){
+        this.clientObj["openid"] = this.clientObj.CliSerID
+        this.setChatFriend(this.clientObj);
+         this.$router.push({
+          name: "clientChat",
+          params: {
+            isClient: false,
+          }
+        });
+      },
+      //向留言用户发消息
+      clientChat(client) {
+        client["CliSerID"] = this.customerObj.CliSerID
+        this.setChatFriend(client);
+        console.log("向留言用户发消息 client-------------",client)
         this.$router.push({
           name: "clientChat",
           params: {
-            isClient: isClientFlag,
-            id: this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : item.phone
+            isClient: true,
           }
         });
       },
@@ -852,6 +888,13 @@
             flex-direction: column;
             justify-content: space-between;
             position: relative;
+            .time{
+              position: absolute;
+              right: .1rem;
+              top: .1rem;
+              font-size: 0.3733rem;
+              color: #999;
+            }
            .online_dot{
             width: 0.4rem;
             position: absolute;
