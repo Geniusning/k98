@@ -328,7 +328,7 @@
                   tempArr.unshift(item[0])
                 }
               })
-              this.clientServiceList = tempArr
+              this.clientServiceList = tempArr.sort(util.sortByKey("stime"))
               console.log("客服列表-------------", this.clientServiceList)
               this.getClientUnreadCount(unReadCount)
               this.addBandge()
