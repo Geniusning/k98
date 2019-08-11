@@ -2,10 +2,10 @@
   <transition name="fade">
     <div id="gameRecordDetail" class="gameRecordDetail">
       <my-header title="排名详情"></my-header>
-      <div class="myRank" v-if="ownRank.ranking||ownRank.score">
+      <!-- <div class="myRank" v-if="ownRank.ranking||ownRank.score">
         <p class="rank">我的排名：{{ownRank.ranking+1}}</p>
         <p class="score">杯数：{{ownRank.score}}</p>
-      </div>
+      </div> -->
       <div class="content vux-1px-t" v-if="gameList.length>0">
         <scroll ref="gameRecordList" class="scrollGameList" :data="gameList">
           <ul class="list">
@@ -62,12 +62,16 @@
       _nomalizeGameList(list){
         let gameList = []
         list.forEach(item=>{
-          if(item.headURI.indexOf("http") === -1){
-            let imgUrl = item.headURI.slice(18)
-            item.headURI = require(`../../assets/image/${imgUrl}.png`)
+          // if(item.headURI.indexOf("http") === -1){
+          //   let imgUrl = item.headURI.slice(18)
+          //   item.headURI = require(`../../assets/image/${imgUrl}.png`)
+          // }
+            // console.log(item.userID.indexOf("Robot"))
+          if(item.userID.indexOf("Robot")===-1){
+            gameList.push(item)
           }
-          gameList.push(item)
         })
+        // if(item.userID.indexOf("Robot")>)
         console.log("gameList------------",gameList)
         return gameList
       }

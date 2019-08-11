@@ -1,5 +1,5 @@
 <template>
-  <div id="message" class="message_wrapper">
+  <div id="message" class="message_wrapper" v-cloak>
     <div class="mask" v-if="showFriendInfoFlag">
       <img @click="close" src="../../assets/image/close.png" class="close" alt="">
     </div>
@@ -133,7 +133,7 @@
       </srcoll>
       <!-- 通知 -->
       <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShow==3">
-        <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index">
+        <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index" @click="showActivityDetail(item.activityInfo.activityID)">
           <div class="info_message">
             <div class="avatar">
               <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
@@ -213,7 +213,7 @@
         clientImg: require("../../assets/image/home_letter.png"),
         color: "#ffd800",
         hello: false,
-        isShow: 0, //最上面tab切换
+        isShow: 2, //最上面tab切换
         selected_num: 0,
         greeting_flag: 0,
         text: "", //回赞和拒绝文案
@@ -230,22 +230,23 @@
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
     beforeRouteEnter(to, from, next) {
-      console.log("l路由判断---------------")
+      console.log("路由判断to---------------",to)
+      console.log("路由判断from---------------",from)
       if (to.params.routeParamNum === 1) {
         next(vm => {
           vm.isShow = 1;
         });
-      } else if (to.params.routeParamNum === 2) {
-        next(vm => {
-          vm.isShow = 2;
-        });
-      } else if (to.params.routeParamNum === 3) {
+      } else if (from.name === "shareActivity") {
         next(vm => {
           vm.isShow = 3;
         });
-      } else {
+      } else if (to.query.routeParamNum === "0") {
         next(vm => {
           vm.isShow = 0;
+        });
+      }else{
+        next(vm => {
+          vm.isShow = 2;
         });
       }
     },
@@ -288,8 +289,6 @@
       this.getCaptainMessList(); //获取店长信  
       this.loadClientServiceList() //加载客服列表  
       // this.isShow = this.getQueryString("routeParamNum")
-      this.isShow = 2
-      console.log(this.isShow)
     },
     destroyed() {
       // console.log("组件销毁");
@@ -299,6 +298,15 @@
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(reg);
         if (r != null) return unescape(r[2]); return null;
+      },
+      //查看活动通知
+      showActivityDetail(activityID) {
+        this.$router.push({
+          name: "shareActivity",
+          params: {
+            id: activityID
+          }
+        });
       },
       //加载客服列表
       loadClientServiceList() {
@@ -359,6 +367,7 @@
       },
       selectList(index) {
         this.isShow = index;
+        console.log(this.isShow)
       },
       //拉取约战、点赞、送礼列表
       _loadMutualEvents() {

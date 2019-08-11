@@ -21,7 +21,7 @@
       <loading v-show="isLoading" style="position:absolute;top:30%;left:0"></loading>
       <scroll class="scrollList" :data="playList" v-if="playList.length">
         <ul class="userList">
-          <li class="userItem" v-for="(item,index) in playList">
+          <li class="userItem" v-for="(item,index) in playList" :key="index">
             <span
               class="rankNum"
               :class="{'first':index==0,'second':index==1,'third':index==2}"
@@ -91,12 +91,18 @@ export default {
       // }
       api.loadArenaRank(this.arenaID).then(res => {
         console.log('比赛排名信息-----------', res)
+        var tempArr = []
         if (res.errCode === 0) {
           if (res.arenaType) {    //arenaType=0个人赛  arenaType=1团体赛
-            this.playList = res.teamRanks;
+            tempArr = res.teamRanks;
           } else {
-            this.playList = res.userRanks;
+            tempArr = res.userRanks;
           }
+          tempArr.forEach(player => {
+            if(!player.IsRobot){
+              this.playList.push(player)
+            }
+          });
           this.isLoading = false;
           if (res.isAllComplete) {  //如果比赛结束，结束轮训
             this.$vux.toast.show({

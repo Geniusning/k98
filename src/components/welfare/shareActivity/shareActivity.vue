@@ -39,6 +39,7 @@
         isShow_bg: false,
         activityID: "",
         activityContent: "",
+        toHomeFlag:false,
       };
     },
     created() {
@@ -65,6 +66,16 @@
         };
         util._getJssdkInfo(shareObj, this.myShareUrl, 20,this.shareGetJifen);
       }
+    },
+     beforeRouteEnter(to, from, next) {
+      console.log("路由判断to---------------",to)
+      console.log("路由判断from---------------",from)
+      if(from.name==="message" || from.name==="welfare"){
+        next(vm=>{
+        vm.toHomeFlag = true
+        })
+      }
+      next()
     },
     mounted() {
       this._loadActivityDetail();
@@ -94,9 +105,13 @@
         });
       },
       back() {
-        this.$router.push({
-          name: "welfare"
-        });
+        if(this.toHomeFlag){
+          this.$router.go(-1)
+        }else{
+          this.$router.push({
+            name: "home"
+          });
+        }
       },
       share() {
         this.isShow_bg = !this.isShow_bg;

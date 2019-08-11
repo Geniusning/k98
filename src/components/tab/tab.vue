@@ -11,7 +11,7 @@
           <img onclick="return false" v-else slot="icon" src="../../assets/image/active_friend.png" class="friend">
           <span slot="label">交友</span>
         </tabbar-item>
-        <tabbar-item :selected="selected==2" :badge="count" link="/message">
+        <tabbar-item :selected="selected==2" :badge="count" link="/message?routeParamNum=0">
           <img onclick="return false" v-if="selected!==2" slot="icon" src="../../assets/image/message.png" class="message">
           <img onclick="return false" v-else slot="icon" src="../../assets/image/active_message.png" class="message">
           <span slot="label">消息</span>
