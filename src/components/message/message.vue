@@ -1,5 +1,5 @@
 <template>
-  <div id="message" class="message_wrapper" v-cloak>
+  <div id="message" class="message_wrapper">
     <div class="mask" v-if="showFriendInfoFlag">
       <img @click="close" src="../../assets/image/close.png" class="close" alt="">
     </div>
@@ -133,7 +133,7 @@
       </srcoll>
       <!-- 通知 -->
       <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShow==3">
-        <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index" @click="showActivityDetail(item.activityInfo.activityID)">
+        <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index" @click="gotoActivity(item.activityInfo)">
           <div class="info_message">
             <div class="avatar">
               <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
@@ -230,21 +230,21 @@
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
     beforeRouteEnter(to, from, next) {
-      console.log("路由判断to---------------",to)
-      console.log("路由判断from---------------",from)
+      console.log("to",to)
+      console.log("from",from)
       if (to.params.routeParamNum === 1) {
         next(vm => {
           vm.isShow = 1;
-        });
-      } else if (from.name === "shareActivity") {
-        next(vm => {
-          vm.isShow = 3;
         });
       } else if (to.query.routeParamNum === "0") {
         next(vm => {
           vm.isShow = 0;
         });
-      }else{
+      } else if (from.name === "shareActivity") {
+        next(vm => {
+          vm.isShow = 3;
+        });
+      } else {
         next(vm => {
           vm.isShow = 2;
         });
@@ -289,24 +289,26 @@
       this.getCaptainMessList(); //获取店长信  
       this.loadClientServiceList() //加载客服列表  
       // this.isShow = this.getQueryString("routeParamNum")
+      this.isShow = 2
+      console.log(this.isShow)
     },
     destroyed() {
       // console.log("组件销毁");
     },
     methods: {
+      //进入活动详情
+      gotoActivity(activetyInfo){
+        this.$router.push({
+          name: "shareActivity",
+          params: {
+            id: activetyInfo.activityID
+          }
+        });
+      },
       getQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(reg);
         if (r != null) return unescape(r[2]); return null;
-      },
-      //查看活动通知
-      showActivityDetail(activityID) {
-        this.$router.push({
-          name: "shareActivity",
-          params: {
-            id: activityID
-          }
-        });
       },
       //加载客服列表
       loadClientServiceList() {
@@ -318,6 +320,8 @@
             this.isClientListFlag = true
             this.clientTitleFlag = true
             this.clientObj = res
+            unReadCount = this.clientObj.unReadMsgCount
+            this.clientObj.lastMsg.stime =util.timestampToTime(res.lastMsg.stime)
           }else{
             this.customerObj = res
             var tempArr = res.uerInfos
@@ -336,12 +340,12 @@
                   tempArr.unshift(item[0])
                 }
               })
-              this.clientServiceList = tempArr.sort(util.sortByKey("stime"))
+              this.clientServiceList = tempArr
               console.log("客服列表-------------", this.clientServiceList)
-              this.getClientUnreadCount(unReadCount)
-              this.addBandge()
             }
           }
+              this.getClientUnreadCount(unReadCount)
+              this.addBandge()
         })
       },
       //瞅瞅他好友信息
@@ -367,7 +371,6 @@
       },
       selectList(index) {
         this.isShow = index;
-        console.log(this.isShow)
       },
       //拉取约战、点赞、送礼列表
       _loadMutualEvents() {

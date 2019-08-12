@@ -396,7 +396,7 @@
         this.clickIndex = index;
         setTimeout(() => {
           this.clickIndex = null;
-        }, 500);
+        }, 200);
         api.createOrder(id).then(res => {
           if (res.errCode === 0) {
             let resultInfo = res.data;

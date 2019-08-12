@@ -422,6 +422,10 @@ const mutations = {
         console.log('state.LastChatMsg：```````````````````````````````````````', obj)
         state.LastChatMsg = obj
     },
+    [types.UPDATE_CLIENTMSG](state, obj) {
+        console.log('state.clientLastChatMsg```````````````````````````````````````', obj)
+        state.clientLastChatMsg = obj
+    },
     //更新聊天输入框
     [types.UPDATE_INPUTVALUE](state, val) {
         state.inputValue = val

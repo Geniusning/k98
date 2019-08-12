@@ -154,6 +154,10 @@ new Vue({
                     })
                 }
                 this.judgeMessType('message')
+            }//处理客服消息
+            else if(result.msgCode === 20){
+                var message = result.content
+                this.appendClientLastMsg(message);
             }
             //处理好友点赞事件
             else if (result.msgCode === 2) {
@@ -280,6 +284,7 @@ new Vue({
             getRecommentList: "GET_RECOMMENTLIST", //获取店长推荐
             connect_websocket: "CONNECT_WEBSOCKET",
             appendLastMsg: "UPDATE_CHATLIST",
+            appendClientLastMsg: "UPDATE_CLIENTMSG",
             updateValue: "UPDATE_INPUTVALUE",
             addBange: "ADD_BADGE",
             compareLastMsg: "COMPARE_LASTMESS",

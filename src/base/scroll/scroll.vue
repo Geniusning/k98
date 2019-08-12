@@ -21,10 +21,10 @@
         type:String,
         default:"加载更多数据"
       },
-      scrollHeight: {
-        type: Number,
-        default: 0
-      },
+      // scrollHeight: {
+      //   type: Number,
+      //   default: 0
+      // },
       probeType: {
         type: Number,
         default: 2
@@ -154,13 +154,14 @@
       loading
     },
     watch: {
-      scrollHeight: function(newValue) {
-        console.log("scrollHeight------",newValue)
-        this.scroll.scrollTo(0, -newValue);
-      },
+      // scrollHeight: function(newValue) {
+      //   console.log("scrollHeight------",newValue)
+      //   this.scroll.scrollTo(0, -newValue);
+      // },
       data(newValue) {
         let len = newValue.length;
-        // console.log('scrollData---------------------', this.data);
+        
+        console.log('scrollData---------------------', this.data);
         this.$emit("getIndex", len);
         setTimeout(() => {
           this.refresh();

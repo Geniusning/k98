@@ -43,8 +43,8 @@
             <div class="onlineStatusPeople">{{(outFriendNum+inFriendNum)>0?(outFriendNum+inFriendNum):1}}人在线···</div>
             <img onclick="return false" src="../../assets/image/findFriend (2).png" alt class="online_person" />
             <div class="leftCircle" v-if="hiddenTelescope">
-              <div class="leftCirclePart" ref="leftCirclePart"></div>
-              <div class="rightCirclePart"></div>
+              <div :class="{'leftCirclePart':!isIphoneX,'leftCirclePartIphoneX':isIphoneX}" ref="leftCirclePart"></div>
+              <div :class="{'rightCirclePart':!isIphoneX,'rightCirclePartIphoneX':isIphoneX}"></div>
             </div>
             <img onclick="return false" src="../../assets/image/findFriend.png" alt class="findFriend_text" v-if="hiddenTelescope" />
             <!-- 更多好友 -->
@@ -61,8 +61,8 @@
             <!-- <div class="online_player">5人在玩 &gt;</div> -->
             <img onclick="return false" src="../../assets/image/intoPlay.png" alt class="online_player" />
             <div class="rightCircle" v-if="hiddenTelescope">
-              <div class="leftCirclePart"></div>
-              <div class="rightCirclePart"></div>
+              <div :class="{'leftCirclePart':!isIphoneX,'leftCirclePartIphoneX':isIphoneX}"></div>
+              <div :class="{'rightCirclePart':!isIphoneX,'rightCirclePartIphoneX':isIphoneX}"></div>
             </div>
             <img onclick="return false" src="../../assets/image/dahuashai.png" alt class="dahuashai_text" v-if="hiddenTelescope" />
           </div>
@@ -291,6 +291,7 @@
             subtopic: '',
           },
         },
+        isIphoneX:false,
         convertType: 0,
         fatherPanelIndex: 2,
         showTelescopeFlag: true,
@@ -334,6 +335,13 @@
         sex: 0,
         range: 0,
         sortType: 0
+      }
+      console.log("isphonex------",util.isIphonex())
+      if(util.isIphonex()){
+        this.isIphoneX = true
+        setTimeout(() => {
+          this.hiddenTelescope = false
+        }, 3000);
       }
       this.acquireWaitGetCoupons(); //获取自动优惠券
       this.setAdvertisePhoto(); //设置轮播图
@@ -388,6 +396,42 @@
       //this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
     },
     methods: {
+      //加载客服列表
+      loadClientServiceList() {
+        let phone = this.userInfo.phone ? this.userInfo.phone : "7777"
+        var unReadCount = 0;
+        api.loadClientServiceList(phone).then(res => {
+          console.log("客服----------------",res)
+          if(res.CliSerID && !res.uerInfos){
+            this.isClientListFlag = true
+            this.clientTitleFlag = true
+            this.clientObj = res
+          }else{
+            this.customerObj = res
+            var tempArr = res.uerInfos
+            if(tempArr.length>0){
+              tempArr.forEach((client,index) => {
+                unReadCount += client.unReadMsgCount
+                if(client.lastMsg){
+                  client["stime"] = client.lastMsg.stime
+                  client.lastMsg.stime = util.timestampToTime(client.lastMsg.stime)
+                }
+                if(client.deskCode!=0 && client.deskCode){
+                  client.deskCode = util.prefixZero(client.deskCode,3)
+                }
+                if(client.unReadMsgCount>0){  //把未读消息放到数组前面
+                  var item = tempArr.splice(index,1)
+                  tempArr.unshift(item[0])
+                }
+              })
+              this.clientServiceList = tempArr
+              console.log("客服列表-------------", this.clientServiceList)
+              this.getClientUnreadCount(unReadCount)
+              this.addBandge()
+            }
+          }
+        })
+      },
       gotoCardList() {
         this.$router.push({
           name: "card"
@@ -534,21 +578,6 @@
             // alert(res.err_msg);
             window.location.href="https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU3MTc1MzA1OA==#wechat_redirect"
         });
-        // if (navigator.userAgent.indexOf("MSIE") > 0) { //close IE
-        //   if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {
-        //     window.opener = null;
-        //     window.close();
-        //   } else {
-        //     window.open('', '_top');
-        //     window.top.close();
-        //   }
-        // } else if (navigator.userAgent.indexOf("Firefox") > 0) { //close firefox
-        //   window.location.href = 'about:blank ';
-        // } else { //close chrome;It is effective when it is only one.
-        //   window.opener = null;
-        //   window.open('', '_self');
-        //   window.close();
-        // }
       },
       //关闭广告
       close_adtise() {
@@ -608,19 +637,19 @@
         })
       },
       //进入场内交友界面
-      intoFriend() {
-        if (this.inFriendNum === 0) {
-          this.$vux.toast.show({
-            type: "text",
-            text: "场内暂时没有朋友",
-            width: "12em"
-          });
-          return;
-        }
-        util.routerTo("friend", this, {
-          routeParamNum: 1 //路由参数1为进入了场内
-        });
-      },
+      // intoFriend() {
+      //   if (this.inFriendNum === 0) {
+      //     this.$vux.toast.show({
+      //       type: "text",
+      //       text: "场内暂时没有朋友",
+      //       width: "12em"
+      //     });
+      //     return;
+      //   }
+      //   util.routerTo("friend", this, {
+      //     routeParamNum: 1 //路由参数1为进入了场内
+      //   });
+      // },
       //进入场外交友界面
       outFriend() {
         util.routerTo("friend", this, {
@@ -645,6 +674,8 @@
         getFriend: "GET_FRIENDlIST", //获取候选人,
         judgeInviteCoupon: "JUDGE_INVITE_COUPON", //判断是否还有邀请有礼
         getRecommentList: "GET_RECOMMENTLIST",
+        addBandge: "ADD_BADGE", //动态变化未读消息数量
+        getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量
       }),
       ...mapActions({
         getAlreadyFriend: "get_alreadyFriendList", //获取已经成为好友事件
@@ -984,26 +1015,6 @@
           .item {
             float: left;
             margin-left: -0.1333rem; // position: absolute;
-            // &.avar0{
-            //   bottom: -0.1rem;
-            //   left: -0.2rem;
-            // }
-            //  &.avar1{
-            //   bottom: .7rem;
-            //   left: .2rem;
-            // }
-            //  &.avar2{
-            //    bottom: 1rem;
-            //   left: 1rem;
-            // }
-            //  &.avar3{
-            //   bottom: .7rem;
-            //   left: 1.8rem;
-            // }
-            //  &.avar4{
-            //     bottom: -0.1rem;
-            //    left: 2.2rem;
-            // }
             .min_avatar {
               width: 0.76rem;
               height: 0.76rem;
@@ -1029,14 +1040,14 @@
         height: 3.4rem;
         border-radius: 50%;
         position: absolute;
-        .leftCirclePart,
+        .leftCirclePart,.leftCirclePartIphoneX,
         .rightCirclePart {
           position: absolute;
           width: 50%;
           height: 100%;
           top: 0;
         }
-        .leftCirclePart {
+        .leftCirclePart,.leftCirclePartIphoneX {
           left: -0.0167rem;
           border-radius: 50% 0 0 50%;
           overflow: hidden;
@@ -1050,6 +1061,15 @@
           height: 100%;
           transform-origin: right center;
           animation: rotateAn 2s 4s linear forwards;
+        }
+        .leftCirclePartIphoneX::after {
+          background: linear-gradient(bottom, #9bccf7, #2785f0);
+          opacity: 1;
+          display: block;
+          content: "";
+          width: 100%;
+          height: 3.4rem;
+          transform-origin: right center;
         }
         .rightCirclePart {
           right: 2px;
@@ -1065,6 +1085,15 @@
           height: 100%;
           transform-origin: left center;
           animation: rotateAn 2s 2s linear forwards;
+        }
+        .rightCirclePartIphoneX::after {
+          background: linear-gradient(bottom, #9bccf7, #2785f0);
+          opacity: 1;
+          display: block;
+          content: "";
+          width: 100%;
+          height: 3.4rem;
+          transform-origin: left center;
         }
       }
       .findFriend_text {
@@ -1112,7 +1141,7 @@
         position: absolute;
         overflow: hidden;
         left: 0.0133rem;
-        .leftCirclePart,
+        .leftCirclePart,.leftCirclePartIphoneX,
         .rightCirclePart {
           position: absolute;
           width: 50%;
@@ -1134,6 +1163,15 @@
           transform-origin: right center;
           animation: rotateAn 2s 4s linear forwards;
         }
+        .leftCirclePartIphoneX::after {
+          background: linear-gradient(bottom, #9bccf7, #2785f0);
+          opacity: 1;
+          display: block;
+          content: "";
+          width: 100%;
+          height: 3.4rem;
+          transform-origin: right center;
+        }
         .rightCirclePart {
           right: 0.0367rem;
           border-radius: 0 50% 50% 0;
@@ -1148,6 +1186,16 @@
           height: 100%;
           transform-origin: left center;
           animation: rotateAn 2s 2s linear forwards;
+        }
+        .rightCirclePartIphoneX::after {
+          background: linear-gradient(bottom, #9bccf7, #2785f0);
+          opacity: 1;
+          display: block;
+          content: "";
+          width: 100%;
+          height: 3.4rem;
+          transform-origin: left center;
+
         }
       }
       .dahuashai_text {

@@ -12,7 +12,7 @@
       </div>
       <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
         <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
-        <scroll ref="listView" class="chat_content" :scrollHeight="scrollHeight"  :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
+        <scroll ref="listView" class="chat_content"   :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
           <ul class="chat_list" ref="chatList">
             <li class="clearfix chatListItem" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" :key="index" v-for="(item,index) in componentChatList">
               <div v-if="item.type==1" class="message_wrapper">
@@ -234,7 +234,7 @@
         isShowEnvelope: false, //信封弹框判断
         envelopeText: "", //信封弹框内容
         showPreview: false,
-        scrollHeight: 500,
+        // scrollHeight: 500,
         // scrollToDomElement: "",
         pullDownRefresh: true,
         expressionShow: false,
@@ -345,16 +345,13 @@
       } else {
         this.today = this.today.toString();
       }
-      window.addEventListener("resize", function() {
-        if (document.activeElement.tagName === "INPUT") {
-          document.activeElement.scrollIntoView({
-            behavior: "smooth"
-          });
-        }
+      document.body.addEventListener('focusout', () => { //软键盘关闭事件
+           window.scrollTo(0, 0); //解决ios键盘留白的bug
       });
+// });
     },
     activated() {
-      console.log(this.staticChatFriendObj)
+      console.log("activated---------------")
       if (!localStorage.getItem('friendInfo')) { //解决微信内置浏览器刷新获得好友信息
         localStorage.setItem('friendInfo', JSON.stringify(this.staticChatFriendObj));
       } else {
@@ -648,7 +645,9 @@
               chatListHeight += item.clientHeight
             })
             this.scrollHeight = chatListHeight;
-          }, 100);
+             console.log("this.scrollHeight----------",this.scrollHeight)
+            this.$refs.listView.scrollTo(0, -this.scrollHeight);
+          }, 20);
           this.$refs.listView.finishPullDown();
           this.$refs.listView.refresh()
         });
@@ -661,7 +660,7 @@
           this.$vux.toast.text('朋友一直未回复，稍后再发送吧', 'middle')
           return
         }
-        window.scrollTo(0, 0); //解决ios键盘留白的bug
+       
         //  this.blurAdjust();
         if (!this.input_value) {
           return;
@@ -800,14 +799,12 @@
       },
       //监听滚动
       myscroll(pos) {
-        console.log(pos);
       },
       tagScroll() {
-        window.scrollTo(0, 0);
         this.expressionShow = false;
         this.emotionShow = false;
         document.getElementById("send_message").blur();
-        // this.blurAdjust();
+  
       },
       //关闭送礼
       // close_gift() {

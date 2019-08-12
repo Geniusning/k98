@@ -201,6 +201,9 @@
     },
     created() {
       this.height = document.body.clientHeight - 50;
+       document.body.addEventListener('focusout', () => { //软键盘关闭事件
+           window.scrollTo(0, 0); //解决ios键盘留白的bug
+      });
     },
     computed: {
       ...mapState(["userInfo"])

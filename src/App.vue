@@ -741,7 +741,10 @@
         this.judgeEveryBool(true, true, false, false);
       },
       $route: function(newValue) {
-        if(newValue.name == "message"){ //控制客服图标显示
+        if(newValue.name == "message" || 
+        newValue.name==="chat" ||
+        newValue.name==="clientChat"||
+        newValue.name==="shareActivity"){ //控制客服图标显示
           this.showClientServiceIconFlag = false
         }else{
           this.showClientServiceIconFlag = true
