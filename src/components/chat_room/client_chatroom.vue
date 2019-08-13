@@ -312,23 +312,29 @@
         }
       },
       _getChatMsgCliList(to, from) {
-        api.loadChatMsgCliSer(this.alreadyClientListCursor, to, from, 20).then(res => {
-          var resultMessList = res.messages
-          this.clientList = res.messages
-          console.log("客服聊天信息-----------", res)
-          var i
-          for (i = resultMessList.length - 1; i >= 0; i--) {
-            let item = resultMessList[i];
-            this.componentChatList.push({
-              message: item.content,
-              friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
-              type: item.type,
-              time: util.timestampToTime(item.stime),
-              from: item.from,
-              chatMsgID: item.id,
-              fromIconURI: item.fromIconURI
-            });
-          }
+        api.loadChatMsgCliSer(this.alreadyClientListCursor, to, from, 20)
+        .then(res => {
+          return new Promise((resolve,reject)=>{
+            var resultMessList = res.messages
+            this.clientList = res.messages
+            console.log("客服聊天信息-----------", res)
+            var i
+            for (i = resultMessList.length - 1; i >= 0; i--) {
+              let item = resultMessList[i];
+              this.componentChatList.push({
+                message: item.content,
+                friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
+                type: item.type,
+                time: util.timestampToTime(item.stime),
+                from: item.from,
+                chatMsgID: item.id,
+                fromIconURI: item.fromIconURI
+              });
+            }
+            resolve()
+          })
+        })
+        .then(()=>{
           this.$nextTick(function() {
             let childNodes = this.$refs.chatList.childNodes;
             let chatListHeight = 0;
@@ -385,15 +391,23 @@
           this.emotionShow = false;
           this.expressionShow = false;
           let childNodes = this.$refs.chatList.childNodes;
-          if (this.clientList.length > 5) {
-            this.$refs.listView.scrollBy(0, -(childNodes[0].clientHeight + 2));
-          }
           if (this.clientList.length === 0 && !this.isClientFlag) {
             this.addCommenter()
           }
         });
         this.input_value = "";
-        // document.getElementById("send_message").focus();   this.addCommenter()
+        this.$refs.listView.refresh()
+        if (this.clientList.length > 5) {
+          this.$nextTick(function() {
+            let childNodes = this.$refs.chatList.childNodes;
+            let chatListHeight = 0;
+            childNodes.forEach(item => {
+              chatListHeight += item.clientHeight
+            })
+            this.scrollHeight = chatListHeight;
+            this.$refs.listView.scrollTo(0, -this.scrollHeight);
+          }) 
+          }
       },
       // 发送图片
       uploadImage(e) {

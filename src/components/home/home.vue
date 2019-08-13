@@ -529,7 +529,9 @@
           console.log("拉取发布的比赛---------", res)
           var reverseArr = res.arenaInfos.reverse();
           if (reverseArr.length > 0) {
-            this.game_giftInfo = reverseArr[0]
+            this.game_giftInfo.firstPrize.content = util.returnDiscountContent(res.arenaInfos[0].firstPrize)
+            this.game_giftInfo.secondPrize.content = util.returnDiscountContent(res.arenaInfos[0].secondPrize)
+            this.game_giftInfo.thirdPrize.content = util.returnDiscountContent(res.arenaInfos[0].thirdPrize)
             this.gameShow = true;
           }
           // console.log('拉取已经发布的比赛场:', res)

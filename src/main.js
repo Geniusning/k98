@@ -43,6 +43,9 @@ new Vue({
         this.loadRecommends(); //获取店长推荐
         this.loadMutualEvents() //统计约战送礼点赞
         this.loadL98otherSetting() //加载控制开关
+        // window.addEventListener("unload", (e) => {
+        //     localStorage.setItem("unload","1234")
+        // });
     },
     methods: {
         //创建长连接

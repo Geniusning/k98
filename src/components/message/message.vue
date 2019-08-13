@@ -5,17 +5,17 @@
     </div>
     <div class="title">
       <div class="btn_box clearfix">
-        <div :class="{active:isShow==0}" class="fri_btn fl" @click="selectList(0)">好友</div>
-        <div :class="{active:isShow==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
-        <div :class="{active:isShow==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"值班客服":"用户留言"}}</div>
-        <!-- <div :class="{active:isShow==3}" class="vux-1px-l hello_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendGiftList.length"></i></div> -->
-        <div :class="{active:isShow==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendEvtList.length"></i></div>
+        <div :class="{active:isShowTab==0}" class="fri_btn fl" @click="selectList(0)">好友</div>
+        <div :class="{active:isShowTab==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
+        <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"值班客服":"用户留言"}}</div>
+        <!-- <div :class="{active:isShowTab==3}" class="vux-1px-l hello_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendGiftList.length"></i></div> -->
+        <div :class="{active:isShowTab==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendEvtList.length"></i></div>
       </div>
       <!-- <div class="dot" v-if="hello"></div> -->
     </div>
     <div class="message_wrapper">
       <!-- 好友 -->
-      <scroll :data='alreadyFriendList' class="friendScrollList" v-if="isShow==0">
+      <scroll :data='alreadyFriendList' class="friendScrollList" v-if="isShowTab==0">
         <ul class="message_list" style="margin-top:0.4rem">
           <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList" :key="index">
             <div class="info_message">
@@ -44,7 +44,7 @@
         </ul>
       </scroll>
       <!-- 新朋友 -->
-      <scroll :data='mutualEventsList' v-else-if="isShow===1">
+      <scroll :data='mutualEventsList' v-else-if="isShowTab===1">
         <ul class="newMessage_list">
           <li class="item " v-for="(item,index) in mutualEventsList" :key="index">
             <!-- v-if="item.from.headimgurl" -->
@@ -94,7 +94,7 @@
         </ul>
       </scroll>
       <!-- 客服通知 -->
-      <srcoll :data="clientServiceList" v-else-if="isShow===2">
+      <srcoll :data="clientServiceList" v-else-if="isShowTab===2">
         <ul v-if="isClientListFlag"  class="message_list">
           <li class="item vux-1px-b" @click="ChatToClient" >
             <div class="info_message">
@@ -132,7 +132,7 @@
      
       </srcoll>
       <!-- 通知 -->
-      <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShow==3">
+      <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShowTab==3">
         <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index" @click="gotoActivity(item.activityInfo)">
           <div class="info_message">
             <div class="avatar">
@@ -213,7 +213,7 @@
         clientImg: require("../../assets/image/home_letter.png"),
         color: "#ffd800",
         hello: false,
-        isShow: 2, //最上面tab切换
+        isShowTab: 2, //最上面tab切换
         selected_num: 0,
         greeting_flag: 0,
         text: "", //回赞和拒绝文案
@@ -234,23 +234,29 @@
       console.log("from",from)
       if (to.params.routeParamNum === 1) {
         next(vm => {
-          vm.isShow = 1;
+          vm.isShowTab = 1;
+        });
+      }else if (from.name === "shareActivity") {
+        next(vm => {
+          vm.isShowTab = 3;
         });
       } else if (to.query.routeParamNum === "0") {
         next(vm => {
-          vm.isShow = 0;
+          vm.isShowTab = 0;
         });
-      } else if (from.name === "shareActivity") {
+      } else if (to.query.routeParamNum === 0) {
         next(vm => {
-          vm.isShow = 3;
+          vm.isShowTab = 0;
         });
-      } else {
+      } 
+       else {
         next(vm => {
-          vm.isShow = 2;
+          vm.isShowTab = 2;
         });
       }
     },
     beforeRouteUpdate(to, from, next) {
+      console.log("beforeRouteUpdate---------",from)
       if (from.name === "clientChat") {
         this.loadClientServiceList()
       }
@@ -288,9 +294,7 @@
       this._loadMutualEvents(); //拉取送礼，约战，
       this.getCaptainMessList(); //获取店长信  
       this.loadClientServiceList() //加载客服列表  
-      // this.isShow = this.getQueryString("routeParamNum")
-      this.isShow = 2
-      console.log(this.isShow)
+      // this.isShowTab = this.getQueryString("routeParamNum")
     },
     destroyed() {
       // console.log("组件销毁");
@@ -370,7 +374,9 @@
         this.isMakeFriendBool = e.target.checked
       },
       selectList(index) {
-        this.isShow = index;
+        console.log("index--------",index)
+        this.isShowTab = index;
+        console.log("this.isShowTab--------",this.isShowTab)
       },
       //拉取约战、点赞、送礼列表
       _loadMutualEvents() {

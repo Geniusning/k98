@@ -161,7 +161,7 @@
       data(newValue) {
         let len = newValue.length;
         
-        console.log('scrollData---------------------', this.data);
+        // console.log('scrollData---------------------', this.data);
         this.$emit("getIndex", len);
         setTimeout(() => {
           this.refresh();

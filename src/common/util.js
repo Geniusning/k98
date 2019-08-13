@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: liuning
- * @Last Modified time: 2019-08-12 11:39:47
+ * @Last Modified time: 2019-08-13 16:30:39
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -207,25 +207,38 @@ util.isAndroid = function () {
       return false;
     }
 }
-  util.isIphonex = () => {
+util.isIphonex = () => {
     if (typeof window !== 'undefined' && window) {
       return /iphone/gi.test(window.navigator.userAgent) && window.screen.height >= 812;
     }
     return false;
-  }
-  util.sortByKey = function(key){
+}
+util.sortByKey = function(key){
     return function(obj1,obj2){
       var v1 = obj1[key]
       var v2 = obj2[key]
       return v2-v1
     }
-  }
-  util.prefixZero = function(num,n){
+}
+util.prefixZero = function(num,n){
     var len = num.toString().length;
     while(len < n) {
         num = "0" + num;
         len++;
     }
     return num;
+}
+util.returnDiscountContent = function(coupon){
+  if (parseInt(coupon.type) === 0) {
+    return "现金券"+coupon.value+"元"
+  } else if (parseInt(coupon.type) === 1) {
+    return "实物券" +coupon.content
+  } else if (parseInt(coupon.type) === 2) {
+    return "折扣券" +coupon.value+"折"
+  } else if (parseInt(coupon.type) === 3){
+    return "兑换券"+coupon.content
+  }else {
+    return "满减券"+coupon.content
   }
+}
 export default util
