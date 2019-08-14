@@ -12,7 +12,7 @@
       </div>
       <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
         <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
-        <scroll ref="listView" class="chat_content" :scrollHeight="scrollHeight"  :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
+        <scroll ref="listView" class="chat_content"   :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
           <ul class="chat_list" ref="chatList">
             <li class="clearfix chatListItem" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" :key="index" v-for="(item,index) in componentChatList">
               <div v-if="item.type==1" class="message_wrapper">
@@ -234,7 +234,7 @@
         isShowEnvelope: false, //信封弹框判断
         envelopeText: "", //信封弹框内容
         showPreview: false,
-        scrollHeight: 500,
+        // scrollHeight: 500,
         // scrollToDomElement: "",
         pullDownRefresh: true,
         expressionShow: false,
@@ -345,16 +345,13 @@
       } else {
         this.today = this.today.toString();
       }
-      window.addEventListener("resize", function() {
-        if (document.activeElement.tagName === "INPUT") {
-          document.activeElement.scrollIntoView({
-            behavior: "smooth"
-          });
-        }
+      document.body.addEventListener('focusout', () => { //软键盘关闭事件
+           window.scrollTo(0, 0); //解决ios键盘留白的bug
       });
+// });
     },
     activated() {
-      console.log(this.staticChatFriendObj)
+      console.log("activated---------------")
       if (!localStorage.getItem('friendInfo')) { //解决微信内置浏览器刷新获得好友信息
         localStorage.setItem('friendInfo', JSON.stringify(this.staticChatFriendObj));
       } else {
@@ -596,62 +593,73 @@
       //获取好友聊天消息记录列表
       _getChatList() {
         let cursor = this.alreadyFriendListcursor;
-        api.getFriendMessList(cursor, this.staticChatFriendObj.openid).then(res => {
-          console.log('好友聊天信息---------', res);
-          this.changeCursor(res.cursor);
-          let resultMessList = res.messages;
-          var i;
-          for (i = resultMessList.length - 1; i >= 0; i--) {
-            let item = resultMessList[i];
-            this.componentChatList.push({
-              message: item.content,
-              friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
-              type: item.type,
-              time: util.timestampToTime(item.stime),
-              chatExtMsg: item.type == 3 ? item.chatExtMsg.extMsg : "",
-              from: item.from,
-              chatMsgID: item.id,
-              isAgree: item.chatExtMsg ? item.chatExtMsg.isAgree : "",
-              isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : "",
-              msgType: item.chatExtMsg ? item.chatExtMsg.msgType : '',
-              couponID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.couponID : "") : '',
-              recordID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.recordID : "") : '',
-              name: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.name : "") : '',
-              combatID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.combatID : "") : '',
-              inviterID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.inviterID : "") : '',
-              url: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.url : "") : '',
-            });
-          }
-          console.log('聊天记录-------', this.componentChatList)
-          this.componentChatList.forEach(item => {
-            switch (item.chatExtMsg ? item.chatExtMsg.name : "") {
-              case "beer":
-                item.chatExtMsg.name = "啤酒"
-                break;
-              case "flower":
-                item.chatExtMsg.name = "鲜花"
-                break;
-              case "house":
-                item.chatExtMsg.name = "别墅"
-                break;
-              case "car":
-                item.chatExtMsg.name = "邮轮"
-                break;
-              default:
-                break;
+        api.getFriendMessList(cursor, this.staticChatFriendObj.openid)
+        .then(res => {
+          return new Promise((resolve,reject)=>{
+            console.log('好友聊天信息---------', res);
+            this.changeCursor(res.cursor);
+            let resultMessList = res.messages;
+            var i;
+            for (i = resultMessList.length - 1; i >= 0; i--) {
+              let item = resultMessList[i];
+              this.componentChatList.push({
+                message: item.content,
+                friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
+                type: item.type,
+                time: util.timestampToTime(item.stime),
+                chatExtMsg: item.type == 3 ? item.chatExtMsg.extMsg : "",
+                from: item.from,
+                chatMsgID: item.id,
+                isAgree: item.chatExtMsg ? item.chatExtMsg.isAgree : "",
+                isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : "",
+                msgType: item.chatExtMsg ? item.chatExtMsg.msgType : '',
+                couponID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.couponID : "") : '',
+                recordID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.recordID : "") : '',
+                name: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.name : "") : '',
+                combatID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.combatID : "") : '',
+                inviterID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.inviterID : "") : '',
+                url: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.url : "") : '',
+              });
             }
+            console.log('聊天记录-------', this.componentChatList)
+            this.componentChatList.forEach(item => {
+              switch (item.chatExtMsg ? item.chatExtMsg.name : "") {
+                case "beer":
+                  item.chatExtMsg.name = "啤酒"
+                  break;
+                case "flower":
+                  item.chatExtMsg.name = "鲜花"
+                  break;
+                case "house":
+                  item.chatExtMsg.name = "别墅"
+                  break;
+                case "car":
+                  item.chatExtMsg.name = "邮轮"
+                  break;
+                default:
+                  break;
+              }
+            })
+            resolve()
           })
-          setTimeout(() => {
-            let childNodes = this.$refs.chatList.childNodes;
+        })
+        .then(()=>{
+          // console.log(data)
+          this.$nextTick(function(){
+            console.log("dom更新后执行")
+             let childNodes = this.$refs.chatList.childNodes;
             let chatListHeight = 0;
             childNodes.forEach(item => {
               chatListHeight += item.clientHeight
             })
             this.scrollHeight = chatListHeight;
-          }, 100);
-          this.$refs.listView.finishPullDown();
-          this.$refs.listView.refresh()
-        });
+             console.log("this.scrollHeight----------",this.scrollHeight)
+              this.$refs.listView.finishPullDown();
+             this.$refs.listView.refresh()
+            this.$refs.listView.scrollTo(0, -this.scrollHeight);
+          })
+        })
+        
       },
   
       //发送消息事件
@@ -661,7 +669,7 @@
           this.$vux.toast.text('朋友一直未回复，稍后再发送吧', 'middle')
           return
         }
-        window.scrollTo(0, 0); //解决ios键盘留白的bug
+       
         //  this.blurAdjust();
         if (!this.input_value) {
           return;
@@ -693,10 +701,18 @@
           console.log('发送消息成功:`````````````````````````````````````````', res);
         this.emotionShow = false;
         this.expressionShow = false;
-        let childNodes = this.$refs.chatList.childNodes;
-        this.$refs.listView.scrollBy(0,-(childNodes[0].clientHeight));
         });
-        this.input_value = "";     
+        this.input_value = "";
+         this.$nextTick(function() {
+            let childNodes = this.$refs.chatList.childNodes;
+            let chatListHeight = 0;
+            childNodes.forEach(item => {
+              chatListHeight += item.clientHeight
+            })
+            this.scrollHeight = chatListHeight;
+            this.$refs.listView.refresh()
+            this.$refs.listView.scrollTo(0, -this.scrollHeight);
+          })     
         // document.getElementById("send_message").focus();   this.addCommenter()
       },
       // 发送图片
@@ -800,14 +816,12 @@
       },
       //监听滚动
       myscroll(pos) {
-        console.log(pos);
       },
       tagScroll() {
-        window.scrollTo(0, 0);
         this.expressionShow = false;
         this.emotionShow = false;
         document.getElementById("send_message").blur();
-        // this.blurAdjust();
+  
       },
       //关闭送礼
       // close_gift() {

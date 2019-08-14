@@ -6,8 +6,8 @@
         <img onclick="return false" :src="userInfo.headimgurl" alt class="avatar">
         <p class="name">{{userInfo.nickname||'游客'}}</p>
         <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->
-        <span class="bindTel" @click="showTelBind" v-if="!userInfo.phone">绑定手机</span>
-        <span class="bindTel1" v-else>{{userInfo.phone}}</span>
+        <!-- <span class="bindTel" @click="showTelBind" v-if="!userInfo.phone">绑定手机</span>
+        <span class="bindTel1" v-else>{{userInfo.phone}}</span> -->
       </div>
       <img onclick="return false" @click="edit_individual" src="../../assets/image/setting.png" alt class="edit">
     </div>

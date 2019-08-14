@@ -1,5 +1,7 @@
 
 // export const TESTSEXTYPE  = "TESTSEXTYPE"
+//客服消息推送
+export const UPDATE_CLIENTMSG = "UPDATE_CLIENTMSG"
 //统计客服未读消息数量
 export const GETCLIENTUNREADCOUNT = "GETCLIENTUNREADCOUNT"
 //C端功能控制

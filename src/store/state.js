@@ -28,6 +28,7 @@ const state = {
     staticChatFriendObj: {}, //拉取列表时候的聊天对象信息
     chatFriendObj_id: "", //动态获取聊天对象的id
     LastChatMsg: {}, //聊天列表
+    clientLastChatMsg:{},//客服推送消息
     inputValue: "", //聊天输入框内容
     socket: null,
     friendListCursor: 0, //候选人浮标
