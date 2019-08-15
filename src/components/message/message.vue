@@ -13,9 +13,10 @@
       </div>
       <!-- <div class="dot" v-if="hello"></div> -->
     </div>
-    <div class="message_wrapper">
+    <div class="message_content">
       <!-- 好友 -->
-      <scroll :data='alreadyFriendList' class="friendScrollList" v-if="isShowTab==0">
+      <div class="message_list"  v-if="isShowTab==0">
+      <scroll :data='alreadyFriendList'>
         <ul class="message_list" style="margin-top:0.4rem">
           <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList" :key="index">
             <div class="info_message">
@@ -40,59 +41,74 @@
               <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}</span>
             </div>
           </li>
-          <p v-if="!alreadyFriendList.length" class="noContent">暂无好友</p>
         </ul>
       </scroll>
+      <p v-if="!alreadyFriendList.length" class="noFriend">暂无好友</p>
+      <div v-if="!userInfo.isSubscribe && isShowQrCode" class="qrCode_wrapper">
+        <img onclick="return false" @click="closeQrCode"  class="close" src="../../assets/image/close.png" alt="">
+        <p class="qrCode_text">长按关注，以便收到好友消息!</p>
+        <img :src="qrCode" alt="" class="qrcodeImg">
+        <p class="qrCode_text">关注享有会员特权:领福利、交群友</p>
+      </div>
+      </div>
       <!-- 新朋友 -->
-      <scroll :data='mutualEventsList' v-else-if="isShowTab===1">
-        <ul class="newMessage_list">
-          <li class="item " v-for="(item,index) in mutualEventsList" :key="index">
-            <!-- v-if="item.from.headimgurl" -->
-            <div class="blank vux-1px-b">
-              <div class="info_message">
-                <div class="avatar">
-                  <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-                    alt="">
-                  <i class="dot"></i>
+      <div class="newMessage_list" v-else-if="isShowTab===1">
+        <scroll :data='mutualEventsList'>
+          <ul>
+            <li class="item " v-for="(item,index) in mutualEventsList" :key="index">
+              <!-- v-if="item.from.headimgurl" -->
+              <div class="blank vux-1px-b">
+                <div class="info_message">
+                  <div class="avatar">
+                    <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                      alt="">
+                    <i class="dot"></i>
+                  </div>
+                  <div class="name_and_message">
+                    <p class="name">{{item.from.nickname}}</p>
+                    <p class="message" style="color:green;font-weight:800" v-if="item.combatID">{{item.from.nickname}}邀请玩把大话骰</p>
+                    <p class="message" style="color:#333" v-else-if="item.id==1">{{item.from.nickname}}送你一个啤酒</p>
+                    <p class="message" style="color:#333" v-else-if="item.id==2">{{item.from.nickname}}送你一个鲜花</p>
+                    <p class="message" style="color:#333" v-else-if="item.id==3">{{item.from.nickname}}送你一个别墅</p>
+                    <p class="message" style="color:#333" v-else-if="item.id==4">{{item.from.nickname}}送你一个跑车</p>
+                    <p class="message" style="color:#333" v-else-if="item.integral">{{item.from.nickname}}送你{{item.name}}</p>
+                    <p class="message" v-else>{{item.from.nickname}}给你点赞,请求加好友</p>
+                  </div>
                 </div>
-                <div class="name_and_message">
-                  <p class="name">{{item.from.nickname}}</p>
-                  <p class="message" style="color:green;font-weight:800" v-if="item.combatID">{{item.from.nickname}}邀请玩把大话骰</p>
-                  <p class="message" style="color:#333" v-else-if="item.id==1">{{item.from.nickname}}送你一个啤酒</p>
-                  <p class="message" style="color:#333" v-else-if="item.id==2">{{item.from.nickname}}送你一个鲜花</p>
-                  <p class="message" style="color:#333" v-else-if="item.id==3">{{item.from.nickname}}送你一个别墅</p>
-                  <p class="message" style="color:#333" v-else-if="item.id==4">{{item.from.nickname}}送你一个跑车</p>
-                  <p class="message" style="color:#333" v-else-if="item.integral">{{item.from.nickname}}送你{{item.name}}</p>
-                  <p class="message" v-else>{{item.from.nickname}}给你点赞,请求加好友</p>
+                <div class="thumb_wrapper">
+                  <div class="clearfix backThumbBox" v-if="item.combatID">
+                    <p class=" back_thumb vux-1px fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
+                    <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
+                  </div>
+                  <div class="clearfix backThumbBox" v-else-if="item.gift">
+                    <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
+                    <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
+                  </div>
+                  <div class="clearfix " v-else>
+                    <p class=" back_thumb vux-1px fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
+                    <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
+                    <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
+                  </div>
+                  <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
+                    <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
+                  </div>
+                </div>
+                <div class="checkBox_scene clearfix" v-show="item.integral">
+                  <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                  <span class="scene-text fl">加好友</span>
                 </div>
               </div>
-              <div class="thumb_wrapper">
-                <div class="clearfix backThumbBox" v-if="item.combatID">
-                  <p class=" back_thumb vux-1px fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
-                  <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
-                </div>
-                <div class="clearfix backThumbBox" v-else-if="item.gift">
-                  <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
-                  <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
-                </div>
-                <div class="clearfix " v-else>
-                  <p class=" back_thumb vux-1px fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
-                  <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
-                  <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
-                </div>
-                <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-                  <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
-                </div>
-              </div>
-              <div class="checkBox_scene clearfix" v-show="item.integral">
-                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                <span class="scene-text fl">加好友</span>
-              </div>
-            </div>
-          </li>
+            </li>
+          </ul>
           <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
-        </ul>
-      </scroll>
+        </scroll>
+        <div v-if="!userInfo.isSubscribe && isShowQrCode" class="qrCode_wrapper">
+          <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
+          <p class="qrCode_text">长按关注，以便收到好友消息!</p>
+          <img  :src="qrCode" alt="" class="qrcodeImg">
+          <p class="qrCode_text">关注享有会员特权:领福利、交群友</p>
+        </div>
+      </div>
       <!-- 客服通知 -->
       <srcoll :data="clientServiceList" v-else-if="isShowTab===2">
         <ul v-if="isClientListFlag"  class="message_list">
@@ -132,20 +148,22 @@
      
       </srcoll>
       <!-- 通知 -->
-      <ul class="message_list" style="margin-top:0.4rem" v-else-if="isShowTab==3">
-        <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index" @click="gotoActivity(item.activityInfo)">
-          <div class="info_message">
-            <div class="avatar">
-              <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
+      <scroll :data="captainMessageList" v-else-if="isShowTab==3">
+        <ul class="message_list" style="margin-top:0.4rem" >
+          <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index" @click="gotoActivity(item.activityInfo)">
+            <div class="info_message">
+              <div class="avatar">
+                <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
+              </div>
+              <div class="name_and_message">
+                <p class="name">店长</p>
+                <p class="captainMessage">活动通知:{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
+              </div>
             </div>
-            <div class="name_and_message">
-              <p class="name">店长</p>
-              <p class="captainMessage">活动通知:{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
-            </div>
-          </div>
-        </li>
-        <p v-if="!captainMessageList.length" class="noContent">暂无系统通知消息</p>
-      </ul>
+          </li>
+          <p v-if="!captainMessageList.length" class="noContent">暂无系统通知消息</p>
+        </ul>
+      </scroll>
     </div>
     <!-- 回赞 -->
     <toast v-model="showPositionValue" type="text" :time="1000" is-show-mask :text="text" :position="position"></toast>
@@ -206,6 +224,7 @@
   export default {
     data() {
       return {
+        isShowQrCode:true,
         isClientListFlag:false,
         clientTitleFlag:false,
         clientObj:{},
@@ -273,7 +292,8 @@
         "challengeGameList",
         "manualEventsList_badgeCount",
         "userInfo",
-        "client_badgeCount"
+        "client_badgeCount",
+        "qrCode"
       ]),
       messageTime() {
         return
@@ -300,6 +320,9 @@
       // console.log("组件销毁");
     },
     methods: {
+      closeQrCode(){
+        this.isShowQrCode = false
+      },
       //进入活动详情
       gotoActivity(activetyInfo){
         this.$router.push({
@@ -344,7 +367,7 @@
                   tempArr.unshift(item[0])
                 }
               })
-              this.clientServiceList = tempArr
+              this.clientServiceList = tempArr.sort(util.sortByKey("stime"))
               console.log("客服列表-------------", this.clientServiceList)
             }
           }
@@ -866,10 +889,15 @@
       color: #fff;
     }
   }
-  .message_wrapper {
+  .message_content {
     width: 100%;
     flex-grow: 1;
     overflow-y: auto;
+    // position: relative;
+    .list-wrapper{
+    position: relative;
+
+    }
     .message_list {
       padding: 0 0.2667rem;
       .dot {
@@ -1022,9 +1050,16 @@
         color: #ccc;
         font-size: 0.5333rem;
       }
-    } // .newFriend_wrapper {
-    //   margin-top: 0.35rem;
+    }
+    .noFriend{
+      width: 100%;
+      text-align: center;
+      margin-top: 50%;
+      color: #ccc;
+      font-size: 0.5333rem;
+    }
     .newMessage_list {
+      position: relative;
       .item {
         position: relative; // display: flex;
         // justify-content: space-between;
@@ -1129,14 +1164,44 @@
           }
         } // }
       }
-      .noContent {
+    } // }
+    .noContent {
+      width: 100%;
+      text-align: center;
+      margin-top: 50%;
+      color: #ccc;
+      font-size: 0.5333rem;
+    }
+    .qrCode_wrapper{
+      position: fixed;
+      bottom: 1.2rem;
+      // bottom: 0;
+      width: 100%;
+      height: 5.3333rem;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      background-color: rgba(0, 0, 0, .4);
+      padding: .2rem 0;
+      .close{
+        width: 1rem;
+        height: 1rem;
+        position: absolute;
+        top: .2rem;
+        right: .1rem;
+        z-index: 9;
+      }
+      .qrCode_text{
         width: 100%;
         text-align: center;
-        margin-top: 50%;
-        color: #ccc;
-        font-size: 0.5333rem;
+        color: #fff;
       }
-    } // }
+      .qrcodeImg{
+        width: 4rem;
+        height: 4rem;
+        margin: .2rem 0;
+      }
+    }
   }
   .vux-1px:before {
     border-radius: 0.2667rem;

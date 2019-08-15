@@ -368,6 +368,7 @@
       // }, 1000);
     },
     activated() {
+      this.loadClientServiceList()
       setTimeout(() => {
         // console.log('门店logo--------------------', this.shopSettingInfo.image)
         let _url = window.location.href;
@@ -406,26 +407,16 @@
             this.isClientListFlag = true
             this.clientTitleFlag = true
             this.clientObj = res
+            unReadCount = res.unReadMsgCount
           }else{
             this.customerObj = res
             var tempArr = res.uerInfos
             if(tempArr.length>0){
               tempArr.forEach((client,index) => {
                 unReadCount += client.unReadMsgCount
-                if(client.lastMsg){
-                  client["stime"] = client.lastMsg.stime
-                  client.lastMsg.stime = util.timestampToTime(client.lastMsg.stime)
-                }
-                if(client.deskCode!=0 && client.deskCode){
-                  client.deskCode = util.prefixZero(client.deskCode,3)
-                }
-                if(client.unReadMsgCount>0){  //把未读消息放到数组前面
-                  var item = tempArr.splice(index,1)
-                  tempArr.unshift(item[0])
-                }
               })
-              this.clientServiceList = tempArr
-              console.log("客服列表-------------", this.clientServiceList)
+              // this.clientServiceList = tempArr
+              // console.log("客服列表-------------", this.clientServiceList)
               this.getClientUnreadCount(unReadCount)
               this.addBandge()
             }

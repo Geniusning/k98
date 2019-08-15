@@ -359,15 +359,19 @@
       //点赞
       giveThumb(position) {
         // this.position = position;
+        if(!this.userInfo.isSubscribe){
+          this.showQrcode(true);
+          return
+        }
         api.makeFriend(this.xid).then(res => {
-          console.log(res);
-          if (res.errcode === 0) {
+          console.log('giveThumb----',res);
+          if (res.errCode === 0) {
             this.isShowEnvelope = true;
             this.envelopeText = "飞奔个赞过去,等待对方回赞成为好友"
             setTimeout(() => {
               this.isShowEnvelope = false;
             }, 2000);
-          } else if (res.errcode === 1023) {
+          } else if(res.errCode === 1023) {
             this.showQrcode(true);
           } else {
             this.isShowEnvelope = true;
@@ -402,6 +406,10 @@
       },
       //玩游戏
       playGame() {
+        if(!this.userInfo.isSubscribe){ //未关注不给约战
+           this.showQrcode(true);
+           return
+        }
         api.sentPlayGameMsg(this.friendId).then(res => {
           console.log('约战返回--------', res)
           if (res.errCode == 0) {
@@ -412,7 +420,7 @@
               this.isShowEnvelope = false;
             }, 2000);
           } else if (res.errCode == 1023) {
-            this.showQrcode(true);
+           
           } else if (res.errCode == 1022) {
             this.isShowEnvelope = true;
             this.envelopeText = "该用户己离线，无法通知";

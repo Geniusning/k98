@@ -3,6 +3,10 @@ import util from "common/util";
 import router from '../router/index.js';
 
 const mutations = {
+    //保存二维码
+    [types.SAVEQRCODE](state,qrcode){
+        state.qrCode = qrcode
+    },
     //获取店长推荐
     [types.GET_RECOMMENTLIST](state, recommentList) {
         state.recommentList = recommentList;

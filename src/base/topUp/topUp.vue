@@ -84,8 +84,8 @@
           <button v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">{{userInfo.money>giftIntegral?'确认兑换':'积分不足,请充值'}}</button>
           <button v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">{{userInfo.money>giftIntegral?'确认赠送':'余额不足,请充值'}}</button>
           <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor && userInfo.money>giftIntegral ">
-            <input @change="onlineSendGift" type="checkbox" class="checkbox fl">
-            <span class="scene-text fl">现场下单</span>
+            <!-- <input @change="onlineSendGift" type="checkbox" class="checkbox fl">
+            <span class="scene-text fl">现场下单</span> -->
           </div>
           <!-- <p class="gotoTopUpText" v-if="userInfo.money<giftIntegral" @click="gotoTopUp">去充值&gt;</p> -->
         </div>
@@ -378,6 +378,11 @@
             }
           })
         }
+        setTimeout(() => {
+          if(!this.userInfo.isSubscribe){
+             this.showQrcode(true);
+          }
+        }, 2000);
       },
       refreshUserInfo() {
         api.getUserInfo("/api/loadUserInfo").then(res => {

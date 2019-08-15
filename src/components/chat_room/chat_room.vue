@@ -117,10 +117,10 @@
                                                                 <loading></loading>
                                                 </div>-->
       </div>
-      <div class="input_wrapper">
+      <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
-          <input type="text" ref="sendWrapper" id="send_message" class="send_message" @focus.prevent="myfocus" v-model="input_value">
-          <div @click="send" class="action_box clearfix" :class="{active:flag}">
+          <input type="text" ref="sendInputRef" placeholder="请输入..." id="send_message" class="send_message" @focus="inputFocus" v-model="input_value">
+          <div @click="send" ref="sendBtn"  class="action_box clearfix" :class="{active:flag}">
             <img src="../../assets/image/plane.png" alt class="icon_plane fl">
             <span class="send fl" ref="send">发送</span>
           </div>
@@ -333,10 +333,12 @@
         chatListIndex: 0,
         componentChatList: [],
         isscroll: true,
+        dontFocus:true,
         // isLoading: false
       };
     },
     created() {
+     
       this.listenScroll = true;
       this.today = new Date().getDate();
       this.today = new Date().getDate();
@@ -348,9 +350,14 @@
       document.body.addEventListener('focusout', () => { //软键盘关闭事件
            window.scrollTo(0, 0); //解决ios键盘留白的bug
       });
+      // let sendBtn = this.$refs.sendBtn
+      // sendBtn.addEventListener("tap",()=>{
+      //    this.$refs.sendInputRef.focus()
+      // })
 // });
     },
     activated() {
+       console.log(window.innerHeight)
       console.log("activated---------------")
       if (!localStorage.getItem('friendInfo')) { //解决微信内置浏览器刷新获得好友信息
         localStorage.setItem('friendInfo', JSON.stringify(this.staticChatFriendObj));
@@ -664,6 +671,10 @@
   
       //发送消息事件
       send() {
+        if(util.isAndroid() && this.dontFocus){
+          this.dontFocus = true
+          document.getElementById("send_message").focus();
+        }
         this.sendingTimes ++
         if(this.sendingTimes>20){
           this.$vux.toast.text('朋友一直未回复，稍后再发送吧', 'middle')
@@ -674,6 +685,7 @@
         if (!this.input_value) {
           return;
         }
+        // this.$refs.sendInputRef.focus()
         //字符串转表情icon
         for (var i = 0; i < this.emotionList.length; i++) {
           if (this.input_value.indexOf(this.emotionList[i].name) !== -1) {
@@ -713,7 +725,7 @@
             this.$refs.listView.refresh()
             this.$refs.listView.scrollTo(0, -this.scrollHeight);
           })     
-        // document.getElementById("send_message").focus();   this.addCommenter()
+       
       },
       // 发送图片
       uploadImage(e) {
@@ -846,6 +858,7 @@
       //选择常用语
       addExpress(item) {
         this.input_value += item;
+         this.dontFocus = false;
       },
       //展示送礼面板
       showToastGift() {
@@ -873,10 +886,15 @@
           this.showTab = false;
         }
       },
-      myfocus() {
+      inputFocus() {
+        setTimeout(() => {
+          this.$refs.input_wrapper.scrollIntoView(true)
+          this.$refs.chatWrapper.scrollIntoView(true)
+        }, 200);
+        this.dontFocus = true
         this.emotionShow = false;
         this.expressionShow = false;
-        this.isscroll = true; //允许动态滚动到最底部记录
+        // this.isscroll = true; //允许动态滚动到最底部记录
       },
       ...mapMutations({
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
@@ -1162,7 +1180,7 @@
           font-size: 0.3733rem;
           float: left;
           width: 6.9333rem;
-          height: 0.9867rem;
+          height: 1rem;
           text-indent: 0.2667rem;
           border: 1px solid #999;
         }

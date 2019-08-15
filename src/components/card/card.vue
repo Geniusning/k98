@@ -244,6 +244,10 @@
       },
       //进入优惠券详情
       selectDiscout(id) {
+        if(!this.userInfo.isSubscribe){
+          this.showQrcode(true)
+          return
+        }
         this.$router.push({
           path: `/card/${id}`
         });
@@ -259,7 +263,8 @@
       },
       onClickBack() {},
       ...mapMutations({
-        changeValidate: "CHANGE_VALIDATE"
+        changeValidate: "CHANGE_VALIDATE",
+         showQrcode: "SHOW_QRCODE", //展示二维码
       })
     },
     components: {

@@ -248,6 +248,8 @@ new Vue({
         //创建二维码
         createQrcode() {
             api.loadAllQrcode().then(res => { //没有创建过二维码才创建
+                console.log("二维码-----------------",res)
+                this.saveQrCode(res.urls[0])
                 if (!res.urls.length || !res.urls) {
                     api.createQrcode().then(res => {
                         console.log('创建二维码接口--------', res);
@@ -284,6 +286,7 @@ new Vue({
             })
         },
         ...mapMutations({
+            saveQrCode:"SAVEQRCODE",//保存二维码
             getRecommentList: "GET_RECOMMENTLIST", //获取店长推荐
             connect_websocket: "CONNECT_WEBSOCKET",
             appendLastMsg: "UPDATE_CHATLIST",

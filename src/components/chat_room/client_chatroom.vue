@@ -125,7 +125,6 @@
     data() {
       return {
         clientImg: require("../../assets/image/home_letter.png"),
-        alreadyClientListCursor: 0,
         isClientFlag: false,
         sendingTimes: 0,
         isShowEnvelope: false, //信封弹框判断
@@ -187,6 +186,8 @@
         chatListIndex: 0,
         componentChatList: [],
         isscroll: true,
+        ClientEndCursor:0,
+        isLoadMore:false,
         // isLoading: false
       };
     },
@@ -236,7 +237,7 @@
     },
     deactivated() {
       this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
-      this.endCursor = null;
+      this.ClientEndCursor = null;
       this.componentChatList = [];
       let cursor = 0;
       this.changeCursor(cursor);
@@ -306,31 +307,48 @@
       loadChatMsgCliSer() {
         console.log("加载留言记录时this.isClientFlag--------", this.isClientFlag)
         if (this.isClientFlag) { //客服账号  加载聊天列表
-          this._getChatMsgCliList(this.staticChatFriendObj.openid, this.staticChatFriendObj.CliSerID)
+          this._getChatMsgCliList(this.ClientEndCursor,this.staticChatFriendObj.openid, this.staticChatFriendObj.CliSerID)
         } else { //用户账号  加载聊天列表
-          this._getChatMsgCliList(this.staticChatFriendObj.CliSerID, this.userInfo.openid)
+          this._getChatMsgCliList(this.ClientEndCursor,this.staticChatFriendObj.CliSerID, this.userInfo.openid)
         }
       },
-      _getChatMsgCliList(to, from) {
-        api.loadChatMsgCliSer(this.alreadyClientListCursor, to, from, 20)
+      _getChatMsgCliList(cursor,to, from) {
+        api.loadChatMsgCliSer(cursor, to, from, 10)
         .then(res => {
           return new Promise((resolve,reject)=>{
             var resultMessList = res.messages
+            this.ClientEndCursor = res.cursor
             this.clientList = res.messages
             console.log("客服聊天信息-----------", res)
             var i
-            for (i = resultMessList.length - 1; i >= 0; i--) {
-              let item = resultMessList[i];
-              this.componentChatList.push({
-                message: item.content,
-                friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
-                type: item.type,
-                time: util.timestampToTime(item.stime),
-                from: item.from,
-                chatMsgID: item.id,
-                fromIconURI: item.fromIconURI
-              });
-            }
+            if(!this.isLoadMore){
+              for (i = resultMessList.length - 1; i >= 0; i--) {
+                let item = resultMessList[i];
+                  this.componentChatList.push({
+                    message: item.content,
+                    friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
+                    type: item.type,
+                    time: util.timestampToTime(item.stime),
+                    from: item.from,
+                    chatMsgID: item.id,
+                    fromIconURI: item.fromIconURI
+                  });
+              }}else{
+                for(i=0;i<resultMessList.length;i++){
+                  let item = resultMessList[i];
+                  this.componentChatList.unshift({
+                   message: item.content,
+                   friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
+                   type: item.type,
+                   time: util.timestampToTime(item.stime),
+                   from: item.from,
+                   chatMsgID: item.id,
+                   fromIconURI: item.fromIconURI
+                 });
+                }
+              }
+            
+            console.log("客服聊天记录-------------",this.componentChatList)
             resolve()
           })
         })
@@ -344,7 +362,9 @@
             this.scrollHeight = chatListHeight;
             this.$refs.listView.finishPullDown();
             this.$refs.listView.refresh()
-            this.$refs.listView.scrollTo(0, -this.scrollHeight);
+            if(!this.isLoadMore){
+              this.$refs.listView.scrollTo(0, -this.scrollHeight);
+            }
           })
         })
       },
@@ -468,48 +488,12 @@
       //下拉刷新
       pullingDown() {
         console.log("下拉刷新");
-        if (!this.alreadyFriendListcursor || this.endCursor == 0) {
+        if (this.ClientEndCursor == 0) {
           return;
         }
-        let cursor = this.alreadyFriendListcursor;
-        // this.isLoading = true;
-        api.getFriendMessList(cursor, this.staticChatFriendObj.openid).then(res => {
-          console.log(res);
-          if (!res.messages.length) {
-            //如果有新消息才更改游标
-            return;
-          }
-          this.endCursor = res.cursor;
-          this.changeCursor(res.cursor);
-          //this.isLoading = false; //加载loading
-          this.isscroll = false; //判断下拉刷新
-          let resultMessList = res.messages;
-          var i;
-          for (i = resultMessList.length - 1; i >= 0; i--) {
-            let item = resultMessList[i];
-            this.componentChatList.unshift({
-              message: item.content,
-              friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
-              type: item.type,
-              time: util.timestampToTime(item.stime),
-              chatExtMsg: item.type == 3 ? item.chatExtMsg.extMsg : "",
-              from: item.from,
-              chatMsgID: item.id,
-              isAgree: item.chatExtMsg ? item.chatExtMsg.isAgree : '',
-              isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : '',
-              msgType: item.chatExtMsg ? item.chatExtMsg.msgType : '',
-              couponID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.couponID : "") : '',
-              recordID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.recordID : "") : '',
-              name: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.name : "") : '',
-              combatID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.combatID : "") : '',
-              inviterID: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.inviterID : "") : '',
-              url: item.chatExtMsg ? (item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.url : "") : '',
-            });
-          }
-          this.$refs.listView.finishPullDown();
-          this.$refs.listView.scrollTo(0, 0, 1000);
-          this.$refs.listView.refresh();
-        });
+        this.isLoadMore = true;
+        this.loadChatMsgCliSer()
+        // });
       },
       tagScroll() {
         window.scrollTo(0, 0);

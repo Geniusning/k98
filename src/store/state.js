@@ -1,4 +1,5 @@
 const state = {
+    qrCode:"",//二维码
     l98Setting:{},//C端功能控制
     baseUrl: "", //公众号地址
     isShow: false, //控住手机验证码弹框

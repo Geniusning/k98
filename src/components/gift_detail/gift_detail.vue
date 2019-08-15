@@ -113,9 +113,11 @@
             this.giftContent.forEach(item => {
               item.time = util.timestampToTimeNoLine(item.time);
             })
-          }else if(res.errCode==1023){
-             this.showQrcode(true);
           }
+          if(!this.userInfo.isSubscribe){
+            this.showQrcode(true);
+          }
+          
         })
       },
       // selectMoney(index, event) {

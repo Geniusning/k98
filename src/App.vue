@@ -19,11 +19,11 @@
             <p class="content">{{dynamicFriendEvt.extMsg.lastMsg.msg}}</p>
             <!-- <p class="content">你试试我的眼的</p> -->
           </div>
-          <!-- <div @click="showDetail">
+          <div @click="showDetail">
               <div class="detail" v-if="messType !='onlineNotice'">&gt;&gt;详情</div>
               <div class="detail" v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true ">&gt;&gt;去聊天</div>
               <div class="detail" v-else>&gt;&gt;打招呼</div>
-            </div> -->
+            </div>
         </div>
       </transition>
       <!-- 回房通知 " -->
@@ -329,6 +329,7 @@
             break;
           case "message":
             this.setChatFriend(this.dynamicFriendEvt.fromInfo);
+            console.log("this.dynamicFriendEvt.fromInfo-----------",this.dynamicFriendEvt.fromInfo)
             this.$router.push({
               // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
               name: "chat",
@@ -380,8 +381,13 @@
             this.setChatFriend(this.dynamicFriendEvt.fromInfo);
             if (this.dynamicFriendEvt.fromInfo.isAlreadyFriends) {
               this.$router.push({
-                path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
-              });
+              // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
+              name: "chat",
+              params: {
+                isClient: false,
+                id: this.dynamicFriendEvt.fromInfo.openid
+              }
+            });
             } else {
               api.makeFriend(this.dynamicFriendEvt.fromInfo.openid).then(res => {
                 console.log(res);
