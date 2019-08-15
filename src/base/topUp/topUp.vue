@@ -382,7 +382,7 @@
           if(!this.userInfo.isSubscribe){
              this.showQrcode(true);
           }
-        }, 2000);
+        }, 1000);
       },
       refreshUserInfo() {
         api.getUserInfo("/api/loadUserInfo").then(res => {

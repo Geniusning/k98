@@ -2,11 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: liuning
-<<<<<<< HEAD
- * @Last Modified time: 2019-08-09 16:38:54
-=======
- * @Last Modified time: 2019-08-12 15:18:38
->>>>>>> 73ace3ab66454373f74c99b8b2a5c513d79bd3d9
+ * @Last Modified time: 2019-08-15 17:38:25
  */
 
 import axios from 'axios'
@@ -215,15 +211,9 @@ api.postFriendMess = function (param) {
   })
 }
 //发送客服聊天图片
-<<<<<<< HEAD
-api.sendImageCliSer = function (openId,from,fileName, param) {
-  return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/sendImageCliSer?to=${openId}&from=${from}&fileName=${fileName}&tk=${Url.tk}`, param).then((res) => {
-=======
 api.sendImageCliSer = function (fromIconURI,openId,from,fileName, param) {
   return new Promise((resolve, reject) => {
     axios.post(Url.commonUrl + `/api/sendImageCliSer?to=${openId}&from=${from}&fileName=${fileName}&fromIconURI=${fromIconURI}&tk=${Url.tk}`, param).then((res) => {
->>>>>>> 73ace3ab66454373f74c99b8b2a5c513d79bd3d9
       if (res.status == 200) {
         resolve(res.data)
       }

@@ -310,11 +310,14 @@
   
     },
     mounted() {
+      console.log("mounted--------")
       this._loadFriends(); //拉取好友
       this._loadMutualEvents(); //拉取送礼，约战，
       this.getCaptainMessList(); //获取店长信  
       this.loadClientServiceList() //加载客服列表  
       // this.isShowTab = this.getQueryString("routeParamNum")
+      this.isShowQrCode = localStorage.getItem("isShowQrCode")==="false"?false:true
+     
     },
     destroyed() {
       // console.log("组件销毁");
@@ -322,6 +325,7 @@
     methods: {
       closeQrCode(){
         this.isShowQrCode = false
+        localStorage.setItem("isShowQrCode",false)
       },
       //进入活动详情
       gotoActivity(activetyInfo){
