@@ -28,8 +28,7 @@
               <img onclick="return false" class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
                 alt="暂无头像">
               <img onclick="return false" src="../../../assets/image/friend_icon.png" alt="" class="friend_icon" v-show="item.isAlreadyFriend">
-              <img onclick="return false" src="../../../assets/image/like1.png" alt="" class="friend_icon" v-show="alreadySendThumbFlag">
-              <!-- <p class="friend_icon" style="right:-1rem;bottom:-0.5rem;width:100px;color:#333;font-weight:700" v-show="item.info.onlineDiceServer">对战中</p> -->
+              <!-- <img onclick="return false" src="../../../assets/image/like1.png" alt="" class="friend_icon" v-show="alreadySendThumbFlag"> -->
             </div>
             <p class="name">{{item.info.nickname}}</p>
           </div>
@@ -66,9 +65,11 @@
   import detectPrefixes from "./tantan.js";
   import api from "common/api";
   import util from 'common/util'
+  import Bus from 'common/bus'
   import {
     mapGetters,
-    mapState
+    mapState,
+    mapMutations
   } from "vuex";
   export default {
     props: {
@@ -164,19 +165,20 @@
     methods: {
       //点赞
       giveThumb(position) {
-        // this.position = position;
+        console.log("右滑动-------")
+        this.$emit("limitTimes",this.limitTimes);
+        --this.limitTimes
         let xid = this.friendData.info.openid
         api.makeFriend(xid).then(res => {
-          this.limitTimes--
-          console.log("api.makeFriend(xid)-----------", res);
-          if (res.errcode === 0) {
+            console.log("api.makeFriend(xid)-----------", res);
+          if (res.errCode === 0) {
             this.$emit("heartBeat", this.friendData);
-          } else if (res.errcode === 1023) {
+          } else if (res.errCode === 1023) {
             this.showQrcode(true);
-          } else if (res.errcode == 1001) { //已经点赞过了
-            this.alreadySendThumbFlag = true
-          } else if (res.errcode == 1002) { //已经是朋友了
-            this.alreadySendThumbFlag = false
+          } else if (res.errCode == 1001) { //已经点赞过了
+            // this.alreadySendThumbFlag = true
+          } else if (res.errCode == 1002) { //已经是朋友了
+            // this.alreadySendThumbFlag = false
           }
         });
       },
@@ -275,10 +277,16 @@
       },
       nextTick() {
         //虚假每天限制20次
-        if(this.limitTimes<1){
+        console.log("this.limitTimes------",this.limitTimes)
+        if(this.limitTimes<1 || this.userInfo.isSubscribe){
             if(this.limitFlag){
-              this.limitFlag = !this.limitFlag
-              this.$vux.toast.text('每天限20次点赞交友机会。当天已用完，明天再来', 'middle')
+              this.limitFlag = !this.limitFlag;
+              this.changeQrCodeText({
+                title:"游客限制次数用完、长按关注、获更多特权",
+                bottomText:"会员特权:交朋友、领福利、打比赛"
+              })
+              this.showQrcode(true)
+              // this.$vux.toast.text('每天限20次点赞交友机会。当天已用完，明天再来', 'middle')
             }
         }
         // 记录最终滑动距离
@@ -287,7 +295,7 @@
         this.lastRotate = this.rotate;
         this.lastZindex = 20;
         // 循环currentPage
-        console.log('this.currentPage：', this.currentPage)
+        // console.log('this.currentPage：', this.currentPage)
         if (this.currentPage == this.pages.length - 3 && this.friendListCursor != 0) {
           // if (this.currentPage == this.pages.length - 3 && this.tampSexFlag) {
           this.$emit('getMoreFriend');
@@ -309,21 +317,21 @@
         ];
         let index = Math.floor(Math.random() * 4);
         this.sign = signList[index];
-        console.log("currentLikeIndex---------", this.currentLikeIndex)
+        // console.log("currentLikeIndex---------", this.currentLikeIndex)
         this.currentLikeIndex++
-          console.log("this pages.length--------", this.pages.length)
+          // console.log("this pages.length--------", this.pages.length)
         if (this.distant > 0) {
           // console.log("往右划朋友信息-------",this.friendData)
           if (!this.friendData.isAlreadyFriend) { //不是朋友才右滑点赞
             this.giveThumb()
             this.like = true;
           } else {
-            this.alreadySendThumbFlag = false
+            // this.alreadySendThumbFlag = false
           }
         } else {
           console.log("往左滑")
           this.dislike = true;
-          this.alreadySendThumbFlag = false
+          // this.alreadySendThumbFlag = false
         }
         // console.log(this.currentPage);
         // let index = this.currentPage;
@@ -478,7 +486,11 @@
           }
           return style;
         }
-      }
+      },
+      ...mapMutations({
+        changeQrCodeText:"CHANGEQRCODETEXT",
+        showQrcode: "SHOW_QRCODE", //暂时二维码
+      })
     },
   };
 </script>

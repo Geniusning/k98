@@ -1,4 +1,8 @@
 const state = {
+    qrCodeTextObj:{
+        title:"长按关注公众号",
+        bottomText:"长按关注享受会员特权：领福利、交朋友"
+    },
     qrCode:"",//二维码
     l98Setting:{},//C端功能控制
     baseUrl: "", //公众号地址

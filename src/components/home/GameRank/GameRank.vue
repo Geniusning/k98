@@ -2,7 +2,7 @@
   <div id="gameCompetionDetail" class="gameCompetionDetail">
     <div class="bg"></div>
     <div class="notice-wrapper">
-      <div class="name">大话骰排名赛直播间</div>
+      <div class="name">大话骰{{this.isTeamGame?"团体":"个人"}}排名赛直播间</div>
       <img src="../../../assets/image/refresh.png" alt class="refresh" @click="refresh">
       <span class="refresh-text">刷新排名</span>
       <img class="home" src="../../../assets/image/game_home.png" alt @click="goHome">
@@ -27,11 +27,11 @@
               :class="{'first':index==0,'second':index==1,'third':index==2}"
             >{{index+1}}</span>
             <div class="userInfo">
-              <img class="avatar" :src="item.headURI?item.headURI:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt>
+              <img class="avatar" :src="item.headURI?item.headURI:robotImg" alt>
               <div class="username">{{item.teamName?item.teamName:(item.nick?item.nick:'无名')}}</div>
             </div>
             <span class="score">{{item.score}}</span>
-            <span class="finishRound">{{item.finishRound*3}}</span>
+            <span class="finishRound">{{item.finishRound}}</span>
             <span class="inviterInfo" v-if="!item.inviterDate">暂无</span>
             <div class="userInfo" v-else>
               <img class="avatar" :src="item.inviterDate.headURI" alt>
@@ -67,6 +67,8 @@ export default {
       url: "",
       arenaID: '',
       isLoading: false,
+      isTeamGame:true,
+      robotImg:require("../../../assets/image/XiaoWanzi.png")
     };
   },
   mounted() {
@@ -78,6 +80,7 @@ export default {
     //拉取比赛场排名
     _loadArenaRank() {
       // let timer = null;
+      this.playList = []
       this.url = window.location.href;
       this.isLoading = true;
       var ArenaId = this.url.split('arenaID=')[1];
@@ -95,10 +98,16 @@ export default {
         if (res.errCode === 0) {
           if (res.arenaType) {    //arenaType=0个人赛  arenaType=1团体赛
             tempArr = res.teamRanks;
+            this.isTeamGame = true
           } else {
             tempArr = res.userRanks;
+             this.isTeamGame = false
           }
           tempArr.forEach(player => {
+            if(player.headURI.indexOf("http") === -1){
+              let imgUrl = player.headURI.slice(18)
+              player.headURI = require(`../../../assets/image/${imgUrl}.png`)
+          }
             if(!player.IsRobot){
               this.playList.push(player)
             }

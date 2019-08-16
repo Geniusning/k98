@@ -25,16 +25,20 @@
 </html>
 <script type="text/javascript">
   //发送消息
-  var str = "?id=1234&phone=214"
+//   var str = "?id=1234&phone=214"
  
-function getQueryString(name) {
-	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-	var r = window.location.search.substr(1).match(reg);
-	if (r != null) return unescape(r[2]); return null;
-}
+// function getQueryString(name) {
+// 	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+// 	var r = window.location.search.substr(1).match(reg);
+// 	if (r != null) return unescape(r[2]); return null;
+// }
 
-  $("#btn").click(function () {
-    closeWebPage()
+//   $("#btn").click(function () {
+//     closeWebPage()
+console.log(2<2)
+if(2<2){
+
+}
 
     // var text = $('#text').val();
     // var html = "<p class='msg'>" + text + "</p>";
@@ -44,7 +48,7 @@ function getQueryString(name) {
     // setTimeout(function () {
     //   ($('.message').children("p:last-child")[0]).scrollIntoView();
     // }, 100);
-  })
+  // })
 
   // function closeWebPage() {
   //   if (navigator.userAgent.indexOf("MSIE") > 0) { //close IE

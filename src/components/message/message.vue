@@ -13,48 +13,45 @@
       </div>
       <!-- <div class="dot" v-if="hello"></div> -->
     </div>
-    <div class="message_content">
+    <div class="message_wrapper">
       <!-- 好友 -->
-      <div class="message_list"  v-if="isShowTab==0">
-      <scroll :data='alreadyFriendList'>
-        <ul class="message_list" style="margin-top:0.4rem">
-          <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList" :key="index">
-            <div class="info_message">
-              <div class="avatar">
-                <img :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-                  alt="">
-                <i class="dot" v-cloak v-show="item.info.unReadMsgCount>0"></i>
-                <!-- <i class="dot" v-cloak v-show="item.info.unReadMsgCount">{{item.info.unReadMsgCount}}</i> -->
+        <scroll :data='alreadyFriendList' v-if="isShowTab==0">
+          <ul class="message_list"  style="margin-top:0.4rem">
+            <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList" :key="index">
+              <div class="info_message">
+                <div class="avatar">
+                  <img :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                    alt="">
+                  <i class="dot" v-cloak v-show="item.info.unReadMsgCount>0"></i>
+                  <!-- <i class="dot" v-cloak v-show="item.info.unReadMsgCount">{{item.info.unReadMsgCount}}</i> -->
+                </div>
+                <div class="name_and_message">
+                  <p class="name">{{item.info.nickname}}</p>
+                  <p class="message" v-if="item.info.lastMsg?item.info.lastMsg.type===1:''" v-html='item.info.lastMsg?item.info.lastMsg.content:""'></p>
+                  <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===2:''">[图片]</p>
+                  <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===3:''">约战，送礼信息</p>
+                  <p class="message" v-else></p>
+                </div>
               </div>
-              <div class="name_and_message">
-                <p class="name">{{item.info.nickname}}</p>
-                <p class="message" v-if="item.info.lastMsg?item.info.lastMsg.type===1:''" v-html='item.info.lastMsg?item.info.lastMsg.content:""'></p>
-                <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===2:''">[图片]</p>
-                <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===3:''">约战，送礼信息</p>
-                <p class="message" v-else></p>
+              <div class="info_time">
+                <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,10)==today?item.info.lastMsg.stime.slice(10,16):item.info.lastMsg.stime.slice(5,10):""}}</p>
+                <img src="../../assets/image/dot_green.png" v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="online_dot">
+                <span v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="friendStatus">{{item.isInDoor?"店内":"店外"}}</span>
+                <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}</span>
               </div>
-            </div>
-            <div class="info_time">
-              <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,10)==today?item.info.lastMsg.stime.slice(10,16):item.info.lastMsg.stime.slice(5,10):""}}</p>
-              <img src="../../assets/image/dot_green.png" v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="online_dot">
-              <span v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="friendStatus">{{item.isInDoor?"店内":"店外"}}</span>
-              <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}</span>
-            </div>
-          </li>
-        </ul>
-      </scroll>
-      <p v-if="!alreadyFriendList.length" class="noFriend">暂无好友</p>
-      <div v-if="!userInfo.isSubscribe && isShowQrCode" class="qrCode_wrapper">
-        <img onclick="return false" @click="closeQrCode"  class="close" src="../../assets/image/close.png" alt="">
-        <p class="qrCode_text">长按关注，以便收到好友消息!</p>
-        <img :src="qrCode" alt="" class="qrcodeImg">
-        <p class="qrCode_text">关注享有会员特权:领福利、交群友</p>
-      </div>
-      </div>
+            </li>
+          </ul>
+          <p v-if="!alreadyFriendList.length" class="noFriend">暂无好友</p>
+        </scroll>
+        <div v-if="(!userInfo.isSubscribe && isShowQrCode) && (isShowTab==0 || isShowTab==1)" class="qrCode_wrapper">
+          <img onclick="return false" @click="closeQrCode"  class="close" src="../../assets/image/close.png" alt="">
+          <p class="qrCode_text">长按关注，以便收到好友消息!</p>
+          <img :src="qrCode" alt="" class="qrcodeImg">
+          <p class="qrCode_text">关注享有会员特权:领福利、交群友</p>
+        </div> 
       <!-- 新朋友 -->
-      <div class="newMessage_list" v-else-if="isShowTab===1">
-        <scroll :data='mutualEventsList'>
-          <ul>
+        <scroll :data='mutualEventsList' v-else-if="isShowTab===1">
+          <ul class="newMessage_list" >
             <li class="item " v-for="(item,index) in mutualEventsList" :key="index">
               <!-- v-if="item.from.headimgurl" -->
               <div class="blank vux-1px-b">
@@ -102,15 +99,8 @@
           </ul>
           <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
         </scroll>
-        <div v-if="!userInfo.isSubscribe && isShowQrCode" class="qrCode_wrapper">
-          <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
-          <p class="qrCode_text">长按关注，以便收到好友消息!</p>
-          <img  :src="qrCode" alt="" class="qrcodeImg">
-          <p class="qrCode_text">关注享有会员特权:领福利、交群友</p>
-        </div>
-      </div>
       <!-- 客服通知 -->
-      <srcoll :data="clientServiceList" v-else-if="isShowTab===2">
+      <scroll :data="clientServiceList" v-else-if="isShowTab===2">
         <ul v-if="isClientListFlag"  class="message_list">
           <li class="item vux-1px-b" @click="ChatToClient" >
             <div class="info_message">
@@ -145,8 +135,7 @@
           </li>
           <p v-show="!clientServiceList.length" class="noContent">未有访客留言</p>
         </ul>
-     
-      </srcoll>
+      </scroll>
       <!-- 通知 -->
       <scroll :data="captainMessageList" v-else-if="isShowTab==3">
         <ul class="message_list" style="margin-top:0.4rem" >
@@ -893,16 +882,17 @@
       color: #fff;
     }
   }
-  .message_content {
+  .message_wrapper {
     width: 100%;
     flex-grow: 1;
-    overflow-y: auto;
+    // overflow-y: auto;
     // position: relative;
     .list-wrapper{
     position: relative;
 
     }
     .message_list {
+      // height: 100%;
       padding: 0 0.2667rem;
       .dot {
         .dot(0.1333rem, 0.4267rem);

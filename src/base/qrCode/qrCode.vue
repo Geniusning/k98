@@ -4,11 +4,11 @@
     <div v-transfer-dom>
           <x-dialog v-model="qrIsShow" class="dialog-demo">
             <div  class="bindTel_wrapper">
-              <h3 class="title">{{title}}</h3>
+              <h3 class="title">{{qrCodeTextObj.title}}</h3>
               <img onclick="return false" src="../../assets/image/close.png" alt="" class="close" @click="cancel">
               <div class="validate_box">
                   <img :src="qrUrl" alt="" class="qrCode">
-                  <p class="desc">长按关注享受会员特权：领福利、交朋友</p>
+                  <p class="desc">{{qrCodeTextObj.bottomText}}</p>
               </div>
             </div>
           </x-dialog>
@@ -18,29 +18,25 @@
 
 <script type='text/ecmascript-6'>
 import { XDialog, XButton, TransferDomDirective as TransferDom } from "vux";
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations,mapState } from "vuex";
 import api from 'common/api.js'
+import Bus from 'common/bus.js'
 export default {
   directives: {
     TransferDom
   },
   data() {
     return {
-        qrUrl:""
+        qrUrl:"",
     };
-  },
-  props:{
-    title:{
-      type:String,
-      default:'长按关注公众号'
-    },
-    
   },
   mounted() {
       this._getQrCode()
+     
   },
   computed: {
-    ...mapGetters(["qrIsShow"])
+    ...mapState(["qrCodeTextObj"]),
+    ...mapGetters(["qrIsShow"]),
   },
   methods: {
     //手机验证取消事件
@@ -77,9 +73,10 @@ export default {
   position: relative;
   .title {
     padding-top: 0.72rem;
-    font-size: 0.4533rem;
-    color: #fff;
+    font-size: 14px;
+    color: #333;
     text-shadow:5px 5px 5px #ccc;
+    text-align: center;
   }
   .close {
     position: absolute;

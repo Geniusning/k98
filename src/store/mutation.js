@@ -3,6 +3,10 @@ import util from "common/util";
 import router from '../router/index.js';
 
 const mutations = {
+    //修改二维码上下文字
+    [types.CHANGEQRCODETEXT](state,data){
+        state.qrCodeTextObj = data
+    },
     //保存二维码
     [types.SAVEQRCODE](state,qrcode){
         state.qrCode = qrcode

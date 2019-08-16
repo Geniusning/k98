@@ -1,5 +1,7 @@
 
 // export const TESTSEXTYPE  = "TESTSEXTYPE"
+//修改二维码图片上下文字
+export const CHANGEQRCODETEXT = "CHANGEQRCODETEXT"
 //保存二维码
 export const SAVEQRCODE = "SAVEQRCODE"
 //客服消息推送

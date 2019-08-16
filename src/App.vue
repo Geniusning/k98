@@ -202,7 +202,7 @@
       </div>
     </div>
     <friendPanel v-if="friendPanelFlag"></friendPanel>
-    <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
+    <qrCode v-show="qrIsShow"></qrCode>
     <transition name="appear">
       <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
     </transition>

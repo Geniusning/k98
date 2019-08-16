@@ -43,21 +43,21 @@ new Vue({
         this.loadRecommends(); //获取店长推荐
         this.loadMutualEvents() //统计约战送礼点赞
         this.loadL98otherSetting() //加载控制开关
-        // window.addEventListener("unload", (e) => {
-        //     localStorage.setItem("unload","1234")
-        // });
+        window.addEventListener("unload", (e) => {
+            localStorage.clear() //清楚所有缓存
+        });
     },
     methods: {
         //创建长连接
         createWebsocket() {
-            let windowUrL = window.location.href;
-            let index = windowUrL.indexOf('.com');
-            let shareurl = windowUrL.slice(0, index);
-            let websocketUrl = shareurl.slice(8);
-            this.connectUrl = `wss://${websocketUrl}.com/api/ws`
-            this.websock = new WebSocket(this.connectUrl);
-            this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
+            // let windowUrL = window.location.href;
+            // let index = windowUrL.indexOf('.com');
+            // let shareurl = windowUrL.slice(0, index);
+            // let websocketUrl = shareurl.slice(8);
+            // this.connectUrl = `wss://${websocketUrl}.com/api/ws`
+            // this.websock = new WebSocket(this.connectUrl);
+            // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
+            this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },

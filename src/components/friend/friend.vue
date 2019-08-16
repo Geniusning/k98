@@ -18,6 +18,7 @@
        @heartBeat="thumbHeartBeat" 
        @showAblum="showAblum" 
        @firstData="listenFirstdata"
+       @limitTimes="listenGiveThumbLimitTimes"
        >
        暂时没有好友</stack>
       <div class="loading-container" v-show="!someList.length">
@@ -123,15 +124,6 @@
       
       return {
         isAlreadyFriend:false,  
-        imgs: [{
-            url: 'http://covteam.u.qiniudn.com/ka2.jpg',
-            title: 'pic1'
-          },
-          {
-            url: 'http://covteam.u.qiniudn.com/poster.png',
-            title: 'pic2'
-          }
-        ],
         showAblumFlag:false,//展示生活照
         sortType: 0, //排序类型
         currentSortIndex:null,
@@ -196,9 +188,9 @@
         ],
         someList: [],
         friendId: "",
-
-          visible: 3,
-          currentPage: 0,
+        visible: 3,
+        currentPage: 0,
+        limitPlayGameTimes:20
       };
     },
     //路由判断，判断是场内还是场外1场内2场外
@@ -327,8 +319,7 @@
       },
       //监听右滑心跳
       thumbHeartBeat(data){
-        console.log("heartBeat--------------")
-        console.log()
+        console.log("heartBeat--------------",data)
         this.$refs.thumbHeartBeat.className = "heartBeat"
         setTimeout(() => {
            this.$refs.thumbHeartBeat.className = ""
@@ -356,12 +347,25 @@
           this.MutationGetMoreFriendList(res.candidates);
         })
       },
+      //监听点赞次数
+      listenGiveThumbLimitTimes(times){
+        this.giveThumbsTimes = times
+        console.log("times---------",this.giveThumbsTimes)
+      },
       //点赞
       giveThumb(position) {
         // this.position = position;
-        if(!this.userInfo.isSubscribe){
-          this.showQrcode(true);
-          return
+        // if(!this.userInfo.isSubscribe){
+        //   this.showQrcode(true);
+        //   return
+        // }
+        if(this.giveThumbsTimes<1){
+           this.changeQrCodeText({
+                title:"游客限制次数用完、长按关注、获更多特权",
+                bottomText:"会员特权:交朋友、领福利、打比赛"
+              })
+           this.showQrcode(true);
+           return 
         }
         api.makeFriend(this.xid).then(res => {
           console.log('giveThumb----',res);
@@ -406,7 +410,12 @@
       },
       //玩游戏
       playGame() {
-        if(!this.userInfo.isSubscribe){ //未关注不给约战
+        this.limitPlayGameTimes--
+        if(this.limitPlayGameTimes<1 || this.userInfo.isSubscribe){ //未关注不给约战
+            this.changeQrCodeText({
+                title:"游客限制次数用完、长按关注、获更多特权",
+                bottomText:"会员特权:交朋友、领福利、打比赛"
+              })
            this.showQrcode(true);
            return
         }
@@ -473,6 +482,7 @@
         // getMoreFriendList: "get_moreFriendList" //获取更多候选人
       }),
       ...mapMutations({
+        changeQrCodeText:"CHANGEQRCODETEXT",
         changeFriIcon:"CHANGEFRIENDICON",//回赞后更改好友页面图标
         changeSexType: "CHANGESEXTYPE", //改变拉取候选人性别参数
         MutationGetMoreFriendList: "GET_MOREFRIENDlIST", //获取更多候选人
