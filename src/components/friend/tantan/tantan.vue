@@ -174,7 +174,7 @@
           if (res.errCode === 0) {
             this.$emit("heartBeat", this.friendData);
           } else if (res.errCode === 1023) {
-            this.showQrcode(true);
+            // this.showQrcode(true);
           } else if (res.errCode == 1001) { //已经点赞过了
             // this.alreadySendThumbFlag = true
           } else if (res.errCode == 1002) { //已经是朋友了
@@ -278,7 +278,8 @@
       nextTick() {
         //虚假每天限制20次
         console.log("this.limitTimes------",this.limitTimes)
-        if(this.limitTimes<1 || this.userInfo.isSubscribe){
+        if(this.limitTimes<1){
+          if(!this.userInfo.isSubscribe){
             if(this.limitFlag){
               this.limitFlag = !this.limitFlag;
               this.changeQrCodeText({
@@ -288,6 +289,7 @@
               this.showQrcode(true)
               // this.$vux.toast.text('每天限20次点赞交友机会。当天已用完，明天再来', 'middle')
             }
+          }
         }
         // 记录最终滑动距离
         this.lastPosWidth = this.poswidth;

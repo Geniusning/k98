@@ -120,7 +120,7 @@
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
           <input type="text" ref="sendInputRef" placeholder="请输入..." id="send_message" class="send_message" @focus="inputFocus" v-model="input_value">
-          <div @click="send" ref="sendBtn"  class="action_box clearfix" :class="{active:flag}">
+          <div @click="send"  ref="sendBtn"  class="action_box clearfix" :class="{active:flag}">
             <img src="../../assets/image/plane.png" alt class="icon_plane fl">
             <span class="send fl" ref="send">发送</span>
           </div>
@@ -668,9 +668,15 @@
         })
         
       },
-  
+      // iosTouch(e){
+      //   //  e.preventDefault();   
+      //   //  e.stopPropagation();  
+      //    document.getElementById("send_message").focus();
+      //    console.log("touch")
+      // },
       //发送消息事件
       send() {
+       
         if(util.isAndroid() && this.dontFocus){
           this.dontFocus = true
           document.getElementById("send_message").focus();
@@ -717,13 +723,15 @@
         this.input_value = "";
          this.$nextTick(function() {
             let childNodes = this.$refs.chatList.childNodes;
-            let chatListHeight = 0;
-            childNodes.forEach(item => {
-              chatListHeight += item.clientHeight
-            })
-            this.scrollHeight = chatListHeight;
+            // let chatListHeight = 0;
+            // childNodes.forEach(item => {
+            //   chatListHeight += item.clientHeight
+            // })
+            // this.scrollHeight = chatListHeight;
             this.$refs.listView.refresh()
-            this.$refs.listView.scrollTo(0, -this.scrollHeight);
+            this.$refs.listView.scrollBy(0, -(childNodes[0].clientHeight));
+            this.$refs.chatWrapper.scrollIntoView(false)
+            // this.$refs.listView.scrollTo(0, -this.scrollHeight);
           })     
        
       },
@@ -886,10 +894,10 @@
           this.showTab = false;
         }
       },
-      inputFocus() {
+      inputFocus() { 
         setTimeout(() => {
-          this.$refs.input_wrapper.scrollIntoView(true)
-          this.$refs.chatWrapper.scrollIntoView(true)
+          this.$refs.input_wrapper.scrollIntoView(false)
+          this.$refs.chatWrapper.scrollIntoView(false)
         }, 200);
         this.dontFocus = true
         this.emotionShow = false;

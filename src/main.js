@@ -43,9 +43,9 @@ new Vue({
         this.loadRecommends(); //获取店长推荐
         this.loadMutualEvents() //统计约战送礼点赞
         this.loadL98otherSetting() //加载控制开关
-        window.addEventListener("unload", (e) => {
+        window.addEventListener("unload", () => {
             localStorage.clear() //清楚所有缓存
-        });
+        })
     },
     methods: {
         //创建长连接
@@ -157,10 +157,6 @@ new Vue({
                     })
                 }
                 this.judgeMessType('message')
-            }//处理客服消息
-            else if(result.msgCode === 20){
-                var message = result.content
-                this.appendClientLastMsg(message);
             }
             //处理好友点赞事件
             else if (result.msgCode === 2) {
@@ -248,7 +244,6 @@ new Vue({
         //创建二维码
         createQrcode() {
             api.loadAllQrcode().then(res => { //没有创建过二维码才创建
-                console.log("二维码-----------------",res)
                 this.saveQrCode(res.urls[0])
                 if (!res.urls.length || !res.urls) {
                     api.createQrcode().then(res => {
@@ -286,11 +281,10 @@ new Vue({
             })
         },
         ...mapMutations({
-            saveQrCode:"SAVEQRCODE",//保存二维码
+            saveQrCode: "SAVEQRCODE",
             getRecommentList: "GET_RECOMMENTLIST", //获取店长推荐
             connect_websocket: "CONNECT_WEBSOCKET",
             appendLastMsg: "UPDATE_CHATLIST",
-            appendClientLastMsg: "UPDATE_CLIENTMSG",
             updateValue: "UPDATE_INPUTVALUE",
             addBange: "ADD_BADGE",
             compareLastMsg: "COMPARE_LASTMESS",

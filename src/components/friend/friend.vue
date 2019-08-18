@@ -190,7 +190,7 @@
         friendId: "",
         visible: 3,
         currentPage: 0,
-        limitPlayGameTimes:20
+        limitPlayGameTimes:10
       };
     },
     //路由判断，判断是场内还是场外1场内2场外
@@ -360,12 +360,14 @@
         //   return
         // }
         if(this.giveThumbsTimes<1){
-           this.changeQrCodeText({
-                title:"游客限制次数用完、长按关注、获更多特权",
-                bottomText:"会员特权:交朋友、领福利、打比赛"
-              })
-           this.showQrcode(true);
-           return 
+          if(!this.userInfo.isSubscribe){
+            this.changeQrCodeText({
+                 title:"游客限制次数用完、长按关注、获更多特权",
+                 bottomText:"会员特权:交朋友、领福利、打比赛"
+               })
+            this.showQrcode(true);
+            return 
+          }
         }
         api.makeFriend(this.xid).then(res => {
           console.log('giveThumb----',res);
@@ -411,13 +413,15 @@
       //玩游戏
       playGame() {
         this.limitPlayGameTimes--
-        if(this.limitPlayGameTimes<1 || this.userInfo.isSubscribe){ //未关注不给约战
-            this.changeQrCodeText({
-                title:"游客限制次数用完、长按关注、获更多特权",
-                bottomText:"会员特权:交朋友、领福利、打比赛"
-              })
-           this.showQrcode(true);
-           return
+        if(this.limitPlayGameTimes<1){ //未关注提示扫码关注
+            if(!this.userInfo.isSubscribe){
+              this.changeQrCodeText({
+                  title:"游客限制次数用完、长按关注、获更多特权",
+                  bottomText:"会员特权:交朋友、领福利、打比赛"
+                })
+              this.showQrcode(true);
+              return
+            }
         }
         api.sentPlayGameMsg(this.friendId).then(res => {
           console.log('约战返回--------', res)
@@ -438,7 +442,7 @@
             }, 2000);
             return;
           }else if(res.errCode == 1089){
-             this.$vux.toast.text('每天限3次约战机会。当天已用完，明天再来', 'middle')
+             this.$vux.toast.text('每天限20次约战机会。当天已用完，明天再来', 'middle')
           }
         })
       },
