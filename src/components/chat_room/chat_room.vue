@@ -5,7 +5,18 @@
         <div class="back_box">
           <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
         </div>
-        <div class="name">{{staticChatFriendObj.nickname}}</div>
+        <div class="name">
+            <div class="sex_box">
+              <img v-if="staticChatFriendObj.sex===2" src="../../assets/image/female.png" alt="">
+              <img v-else  src="../../assets/image/male.png" alt="">
+            </div>
+            {{staticChatFriendObj.nickname}}
+            <div class="online_status">
+               <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
+               <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
+               <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
+            </div>
+        </div>
         <div class="backHome_box">
           <img onclick="return false" src="../../assets/image/chat_home.png" alt class="home" @click="goHome">
         </div>
@@ -357,15 +368,14 @@
 // });
     },
     activated() {
-       console.log(window.innerHeight)
-      console.log("activated---------------")
+       console.log("this.staticChatFriendObj-----------",this.staticChatFriendObj)
       if (!localStorage.getItem('friendInfo')) { //解决微信内置浏览器刷新获得好友信息
         localStorage.setItem('friendInfo', JSON.stringify(this.staticChatFriendObj));
       } else {
         let friendInfo = JSON.parse(localStorage.getItem('friendInfo'));
         this.setChatFriend(friendInfo)
       }
-      this.sendingTimes = localStorage.getItem(this.staticChatFriendObj.openid)?localStorage.getItem(this.staticChatFriendObj.openid):0   //获取发送给当前好友信息次数
+      this.sendingTimes = sessionStorage.getItem(this.staticChatFriendObj.openid)?sessionStorage.getItem(this.staticChatFriendObj.openid):0   //获取发送给当前好友信息次数
       if (!(JSON.stringify(this.$route.query) === "{}")) {
         this.setChatFriend(this.$route.query.info);
       }
@@ -421,7 +431,7 @@
     },
     deactivated() {
       Bus.$off();
-      localStorage.setItem(this.staticChatFriendObj.openid, this.sendingTimes); //保存对应好友发送信息次数
+      sessionStorage.setItem(this.staticChatFriendObj.openid, this.sendingTimes); //保存对应好友发送信息次数
       this.setChatFriend({});//清除vuex里面保存的聊天好友对象
       localStorage.removeItem('friendInfo');//清除缓存中对应的好友信息，避免每次进入聊天页面都是同一个好友
       this.endCursor = null;
@@ -457,6 +467,17 @@
         api.respondForGift(giftParam).then(res => {
           console.log('送礼操作结果-------------------', res);
           if (res.errCode == 0) {
+            if(flag){
+              setTimeout(() => {
+                if(!this.userInfo.isSubscribe){
+                    this.changeQrCodeText({
+                        title:"长按关注，每天获签到积分及更多特权",
+                        bottomText:"会员特权:领福利、交群友、参活动"
+                      })
+                    this.showQrcode(true)
+                } 
+              }, 1000);
+            }
             this.componentChatList.forEach(item => {
               if (giftParam.chatMsgID == item.chatMsgID) {
                 item.isHandled = true
@@ -668,15 +689,8 @@
         })
         
       },
-      // iosTouch(e){
-      //   //  e.preventDefault();   
-      //   //  e.stopPropagation();  
-      //    document.getElementById("send_message").focus();
-      //    console.log("touch")
-      // },
       //发送消息事件
-      send() {
-       
+     send() {
         if(util.isAndroid() && this.dontFocus){
           this.dontFocus = true
           document.getElementById("send_message").focus();
@@ -723,15 +737,13 @@
         this.input_value = "";
          this.$nextTick(function() {
             let childNodes = this.$refs.chatList.childNodes;
-            // let chatListHeight = 0;
-            // childNodes.forEach(item => {
-            //   chatListHeight += item.clientHeight
-            // })
-            // this.scrollHeight = chatListHeight;
+            let chatListHeight = 0;
+            childNodes.forEach(item => {
+              chatListHeight += item.clientHeight
+            })
+            this.scrollHeight = chatListHeight;
             this.$refs.listView.refresh()
-            this.$refs.listView.scrollBy(0, -(childNodes[0].clientHeight));
-            this.$refs.chatWrapper.scrollIntoView(false)
-            // this.$refs.listView.scrollTo(0, -this.scrollHeight);
+            this.$refs.listView.scrollTo(0, -this.scrollHeight);
           })     
        
       },
@@ -908,6 +920,7 @@
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         updateChatList: "UPDATE_CHATLIST",
         showQrcode: "SHOW_QRCODE", //暂时二维码
+        changeQrCodeText:"CHANGEQRCODETEXT",
         updateValue: "UPDATE_INPUTVALUE",
         changeCursor: "CHANGE_CURSOR",
         getGiftList: "GET_GIFTLIST" //获取礼物
@@ -1021,6 +1034,26 @@
       .name {
         color: #333;
         font-size: 0.4267rem;
+        display: flex;
+        justify-content: space-between;
+        .sex_box{
+          margin-right: .2rem;
+          padding-top: .05rem;
+          width: 0.4rem;
+          img{
+            width: 100%;
+          }
+        }
+        .online_status{
+          display: flex;
+          .online_dot{
+            padding-top: 0.1333rem;
+            width: .4rem;
+            height: .4rem;
+          }
+          .friendStatus{}
+          .roomNum{}
+        }
       }
       .backHome_box {
         .home {

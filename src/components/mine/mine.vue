@@ -49,7 +49,7 @@
         </ul>
       </div>
       <!-- 福利 -->
-      <div class="welfare_wrapper">
+      <div class="welfare_wrapper" v-if="sendGiftList.length">
         <h2 class="jiFen_title">
           积分换礼品
           <span class="star">#</span>

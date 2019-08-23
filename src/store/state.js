@@ -1,4 +1,8 @@
 const state = {
+    focusThumbTimes:30,   //关注的用户点赞次数
+    unfocusThumbTimes:10,//未关注用户的点赞次数
+    focusPlayTimes:30,  //关注用户的约战次数
+    unfocusPlayTimes:10, //未关注用户的约战次数
     qrCodeTextObj:{
         title:"长按关注公众号",
         bottomText:"长按关注享受会员特权：领福利、交朋友"

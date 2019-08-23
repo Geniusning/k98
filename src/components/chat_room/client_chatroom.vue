@@ -5,7 +5,18 @@
         <div class="back_box">
           <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
         </div>
-        <div class="name">{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:"客服小哥"}}</div>
+        <div class="name">
+          <div class="sex_box">
+              <img v-if="staticChatFriendObj.sex===2" src="../../assets/image/female.png" alt="">
+              <img v-else  src="../../assets/image/male.png" alt="">
+          </div>
+          <span>{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:"客服小哥"}}</span>
+          <div class="online_status">
+              <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
+              <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
+              <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
+          </div>
+        </div>
         <div class="backHome_box">
           <img onclick="return false" src="../../assets/image/chat_home.png" alt class="home" @click="goHome">
         </div>
@@ -671,6 +682,34 @@
       .name {
         color: #333;
         font-size: 0.4267rem;
+        text-align: center;
+        // position: relative;
+        display: flex;
+        justify-content: space-between;
+        .sex_box{
+          // position: absolute;
+          // left: -.7rem;
+          width: 0.4rem;
+          margin-right: 0.2333rem;
+          padding-top: .05rem;
+          img{
+            width: 100%;
+          }
+        }
+        .online_status{
+          // margin-left: .2rem;
+          display: flex;
+          .online_dot{
+            padding-top: 0.1333rem;
+            width: .4rem;
+            height: .4rem;
+          }
+          .friendStatus{}
+          .roomNum{
+            padding-top: 0.08rem;
+            font-size: 14px;
+          }
+        }
       }
       .backHome_box {
         .home {

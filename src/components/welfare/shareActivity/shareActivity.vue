@@ -56,7 +56,7 @@
           link: `${this.shareUrl}k98/shareActivity?activityID=${this.activityID}&visitType=5`,
           imgUrl: `${this.shopSettingInfo.image}`
         };
-        util._getJssdkInfo(shareObj, this.myShareUrl, 20,this.shareGetJifen);
+        util._getJssdkInfo(shareObj, this.myShareUrl, 20,"activity",this.shareGetJifen);
       } else {
         let shareObj = {
           title: "活动通知",
@@ -64,7 +64,7 @@
           link: `${this.shareUrl}k98/shareActivity?activityID=${this.activityID}&visitType=5`,
           imgUrl: `${this.shopSettingInfo.image}`
         };
-        util._getJssdkInfo(shareObj, this.myShareUrl, 20,this.shareGetJifen);
+        util._getJssdkInfo(shareObj, this.myShareUrl, 20,"activity",this.shareGetJifen);
       }
     },
      beforeRouteEnter(to, from, next) {
@@ -85,8 +85,8 @@
     },
     methods: {
       //分享获得积分
-      shareGetJifen(amount) {
-        api.shareToGetIntegral(amount).then(res => {
+      shareGetJifen(amount,shareType) {
+        api.shareToGetIntegral(amount,shareType).then(res => {
           if (res.errCode == 1030) {
             alert('分享已上限，每天最多分享2次获得积分');
           }

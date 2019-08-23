@@ -250,7 +250,7 @@
       };
     },
     computed: {
-      ...mapState(["friendPanelFlag", "inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo", "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo"]),
+      ...mapState(["userInfo","friendPanelFlag", "inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo", "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo"]),
       ...mapGetters(["qrIsShow"]),
     },
     created() {
@@ -456,6 +456,13 @@
             //重新拉取约战，送礼，点赞列表
             this._loadMutualEvents();
             this.isMakeFriendBool = true;
+            if(!this.userInfo.isSubscribe){
+              this.changeQrCodeText({
+                    title:"长按关注，每天获签到积分及更多特权",
+                    bottomText:"会员特权:领福利、交群友、参活动"
+                  })
+              this.showQrcode(true)
+            }
           }
         });
         this.isShowGiftPanel = false;
@@ -478,6 +485,13 @@
             //重新拉取约战，送礼，点赞列表
             // this._loadMutualEvents();
             this.isMakeFriendBool = true;
+            if(!this.userInfo.isSubscribe){
+              this.changeQrCodeText({
+                    title:"长按关注，每天获签到积分及更多特权",
+                    bottomText:"会员特权:领福利、交群友、参活动"
+                  })
+              this.showQrcode(true)
+            }
           }
         });
         this.isShowGiftPanel = false;
@@ -610,10 +624,11 @@
         // updateChatList: "UPDATE_CHATLIST",//更新聊天列表
         changeFriPanelFlag: "CHANGEFRIENDPANELFLAG", //更改匹配成功flag
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
-        showQrcode: "SHOW_QRCODE", //展示二维码
         addGiftInfo: "ADD_GIFTINFO",
         CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数
         addBange: "ADD_BADGE",
+        changeQrCodeText:"CHANGEQRCODETEXT",
+        showQrcode: "SHOW_QRCODE", 
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
@@ -746,7 +761,8 @@
         console.log('topUpGameInfo-------------', newValue)
         this.judgeEveryBool(true, true, false, false);
       },
-      $route: function(newValue) {
+      $route: function(newValue,oldValue) {
+        console.log("$route---------",oldValue)
         if(newValue.name == "message" || 
         newValue.name==="chat" ||
         newValue.name==="clientChat"||

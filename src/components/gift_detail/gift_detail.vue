@@ -115,6 +115,10 @@
             })
           }
           if(!this.userInfo.isSubscribe){
+             this.changeQrCodeText({
+                  title:"长按关注，积分在握,可换礼物/门店项目",
+                  bottomText:"会员特权:领福利、交群友、参活动"
+                })
             this.showQrcode(true);
           }
           
@@ -159,6 +163,7 @@
         });
       },
       ...mapMutations({
+        changeQrCodeText:"CHANGEQRCODETEXT",
         getUserInfo: "GET_USERINFO", //获取用户信息
          showQrcode: "SHOW_QRCODE", //展示二维码
       })

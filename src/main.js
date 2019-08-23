@@ -44,7 +44,7 @@ new Vue({
         this.loadMutualEvents() //统计约战送礼点赞
         this.loadL98otherSetting() //加载控制开关
         window.addEventListener("unload", () => {
-            localStorage.clear() //清楚所有缓存
+            localStorage.removeItem("friendInfo") //清楚缓存
         })
     },
     methods: {
@@ -215,7 +215,6 @@ new Vue({
         _websocketclose(e) {
             //关闭
             console.log("websocket关闭-----------", e)
-            localStorage.clear() //清楚所有缓存
             this.reconnectWebsocket() //重连
         },
         //拉取积分换礼品列表

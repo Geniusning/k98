@@ -13,12 +13,11 @@
       </div>
       <!-- 相册··················································begin -->
       <!-- 相册··················································end -->
-      <stack ref="stack" :pages="someList" :visible="visible" :currentIndex="currentPage"
+      <stack ref="stack" :pages="someList" :visible="visible" :currentIndex="currentPage" 
        @getMoreFriend="sonGetMoreFriend" 
        @heartBeat="thumbHeartBeat" 
        @showAblum="showAblum" 
        @firstData="listenFirstdata"
-       @limitTimes="listenGiveThumbLimitTimes"
        >
        暂时没有好友</stack>
       <div class="loading-container" v-show="!someList.length">
@@ -190,7 +189,6 @@
         friendId: "",
         visible: 3,
         currentPage: 0,
-        limitPlayGameTimes:10
       };
     },
     //路由判断，判断是场内还是场外1场内2场外
@@ -211,7 +209,9 @@
     //   }
     // },
     computed: {
-      ...mapState(["friendList", "inAndOutFriendCursor", "friendListCursor", "giftList", "userInfo", "loadFriendSexType","staticChatFriendObj"]),
+      ...mapState(["friendList", "inAndOutFriendCursor", 
+      "friendListCursor", "giftList", "userInfo", "loadFriendSexType",
+      "staticChatFriendObj","focusThumbTimes","unfocusThumbTimes","focusPlayTimes","unfocusPlayTimes"]),
       ...mapGetters(["qrIsShow"]),
     },
     mounted() {
@@ -347,26 +347,57 @@
           this.MutationGetMoreFriendList(res.candidates);
         })
       },
-      //监听点赞次数
-      listenGiveThumbLimitTimes(times){
-        this.giveThumbsTimes = times
-        console.log("times---------",this.giveThumbsTimes)
-      },
+
       //点赞
       giveThumb(position) {
-        // this.position = position;
-        // if(!this.userInfo.isSubscribe){
-        //   this.showQrcode(true);
-        //   return
-        // }
-        if(this.giveThumbsTimes<1){
-          if(!this.userInfo.isSubscribe){
-            this.changeQrCodeText({
-                 title:"游客限制次数用完、长按关注、获更多特权",
-                 bottomText:"会员特权:交朋友、领福利、打比赛"
-               })
-            this.showQrcode(true);
-            return 
+       //每天限制30次
+          //从本地缓存读取当日约战点赞次数，数据格式 {unfocusThumbTimes:0,focusThumbLimitTimes:0,unfocusPlayTimes:0,focusPlayTimes:0,date:new Date().getDate()}
+        let thumbTimes = localStorage.getItem("thumbTimes")?
+        localStorage.getItem("thumbTimes"):{unfocusThumbTimes:this.unfocusThumbTimes,focusThumbTimes:this.focusThumbTimes,date:new Date().getDate()}
+        let todayDate = new Date().getDate()
+
+        if(typeof thumbTimes === "string"){
+          thumbTimes = JSON.parse(thumbTimes)
+        }
+        console.log("thumbTimes---------",thumbTimes)
+        // 判断未关注用户今天点赞次数是否达到10次，达到10次弹框提醒关注
+        if(!this.userInfo.isSubscribe){  //判断是否关注公众号
+          this.changeUnfocusThumbTimes(-1)
+          if(thumbTimes.date==todayDate && Number(thumbTimes.unfocusThumbTimes)<1){
+            // 当未关注用户点赞次数达到10次，存入缓存
+              thumbTimes["date"] = new Date().getDate()
+              let unfocusThumbNum = Number(thumbTimes.unfocusThumbTimes)
+              unfocusThumbNum--
+              thumbTimes["unfocusThumbTimes"] = unfocusThumbNum
+              localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+              this.changeQrCodeText({
+                  title:"游客仅限10次交友机会，长按关注获取更多特权",
+                  bottomText:"会员特权:领福利、交群友、参活动"
+                })
+              this.showQrcode(true)
+              return 
+          }else{
+             thumbTimes["date"] = new Date().getDate()
+             thumbTimes["unfocusThumbTimes"] = this.unfocusThumbTimes
+             localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+          }
+        }else{
+          this.changeFocusThumbTimes(-1) 
+          // 当已关注用户点赞次数达到30次，存入缓存
+          // 判断已关注用户今天点赞此时是否达到30，达到30次弹框提醒今日点赞次数已用完
+          if(thumbTimes.date==todayDate && Number(thumbTimes.focusThumbTimes)<1){
+            console.log("进来了")
+              thumbTimes["date"] = new Date().getDate()
+              let focusThumbNum = Number(thumbTimes.focusThumbTimes)
+              focusThumbNum--
+              thumbTimes["focusThumbTimes"] = focusThumbNum
+              localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+              this.$vux.toast.text('每天限30次点赞交友机会。当天已用完，明天再来', 'middle')
+              return
+          }else{
+             thumbTimes["date"] = new Date().getDate()
+             thumbTimes["focusThumbTimes"] = this.focusThumbTimes
+             localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
           }
         }
         api.makeFriend(this.xid).then(res => {
@@ -378,7 +409,7 @@
               this.isShowEnvelope = false;
             }, 2000);
           } else if(res.errCode === 1023) {
-            this.showQrcode(true);
+            // this.showQrcode(true);
           } else {
             this.isShowEnvelope = true;
             this.envelopeText = "您已点赞了哦,等待对方回赞成为好友"
@@ -412,16 +443,53 @@
       },
       //玩游戏
       playGame() {
-        this.limitPlayGameTimes--
-        if(this.limitPlayGameTimes<1){ //未关注提示扫码关注
-            if(!this.userInfo.isSubscribe){
+        let playTimes = localStorage.getItem("playTimes")?
+        localStorage.getItem("playTimes"):{unfocusPlayTimes:this.unfocusPlayTimes,focusPlayTimes:this.focusPlayTimes,date:new Date().getDate()}
+        let todayDate = new Date().getDate()
+
+        if(typeof playTimes === "string"){
+          playTimes = JSON.parse(playTimes)
+        }
+        console.log("playTimes---------",playTimes)
+        // 判断未关注用户今天点赞次数是否达到10次，达到10次弹框提醒关注
+        if(!this.userInfo.isSubscribe){  //判断是否关注公众号
+          this.changeUnFocusPlayTimes(-1)
+          if(playTimes.date==todayDate && Number(playTimes.unfocusPlayTimes)<1){
+            // 当未关注用户点赞次数达到10次，存入缓存
+              playTimes["date"] = new Date().getDate()
+              let unFoucusplayNum = Number(playTimes.unfocusPlayTimes)
+              unFoucusplayNum--
+              playTimes["unfocusPlayTimes"] = unFoucusplayNum
+              localStorage.setItem("playTimes",JSON.stringify(playTimes))
               this.changeQrCodeText({
-                  title:"游客限制次数用完、长按关注、获更多特权",
-                  bottomText:"会员特权:交朋友、领福利、打比赛"
+                  title:"游客仅限10次挑战群友机会，长按关注获取更多特权",
+                  bottomText:"会员特权:领福利、交群友、参活动"
                 })
-              this.showQrcode(true);
+              this.showQrcode(true)
+              return 
+          }else{
+             playTimes["date"] = new Date().getDate()
+             playTimes["unfocusPlayTimes"] = this.unfocusPlayTimes
+             localStorage.setItem("playTimes",JSON.stringify(playTimes))
+          }
+        }else{
+          this.changeFocusPlayTimes(-1)
+          // 当已关注用户点赞次数达到30次，存入缓存
+          // 判断已关注用户今天点赞此时是否达到30，达到30次弹框提醒今日点赞次数已用完
+          if(playTimes.date==todayDate && Number(playTimes.focusPlayTimes)<1){
+            console.log("进来了")
+              playTimes["date"] = new Date().getDate()
+              let focusPlayTimes = Number(playTimes.focusPlayTimes)
+              focusPlayTimes--
+              playTimes["focusPlayTimes"] = focusPlayTimes
+              localStorage.setItem("playTimes",JSON.stringify(playTimes))
+              this.$vux.toast.text('每天限30次约战机会。当天已用完，明天再来', 'middle')
               return
-            }
+          }else{
+             playTimes["date"] = new Date().getDate()
+             playTimes["focusPlayTimes"] = this.focusPlayTimes
+             localStorage.setItem("playTimes",JSON.stringify(playTimes))
+          }
         }
         api.sentPlayGameMsg(this.friendId).then(res => {
           console.log('约战返回--------', res)
@@ -442,7 +510,7 @@
             }, 2000);
             return;
           }else if(res.errCode == 1089){
-             this.$vux.toast.text('每天限20次约战机会。当天已用完，明天再来', 'middle')
+            //  this.$vux.toast.text('每天限20次约战机会。当天已用完，明天再来', 'middle')
           }
         })
       },
@@ -486,6 +554,10 @@
         // getMoreFriendList: "get_moreFriendList" //获取更多候选人
       }),
       ...mapMutations({
+        changeUnFocusPlayTimes:"CHANGEUNFOCUSPLAYTIMES",//未关注用户约战次数
+        changeFocusPlayTimes:"CHANGEFOCUSPLAYTIMES",//关注用户约战次数
+        changeUnfocusThumbTimes:"CHANGEUNFOCUSTHUMBTIMES",//未关注用户点赞次数
+        changeFocusThumbTimes:"CHANGEFOCUSTHUMBTIMES",//关注用户点赞次数
         changeQrCodeText:"CHANGEQRCODETEXT",
         changeFriIcon:"CHANGEFRIENDICON",//回赞后更改好友页面图标
         changeSexType: "CHANGESEXTYPE", //改变拉取候选人性别参数

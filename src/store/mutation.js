@@ -3,6 +3,22 @@ import util from "common/util";
 import router from '../router/index.js';
 
 const mutations = {
+    //修改未关注user点赞次数
+    [types.CHANGEUNFOCUSTHUMBTIMES](state,count){
+        state.unfocusThumbTimes += count
+    },
+    //修改关注user点赞次数
+    [types.CHANGEFOCUSTHUMBTIMES](state,count){
+        state.focusThumbTimes += count
+    },
+    //修改未关注user约战次数
+    [types.CHANGEUNFOCUSPLAYTIMES](state,count){
+        state.unfocusPlayTimes += count
+    },
+    //修改关注user约战次数
+    [types.CHANGEFOCUSPLAYTIMES](state,count){
+        state.focusPlayTimes += count
+    },
     //修改二维码上下文字
     [types.CHANGEQRCODETEXT](state,data){
         state.qrCodeTextObj = data
@@ -13,11 +29,25 @@ const mutations = {
     },
     //获取店长推荐
     [types.GET_RECOMMENTLIST](state, recommentList) {
-        state.recommentList = recommentList;
+        let now = new Date().getTime()
+        recommentList.forEach(recomment=>{
+            let endTime = new Date(recomment.coupInfo.endTime).getTime()
+            if(endTime>now){  //判断优惠券是否过期
+                state.recommentList.push(recomment)
+            }
+        })
+        // state.recommentList = recommentList;
     },
     //获取积分换礼品列表
     [types.GET_SENDGIFTLIST](state, sendGiftList) {
-        state.sendGiftList = sendGiftList;
+        let now = new Date().getTime()
+        sendGiftList.forEach(gift=>{
+            let endTime = new Date(gift.coupInfo.endTime).getTime()
+            if(endTime>now){  //判断优惠券是否过期
+                state.sendGiftList.push(gift)
+            }
+        })
+        // state.sendGiftList = sendGiftList;
     },
     //判断消息类型
     [types.JUDGE_MESSTYPE](state, type) {
@@ -78,11 +108,11 @@ const mutations = {
         }
         state.friendList = data.candidates;
         state.friendList.forEach(item => {
-            if (item.info.sex == 1) {
-                item.info.sex = "男";
-            } else {
-                item.info.sex = "女";
-            }
+            // if (item.info.sex == 2) {
+            //     item.info.sex = "女";
+            // } else {
+            //     item.info.sex = "男";
+            // }
 
             let nowTimeStamp = Math.round(new Date().getTime() / 1000);
             let visitTime = nowTimeStamp - item.visitTime;

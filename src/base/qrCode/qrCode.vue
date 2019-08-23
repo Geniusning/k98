@@ -77,6 +77,7 @@ export default {
     color: #333;
     text-shadow:5px 5px 5px #ccc;
     text-align: center;
+    font-weight: 900;
   }
   .close {
     position: absolute;

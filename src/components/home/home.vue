@@ -143,7 +143,7 @@
                                 <img onclick="return false" src="../../assets/image/advertise.png" alt class="advertise" onclick="return false">
                                 <img onclick="return false" src="../../assets/image/close_ad.png" alt class="close" @click="close_adtise">
               </div>-->
-          <div class="welfare_content">
+          <div class="welfare_content" v-if="recommentList.length">
             <ul class="welfare_list" v-if="recommentList.length">
               <li class="item clearfix" v-for="(item,index) in recommentList" :key="index">
                 <div class="left">
@@ -381,7 +381,7 @@
             link: `${this.shareUrl}k98/home?visitType=3`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
-          util._getJssdkInfo(shareObj, this.myShareUrl, 20, this.shareGetJifen);
+          util._getJssdkInfo(shareObj, this.myShareUrl, 20,"activity",this.shareGetJifen);
         } else {
           let shareObj = {
             title: "找朋友",
@@ -389,7 +389,7 @@
             link: `${this.shareUrl}k98/home?visitType=3`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
-          util._getJssdkInfo(shareObj, this.myShareUrl, 20, this.shareGetJifen);
+          util._getJssdkInfo(shareObj, this.myShareUrl, 20,"activity",this.shareGetJifen);
         }
       }, 100);
       this.getAlreadyFriend(); //获取已经成为好友列表
@@ -460,8 +460,8 @@
         }, 10000);
       },
       //分享获得优惠券
-      shareGetJifen(amount) {
-        api.shareToGetIntegral(amount).then(res => {
+      shareGetJifen(amount,shareType) {
+        api.shareToGetIntegral(amount,shareType).then(res => {
           if (res.errCode == 1030) {
             alert('分享已上限，每天最多分享2次获得积分');
           }

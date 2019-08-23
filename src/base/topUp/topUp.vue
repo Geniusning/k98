@@ -380,6 +380,10 @@
         }
         setTimeout(() => {
           if(!this.userInfo.isSubscribe){
+            this.changeQrCodeText({
+                  title:"长按关注，即可兑换门店礼物/门店项目",
+                  bottomText:"会员特权:领福利、交群友、参活动"
+              })
              this.showQrcode(true);
           }
         }, 1000);
@@ -436,6 +440,7 @@
         });
       },
       ...mapMutations({
+         changeQrCodeText:"CHANGEQRCODETEXT",
         showQrcode: "SHOW_QRCODE", //暂时二维码
         getUserInfo: "GET_USERINFO" //获取用户信息
       })

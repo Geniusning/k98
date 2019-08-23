@@ -35,7 +35,7 @@
           <!-- 个人信息 -->
           <div class="userInfo_wrapper">
             <div class="userBox clearfix">
-              <img onclick="return false" src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex=='男'">
+              <img onclick="return false" src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex!=2">
               <img onclick="return false" src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
 
               <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
@@ -88,11 +88,11 @@
       pages: {
         type: Array,
         default: []
-      }
+      },
     },
     data() {
       return {
-        limitTimes:20,
+
         limitFlag:true,
         like: false,
         dislike: false,
@@ -144,7 +144,8 @@
     },
     computed: {
       // ...mapGetters(["friendList"]),
-      ...mapState(["friendListCursor", "userInfo", "tampSexFlag"]),
+      ...mapState(["friendListCursor", "userInfo", "tampSexFlag","focusThumbTimes","unfocusThumbTimes"]),
+
       // 划出面积比例
       offsetRatio() {
         let width = this.$el.offsetWidth;
@@ -165,9 +166,57 @@
     methods: {
       //点赞
       giveThumb(position) {
-        console.log("右滑动-------")
-        this.$emit("limitTimes",this.limitTimes);
-        --this.limitTimes
+         //每天限制30次
+          //从本地缓存读取当日约战点赞次数，数据格式 {unfocusThumbTimes:0,focusThumbLimitTimes:0,unfocusPlayTimes:0,focusPlayTimes:0,date:new Date().getDate()}
+        let thumbTimes = localStorage.getItem("thumbTimes")?
+        localStorage.getItem("thumbTimes"):{unfocusThumbTimes:this.unfocusThumbTimes,focusThumbTimes:this.focusThumbTimes,date:new Date().getDate()}
+        let todayDate = new Date().getDate()
+
+        if(typeof thumbTimes === "string"){
+          thumbTimes = JSON.parse(thumbTimes)
+        }
+        console.log("thumbTimes---------",thumbTimes)
+        // 判断未关注用户今天点赞次数是否达到10次，达到10次弹框提醒关注
+        if(!this.userInfo.isSubscribe){  //判断是否关注公众号
+          this.changeUnfocusThumbTimes(-1)
+          if(thumbTimes.date==todayDate && Number(thumbTimes.unfocusThumbTimes)<1){
+            // 当未关注用户点赞次数达到10次，存入缓存
+              thumbTimes["date"] = new Date().getDate()
+              let unfocusThumbNum = Number(thumbTimes.unfocusThumbTimes)
+              unfocusThumbNum--
+              thumbTimes["unfocusThumbTimes"] = this.unfocusThumbTimes
+              localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+              this.changeQrCodeText({
+                  title:"游客仅限10次交友机会，长按关注获取更多特权",
+                  bottomText:"会员特权:交朋友、领福利、打比赛"
+                })
+              this.showQrcode(true)
+              return 
+          }else{
+             thumbTimes["date"] = new Date().getDate()
+             thumbTimes["unfocusThumbTimes"] = this.unfocusThumbTimes
+             localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+          }
+        }else{
+          this.changeFocusThumbTimes(-1) 
+          // 当已关注用户点赞次数达到30次，存入缓存
+          // 判断已关注用户今天点赞此时是否达到30，达到30次弹框提醒今日点赞次数已用完
+          if(thumbTimes.date==todayDate && Number(thumbTimes.focusThumbTimes)<1){
+              thumbTimes["date"] = new Date().getDate()
+              let focusThumbNum = Number(thumbTimes.focusThumbTimes)
+              focusThumbNum--
+              thumbTimes["focusThumbTimes"] = focusThumbNum
+              localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+              if(this.limitFlag){
+                this.limitFlag = !this.limitFlag;
+                this.$vux.toast.text('每天限30次点赞交友机会。当天已用完，明天再来', 'middle')
+              }
+          }else{
+             thumbTimes["date"] = new Date().getDate()
+             thumbTimes["focusThumbTimes"] = this.focusThumbTimes
+             localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+          }
+        }
         let xid = this.friendData.info.openid
         api.makeFriend(xid).then(res => {
             console.log("api.makeFriend(xid)-----------", res);
@@ -276,21 +325,6 @@
         this.dislike = false;
       },
       nextTick() {
-        //虚假每天限制20次
-        console.log("this.limitTimes------",this.limitTimes)
-        if(this.limitTimes<1){
-          if(!this.userInfo.isSubscribe){
-            if(this.limitFlag){
-              this.limitFlag = !this.limitFlag;
-              this.changeQrCodeText({
-                title:"游客限制次数用完、长按关注、获更多特权",
-                bottomText:"会员特权:交朋友、领福利、打比赛"
-              })
-              this.showQrcode(true)
-              // this.$vux.toast.text('每天限20次点赞交友机会。当天已用完，明天再来', 'middle')
-            }
-          }
-        }
         // 记录最终滑动距离
         this.lastPosWidth = this.poswidth;
         this.lastPosHeight = this.posheight;
@@ -306,6 +340,7 @@
           this.currentLikeIndex = -1
         }
         this.friendData = this.pages[this.currentPage];
+        console.log("friendData-------------------",this.friendData)
         this.currentPage = this.currentPage === this.pages.length - 1 ? 0 : this.currentPage + 1;
         this.backToParentData = this.pages[this.currentPage];
         // console.log("this.friendData----------",this.friendData)
@@ -490,6 +525,8 @@
         }
       },
       ...mapMutations({
+        changeUnfocusThumbTimes:"CHANGEUNFOCUSTHUMBTIMES",//未关注用户点赞次数
+        changeFocusThumbTimes:"CHANGEFOCUSTHUMBTIMES",//关注用户点赞次数
         changeQrCodeText:"CHANGEQRCODETEXT",
         showQrcode: "SHOW_QRCODE", //暂时二维码
       })

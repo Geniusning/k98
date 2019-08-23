@@ -241,11 +241,6 @@
     },
     components: {
       Scroll
-    },
-    watch: {
-      $route(newValue, oldValue) {
-        console.log(newValue);
-      }
     }
   };
 </script>

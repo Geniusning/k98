@@ -4,8 +4,9 @@
     <!-- <scroll> -->
     <div class="scrollBox vux-1px-t">
       <!-- 上传头像 -->
-      <div class="avatar_wrapper clearfix" >
-        <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="" class="pic_avatar fl" ref="avatar">
+      <div class="avatar_wrapper clearfix">
+        <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+          alt="" class="pic_avatar fl" ref="avatar">
         <div @click="updateAvatar" class="upload">
           <p class="upload_title">更换头像、生活照</p>
           <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
@@ -18,15 +19,15 @@
       </div>
       <!-- 头像选择 -->
       <!-- <div class="select_list_wrapper">
-            <h3>候选头像</h3>
-              <ul class="avatar_lsit">
-                  <li><img onclick="return false" src="../../assets/image/avatar3.jpg" alt=""></li>
-                  <li><img onclick="return false" src="../../assets/image/avatar2.jpg" alt=""></li>
-                  <li><img onclick="return false" src="../../assets/image/avatar.jpg" alt=""></li>
-                  <li><img onclick="return false" src="../../assets/image/avatar.jpg" alt=""></li>
-                  <li><img onclick="return false" src="../../assets/image/avatar2.jpg" alt=""></li>
-              </ul>
-          </div> -->
+              <h3>候选头像</h3>
+                <ul class="avatar_lsit">
+                    <li><img onclick="return false" src="../../assets/image/avatar3.jpg" alt=""></li>
+                    <li><img onclick="return false" src="../../assets/image/avatar2.jpg" alt=""></li>
+                    <li><img onclick="return false" src="../../assets/image/avatar.jpg" alt=""></li>
+                    <li><img onclick="return false" src="../../assets/image/avatar.jpg" alt=""></li>
+                    <li><img onclick="return false" src="../../assets/image/avatar2.jpg" alt=""></li>
+                </ul>
+            </div> -->
       <!-- 修改信息 -->
       <div class="userInfo_wrapper">
         <ul class="userInfo_list">
@@ -46,12 +47,12 @@
           </li>
           <li class="item vux-1px-b">
             <span class="item_name">标签</span>
-            <input type="text" class="input_name" v-model="signatureList" disabled >
+            <input type="text" class="input_name" v-model="signatureList" disabled>
             <img onclick="return false" src="../../assets/image/add.png" alt="" class="add" @click="showTag">
           </li>
           <li class="item vux-1px-b">
             <span class="item_name">手机</span>
-            <input type="text" class="input_name" v-model="phone" @blur="blurAdjust"> 
+            <input type="text" class="input_name" v-model="phone" @blur="blurAdjust">
           </li>
           <li class="item_last vux-1px-b">
             <span class="item_name signature">个性签名</span>
@@ -62,8 +63,8 @@
             <!-- 通知权限 -->
             <div class="authority_wrapper">
               <!-- <h4 class="title">通知权限
-                <span class="star">#</span>
-              </h4> -->
+                  <span class="star">#</span>
+                </h4> -->
               <ul class="authority_list">
                 <li style="font-size: 0.3733rem;" class="authorItem">
                   <group style="padding:0">
@@ -129,8 +130,20 @@
 </template>
 
 <script type='text/ecmascript-6'>
-  import {mapState,mapMutations} from "vuex";
-  import {XButton,XHeader,Previewer,PopupPicker,XDialog,TransferDomDirective as TransferDom,Group,XSwitch} from "vux";
+  import {
+    mapState,
+    mapMutations
+  } from "vuex";
+  import {
+    XButton,
+    XHeader,
+    Previewer,
+    PopupPicker,
+    XDialog,
+    TransferDomDirective as TransferDom,
+    Group,
+    XSwitch
+  } from "vux";
   import VueCropper from "vue-cropper";
   import axios from "axios";
   import api from "common/api";
@@ -145,8 +158,8 @@
     },
     data() {
       return {
-        isStealth:null,
-        isQuiet:null,
+        isStealth: null,
+        isQuiet: null,
         signatureList: "",
         title: "最多选5个",
         diyTag: "",
@@ -167,6 +180,7 @@
         path: "",
         resText: "",
         length: "0",
+        onceClick: true,
         sexList: [
           ["男", "女"]
         ],
@@ -201,8 +215,8 @@
     },
     created() {
       this.height = document.body.clientHeight - 50;
-       document.body.addEventListener('focusout', () => { //软键盘关闭事件
-           window.scrollTo(0, 0); //解决ios键盘留白的bug
+      document.body.addEventListener('focusout', () => { //软键盘关闭事件
+        window.scrollTo(0, 0); //解决ios键盘留白的bug
       });
     },
     computed: {
@@ -216,17 +230,17 @@
       this.phone = this.userInfo.phone;
       this.isStealth = this.userInfo.isStealth;
       this.isQuiet = this.userInfo.isQuiet;
-      this.signature = this.userInfo.signature?this.userInfo.signature :this.signature;
+      this.signature = this.userInfo.signature ? this.userInfo.signature : this.signature;
     },
     methods: {
       //隐身状态 上线不通知好友
-      stealth(e){
+      stealth(e) {
         console.log(e)
         this.isStealth = e
       },
       //安静状态，不接受好友的上线通知
-      changeQuiet(e){
-        this.isQuiet =e
+      changeQuiet(e) {
+        this.isQuiet = e
       },
       blurAdjust() {
         window.scrollTo(0, 0);
@@ -341,22 +355,33 @@
           tags: this.signatureList,
           phone: this.phone,
           signature: this.signature,
-          isStealth:this.isStealth,
-          isQuiet:this.isQuiet
+          isStealth: this.isStealth,
+          isQuiet: this.isQuiet
         };
         let strUserInfoParam = JSON.stringify(userInfoParam);
         let decc = new TextEncoder("utf-8");
         let param = decc.encode(strUserInfoParam);
         //保存信息
         api.savePersonalInfo(param).then(res => {
-          console.log(res)
           if (res.errorCode === 0) {
             api.getUserInfo("/api/loadUserInfo").then(res => {
-                console.log(res);
                 this.getuserInfo(res);
                 this.$vux.toast.show({
                   text: "保存成功"
                 });
+                setTimeout(() => {
+                  if (!this.userInfo.isSubscribe) {
+                    if (this.onceClick) {
+                      this.onceClick = false;
+                      this.changeQrCodeText({
+                        title: "长按关注，好友才能联系到你",
+                        bottomText: "会员特权:领福利、交群友、参活动"
+                      })
+                      this.showQrcode(true);
+                      return
+                    }
+                  }
+                }, 500);
               })
               .catch(err => {
                 console.log(err);
@@ -371,7 +396,9 @@
         })
       },
       ...mapMutations({
-        getuserInfo: "GET_USERINFO"
+        getuserInfo: "GET_USERINFO",
+        changeQrCodeText: "CHANGEQRCODETEXT",
+        showQrcode: "SHOW_QRCODE", //暂时二维码
       })
     },
     watch: {
@@ -389,7 +416,7 @@
       Scroll,
       myHeader,
       Group,
-XSwitch
+      XSwitch
     }
   };
 </script>
@@ -445,7 +472,7 @@ XSwitch
           text-decoration: none;
           color: #666;
           display: flex;
-          .upload_title{
+          .upload_title {
             margin-right: 0.1333rem;
             margin-top: -0.08rem;
           }
@@ -552,8 +579,7 @@ XSwitch
               .arrow(0.5rem);
             }
             .authority_wrapper {
-              background-color: #fff;
-              // margin: 0.1333rem 0;
+              background-color: #fff; // margin: 0.1333rem 0;
               .title {
                 // padding: 0 0.4rem;
                 .title();

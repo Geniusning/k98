@@ -245,6 +245,10 @@
       //进入优惠券详情
       selectDiscout(id) {
         if(!this.userInfo.isSubscribe){
+          this.changeQrCodeText({
+                title:"长按关注，以便管理、核销优惠券",
+                bottomText:"会员特权:领福利、交群友、参活动"
+              })
           this.showQrcode(true)
           return
         }
@@ -263,7 +267,8 @@
       },
       onClickBack() {},
       ...mapMutations({
-        changeValidate: "CHANGE_VALIDATE",
+         changeQrCodeText:"CHANGEQRCODETEXT",
+         changeValidate: "CHANGE_VALIDATE",
          showQrcode: "SHOW_QRCODE", //展示二维码
       })
     },

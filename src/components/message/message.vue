@@ -15,6 +15,12 @@
     </div>
     <div class="message_wrapper">
       <!-- 好友 -->
+       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1 || isShowTab==2)) " class="qrCode_wrapper">
+          <img onclick="return false" @click="closeQrCode"  class="close" src="../../assets/image/close.png" alt="">
+          <p class="qrCode_text" style="font-size: 14px">{{isShowTab===2?"长按关注，以便客服应答及时送达给您":"长按关注，以便好友消息及时送达给您"}}</p>
+          <img :src="qrCode" alt="" class="qrcodeImg">
+          <p class="qrCode_text">会员特权:领福利、交群友、参活动</p>
+        </div> 
         <scroll :data='alreadyFriendList' v-if="isShowTab==0">
           <ul class="message_list"  style="margin-top:0.4rem">
             <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList" :key="index">
@@ -40,15 +46,10 @@
                 <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}</span>
               </div>
             </li>
+            <p v-if="!alreadyFriendList.length" class="noFriend">暂无好友</p>
           </ul>
-          <p v-if="!alreadyFriendList.length" class="noFriend">暂无好友</p>
         </scroll>
-        <div v-if="(!userInfo.isSubscribe && isShowQrCode) && (isShowTab==0 || isShowTab==1)" class="qrCode_wrapper">
-          <img onclick="return false" @click="closeQrCode"  class="close" src="../../assets/image/close.png" alt="">
-          <p class="qrCode_text">长按关注，以便收到好友消息!</p>
-          <img :src="qrCode" alt="" class="qrcodeImg">
-          <p class="qrCode_text">关注享有会员特权:领福利、交群友</p>
-        </div> 
+       
       <!-- 新朋友 -->
         <scroll :data='mutualEventsList' v-else-if="isShowTab===1">
           <ul class="newMessage_list" >
@@ -96,11 +97,11 @@
                 </div>
               </div>
             </li>
+            <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
           </ul>
-          <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
         </scroll>
       <!-- 客服通知 -->
-      <scroll :data="clientServiceList" v-else-if="isShowTab===2">
+      <scroll ref="clientScroll" :data="clientServiceList" v-else-if="isShowTab===2">
         <ul v-if="isClientListFlag"  class="message_list">
           <li class="item vux-1px-b" @click="ChatToClient" >
             <div class="info_message">
@@ -390,9 +391,14 @@
         this.isMakeFriendBool = e.target.checked
       },
       selectList(index) {
-        console.log("index--------",index)
+        
         this.isShowTab = index;
-        console.log("this.isShowTab--------",this.isShowTab)
+        if(this.isShowTab===2){
+          this.$nextTick(function(){
+            this.$refs.clientScroll.scrollTo(0,0)
+          })
+        }
+     
       },
       //拉取约战、点赞、送礼列表
       _loadMutualEvents() {
@@ -437,6 +443,15 @@
             this.removeEventList()
             if (flag) {
               this.text = "已感谢";
+              setTimeout(() => {
+                if(!this.userInfo.isSubscribe){
+                this.changeQrCodeText({
+                      title:"长按关注，每天获签到积分及更多特权",
+                      bottomText:"会员特权:领福利、交群友、参活动"
+                    })
+                this.showQrcode(true)
+                } 
+              }, 1000);
             } else {
               this.text = "已拒接";
             }
@@ -565,6 +580,8 @@
         // clearChallengeGameList: "CLEAR_CHALLENGEGAMELIST",//清空约战记录
         addBandge: "ADD_BADGE", //动态变化未读消息数量
         getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量
+        changeQrCodeText:"CHANGEQRCODETEXT",
+        showQrcode: "SHOW_QRCODE", 
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
@@ -1177,6 +1194,7 @@
       text-align: center;
       background-color: rgba(0, 0, 0, .4);
       padding: .2rem 0;
+      z-index: 1;
       .close{
         width: 1rem;
         height: 1rem;
@@ -1189,6 +1207,7 @@
         width: 100%;
         text-align: center;
         color: #fff;
+        font-size: 12px;
       }
       .qrcodeImg{
         width: 4rem;
