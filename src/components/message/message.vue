@@ -111,7 +111,7 @@
               </div>
               <div class="name_and_message">
                 <p class="name">客服小哥</p>
-                <p class="captainMessage">欢迎光临! 请留言，我将尽快回复您</p>
+                <p class="captainMessage">欢迎光临! 有任何问题或建议，请留言</p>
                 <p class="time"> {{clientObj.lastMsg?clientObj.lastMsg.stime.slice(8,10)==today?clientObj.lastMsg.stime.slice(10,16):clientObj.lastMsg.stime.slice(5,10):""}}</p>
               </div>
             </div>
@@ -126,7 +126,7 @@
               </div>
               <div class="name_and_message">
                 <p class="name">{{item.nickname?item.nickname:"客服小哥"}}</p>
-                <p class="captainMessage">{{userInfo.role?"请查看用户留言消息":"欢迎光临! 请留言，我将尽快回复您"}}</p>
+                <p class="captainMessage">{{userInfo.role?"请查看用户留言消息":"欢迎光临! 有任何问题或建议，请留言"}}</p>
                 <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p>
                 <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
                 <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
@@ -337,13 +337,13 @@
         var unReadCount = 0;
         api.loadClientServiceList(phone).then(res => {
           console.log("客服----------------",res)
-          if(res.CliSerID && !res.uerInfos){
+          if(res.CliSerID && !res.uerInfos){  //用户进入
             this.isClientListFlag = true
             this.clientTitleFlag = true
             this.clientObj = res
             unReadCount = this.clientObj.unReadMsgCount
             this.clientObj.lastMsg.stime =util.timestampToTime(res.lastMsg.stime)
-          }else{
+          }else{ //客服进入
             this.customerObj = res
             var tempArr = res.uerInfos
             if(tempArr.length>0){

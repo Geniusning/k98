@@ -51,7 +51,7 @@
             <div class="more">
               <ul class="fri_list" v-show="friendList.length>3">
                 <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList" :key="index">
-                  <img onclick="return false" :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                  <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg"
                     class="min_avatar" />
                 </li>
               </ul>
@@ -312,6 +312,7 @@
         isGiftPanel: false,
         hiddenTelescope: true,
         isFirstLoad: false,
+        defaultAvatarImg:require("../../assets/image/avatar1.jpeg")
       };
     },
     created() {
@@ -349,23 +350,10 @@
       this._loadPublishArenas(); //拉取已经发布的比赛场
       //this._loadFriendEvts(); //获取好友事件列表
       //this.getFriendGift(); //获取好友送礼列表6
-      //监听摇色蛊动画
-      // setInterval(() => {
-      //   this.$refs.iconAnimation.className = "icon animations fl"
-      // }, 5000)
-      // this.$refs.iconAnimation.addEventListener('webkitAnimationEnd', () => {
-      //   this.$refs.iconAnimation.className = "icon fl"
-      //   console.log('动画结束啦')
-      // }, false);
       //监听望眼镜动画leftCirclePart
       this.$refs.leftCirclePart.addEventListener('webkitAnimationEnd', () => {
         this.hiddenTelescope = false; //隐藏望眼镜扇形动画
       }, false);
-      // 圆圈动画
-      // this.renderCircle();
-      // setTimeout(() => {
-      //   this.openCircle();
-      // }, 1000);
     },
     activated() {
       this.loadClientServiceList()
@@ -1033,14 +1021,16 @@
         height: 3.4rem;
         border-radius: 50%;
         position: absolute;
+        overflow: hidden;
         .leftCirclePart,.leftCirclePartIphoneX,
         .rightCirclePart {
           position: absolute;
           width: 50%;
           height: 100%;
           top: 0;
+          overflow: hidden;
         }
-        .leftCirclePart,.leftCirclePartIphoneX {
+        .leftCirclePart {
           left: -0.0167rem;
           border-radius: 50% 0 0 50%;
           overflow: hidden;

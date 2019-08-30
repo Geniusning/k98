@@ -46,18 +46,21 @@ new Vue({
         window.addEventListener("unload", () => {
             localStorage.removeItem("friendInfo") //清楚缓存
         })
+        setTimeout(() => { //13秒过后如果用户没有离开系统则把用户放入待被邀请游戏队列
+            this.addWaitingCombatList()
+        }, 13000);
     },
     methods: {
         //创建长连接
         createWebsocket() {
-            // let windowUrL = window.location.href;
-            // let index = windowUrL.indexOf('.com');
-            // let shareurl = windowUrL.slice(0, index);
-            // let websocketUrl = shareurl.slice(8);
-            // this.connectUrl = `wss://${websocketUrl}.com/api/ws`
-            // this.websock = new WebSocket(this.connectUrl);
-            // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
+            let windowUrL = window.location.href;
+            let index = windowUrL.indexOf('.com');
+            let shareurl = windowUrL.slice(0, index);
+            let websocketUrl = shareurl.slice(8);
+            this.connectUrl = `wss://${websocketUrl}.com/api/ws`
+            this.websock = new WebSocket(this.connectUrl);
+            this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
+            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },
@@ -83,6 +86,12 @@ new Vue({
                 }, 5000);
                 this.limitTimes++
             }
+        },
+        //成为待被邀请队列成员
+        addWaitingCombatList(){
+            api.addWaitingCombatList().then(res=>{
+                console.log("成为待被邀请队列成员-----------",res)
+            })
         },
         //加载L98控制开关信息
         loadL98otherSetting() {

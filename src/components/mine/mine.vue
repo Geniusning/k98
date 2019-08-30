@@ -3,13 +3,16 @@
     <!-- 个人信息 -->
     <div class="personInfo_content">
       <div class="person_info">
-        <img onclick="return false" :src="userInfo.headimgurl" alt class="avatar">
+        <img onclick="return false" :src="userInfo.headimgurl" alt class="avatar" @click="edit_individual">
         <p class="name">{{userInfo.nickname||'游客'}}</p>
         <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->
         <!-- <span class="bindTel" @click="showTelBind" v-if="!userInfo.phone">绑定手机</span>
         <span class="bindTel1" v-else>{{userInfo.phone}}</span> -->
       </div>
-      <img onclick="return false" @click="edit_individual" src="../../assets/image/setting.png" alt class="edit">
+      <div class="edit" @click="edit_individual">
+        <img onclick="return false"  src="../../assets/image/setting.png" alt class="editIcon">
+        <div class="editText">设置</div>
+      </div>
     </div>
     <div class="content">
       <!-- 我的信息 -->
@@ -370,10 +373,19 @@ export default {
     text-align: center;
     .edit {
       position: absolute;
-      width: 0.6rem;
-      height: 0.56rem;
       top: 0.4rem;
       right: 0.4133rem;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      .editIcon{
+        width: 0.6rem;
+        height: 0.56rem;
+      }
+      .editText{
+        font-weight: 900;
+        color: #fff;
+      }
     }
     .person_info {
       position: absolute;

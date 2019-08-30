@@ -509,10 +509,10 @@
         api.responseCombat(params).then(res => {
           console.log(res)
           if (res.errCode == 0) {
-            this.isShowGiftPanel = false;
             console.log('删除结果-----------', res);
           }
         })
+        this.isShowGiftPanel = false;
         this._loadMutualEvents()
       },
       //未成为好友接受游戏
