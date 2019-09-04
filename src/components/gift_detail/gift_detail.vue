@@ -71,6 +71,7 @@
         giftContent: [],
         giftList: [],
         giftCursor: 0,
+        // defaultHeadUrl:require("./assets/image/avatar2.jpg")
       };
     },
     computed: {

@@ -15,95 +15,94 @@
     </div>
     <div class="message_wrapper">
       <!-- 好友 -->
-       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1 || isShowTab==2)) " class="qrCode_wrapper">
-          <img onclick="return false" @click="closeQrCode"  class="close" src="../../assets/image/close.png" alt="">
-          <p class="qrCode_text" style="font-size: 14px">{{isShowTab===2?"长按关注，以便客服应答及时送达给您":"长按关注，以便好友消息及时送达给您"}}</p>
-          <img :src="qrCode" alt="" class="qrcodeImg">
-          <p class="qrCode_text">会员特权:领福利、交群友、参活动</p>
-        </div> 
-        <scroll :data='alreadyFriendList' v-if="isShowTab==0">
-          <ul class="message_list"  style="margin-top:0.4rem">
-            <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList" :key="index">
+      <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1 || isShowTab==2)) " class="qrCode_wrapper">
+        <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
+        <p class="qrCode_text" style="font-size: 14px">{{isShowTab===2?"长按关注，以便客服应答及时送达给您":"长按关注，以便好友消息及时送达给您"}}</p>
+        <img :src="qrCode" alt="" class="qrcodeImg">
+        <p class="qrCode_text">会员特权:领福利、交群友、参活动</p>
+      </div>
+      <scroll :data='alreadyFriendList' v-if="isShowTab==0">
+        <ul class="message_list" style="margin-top:0.4rem">
+          <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList" :key="index">
+            <div class="info_message">
+              <div class="avatar">
+                <img :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                  alt="">
+                <i class="dot" v-cloak v-show="item.info.unReadMsgCount>0"></i>
+                <!-- <i class="dot" v-cloak v-show="item.info.unReadMsgCount">{{item.info.unReadMsgCount}}</i> -->
+              </div>
+              <div class="name_and_message">
+                <p class="name">{{item.info.nickname}}</p>
+                <p class="message" v-if="item.info.lastMsg?item.info.lastMsg.type===1:''" v-html='item.info.lastMsg?item.info.lastMsg.content:""'></p>
+                <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===2:''">[图片]</p>
+                <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===3:''">约战，送礼信息</p>
+                <p class="message" v-else></p>
+              </div>
+            </div>
+            <div class="info_time">
+              <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,10)==today?item.info.lastMsg.stime.slice(10,16):item.info.lastMsg.stime.slice(5,10):""}}</p>
+              <img src="../../assets/image/dot_green.png" v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="online_dot">
+              <span v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="friendStatus">{{item.isInDoor?"店内":"店外"}}</span>
+              <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}</span>
+            </div>
+          </li>
+          <p v-if="!alreadyFriendList.length" class="noFriend">暂无好友</p>
+        </ul>
+      </scroll>
+      <!-- 新朋友 -->
+      <scroll :data='mutualEventsList' v-else-if="isShowTab===1">
+        <ul class="newMessage_list">
+          <li class="item " v-for="(item,index) in mutualEventsList" :key="index">
+            <!-- v-if="item.from.headimgurl" -->
+            <div class="blank vux-1px-b">
               <div class="info_message">
                 <div class="avatar">
-                  <img :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                  <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
                     alt="">
-                  <i class="dot" v-cloak v-show="item.info.unReadMsgCount>0"></i>
-                  <!-- <i class="dot" v-cloak v-show="item.info.unReadMsgCount">{{item.info.unReadMsgCount}}</i> -->
+                  <i class="dot"></i>
                 </div>
                 <div class="name_and_message">
-                  <p class="name">{{item.info.nickname}}</p>
-                  <p class="message" v-if="item.info.lastMsg?item.info.lastMsg.type===1:''" v-html='item.info.lastMsg?item.info.lastMsg.content:""'></p>
-                  <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===2:''">[图片]</p>
-                  <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===3:''">约战，送礼信息</p>
-                  <p class="message" v-else></p>
+                  <p class="name">{{item.from.nickname}}</p>
+                  <p class="message" style="color:green;font-weight:800" v-if="item.combatID">{{item.from.nickname}}邀请玩把大话骰</p>
+                  <p class="message" style="color:#333" v-else-if="item.id==1">{{item.from.nickname}}送你一个啤酒</p>
+                  <p class="message" style="color:#333" v-else-if="item.id==2">{{item.from.nickname}}送你一个鲜花</p>
+                  <p class="message" style="color:#333" v-else-if="item.id==3">{{item.from.nickname}}送你一个别墅</p>
+                  <p class="message" style="color:#333" v-else-if="item.id==4">{{item.from.nickname}}送你一个跑车</p>
+                  <p class="message" style="color:#333" v-else-if="item.integral">{{item.from.nickname}}送你{{item.name}}</p>
+                  <p class="message" v-else>{{item.from.nickname}}给你点赞,请求加好友</p>
                 </div>
               </div>
-              <div class="info_time">
-                <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,10)==today?item.info.lastMsg.stime.slice(10,16):item.info.lastMsg.stime.slice(5,10):""}}</p>
-                <img src="../../assets/image/dot_green.png" v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="online_dot">
-                <span v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="friendStatus">{{item.isInDoor?"店内":"店外"}}</span>
-                <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}</span>
-              </div>
-            </li>
-            <p v-if="!alreadyFriendList.length" class="noFriend">暂无好友</p>
-          </ul>
-        </scroll>
-       
-      <!-- 新朋友 -->
-        <scroll :data='mutualEventsList' v-else-if="isShowTab===1">
-          <ul class="newMessage_list" >
-            <li class="item " v-for="(item,index) in mutualEventsList" :key="index">
-              <!-- v-if="item.from.headimgurl" -->
-              <div class="blank vux-1px-b">
-                <div class="info_message">
-                  <div class="avatar">
-                    <img :src="item.from.headimgurl?item.from.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-                      alt="">
-                    <i class="dot"></i>
-                  </div>
-                  <div class="name_and_message">
-                    <p class="name">{{item.from.nickname}}</p>
-                    <p class="message" style="color:green;font-weight:800" v-if="item.combatID">{{item.from.nickname}}邀请玩把大话骰</p>
-                    <p class="message" style="color:#333" v-else-if="item.id==1">{{item.from.nickname}}送你一个啤酒</p>
-                    <p class="message" style="color:#333" v-else-if="item.id==2">{{item.from.nickname}}送你一个鲜花</p>
-                    <p class="message" style="color:#333" v-else-if="item.id==3">{{item.from.nickname}}送你一个别墅</p>
-                    <p class="message" style="color:#333" v-else-if="item.id==4">{{item.from.nickname}}送你一个跑车</p>
-                    <p class="message" style="color:#333" v-else-if="item.integral">{{item.from.nickname}}送你{{item.name}}</p>
-                    <p class="message" v-else>{{item.from.nickname}}给你点赞,请求加好友</p>
-                  </div>
+              <div class="thumb_wrapper">
+                <div class="clearfix backThumbBox" v-if="item.combatID">
+                  <p class=" back_thumb vux-1px fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
+                  <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
                 </div>
-                <div class="thumb_wrapper">
-                  <div class="clearfix backThumbBox" v-if="item.combatID">
-                    <p class=" back_thumb vux-1px fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
-                    <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
-                  </div>
-                  <div class="clearfix backThumbBox" v-else-if="item.gift">
-                    <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
-                    <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
-                  </div>
-                  <div class="clearfix " v-else>
-                    <p class=" back_thumb vux-1px fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
-                    <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
-                    <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
-                  </div>
-                  <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-                    <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
-                  </div>
+                <div class="clearfix backThumbBox" v-else-if="item.gift">
+                  <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
+                  <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
                 </div>
-                <div class="checkBox_scene clearfix" v-show="item.integral">
-                  <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                  <span class="scene-text fl">加好友</span>
+                <div class="clearfix " v-else>
+                  <p class=" back_thumb vux-1px fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
+                  <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
+                  <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
+                </div>
+                <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
+                  <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
                 </div>
               </div>
-            </li>
-            <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
-          </ul>
-        </scroll>
+              <div class="checkBox_scene clearfix" v-show="item.integral">
+                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                <span class="scene-text fl">加好友</span>
+              </div>
+            </div>
+          </li>
+          <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
+        </ul>
+      </scroll>
       <!-- 客服通知 -->
       <scroll ref="clientScroll" :data="clientServiceList" v-else-if="isShowTab===2">
-        <ul v-if="isClientListFlag"  class="message_list">
-          <li class="item vux-1px-b" @click="ChatToClient" >
+        <ul v-if="isClientListFlag" class="message_list">
+          <li class="item vux-1px-b" @click="ChatToClient">
             <div class="info_message">
               <div class="avatar">
                 <img :src="clientImg" alt="">
@@ -130,7 +129,7 @@
                 <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p>
                 <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
                 <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
-                <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum" >{{`${item.deskCode}`}}</span>
+                <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}</span>
               </div>
             </div>
           </li>
@@ -139,7 +138,7 @@
       </scroll>
       <!-- 通知 -->
       <scroll :data="captainMessageList" v-else-if="isShowTab==3">
-        <ul class="message_list" style="margin-top:0.4rem" >
+        <ul class="message_list" style="margin-top:0.4rem">
           <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index" @click="gotoActivity(item.activityInfo)">
             <div class="info_message">
               <div class="avatar">
@@ -214,11 +213,11 @@
   export default {
     data() {
       return {
-        isShowQrCode:true,
-        isClientListFlag:false,
-        clientTitleFlag:false,
-        clientObj:{},
-        customerObj:{},
+        isShowQrCode: true,
+        isClientListFlag: false,
+        clientTitleFlag: false,
+        clientObj: {},
+        customerObj: {},
         clientImg: require("../../assets/image/home_letter.png"),
         color: "#ffd800",
         hello: false,
@@ -239,13 +238,13 @@
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
     beforeRouteEnter(to, from, next) {
-      console.log("to",to)
-      console.log("from",from)
+      console.log("to", to)
+      console.log("from", from)
       if (to.params.routeParamNum === 1) {
         next(vm => {
           vm.isShowTab = 1;
         });
-      }else if (from.name === "shareActivity") {
+      } else if (from.name === "shareActivity") {
         next(vm => {
           vm.isShowTab = 3;
         });
@@ -257,15 +256,14 @@
         next(vm => {
           vm.isShowTab = 0;
         });
-      } 
-       else {
+      } else {
         next(vm => {
           vm.isShowTab = 2;
         });
       }
     },
     beforeRouteUpdate(to, from, next) {
-      console.log("beforeRouteUpdate---------",from)
+      console.log("beforeRouteUpdate---------", from)
       if (from.name === "clientChat") {
         this.loadClientServiceList()
       }
@@ -297,7 +295,6 @@
       } else {
         this.today = this.today.toString();
       }
-  
     },
     mounted() {
       console.log("mounted--------")
@@ -306,19 +303,18 @@
       this.getCaptainMessList(); //获取店长信  
       this.loadClientServiceList() //加载客服列表  
       // this.isShowTab = this.getQueryString("routeParamNum")
-      this.isShowQrCode = localStorage.getItem("isShowQrCode")==="false"?false:true
-     
+      this.isShowQrCode = localStorage.getItem("isShowQrCode") === "false" ? false : true
     },
     destroyed() {
       // console.log("组件销毁");
     },
     methods: {
-      closeQrCode(){
+      closeQrCode() {
         this.isShowQrCode = false
-        localStorage.setItem("isShowQrCode",false)
+        localStorage.setItem("isShowQrCode", false)
       },
       //进入活动详情
-      gotoActivity(activetyInfo){
+      gotoActivity(activetyInfo) {
         this.$router.push({
           name: "shareActivity",
           params: {
@@ -329,35 +325,36 @@
       getQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(reg);
-        if (r != null) return unescape(r[2]); return null;
+        if (r != null) return unescape(r[2]);
+        return null;
       },
       //加载客服列表
       loadClientServiceList() {
         let phone = this.userInfo.phone ? this.userInfo.phone : "7777"
         var unReadCount = 0;
         api.loadClientServiceList(phone).then(res => {
-          console.log("客服----------------",res)
-          if(res.CliSerID && !res.uerInfos){  //用户进入
+          console.log("客服----------------", res)
+          if (res.CliSerID && !res.uerInfos) { //用户进入
             this.isClientListFlag = true
             this.clientTitleFlag = true
             this.clientObj = res
             unReadCount = this.clientObj.unReadMsgCount
-            this.clientObj.lastMsg.stime =util.timestampToTime(res.lastMsg.stime)
-          }else{ //客服进入
+            this.clientObj.lastMsg.stime = util.timestampToTime(res.lastMsg.stime)
+          } else { //客服进入
             this.customerObj = res
             var tempArr = res.uerInfos
-            if(tempArr.length>0){
-              tempArr.forEach((client,index) => {
+            if (tempArr.length > 0) {
+              tempArr.forEach((client, index) => {
                 unReadCount += client.unReadMsgCount
-                if(client.lastMsg){
+                if (client.lastMsg) {
                   client["stime"] = client.lastMsg.stime
                   client.lastMsg.stime = util.timestampToTime(client.lastMsg.stime)
                 }
-                if(client.deskCode!=0 && client.deskCode){
-                  client.deskCode = util.prefixZero(client.deskCode,3)
+                if (client.deskCode != 0 && client.deskCode) {
+                  client.deskCode = util.prefixZero(client.deskCode, 3)
                 }
-                if(client.unReadMsgCount>0){  //把未读消息放到数组前面
-                  var item = tempArr.splice(index,1)
+                if (client.unReadMsgCount > 0) { //把未读消息放到数组前面
+                  var item = tempArr.splice(index, 1)
                   tempArr.unshift(item[0])
                 }
               })
@@ -365,8 +362,8 @@
               console.log("客服列表-------------", this.clientServiceList)
             }
           }
-              this.getClientUnreadCount(unReadCount)
-              this.addBandge()
+          this.getClientUnreadCount(unReadCount)
+          this.addBandge()
         })
       },
       //瞅瞅他好友信息
@@ -391,14 +388,12 @@
         this.isMakeFriendBool = e.target.checked
       },
       selectList(index) {
-        
         this.isShowTab = index;
-        if(this.isShowTab===2){
-          this.$nextTick(function(){
-            this.$refs.clientScroll.scrollTo(0,0)
+        if (this.isShowTab === 2) {
+          this.$nextTick(function() {
+            this.$refs.clientScroll.scrollTo(0, 0)
           })
         }
-     
       },
       //拉取约战、点赞、送礼列表
       _loadMutualEvents() {
@@ -443,14 +438,18 @@
             this.removeEventList()
             if (flag) {
               this.text = "已感谢";
+              api.getUserInfo("/api/loadUserInfo").then(res => {
+                console.log("个人信息-------", res)
+                this.getUserInfo(res);
+              })
               setTimeout(() => {
-                if(!this.userInfo.isSubscribe){
-                this.changeQrCodeText({
-                      title:"长按关注，每天获签到积分及更多特权",
-                      bottomText:"会员特权:领福利、交群友、参活动"
-                    })
-                this.showQrcode(true)
-                } 
+                if (!this.userInfo.isSubscribe) {
+                  this.changeQrCodeText({
+                    title: "长按关注，每天获签到积分及更多特权",
+                    bottomText: "会员特权:领福利、交群友、参活动"
+                  })
+                  this.showQrcode(true)
+                }
               }, 1000);
             } else {
               this.text = "已拒接";
@@ -537,10 +536,10 @@
         console.log(index);
       },
       //向客服发消息
-      ChatToClient(){
+      ChatToClient() {
         this.clientObj["openid"] = this.clientObj.CliSerID
         this.setChatFriend(this.clientObj);
-         this.$router.push({
+        this.$router.push({
           name: "clientChat",
           params: {
             isClient: false,
@@ -551,7 +550,7 @@
       clientChat(client) {
         client["CliSerID"] = this.customerObj.CliSerID
         this.setChatFriend(client);
-        console.log("向留言用户发消息 client-------------",client)
+        console.log("向留言用户发消息 client-------------", client)
         this.$router.push({
           name: "clientChat",
           params: {
@@ -571,6 +570,7 @@
         });
       },
       ...mapMutations({
+         getUserInfo: "GET_USERINFO", //获取用户信息
         chanageFriendPanelFlag: "CHANGEFRIENDPANELFLAG", //显示好友匹配成功弹框
         CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
@@ -580,8 +580,8 @@
         // clearChallengeGameList: "CLEAR_CHALLENGEGAMELIST",//清空约战记录
         addBandge: "ADD_BADGE", //动态变化未读消息数量
         getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量
-        changeQrCodeText:"CHANGEQRCODETEXT",
-        showQrcode: "SHOW_QRCODE", 
+        changeQrCodeText: "CHANGEQRCODETEXT",
+        showQrcode: "SHOW_QRCODE",
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
@@ -901,12 +901,10 @@
   }
   .message_wrapper {
     width: 100%;
-    flex-grow: 1;
-    // overflow-y: auto;
+    flex-grow: 1; // overflow-y: auto;
     // position: relative;
-    .list-wrapper{
-    position: relative;
-
+    .list-wrapper {
+      position: relative;
     }
     .message_list {
       // height: 100%;
@@ -945,41 +943,42 @@
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            .time{
+            .time {
               position: absolute;
               right: .1rem;
               top: .1rem;
               font-size: 0.3733rem;
               color: #999;
             }
-           .online_dot{
-            width: 0.4rem;
-            position: absolute;
-            bottom: 0.48rem;
-            right: 1.8rem;
-            color: #333;
-            font-weight: 600;
-          }
-          .friendStatus {
-            display: inline-block;
-            width: 1.4rem;
-            position: absolute;
-            bottom: 0.5rem;
-            color: #333;
-            right: 0.3rem;
-            font-size: 15px;
-          }
-          .roomNum{
-            position: absolute;
-            bottom: 0.55rem;
-            color: #333;
-            right: 0rem;
-            display: inline-block;
-            padding: 0rem 0.1067rem;
-            line-height: .3rem;;
-            border: 1px solid #333;
-            font-size: 11px;
-          }
+            .online_dot {
+              width: 0.4rem;
+              position: absolute;
+              bottom: 0.48rem;
+              right: 1.8rem;
+              color: #333;
+              font-weight: 600;
+            }
+            .friendStatus {
+              display: inline-block;
+              width: 1.4rem;
+              position: absolute;
+              bottom: 0.5rem;
+              color: #333;
+              right: 0.3rem;
+              font-size: 15px;
+            }
+            .roomNum {
+              position: absolute;
+              bottom: 0.55rem;
+              color: #333;
+              right: 0rem;
+              display: inline-block;
+              padding: 0rem 0.1067rem;
+              line-height: .3rem;
+              ;
+              border: 1px solid #333;
+              font-size: 11px;
+            }
             .name {
               color: #333333;
               font-size: 0.4267rem;
@@ -1019,7 +1018,7 @@
           font-size: 0.3733rem;
           color: #999;
           position: relative;
-          .online_dot{
+          .online_dot {
             width: 0.4rem;
             position: absolute;
             bottom: 0.48rem;
@@ -1036,14 +1035,15 @@
             right: 0.3rem;
             font-size: 15px;
           }
-          .roomNum{
+          .roomNum {
             position: absolute;
             bottom: 0.55rem;
             color: #333;
             right: 0rem;
             display: inline-block;
             padding: 0rem 0.1067rem;
-            line-height: .3rem;;
+            line-height: .3rem;
+            ;
             border: 1px solid #333;
             font-size: 11px;
           }
@@ -1062,7 +1062,7 @@
         font-size: 0.5333rem;
       }
     }
-    .noFriend{
+    .noFriend {
       width: 100%;
       text-align: center;
       margin-top: 50%;
@@ -1183,10 +1183,9 @@
       color: #ccc;
       font-size: 0.5333rem;
     }
-    .qrCode_wrapper{
+    .qrCode_wrapper {
       position: fixed;
-      bottom: 1.2rem;
-      // bottom: 0;
+      bottom: 1.2rem; // bottom: 0;
       width: 100%;
       height: 5.3333rem;
       left: 50%;
@@ -1195,7 +1194,7 @@
       background-color: rgba(0, 0, 0, .4);
       padding: .2rem 0;
       z-index: 1;
-      .close{
+      .close {
         width: 1rem;
         height: 1rem;
         position: absolute;
@@ -1203,13 +1202,13 @@
         right: .1rem;
         z-index: 9;
       }
-      .qrCode_text{
+      .qrCode_text {
         width: 100%;
         text-align: center;
         color: #fff;
         font-size: 12px;
       }
-      .qrcodeImg{
+      .qrcodeImg {
         width: 4rem;
         height: 4rem;
         margin: .2rem 0;

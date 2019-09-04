@@ -59,6 +59,7 @@
       return {
         isShow_bg: false,
         couponList: [],
+        activityId:"",
       };
     },
     created() {
@@ -120,7 +121,8 @@
           let tempArr = []
           if (res.errCode === 0) {
             tempArr[0] = res.coupons.aCoupon;
-            tempArr[1] = res.coupons.bCoupon
+            tempArr[1] = res.coupons.bCoupon;
+            this.activityId = res.coupons.activityId
           }
           console.log("tempArr------",tempArr)
           tempArr.forEach((element) => {

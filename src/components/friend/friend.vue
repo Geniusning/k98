@@ -28,24 +28,24 @@
       <!-- <p class="control_guide" v-show="isFirstLoad">互赞成为好友。
                         <br>下面分别是送礼、点赞、约Ta玩大话骰
                       </p> -->
-      <div class="gifts">
+      <div class="gifts" @click="isFirstLoad=false">
         <img onclick="return false" src="../../assets/image/gift.png" @click="isGiftPanel=true" alt>
         <img onclick="return false" src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt>
         <p class="handleText" v-show="isFirstLoad">送礼成好友</p>
         <!-- <p>见面礼</p> -->
       </div>
       <!--  -->
-      <div class="thumbs" v-if="!isFriend" >
+      <div class="thumbs" v-if="!isFriend" @click="isFirstLoad=false">
         <img onclick="return false" ref="thumbHeartBeat" src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt>
         <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
         <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
       </div>
-      <div class="hello" v-else>
+      <div class="hello" v-else @click="isFirstLoad=false">
         <img onclick="return false" src="../../assets/image/sayhi.png" @click="chat" alt>
         <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
         <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
       </div>
-      <div class="playGame">
+      <div class="playGame" @click="isFirstLoad=false">
         <img onclick="return false" src="../../assets/image/game.png" @click="playGame" alt>
         <img onclick="return false" src="../../assets/image/game.png" v-show="isFirstLoad" class="guidePlayGame" alt>
         <p class="handleText" v-show="isFirstLoad">约战大话骰</p>
@@ -832,6 +832,7 @@
       left: 0;
       right: 0;
       background-color: rgba(0, 0, 0, 0.3);
+      z-index: 9;
       .thumb {
         position: absolute;
         width: 0.8rem;

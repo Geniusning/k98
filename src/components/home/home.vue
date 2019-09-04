@@ -496,6 +496,7 @@
       //进入游戏
       intoReadyGame() {
         this.gameShow = false;
+        console.log("url------",`${this.gameUrl}game/?gamePath=game2`)
         window.location.href = `${this.gameUrl}game/?gamePath=game2`;
       },
       // 关闭游戏

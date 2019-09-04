@@ -296,9 +296,10 @@ const mutations = {
                 state.dynamicFriendEvt = friendEvtObj.content;
                 break;
             case 7: //约你游戏
-                if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
-                    return false;
-                }
+            if (state.staticChatFriendObj.openid === friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
+                return false;
+            }
+            console.log("yueniwanyouxi")
                 friendEvtObj.content.extMsg = {
                     lastMsg: {},
                     gameInfo: friendEvtObj.content.extMsg

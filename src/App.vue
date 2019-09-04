@@ -99,17 +99,17 @@
           <div class="topUpGiftInfo-wrapper" v-else-if="isShowGiftPanel && !isAlreadyFriend &&topUpGameInfo.msgCode !=19">
             <div class="topUpGiftInfo-top">
               <div class="img">
-                <img class="giftAvatar" v-if="topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12" :src="topUpGiftInfo.content.fromInfo.headimgurl?topUpGiftInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                <img class="giftAvatar" v-if="topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12" :src="topUpGiftInfo.content.fromInfo.headimgurl?topUpGiftInfo.content.fromInfo.headimgurl:defaultHeadUrl"
                   alt>
-                <img class="giftAvatar" v-if="topUpThumbInfo.msgCode ==2" :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                <img class="giftAvatar" v-if="topUpThumbInfo.msgCode ==2" :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:defaultHeadUrl"
                   alt>
-                <img class="giftAvatar" v-else-if="topUpGameInfo.msgCode ==7 || topUpGiftInfo.msgCode==19" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                <img class="giftAvatar" v-else-if="topUpGameInfo.msgCode ==7 || topUpGiftInfo.msgCode==19" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:''"
                   alt>
               </div>
               <div class="name">
                 <p class="name" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">{{topUpGiftInfo.content.fromInfo.nickname?topUpGiftInfo.content.fromInfo.nickname:'店长'}}送您一份礼物</p>
                 <p class="name" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">{{topUpThumbInfo.content.fromInfo?topUpThumbInfo.content.fromInfo.nickname:'朋友'}}给你点赞了</p>
-                <p class="name" v-else-if="(topUpGameInfo.msgCode == 7 || topUpGiftInfo.msgCode==19) && gameFlag">{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:'朋友'}}约你玩大话骰</p>
+                <p class="name" v-else-if="(topUpGameInfo.msgCode == 7 || topUpGiftInfo.msgCode==19) && gameFlag">{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:(this.userInfo.sex=="男"?"领桌美女":"领桌帅哥")}}约你玩大话骰</p>
               </div>
             </div>
             <div class="topUpGiftInfo-middle">
@@ -246,7 +246,8 @@
         isMakeFriendBool: true,
         allMutatualInfo_temp: {},
         isAlreadyFriend: false,
-        showClientServiceIconFlag:true
+        showClientServiceIconFlag:true,
+        defaultHeadUrl:require("./assets/image/avatar2.jpg")
       };
     },
     computed: {
@@ -285,7 +286,29 @@
       }
     },
     mounted() {
+      let _url = window.location.href;
+      this.gameUrl = _url.split("k98")[0];
       this.loadLastRoomInfo() //加载回房信息
+      var topUpGameInfo = {
+        content:{
+          fromInfo:{
+            openid:"lakdjgjkfh"
+          },
+          extMsg:{
+              combatID:"",
+              headImgURL:"",
+              inviterID:"",
+              nickName:"",
+              url:`${this.gameUrl}game/?gamePath=game1`
+          }
+        },
+        msgCode:7
+      }
+      setTimeout(() => {
+        console.log("进来啦")
+        console.log(topUpGameInfo)
+        this.addFriendEvtObj(topUpGameInfo)
+      }, 14000);
     },
     methods: {
        inToLetter() {
@@ -454,6 +477,10 @@
           console.log('送礼操作结果-------------------', res);
           if (res.errCode == 0) {
             //重新拉取约战，送礼，点赞列表
+            api.getUserInfo("/api/loadUserInfo").then(res => {
+                console.log("个人信息-------", res)
+                this.getUserInfo(res);
+            })
             this._loadMutualEvents();
             this.isMakeFriendBool = true;
             if(!this.userInfo.isSubscribe){
@@ -484,6 +511,10 @@
           if (res.errCode == 0) {
             //重新拉取约战，送礼，点赞列表
             // this._loadMutualEvents();
+            api.getUserInfo("/api/loadUserInfo").then(res => {
+              console.log("个人信息-------", res)
+              this.getUserInfo(res);
+            })
             this.isMakeFriendBool = true;
             if(!this.userInfo.isSubscribe){
               this.changeQrCodeText({
@@ -534,6 +565,7 @@
           })
         } else {
           //应战
+          // alert(gameInfo.extMsg.gameInfo.url)
           window.location.href = gameInfo.extMsg.gameInfo.url;
         }
       },
@@ -629,6 +661,8 @@
         addBange: "ADD_BADGE",
         changeQrCodeText:"CHANGEQRCODETEXT",
         showQrcode: "SHOW_QRCODE", 
+        getUserInfo: "GET_USERINFO", //获取用户信息
+        addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
