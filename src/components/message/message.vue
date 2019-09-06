@@ -390,9 +390,12 @@
       selectList(index) {
         this.isShowTab = index;
         if (this.isShowTab === 2) {
-          this.$nextTick(function() {
-            this.$refs.clientScroll.scrollTo(0, 0)
-          })
+          setTimeout(() => {
+            this.$nextTick(function() {
+              this.$refs.clientScroll.scrollTo(0, 0)
+            })
+
+          }, 50);
         }
       },
       //拉取约战、点赞、送礼列表

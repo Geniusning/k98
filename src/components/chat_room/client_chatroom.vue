@@ -416,10 +416,12 @@
         console.log("this.input_value------",this.input_value)
         var emotionArr = this.input_value.match(/\[.{1,2}\]/g)
         var reg = /\[.{1,2}\]/;
-        for (let i = 0; i < emotionArr.length; i++) {
-          for (var j = 0; j < this.emotionList.length; j++) {
-            if (this.input_value.indexOf(this.emotionList[j].name) !== -1) {
-              this.input_value = this.input_value.replace(reg, `<img src=${this.emotionList[j].num} style="vertical-align: -6px;">`);
+        if(emotionArr){
+          for (let i = 0; i < emotionArr.length; i++) {
+            for (var j = 0; j < this.emotionList.length; j++) {
+              if (this.input_value.indexOf(this.emotionList[j].name) !== -1) {
+                this.input_value = this.input_value.replace(reg, `<img src=${this.emotionList[j].num} style="vertical-align: -6px;">`);
+              }
             }
           }
         }
