@@ -45,7 +45,7 @@
               </div>
               <div class="name">
                 <p class="name" v-if="allMutatualInfo_temp.type == 3 && giftFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'店长'}}送您一份礼物</p>
-                <p class="name" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'朋友'}}约你玩大话骰</p>
+                <p class="name" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'朋友'}}</p>
               </div>
             </div>
             <div class="topUpGiftInfo-middle">
@@ -75,8 +75,8 @@
                   <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
                 </div>
                 <div class="topUpGiftInfo_right">
-                  <p class="desc title_desc">{{allMutatualInfo_temp.combatID?'已在房间等你':'约你玩游戏啦'}}</p>
-                  <p class="desc title_sub_desc">{{allMutatualInfo_temp.combatID?'不见不散':'赶紧开房pk吧'}}</p>
+                  <p class="desc title_desc">{{allMutatualInfo_temp.combatID?'约你玩几局大话骰':'约你玩一局大话骰'}}</p>
+                  <p class="desc title_sub_desc">{{allMutatualInfo_temp.combatID?'':''}}</p>
                 </div>
               </div>
             </div>
@@ -103,13 +103,13 @@
                   alt>
                 <img class="giftAvatar" v-if="topUpThumbInfo.msgCode ==2" :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:defaultHeadUrl"
                   alt>
-                <img class="giftAvatar" v-else-if="topUpGameInfo.msgCode ==7 || topUpGiftInfo.msgCode==19" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:''"
+                <img class="giftAvatar" v-else-if="topUpGameInfo.msgCode ==7 || topUpGiftInfo.msgCode==19" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:(userInfo.sex=='男'?defaultfemaletHeadUrl:defaultmaleHeadUrl)"
                   alt>
               </div>
               <div class="name">
                 <p class="name" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">{{topUpGiftInfo.content.fromInfo.nickname?topUpGiftInfo.content.fromInfo.nickname:'店长'}}送您一份礼物</p>
                 <p class="name" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">{{topUpThumbInfo.content.fromInfo?topUpThumbInfo.content.fromInfo.nickname:'朋友'}}给你点赞了</p>
-                <p class="name" v-else-if="(topUpGameInfo.msgCode == 7 || topUpGiftInfo.msgCode==19) && gameFlag">{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:(this.userInfo.sex=="男"?"领桌美女":"领桌帅哥")}}约你玩大话骰</p>
+                <p class="name" v-else-if="(topUpGameInfo.msgCode == 7 || topUpGiftInfo.msgCode==19) && gameFlag">{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:(userInfo.sex=="男"?"邻桌小妹":"邻桌小哥")}}</p>
               </div>
             </div>
             <div class="topUpGiftInfo-middle">
@@ -143,8 +143,8 @@
                   <img style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
                 </div>
                 <div class="topUpGiftInfo_right">
-                  <p class="desc title_desc">{{topUpGameInfo.content.extMsg.gameInfo.combatID?'已在房间等你':'约你玩游戏啦'}}</p>
-                  <p class="desc title_sub_desc">{{topUpGameInfo.content.extMsg.gameInfo.combatID?'不见不散':'赶紧开房pk吧'}}</p>
+                  <p class="desc title_desc">{{topUpGameInfo.content.extMsg.gameInfo.combatID?'约你玩几局大话骰':'约你玩一局大话骰'}}</p>
+                  <p class="desc title_sub_desc">{{topUpGameInfo.content.extMsg.gameInfo.combatID?'':''}}</p>
                 </div>
               </div>
             </div>
@@ -247,7 +247,9 @@
         allMutatualInfo_temp: {},
         isAlreadyFriend: false,
         showClientServiceIconFlag:true,
-        defaultHeadUrl:require("./assets/image/avatar2.jpg")
+        defaultfemaletHeadUrl:require("./assets/image/avatar2.jpg"),
+        defaultmaleHeadUrl:require("./assets/image/dinosourt.png"),
+        responseForGameUrl:"",
       };
     },
     computed: {
@@ -287,7 +289,7 @@
     },
     mounted() {
       let _url = window.location.href;
-      this.gameUrl = _url.split("k98")[0];
+      this.responseForGameUrl = _url.split("k98")[0];
       this.loadLastRoomInfo() //加载回房信息
       var topUpGameInfo = {
         content:{
@@ -299,16 +301,14 @@
               headImgURL:"",
               inviterID:"",
               nickName:"",
-              url:`${this.gameUrl}game/?gamePath=game1`
+              url:`${this.responseForGameUrl}game/?gamePath=game1`
           }
         },
         msgCode:7
       }
       setTimeout(() => {
-        console.log("进来啦")
-        console.log(topUpGameInfo)
         this.addFriendEvtObj(topUpGameInfo)
-      }, 14000);
+      }, 25000);
     },
     methods: {
        inToLetter() {
@@ -1040,13 +1040,13 @@
           }
           .topUpGiftInfo_right {
             // margin-top: 0.14rem;
-            .thumb_text {
-              font-size: 0.4467rem;
-            }
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            justify-content: space-around;
+            justify-content: center;
+            .thumb_text {
+              font-size: 0.4467rem;
+            }
             .desc {
               color: #838383;
             }

@@ -1,5 +1,7 @@
 
 // export const TESTSEXTYPE  = "TESTSEXTYPE"\
+//推送客服小
+// export const LISTENCLIENTMSG="LISTENCLIENTMSG"
 //修改未关注用户的约战次数
 export const CHANGEUNFOCUSPLAYTIMES = "CHANGEUNFOCUSPLAYTIMES"
 //修改关注用户的约战次数

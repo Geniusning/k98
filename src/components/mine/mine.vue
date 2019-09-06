@@ -190,8 +190,8 @@ export default {
     intoFriendList() {
       this.$router.push({
         name: `message`,
-        params: {
-          routeParamNum: 0
+        query: {
+          routeParamNum: "0"
         }
       });
     },

@@ -24,7 +24,7 @@
         <span class="avatar">对手</span>
         <span class="time">时间</span>
       </div>
-      <scroll class="scroll" :data="gameContent" @pullingUp="pullUpMoreData" :pullup="true">
+      <scroll ref="scroll" class="scroll" :data="gameContent" @pullingUp="pullUpMoreData" :pullup="true">
         <ul class="gift_list">
           <li class="item vux-1px" v-for="(item,index) in gameContent" :key="index">
             <span class="total">{{item.value}}</span>
@@ -68,14 +68,20 @@ export default {
   methods: {
     //上拉加载更多
     pullUpMoreData() {
-      console.log('上拉加载更多');
       if (this.gameCursor) {
           this._LoadGameScoreDetail();
+           this.$refs.scroll.finishPullUp()
+        }else{
+          console.log('没有啦');
+        this.$vux.toast.text('没有啦', 'middle')
         }
     },
     //拉取游戏详情
     _LoadGameScoreDetail() {
       let count = 20;
+      this.$vux.loading.show({
+        text:"loading"
+      })
       api.LoadGameScoreDetail(this.gameCursor,count).then(res => {
         console.log('游戏详情-------------------', res);
         this.gameContent =this.gameContent.concat(this._nomalizeGameList(res.coupon.details));
@@ -83,6 +89,10 @@ export default {
         this.gameContent.forEach(item => {
           item.time = util.timestampToTimeNoLine(item.time);
         })
+        this.$vux.loading.hide()
+      }).then(()=>{
+        console.log("refresh")
+       
       })
     },
     _nomalizeGameList(list){

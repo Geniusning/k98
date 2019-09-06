@@ -53,7 +53,11 @@ arr.forEach((item,index)=>{
     arr.splice(index,1)
   }
 })
-console.log(arr)
+// console.log("https://singledog.qianz.com/k98/home".split("k98")[0])
+var str = `[大哭][嘻嘻]<img src=/static/face/3.gif style="vertical-align: -6px;"><img src=/static/face/4.gif style="vertical-align: -6px;"><img src=/static/face/3.gif style="vertica`
+var reg = /\[.{2}\]/g;
+console.log(str.match(reg))
+
     // var text = $('#text').val();
     // var html = "<p class='msg'>" + text + "</p>";
     // $(".message").append(html);

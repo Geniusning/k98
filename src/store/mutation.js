@@ -3,6 +3,11 @@ import util from "common/util";
 import router from '../router/index.js';
 
 const mutations = {
+    //监听客服推送消息
+    // [types.LISTENCLIENTMSG](state,msg){
+    //     state.lastClientMsg = msg
+    //     state.client_badgeCount = msg.content.extMsg.count
+    // },
     //修改未关注user点赞次数
     [types.CHANGEUNFOCUSTHUMBTIMES](state,count){
         state.unfocusThumbTimes += count
@@ -392,6 +397,10 @@ const mutations = {
                 state.topUpGameInfo = friendEvtObj
                 console.log('好友邀请你进游戏玩-----------', friendEvtObj)
                 break;
+            // case 20 ://监听客服推送消息
+            //    state.lastClientMsg = friendEvtObj.content;
+            //    state.client_badgeCount = friendEvtObj.content.extMsg.count
+            //    break;
             default:
                 break;
         }
@@ -461,9 +470,11 @@ const mutations = {
         console.log('state.LastChatMsg：```````````````````````````````````````', obj)
         state.LastChatMsg = obj
     },
+    //更新客服聊天劣币
     [types.UPDATE_CLIENTMSG](state, obj) {
         console.log('state.clientLastChatMsg```````````````````````````````````````', obj)
         state.clientLastChatMsg = obj
+        state.client_badgeCount = obj.extMsg.count
     },
     //更新聊天输入框
     [types.UPDATE_INPUTVALUE](state, val) {

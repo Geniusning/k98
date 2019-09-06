@@ -27,7 +27,7 @@
         <span class="avatar">头像</span>
         <span class="time">时间</span>
       </div>
-      <scroll class="scroll" :data="giftContent" @pullingUp="pullUpMoreData" :pullup="true">
+      <scroll ref="scroll" class="scroll" :data="giftContent" @pullingUp="pullUpMoreData" :pullup="true">
         <ul class="gift_list">
           <li class="item vux-1px" v-for="(item,index) in giftContent" :key="index">
             <span class="total">${{item.value}}</span>
@@ -35,13 +35,21 @@
             <!-- <span class="name"  v-else>-3积分</span> -->
             <span class="content">{{item.content}}</span>
             <div class="avatar">
-              <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" class="gift_icon">
+              <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                class="gift_icon">
             </div>
             <span class="time">{{item.time}}</span>
           </li>
           <p v-if="!giftContent.length" class="noContent">暂无积分变动内容</p>
         </ul>
-        <p slot='pullup'>加载更多内容</p>
+        <!-- <div class="pullup-wrapper">
+          <div v-if="!isPullUpLoad" class="before-trigger">
+            <span class="pullup-txt">Pull up and load more</span>
+          </div>
+          <div v-else class="after-trigger">
+            <span class="pullup-txt">Loading...</span>
+          </div>
+        </div> -->
       </scroll>
       <topUp v-if="isIntegralPanel" @closeIntegralPanel="closeIntegralPanel" :fatherPanelIndex="fatherPanelIndex"></topUp>
       <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
@@ -51,11 +59,12 @@
 
 <script type='text/ecmascript-6'>
   import api from "common/api";
-  import util from 'common/util'
+  import util from 'common/util';
+  import BScroll from "better-scroll";
   import myHeader from "../../base/myheader/myheader";
   import Scroll from "../../base/scroll/scroll";
   import topUp from 'base/topUp/topUp';
-    import qrCode from 'base/qrCode/qrCode';
+  import qrCode from 'base/qrCode/qrCode';
   import {
     mapState,
     mapMutations,
@@ -71,6 +80,7 @@
         giftContent: [],
         giftList: [],
         giftCursor: 0,
+        isPullUpLoad: false
         // defaultHeadUrl:require("./assets/image/avatar2.jpg")
       };
     },
@@ -89,14 +99,16 @@
     methods: {
       //上拉加载更多
       pullUpMoreData() {
-        console.log('上拉加载更多');
         if (this.giftCursor) {
           this._loadWealthDetail();
+          this.$refs.scroll.finishPullUp()
+        } else {
+          alert(111)
+          this.$vux.toast.text('没有啦', 'middle')
         }
       },
       //监听充值面板状态
       closeIntegralPanel(flag) {
-        console.log('面板状态-----------', flag);
         this.isIntegralPanel = flag;
       },
       showTreasure() {
@@ -105,24 +117,31 @@
       //拉取礼物明细
       _loadWealthDetail() {
         let count = 20;
+        this.$vux.loading.show({
+          text: "loading"
+        })
         api.loadWealthDetail(this.giftCursor, count).then(res => {
           console.log('礼物明细-----------------------------', res);
-          if(res.errCode==0){
+          if (res.errCode == 0) {
+            this.$vux.loading.hide()
             this.giftContent = this.giftContent.concat(res.wealthDetailRanking.details);
             console.log('this.giftContent---------------', this.giftContent)
             this.giftCursor = res.wealthDetailRanking.cursor;
             this.giftContent.forEach(item => {
+              if (item.headimgurl.indexOf("http") === -1) {
+                let imgUrl = item.headimgurl.slice(18)
+                item.headimgurl = require(`../../assets/image/${imgUrl}.png`)
+              }
               item.time = util.timestampToTimeNoLine(item.time);
             })
           }
-          if(!this.userInfo.isSubscribe){
-             this.changeQrCodeText({
-                  title:"长按关注，积分在握,可换礼物/门店项目",
-                  bottomText:"会员特权:领福利、交群友、参活动"
-                })
+          if (!this.userInfo.isSubscribe) {
+            this.changeQrCodeText({
+              title: "长按关注，积分在握,可换礼物/门店项目",
+              bottomText: "会员特权:领福利、交群友、参活动"
+            })
             this.showQrcode(true);
           }
-          
         })
       },
       // selectMoney(index, event) {
@@ -164,9 +183,9 @@
         });
       },
       ...mapMutations({
-        changeQrCodeText:"CHANGEQRCODETEXT",
+        changeQrCodeText: "CHANGEQRCODETEXT",
         getUserInfo: "GET_USERINFO", //获取用户信息
-         showQrcode: "SHOW_QRCODE", //展示二维码
+        showQrcode: "SHOW_QRCODE", //展示二维码
       })
     },
     components: {
@@ -299,6 +318,11 @@
             color: #ccc;
             font-size: 0.5333rem;
           }
+        }
+        .pullup-wrapper {
+          padding: 20px;
+          text-align: center;
+          color: #999
         }
       }
       .selectMoneyBox {

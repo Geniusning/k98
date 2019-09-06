@@ -9,11 +9,12 @@ import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 
 // import vuePicturePreview from 'vue-picture-preview'
-import { ToastPlugin } from 'vux'
+import { ToastPlugin,LoadingPlugin  } from 'vux'
 import { mapMutations, mapState, mapActions } from 'vuex'
 import api from './common/api'
 import config from './common/config'
 Vue.use(ToastPlugin)
+Vue.use(LoadingPlugin)
 Vue.use(Viewer)
     // Vue.use(vuePicturePreview)
 FastClick.attach(document.body)
@@ -43,9 +44,9 @@ new Vue({
         this.loadRecommends(); //获取店长推荐
         this.loadMutualEvents() //统计约战送礼点赞
         this.loadL98otherSetting() //加载控制开关
-        window.addEventListener("unload", () => {
-            localStorage.removeItem("friendInfo") //清楚缓存
-        })
+        // window.addEventListener("unload", () => {
+        //     localStorage.removeItem("friendInfo") //清楚缓存
+        // })
         setTimeout(() => { //13秒过后如果用户没有离开系统则把用户放入待被邀请游戏队列
             this.addWaitingCombatList()
         }, 13000);
@@ -206,6 +207,9 @@ new Vue({
                 this.judgeMessType('gameSayHi');
             } else if (result.msgCode === 18) { //对方在游戏操作打招呼返回结果通知
                 this.judgeMessType('rejectThumb');
+            }else if(result.msgCode===20){
+                this.updateClientMsg(result.content)
+                this.addBange()
             }
         },
         _strToBinary(str) {
@@ -289,6 +293,7 @@ new Vue({
             })
         },
         ...mapMutations({
+            updateClientMsg:"UPDATE_CLIENTMSG",//推送更新客服消息
             saveQrCode: "SAVEQRCODE",
             getRecommentList: "GET_RECOMMENTLIST", //获取店长推荐
             connect_websocket: "CONNECT_WEBSOCKET",

@@ -35,7 +35,12 @@
                 </div>
                 <div class="message_box">
                   <span v-show="item.type===1" class="arrow"></span>
-                  <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message"></p>
+                  <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message">
+                    <!-- 你是我的眼
+                    <img :src="emotionList[0].num" alt="">
+                    <img :src="emotionList[2].num" alt=""> -->
+                  </p>
+                  
                 </div>
               </div>
               <div v-if="item.type==2" class="message_wrapper">
@@ -358,7 +363,22 @@
                  });
                 }
               }
-            
+            // var reg = /\[.{2}\]/g;
+            // this.componentChatList.forEach((item,index)=>{
+            //   if(item.type===1){
+            //     item["emotionArr"] = item.message.match(reg)
+            //     if(item["emotionArr"]){
+            //       item["emotionArr"].forEach((pic,i,arr)=>{
+            //         for (var i = 0; i < this.emotionList.length; i++) {
+            //            if (pic.indexOf(this.emotionList[i].name) !== -1) {
+            //              var reg1 = /\[.*\]/;
+            //              arr[i] = pic.replace(reg, `${this.emotionList[i].num}`);
+            //            }
+            //          }
+            //       })
+            //     }
+            //   }
+            // })
             console.log("客服聊天记录-------------",this.componentChatList)
             resolve()
           })
@@ -393,13 +413,21 @@
           return;
         }
         //字符串转表情icon
+        console.log("this.input_value------",this.input_value)
+          var reg = /\[.{1,2}\]/;
         for (var i = 0; i < this.emotionList.length; i++) {
+          // debugger
           if (this.input_value.indexOf(this.emotionList[i].name) !== -1) {
-            var reg = /\[.*\]/;
-            console.log(this.input_value.match(reg)[0]);
             this.input_value = this.input_value.replace(reg, `<img src=${this.emotionList[i].num} style="vertical-align: -6px;">`);
           }
         }
+        for (var i = 0; i < this.emotionList.length; i++) {
+          // debugger
+          if (this.input_value.indexOf(this.emotionList[i].name) !== -1) {
+            this.input_value = this.input_value.replace(reg, `<img src=${this.emotionList[i].num} style="vertical-align: -6px;">`);
+          }
+        }
+        console.log("this.input_value-------",this.input_value)
         //把自己发送的内容加到聊天列表里面
         this.componentChatList.push({
           message: this.input_value,
@@ -567,7 +595,7 @@
             message: messageInfo.content ? messageInfo.content : "",
             friend: 1, //1为朋友，0为自己
             from: messageInfo.from,
-            type: messageInfo.type, //1 聊天消息 2.图标，3.送礼，4.约战
+            type: messageInfo.type, //1 聊天消息表情 2.图片，3.送礼，4.约战
             time: util.timestampToTime(messageInfo.stime),
             chatMsgID: messageInfo.id,
           });
@@ -579,41 +607,6 @@
           this.setMsgReadCliSer()//消息已读
           // this.$refs.listView.refresh();
       },
-      // LastChatMsg: function(newValue) {
-      //   console.log('在聊天页面收到对方发来的消息-------------------------------：', newValue);
-      //   this.sendingTimes = 0; //清空限制连续发送消息次数
-      //   let messageInfo = newValue.allInfo.lastMsg;
-      //   if (messageInfo.type == 3 || messageInfo.type == 4) { //如果是送礼和约战则不在聊天框显示
-      //     return
-      //   }
-      //   if (messageInfo.from == this.staticChatFriendObj.openid) {
-      //     //判断是否是进入时原来的两个人进行聊天
-      //     this.componentChatList.push({
-      //       message: messageInfo.content ? messageInfo.content : "",
-      //       friend: messageInfo.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
-      //       from: messageInfo.from,
-      //       type: messageInfo.type, //1 聊天消息 2.图标，3.送礼，4.约战
-      //       time: util.timestampToTime(messageInfo.stime),
-      //       chatMsgID: messageInfo.id,
-      //       isAgree: messageInfo.chatExtMsg ? messageInfo.chatExtMsg.isAgree : '',
-      //       isHandled: messageInfo.chatExtMsg ? messageInfo.chatExtMsg.isHandled : '',
-      //       msgType: messageInfo.chatExtMsg ? messageInfo.chatExtMsg.msgType : '',
-      //       couponID: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg ? messageInfo.chatExtMsg.extMsg.couponID : "") : '',
-      //       recordID: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg ? messageInfo.chatExtMsg.extMsg.recordID : "") : '',
-      //       name: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg ? messageInfo.chatExtMsg.extMsg.name : "") : '',
-      //       combatID: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg ? messageInfo.chatExtMsg.extMsg.combatID : "") : '',
-      //       inviterID: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg ? messageInfo.chatExtMsg.extMsg.inviterID : "") : '',
-      //       url: messageInfo.chatExtMsg ? (messageInfo.chatExtMsg.extMsg ? messageInfo.chatExtMsg.extMsg.url : "") : '',
-      //     });
-      //     // console.log('聊天记录-------------', this.componentChatList)
-      //     setTimeout(() => {
-      //       let childNodes = this.$refs.chatList.childNodes;
-      //       console.log("LastChatMsg_childNodes-------------",childNodes) 
-      //       this.$refs.listView.scrollBy(0,-(childNodes[0].clientHeight));
-      //     }, 100);
-      //     // this.$refs.listView.refresh();
-      //   }
-      // },
       input_value: function(newValue, oldValue) {
         if (newValue.length > 0 || oldValue > 0) {
           this.flag = true;
@@ -621,20 +614,6 @@
           this.flag = false;
         }
       },
-      // chatListIndex: function(newValue) {
-      //   if (this.isscroll) {
-      //     this.$nextTick(function() {
-      //       let childNodes = this.$refs.chatList.childNodes;
-      //       console.log(childNodes)
-      //       let chatListHeight = 0;
-      //       childNodes.forEach(item => {
-      //         chatListHeight += item.clientHeight
-      //       })
-      //       this.scrollHeight = chatListHeight;
-      //       console.log('父页面scrollHeight：', this.scrollHeight);
-      //     });
-      //   }
-      // }
     },
     components: {
       XHeader,

@@ -43,7 +43,7 @@
       },
       pullup: {
         type: Boolean,
-        default: false
+        default: true
       },
       beforeScroll: {
         type: Boolean,
@@ -79,11 +79,12 @@
           click: this.click,
           pullDownRefresh: this.pullDownRefresh,
           pullUpLoad: {
-            threshold: -40,
+            threshold: 0,
             moreTxt: "加载更多",
             noMoreTxt: "没有更多数据了"
           },
-          maxScrollY: 10
+          maxScrollY: 10,
+          // startY:0
         });
         if (this.listenScroll) {
           let me = this;
@@ -93,7 +94,7 @@
         }
         if (this.pullup) {
           this.scroll.on("pullingUp", () => {
-            this.isPullUpLoad = true
+            console.log('触发上拉加载更多')
             this.$emit("pullingUp");
           });
         }
