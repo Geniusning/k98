@@ -288,8 +288,10 @@
       }
     },
     mounted() {
-      let _url = window.location.href;
-      this.responseForGameUrl = _url.split("k98")[0];
+      let _GameUrl = window.location.href;
+      let indexGame = _GameUrl.indexOf('.com');
+      let shareurlGame = _GameUrl.slice(0, indexGame);
+      this.responseForGameUrl =`${shareurlGame}.com/`
       this.loadLastRoomInfo() //加载回房信息
       var topUpGameInfo = {
         content:{
@@ -306,6 +308,7 @@
         },
         msgCode:7
       }
+      // alert(`${this.responseForGameUrl}game/?gamePath=game1`)
       setTimeout(() => {
         this.addFriendEvtObj(topUpGameInfo)
       }, 25000);

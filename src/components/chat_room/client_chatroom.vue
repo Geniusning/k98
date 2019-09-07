@@ -363,22 +363,6 @@
                  });
                 }
               }
-            // var reg = /\[.{2}\]/g;
-            // this.componentChatList.forEach((item,index)=>{
-            //   if(item.type===1){
-            //     item["emotionArr"] = item.message.match(reg)
-            //     if(item["emotionArr"]){
-            //       item["emotionArr"].forEach((pic,i,arr)=>{
-            //         for (var i = 0; i < this.emotionList.length; i++) {
-            //            if (pic.indexOf(this.emotionList[i].name) !== -1) {
-            //              var reg1 = /\[.*\]/;
-            //              arr[i] = pic.replace(reg, `${this.emotionList[i].num}`);
-            //            }
-            //          }
-            //       })
-            //     }
-            //   }
-            // })
             console.log("客服聊天记录-------------",this.componentChatList)
             resolve()
           })
