@@ -97,13 +97,13 @@ new Vue({
         //加载L98控制开关信息
         loadL98otherSetting() {
             api.loadL98otherSetting().then(res => {
-                console.log("控制开关--------", res)
+                // console.log("控制开关--------", res)
                 this.LoadL98Setting(res)
             })
         },
         loadAdvertisingPhoto() {
             api.loadAdvertisingPhoto().then(res => {
-                console.log('轮播图-------------------------：', res.adPhotoURL)
+                // console.log('轮播图-------------------------：', res.adPhotoURL)
                 this.getAdvertisingImg(res.adPhotoURL);
 
             })
@@ -212,19 +212,6 @@ new Vue({
                 this.addBange()
             }
         },
-        _strToBinary(str) {
-            var result = [];
-            var list = str.split("");
-            for (var i = 0; i < list.length; i++) {
-                if (i != 0) {
-                    result.push(" ");
-                }
-                var item = list[i];
-                var binaryStr = item.charCodeAt().toString(2);
-                result.push(binaryStr);
-            }
-            return result.join("");
-        },
         _websocketclose(e) {
             //关闭
             console.log("websocket关闭-----------", e)
@@ -233,7 +220,7 @@ new Vue({
         //拉取积分换礼品列表
         loadGoods() {
             api.loadGoods().then(res => {
-                console.log('积分换礼品列表------', res);
+                // console.log('积分换礼品列表------', res);
                 this.getSendGiftList(res.slice(0, 4));
             })
         },
@@ -249,7 +236,7 @@ new Vue({
         //获取门店信息
         loadStoreSetting() {
             api.loadStoreSetting().then(res => {
-                console.log('门店信息---------------------------------：', res)
+                // console.log('门店信息---------------------------------：', res)
                 this.getShopSetting(res)
             })
         },
@@ -259,9 +246,9 @@ new Vue({
                 this.saveQrCode(res.urls[0])
                 if (!res.urls.length || !res.urls) {
                     api.createQrcode().then(res => {
-                        console.log('创建二维码接口--------', res);
+                        // console.log('创建二维码接口--------', res);
                     });
-                    console.log('进来创建二维码了')
+                    // console.log('进来创建二维码了')
                 }
 
             });
@@ -269,7 +256,7 @@ new Vue({
         //获取店长推荐
         loadRecommends() {
             api.loadRecommends().then(res => {
-                console.log('店长推荐数据---------------------', res)
+                // console.log('店长推荐数据---------------------', res)
                 this.recommendList = res;
                 this.getRecommentList(this.recommendList);
             })
@@ -289,7 +276,7 @@ new Vue({
                     this.CalcManualEventsCount(count);
                 }
                 this.addBange();
-                console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
+                // console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
             })
         },
         ...mapMutations({
