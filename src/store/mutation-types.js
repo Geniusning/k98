@@ -2,6 +2,10 @@
 // export const TESTSEXTYPE  = "TESTSEXTYPE"\
 //推送客服小
 // export const LISTENCLIENTMSG="LISTENCLIENTMSG"
+//清楚所有弹窗data
+export const CLEARTOPUPDATA = "CLEARTOPUPDATA"
+//切换灵魂匹配模式
+export const SWITCHSOULFLAG = "SWITCHSOULFLAG"
 //修改未关注用户的约战次数
 export const CHANGEUNFOCUSPLAYTIMES = "CHANGEUNFOCUSPLAYTIMES"
 //修改关注用户的约战次数

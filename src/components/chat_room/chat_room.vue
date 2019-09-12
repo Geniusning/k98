@@ -22,6 +22,18 @@
         </div>
       </div>
       <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
+        <!-- soul面板 -->
+        <div class="soul_panel" v-if="isShowSoulPanel">
+          <div class="avatar_box">
+            <img class="avatar" :src="userInfo.headimgurl" alt="">
+            <div class="line">匹配度90.2%</div>
+            <img class="avatar" :src="staticChatFriendObj.headimgurl" alt="">
+          </div>
+          <div class="chat_soulText_box">
+            <p class="chatSoulText">恭喜找到自己的灵魂玩伴</p>
+            <p class="chatSoulText">赶紧聊聊吧,还可以送礼，一起玩游戏</p>
+          </div>
+        </div>
         <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
         <scroll ref="listView" class="chat_content"   :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
           <ul class="chat_list" ref="chatList">
@@ -126,7 +138,7 @@
         </scroll>
         <!-- <div class="loading-container" v-show="isLoading">
                                                                 <loading></loading>
-                                                </div>-->
+            </div>-->
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
@@ -345,11 +357,11 @@
         componentChatList: [],
         isscroll: true,
         dontFocus:true,
+        isShowSoulPanel:false
         // isLoading: false
       };
     },
     created() {
-     
       this.listenScroll = true;
       this.today = new Date().getDate();
       this.today = new Date().getDate();
@@ -381,6 +393,12 @@
       }
       console.log(this.$route)
       this.friendId = this.$route.params.id;
+      if(this.$route.params.isSoul){
+        this.isShowSoulPanel = true;
+        setTimeout(() => {
+          this.isShowSoulPanel = false;
+        }, 6000);
+      }
       this._getChatList(); //前端获取聊天记录
       this._loadAllGift(); //获取礼物
       Bus.$on("VirtualGiftInfo", (giftInfo) => {
@@ -1073,6 +1091,47 @@
       background: #eee;
       overflow-y: auto;
       position: relative;
+      .soul_panel{
+        width: 8rem;
+        height: 5rem;
+       box-shadow: 2px 2px 10px 7px rgba(0, 0, 0, 0.2);
+       position: absolute;
+       top: .5rem;
+       left: 50%;
+       margin-left: -4rem;
+       z-index: 3;
+       background-color: #fff;
+        .avatar_box{
+          display: flex;
+          margin-left: 1.4rem ;
+          margin-top: .8rem;
+          margin-bottom: .6rem;
+          .avatar{
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+          }
+          .line{
+            // width: 1.rem;
+            display: inline-block;
+            height: 16px;
+            background: linear-gradient(left,#FF5201 15%,#FF9E19 5%,#FFCA24 10%,#FFC322 40%,#FFD709 30%);
+            padding:0.0533rem 0.08rem;
+            border-radius: 0.2rem;
+            color: #fff;
+            letter-spacing: 2px;
+            margin:.4rem  0.2rem ;
+          }
+        }
+        .chat_soulText_box{
+          .chatSoulText{
+            text-align: center;
+            font-size: 0.4133rem;
+            color: #ccc;
+            margin-top: .4rem;
+          }
+        }
+      }
       .preview_pic {
         position: fixed;
         text-align: center;

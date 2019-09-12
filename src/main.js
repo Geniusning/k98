@@ -210,6 +210,22 @@ new Vue({
             }else if(result.msgCode===20){
                 this.updateClientMsg(result.content)
                 this.addBange()
+            }else if(result.msgCode===22){
+               
+                console.log("-----------------------",this.$route)
+                if(this.$route.name==="chat"){
+                    this.$router.go(-1)
+                }
+                setTimeout(() => {
+                    this.setChatFriend(result.content.fromInfo)
+                    this.$router.push({
+                        name: "chat",
+                        params: {
+                          isSoul: true,
+                          id: this.staticChatFriendObj.openid
+                        }
+                    });
+                }, 500);
             }
         },
         _websocketclose(e) {
@@ -280,6 +296,7 @@ new Vue({
             })
         },
         ...mapMutations({
+            setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
             updateClientMsg:"UPDATE_CLIENTMSG",//推送更新客服消息
             saveQrCode: "SAVEQRCODE",
             getRecommentList: "GET_RECOMMENTLIST", //获取店长推荐

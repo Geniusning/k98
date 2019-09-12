@@ -3,7 +3,7 @@
     <li class="stack-item" v-for="(item, index) in pages" :key="index" :style="[transformIndex(index),transform(index)]" @touchmove.prevent="touchmove" @touchstart.prevent="touchstart" @touchend.prevent="touchend" @mousedown.prevent="touchstart" @mouseup.prevent="touchend"
       @mousemove.prevent="touchmove" @mouseout.prevent="touchend" @webkit-transition-end="onTransitionEnd(index)" @transitionend="onTransitionEnd(index)">
       <div style="height:100%" class="stack_content">
-        <div class="big_box">
+        <div class="big_box" v-if="!soulSwitch">
           <div class="img_content">
             <div class="icon_box" v-if="item.isInDoor">
               <img onclick="return false" src="../../../assets/image/online.png" alt="" class="icon">
@@ -37,19 +37,18 @@
             <div class="userBox clearfix">
               <img onclick="return false" src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex!=2">
               <img onclick="return false" src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
-
               <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
               <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>
               <span class="gift">富豪榜 {{item.info.wealthRanking}}</span>
               <span class="thumb">战神榜 {{item.info.gameScoreRanking}}
-                <img onclick="return false" class="battle" v-if="item.info.isQuiet"  src="../../../assets/image/mianZhan.png" alt="">
-                <img onclick="return false" class="battle" v-if="item.info.onlineDiceServer"  src="../../../assets/image/battle.png" alt="">
-              </span>
+                            <img onclick="return false" class="battle" v-if="item.info.isQuiet"  src="../../../assets/image/mianZhan.png" alt="">
+                            <img onclick="return false" class="battle" v-if="item.info.onlineDiceServer"  src="../../../assets/image/battle.png" alt="">
+                          </span>
             </div>
             <div class="tag_wrapper">
               <span v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')" :key="index">{{item}}</span>
               <!-- <span>招人爱</span>
-                      <span>大胃王</span> -->
+                                  <span>大胃王</span> -->
             </div>
             <div class="signature_wrapper">
               <!-- <p class="word">生活不止眼前的苟且，还有诗和远方的田野</p> -->
@@ -59,6 +58,14 @@
         </div>
       </div>
     </li>
+    <div class="souling_wrapper" v-if="soulSwitch">
+      <img ref="souling" class="souling" src="../../../assets/image/earth1.gif" alt="">
+      <!-- <div class="text_content">
+          <p class="text">{{stopSearch === false?"正在地球的某个角落":""}}</p>
+          <p ref="dot" class="text dot">{{stopSearch === false?"寻找你的灵魂玩伴":""}}</p>
+        </div> -->
+      <p ref="dot" class="resultSoulText dot" v-html="resultSoulText"></p>
+    </div>
   </ul>
 </template>
 <script>
@@ -73,6 +80,14 @@
   } from "vuex";
   export default {
     props: {
+      resultSoulText: {
+        type: String,
+        default: "",
+      },
+      stopSearch: {
+        type: Boolean,
+        default: false
+      },
       stackinit: {
         type: Object,
         default: []
@@ -92,8 +107,7 @@
     },
     data() {
       return {
-
-        limitFlag:true,
+        limitFlag: true,
         like: false,
         dislike: false,
         currentLikeIndex: 0,
@@ -129,6 +143,13 @@
       };
     },
     watch: {
+      stopSearch(newValue){
+        console.log("newValue----------",newValue)
+        if(newValue){
+          // this.$refs.souling.className = "souling_noRotate"
+          this.$refs.dot.className = "resultSoulText"
+        }
+      },
       currentIndex(val) {
         this.currentPage = 0 //条件筛选群友后重置群友第一个游标
         this.currentLikeIndex = 0 //条件筛选群友后重置喜欢图标显示index
@@ -144,8 +165,7 @@
     },
     computed: {
       // ...mapGetters(["friendList"]),
-      ...mapState(["friendListCursor", "userInfo", "tampSexFlag","focusThumbTimes","unfocusThumbTimes"]),
-
+      ...mapState(["friendListCursor", "userInfo", "tampSexFlag", "focusThumbTimes", "unfocusThumbTimes", "soulSwitch"]),
       // 划出面积比例
       offsetRatio() {
         let width = this.$el.offsetWidth;
@@ -166,60 +186,63 @@
     methods: {
       //点赞
       giveThumb(position) {
-         //每天限制30次
-          //从本地缓存读取当日约战点赞次数，数据格式 {unfocusThumbTimes:0,focusThumbLimitTimes:0,unfocusPlayTimes:0,focusPlayTimes:0,date:new Date().getDate()}
-        let thumbTimes = localStorage.getItem("thumbTimes")?
-        localStorage.getItem("thumbTimes"):{unfocusThumbTimes:this.unfocusThumbTimes,focusThumbTimes:this.focusThumbTimes,date:new Date().getDate()}
+        //每天限制30次
+        //从本地缓存读取当日约战点赞次数，数据格式 {unfocusThumbTimes:0,focusThumbLimitTimes:0,unfocusPlayTimes:0,focusPlayTimes:0,date:new Date().getDate()}
+        let thumbTimes = localStorage.getItem("thumbTimes") ?
+          localStorage.getItem("thumbTimes") : {
+            unfocusThumbTimes: this.unfocusThumbTimes,
+            focusThumbTimes: this.focusThumbTimes,
+            date: new Date().getDate()
+          }
         let todayDate = new Date().getDate()
-
-        if(typeof thumbTimes === "string"){
+        if (typeof thumbTimes === "string") {
           thumbTimes = JSON.parse(thumbTimes)
         }
-        console.log("thumbTimes---------",thumbTimes)
+        console.log("thumbTimes---------", thumbTimes)
         // 判断未关注用户今天点赞次数是否达到10次，达到10次弹框提醒关注
-        if(!this.userInfo.isSubscribe){  //判断是否关注公众号
+        if (!this.userInfo.isSubscribe) { //判断是否关注公众号
           this.changeUnfocusThumbTimes(-1)
-          if(thumbTimes.date==todayDate && Number(thumbTimes.unfocusThumbTimes)<1){
+          if (thumbTimes.date == todayDate && Number(thumbTimes.unfocusThumbTimes) < 1) {
             // 当未关注用户点赞次数达到10次，存入缓存
-              thumbTimes["date"] = new Date().getDate()
-              let unfocusThumbNum = Number(thumbTimes.unfocusThumbTimes)
-              unfocusThumbNum--
-              thumbTimes["unfocusThumbTimes"] = this.unfocusThumbTimes
-              localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
-              this.changeQrCodeText({
-                  title:"游客仅限10次交友机会，长按关注获取更多特权",
-                  bottomText:"会员特权:交朋友、领福利、打比赛"
-                })
-              this.showQrcode(true)
-              return 
-          }else{
-             thumbTimes["date"] = new Date().getDate()
-             thumbTimes["unfocusThumbTimes"] = this.unfocusThumbTimes
-             localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+            thumbTimes["date"] = new Date().getDate()
+            let unfocusThumbNum = Number(thumbTimes.unfocusThumbTimes)
+            unfocusThumbNum--
+            thumbTimes["unfocusThumbTimes"] = this.unfocusThumbTimes
+            localStorage.setItem("thumbTimes", JSON.stringify(thumbTimes))
+            this.changeQrCodeText({
+              title: "游客仅限10次交友机会，长按关注获取更多特权",
+              bottomText: "会员特权:交朋友、领福利、打比赛"
+            })
+            this.showQrcode(true)
+            return
+          } else {
+            thumbTimes["date"] = new Date().getDate()
+            thumbTimes["unfocusThumbTimes"] = this.unfocusThumbTimes
+            localStorage.setItem("thumbTimes", JSON.stringify(thumbTimes))
           }
-        }else{
-          this.changeFocusThumbTimes(-1) 
+        } else {
+          this.changeFocusThumbTimes(-1)
           // 当已关注用户点赞次数达到30次，存入缓存
           // 判断已关注用户今天点赞此时是否达到30，达到30次弹框提醒今日点赞次数已用完
-          if(thumbTimes.date==todayDate && Number(thumbTimes.focusThumbTimes)<1){
-              thumbTimes["date"] = new Date().getDate()
-              let focusThumbNum = Number(thumbTimes.focusThumbTimes)
-              focusThumbNum--
-              thumbTimes["focusThumbTimes"] = focusThumbNum
-              localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
-              if(this.limitFlag){
-                this.limitFlag = !this.limitFlag;
-                this.$vux.toast.text('每天限30次点赞交友机会。当天已用完，明天再来', 'middle')
-              }
-          }else{
-             thumbTimes["date"] = new Date().getDate()
-             thumbTimes["focusThumbTimes"] = this.focusThumbTimes
-             localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+          if (thumbTimes.date == todayDate && Number(thumbTimes.focusThumbTimes) < 1) {
+            thumbTimes["date"] = new Date().getDate()
+            let focusThumbNum = Number(thumbTimes.focusThumbTimes)
+            focusThumbNum--
+            thumbTimes["focusThumbTimes"] = focusThumbNum
+            localStorage.setItem("thumbTimes", JSON.stringify(thumbTimes))
+            if (this.limitFlag) {
+              this.limitFlag = !this.limitFlag;
+              this.$vux.toast.text('每天限30次点赞交友机会。当天已用完，明天再来', 'middle')
+            }
+          } else {
+            thumbTimes["date"] = new Date().getDate()
+            thumbTimes["focusThumbTimes"] = this.focusThumbTimes
+            localStorage.setItem("thumbTimes", JSON.stringify(thumbTimes))
           }
         }
         let xid = this.friendData.info.openid
         api.makeFriend(xid).then(res => {
-            console.log("api.makeFriend(xid)-----------", res);
+          console.log("api.makeFriend(xid)-----------", res);
           if (res.errCode === 0) {
             this.$emit("heartBeat", this.friendData);
           } else if (res.errCode === 1023) {
@@ -340,7 +363,7 @@
           this.currentLikeIndex = -1
         }
         this.friendData = this.pages[this.currentPage];
-        console.log("friendData-------------------",this.friendData)
+        console.log("friendData-------------------", this.friendData)
         this.currentPage = this.currentPage === this.pages.length - 1 ? 0 : this.currentPage + 1;
         this.backToParentData = this.pages[this.currentPage];
         // console.log("this.friendData----------",this.friendData)
@@ -357,19 +380,19 @@
         // console.log("currentLikeIndex---------", this.currentLikeIndex)
         this.currentLikeIndex++
           // console.log("this pages.length--------", this.pages.length)
-        if (this.distant > 0) {
-          // console.log("往右划朋友信息-------",this.friendData)
-          if (!this.friendData.isAlreadyFriend) { //不是朋友才右滑点赞
-            this.giveThumb()
-            this.like = true;
+          if (this.distant > 0) {
+            // console.log("往右划朋友信息-------",this.friendData)
+            if (!this.friendData.isAlreadyFriend) { //不是朋友才右滑点赞
+              this.giveThumb()
+              this.like = true;
+            } else {
+              // this.alreadySendThumbFlag = false
+            }
           } else {
+            console.log("往左滑")
+            this.dislike = true;
             // this.alreadySendThumbFlag = false
           }
-        } else {
-          console.log("往左滑")
-          this.dislike = true;
-          // this.alreadySendThumbFlag = false
-        }
         // console.log(this.currentPage);
         // let index = this.currentPage;
         // if (this.distant > 0) {
@@ -525,9 +548,9 @@
         }
       },
       ...mapMutations({
-        changeUnfocusThumbTimes:"CHANGEUNFOCUSTHUMBTIMES",//未关注用户点赞次数
-        changeFocusThumbTimes:"CHANGEFOCUSTHUMBTIMES",//关注用户点赞次数
-        changeQrCodeText:"CHANGEQRCODETEXT",
+        changeUnfocusThumbTimes: "CHANGEUNFOCUSTHUMBTIMES", //未关注用户点赞次数
+        changeFocusThumbTimes: "CHANGEFOCUSTHUMBTIMES", //关注用户点赞次数
+        changeQrCodeText: "CHANGEQRCODETEXT",
         showQrcode: "SHOW_QRCODE", //暂时二维码
       })
     },
@@ -546,6 +569,86 @@
     -webkit-perspective-origin: 50% 150%;
     margin: 0;
     padding: 0;
+    .souling_wrapper {
+      position: absolute;
+      left: 50%;
+      top: 1rem;
+      width: 10rem;
+      height: 7rem;
+      margin-left: -5rem;
+      z-index: 99;
+      text-align: center;
+      .resultSoulText {
+        text-align: center;
+        margin-top: 1.5rem;
+        line-height: 2;
+        color: #BFBEBE;
+        font-size: .4rem;
+        font-weight: 700;
+      }
+      @keyframes rotating {
+        20% {
+          transform: rotate(72deg);
+        }
+        40% {
+          transform: rotate(144deg);
+        }
+        60% {
+          transform: rotate(216deg);
+        }
+        80% {
+          transform: rotate(288deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .souling {
+        
+        width: 5rem;
+        height: 5rem; 
+        // animation: rotating 3s infinite linear;
+      }
+      .souling_noRotate {
+        width: 100%;
+        height: 100%;
+      }
+      .dot {
+        font-size: .433rem;
+        color: #BFBEBE;
+        font-weight: 700;
+      }
+      .dot:after {
+        content: ".";
+        display: inline-block;
+        width: 2em;
+        text-indent: -0.5em;
+        overflow: hidden;
+        vertical-align: bottom;
+        -webkit-animation: dotting 5s infinite;
+        -o-animation: dotting 5s infinite;
+        -moz-animation: dotting 5s infinite;
+        animation: dotting 5s infinite;
+        text-align: left;
+      }
+      @keyframes dotting {
+        0% {
+          text-shadow: 0em 0 0 currentColor;
+        }
+        25% {
+          text-shadow: 0.7em 0 0 currentColor;
+        }
+        50% {
+          text-shadow: 0.7em 0 0 currentColor, 1.3em 0 0 currentColor;
+        }
+        75% {
+          text-shadow: 0.7em 0 0 currentColor, 1.3em 0 0 currentColor, 1.9em 0 0 currentColor;
+        }
+        100% {
+          text-shadow: 0em 0 0 currentColor;
+        }
+      }
+    }
   }
   .stack-item {
     background: rgba(255, 255, 255, 1);

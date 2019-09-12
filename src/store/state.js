@@ -54,7 +54,8 @@ const state = {
     allMutatualInfo:{}, //送礼、约战、点赞 结构体
     loadFriendSexType:"", //拉取候选人性别参数
     friendPanelFlag:false, //配对成功弹框
-
+    soulSwitch:false,
+    soulFriInfo:{}
 }
 
 export default state
