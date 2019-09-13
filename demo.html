@@ -58,6 +58,9 @@ var str = `[大哭][嘻嘻][大哭][嘻嘻]梵[大哭][嘻嘻][大哭][嘻嘻]�
 var emotionArr = str.match(/\[.{1,2}\]/g)
 console.log(emotionArr)
 
+            let index = "https://llwang1.qianzhi.com/?code=asdgasg&state=1".indexOf('.com');
+            let shareurl = "https://llwang1.qianzhi.com/?code=asdgasg&state=1".slice(0, index);
+            console.log(shareurl+".com")
     // var text = $('#text').val();
     // var html = "<p class='msg'>" + text + "</p>";
     // $(".message").append(html);
