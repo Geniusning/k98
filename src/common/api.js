@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: liuning
- * @Last Modified time: 2019-09-03 17:40:16
+ * @Last Modified time: 2019-09-12 11:26:01
  */
 
 import axios from 'axios'
@@ -12,6 +12,30 @@ let index = windowUrL.indexOf('.com');
 let shareurl = windowUrL.slice(0, index)+".com/"
 
 let api = {};
+//接受灵魂匹配
+api.acceptSoulFri = function (fromId) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/acceptSoulFri?fromId=${fromId}`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//搜索灵魂匹配用户
+api.searchWaitBeMakeFriUser = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/searchWaitBeMakeFriUser`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //随机场添加等待约战人名单
 api.addWaitingCombatList = function () {
   return new Promise((resolve, reject) => {

@@ -8,6 +8,10 @@ const mutations = {
     //     state.lastClientMsg = msg
     //     state.client_badgeCount = msg.content.extMsg.count
     // },
+    //切换灵魂匹配模式
+    [types.SWITCHSOULFLAG](state,soulFlag){
+        state.soulSwitch = soulFlag
+    },
     //修改未关注user点赞次数
     [types.CHANGEUNFOCUSTHUMBTIMES](state,count){
         state.unfocusThumbTimes += count
@@ -397,13 +401,19 @@ const mutations = {
                 state.topUpGameInfo = friendEvtObj
                 console.log('好友邀请你进游戏玩-----------', friendEvtObj)
                 break;
-            // case 20 ://监听客服推送消息
-            //    state.lastClientMsg = friendEvtObj.content;
-            //    state.client_badgeCount = friendEvtObj.content.extMsg.count
-            //    break;
+            case 21 ://监听灵魂匹配推送
+                state.soulFriInfo = friendEvtObj
+               break;
             default:
                 break;
         }
+    },
+    //清楚所有弹窗data
+    [types.CLEARTOPUPDATA](state){
+        state.topUpGameInfo = {}
+        state.topUpGiftInfo = {}
+        state.topUpThumbInfo = {}
+        state.soulFriInfo = {}
     },
     //获取好友事件
     // [types.GET_FRIENDEVTLIST](state, {
@@ -455,7 +465,9 @@ const mutations = {
     },
     //设置候选人聊天的信息
     [types.SET_CHAT_FRIEND](state, data) {
+        // data.info.isIndoor = data.isInDoor
         state.staticChatFriendObj = data.info ? data.info : data
+        
         // console.log('state.staticChatFriendObj-------------------', state.staticChatFriendObj);
     },
     //设置动态聊天朋友信息

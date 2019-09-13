@@ -5,51 +5,60 @@
       <img onclick="return false" src="../../assets/image/setting.png" alt @click="intoSetting">
     </div>
     <div class="stack-wrapper">
-      <div v-show="isFirstLoad">
+      <div v-if="isFirstLoad">
         <p class="intro_mfTips">绿灯闪烁表示好友在线哦，红灯表示离线</p>
         <img src="../../assets/image/arrow left.png" alt class="arrow_left">
         <img src="../../assets/image/Arrow Right.png" alt class="arrow_right">
         <p class="arrow_desc">左右滑动可换人,右滑表示喜欢哦</p>
       </div>
+      <div class="switchBtn_wrapper" @click="switchMakeFriModal">
+        <div class="imgBox">
+          <img onclick="return false" class="soulIcon" src="../../assets/image/soulIcon.png" alt="">
+          <span class="dot left"></span>
+          <span class="dot right"></span>
+        </div>
+        <p class="soulText">{{modalSwitch?"自己找":"Soul玩伴"}}</p>
+      </div>
       <!-- 相册··················································begin -->
       <!-- 相册··················································end -->
-      <stack ref="stack" :pages="someList" :visible="visible" :currentIndex="currentPage" 
-       @getMoreFriend="sonGetMoreFriend" 
-       @heartBeat="thumbHeartBeat" 
-       @showAblum="showAblum" 
-       @firstData="listenFirstdata"
-       >
-       暂时没有好友</stack>
+      <stack ref="stack" :pages="someList" :visible="visible" :currentIndex="currentPage" :resultSoulText="soulText" :stopSearch="searching" @getMoreFriend="sonGetMoreFriend" @heartBeat="thumbHeartBeat" @showAblum="showAblum" @firstData="listenFirstdata">
+        暂时没有好友</stack>
       <div class="loading-container" v-show="!someList.length">
         <loading></loading>
       </div>
     </div>
     <div class="control_wrapper">
       <!-- <p class="control_guide" v-show="isFirstLoad">互赞成为好友。
-                        <br>下面分别是送礼、点赞、约Ta玩大话骰
-                      </p> -->
-      <div class="gifts" @click="isFirstLoad=false">
-        <img onclick="return false" src="../../assets/image/gift.png" @click="isGiftPanel=true" alt>
-        <img onclick="return false" src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt>
-        <p class="handleText" v-show="isFirstLoad">送礼成好友</p>
-        <!-- <p>见面礼</p> -->
+                          <br>下面分别是送礼、点赞、约Ta玩大话骰
+        </p> -->
+      <div class="soulBtns_wrapper" v-show="isEndResultSearchBtnBox">
+        <button class="btn" @click="cancleSoulSearch">退出</button>
+        <button class="btn" @click="intoSetting">去完善</button>
       </div>
-      <!--  -->
-      <div class="thumbs" v-if="!isFriend" @click="isFirstLoad=false">
-        <img onclick="return false" ref="thumbHeartBeat" src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt>
-        <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
-        <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
-      </div>
-      <div class="hello" v-else @click="isFirstLoad=false">
-        <img onclick="return false" src="../../assets/image/sayhi.png" @click="chat" alt>
-        <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
-        <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
-      </div>
-      <div class="playGame" @click="isFirstLoad=false">
-        <img onclick="return false" src="../../assets/image/game.png" @click="playGame" alt>
-        <img onclick="return false" src="../../assets/image/game.png" v-show="isFirstLoad" class="guidePlayGame" alt>
-        <p class="handleText" v-show="isFirstLoad">约战大话骰</p>
-        <!-- <p>玩一把</p> -->
+      <div class="btns_wrapper" v-show="!soulSwitch">
+        <div class="gifts" @click="isFirstLoad=false">
+          <img onclick="return false" src="../../assets/image/gift.png" @click="isGiftPanel=true" alt>
+          <img onclick="return false" src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt>
+          <p class="handleText" v-show="isFirstLoad">送礼成好友</p>
+          <!-- <p>见面礼</p> -->
+        </div>
+        <!--  -->
+        <div class="thumbs" v-if="!isFriend" @click="isFirstLoad=false">
+          <img onclick="return false" ref="thumbHeartBeat" src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt>
+          <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
+          <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
+        </div>
+        <div class="hello" v-else @click="isFirstLoad=false">
+          <img onclick="return false" src="../../assets/image/sayhi.png" @click="chat" alt>
+          <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt>
+          <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
+        </div>
+        <div class="playGame" @click="isFirstLoad=false">
+          <img onclick="return false" src="../../assets/image/game.png" @click="playGame" alt>
+          <img onclick="return false" src="../../assets/image/game.png" v-show="isFirstLoad" class="guidePlayGame" alt>
+          <p class="handleText" v-show="isFirstLoad">约战大话骰</p>
+          <!-- <p>玩一把</p> -->
+        </div>
       </div>
     </div>
     <!-- 筛选好友信息 -->
@@ -84,10 +93,11 @@
     </div>
     <!-- 点赞 -->
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask width="10em" :text="text" :position="position"></toast>
-    <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad" -->
+    <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad"   isFirstLoad-->
     <div class="guide_bg" v-show="isFirstLoad" @click="isFirstLoad=false">
       <img onclick="return false" class="thumb" src="../../assets/image/thumb.png" alt>
-      <p class="intro">完善资料送福利，每天推3名星座匹配群友</p>
+      <p class="intro">完善个人资料</p>
+      <p class="intro_soulText">跟随灵魂找玩伴</p>
     </div>
     <keep-alive>
       <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
@@ -112,20 +122,33 @@
   import api from "common/api";
   import Bus from 'common/bus.js'
   import lifePhote from './personalInfo/personalInfo'
-  import {mapState,mapActions,mapMutations,mapGetters} from "vuex";
-  import {Toast,TransferDom,Popup,XDialog,XButton,Scroller} from "vux";
+  import {
+    mapState,
+    mapActions,
+    mapMutations,
+    mapGetters
+  } from "vuex";
+  import {
+    Toast,
+    TransferDom,
+    Popup,
+    XDialog,
+    XButton,
+    Scroller
+  } from "vux";
   export default {
     // el: "#stack",
     directives: {
       TransferDom
     },
     data() {
-      
       return {
-        isAlreadyFriend:false,  
-        showAblumFlag:false,//展示生活照
+        searching: false,
+        soulText: `<span style="display:inline-block;margin-left:60px;">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
+        isAlreadyFriend: false,
+        showAblumFlag: false, //展示生活照
         sortType: 0, //排序类型
-        currentSortIndex:null,
+        currentSortIndex: null,
         sexType: 0, //性别类型
         rangeType: 0, //店内外类型
         fatherPanelIndex: 1,
@@ -171,8 +194,7 @@
             name: "店外"
           }
         ],
-        rankList: [
-         {
+        rankList: [{
             id: 1,
             name: "财富榜"
           },
@@ -189,6 +211,9 @@
         friendId: "",
         visible: 3,
         currentPage: 0,
+        modalSwitch: false,
+        isEndResultSearchBtnBox: false,
+        soulTimer: null
       };
     },
     //路由判断，判断是场内还是场外1场内2场外
@@ -209,20 +234,21 @@
     //   }
     // },
     computed: {
-      ...mapState(["friendList", "inAndOutFriendCursor", 
-      "friendListCursor", "giftList", "userInfo", "loadFriendSexType",
-      "staticChatFriendObj","focusThumbTimes","unfocusThumbTimes","focusPlayTimes","unfocusPlayTimes"]),
+      ...mapState(["friendList", "inAndOutFriendCursor",
+        "friendListCursor", "giftList", "userInfo", "loadFriendSexType",
+        "staticChatFriendObj", "focusThumbTimes", "unfocusThumbTimes", "focusPlayTimes", "unfocusPlayTimes", "soulSwitch"
+      ]),
       ...mapGetters(["qrIsShow"]),
     },
     mounted() {
-       let param = {
-            mySex: Number(this.loadFriendSexType),
-            cursor: 0,
-            sex: this.sexType,
-            range: this.rangeType,
-            sortType: this.sortType
-          }
-          this.getAllCommunityFriend(param)
+      let param = {
+        mySex: Number(this.loadFriendSexType),
+        cursor: 0,
+        sex: this.sexType,
+        range: this.rangeType,
+        sortType: this.sortType
+      }
+      this.getAllCommunityFriend(param)
       console.log(this.friendList)
       if (this.userInfo.firstLoad) {
         this.isFirstLoad = true;
@@ -232,15 +258,55 @@
       this._clearFirstLoadTag(); //标识已经进入过公众号
       this._loadAllGift();
     },
-    activated(){
+    activated() {
       console.log("进入找朋友页面")
-      console.log("好友列表--------------",this.someList)
-      Bus.$on("changeFriendConnetion",(openid)=>{
-        this.isFriend = true
-       this.changeFriIcon(openid)
-      })
+      console.log("好友列表--------------", this.someList)
+      this.soulText = `<span style="display:inline-block;margin-left:60px;">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
+        Bus.$on("changeFriendConnetion", (openid) => {
+          this.isFriend = true
+          this.changeFriIcon(openid)
+        })
+    },
+    deactivated() {
+      this.modalSwitch = false
+      this.switchSoulModal(this.modalSwitch)
+      this.isEndResultSearchBtnBox = false
+      this.searching = false
+      this.soulText = ""
+      clearTimeout(this.soulTimer)
     },
     methods: {
+      //取消灵魂匹配
+      cancleSoulSearch() {
+        this.modalSwitch = false
+        this.switchSoulModal(this.modalSwitch)
+        this.isEndResultSearchBtnBox = false
+        this.searching = false
+        // this.soulText = `正在地球的每一个角落<br>寻找你的灵魂玩伴`
+        this.soulText = `<span style="display:inline-block;margin-left:60px;">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`
+      },
+      //切换交友模式
+      switchMakeFriModal() {
+        this.modalSwitch = !this.modalSwitch
+        this.switchSoulModal(this.modalSwitch)
+        if(this.modalSwitch){
+          api.searchWaitBeMakeFriUser().then(res=>{
+            console.log("搜索结果----------",res)
+          })
+        }
+        if (!this.modalSwitch) {
+          clearTimeout(this.soulTimer)
+          this.isEndResultSearchBtnBox = false
+          this.soulText = `<span style="display:inline-block;margin-left:60px;">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`
+          return
+        }
+        this.soulTimer = setTimeout(() => {
+          this.soulText = "对不起<br>找不到和您匹配度>60%的灵魂玩伴<br>请完善个人资料,以便精准匹配"
+          this.isEndResultSearchBtnBox = true;
+          this.searching = true
+        }, 6000);
+      },
+ 
       //拉取候选人
       getAllCommunityFriend(params) {
         api.getFriendList(params).then(res => {
@@ -292,7 +358,7 @@
         })
       },
       //监听关闭相册
-      closeAlbum(flag){
+      closeAlbum(flag) {
         console.log(flag);
         this.showAblumFlag = flag;
       },
@@ -318,11 +384,11 @@
         this.isInDoor = data.isInDoor;
       },
       //监听右滑心跳
-      thumbHeartBeat(data){
-        console.log("heartBeat--------------",data)
+      thumbHeartBeat(data) {
+        console.log("heartBeat--------------", data)
         this.$refs.thumbHeartBeat.className = "heartBeat"
         setTimeout(() => {
-           this.$refs.thumbHeartBeat.className = ""
+          this.$refs.thumbHeartBeat.className = ""
         }, 500);
       },
       //获取更多朋友
@@ -347,68 +413,70 @@
           this.MutationGetMoreFriendList(res.candidates);
         })
       },
-
       //点赞
       giveThumb(position) {
-       //每天限制30次
-          //从本地缓存读取当日约战点赞次数，数据格式 {unfocusThumbTimes:0,focusThumbLimitTimes:0,unfocusPlayTimes:0,focusPlayTimes:0,date:new Date().getDate()}
-        let thumbTimes = localStorage.getItem("thumbTimes")?
-        localStorage.getItem("thumbTimes"):{unfocusThumbTimes:this.unfocusThumbTimes,focusThumbTimes:this.focusThumbTimes,date:new Date().getDate()}
+        //每天限制30次
+        //从本地缓存读取当日约战点赞次数，数据格式 {unfocusThumbTimes:0,focusThumbLimitTimes:0,unfocusPlayTimes:0,focusPlayTimes:0,date:new Date().getDate()}
+        let thumbTimes = localStorage.getItem("thumbTimes") ?
+          localStorage.getItem("thumbTimes") : {
+            unfocusThumbTimes: this.unfocusThumbTimes,
+            focusThumbTimes: this.focusThumbTimes,
+            date: new Date().getDate()
+          }
         let todayDate = new Date().getDate()
-
-        if(typeof thumbTimes === "string"){
+        if (typeof thumbTimes === "string") {
           thumbTimes = JSON.parse(thumbTimes)
         }
-        console.log("thumbTimes---------",thumbTimes)
+        console.log("thumbTimes---------", thumbTimes)
         // 判断未关注用户今天点赞次数是否达到10次，达到10次弹框提醒关注
-        if(!this.userInfo.isSubscribe){  //判断是否关注公众号
+        if (!this.userInfo.isSubscribe) { //判断是否关注公众号
           this.changeUnfocusThumbTimes(-1)
-          if(thumbTimes.date==todayDate && Number(thumbTimes.unfocusThumbTimes)<1){
+          if (thumbTimes.date == todayDate && Number(thumbTimes.unfocusThumbTimes) < 1) {
             // 当未关注用户点赞次数达到10次，存入缓存
-              thumbTimes["date"] = new Date().getDate()
-              let unfocusThumbNum = Number(thumbTimes.unfocusThumbTimes)
-              unfocusThumbNum--
-              thumbTimes["unfocusThumbTimes"] = unfocusThumbNum
-              localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
-              this.changeQrCodeText({
-                  title:"游客仅限10次交友机会，长按关注获取更多特权",
-                  bottomText:"会员特权:领福利、交群友、参活动"
-                })
-              this.showQrcode(true)
-              return 
-          }else{
-             thumbTimes["date"] = new Date().getDate()
-             thumbTimes["unfocusThumbTimes"] = this.unfocusThumbTimes
-             localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+            thumbTimes["date"] = new Date().getDate()
+            let unfocusThumbNum = Number(thumbTimes.unfocusThumbTimes)
+            unfocusThumbNum--
+            thumbTimes["unfocusThumbTimes"] = unfocusThumbNum
+            localStorage.setItem("thumbTimes", JSON.stringify(thumbTimes))
+            this.changeQrCodeText({
+              title: "游客仅限10次交友机会，长按关注获取更多特权",
+              bottomText: "会员特权:领福利、交群友、参活动"
+            })
+            this.showQrcode(true)
+            return
+          } else {
+            thumbTimes["date"] = new Date().getDate()
+            thumbTimes["unfocusThumbTimes"] = this.unfocusThumbTimes
+            localStorage.setItem("thumbTimes", JSON.stringify(thumbTimes))
           }
-        }else{
-          this.changeFocusThumbTimes(-1) 
+        } else {
+          this.changeFocusThumbTimes(-1)
           // 当已关注用户点赞次数达到30次，存入缓存
           // 判断已关注用户今天点赞此时是否达到30，达到30次弹框提醒今日点赞次数已用完
-          if(thumbTimes.date==todayDate && Number(thumbTimes.focusThumbTimes)<1){
+          if (thumbTimes.date == todayDate && Number(thumbTimes.focusThumbTimes) < 1) {
             console.log("进来了")
-              thumbTimes["date"] = new Date().getDate()
-              let focusThumbNum = Number(thumbTimes.focusThumbTimes)
-              focusThumbNum--
-              thumbTimes["focusThumbTimes"] = focusThumbNum
-              localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
-              this.$vux.toast.text('每天限30次点赞交友机会。当天已用完，明天再来', 'middle')
-              return
-          }else{
-             thumbTimes["date"] = new Date().getDate()
-             thumbTimes["focusThumbTimes"] = this.focusThumbTimes
-             localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes))
+            thumbTimes["date"] = new Date().getDate()
+            let focusThumbNum = Number(thumbTimes.focusThumbTimes)
+            focusThumbNum--
+            thumbTimes["focusThumbTimes"] = focusThumbNum
+            localStorage.setItem("thumbTimes", JSON.stringify(thumbTimes))
+            this.$vux.toast.text('每天限30次点赞交友机会。当天已用完，明天再来', 'middle')
+            return
+          } else {
+            thumbTimes["date"] = new Date().getDate()
+            thumbTimes["focusThumbTimes"] = this.focusThumbTimes
+            localStorage.setItem("thumbTimes", JSON.stringify(thumbTimes))
           }
         }
         api.makeFriend(this.xid).then(res => {
-          console.log('giveThumb----',res);
+          console.log('giveThumb----', res);
           if (res.errCode === 0) {
             this.isShowEnvelope = true;
             this.envelopeText = "飞奔个赞过去,等待对方回赞成为好友"
             setTimeout(() => {
               this.isShowEnvelope = false;
             }, 2000);
-          } else if(res.errCode === 1023) {
+          } else if (res.errCode === 1023) {
             // this.showQrcode(true);
           } else {
             this.isShowEnvelope = true;
@@ -427,12 +495,12 @@
       chat() {
         // util.routerTo("chat", this);
         console.log("jinrula")
-      this.setChatFriend(this.friendInfo);
-      this.$router.push({
-          name:"chat",
-          params: { 
+        this.setChatFriend(this.friendInfo);
+        this.$router.push({
+          name: "chat",
+          params: {
             isClient: false,
-            id:this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:item.phone
+            id: this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : item.phone
           }
         });
         // console.log()
@@ -443,52 +511,55 @@
       },
       //玩游戏
       playGame() {
-        let playTimes = localStorage.getItem("playTimes")?
-        localStorage.getItem("playTimes"):{unfocusPlayTimes:this.unfocusPlayTimes,focusPlayTimes:this.focusPlayTimes,date:new Date().getDate()}
+        let playTimes = localStorage.getItem("playTimes") ?
+          localStorage.getItem("playTimes") : {
+            unfocusPlayTimes: this.unfocusPlayTimes,
+            focusPlayTimes: this.focusPlayTimes,
+            date: new Date().getDate()
+          }
         let todayDate = new Date().getDate()
-
-        if(typeof playTimes === "string"){
+        if (typeof playTimes === "string") {
           playTimes = JSON.parse(playTimes)
         }
-        console.log("playTimes---------",playTimes)
+        console.log("playTimes---------", playTimes)
         // 判断未关注用户今天点赞次数是否达到10次，达到10次弹框提醒关注
-        if(!this.userInfo.isSubscribe){  //判断是否关注公众号
+        if (!this.userInfo.isSubscribe) { //判断是否关注公众号
           this.changeUnFocusPlayTimes(-1)
-          if(playTimes.date==todayDate && Number(playTimes.unfocusPlayTimes)<1){
+          if (playTimes.date == todayDate && Number(playTimes.unfocusPlayTimes) < 1) {
             // 当未关注用户点赞次数达到10次，存入缓存
-              playTimes["date"] = new Date().getDate()
-              let unFoucusplayNum = Number(playTimes.unfocusPlayTimes)
-              unFoucusplayNum--
-              playTimes["unfocusPlayTimes"] = unFoucusplayNum
-              localStorage.setItem("playTimes",JSON.stringify(playTimes))
-              this.changeQrCodeText({
-                  title:"游客仅限10次挑战群友机会，长按关注获取更多特权",
-                  bottomText:"会员特权:领福利、交群友、参活动"
-                })
-              this.showQrcode(true)
-              return 
-          }else{
-             playTimes["date"] = new Date().getDate()
-             playTimes["unfocusPlayTimes"] = this.unfocusPlayTimes
-             localStorage.setItem("playTimes",JSON.stringify(playTimes))
+            playTimes["date"] = new Date().getDate()
+            let unFoucusplayNum = Number(playTimes.unfocusPlayTimes)
+            unFoucusplayNum--
+            playTimes["unfocusPlayTimes"] = unFoucusplayNum
+            localStorage.setItem("playTimes", JSON.stringify(playTimes))
+            this.changeQrCodeText({
+              title: "游客仅限10次挑战群友机会，长按关注获取更多特权",
+              bottomText: "会员特权:领福利、交群友、参活动"
+            })
+            this.showQrcode(true)
+            return
+          } else {
+            playTimes["date"] = new Date().getDate()
+            playTimes["unfocusPlayTimes"] = this.unfocusPlayTimes
+            localStorage.setItem("playTimes", JSON.stringify(playTimes))
           }
-        }else{
+        } else {
           this.changeFocusPlayTimes(-1)
           // 当已关注用户点赞次数达到30次，存入缓存
           // 判断已关注用户今天点赞此时是否达到30，达到30次弹框提醒今日点赞次数已用完
-          if(playTimes.date==todayDate && Number(playTimes.focusPlayTimes)<1){
+          if (playTimes.date == todayDate && Number(playTimes.focusPlayTimes) < 1) {
             console.log("进来了")
-              playTimes["date"] = new Date().getDate()
-              let focusPlayTimes = Number(playTimes.focusPlayTimes)
-              focusPlayTimes--
-              playTimes["focusPlayTimes"] = focusPlayTimes
-              localStorage.setItem("playTimes",JSON.stringify(playTimes))
-              this.$vux.toast.text('每天限30次约战机会。当天已用完，明天再来', 'middle')
-              return
-          }else{
-             playTimes["date"] = new Date().getDate()
-             playTimes["focusPlayTimes"] = this.focusPlayTimes
-             localStorage.setItem("playTimes",JSON.stringify(playTimes))
+            playTimes["date"] = new Date().getDate()
+            let focusPlayTimes = Number(playTimes.focusPlayTimes)
+            focusPlayTimes--
+            playTimes["focusPlayTimes"] = focusPlayTimes
+            localStorage.setItem("playTimes", JSON.stringify(playTimes))
+            this.$vux.toast.text('每天限30次约战机会。当天已用完，明天再来', 'middle')
+            return
+          } else {
+            playTimes["date"] = new Date().getDate()
+            playTimes["focusPlayTimes"] = this.focusPlayTimes
+            localStorage.setItem("playTimes", JSON.stringify(playTimes))
           }
         }
         api.sentPlayGameMsg(this.friendId).then(res => {
@@ -501,7 +572,6 @@
               this.isShowEnvelope = false;
             }, 2000);
           } else if (res.errCode == 1023) {
-           
           } else if (res.errCode == 1022) {
             this.isShowEnvelope = true;
             this.envelopeText = "该用户己离线，无法通知";
@@ -509,7 +579,7 @@
               this.isShowEnvelope = false;
             }, 2000);
             return;
-          }else if(res.errCode == 1089){
+          } else if (res.errCode == 1089) {
             //  this.$vux.toast.text('每天限20次约战机会。当天已用完，明天再来', 'middle')
           }
         })
@@ -520,15 +590,12 @@
       },
       chooseRange(index) {
         this.rangeType = index;
-
       },
-      chooseDegree(id,index) {
+      chooseDegree(id, index) {
         this.sortType = id;
         this.currentSortIndex = index
-
       },
       getSortedFriend() {
-        
         this.changeFriendCursor(0);
         this.currentPage++;
         this.visible = 3;
@@ -546,20 +613,20 @@
           this.showToast = false;
         })
       },
-      cancel(){
-         this.showToast = false;
+      cancel() {
+        this.showToast = false;
       },
       ...mapActions({
         // getFriendList: "get_Friendlist", //获取候选人
         // getMoreFriendList: "get_moreFriendList" //获取更多候选人
       }),
       ...mapMutations({
-        changeUnFocusPlayTimes:"CHANGEUNFOCUSPLAYTIMES",//未关注用户约战次数
-        changeFocusPlayTimes:"CHANGEFOCUSPLAYTIMES",//关注用户约战次数
-        changeUnfocusThumbTimes:"CHANGEUNFOCUSTHUMBTIMES",//未关注用户点赞次数
-        changeFocusThumbTimes:"CHANGEFOCUSTHUMBTIMES",//关注用户点赞次数
-        changeQrCodeText:"CHANGEQRCODETEXT",
-        changeFriIcon:"CHANGEFRIENDICON",//回赞后更改好友页面图标
+        changeUnFocusPlayTimes: "CHANGEUNFOCUSPLAYTIMES", //未关注用户约战次数
+        changeFocusPlayTimes: "CHANGEFOCUSPLAYTIMES", //关注用户约战次数
+        changeUnfocusThumbTimes: "CHANGEUNFOCUSTHUMBTIMES", //未关注用户点赞次数
+        changeFocusThumbTimes: "CHANGEFOCUSTHUMBTIMES", //关注用户点赞次数
+        changeQrCodeText: "CHANGEQRCODETEXT",
+        changeFriIcon: "CHANGEFRIENDICON", //回赞后更改好友页面图标
         changeSexType: "CHANGESEXTYPE", //改变拉取候选人性别参数
         MutationGetMoreFriendList: "GET_MOREFRIENDlIST", //获取更多候选人
         getLessThan10friendList: "GET_LESSTHAN10FRIENDLIST", //获取少于10个候选人
@@ -570,7 +637,8 @@
         getFriend: "GET_FRIENDlIST", //获取候选好友
         updateFriendCursor: "UPDATE_INANDOUT_FRIEND_CURSOR", //更新场内场外游标
         changeUserLifeImgList: "GET_LIFEIMG", //更改用户生活照
-        getGiftList: "GET_GIFTLIST" //获取礼物
+        getGiftList: "GET_GIFTLIST", //获取礼物
+        switchSoulModal: "SWITCHSOULFLAG" //切换灵魂匹配模式
       })
     },
     watch: {
@@ -612,6 +680,7 @@
       flex-direction: row-reverse;
       padding: 0.09rem 0.3rem 0.1rem;
       box-sizing: border-box;
+      position: relative;
       .select {
         font-size: 13px;
         color: #ff7900;
@@ -624,23 +693,47 @@
       }
     }
     .control_wrapper {
-      // height: 5.625rem;
-      display: flex;
-      justify-content: space-between;
-      padding: 0 1.6rem; // margin-top: -0.2667rem;
-      box-sizing: border-box;
-      position: relative;
-       @keyframes bigAndSmall {
-      0% {
-        transform: scale(1); //  opacity: 1;
+      height: 2.5rem;
+      @keyframes bigAndSmall {
+        0% {
+          transform: scale(1); //  opacity: 1;
+        }
+        50% {
+          transform: scale(1.6);
+        }
+        100% {
+          transform: rotate(1);
+        }
       }
-      50% {
-        transform: scale(1.6);
+      .soulBtns_wrapper {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 1.6rem; // margin-top: -0.2667rem;
+        box-sizing: border-box;
+        position: relative;
+        margin-top: 0.9667rem;
+        .btn {
+          width: 2.6667rem;
+          height: 1.1rem;
+          line-height: 1.1rem;
+          padding: 0.1067rem 0.1067rem;
+          text-align: center;
+          line-height: 0.5067rem;
+          background: -webkit-linear-gradient( left, #fff800, #fef200, #fccc00, #fbbc00);
+          color: #1d1d1d;
+          border-radius: 0.08rem;
+          border: none;
+          font-size: 14px;
+          font-weight: 700;
+        }
       }
-      100% {
-        transform: rotate(1);
+      .btns_wrapper {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 1.6rem; // margin-top: -0.2667rem;
+        box-sizing: border-box;
+        position: relative;
       }
-    }
       .control_guide {
         position: absolute;
         z-index: 9;
@@ -652,11 +745,10 @@
       }
       img {
         width: 1.6rem;
-        height: 1.6rem;
-        // .thumbs{
+        height: 1.6rem; // .thumbs{
         //   }
       }
-      .heartBeat{
+      .heartBeat {
         animation: bigAndSmall .3s linear 1;
       }
       .thumbs {
@@ -746,7 +838,55 @@
       width: 8.9rem; // width: 100%;
       height: 10.5333rem;
       list-style: none;
-      pointer-events: none;
+      .switchBtn_wrapper {
+        position: absolute;
+        left: 50%;
+        top: -1.25rem;
+        margin-left: -.7rem;
+        z-index: 9;
+        .imgBox {
+          .soulIcon {
+            margin-left: .1rem;
+            margin-bottom: -.15rem;
+            width: 1.2533rem;
+            height: 0.8533rem;
+            position: relative;
+          }
+          .dot {
+            position: absolute;
+            top: 0.236rem;
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #fff; // background:linear-gradient(top left,#fff,#317FBB) ;
+            animation: bling 1000ms linear infinite normal;
+          }
+          .left {
+            left: .4rem;
+          }
+          .right {
+            left: .9rem;
+          }
+        }
+        @keyframes bling {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        .soulText {
+          background-color: rgba(0, 0, 0, 0.2);
+          color: #fff;
+          text-align: center;
+          padding: 0 0.08rem;
+          font-size: 12px;
+          border-radius: 10px;
+          position: relative;
+        }
+      } // pointer-events: none;
       @keyframes leftMove {
         0% {
           transform: translateX(5px); //  opacity: 1;
@@ -864,6 +1004,14 @@
         font-size: 0.4rem;
         font-weight: 700;
       }
+      .intro_soulText {
+        position: absolute;
+        top: 1.8667rem;
+        left: 3.8rem;
+        color: #fff;
+        font-size: 0.4rem;
+        font-weight: 700;
+      }
     }
   } // 弹框礼物
   // .friend_gift_wrapper {
@@ -883,8 +1031,7 @@
   // }
   //弹框选择
   .select_wrapper {
-    width: 8rem;
-    // height: 8.1rem;
+    width: 8rem; // height: 8.1rem;
     padding-bottom: 0.1867rem;
     .bg("../../assets/image/bg.png");
     position: relative; // padding: 0.625rem;

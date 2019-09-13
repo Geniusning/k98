@@ -20,10 +20,10 @@
             <!-- <p class="content">你试试我的眼的</p> -->
           </div>
           <div @click="showDetail">
-              <div class="detail" v-if="messType !='onlineNotice'">&gt;&gt;详情</div>
-              <div class="detail" v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true ">&gt;&gt;去聊天</div>
-              <div class="detail" v-else>&gt;&gt;打招呼</div>
-            </div>
+            <div class="detail" v-if="messType !='onlineNotice'">&gt;&gt;详情</div>
+            <div class="detail" v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true ">&gt;&gt;去聊天</div>
+            <div class="detail" v-else>&gt;&gt;打招呼</div>
+          </div>
         </div>
       </transition>
       <!-- 回房通知 " -->
@@ -95,16 +95,42 @@
               </div>
             </div>
           </div>
+          <!-- 灵魂匹配 -->
+          <div class="topUpGiftInfo-wrapper" v-else-if="soulFriInfo.msgCode==21">
+            <div class="topUpGiftInfo-top">
+              <div class="img">
+                <img onclick="return false" class="giftAvatar" :src="soulFriInfo.content.fromInfo.headimgurl?soulFriInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                  alt>
+              </div>
+              <div class="name">
+                <p class="name">{{soulFriInfo.content.fromInfo.nickname?soulFriInfo.content.fromInfo.nickname:'朋友'}}</p>
+              </div>
+            </div>
+            <div class="topUpGiftInfo-middle">
+              <div class="partition_zone">
+                <!-- <div class="topUpGiftInfo_left">
+                    <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
+                  </div> -->
+                <div class="topUpGiftInfo_right">
+                  <p class="desc title_desc soulText">Ta启动了寻觅灵魂玩伴</p>
+                  <p class="soulText">茫茫人海中找到了你,匹配度:80%</p>
+                </div>
+              </div>
+            </div>
+            <div class="topUpGiftInfo-bottom soul-Bottom" style="margin-top:.3rem">
+              <div class="bottom_partition">
+                <div class="handleBtn" @click="rejectSoulFri()">插肩而过</div>
+                <div class="handleBtn" @click="acceptSoulFri(soulFriInfo.content.fromInfo)">随缘结识</div>
+              </div>
+            </div>
+          </div>
           <!-- 不是好友的送礼，约战交互 -->
           <div class="topUpGiftInfo-wrapper" v-else-if="isShowGiftPanel && !isAlreadyFriend &&topUpGameInfo.msgCode !=19">
             <div class="topUpGiftInfo-top">
               <div class="img">
-                <img class="giftAvatar" v-if="topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12" :src="topUpGiftInfo.content.fromInfo.headimgurl?topUpGiftInfo.content.fromInfo.headimgurl:defaultHeadUrl"
-                  alt>
-                <img class="giftAvatar" v-if="topUpThumbInfo.msgCode ==2" :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:defaultHeadUrl"
-                  alt>
-                <img class="giftAvatar" v-else-if="topUpGameInfo.msgCode ==7 || topUpGiftInfo.msgCode==19" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:(userInfo.sex=='男'?defaultfemaletHeadUrl:defaultmaleHeadUrl)"
-                  alt>
+                <img class="giftAvatar" v-if="topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12" :src="topUpGiftInfo.content.fromInfo.headimgurl?topUpGiftInfo.content.fromInfo.headimgurl:defaultHeadUrl" alt>
+                <img class="giftAvatar" v-if="topUpThumbInfo.msgCode ==2" :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:defaultHeadUrl" alt>
+                <img class="giftAvatar" v-else-if="topUpGameInfo.msgCode ==7 || topUpGiftInfo.msgCode==19" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:(userInfo.sex=='男'?defaultfemaletHeadUrl:defaultmaleHeadUrl)" alt>
               </div>
               <div class="name">
                 <p class="name" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">{{topUpGiftInfo.content.fromInfo.nickname?topUpGiftInfo.content.fromInfo.nickname:'店长'}}送您一份礼物</p>
@@ -246,14 +272,17 @@
         isMakeFriendBool: true,
         allMutatualInfo_temp: {},
         isAlreadyFriend: false,
-        showClientServiceIconFlag:true,
-        defaultfemaletHeadUrl:require("./assets/image/avatar2.jpg"),
-        defaultmaleHeadUrl:require("./assets/image/dinosourt.png"),
-        responseForGameUrl:"",
+        showClientServiceIconFlag: true,
+        defaultfemaletHeadUrl: require("./assets/image/avatar2.jpg"),
+        defaultmaleHeadUrl: require("./assets/image/dinosourt.png"),
+        responseForGameUrl: "",
+        showMatchingSoulTimes:0,
       };
     },
     computed: {
-      ...mapState(["userInfo","friendPanelFlag", "inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo", "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo"]),
+      ...mapState(["userInfo", "friendPanelFlag", "inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo",
+        "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo", "soulFriInfo","staticChatFriendObj"
+      ]),
       ...mapGetters(["qrIsShow"]),
     },
     created() {
@@ -291,22 +320,22 @@
       let _GameUrl = window.location.href;
       let indexGame = _GameUrl.indexOf('.com');
       let shareurlGame = _GameUrl.slice(0, indexGame);
-      this.responseForGameUrl =`${shareurlGame}.com/`
+      this.responseForGameUrl = `${shareurlGame}.com/`
       this.loadLastRoomInfo() //加载回房信息
       var topUpGameInfo = {
-        content:{
-          fromInfo:{
-            openid:"lakdjgjkfh"
+        content: {
+          fromInfo: {
+            openid: "lakdjgjkfh"
           },
-          extMsg:{
-              combatID:"",
-              headImgURL:"",
-              inviterID:"",
-              nickName:"",
-              url:`${this.responseForGameUrl}game/?gamePath=game1`
+          extMsg: {
+            combatID: "",
+            headImgURL: "",
+            inviterID: "",
+            nickName: "",
+            url: `${this.responseForGameUrl}game/?gamePath=game1`
           }
         },
-        msgCode:7
+        msgCode: 7
       }
       // alert(`${this.responseForGameUrl}game/?gamePath=game1`)
       setTimeout(() => {
@@ -314,7 +343,7 @@
       }, 25000);
     },
     methods: {
-       inToLetter() {
+      inToLetter() {
         util.routerTo("message", this, {
           routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
         });
@@ -355,7 +384,7 @@
             break;
           case "message":
             this.setChatFriend(this.dynamicFriendEvt.fromInfo);
-            console.log("this.dynamicFriendEvt.fromInfo-----------",this.dynamicFriendEvt.fromInfo)
+            console.log("this.dynamicFriendEvt.fromInfo-----------", this.dynamicFriendEvt.fromInfo)
             this.$router.push({
               // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
               name: "chat",
@@ -407,13 +436,13 @@
             this.setChatFriend(this.dynamicFriendEvt.fromInfo);
             if (this.dynamicFriendEvt.fromInfo.isAlreadyFriends) {
               this.$router.push({
-              // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
-              name: "chat",
-              params: {
-                isClient: false,
-                id: this.dynamicFriendEvt.fromInfo.openid
-              }
-            });
+                // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
+                name: "chat",
+                params: {
+                  isClient: false,
+                  id: this.dynamicFriendEvt.fromInfo.openid
+                }
+              });
             } else {
               api.makeFriend(this.dynamicFriendEvt.fromInfo.openid).then(res => {
                 console.log(res);
@@ -451,6 +480,31 @@
         let cursor = 0;
         this.getAlreadyFriendList(cursor);
       },
+      //灵魂匹配拒绝
+      rejectSoulFri() {
+        this.isShowGiftPanel = false;
+        this.clearTopUpData()
+      },
+      //灵魂匹配接受
+      acceptSoulFri(userInfo) {
+        console.log("sdianji")
+        console.log(userInfo)
+        this.isShowGiftPanel = false;
+        api.acceptSoulFri(userInfo.openid).then(res => {
+          console.log(res)
+          // if (res.errCode === 0) {
+            this.setChatFriend(userInfo)
+            this.$router.push({
+              name: "chat",
+              params: {
+                isSoul: true,
+                id: this.staticChatFriendObj.openid
+              }
+            });
+            this.clearTopUpData()
+          // }
+        })
+      },
       //回赞事件
       backThumbClick(type, flag, fromInfo) {
         api.giveBackThumb(type, flag).then(res => {
@@ -463,6 +517,7 @@
               this.changeFriPanelFlag(true);
               Bus.$emit("changeFriendConnetion", fromInfo.openid)
             }
+            // this.addFriendEvtObj({}) //清空推送内容
           }
         });
       },
@@ -481,18 +536,19 @@
           if (res.errCode == 0) {
             //重新拉取约战，送礼，点赞列表
             api.getUserInfo("/api/loadUserInfo").then(res => {
-                console.log("个人信息-------", res)
-                this.getUserInfo(res);
+              console.log("个人信息-------", res)
+              this.getUserInfo(res);
             })
             this._loadMutualEvents();
             this.isMakeFriendBool = true;
-            if(!this.userInfo.isSubscribe){
+            if (!this.userInfo.isSubscribe) {
               this.changeQrCodeText({
-                    title:"长按关注，每天获签到积分及更多特权",
-                    bottomText:"会员特权:领福利、交群友、参活动"
-                  })
+                title: "长按关注，每天获签到积分及更多特权",
+                bottomText: "会员特权:领福利、交群友、参活动"
+              })
               this.showQrcode(true)
             }
+            //  this.addFriendEvtObj({}) //清空推送内容
           }
         });
         this.isShowGiftPanel = false;
@@ -519,13 +575,14 @@
               this.getUserInfo(res);
             })
             this.isMakeFriendBool = true;
-            if(!this.userInfo.isSubscribe){
+            if (!this.userInfo.isSubscribe) {
               this.changeQrCodeText({
-                    title:"长按关注，每天获签到积分及更多特权",
-                    bottomText:"会员特权:领福利、交群友、参活动"
-                  })
+                title: "长按关注，每天获签到积分及更多特权",
+                bottomText: "会员特权:领福利、交群友、参活动"
+              })
               this.showQrcode(true)
             }
+            // this.addFriendEvtObj({}) //清空推送内容
           }
         });
         this.isShowGiftPanel = false;
@@ -548,6 +605,7 @@
         })
         this.isShowGiftPanel = false;
         this._loadMutualEvents()
+        // this.addFriendEvtObj({}) //清空推送内容
       },
       //未成为好友接受游戏
       no_Become_Friend_respondForGame(gameInfo) {
@@ -596,6 +654,7 @@
           console.log(res)
           if (res.errCode == 0) {
             console.log('删除结果-----------', res);
+            // this.addFriendEvtObj({}) //清空推送内容
             window.location.href = gameUrl;
           }
         })
@@ -623,6 +682,7 @@
           console.log(res)
           if (res.errCode == 0) {
             this.isShowGiftPanel = false;
+            // this.addFriendEvtObj({}) //清空推送内容
             console.log('删除结果-----------', res);
           }
         })
@@ -662,10 +722,11 @@
         addGiftInfo: "ADD_GIFTINFO",
         CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数
         addBange: "ADD_BADGE",
-        changeQrCodeText:"CHANGEQRCODETEXT",
-        showQrcode: "SHOW_QRCODE", 
+        changeQrCodeText: "CHANGEQRCODETEXT",
+        showQrcode: "SHOW_QRCODE",
         getUserInfo: "GET_USERINFO", //获取用户信息
         addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
+        clearTopUpData:"CLEARTOPUPDATA" 
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
@@ -758,6 +819,9 @@
         }
       },
       topUpGiftInfo: function(newValue) {
+         if(!newValue.msgCode){
+          return
+        }
         console.log('topUpGiftInfo----------', newValue)
         this.judgeEveryBool(true, false, true, false);
         switch (newValue.content.extMsg.goodInfo.extInfo.name) {
@@ -791,21 +855,38 @@
         console.log('送的礼物----------', newValue);
       },
       topUpThumbInfo: function(newValue) {
+        if(!newValue.msgCode){
+          return
+        }
         console.log('topUpThumbInfo-------------', newValue)
         this.judgeEveryBool(true, false, false, true);
       },
+      soulFriInfo: function(newValue) {
+       if(!newValue.msgCode){
+          return
+        }
+        if(this.showMatchingSoulTimes<2){
+           this.isShowGiftPanel = true
+        }else{
+            this.clearTopUpData()
+        }
+        this.showMatchingSoulTimes++
+      },
       topUpGameInfo: function(newValue) {
+        if(!newValue.msgCode){
+          return
+        }
         console.log('topUpGameInfo-------------', newValue)
         this.judgeEveryBool(true, true, false, false);
       },
-      $route: function(newValue,oldValue) {
-        console.log("$route---------",oldValue)
-        if(newValue.name == "message" || 
-        newValue.name==="chat" ||
-        newValue.name==="clientChat"||
-        newValue.name==="shareActivity"){ //控制客服图标显示
+      $route: function(newValue, oldValue) {
+        console.log("$route---------", oldValue)
+        if (newValue.name == "message" ||
+          newValue.name === "chat" ||
+          newValue.name === "clientChat" ||
+          newValue.name === "shareActivity") { //控制客服图标显示
           this.showClientServiceIconFlag = false
-        }else{
+        } else {
           this.showClientServiceIconFlag = true
         }
         //隐藏导航
@@ -1002,6 +1083,7 @@
       right: 0;
       margin: 0 auto; // transform: translateX(-3.333rem);
       z-index: 99999;
+      height: 4.3rem;
       .topUpGiftInfo-top {
         box-sizing: border-box;
         padding-top: 0.2333rem;
@@ -1047,6 +1129,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            width: 100%;
             .thumb_text {
               font-size: 0.4467rem;
             }
@@ -1064,6 +1147,13 @@
               color: #5B5B5B;
               font-size: 0.3467rem;
               font-weight: 600
+            }
+            .soulText {
+              color: #919090;
+              width: 100%;
+              font-weight: 600;
+              text-align: center;
+              margin-bottom: 0.3333rem;
             }
           }
         }

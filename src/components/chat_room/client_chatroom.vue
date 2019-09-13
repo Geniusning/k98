@@ -397,6 +397,9 @@
           return;
         }
         //字符串转表情icon
+        //这段代码是绝壁垃圾，暂时这样吧  下次头脑清醒时再来搞,功能如下两行
+        //this.input_value------ [大哭]大风歌[晕]
+       // this.input_value------- <img src=/static/face/3.gif style="vertical-align: -6px;">大风歌<img src=/static/face/7.gif style="vertical-align: -6px;">
         console.log("this.input_value------",this.input_value)
         var emotionArr = this.input_value.match(/\[.{1,2}\]/g)
         var reg = /\[.{1,2}\]/;
