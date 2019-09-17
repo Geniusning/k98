@@ -480,7 +480,7 @@ export default {
       text-align: center;
       line-height: 1.0667rem;
       border-radius: 50%;
-      background: #f6d001;
+      background: red;
       color: #fff;
     }
     .discount_wrapper {

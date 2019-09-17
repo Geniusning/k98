@@ -53,12 +53,21 @@
 </div>
 
 <script>
-	let cir = document.getElementById('circles');
-	for(let i=0;i<180;i++){
-		let div = document.createElement('div');
-		div.style = `transform: rotateX(${i}deg);border: 1px solid rgba(74,102,196,.8)`;
-		div.className = 'circle';
-		cir.appendChild(div);
+	// let cir = document.getElementById('circles');
+	// for(let i=0;i<180;i++){
+	// 	let div = document.createElement('div');
+	// 	div.style = `transform: rotateX(${i}deg);border: 1px solid rgba(74,102,196,.8)`;
+	// 	div.className = 'circle';
+	// 	cir.appendChild(div);
+	// }
+	var obj = {}
+	var obj1 = {name:"liu"}
+	console.log(Object.keys(obj1))
+	// if(){
+	// 	console.log("kong duixiang ")
+	// }
+	if(Object.keys(obj1).length){
+		console.log("no kong")
 	}
 </script>
 </body>

@@ -681,6 +681,7 @@
       padding: 0.09rem 0.3rem 0.1rem;
       box-sizing: border-box;
       position: relative;
+      height: 1.3333rem;
       .select {
         font-size: 13px;
         color: #ff7900;
@@ -714,8 +715,8 @@
         margin-top: 0.9667rem;
         .btn {
           width: 2.6667rem;
-          height: 1.1rem;
-          line-height: 1.1rem;
+          height: 1rem;
+          line-height: 1rem;
           padding: 0.1067rem 0.1067rem;
           text-align: center;
           line-height: 0.5067rem;
@@ -723,7 +724,7 @@
           color: #1d1d1d;
           border-radius: 0.08rem;
           border: none;
-          font-size: 14px;
+          font-size: 16px;
           font-weight: 700;
         }
       }
@@ -836,7 +837,7 @@
       margin: 0.09rem auto 0; // padding:0 0.5rem;
       position: relative; // z-index: 1000;
       width: 8.9rem; // width: 100%;
-      height: 10.5333rem;
+      height: 9.5333rem;
       list-style: none;
       .switchBtn_wrapper {
         position: absolute;

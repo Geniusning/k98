@@ -94,7 +94,7 @@ const mutations = {
     //获取用户数据
     [types.GET_USERINFO](state, userinfo) {
         state.loadFriendSexType = userinfo.sex === 1 ? "1" : "2"
-        console.log("state.loadFriendSexType-------------", state.loadFriendSexType)
+        // console.log("state.loadFriendSexType-------------", state.loadFriendSexType)
         userinfo.sex = userinfo.sex === 1 ? "男" : "女"
         state.userInfo = userinfo;
     },
@@ -414,6 +414,7 @@ const mutations = {
         state.topUpGiftInfo = {}
         state.topUpThumbInfo = {}
         state.soulFriInfo = {}
+        state.allMutatualInfo = {}
     },
     //获取好友事件
     // [types.GET_FRIENDEVTLIST](state, {

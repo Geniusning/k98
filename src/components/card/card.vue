@@ -57,12 +57,43 @@
       <ul class="usered_list" v-show="tagIndex==1">
         <h3 class="noCouponTips" v-if="!usedList.length">暂无优惠券</h3>
         <li v-else class="item" v-for="(item,index) in usedList" :key="index">
-          <div class="left1">
-            <p class="name">{{item.coupon.name}}</p>
-            <p class="time">{{item.coupon.time}}</p>
+          <!-- <div class="left1">
+              <p class="name">{{item.coupon.name}}</p>
+              <p class="time">{{item.coupon.time}}</p>
+            </div>
+            <div class="right1">
+              已使用
+            </div> -->
+          <div class="myleft">
+            <p class="discount_type_text">{{item.coupon.type}}</p>
           </div>
-          <div class="right1">
-            已使用
+          <div class="mycenter">
+            <div class="discount_theme clearfix">
+              <div class="theme">
+                {{item.coupon.theme?item.coupon.theme:"新人礼包"}}
+              </div>
+              <div class="receiver_wrapper" v-if="item.coupon.senderHeadImage">
+                <img onclick="return false" :src="item.coupon.senderHeadImage" alt="" class="receiver_avartar">
+                <span class="receiver_name">{{item.coupon.senderName}}</span><span>送</span>
+              </div>
+              <!-- v-if="item.coupon.integral" -->
+              <div class="receiverProject_wrapper">
+                <div class="integral_content">
+                  {{item.coupon.codeNum}}
+                  <!-- <img onclick="return false" src="../../assets/image/integralIcon.png" class="integral_icon"> -->
+                  <!-- <span class="integral_text">{{item.coupon.integral}}</span> -->
+                </div>
+                <img onclick="return false" v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
+              </div>
+            </div>
+            <div class="discount_content">{{item.coupon.name}}</div>
+            <div class="discount_limitAndTime">
+              <div class="limit">积分:{{item.coupon.integral}} &nbsp;&nbsp;&nbsp;{{item.coupon.limit}}</div>
+              <p class="time">有效期至:{{item.coupon.time}}</p>
+            </div>
+          </div>
+          <div class="myright">
+            <p class="use_text">已使用</p>
           </div>
         </li>
       </ul>
@@ -70,12 +101,43 @@
       <ul class="past_list" v-show="tagIndex==2">
         <h3 class="noCouponTips" v-if="!timeOutList.length">暂无优惠券</h3>
         <li v-else class="item" v-for="(item,index) in timeOutList" :key="index">
-          <div class="left1">
+          <!-- <div class="left1">
             <p class="name">{{item.coupon.name}}</p>
             <p class="time">{{item.coupon.time}}</p>
           </div>
           <div class="right1">
             已过期
+          </div> -->
+            <div class="myleft">
+            <p class="discount_type_text">{{item.coupon.type}}</p>
+          </div>
+          <div class="mycenter">
+            <div class="discount_theme clearfix">
+              <div class="theme">
+                {{item.coupon.theme?item.coupon.theme:"新人礼包"}}
+              </div>
+              <div class="receiver_wrapper" v-if="item.coupon.senderHeadImage">
+                <img onclick="return false" :src="item.coupon.senderHeadImage" alt="" class="receiver_avartar">
+                <span class="receiver_name">{{item.coupon.senderName}}</span><span>送</span>
+              </div>
+              <!-- v-if="item.coupon.integral" -->
+              <div class="receiverProject_wrapper">
+                <div class="integral_content">
+                  {{item.coupon.codeNum}}
+                  <!-- <img onclick="return false" src="../../assets/image/integralIcon.png" class="integral_icon"> -->
+                  <!-- <span class="integral_text">{{item.coupon.integral}}</span> -->
+                </div>
+                <img onclick="return false" v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
+              </div>
+            </div>
+            <div class="discount_content">{{item.coupon.name}}</div>
+            <div class="discount_limitAndTime">
+              <div class="limit">积分:{{item.coupon.integral}} &nbsp;&nbsp;&nbsp;{{item.coupon.limit}}</div>
+              <p class="time">有效期至:{{item.coupon.time}}</p>
+            </div>
+          </div>
+          <div class="myright">
+            <p class="use_text">已过期</p>
           </div>
         </li>
       </ul>
@@ -205,36 +267,36 @@
         });
       },
       distributeDiscount(resDiscountList, discountList) {
-          // let tempDiscountList = []
-          resDiscountList.forEach(element => {
-            element.coupon.codeNum =
-              util.prefixZero(element.coupon.type, 1) + "-" +
-              util.prefixZero(element.coupon.batch, 3) + "-" +
-              util.prefixZero(element.coupon.acquireNum, 7)
-            element.coupon.time = element.coupon.endTime;
-            element.getTime = util.timestampToTime(element.getTime);
-            switch (element.coupon.type) {
-              case 0:
-                element.coupon.name = element.coupon.value + "元代金券";
-                break;
-              case 1:
-                element.coupon.name = element.coupon.content;
-                break;
-              case 2:
-                element.coupon.name = element.coupon.value + "折";
-                break;
-              case 3:
-                element.coupon.name = element.coupon.content;
-                break;
-              case 4:
-                element.coupon.name = element.coupon.content;
-                break;
-              default:
-                break;
-            }
-            element.coupon.type = util.returnDiscountType(element.coupon.type);
-            discountList.push(element)
-          });
+        // let tempDiscountList = []
+        resDiscountList.forEach(element => {
+          element.coupon.codeNum =
+            util.prefixZero(element.coupon.type, 1) + "-" +
+            util.prefixZero(element.coupon.batch, 3) + "-" +
+            util.prefixZero(element.coupon.acquireNum, 7)
+          element.coupon.time = element.coupon.endTime;
+          element.getTime = util.timestampToTime(element.getTime);
+          switch (element.coupon.type) {
+            case 0:
+              element.coupon.name = element.coupon.value + "元代金券";
+              break;
+            case 1:
+              element.coupon.name = element.coupon.content;
+              break;
+            case 2:
+              element.coupon.name = element.coupon.value + "折";
+              break;
+            case 3:
+              element.coupon.name = element.coupon.content;
+              break;
+            case 4:
+              element.coupon.name = element.coupon.content;
+              break;
+            default:
+              break;
+          }
+          element.coupon.type = util.returnDiscountType(element.coupon.type);
+          discountList.push(element)
+        });
       },
       //返回上一页
       goBack() {
@@ -244,11 +306,11 @@
       },
       //进入优惠券详情
       selectDiscout(id) {
-        if(!this.userInfo.isSubscribe){
+        if (!this.userInfo.isSubscribe) {
           this.changeQrCodeText({
-                title:"长按关注，以便管理、核销优惠券",
-                bottomText:"会员特权:领福利、交群友、参活动"
-              })
+            title: "长按关注，以便管理、核销优惠券",
+            bottomText: "会员特权:领福利、交群友、参活动"
+          })
           this.showQrcode(true)
           return
         }
@@ -267,9 +329,9 @@
       },
       onClickBack() {},
       ...mapMutations({
-         changeQrCodeText:"CHANGEQRCODETEXT",
-         changeValidate: "CHANGE_VALIDATE",
-         showQrcode: "SHOW_QRCODE", //展示二维码
+        changeQrCodeText: "CHANGEQRCODETEXT",
+        changeValidate: "CHANGE_VALIDATE",
+        showQrcode: "SHOW_QRCODE", //展示二维码
       })
     },
     components: {
@@ -526,11 +588,195 @@
       }
       .usered_list {
         overflow-y: auto;
-        .card("../../assets/image/used.png", 0.7333rem);
+        .card("../../assets/image/songli_discount_bg.png", 0.5333rem);
+        .item {
+          display: flex;
+        }
+        .myleft {
+          width: 1.3rem;
+          text-align: center;
+          .discount_type_text {
+            display: inline-block;
+            width: 0.4rem;
+            padding-top: 0.2333rem;
+            font-size: 0.45rem;
+            color: #D33700;
+            font-weight: 900
+          }
+        }
+        .mycenter {
+          margin-left: .1rem;
+          flex: 1;
+          color: #fff;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          position: relative;
+          .discount_theme {
+            font-size: 0.3733rem;
+            position: relative;
+            .theme,
+            .receiver_wrapper,
+            .receiverProject_wrapper {
+              float: left;
+            }
+            .theme {}
+            .receiver_wrapper {
+              margin-left: 0.6667rem;
+              .receiver_avartar {
+                width: 0.5333rem;
+                height: 0.5333rem;
+                border-radius: 50%;
+                margin-right: 0.1667rem;
+                float: left;
+              }
+              .receiver_name {
+                float: left;
+                max-width: 1.2rem;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+              }
+            }
+            .receiverProject_wrapper {
+              position: absolute;
+              right: 0.1333rem;
+              .integral_content {
+                font-size: 0.32rem;
+              }
+              .project_img {
+                position: absolute;
+                left: .6rem;
+                margin-top: 0.1667rem;
+                width: 1.3rem;
+                height: 1rem;
+              }
+            }
+          }
+          .discount_content {
+            margin-top: .3rem;
+            font-size: 0.45rem;
+            text-align: center;
+          }
+          .discount_limitAndTime {
+            margin-top: .4rem;
+            display: flex;
+            justify-content: space-between;
+            .limit {}
+            .time {
+              margin-left: 0.2667rem;
+            }
+          }
+        }
+        .myright {
+          width: 1.3rem;
+          padding-top: 0.2667rem;
+          text-align: center;
+          box-sizing: border-box;
+          .use_text {
+            display: inline-block;
+            width: 0.4rem;
+            font-size: 0.4rem;
+            color: #D33700;
+            font-weight: 900
+          }
+        }
       }
       .past_list {
         overflow-y: auto;
-        .card("../../assets/image/past.png", 0.7333rem);
+        .card("../../assets/image/songli_discount_bg.png", 0.5333rem);
+        .item {
+          display: flex;
+        }
+        .myleft {
+          width: 1.3rem;
+          text-align: center;
+          .discount_type_text {
+            display: inline-block;
+            width: 0.4rem;
+            padding-top: 0.2333rem;
+            font-size: 0.45rem;
+            color: #D33700;
+            font-weight: 900
+          }
+        }
+        .mycenter {
+          margin-left: .1rem;
+          flex: 1;
+          color: #fff;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          position: relative;
+          .discount_theme {
+            font-size: 0.3733rem;
+            position: relative;
+            .theme,
+            .receiver_wrapper,
+            .receiverProject_wrapper {
+              float: left;
+            }
+            .theme {}
+            .receiver_wrapper {
+              margin-left: 0.6667rem;
+              .receiver_avartar {
+                width: 0.5333rem;
+                height: 0.5333rem;
+                border-radius: 50%;
+                margin-right: 0.1667rem;
+                float: left;
+              }
+              .receiver_name {
+                float: left;
+                max-width: 1.2rem;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+              }
+            }
+            .receiverProject_wrapper {
+              position: absolute;
+              right: 0.1333rem;
+              .integral_content {
+                font-size: 0.32rem;
+              }
+              .project_img {
+                position: absolute;
+                left: .6rem;
+                margin-top: 0.1667rem;
+                width: 1.3rem;
+                height: 1rem;
+              }
+            }
+          }
+          .discount_content {
+            margin-top: .3rem;
+            font-size: 0.45rem;
+            text-align: center;
+          }
+          .discount_limitAndTime {
+            margin-top: .4rem;
+            display: flex;
+            justify-content: space-between;
+            .limit {}
+            .time {
+              margin-left: 0.2667rem;
+            }
+          }
+        }
+        .myright {
+          width: 1.3rem;
+          padding-top: 0.2667rem;
+          text-align: center;
+          box-sizing: border-box;
+          .use_text {
+            display: inline-block;
+            width: 0.4rem;
+            font-size: 0.4rem;
+            color: #D33700;
+            font-weight: 900
+          }
+        }
       }
     }
   }

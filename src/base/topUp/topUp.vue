@@ -170,14 +170,42 @@
       ...mapGetters(['recommentList', "sendGiftList"])
     },
     created() {
+    },
+    mounted() {},
+    props: {
+      aftergiftInfo:{
+        type:Object,
+        default:null,
+      },
+      convertType: { //是自己兑换还是送礼模式
+        type: Number,
+        default: null,
+      },
+      friendId: {
+        type: String,
+        default: null,
+      },
+      fatherPanelIndex: {
+        type: Number,
+        default: 1
+      },
+      giftInfo: {
+        type: Object,
+        default: null,
+      },
+      isInDoor: {
+        type: Boolean,
+        default: false
+      }
+    },
+    activated() {
       this.panelIndex = this.fatherPanelIndex;
+      console.log("this.panelIndex---------",this.panelIndex)
       this.componentGiftInfo = this.giftInfo;
-      console.log(this.componentGiftInfo)
       if (this.componentGiftInfo) {
         this.giftIntegral = this.componentGiftInfo.goods.integral; //店长推荐和礼品商城
       }
       this.componentConvertType = this.convertType;
-      console.log('this.componentConvertType------------', this.componentConvertType)
       api.loadAllGift().then(res => {
         if (res.errCode === 0) {
           let TempGiftList = res.gifts;
@@ -209,29 +237,6 @@
           })
         }
       })
-    },
-    mounted() {},
-    props: {
-      convertType: { //是自己兑换还是送礼模式
-        type: Number,
-        default: null,
-      },
-      friendId: {
-        type: String,
-        default: null,
-      },
-      fatherPanelIndex: {
-        type: Number,
-        default: 1
-      },
-      giftInfo: {
-        type: Object,
-        default: null,
-      },
-      isInDoor: {
-        type: Boolean,
-        default: false
-      }
     },
     methods: {
       //现场送
@@ -779,6 +784,47 @@
           font-size: 0.2667rem;
         }
       }
+      .giftContent{
+        display: flex;
+        justify-content: space-around;
+        margin-top: .5rem;
+        padding: 0 .7rem;
+        .leftpart{
+          .pic{
+              width: 2.2rem;
+              height: 1.8rem;
+          }
+        }
+        .rightpart{
+          .title,.integral{
+            color: #0f0f0f;
+            font-weight: 600;
+            overflow: hidden;
+            font-size: 0.3467rem;
+          }
+          .desc,.limit{
+            color: #5B5B5B;
+            font-size: 0.3467rem;
+          }
+        }
+      }
+      .btn_wrapper{
+      display: flex;
+      justify-content: space-around;
+      margin-top: 0.3667rem;
+      padding: 0 .7rem;
+      #btn{
+        border-radius: 0.1rem;
+        box-sizing: border-box;
+        letter-spacing: 0.08rem;
+        font-weight: 800;
+        border: none;
+        color: #333;
+        padding: 0.1333rem 0.4rem;
+        font-size: .35rem;
+        background: -webkit-linear-gradient(top, #fedc00, #e39300);
+      }
+    }
       .close {
         width: 0.4667rem;
         height: 0.4667rem;

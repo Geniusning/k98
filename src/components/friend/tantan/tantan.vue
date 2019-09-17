@@ -580,7 +580,7 @@
       text-align: center;
       .resultSoulText {
         text-align: center;
-        margin-top: 1.5rem;
+        margin-top: .5rem;
         line-height: 2;
         color: #BFBEBE;
         font-size: .4rem;
@@ -604,7 +604,7 @@
         }
       }
       .souling {
-        
+        margin-left: .2rem;
         width: 5rem;
         height: 5rem; 
         // animation: rotating 3s infinite linear;
@@ -768,7 +768,7 @@
         width: 100%;
         text-align: center;
         height: 0.6133rem;
-        top: 6.7rem; // left: 3.4167rem;
+        top: 6.4rem; // left: 3.4167rem;
         z-index: 10000;
         font-size: 0.4533rem;
         font-weight: 700;
@@ -787,7 +787,7 @@
         border-radius: 50%; // padding: 0.1rem;
         border: 0.1067rem solid #f1f1f1;
         position: absolute;
-        margin: 1.4rem auto 0.5rem;
+        margin: 1.1rem auto;
         top: 0;
         left: 0;
         right: 0;
@@ -811,7 +811,7 @@
       }
     }
     .userInfo_wrapper {
-      margin-top: 0.7133rem;
+      margin-top: 0.1133rem;
       padding-left: 0.4533rem;
       .userBox {
         position: relative;
@@ -906,7 +906,7 @@
         }
       }
       .signature_wrapper {
-        margin-top: 0.3233rem;
+        margin-top: 0.16rem;
         .word {
           color: #808080;
           text-align: left;
