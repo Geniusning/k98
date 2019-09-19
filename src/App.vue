@@ -625,13 +625,6 @@
               this.getUserInfo(res);
             })
             this.isMakeFriendBool = true;
-            // if (!this.userInfo.isSubscribe) {
-            //   this.changeQrCodeText({
-            //     title: "长按关注，每天获签到积分及更多特权",
-            //     bottomText: "会员特权:领福利、交群友、参活动"
-            //   })
-            //   this.showQrcode(true)
-            // }
           }
         });
         if (flag) {

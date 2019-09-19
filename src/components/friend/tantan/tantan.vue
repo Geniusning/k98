@@ -768,7 +768,7 @@
         width: 100%;
         text-align: center;
         height: 0.6133rem;
-        top: 6.4rem; // left: 3.4167rem;
+        top: 6.5rem; // left: 3.4167rem;
         z-index: 10000;
         font-size: 0.4533rem;
         font-weight: 700;
@@ -787,7 +787,7 @@
         border-radius: 50%; // padding: 0.1rem;
         border: 0.1067rem solid #f1f1f1;
         position: absolute;
-        margin: 1.1rem auto;
+        margin: 1.2rem auto;
         top: 0;
         left: 0;
         right: 0;
@@ -811,7 +811,7 @@
       }
     }
     .userInfo_wrapper {
-      margin-top: 0.1133rem;
+      margin-top: 0.3rem;
       padding-left: 0.4533rem;
       .userBox {
         position: relative;

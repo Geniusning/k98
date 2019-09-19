@@ -2,15 +2,6 @@
   <div id="friend" class="friend">
     <div class="nav">
       <img onclick="return false" src="../../assets/image/select.png" alt @click="showToast=true">
-      <img onclick="return false" src="../../assets/image/setting.png" alt @click="intoSetting">
-    </div>
-    <div class="stack-wrapper">
-      <div v-if="isFirstLoad">
-        <p class="intro_mfTips">绿灯闪烁表示好友在线哦，红灯表示离线</p>
-        <img src="../../assets/image/arrow left.png" alt class="arrow_left">
-        <img src="../../assets/image/Arrow Right.png" alt class="arrow_right">
-        <p class="arrow_desc">左右滑动可换人,右滑表示喜欢哦</p>
-      </div>
       <div class="switchBtn_wrapper" @click="switchMakeFriModal">
         <div class="imgBox">
           <img onclick="return false" class="soulIcon" src="../../assets/image/soulIcon.png" alt="">
@@ -18,6 +9,16 @@
           <span class="dot right"></span>
         </div>
         <p class="soulText">{{modalSwitch?"自己找":"Soul玩伴"}}</p>
+        <p class="intro_soulText" v-show="isFirstLoad">跟随灵魂找玩伴</p>
+      </div>
+      <img onclick="return false" src="../../assets/image/setting.png" class="setting" alt @click="intoSetting">
+    </div>
+    <div class="stack-wrapper">
+      <div v-if="isFirstLoad">
+        <p class="intro_mfTips">绿灯闪烁表示好友在线哦，红灯表示离线</p>
+        <img src="../../assets/image/arrow left.png" alt class="arrow_left">
+        <img src="../../assets/image/Arrow Right.png" alt class="arrow_right">
+        <p class="arrow_desc">左右滑动可换人,右滑表示喜欢哦</p>
       </div>
       <!-- 相册··················································begin -->
       <!-- 相册··················································end -->
@@ -29,8 +30,8 @@
     </div>
     <div class="control_wrapper">
       <!-- <p class="control_guide" v-show="isFirstLoad">互赞成为好友。
-                          <br>下面分别是送礼、点赞、约Ta玩大话骰
-        </p> -->
+                                <br>下面分别是送礼、点赞、约Ta玩大话骰
+              </p> -->
       <div class="soulBtns_wrapper" v-show="isEndResultSearchBtnBox">
         <button class="btn" @click="cancleSoulSearch">退出</button>
         <button class="btn" @click="intoSetting">去完善</button>
@@ -97,7 +98,6 @@
     <div class="guide_bg" v-show="isFirstLoad" @click="isFirstLoad=false">
       <img onclick="return false" class="thumb" src="../../assets/image/thumb.png" alt>
       <p class="intro">完善个人资料</p>
-      <p class="intro_soulText">跟随灵魂找玩伴</p>
     </div>
     <keep-alive>
       <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
@@ -289,9 +289,9 @@
       switchMakeFriModal() {
         this.modalSwitch = !this.modalSwitch
         this.switchSoulModal(this.modalSwitch)
-        if(this.modalSwitch){
-          api.searchWaitBeMakeFriUser().then(res=>{
-            console.log("搜索结果----------",res)
+        if (this.modalSwitch) {
+          api.searchWaitBeMakeFriUser().then(res => {
+            console.log("搜索结果----------", res)
           })
         }
         if (!this.modalSwitch) {
@@ -306,7 +306,6 @@
           this.searching = true
         }, 6000);
       },
- 
       //拉取候选人
       getAllCommunityFriend(params) {
         api.getFriendList(params).then(res => {
@@ -571,8 +570,7 @@
             setTimeout(() => {
               this.isShowEnvelope = false;
             }, 2000);
-          } else if (res.errCode == 1023) {
-          } else if (res.errCode == 1022) {
+          } else if (res.errCode == 1023) {} else if (res.errCode == 1022) {
             this.isShowEnvelope = true;
             this.envelopeText = "该用户己离线，无法通知";
             setTimeout(() => {
@@ -682,10 +680,71 @@
       box-sizing: border-box;
       position: relative;
       height: 1.3333rem;
+      .switchBtn_wrapper {
+        position: relative; 
+        margin-left: .1rem; 
+        // z-index: 99;
+        .intro_soulText {
+          position: absolute;
+          top: .2rem;
+          left: 1.5rem;
+          color: #fff;
+          font-size: 0.4rem;
+          font-weight: 700;
+          z-index: 99;
+          width: 3.6667rem;
+        }
+        .imgBox {
+          .soulIcon {
+            margin-left: .1rem;
+            margin-bottom: -.15rem;
+            width: 1.2533rem;
+            height: 0.8533rem;
+            position: relative;
+          }
+          .dot {
+            position: absolute;
+            top: 0.236rem;
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #fff; // background:linear-gradient(top left,#fff,#317FBB) ;
+            animation: bling 1000ms linear infinite normal;
+          }
+          .left {
+            left: .4rem;
+          }
+          .right {
+            left: .9rem;
+          }
+        }
+        @keyframes bling {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        .soulText {
+          background-color: rgba(0, 0, 0, 0.2);
+          color: #fff;
+          text-align: center;
+          padding: 0 0.08rem;
+          font-size: 12px;
+          border-radius: 5px;
+          position: relative;
+        }
+      }
       .select {
         font-size: 13px;
         color: #ff7900;
         font-weight: 700;
+      }
+      .setting{
+        position: relative;
+        z-index: 99;
       }
       img {
         width: 0.6667rem;
@@ -837,57 +896,8 @@
       margin: 0.09rem auto 0; // padding:0 0.5rem;
       position: relative; // z-index: 1000;
       width: 8.9rem; // width: 100%;
-      height: 9.5333rem;
+      height: 9.8rem;
       list-style: none;
-      .switchBtn_wrapper {
-        position: absolute;
-        left: 50%;
-        top: -1.25rem;
-        margin-left: -.7rem;
-        z-index: 9;
-        .imgBox {
-          .soulIcon {
-            margin-left: .1rem;
-            margin-bottom: -.15rem;
-            width: 1.2533rem;
-            height: 0.8533rem;
-            position: relative;
-          }
-          .dot {
-            position: absolute;
-            top: 0.236rem;
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: #fff; // background:linear-gradient(top left,#fff,#317FBB) ;
-            animation: bling 1000ms linear infinite normal;
-          }
-          .left {
-            left: .4rem;
-          }
-          .right {
-            left: .9rem;
-          }
-        }
-        @keyframes bling {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        .soulText {
-          background-color: rgba(0, 0, 0, 0.2);
-          color: #fff;
-          text-align: center;
-          padding: 0 0.08rem;
-          font-size: 12px;
-          border-radius: 10px;
-          position: relative;
-        }
-      } // pointer-events: none;
       @keyframes leftMove {
         0% {
           transform: translateX(5px); //  opacity: 1;
@@ -1001,14 +1011,6 @@
         position: absolute;
         top: 0.4667rem;
         left: 2rem;
-        color: #fff;
-        font-size: 0.4rem;
-        font-weight: 700;
-      }
-      .intro_soulText {
-        position: absolute;
-        top: 1.8667rem;
-        left: 3.8rem;
         color: #fff;
         font-size: 0.4rem;
         font-weight: 700;

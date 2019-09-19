@@ -236,7 +236,7 @@ new Vue({
         //拉取积分换礼品列表
         loadGoods() {
             api.loadGoods().then(res => {
-                // console.log('积分换礼品列表------', res);
+                console.log('积分换礼品列表------', res);
                 this.getSendGiftList(res.slice(0, 4));
             })
         },
@@ -272,7 +272,7 @@ new Vue({
         //获取店长推荐
         loadRecommends() {
             api.loadRecommends().then(res => {
-                // console.log('店长推荐数据---------------------', res)
+                console.log('店长推荐数据---------------------', res)
                 this.recommendList = res;
                 this.getRecommentList(this.recommendList);
             })

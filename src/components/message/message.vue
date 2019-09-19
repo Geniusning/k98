@@ -389,6 +389,7 @@
       },
       selectList(index) {
         this.isShowTab = index;
+        console.log(this.isShowTab)
         if (this.isShowTab === 2) {
           setTimeout(() => {
             this.$nextTick(function() {

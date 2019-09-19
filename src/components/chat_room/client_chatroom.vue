@@ -568,7 +568,6 @@
       },
       ...mapMutations({
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
-        updateChatList: "UPDATE_CHATLIST",
         showQrcode: "SHOW_QRCODE", //暂时二维码
         updateValue: "UPDATE_INPUTVALUE",
         changeCursor: "CHANGE_CURSOR",

@@ -170,35 +170,6 @@
       ...mapGetters(['recommentList', "sendGiftList"])
     },
     created() {
-    },
-    mounted() {},
-    props: {
-      aftergiftInfo:{
-        type:Object,
-        default:null,
-      },
-      convertType: { //是自己兑换还是送礼模式
-        type: Number,
-        default: null,
-      },
-      friendId: {
-        type: String,
-        default: null,
-      },
-      fatherPanelIndex: {
-        type: Number,
-        default: 1
-      },
-      giftInfo: {
-        type: Object,
-        default: null,
-      },
-      isInDoor: {
-        type: Boolean,
-        default: false
-      }
-    },
-    activated() {
       this.panelIndex = this.fatherPanelIndex;
       console.log("this.panelIndex---------",this.panelIndex)
       this.componentGiftInfo = this.giftInfo;
@@ -237,6 +208,32 @@
           })
         }
       })
+    },
+    mounted() {},
+    props: {
+      convertType: { //是自己兑换还是送礼模式
+        type: Number,
+        default: null,
+      },
+      friendId: {
+        type: String,
+        default: null,
+      },
+      fatherPanelIndex: {
+        type: Number,
+        default: 1
+      },
+      giftInfo: {
+        type: Object,
+        default: null,
+      },
+      isInDoor: {
+        type: Boolean,
+        default: false
+      }
+    },
+    activated() {
+
     },
     methods: {
       //现场送
