@@ -53,7 +53,7 @@
         let shareObj = {
           title: "活动通知",
           desc: "本店最新活动，会员特权。点击查看",
-          link: `${this.shareUrl}k98/shareActivity?activityID=${this.activityID}&visitType=5`,
+          link: `${this.shareUrl}k98/shareActivity?activityID=${this.activityID}&visitType=5&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
           imgUrl: `${this.shopSettingInfo.image}`
         };
         util._getJssdkInfo(shareObj, this.myShareUrl, 20,"activity",this.shareGetJifen);
@@ -61,7 +61,7 @@
         let shareObj = {
           title: "活动通知",
           desc: "本店最新活动，会员特权。点击查看",
-          link: `${this.shareUrl}k98/shareActivity?activityID=${this.activityID}&visitType=5`,
+          link: `${this.shareUrl}k98/shareActivity?activityID=${this.activityID}&visitType=5&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
           imgUrl: `${this.shopSettingInfo.image}`
         };
         util._getJssdkInfo(shareObj, this.myShareUrl, 20,"activity",this.shareGetJifen);
@@ -81,7 +81,7 @@
       this._loadActivityDetail();
     },
     computed: {
-      ...mapState(["socket", "shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl"])
+      ...mapState(["socket", "shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl","userInfo"])
     },
     methods: {
       //分享获得积分

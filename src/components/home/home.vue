@@ -365,7 +365,7 @@
           let shareObj = {
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
-            link: `${this.shareUrl}k98/home?visitType=3`,
+            link: `${this.shareUrl}k98/home?visitType=3&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(shareObj, this.myShareUrl, 20, "activity", this.shareGetJifen);
@@ -373,7 +373,7 @@
           let shareObj = {
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
-            link: `${this.shareUrl}k98/home?visitType=3`,
+            link: `${this.shareUrl}k98/home?visitType=3&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(shareObj, this.myShareUrl, 20, "activity", this.shareGetJifen);

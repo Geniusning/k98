@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: liuning
- * @Last Modified time: 2019-08-22 18:16:38
+ * @Last Modified time: 2019-09-20 14:44:07
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -157,22 +157,34 @@ util._getJssdkInfo = function (shareObj, url, amount,shareType,fn) {
           timestamp: res.timestamp,
           nonceStr: res.nonceStr,
           signature: res.signature,
-          jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", "chooseImage"]
+          jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", "chooseImage","onMenuShareTimeline"]
         });
         wx.ready(() => {
-          wx.onMenuShareAppMessage({
+          wx.onMenuShareAppMessage({ //分享好友
             title: shareObj.title,
             desc: shareObj.desc,
             link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
             imgUrl: shareObj.imgUrl,
             success: () => {
-              //分享记录
-              api.createShareDaylog().then(res => {});
+              //分享朋友记录
+              console.log("分享好友")
+              api.createShareDaylog("friend")
               //分享获得积分
               fn(amount,shareType)
               
             }
           });
+          wx.onMenuShareTimeline({  //朋友圈
+            title: shareObj.title, // 分享标题
+            link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: shareObj.imgUrl, // 分享图标
+            success:  ()=> {
+            // 用户点击了分享后执行的回调函数
+            //分享朋友圈记录
+            console.log("分享朋友圈")
+            api.createShareDaylog("timeLine")
+            }
+          })
         });
         wx.error(function (res) {
           console.log(res);

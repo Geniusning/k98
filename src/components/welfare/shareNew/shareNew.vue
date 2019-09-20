@@ -155,7 +155,7 @@
               let shareObj = {
                 title: "新人大礼包",
                 desc: `抢了${this.shopSettingInfo.AliasName}一份新人礼包，转送给你，有空去瞅瞅`,
-                link: `${this.shareUrl}k98/shareNew?visitType=4`,
+                link: `${this.shareUrl}k98/shareNew?visitType=4&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
                 imgUrl: `${this.shopSettingInfo.image}`
               }
               util._getJssdkInfo(shareObj, this.myShareUrl, 20,  ()=>{
@@ -165,7 +165,7 @@
               let shareObj = {
                 title: "新人大礼包",
                 desc: `抢了${this.shopSettingInfo.AliasName}一份新人礼包，转送给你，有空去瞅瞅`,
-                link: `${this.shareUrl}k98/shareNew?visitType=4`,
+                link: `${this.shareUrl}k98/shareNew?visitType=4&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
                 imgUrl: `${this.shopSettingInfo.image}`
               };
              
