@@ -44,6 +44,7 @@ new Vue({
         this.loadRecommends(); //获取店长推荐
         this.loadMutualEvents() //统计约战送礼点赞
         this.loadL98otherSetting() //加载控制开关
+        this._loadInviteCoupon() //判断是否有邀新活动
         // window.addEventListener("unload", () => {
         //     localStorage.removeItem("friendInfo") //清楚缓存
         // })
@@ -54,14 +55,14 @@ new Vue({
     methods: {
         //创建长连接
         createWebsocket() {
-            let windowUrL = window.location.href;
-            let index = windowUrL.indexOf('.com');
-            let shareurl = windowUrL.slice(0, index);
-            let websocketUrl = shareurl.slice(8);
-            this.connectUrl = `wss://${websocketUrl}.com/api/ws`
-            this.websock = new WebSocket(this.connectUrl);
-            this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
+            // let windowUrL = window.location.href;
+            // let index = windowUrL.indexOf('.com');
+            // let shareurl = windowUrL.slice(0, index);
+            // let websocketUrl = shareurl.slice(8);
+            // this.connectUrl = `wss://${websocketUrl}.com/api/ws`
+            // this.websock = new WebSocket(this.connectUrl);
+            // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
+            this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },
@@ -87,6 +88,14 @@ new Vue({
                 }, 5000);
                 this.limitTimes++
             }
+        },
+        _loadInviteCoupon() {
+            api.loadInviteCoupon().then(res => {
+              console.log("获取优惠券---------",res)
+              if(res.errCode===0){
+                this.judgeInviteCoupon(res.coupons.isputAway);
+              }
+          })
         },
         //成为待被邀请队列成员
         addWaitingCombatList(){
@@ -304,6 +313,7 @@ new Vue({
             appendLastMsg: "UPDATE_CHATLIST",
             updateValue: "UPDATE_INPUTVALUE",
             addBange: "ADD_BADGE",
+            judgeInviteCoupon: "JUDGE_INVITE_COUPON", //判断是否还有邀请有礼
             compareLastMsg: "COMPARE_LASTMESS",
             getAdvertisingImg: "GET_ADVERTISINGIMG", //获取首页轮播图
             //addFriendEvt: "ADD_FRIENDEVTLIST", //新增好友事件列表

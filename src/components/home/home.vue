@@ -381,7 +381,7 @@
       }, 100);
       this.getAlreadyFriend(); //获取已经成为好友列表
       this._getInOutNum(); //获取场内场外用户数
-      //this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
+      // this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
     },
     methods: {
       //加载客服列表
@@ -479,10 +479,10 @@
       },
       //判断是否已经分享过优惠券 (福利优惠券)
       // _loadInviteWaitGetCoupon() {
-      //   api.loadInviteWaitGetCoupon().then(res => {
+      //   api.loadInviteCoupon().then(res => {
       //     console.log('邀新有礼优惠券----------------------------------:', res)
       //     if (res.errCode === 0 && res.coupons === null) {
-      //       this.judgeInviteCoupon(false);
+            
       //     }
       //   })
       // },
@@ -651,7 +651,6 @@
         getPosition: "GET_POSITION",
         updateShareUrl: "UPDATE_SHAREURL",
         getFriend: "GET_FRIENDlIST", //获取候选人,
-        judgeInviteCoupon: "JUDGE_INVITE_COUPON", //判断是否还有邀请有礼
         getRecommentList: "GET_RECOMMENTLIST",
         addBandge: "ADD_BADGE", //动态变化未读消息数量
         getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量

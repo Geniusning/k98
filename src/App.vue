@@ -11,9 +11,9 @@
         <div class="envelop-wrapper" v-if="isShowEnvelop">
           <img onclick="return false" src="./assets/image/close_ad.png" alt class="close" @click.stop="close">
           <div class="top">
-            <img onclick="return false" :src="dynamicFriendEvt.fromInfo.headimgurl?dynamicFriendEvt.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+            <img onclick="return false" :src="dynamicFriendEvt.fromInfo.headimgurl?dynamicFriendEvt.fromInfo.headimgurl:shopSettingInfo.image"
               alt class="avatar">
-            <div class="name">{{dynamicFriendEvt.fromInfo.nickname?dynamicFriendEvt.fromInfo.nickname:'陌生人'}}</div>
+            <div class="name">{{dynamicFriendEvt.fromInfo.nickname?dynamicFriendEvt.fromInfo.nickname:'店长'}}</div>
           </div>
           <div class="bottom">
             <p class="content">{{dynamicFriendEvt.extMsg.lastMsg.msg}}</p>
@@ -40,7 +40,7 @@
           <div class="topUpGiftInfo-wrapper" v-if="isShowGiftPanel && allMutatualInfo_temp.isAlreadyFriends">
             <div class="topUpGiftInfo-top" v-if="!isShowGiftGuide">
               <div class="img">
-                <img onclick="return false" class="giftAvatar" :src="allMutatualInfo_temp.headimgurl?allMutatualInfo_temp.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                <img onclick="return false" class="giftAvatar" :src="allMutatualInfo_temp.headimgurl?allMutatualInfo_temp.headimgurl:shopSettingInfo.image"
                   alt>
               </div>
               <div class="name">
@@ -116,7 +116,7 @@
             </div>
             <div class="topUpGiftInfo-middle">
               <div class="partition_zone">
-                <div class="topUpGiftInfo_right">
+                <div class="topUpGiftInfo_right" style="padding-top: 30px">
                   <p class="desc title_desc soulText">Ta启动了寻觅灵魂玩伴</p>
                   <p class="soulText">茫茫人海中找到了你,匹配度:80%</p>
                 </div>
@@ -291,7 +291,7 @@
     },
     computed: {
       ...mapState(["userInfo", "friendPanelFlag", "inputValue", "dynamicFriendEvt", "messType", "topUpGiftInfo",
-        "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo", "soulFriInfo", "staticChatFriendObj"
+        "topUpThumbInfo", "topUpGameInfo", "allMutatualInfo", "soulFriInfo", "staticChatFriendObj","shopSettingInfo"
       ]),
       ...mapGetters(["qrIsShow"]),
     },
