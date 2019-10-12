@@ -31,7 +31,7 @@
           </div>
           <div class="chat_soulText_box">
             <p class="chatSoulText">恭喜找到自己的灵魂玩伴</p>
-            <p class="chatSoulText">赶紧聊聊吧,还可以送礼，一起玩游戏</p>
+            <p class="chatSoulText">赶紧送个见面礼、聊聊天、结伴玩游戏啦!</p>
           </div>
         </div>
         <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
@@ -62,7 +62,7 @@
                   <img :src="item.message" @load="onImgLoaded" alt class="messRecordPic"  ref="picture">
                 </div>
               </div>
-              <div v-else-if="item.type==3" class="gift_wrapper">
+              <div v-else-if="item.type==3 || item.type==8" class="gift_wrapper">
                 <p class="giftRecord_time">{{item.time}}</p>
                 <div>
                   <div v-if="item.isHandled">
@@ -82,7 +82,7 @@
                   <div v-else>
                     <div>
                       <div class="myGifoInfo" :class="{'friendPanel':item.friend,'minePanel':!item.friend}" v-if="item.from==userInfo.openid">
-                        <p class="giftRecord_test giftText">{{userInfo.nickname}}送{{staticChatFriendObj.nickname}}一份精美礼物</p>
+                        <p class="giftRecord_test giftText">{{item.isBeFriendModel?"恭喜成为好友,店长":userInfo.nickname}}送{{staticChatFriendObj.nickname}}一份精美礼物</p>
                         <div class="gift">
                           <div class="giftImg">
                             <img onclick="return false" v-if="item.chatExtMsg.image" :src="item.chatExtMsg.image" alt="">
@@ -98,7 +98,7 @@
                         </div>
                       </div>
                       <div class="myGifoInfo" :class="{'friendPanel':item.friend,'minePanel':!item.friend}" v-else>
-                        <p class="giftRecord_test giftText">{{staticChatFriendObj.nickname}}送{{userInfo.nickname}}一份精美礼物</p>
+                        <p class="giftRecord_test giftText">{{item.isBeFriendModel?"恭喜成为好友,店长":staticChatFriendObj.nickname}}送{{userInfo.nickname}}一份精美礼物</p>
                         <div class="gift">
                           <div class="giftImg">
                             <img onclick="return false" v-if="item.chatExtMsg.image" :src="item.chatExtMsg.image" alt="">
@@ -112,7 +112,7 @@
                             <p class="giftIntegral">{{item.chatExtMsg.integral?item.chatExtMsg.integral:item.chatExtMsg.money}}积分</p>
                           </div>
                         </div>
-                        <p class="giftRecord_test giftText"><span @click="respondForGift(item,false)" class="no">拒收</span><span @click="respondForGift(item,true)" class="yes">感谢</span></p>
+                        <p class="giftRecord_test giftText"><span @click="respondForGift(item,false,item.isBeFriendModel)" class="no">拒收</span><span @click="respondForGift(item,true,item.isBeFriendModel)" class="yes">感谢</span></p>
                       </div>
                     </div>
                   </div>
@@ -395,9 +395,6 @@
       this.friendId = this.$route.params.id;
       if(this.$route.params.isSoul){
         this.isShowSoulPanel = true;
-        setTimeout(() => {
-          this.isShowSoulPanel = false;
-        }, 6000);
       }
       this._getChatList(); //前端获取聊天记录
       this._loadAllGift(); //获取礼物
@@ -472,14 +469,15 @@
     },
     methods: {
       //接受或拒绝礼物
-      respondForGift(giftInfo, flag) {
+      respondForGift(giftInfo, flag,isSysSendGift) {
         console.log('giftInfo----------------', giftInfo)
         let giftParam = {
           agree: flag, //是否接受
           recordID: giftInfo.recordID, //送礼记录ID
           fromID: giftInfo.from, //赠送者
           respondType: giftInfo.msgType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
-          chatMsgID: giftInfo.chatMsgID
+          chatMsgID: giftInfo.chatMsgID,
+          isSysSendGift:isSysSendGift?true:false
         }
         console.log('giftParam------------', giftParam)
         api.respondForGift(giftParam).then(res => {
@@ -655,6 +653,7 @@
                 type: item.type,
                 time: util.timestampToTime(item.stime),
                 chatExtMsg: item.type == 3 ? item.chatExtMsg.extMsg : "",
+                isBeFriendModel:item.chatExtMsg?(item.chatExtMsg.isBeFriendModel?item.chatExtMsg.isBeFriendModel:false):false,
                 from: item.from,
                 chatMsgID: item.id,
                 isAgree: item.chatExtMsg ? item.chatExtMsg.isAgree : "",
@@ -710,6 +709,7 @@
       },
       //发送消息事件
      send() {
+        this.isShowSoulPanel = false; //发消息隐藏灵魂匹配面板
         if(util.isAndroid() && this.dontFocus){
           this.dontFocus = true
           document.getElementById("send_message").focus();
@@ -951,6 +951,7 @@
     },
     watch: {
       LastChatMsg: function(newValue) {
+        this.isShowSoulPanel = false; //当有消息隐藏灵魂匹配面板
         console.log('在聊天页面收到对方发来的消息-------------------------------：', newValue);
         this.sendingTimes = 0; //清空限制连续发送消息次数
         let messageInfo = newValue.allInfo.lastMsg;
@@ -980,7 +981,7 @@
           setTimeout(() => {
             let childNodes = this.$refs.chatList.childNodes;
             console.log("LastChatMsg_childNodes-------------",childNodes) 
-            this.$refs.listView.scrollBy(0,-(childNodes[0].clientHeight));
+            this.$refs.listView.scrollBy(0,-(childNodes[0].clientHeight)+10);
           }, 100);
           // this.$refs.listView.refresh();
         }
@@ -1148,6 +1149,7 @@
       .chat_content {
         height: 100%;
         .chat_list {
+          // height: 100%;
           .chatListItem {
             padding: 0.4rem 0;
             box-sizing: border-box;

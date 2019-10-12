@@ -165,8 +165,9 @@ new Vue({
                 var message = result.content.extMsg
                 this.appendLastMsg(message);
                 // // 判断是否在聊天页面；是在聊天页面返回from给服务器表示消息已读
-                let reg = new RegExp(message.allInfo.lastMsg.from)
-                if (reg.test(this.$route.path)) {
+                let reg = new RegExp("/message/chat")
+                if (reg.test("/message/chat")) {
+                    console.log("是否进来标记已读")
                     let fromId = message.allInfo.lastMsg.from;
                     //发送消息表示已读 
                     api.sendMsgReaded(fromId).then(res => {

@@ -286,6 +286,7 @@
       },
       //确认赠送店铺项目
       confirmShopItemGift(goodID) {
+        console.log("goodId----",goodID)
         if (this.userInfo.money < this.giftIntegral) { //当前积分少于项目消耗积分
           this.panelIndex = 0
           this.showOweText = true;

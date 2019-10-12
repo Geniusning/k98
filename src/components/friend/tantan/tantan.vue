@@ -64,6 +64,10 @@
           <p class="text">{{stopSearch === false?"正在地球的某个角落":""}}</p>
           <p ref="dot" class="text dot">{{stopSearch === false?"寻找你的灵魂玩伴":""}}</p>
         </div> -->
+      <div class="result_icon">
+        <img class="found_result" v-if="searchResult" src="../../../assets/image/no_found.png" alt="">
+        <img class="found_result" v-else src="../../../assets/image/finding.png" alt="">
+      </div>
       <p ref="dot" class="resultSoulText dot" v-html="resultSoulText"></p>
     </div>
   </ul>
@@ -80,6 +84,10 @@
   } from "vuex";
   export default {
     props: {
+      searchResult:{
+        type:Boolean,
+        default:false
+      },
       resultSoulText: {
         type: String,
         default: "",
@@ -580,7 +588,7 @@
       text-align: center;
       .resultSoulText {
         text-align: center;
-        margin-top: .5rem;
+        margin-top: 1rem;
         line-height: 2;
         color: #BFBEBE;
         font-size: .4rem;
@@ -604,10 +612,19 @@
         }
       }
       .souling {
-        margin-left: .2rem;
-        width: 5rem;
-        height: 5rem; 
+        margin-left: .5rem;
+        width: 4.5rem;
+        height: 4.5rem; 
         // animation: rotating 3s infinite linear;
+      }
+      .result_icon{
+        position: absolute;
+        top: 4.2rem;
+        right: 1.2rem;
+        .found_result{
+          width: 1.5rem;
+          height: 1.5rem;
+        }
       }
       .souling_noRotate {
         width: 100%;
@@ -674,6 +691,7 @@
   .stack_content {
     .big_box {
       background: #fff;
+      border-radius: 10px;
     }
     .img_content {
       width: 100%;

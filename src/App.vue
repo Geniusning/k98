@@ -85,8 +85,8 @@
             </div>
             <div class="topUpGiftInfo-bottom">
               <div class="bottom_partition" v-if="allMutatualInfo_temp.type == 3 && giftFlag">
-                <div v-if="!isShowGiftGuide" class="handleBtn" @click="respondForGift(allMutatualInfo_temp,false)">拒收</div>
-                <div v-if="!isShowGiftGuide" class="handleBtn" @click="respondForGift(allMutatualInfo_temp,true)">感谢</div>
+                <div v-if="!isShowGiftGuide" class="handleBtn" @click="respondForGift(allMutatualInfo_temp,false,allMutatualInfo_temp.openid)">拒收</div>
+                <div v-if="!isShowGiftGuide" class="handleBtn" @click="respondForGift(allMutatualInfo_temp,true,allMutatualInfo_temp.openid)">感谢</div>
                 <div v-if="isShowGiftGuide" class="handleBtn" @click="confirm">确定</div>
                 <div v-if="isShowGiftGuide" class="handleBtn" @click="gotoDetail">详情&gt;&gt;</div>
                 <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
@@ -581,6 +581,7 @@
           fromID: giftInfo.fromInfo.openid, //赠送者
           respondType: giftInfo.extMsg.goodInfo.msgType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
           isMakeFriend: this.isMakeFriendBool,
+          isSysSendGift:false
         }
         api.respondForGift(giftParam).then(res => {
           if (res.errCode == 0) {
@@ -615,7 +616,8 @@
           respondType: giftInfo.msgType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
           isMakeFriend: this.isMakeFriendBool,
           // chatMsgID: giftInfo.isAlreadyFriends?giftInfo.id:""
-          chatMsgID: giftInfo.id
+          chatMsgID: giftInfo.id,
+          isSysSendGift:false
         }
         api.respondForGift(giftParam).then(res => {
           if (res.errCode == 0) {

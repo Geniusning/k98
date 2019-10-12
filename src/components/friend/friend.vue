@@ -22,7 +22,15 @@
       </div>
       <!-- 相册··················································begin -->
       <!-- 相册··················································end -->
-      <stack ref="stack" :pages="someList" :visible="visible" :currentIndex="currentPage" :resultSoulText="soulText" :stopSearch="searching" @getMoreFriend="sonGetMoreFriend" @heartBeat="thumbHeartBeat" @showAblum="showAblum" @firstData="listenFirstdata">
+      <stack ref="stack" :pages="someList" :visible="visible" 
+      :currentIndex="currentPage" 
+      :resultSoulText="soulText" 
+      :searchResult="isEndResultSearchBtnBox"
+      :stopSearch="searching" 
+      @getMoreFriend="sonGetMoreFriend" 
+      @heartBeat="thumbHeartBeat" 
+      @showAblum="showAblum"
+       @firstData="listenFirstdata">
         暂时没有好友</stack>
       <div class="loading-container" v-show="!someList.length">
         <loading></loading>
@@ -144,7 +152,7 @@
     data() {
       return {
         searching: false,
-        soulText: `<span style="display:inline-block;margin-left:60px;">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
+        soulText: `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
         isAlreadyFriend: false,
         showAblumFlag: false, //展示生活照
         sortType: 0, //排序类型
@@ -261,7 +269,7 @@
     activated() {
       console.log("进入找朋友页面")
       console.log("好友列表--------------", this.someList)
-      this.soulText = `<span style="display:inline-block;margin-left:60px;">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
+      this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
         Bus.$on("changeFriendConnetion", (openid) => {
           this.isFriend = true
           this.changeFriIcon(openid)
@@ -283,7 +291,7 @@
         this.isEndResultSearchBtnBox = false
         this.searching = false
         // this.soulText = `正在地球的每一个角落<br>寻找你的灵魂玩伴`
-        this.soulText = `<span style="display:inline-block;margin-left:60px;">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`
+        this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`
       },
       //切换交友模式
       switchMakeFriModal() {
@@ -297,7 +305,7 @@
         if (!this.modalSwitch) {
           clearTimeout(this.soulTimer)
           this.isEndResultSearchBtnBox = false
-          this.soulText = `<span style="display:inline-block;margin-left:60px;">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`
+          this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`
           return
         }
         this.soulTimer = setTimeout(() => {
@@ -893,7 +901,7 @@
       }
     }
     .stack-wrapper {
-      margin: 0.09rem auto 0; // padding:0 0.5rem;
+      margin: 0rem auto 0; // padding:0 0.5rem;
       position: relative; // z-index: 1000;
       width: 8.9rem; // width: 100%;
       height: 9.8rem;
