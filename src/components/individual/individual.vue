@@ -76,6 +76,11 @@
                     <x-switch title="我要静静，好友上线不通知我" :value-map="[false, true]" @on-change="changeQuiet" v-model="isQuiet"></x-switch>
                   </group>
                 </li>
+                <li style="font-size: 0.3733rem;" class="authorItem">
+                  <group>
+                    <x-switch title="挂免战牌" :value-map="[false, true]" @on-change="changeBattle" v-model="isBattle"></x-switch>
+                  </group>
+                </li>
               </ul>
             </div>
           </li>
@@ -160,6 +165,7 @@
       return {
         isStealth: null,
         isQuiet: null,
+        isBattle:false,
         signatureList: "",
         title: "最多选5个",
         diyTag: "",
@@ -230,6 +236,7 @@
       this.phone = this.userInfo.phone;
       this.isStealth = this.userInfo.isStealth;
       this.isQuiet = this.userInfo.isQuiet;
+      this.isBattle = this.userInfo.isBattle;
       this.signature = this.userInfo.signature ? this.userInfo.signature : this.signature;
     },
     methods: {
@@ -241,6 +248,9 @@
       //安静状态，不接受好友的上线通知
       changeQuiet(e) {
         this.isQuiet = e
+      },
+      changeBattle(e){
+        this.isBattle = e
       },
       blurAdjust() {
         window.scrollTo(0, 0);

@@ -518,6 +518,10 @@
       },
       //玩游戏
       playGame() {
+        if(this.friendInfo.info.isBattle){ //群友挂免战功能，不能邀约战
+        this.$vux.toast.text('已挂免战牌,暂不接受群友挑战', 'middle')
+          return 
+        }
         let playTimes = localStorage.getItem("playTimes") ?
           localStorage.getItem("playTimes") : {
             unfocusPlayTimes: this.unfocusPlayTimes,

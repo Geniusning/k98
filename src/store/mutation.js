@@ -52,7 +52,7 @@ const mutations = {
         let now = new Date().getTime()
         sendGiftList.forEach(gift=>{
             let endTime = new Date(gift.coupInfo.endTime).getTime()
-            if(endTime>now){  //判断优惠券是否过期
+            if(endTime>=now){  //判断优惠券是否过期
                 state.sendGiftList.push(gift)
             }
         })

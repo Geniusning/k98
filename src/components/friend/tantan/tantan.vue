@@ -40,10 +40,11 @@
               <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
               <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>
               <span class="gift">富豪榜 {{item.info.wealthRanking}}</span>
-              <span class="thumb">战神榜 {{item.info.gameScoreRanking}}
-                            <img onclick="return false" class="battle" v-if="item.info.isQuiet"  src="../../../assets/image/mianZhan.png" alt="">
-                            <img onclick="return false" class="battle" v-if="item.info.onlineDiceServer"  src="../../../assets/image/battle.png" alt="">
-                          </span>
+              <div class="thumb">战神榜 {{item.info.gameScoreRanking}}
+                  <img onclick="return false" class="battle" v-if="item.info.isBattle"  src="../../../assets/image/nobattle.jpg" alt="">
+                  <img onclick="return false" class="battle" v-else-if="item.info.onlineDiceServer"  src="../../../assets/image/battle.png" alt="">
+                  <img onclick="return false" class="battle" v-else  src="../../../assets/image/comeBattle.jpg" alt="">
+              </div>
             </div>
             <div class="tag_wrapper">
               <span v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')" :key="index">{{item}}</span>
@@ -869,8 +870,8 @@
           display: inline-block;
           position: relative;
           .battle {
-            width: 0.7733rem;
-            height: 0.7867rem;
+            width: 0.8rem;
+            height: 0.8rem;
             position: absolute;
             top: -0.6rem;
             right: -0.5rem;

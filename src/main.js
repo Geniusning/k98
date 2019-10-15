@@ -247,7 +247,7 @@ new Vue({
         loadGoods() {
             api.loadGoods().then(res => {
                 console.log('积分换礼品列表------', res);
-                this.getSendGiftList(res.slice(0, 4));
+                this.getSendGiftList(res.slice(0));
             })
         },
         // 获取用户信息
