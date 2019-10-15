@@ -14,7 +14,7 @@
             <div class="dailyLifePhoto-wrapper" >
               <h3 class="title">上传生活照<span class="desc">(最多上传4张)</span></h3>
               <ul class="uploadLifePhotoList">
-                <li v-for="(item,index) in lifePhotoList" class="photo">
+                <li v-for="(item,index) in lifePhotoList" class="photo" :key="index">
                   <img :src="item" alt="" class="imgItem">
                   <img src="../../assets/image/close-round.png" alt="" class="close" @click="close(index)">
                 </li>

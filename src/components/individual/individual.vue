@@ -366,7 +366,8 @@
           phone: this.phone,
           signature: this.signature,
           isStealth: this.isStealth,
-          isQuiet: this.isQuiet
+          isQuiet: this.isQuiet,
+          isBattle:this.isBattle
         };
         let strUserInfoParam = JSON.stringify(userInfoParam);
         let decc = new TextEncoder("utf-8");
