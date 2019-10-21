@@ -41,9 +41,9 @@
               <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>
               <span class="gift">富豪榜 {{item.info.wealthRanking}}</span>
               <div class="thumb">战神榜 {{item.info.gameScoreRanking}}
-                  <img onclick="return false" class="battle" v-if="item.info.isBattle"  src="../../../assets/image/nobattle.jpg" alt="">
+                  <img onclick="return false" class="battle" v-if="item.info.isBattle || !item.info.isSubscribe"  src="../../../assets/image/noBattle.png" alt="">
                   <img onclick="return false" class="battle" v-else-if="item.info.onlineDiceServer"  src="../../../assets/image/battle.png" alt="">
-                  <img onclick="return false" class="battle" v-else  src="../../../assets/image/comeBattle.jpg" alt="">
+                  <img onclick="return false" class="battle" v-else  src="../../../assets/image/comeBattle.png" alt="">
               </div>
             </div>
             <div class="tag_wrapper">

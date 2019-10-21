@@ -14,11 +14,12 @@
       <img onclick="return false" src="../../assets/image/setting.png" class="setting" alt @click="intoSetting">
     </div>
     <div class="stack-wrapper">
+      <!-- isFirstLoad -->
       <div v-if="isFirstLoad">
-        <p class="intro_mfTips">绿灯闪烁表示好友在线哦，红灯表示离线</p>
+        <p class="intro_mfTips">绿灯在线，红灯离线</p>
         <img src="../../assets/image/arrow left.png" alt class="arrow_left">
         <img src="../../assets/image/Arrow Right.png" alt class="arrow_right">
-        <p class="arrow_desc">左右滑动可换人,右滑表示喜欢哦</p>
+        <p class="arrow_desc">左划换人，右划喜欢</p>
       </div>
       <!-- 相册··················································begin -->
       <!-- 相册··················································end -->
@@ -103,9 +104,10 @@
     <!-- 点赞 -->
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask width="10em" :text="text" :position="position"></toast>
     <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad"   isFirstLoad-->
-    <div class="guide_bg" v-show="isFirstLoad" @click="isFirstLoad=false">
-      <img onclick="return false" class="thumb" src="../../assets/image/thumb.png" alt>
-      <p class="intro">完善个人资料</p>
+    <div class="guide_bg" v-show="isFirstLoad" >
+      <!-- <img onclick="return false" class="thumb" src="../../assets/image/thumb.png" alt> -->
+      <p class="know" @click="isFirstLoad=false">知道了</p>
+      <p class="intro">设置个人资料</p>
     </div>
     <keep-alive>
       <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
@@ -261,7 +263,7 @@
       if (this.userInfo.firstLoad) {
         this.isFirstLoad = true;
       } else {
-        this.isFirstLoad = false;
+        this.isFirstLoad = true;
       }
       this._clearFirstLoadTag(); //标识已经进入过公众号
       this._loadAllGift();
@@ -698,7 +700,7 @@
         // z-index: 99;
         .intro_soulText {
           position: absolute;
-          top: .2rem;
+          top: .4rem;
           left: 1.5rem;
           color: #fff;
           font-size: 0.4rem;
@@ -1019,10 +1021,22 @@
       //   top: 0.2667rem;
       //   right: 0.3933rem;
       // }
+      .know{
+        position: absolute;
+        display: inline-block;
+        bottom: 36%;
+        left: 50%;
+        width: 2rem;
+        text-align: center;
+        margin-left: -1rem;
+        color: #fff;
+        font-size: 20px;
+        border: 2px solid #fff;
+      }
       .intro {
         position: absolute;
         top: 0.4667rem;
-        left: 2rem;
+        left: 1.2rem;
         color: #fff;
         font-size: 0.4rem;
         font-weight: 700;

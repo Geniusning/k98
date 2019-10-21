@@ -10,7 +10,7 @@
           <!-- <p class="bar_name" v-if="shopInfo.name1">{{shopInfo.name1}}</p> -->
         </div>
       </div>
-      <swiper :show-dots="false" :auto="true" class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
+      <swiper :show-dots="false" :auto="false" class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
       <div class="shadowLeft"></div>
       <div class="shadowRight"></div>
     </div>

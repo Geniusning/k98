@@ -1,12 +1,12 @@
 export default {
     commonUrl: '',
     /* zhognxin */
-    // shareUrl: "https://singledog.qianz.com/",
+    shareUrl: "https://singledog.qianz.com/",
     websocketUrl: "wss://singledog.qianz.com/api/ws",
     // appId: "wxb2fa3c446063ec19",
     /* 老友一起玩吧 */
     // appId: "wx2bbe97c9b7e6d747",
     // websocketUrl:"wss://llwant1.qianz.com/api/ws",
-    shareUrl: "https://llwant1.qianz.com/",
-    tk: "2E5BRWgYIbs4Qj3o7Z4rO7HrFjQLzNvXT26mg0QhuKnVYUNSk9KMAZSHJYN9pAGKTnKN_w=="
+    // shareUrl: "https://llwant1.qianz.com/",
+    tk: "bo2ip81u1dhrVgRzrjo7NVG6cx13ajGLh047z_cnB1hxSN5xS5XjkEwhzey24OZWTuhenw=="
 }
