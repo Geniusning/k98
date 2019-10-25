@@ -263,7 +263,7 @@
       if (this.userInfo.firstLoad) {
         this.isFirstLoad = true;
       } else {
-        this.isFirstLoad = true;
+        this.isFirstLoad = false;
       }
       this._clearFirstLoadTag(); //标识已经进入过公众号
       this._loadAllGift();

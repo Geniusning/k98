@@ -400,7 +400,7 @@
           }
         });
         //核对员工电话
-        api.verifyPhoneNumber(this.phone).then(res => {
+        api.verifyPhoneNumber(this.phone,this.userInfo.headimgurl).then(res => {
           console.log('核对员工电话结果-------------------', res);
         }).catch(err => {
           console.log(err);
