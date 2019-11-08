@@ -27,8 +27,8 @@
           </div>
           <div class="right">
             <div class="thunb_box">
-              <label class="ui-radio" :class="{'checked':radio_vip==item.id}">
-                  <input type="radio" @change="selectVip" v-model="radio_vip" :value="item.id">
+              <label class="ui-radio" :class="{'checked':radio_vip==item.vipId}">
+                  <input type="radio" @change="selectVip" v-model="radio_vip" :value="item.vipId">
               </label>
             </div>
           </div>
@@ -37,7 +37,7 @@
     </div>
     <div class="title_content_wel vux-1px-t">
       <div class="title clearfix">
-        <h2 class="shop_title">请选择推荐人(必填)</h2>
+        <h2 class="shop_title2">· 请选择推荐人(必填)</h2>
       </div>
     </div>
     <div class="staff_content">
@@ -51,8 +51,8 @@
           <div class="staff_right">
             <div class="thunb_box">
               <label class="ui-radio" :class="{'checked':radio_phone==item.phone}">
-                                   <input type="radio" @change="selectPhone" v-model="radio_phone" :value="item.phone">
-                              </label>
+                    <input type="radio" @change="selectPhone" v-model="radio_phone" :value="item.phone">
+              </label>
             </div>
           </div>
         </li>
@@ -83,7 +83,7 @@
         staffList: [],
         radio_vip: '',
         radio_phone: '',
-        defaultHeadImg: require("../../assets/image/avatar1.jpeg")
+        defaultHeadImg: require("../../assets/image/home_letter.png")
       }
     },
     mounted() {
@@ -110,7 +110,7 @@
         api.loadAllStaff().then(res => {
           console.log("全部员工-------", res)
           if (res.errCode == 0) {
-            this.staffList = res.staff
+            this.staffList = res.staff.sort(util.sortByKeyS2L("number"))
           }
         })
       },
