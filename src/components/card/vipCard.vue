@@ -2,7 +2,7 @@
   <div class="welfare_wrapper">
     <div class="title_content_wel ">
       <div class="title clearfix">
-        <h2 class="shop_title2">· 请选择卡种（单选）:</h2>
+        <h2 class="shop_title2">· 请选择卡种(单选)</h2>
       </div>
     </div>
     <div class="welfare_content " v-if="vipCardList.length">
