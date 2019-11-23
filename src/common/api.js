@@ -2,7 +2,7 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: liuning
- * @Last Modified time: 2019-09-20 10:36:10
+ * @Last Modified time: 2019-10-23 17:11:15
  */
 
 import axios from 'axios'
@@ -12,6 +12,29 @@ let index = windowUrL.indexOf('.com');
 let shareurl = windowUrL.slice(0, index)+".com/"
 
 let api = {};
+api.loadAllStaff = function(){
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadAllStaff`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//加载vip卡券
+api.loadVipCardList = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadVipCard`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //接受灵魂匹配
 api.acceptSoulFri = function (fromId) {
   return new Promise((resolve, reject) => {
@@ -771,9 +794,9 @@ api.convertRecommend = function (recommendID) {
   })
 }
 //验证员工
-api.verifyPhoneNumber = function (phone) {
+api.verifyPhoneNumber = function (phone,avatarImg) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/verifyPhoneNumber?phone=${phone}`)
+    axios.get(`/api/verifyPhoneNumber?phone=${phone}&avatarImg=${avatarImg}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

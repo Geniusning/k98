@@ -2,12 +2,40 @@
  * @Author: liu 
  * @Date: 2018-05-04 15:49:52 
  * @Last Modified by: liuning
+<<<<<<< HEAD
  * @Last Modified time: 2019-09-20 10:36:12
+=======
+ * @Last Modified time: 2019-10-28 10:35:45
+>>>>>>> b8ea4e012db7a75b6d5481f1931ef1603230e5d1
  */
 
 import axios from 'axios'
 import Url from './config'
 let api = {};
+//加载全部员工
+api.loadAllStaff = function(){
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadAllStaff?tk=${Url.tk}`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//加载vip卡券
+api.loadVipCardList = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadVipCard?tk=${Url.tk}`).then(res => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //接受灵魂匹配
 api.acceptSoulFri = function (fromId) {
   return new Promise((resolve, reject) => {
@@ -766,9 +794,9 @@ api.convertRecommend = function (recommendID) {
   })
 }
 //验证员工
-api.verifyPhoneNumber = function (phone) {
+api.verifyPhoneNumber = function (phone,avatarImg) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/verifyPhoneNumber?phone=${phone}&tk=${Url.tk}`)
+    axios.get(`/api/verifyPhoneNumber?phone=${phone}&avatarImg=${avatarImg}&tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

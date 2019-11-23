@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: liuning
- * @Last Modified time: 2019-09-20 14:44:07
+ * @Last Modified time: 2019-10-29 17:05:04
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -232,6 +232,13 @@ util.sortByKey = function(key){
       var v2 = obj2[key]
       return v2-v1
     }
+}
+util.sortByKeyS2L = function(key){
+  return function(obj1,obj2){
+    var v1 = obj1[key]
+    var v2 = obj2[key]
+    return v1-v2
+  }
 }
 util.prefixZero = function(num,n){
     var len = num.toString().length;

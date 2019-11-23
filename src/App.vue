@@ -287,6 +287,7 @@
         defaultmaleHeadUrl: require("./assets/image/dinosourt.png"),
         responseForGameUrl: "",
         showMatchingSoulTimes: 0,
+        timeTick:null
       };
     },
     computed: {
@@ -335,7 +336,7 @@
       this.responseForGameUrl = `${shareurlGame}.com/`
       this.loadLastRoomInfo() //加载回房信息
       // alert(`${this.responseForGameUrl}game/?gamePath=game1`)
-      setTimeout(() => {
+      this.timeTick = setTimeout(() => {
         this.clearTopUpData()
         this.allMutatualInfo_temp = {}
         this.isAlreadyFriend = false;
@@ -357,7 +358,7 @@
           msgCode: 7
         }
         this.addFriendEvtObj(topUpGameInfo)
-      }, 25000);
+      }, 30000);
     },
     methods: {
       confirm() {
@@ -829,6 +830,7 @@
         }
       },
       allMutatualInfo: function(newValue) {
+        clearTimeout(this.timeTick)
         if (!Object.keys(newValue).length) {
           return
         }
@@ -870,6 +872,7 @@
         }
       },
       topUpGiftInfo: function(newValue) {
+        clearTimeout(this.timeTick)
         if (!newValue.msgCode) {
           return
         }
@@ -906,6 +909,7 @@
         // console.log('送的礼物----------', newValue);
       },
       topUpThumbInfo: function(newValue) {
+         clearTimeout(this.timeTick)
         if (!newValue.msgCode) {
           return
         }
@@ -913,6 +917,7 @@
         this.judgeEveryBool(true, false, false, true);
       },
       soulFriInfo: function(newValue) {
+         clearTimeout(this.timeTick)
         if (!newValue.msgCode) {
           return
         }
@@ -924,6 +929,7 @@
         this.showMatchingSoulTimes++
       },
       topUpGameInfo: function(newValue) {
+         clearTimeout(this.timeTick)
         if (!newValue.msgCode) {
           return
         }

@@ -474,7 +474,6 @@
             this.setChatFriend(fromInfo)
             //重新拉取已经成为好友列表
             this.removeEventList()
-            console.log("jinlaile")
             //重新拉取约战，送礼，点赞列表
             // this._loadMutualEvents();
             if (flag == "yes") {

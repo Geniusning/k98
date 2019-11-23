@@ -182,12 +182,20 @@ const router = new Router({
         path: ":id",
         name: "cardDetail",
         meta: {
-          title: "优惠券"
+          title: "卡券"
         },
         component: () => import('../components/card_detail/card_detail.vue'),
       }],
       meta: {
-        title: "优惠券"
+        title: "卡券"
+      }
+    },
+    {
+      path: '/vipCard',
+      name: 'vipCard',
+      component: () => import('../components/card/vipCard.vue'),
+      meta: {
+        title: "积分换会员卡"
       }
     },
     {

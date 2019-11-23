@@ -160,7 +160,7 @@
               <!-- v-if="item.coupon.integral" -->
               <div class="receiverProject_wrapper">
                 <div class="integral_content">
-                  1-01-0000001
+                  {{item.coupon.codeNum}}
                   <!-- <img onclick="return false" src="../../assets/image/integralIcon.png" class="integral_icon"> -->
                   <!-- <span class="integral_text">{{item.coupon.integral}}</span> -->
                 </div>
