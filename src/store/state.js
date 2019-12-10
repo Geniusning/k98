@@ -55,7 +55,9 @@ const state = {
     loadFriendSexType:"", //拉取候选人性别参数
     friendPanelFlag:false, //配对成功弹框
     soulSwitch:false,
-    soulFriInfo:{}
+    soulFriInfo:{},
+    messageQueue:[], //消息队列
+    topUpMessage:"",//
 }
 
 export default state

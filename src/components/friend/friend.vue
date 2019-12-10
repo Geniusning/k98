@@ -8,8 +8,8 @@
           <span class="dot left"></span>
           <span class="dot right"></span>
         </div>
-        <p class="soulText">{{modalSwitch?"自己找":"Soul玩伴"}}</p>
-        <p class="intro_soulText" v-show="isFirstLoad">跟随灵魂找玩伴</p>
+        <p class="soulText">{{modalSwitch?"自己找":"1键找玩伴"}}</p>
+        <p class="intro_soulText" v-show="isFirstLoad">1键找到你的幸运玩伴</p>
       </div>
       <img onclick="return false" src="../../assets/image/setting.png" class="setting" alt @click="intoSetting">
     </div>
@@ -80,7 +80,7 @@
           <div class="sex_wrapper">
             <h3>性别:</h3>
             <ul class="sex_list">
-              <li @click="chooseSex(item.id)" :class="{active:sexType == index}" v-for="(item,index) in sexArr" :key="index">
+              <li @click="chooseSex(item.id)" :class="{active:sexType == item.id}" v-for="(item,index) in sexArr" :key="index">
                 <span>{{item.name}}</span>
               </li>
             </ul>
@@ -179,7 +179,7 @@
         isGiftPanel: false, //礼物面板状态
         isInDoor: false, //好友是否在线
         sexArr: [{
-            id: 0,
+            id: 2,
             name: "全部"
           },
           {
@@ -187,7 +187,7 @@
             name: "男"
           },
           {
-            id: 2,
+            id: 0,
             name: "女"
           }
         ],
@@ -252,14 +252,20 @@
     },
     mounted() {
       let param = {
-        mySex: Number(this.loadFriendSexType),
+        // mySex: Number(this.loadFriendSexType),
         cursor: 0,
-        sex: this.sexType,
+        sex: this.loadFriendSexType,
         range: this.rangeType,
         sortType: this.sortType
       }
+      console.log("---------------------------------",param)
       this.getAllCommunityFriend(param)
-      console.log(this.friendList)
+      if(this.userInfo.sex==="男"){
+        this.sexType = 0
+      }else{
+         this.sexType = 1
+      }
+      
       if (this.userInfo.firstLoad) {
         this.isFirstLoad = true;
       } else {
@@ -269,8 +275,6 @@
       this._loadAllGift();
     },
     activated() {
-      console.log("进入找朋友页面")
-      console.log("好友列表--------------", this.someList)
       this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
         Bus.$on("changeFriendConnetion", (openid) => {
           this.isFriend = true
@@ -330,7 +334,6 @@
       },
       //监听充值面板状态
       closeIntegralPanel(flag) {
-        console.log('面板状态-----------', flag);
         this.isGiftPanel = flag;
       },
       //标识进入过公众号
@@ -339,14 +342,12 @@
           return;
         }
         api.clearFirstLoadTag().then(res => {
-          console.log('标识进入过公众号---------------', res);
           this._getUserInfo();
         });
       },
       // 获取用户信息
       _getUserInfo() {
         api.getUserInfo().then(res => {
-          console.log('个人信息-------------------------：', res);
           this.getuserInfo(res);
         }).catch(err => {
           console.log(err);
@@ -373,7 +374,7 @@
       },
       // 监听点击相册
       showAblum(data) {
-        console.log('监听点击相册------------------------------：', data);
+        // console.log('监听点击相册------------------------------：', data);
         this.showAblumFlag = true;
         this.changeUserLifeImgList(data.info.lifePhotoURL.lifePhotoURL);
         // this.$router.push({
@@ -597,8 +598,8 @@
         })
       },
       // 性别选择
-      chooseSex(index) {
-        this.sexType = index;
+      chooseSex(id) {
+        this.sexType = id;
       },
       chooseRange(index) {
         this.rangeType = index;
@@ -612,14 +613,14 @@
         this.currentPage++;
         this.visible = 3;
         let params = {
-          mySex: Number(this.loadFriendSexType),
+          //mySex: Number(this.loadFriendSexType),
           cursor: this.friendListCursor,
           sex: this.sexType,
           range: this.rangeType,
           sortType: this.sortType
         }
         api.getFriendList(params).then(res => {
-          console.log('拉取排序后的候选人：·····················', res);
+          // console.log('拉取排序后的候选人：·····················', res);
           this.changeFriendCursor(res.cursor)
           this.getFriend(res)
           this.showToast = false;
@@ -1138,6 +1139,7 @@
       color: @baseColor;
       font-size: 0.4267rem;
       font-family: "PingFang-SC-Bold";
+      padding:.3333rem 0;
     }
     .cancel_btn {
       margin-right: 0.875rem;

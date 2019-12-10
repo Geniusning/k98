@@ -2,6 +2,15 @@
 // export const TESTSEXTYPE  = "TESTSEXTYPE"\
 //推送客服小
 // export const LISTENCLIENTMSG="LISTENCLIENTMSG"
+
+//select message at start
+export const SELECTMESSAGEFROMQUEUE = "SELECTMESSAGEFROMQUEUE"
+//清楚消息队列里删除的消息
+export const CLEARTOPUPMESSAGE = "CLEARTOPUPMESSAGE"
+//add message into queue
+export const ADDMESSAGEQUEUE = "ADDMESSAGEQUEUE"
+//delete message from queue
+export const DELMESSAGEQUEUE = "DELMESSAGEQUEUE"
 //清楚所有弹窗data
 export const CLEARTOPUPDATA = "CLEARTOPUPDATA"
 //切换灵魂匹配模式

@@ -35,7 +35,7 @@
           <!-- 个人信息 -->
           <div class="userInfo_wrapper">
             <div class="userBox clearfix">
-              <img onclick="return false" src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex!=2">
+              <img onclick="return false" src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex==1">
               <img onclick="return false" src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
               <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
               <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>

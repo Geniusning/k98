@@ -332,10 +332,10 @@
     },
     updated() {},
     mounted() {
+      var mySex = this.userInfo.sex == "男" ? 1 : 0
       let params = {
-        mySex: this.userInfo.sex == "男" ? 1 : 2,
         cursor: 0,
-        sex: 0,
+        sex: mySex,
         range: 0,
         sortType: 0
       }

@@ -9,7 +9,7 @@ import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 
 // import vuePicturePreview from 'vue-picture-preview'
-import { ToastPlugin,LoadingPlugin  } from 'vux'
+import { ToastPlugin, LoadingPlugin } from 'vux'
 import { mapMutations, mapState, mapActions } from 'vuex'
 import api from './common/api'
 import config from './common/config'
@@ -45,9 +45,9 @@ new Vue({
         this.loadMutualEvents() //统计约战送礼点赞
         this.loadL98otherSetting() //加载控制开关
         this._loadInviteCoupon() //判断是否有邀新活动
-        // window.addEventListener("unload", () => {
-        //     localStorage.removeItem("friendInfo") //清楚缓存
-        // })
+            // window.addEventListener("unload", () => {
+            //     localStorage.removeItem("friendInfo") //清楚缓存
+            // })
         setTimeout(() => { //13秒过后如果用户没有离开系统则把用户放入待被邀请游戏队列
             this.addWaitingCombatList()
         }, 13000);
@@ -55,14 +55,14 @@ new Vue({
     methods: {
         //创建长连接
         createWebsocket() {
-            let windowUrL = window.location.href;
-            let index = windowUrL.indexOf('.com');
-            let shareurl = windowUrL.slice(0, index);
-            let websocketUrl = shareurl.slice(8);
-            this.connectUrl = `wss://${websocketUrl}.com/api/ws`
-            this.websock = new WebSocket(this.connectUrl);
-            this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
+            // let windowUrL = window.location.href;
+            // let index = windowUrL.indexOf('.com');
+            // let shareurl = windowUrL.slice(0, index);
+            // let websocketUrl = shareurl.slice(8);
+            // this.connectUrl = `wss://${websocketUrl}.com/api/ws`
+            // this.websock = new WebSocket(this.connectUrl);
+            // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
+            this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },
@@ -91,16 +91,16 @@ new Vue({
         },
         _loadInviteCoupon() {
             api.loadInviteCoupon().then(res => {
-              console.log("获取优惠券---------",res)
-              if(res.errCode===0){
-                this.judgeInviteCoupon(res.coupons.isputAway);
-              }
-          })
+                console.log("获取优惠券---------", res)
+                if (res.errCode === 0) {
+                    this.judgeInviteCoupon(res.coupons.isputAway);
+                }
+            })
         },
         //成为待被邀请队列成员
-        addWaitingCombatList(){
-            api.addWaitingCombatList().then(res=>{
-                console.log("成为待被邀请队列成员-----------",res)
+        addWaitingCombatList() {
+            api.addWaitingCombatList().then(res => {
+                console.log("成为待被邀请队列成员-----------", res)
             })
         },
         //加载L98控制开关信息
@@ -158,17 +158,21 @@ new Vue({
             } else if (result.ops == 26) {
                 this.pingNumer = 0;
             } else {
-                this.addFriendEvtObj(result)
+                // this.addFriendEvtObj(result)
             }
             //处理聊天消息
             if (result.msgCode === 1) {
+                // this.addFriendEvtObj(result)
                 var message = result.content.extMsg
                 this.appendLastMsg(message);
+                this.addBange();
                 // // 判断是否在聊天页面；是在聊天页面返回from给服务器表示消息已读
                 let reg = new RegExp("/message/chat")
-                if (reg.test("/message/chat")) {
+                if (reg.test(this.$route.fullPath)) {
                     console.log("是否进来标记已读")
-                    let fromId = message.allInfo.lastMsg.from;
+                    console.log("message----", message)
+                        // let fromId = message.allInfo.lastMsg.from;
+                    let fromId = message.lastMsg.from;
                     //发送消息表示已读 
                     api.sendMsgReaded(fromId).then(res => {
                         if (res.errorCode == 0) {
@@ -180,50 +184,75 @@ new Vue({
             }
             //处理好友点赞事件
             else if (result.msgCode === 2) {
-                console.log(result)
                 this.loadMutualEvents();
                 this.judgeMessType('thumb')
+                this.addMessageIntoQueue(result)
             }
             //处理送礼
             else if (result.msgCode === 3) {
                 this.loadMutualEvents();
                 this.judgeMessType('gift')
+                this.addMessageIntoQueue(result)
             } else if (result.msgCode === 4) { //发布优惠券
                 this.judgeMessType('discount')
-            } else if (result.msgCode === 6) {
+                this.addFriendEvtObj(result)
+            } else if (result.msgCode === 6) { //活动通知
+                this.addFriendEvtObj(result)
                 this.judgeMessType('activity')
+
             }
             //处理约战事件
             else if (result.msgCode === 7) {
                 this.loadMutualEvents();
                 this.addBange();
                 this.judgeMessType('playGame')
+                this.addMessageIntoQueue(result)
+            }else if (result.msgCode === 24) {
+                this.loadMutualEvents();
+                this.addBange();
+                this.judgeMessType('playGame')
+                this.addMessageIntoQueue(result)
+                // this.addFriendEvtObj(result)
             }
             //上线通知
             else if (result.msgCode === 8) {
                 this.judgeMessType('onlineNotice');
+                this.addFriendEvtObj(result)
             } else if (result.msgCode === 9) {
                 //分享获得积分通知
+                this.addFriendEvtObj(result)
                 this.judgeMessType('shareGetIntegral');
+            } else if (result.msgCode === 12) {
+                this.loadMutualEvents();
+                this.addBange();
+                this.judgeMessType('gift')
+                this.addMessageIntoQueue(result)
             } else if (result.msgCode === 13) { //对方操作回赞后返回结果通知
                 this.judgeMessType('backThumb');
+                this.addFriendEvtObj(result)
             } else if (result.msgCode === 14) { //对方操作收到礼物后返回结果通知
                 this.judgeMessType('successGift');
+                this.addFriendEvtObj(result)
             } else if (result.msgCode === 15) { //对方操作拒绝礼物后返回结果通知
                 this.judgeMessType('failGift');
+                this.addFriendEvtObj(result)
             } else if (result.msgCode === 16) { //对方操作拒绝约占后返回结果通知
                 this.judgeMessType('rejectGame');
+                this.addFriendEvtObj(result)
             } else if (result.msgCode === 17) { //对方在游戏操作打招呼返回结果通知
                 this.judgeMessType('gameSayHi');
+                this.addFriendEvtObj(result)
             } else if (result.msgCode === 18) { //对方在游戏操作打招呼返回结果通知
                 this.judgeMessType('rejectThumb');
-            }else if(result.msgCode===20){
+                this.addFriendEvtObj(result)
+            } else if (result.msgCode === 20) {
+                this.addFriendEvtObj(result)
                 this.updateClientMsg(result.content)
                 this.addBange()
-            }else if(result.msgCode===22){
-               
-                console.log("-----------------------",this.$route)
-                if(this.$route.name==="chat"){
+            } else if (result.msgCode === 22) {
+                this.addFriendEvtObj(result)
+                console.log("-----------------------", this.$route)
+                if (this.$route.name === "chat") {
                     this.$router.go(-1)
                 }
                 setTimeout(() => {
@@ -231,8 +260,8 @@ new Vue({
                     this.$router.push({
                         name: "chat",
                         params: {
-                          isSoul: true,
-                          id: this.staticChatFriendObj.openid
+                            isSoul: true,
+                            id: this.staticChatFriendObj.openid
                         }
                     });
                 }, 500);
@@ -307,7 +336,7 @@ new Vue({
         },
         ...mapMutations({
             setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
-            updateClientMsg:"UPDATE_CLIENTMSG",//推送更新客服消息
+            updateClientMsg: "UPDATE_CLIENTMSG", //推送更新客服消息
             saveQrCode: "SAVEQRCODE",
             getRecommentList: "GET_RECOMMENTLIST", //获取店长推荐
             connect_websocket: "CONNECT_WEBSOCKET",
@@ -318,7 +347,8 @@ new Vue({
             compareLastMsg: "COMPARE_LASTMESS",
             getAdvertisingImg: "GET_ADVERTISINGIMG", //获取首页轮播图
             //addFriendEvt: "ADD_FRIENDEVTLIST", //新增好友事件列表
-            addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
+            addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框
+            addMessageIntoQueue: "ADDMESSAGEQUEUE", //add message into messagequeue
             //getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
             updateShareUrl: "UPDATE_SHAREURL", //分享地址
             getuserInfo: "GET_USERINFO", //获取用户信息

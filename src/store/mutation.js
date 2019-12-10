@@ -8,55 +8,75 @@ const mutations = {
     //     state.lastClientMsg = msg
     //     state.client_badgeCount = msg.content.extMsg.count
     // },
+    //clear topUpmesage
+    [types.CLEARTOPUPMESSAGE](state) {
+        state.topUpMessage = ""
+    },
+    //insert message into messageQueue
+    [types.ADDMESSAGEQUEUE](state, queue) {
+        state.messageQueue.push(queue)
+    },
+    //delete message from messageQueue
+    [types.DELMESSAGEQUEUE](state) {
+        // if(state.messageQueue.length===0){
+        //     return false
+        // }
+        state.messageQueue.shift()
+
+    },
+    [types.SELECTMESSAGEFROMQUEUE](state) {
+        state.topUpMessage = state.messageQueue[0]
+            // console.log("state.topUpMessage-------------------------------", state.topUpMessage)
+    },
     //切换灵魂匹配模式
-    [types.SWITCHSOULFLAG](state,soulFlag){
+    [types.SWITCHSOULFLAG](state, soulFlag) {
         state.soulSwitch = soulFlag
     },
     //修改未关注user点赞次数
-    [types.CHANGEUNFOCUSTHUMBTIMES](state,count){
+    [types.CHANGEUNFOCUSTHUMBTIMES](state, count) {
         state.unfocusThumbTimes += count
     },
     //修改关注user点赞次数
-    [types.CHANGEFOCUSTHUMBTIMES](state,count){
+    [types.CHANGEFOCUSTHUMBTIMES](state, count) {
         state.focusThumbTimes += count
     },
     //修改未关注user约战次数
-    [types.CHANGEUNFOCUSPLAYTIMES](state,count){
+    [types.CHANGEUNFOCUSPLAYTIMES](state, count) {
         state.unfocusPlayTimes += count
     },
     //修改关注user约战次数
-    [types.CHANGEFOCUSPLAYTIMES](state,count){
+    [types.CHANGEFOCUSPLAYTIMES](state, count) {
         state.focusPlayTimes += count
     },
     //修改二维码上下文字
-    [types.CHANGEQRCODETEXT](state,data){
+    [types.CHANGEQRCODETEXT](state, data) {
         state.qrCodeTextObj = data
     },
     //保存二维码
-    [types.SAVEQRCODE](state,qrcode){
+    [types.SAVEQRCODE](state, qrcode) {
         state.qrCode = qrcode
     },
     //获取店长推荐
     [types.GET_RECOMMENTLIST](state, recommentList) {
         let now = new Date().getTime()
-        recommentList.forEach(recomment=>{
-            let endTime = new Date(recomment.coupInfo.endTime).getTime()
-            if(endTime>now){  //判断优惠券是否过期
-                state.recommentList.push(recomment)
-            }
-        })
-        // state.recommentList = recommentList;
+        recommentList.forEach(recomment => {
+                let endTime = new Date(recomment.coupInfo.endTime).getTime()
+                if (endTime > now) { //判断优惠券是否过期
+                    state.recommentList.push(recomment)
+                }
+            })
+            // state.recommentList = recommentList;
     },
     //获取积分换礼品列表
     [types.GET_SENDGIFTLIST](state, sendGiftList) {
         let now = new Date().getTime()
-        sendGiftList.forEach(gift=>{
-            let endTime = new Date(gift.coupInfo.endTime).getTime()
-            if(endTime>=now){  //判断优惠券是否过期
-                state.sendGiftList.push(gift)
-            }
-        })
-        // state.sendGiftList = sendGiftList;
+        sendGiftList.forEach(gift => {
+                let endTime = new Date(gift.coupInfo.endTime).getTime()
+                if (endTime >= now) { //判断优惠券是否过期
+                    state.sendGiftList.push(gift)
+                }
+            })
+            // state.sendGiftList = sendGiftList;
     },
     //判断消息类型
     [types.JUDGE_MESSTYPE](state, type) {
@@ -93,8 +113,9 @@ const mutations = {
     },
     //获取用户数据
     [types.GET_USERINFO](state, userinfo) {
-        state.loadFriendSexType = userinfo.sex === 1 ? "1" : "2"
-        // console.log("state.loadFriendSexType-------------", state.loadFriendSexType)
+        state.loadFriendSexType = userinfo.sex === 1 ? 0 : 1
+        // state.loadFriendSexType = userinfo.sex
+            // console.log("state.loadFriendSexType-------------", state.loadFriendSexType)
         userinfo.sex = userinfo.sex === 1 ? "男" : "女"
         state.userInfo = userinfo;
     },
@@ -133,9 +154,9 @@ const mutations = {
         console.log('更多候选人数据：', data);
         data.forEach(item => {
             if (item.info.sex == 1) {
-                item.info.sex = "男";
+                item.info.sex = 1;
             } else {
-                item.info.sex = "女";
+                item.info.sex = 0;
             }
             let nowTimeStamp = Math.round(new Date().getTime() / 1000);
             let visitTime = nowTimeStamp - item.visitTime;
@@ -148,9 +169,9 @@ const mutations = {
         console.log('获取不足10个候选人数据：', data);
         data.forEach(item => {
             if (item.info.sex == 1) {
-                item.info.sex = "男";
+                item.info.sex = 1;
             } else {
-                item.info.sex = "女";
+                item.info.sex = 0;
             }
             let nowTimeStamp = Math.round(new Date().getTime() / 1000);
             let visitTime = nowTimeStamp - item.visitTime;
@@ -181,9 +202,9 @@ const mutations = {
             } else {
                 tempData.push(item)
             }
-            if(item.info.deskCode!=0){
-                item.info.deskCode = util.prefixZero(item.info.deskCode,3)
-                // console.log(item.deskCode)
+            if (item.info.deskCode != 0) {
+                item.info.deskCode = util.prefixZero(item.info.deskCode, 3)
+                    // console.log(item.deskCode)
             }
             totalCount += item.info.unReadMsgCount //累计未读消息
         })
@@ -201,12 +222,12 @@ const mutations = {
         console.log('COMPARE_LASTMESS:```````````````````````````````````', lastMsgFrom)
         let totalCount = 0;
         state.alreadyFriendList.forEach(item => {
-            if (lastMsgFrom.allInfo.lastMsg.from === item.info.openid) {
-                let tempTime = util.timestampToTime(lastMsgFrom.allInfo.lastMsg.stime)
+            if (lastMsgFrom.lastMsg.from === item.info.openid) {
+                let tempTime = util.timestampToTime(lastMsgFrom.lastMsg.stime)
                 console.log('time--------------', tempTime)
-                item.info.lastMsg = lastMsgFrom.allInfo.lastMsg
+                item.info.lastMsg = lastMsgFrom.lastMsg
                 item.info.lastMsg.stime = tempTime
-                item.info.unReadMsgCount = lastMsgFrom.allInfo.count;
+                item.info.unReadMsgCount = lastMsgFrom.count;
             }
             totalCount += item.info.unReadMsgCount //累计未读消息   
         })
@@ -276,9 +297,9 @@ const mutations = {
                 state.topUpThumbInfo = friendEvtObj;
                 break;
             case 3:
-                if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
-                    return false;
-                }
+                // if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹框
+                //     return false;
+                // }
                 friendEvtObj.content.extMsg = {
                     lastMsg: {},
                     goodInfo: friendEvtObj.content.extMsg
@@ -305,10 +326,9 @@ const mutations = {
                 state.dynamicFriendEvt = friendEvtObj.content;
                 break;
             case 7: //约你游戏
-            if (state.staticChatFriendObj.openid === friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
-                return false;
-            }
-            console.log("yueniwanyouxi")
+                // if (state.staticChatFriendObj.openid === friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
+                //     return false;
+                // }
                 friendEvtObj.content.extMsg = {
                     lastMsg: {},
                     gameInfo: friendEvtObj.content.extMsg
@@ -389,9 +409,9 @@ const mutations = {
                 state.dynamicFriendEvt = friendEvtObj.content;
                 break;
             case 19: //约你再战游戏
-                if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
-                    return false;
-                }
+                // if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
+                //     return false;
+                // }
                 friendEvtObj.content.extMsg = {
                     lastMsg: {},
                     gameInfo: friendEvtObj.content.extMsg
@@ -401,15 +421,25 @@ const mutations = {
                 state.topUpGameInfo = friendEvtObj
                 console.log('好友邀请你进游戏玩-----------', friendEvtObj)
                 break;
-            case 21 ://监听灵魂匹配推送
+            case 21: //监听灵魂匹配推送
                 state.soulFriInfo = friendEvtObj
-               break;
+                break;
+            case 24:
+            friendEvtObj.content.extMsg = {
+                lastMsg: {},
+                gameInfo: friendEvtObj.content.extMsg
+            };
+            // friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
+            // state.dynamicFriendEvt = friendEvtObj.content;
+            state.topUpGameInfo = friendEvtObj
+            console.log('队列约战你进游戏玩-----------', friendEvtObj)
+            break;
             default:
                 break;
         }
     },
     //清楚所有弹窗data
-    [types.CLEARTOPUPDATA](state){
+    [types.CLEARTOPUPDATA](state) {
         state.topUpGameInfo = {}
         state.topUpGiftInfo = {}
         state.topUpThumbInfo = {}
@@ -450,7 +480,7 @@ const mutations = {
     //   state.game_badgeCount = state.challengeGameList.length;
     // },
     //统计客服未读数量
-    [types.GETCLIENTUNREADCOUNT](state,count){
+    [types.GETCLIENTUNREADCOUNT](state, count) {
         state.client_badgeCount = count
     },
     //统计约战，送礼，点赞数量
@@ -461,14 +491,14 @@ const mutations = {
     [types.ADD_BADGE](state) {
         let total = 0;
         // state.gift_badgeCount + state.game_badgeCount+
-        total = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount+state.client_badgeCount;
+        total = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount + state.client_badgeCount;
         state.badgeCount = total;
     },
     //设置候选人聊天的信息
     [types.SET_CHAT_FRIEND](state, data) {
         // data.info.isIndoor = data.isInDoor
         state.staticChatFriendObj = data.info ? data.info : data
-        
+
         // console.log('state.staticChatFriendObj-------------------', state.staticChatFriendObj);
     },
     //设置动态聊天朋友信息
@@ -538,7 +568,7 @@ const mutations = {
         state.friendPanelFlag = flag;
     },
     //l98功能开关设置
-    [types.L98OTHERSETTING](state,otherSetting){
+    [types.L98OTHERSETTING](state, otherSetting) {
         state.l98Setting = otherSetting
     },
     //测试
