@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "better-scroll": "^1.10.2",
+    "better-scroll": "^2.0.0-beta.2",
     "fastclick": "^1.0.6",
     "lrz": "^4.9.40",
     "qrcode": "^1.2.2",

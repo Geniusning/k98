@@ -22,7 +22,7 @@
           <div @click="showDetail">
             <div class="detail" v-if="messType !='onlineNotice'">&gt;&gt;详情</div>
             <div class="detail" v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true ">&gt;&gt;去聊天</div>
-            <div class="detail" v-else>&gt;&gt;打招呼</div>
+            <div class="detail" v-else>&gt;&gt;打个招呼</div>
           </div>
         </div>
       </transition>
@@ -185,10 +185,10 @@
                 <div v-if="!isShowGiftGuide" class="handleBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,true)">感谢</div>
                 <div v-if="isShowGiftGuide" class="handleBtn" @click="confirm">确定</div>
                 <div v-if="isShowGiftGuide" class="handleBtn" @click="gotoDetail">详情&gt;&gt;</div>
-                <div class="checkBox_scene clearfix">
+                <!-- <div class="checkBox_scene clearfix">
                   <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
                   <span class="scene-text fl">加好友</span>
-                </div>
+                </div> -->
               </div>
               <div class="bottom_partition" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
                 <div class="handleBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'no',topUpThumbInfo.content.fromInfo)">拒绝</div>
@@ -1168,7 +1168,7 @@ html {
 .backToGame_wrapper {
   width: 8.4rem;
   height: 4.6933rem;
-  background-image: url("./assets/image/envelop.png");
+  background-image: url("./assets/image/envelop_handle.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   position: fixed;
@@ -1280,7 +1280,7 @@ html {
   }
   .topUpGiftInfo-wrapper {
     width: 8.333rem; // height: 4rem;
-    background-image: url("./assets/image/envelop.png");
+    background-image: url("./assets/image/envelop_handle.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
     position: fixed;
@@ -1373,11 +1373,13 @@ html {
     .topUpGiftInfo-bottom {
       .bottom_partition {
         display: flex;
-        justify-content: space-around;
-        margin-top: 0.1667rem;
-        padding: 0 1rem;
+        justify-content: space-between;
+        margin-top: 0.2rem;
+      
         padding-bottom: 0.3333rem;
         position: relative;
+        width: 100%;
+        box-sizing: border-box;
         .checkBox_scene {
           position: absolute;
           bottom: 0.2667rem;
@@ -1402,7 +1404,7 @@ html {
         color: #333;
         padding: 0.1333rem 0.4rem;
         font-size: 0.35rem;
-        background: -webkit-linear-gradient(top, #fedc00, #e39300);
+        // background: -webkit-linear-gradient(top, #fedc00, #e39300);
       }
     }
   }

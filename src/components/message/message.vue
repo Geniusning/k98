@@ -817,7 +817,7 @@
   }
   .title {
     text-align: center;
-    padding: 0.11rem 0.6125rem;
+    padding: 0.11rem 0.5rem;
     margin-top: 0.1333rem;
     height: 1rem;
     .btn_box {

@@ -256,7 +256,7 @@ export default {
       isShowEnvelope: false, //信封弹框判断
       envelopeText: "", //信封弹框内容
       showPreview: false,
-      // scrollHeight: 500,
+      scrollHeight: 0,
       // scrollToDomElement: "",
       pullDownRefresh: true,
       expressionShow: false,
@@ -661,9 +661,7 @@ export default {
     //获取好友聊天消息记录列表
     _getChatList() {
       let cursor = this.alreadyFriendListcursor;
-      api
-        .getFriendMessList(cursor, this.staticChatFriendObj.openid)
-        .then(res => {
+      api.getFriendMessList(cursor, this.staticChatFriendObj.openid).then(res => {
           return new Promise((resolve, reject) => {
             console.log("好友聊天信息---------", res);
             this.changeCursor(res.cursor);
@@ -677,42 +675,18 @@ export default {
                 type: item.type,
                 time: util.timestampToTime(item.stime),
                 chatExtMsg: item.type == 3 ? item.chatExtMsg.extMsg : "",
-                isBeFriendModel: item.chatExtMsg
-                  ? item.chatExtMsg.isBeFriendModel
-                    ? item.chatExtMsg.isBeFriendModel
-                    : false
-                  : false,
+                isBeFriendModel: item.chatExtMsg? item.chatExtMsg.isBeFriendModel? item.chatExtMsg.isBeFriendModel: false: false,
                 from: item.from,
                 chatMsgID: item.id,
                 isAgree: item.chatExtMsg ? item.chatExtMsg.isAgree : "",
                 isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : "",
                 msgType: item.chatExtMsg ? item.chatExtMsg.msgType : "",
-                couponID: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg
-                    ? item.chatExtMsg.extMsg.couponID
-                    : ""
-                  : "",
-                recordID: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg
-                    ? item.chatExtMsg.extMsg.recordID
-                    : ""
-                  : "",
-                name: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.name : ""
-                  : "",
-                combatID: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg
-                    ? item.chatExtMsg.extMsg.combatID
-                    : ""
-                  : "",
-                inviterID: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg
-                    ? item.chatExtMsg.extMsg.inviterID
-                    : ""
-                  : "",
-                url: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.url : ""
-                  : ""
+                couponID: item.chatExtMsg? item.chatExtMsg.extMsg? item.chatExtMsg.extMsg.couponID: "": "",
+                recordID: item.chatExtMsg? item.chatExtMsg.extMsg? item.chatExtMsg.extMsg.recordID: "": "",
+                name: item.chatExtMsg? item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.name : "": "",
+                combatID: item.chatExtMsg? item.chatExtMsg.extMsg? item.chatExtMsg.extMsg.combatID: "": "",
+                inviterID: item.chatExtMsg? item.chatExtMsg.extMsg? item.chatExtMsg.extMsg.inviterID: "": "",
+                url: item.chatExtMsg? item.chatExtMsg.extMsg ? item.chatExtMsg.extMsg.url : "": ""
               });
             }
             console.log("聊天记录-------", this.componentChatList);
@@ -757,10 +731,10 @@ export default {
     //发送消息事件
     send() {
       this.isShowSoulPanel = false; //发消息隐藏灵魂匹配面板
-      if (util.isAndroid() && this.dontFocus) {
-        this.dontFocus = true;
-        document.getElementById("send_message").focus();
-      }
+      // if (util.isAndroid() && this.dontFocus) {  //输入后再次弹起键盘
+      //   this.dontFocus = true;
+      //   document.getElementById("send_message").focus();
+      // }
       this.sendingTimes++;
       if (this.sendingTimes > 20) {
         this.$vux.toast.text("朋友一直未回复，稍后再发送吧", "middle");
@@ -805,24 +779,20 @@ export default {
       let decc1 = new TextEncoder("utf-8");
       let result = decc1.encode(textMessObj);
       api.postFriendMess(result).then(res => {
-        console.log(
-          "发送消息成功:`````````````````````````````````````````",
-          res
-        );
         this.emotionShow = false;
         this.expressionShow = false;
       });
       this.input_value = "";
-      this.$nextTick(function() {
+      // this.$nextTick(function() {
         let childNodes = this.$refs.chatList.childNodes;
-        let chatListHeight = 0;
-        childNodes.forEach(item => {
-          chatListHeight += item.clientHeight;
-        });
-        this.scrollHeight = chatListHeight;
-        this.$refs.listView.refresh();
-        this.$refs.listView.scrollTo(0, -this.scrollHeight);
-      });
+      //   let chatListHeight = 0;
+      //   childNodes.forEach(item => {
+      //     chatListHeight += item.clientHeight;
+      //   });
+      //   this.scrollHeight = chatListHeight;
+      //   // this.$refs.listView.refresh();
+      this.$refs.listView.scrollBy(0, -childNodes[0].clientHeight-10);
+      // });
     },
     // 发送图片
     uploadImage(e) {
@@ -884,9 +854,7 @@ export default {
       }
       let cursor = this.alreadyFriendListcursor;
       // this.isLoading = true;
-      api
-        .getFriendMessList(cursor, this.staticChatFriendObj.openid)
-        .then(res => {
+      api.getFriendMessList(cursor, this.staticChatFriendObj.openid).then(res => {
           console.log(res);
           if (!res.messages.length) {
             //如果有新消息才更改游标
@@ -1021,10 +989,7 @@ export default {
   watch: {
     LastChatMsg: function(newValue) {
       this.isShowSoulPanel = false; //当有消息隐藏灵魂匹配面板
-      console.log(
-        "在聊天页面收到对方发来的消息-------------------------------：",
-        newValue
-      );
+      // console.log("在聊天页面收到对方发来的消息-------------------------------：",newValue);
       this.sendingTimes = 0; //清空限制连续发送消息次数
       let messageInfo = newValue.lastMsg;
       if (messageInfo.type == 3 || messageInfo.type == 4) {

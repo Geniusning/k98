@@ -345,7 +345,7 @@ const mutations = {
                 friendEvtObj.content.extMsg = {
                     lastMsg: {},
                 };
-                friendEvtObj.content.extMsg.lastMsg['msg'] = friendEvtObj.content.fromInfo.nickname + "上线,打个招呼？";
+                friendEvtObj.content.extMsg.lastMsg['msg'] =friendEvtObj.content.fromInfo.nickname + (friendEvtObj.content.fromInfo.onlineType==="k98"?"上线啦":"进入游戏大厅啦");
                 friendEvtObj.content["notifyType"] = 8;
                 state.dynamicFriendEvt = friendEvtObj.content;
                 break;

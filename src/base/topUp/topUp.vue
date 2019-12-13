@@ -11,7 +11,7 @@
         </div>
         <div class="coinBox_bottom">
           <ul class="coinList">
-            <li class="coinItem" v-for="(item,index) in moneyList" :key="item.id" @click="payForCoin(item.id,index)">
+            <li class="coinItem" v-for="(item,index) in moneyList" :key="item.id" @click="payForCoin(item.id,index,item.points)">
               <img onclick="return false" :src="item.imgUrl" :class="[item.iconClass,{bigAndSamll:index===clickIndex}]">
               <p class="intergral">{{item.points}}</p>
               <p class="moneyCount">￥{{item.name}}</p>
@@ -81,12 +81,15 @@
         </div>
         <div class="handle">
           <!-- :class="{greyBtn:userInfo.money<giftIntegral}" -->
-          <button v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">{{userInfo.money>giftIntegral?'确认兑换':'积分不足,请充值'}}</button>
-          <button v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">{{userInfo.money>giftIntegral?'确认赠送':'余额不足,请充值'}}</button>
-          <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor && userInfo.money>giftIntegral ">
+          <div v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">
+            确认
+          </div>
+          <div v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">确认</div>
+          <div v-show="userInfo.money<giftIntegral"  class="tips_money">积分不足,请充值>></div>
+          <!-- <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor && userInfo.money>giftIntegral "> -->
             <!-- <input @change="onlineSendGift" type="checkbox" class="checkbox fl">
             <span class="scene-text fl">现场下单</span> -->
-          </div>
+          <!-- </div> -->
           <!-- <p class="gotoTopUpText" v-if="userInfo.money<giftIntegral" @click="gotoTopUp">去充值&gt;</p> -->
         </div>
         <div class="myMoney" v-if="userInfo.money-componentGiftInfo.goods.integral>0?false:true">尚欠积分:{{Math.abs(userInfo.money-componentGiftInfo.goods.integral)}}</div>
@@ -101,10 +104,22 @@
           </div>
           <p class="successful_text">{{successfulText}}</p>
           <p class="successful_desc">{{successful_desc}}</p>
-          <button @click="closeIntegralPanel" class="btn">确认</button>
-          <p class="gotoTopUpText" @click="gotoTopUp">去充值&gt;</p>
+          <div @click="closeIntegralPanel" class="btn">确认</div>
         </div>
-        <!-- <div class="myMoney">我的积分:{{userInfo.money}}</div> -->
+      </div>
+      <!-- 充值成功面板 -->
+      <div class="successfullyBox" v-else-if="panelIndex===4" key="successfullyBox">
+        <div class="envelope">
+          <div class="close" @click="closeIntegralPanel">X</div>
+          <div class="integralIcon_wrapper">
+            <img onclick="return false" src="../../assets/image/integralIcon.png" alt class="integralIcon">
+            <div class="integralIcon_text">我的积分:{{userInfo.money}}</div>
+          </div>
+          <p class="successful_text">充值成功,增加{{moneyPoint}}积分</p>
+          <!-- <p class="successful_desc">{{successful_desc}}</p> -->
+          <div @click="closeIntegralPanel" class="btn">确认</div>
+          <!-- <div @click="changeGoods" class="changebtn">兑换</div> -->
+        </div>
       </div>
     </transition>
   </div>
@@ -126,6 +141,7 @@
         showOweText: false,
         panelIndex: null,
         componentGiftInfo: "",
+        moneyPoint:"",
         componentConvertType: null,
         componentGiftList: [],
         successfulText: "送礼失败",
@@ -316,7 +332,7 @@
             if (res.errCode && res.errCode == 1021) {
               this.successfulText = "您已兑换"
             } else if (res.errCode == 1029) {
-              this.successfulText = "积分不足，请点右下角前往充值"
+              this.successfulText = "积分不足"
               this.successful_desc = ``;
               return;
             } else if (res.errCode == 1023) {
@@ -331,7 +347,7 @@
           api.sentRecommend(goodID, this.friendId).then(res => {
             console.log('店长推荐赠送结果---------', res)
             if (res.errCode == 1029) {
-              this.successfulText = "积分不足，请点右下角前往充值";
+              this.successfulText = "积分不足";
               this.successful_desc = ``;
               return;
             } else if (res.errCode == 1023) {
@@ -346,7 +362,7 @@
         } else if (this.componentConvertType == 3) { //赠送积分换礼品项目
           api.sentGoods(goodID, this.friendId).then(res => {
             if (res.errCode == 1029) {
-              this.successfulText = "积分不足，请点右下角前往充值"
+              this.successfulText = "积分不足"
               this.successful_desc = ``;
               return;
             } else if (res.errCode == 1023) {
@@ -398,9 +414,15 @@
           this.panelIndex = 3;
         })
       },
+      //前往兑换
+      changeGoods(){
+        this.panelIndex = 1;
+      },
       //   充值
-      payForCoin(id,index) {
-        console.log(id);
+      payForCoin(id,index,point) {
+        this.moneyPoint = point
+        console.log("this.moneyPoint---",this.moneyPoint)
+        // console.log(id);
         if(!this.l98Setting.integralConvertOpen){
           this.$vux.toast.text('商家未开通本功能', 'middle')
           return
@@ -430,7 +452,7 @@
                   alert("微信支付成功");
                   api.getUserInfo("/api/loadUserInfo").then(res => {
                       this.getUserInfo(res);
-                      this.panelIndex = 1;
+                      this.panelIndex = 4;
                     })
                     .catch(err => {
                       console.log(err);
@@ -478,7 +500,7 @@
     background-color: rgba(0, 0, 0, 0.3);
     z-index: 100;
     .coinBox {
-      width: 100%; // height: 5rem; // transform: translateY(50%);
+      width: 8.333rem;;// height: 5rem; // transform: translateY(50%);
       margin: 50% auto; // background-color: #fff;
       .bg('../../assets/image/envelop.png');
       .coinBox_top {
@@ -555,7 +577,7 @@
       margin: 40% auto; // background-color: #fff;
       // padding-top: 0.7333rem;
       // width: 100%;
-      width: 9.3333rem;
+      width: 8.333rem;;
       box-sizing: border-box;
       .bg('../../assets/image/envelop.png'); // background-image: url('../../assets/image/envelop.png')
       .giftPanelBox_title {
@@ -647,12 +669,13 @@
       }
     }
     .sendGiftPanelBox {
-      width: 8.4rem; // height: 4.7rem;
+      // width: 8.4rem; 
+      width: 8.333rem;; 
       padding-bottom: 0.2333rem;
       box-sizing: border-box;
       margin: 50% auto;
       position: relative;
-      .bg("../../assets/image/envelop.png");
+      .bg("../../assets/image/envelop_handle.png");
       .header {
         display: flex;
         padding: 0.2667rem 0.4rem;
@@ -716,22 +739,31 @@
       }
       .handle {
         width: 100%;
-        text-align: center;
+        text-align: right;
         padding-top: 0.3rem;
         padding-bottom: 0.3rem;
-        position: relative; // .gotoTopUpText {
-        //   position: absolute;
-        //   bottom: 0.13rem;
-        //   right: 0.28rem;
-        //   color: #F7C600;
-        //   text-decoration: underline;
-        // }
+        position: relative; 
+        padding-right: .35rem;
+        box-sizing: border-box;
+        position: relative;
+        .tips_money{
+          left: 50%;
+          font-weight:700;
+          color: #333; 
+          width: 3.2rem;
+          margin-left:-1.6rem ;
+          position: absolute;
+          bottom: 0.3rem;
+          font-size: 12px;
+        }
         .btn {
           padding: 0.08rem 0.1067rem;
           border: none;
-          background: -webkit-linear-gradient(top, #fcd502, #e59305);
+          display: inline-block;
           font-weight: 600;
           color: #333;
+          font-size: 14px;
+          letter-spacing: 0.009rem;
         }
         .greyBtn {
           background: gray;
@@ -765,7 +797,7 @@
       margin: 50% auto;
       width: 8.3333rem;
       height: 4.7rem;
-      .bg("../../assets/image/envelop.png");
+      .bg("../../assets/image/envelop_handle.png");
       position: relative;
       .myWelfare {
         position: absolute;
@@ -865,16 +897,23 @@
       .btn {
         position: absolute;
         bottom: .6rem;
-        left: 50%;
-        margin-left: -1rem;
-        width: 2rem;
+        right: .3rem;
+
         text-align: center;
         letter-spacing: 0.08rem;
         padding: 0.08rem 0.1067rem;
         border: none;
-        background: -webkit-linear-gradient(top, #fcd502, #e59305);
+        // background: -webkit-linear-gradient(top, #fcd502, #e59305);
         font-weight: 600;
         color: #333;
+      }
+      .changebtn{
+        position: absolute;
+        bottom:.6rem;
+        left: .45rem;
+        font-weight: 700;
+        color: #333;
+
       }
       .gotoTopUpText {
         position: absolute;

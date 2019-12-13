@@ -3,48 +3,72 @@
     <div class="bg"></div>
     <div class="notice-wrapper">
       <div class="name">大话骰{{this.isTeamGame?"团体":"个人"}}排名赛直播间</div>
-      <img src="../../../assets/image/refresh.png" alt class="refresh" @click="refresh">
-      <span class="refresh-text">刷新排名</span>
+        <img src="../../../assets/image/refresh.png" alt class="refresh" @click="refresh">
+        <span class="refresh-text">刷新排名</span>
       <img class="home" src="../../../assets/image/game_home.png" alt @click="goHome">
     </div>
-
-    <div class="scroll-wrapper">
-      <div class="playerNumber">
-        <ul class="titleList">
-          <li class="subTitle">名次</li>
-          <li class="subTitle">参赛者</li>
-          <li class="subTitle">战绩(杯)</li>
-          <li class="subTitle">已打(局)</li>
-          <li class="subTitle">邀请人</li>
-        </ul>
+    <div style="height: 85%;">
+      <div class="scroll-wrapper" v-if="!isTeamGame">
+        <div class="playerNumber" v-if="!isTeamGame">
+          <ul class="titleList" >
+            <li class="subTitle">名次</li>
+            <li class="subTitle">参赛者</li>
+            <li class="subTitle">战绩(杯)</li>
+            <li class="subTitle">已打(局)</li>
+            <li class="subTitle">邀请人</li>
+          </ul>
+        </div>
+        <loading v-show="isLoading" style="position:absolute;top:30%;left:0"></loading>
+        <scroll class="scrollList" :data="playList" v-if="playList.length">
+          <ul class="userList">
+            <li class="userItem" v-for="(item,index) in playList" :key="index">
+              <span class="rankNum" :class="{'first':index==0,'second':index==1,'third':index==2}">{{index+1}}</span>
+              <div class="userInfo">
+                <img class="avatar" :src="item.headURI?item.headURI:robotImg" alt>
+                <div class="username">{{item.teamName?item.teamName:(item.nick?item.nick:'无名')}}</div>
+              </div>
+              <span class="score" style="padding-top:.3rem">{{item.score}}</span>
+              <span class="finishRound">{{item.finishRound}}</span>
+              <span class="inviterInfo" v-if="!item.inviterDate">暂无</span>
+              <div class="userInfo" v-else>
+                <img class="avatar" :src="item.inviterDate.headURI" alt>
+                <div class="username">{{item.inviterDate.nick}}</div>
+              </div>
+            </li>
+          </ul>
+        </scroll>
+        <p style="font-size:20px;font-weight:400;color:#ccc;width:100%;text-align:center;margin-top:50%" class="noContentText" v-else>暂无选手参赛</p>
       </div>
-      <loading v-show="isLoading" style="position:absolute;top:30%;left:0"></loading>
-      <scroll class="scrollList" :data="playList" v-if="playList.length">
-        <ul class="userList">
-          <li class="userItem" v-for="(item,index) in playList" :key="index">
-            <span
-              class="rankNum"
-              :class="{'first':index==0,'second':index==1,'third':index==2}"
-            >{{index+1}}</span>
-            <div class="userInfo">
-              <img class="avatar" :src="item.headURI?item.headURI:robotImg" alt>
-              <div class="username">{{item.teamName?item.teamName:(item.nick?item.nick:'无名')}}</div>
-            </div>
-            <span class="score">{{item.score}}</span>
-            <span class="finishRound">{{item.finishRound}}</span>
-            <span class="inviterInfo" v-if="!item.inviterDate">暂无</span>
-            <div class="userInfo" v-else>
-              <img class="avatar" :src="item.inviterDate.headURI" alt>
-              <div class="username">{{item.inviterDate.nick}}</div>
-            </div>
-          </li>
-        </ul>
-      </scroll>
-      <p
-        style="font-size:20px;font-weight:400;color:#ccc;width:100%;text-align:center;margin-top:50%"
-        class="noContentText"
-        v-else
-      >暂无选手参赛</p>
+      <div class="scroll-wrapper" v-else>
+        <div class="playerNumber" >
+          <ul class="titleList" >
+            <li class="subTitle">名次</li>
+            <li class="subTitle">队长</li>
+            <li class="subTitle">队员</li>
+            <li class="subTitle">战绩(杯)</li>
+            <li class="subTitle">已打(局)</li>
+          </ul>
+        </div>
+        <loading v-show="isLoading" style="position:absolute;top:30%;left:0"></loading>
+        <scroll class="scrollList" :data="playList" v-if="playList.length">
+          <ul class="userList">
+            <li class="userItem" v-for="(item,index) in playList" :key="index">
+              <span class="rankNum" :class="{'first':index==0,'second':index==1,'third':index==2}">{{index+1}}</span>
+              <div class="userInfo">
+                <img class="avatar" :src="item.captain.headURI?item.captain.headURI:robotImg" alt>
+                <!-- <div class="username">{{item.teamName?item.teamName:(item.captain.nick?item.captain.nick:'无名')}}</div> -->
+              </div>
+              <div class="score" >
+                <img v-for="(teamMate,index) in item.member" :key="index" v-if="teamMate.id!=item.captain.id" :class="'memberHeadImg'+index" :src="teamMate.headURI" alt="">
+              </div>
+              <span class="finishRound">{{item.score}}</span>
+              <span class="inviterInfo">{{item.finishRound}}</span>
+    
+            </li>
+          </ul>
+        </scroll>
+        <p style="font-size:20px;font-weight:400;color:#ccc;width:100%;text-align:center;margin-top:50%" class="noContentText" v-else>暂无选手参赛</p>
+      </div>
     </div>
     <!-- <div class="btn-wrapper">
          <p class='backHome'>长按关注本店公众号，享受会员特权：领福利、交群友、玩游戏！</p>
@@ -89,28 +113,20 @@ export default {
       } else {
         this.arenaID = this.$route.params.arenaID
       }
-      // if (timer) {
-      //   clearTimeout(timer);
-      // }
       api.loadArenaRank(this.arenaID).then(res => {
         console.log('比赛排名信息-----------', res)
         var tempArr = []
         if (res.errCode === 0) {
-          if (res.arenaType) {    //arenaType=0个人赛  arenaType=1团体赛
+          if (res.arenaType==1) {    //arenaType=0个人赛  arenaType=1团体赛
             tempArr = res.teamRanks;
             this.isTeamGame = true
           } else {
             tempArr = res.userRanks;
              this.isTeamGame = false
           }
+          console.log("this.isTeamGame-----",this.isTeamGame)
           tempArr.forEach(player => {
-            if(player.headURI.indexOf("http") === -1){
-              let imgUrl = player.headURI.slice(18)
-              player.headURI = require(`../../../assets/image/${imgUrl}.png`)
-          }
-            if(!player.IsRobot){
               this.playList.push(player)
-            }
           });
           this.isLoading = false;
           if (res.isAllComplete) {  //如果比赛结束，结束轮训
@@ -182,13 +198,13 @@ export default {
       width: 0.8rem;
       height: 0.8rem;
       top: 0.3rem;
-      left: 0.4333rem;
+      left: 0rem;
     }
     .refresh-text {
       position: absolute;
       width: 1.5rem;
       top: 1.13rem;
-      left: 0.3rem;
+      left: -0.2rem;
     }
     .name {
       font-size: 0.48rem;
@@ -202,13 +218,13 @@ export default {
       position: absolute;
       width: 1rem;
       height: 1rem;
-      right: 0.2667rem;
+      right: -0.2rem;
       top: 0.1333rem;
     }
   }
   .scroll-wrapper {
     width: 8.8rem;
-    height: 85%;
+    height: 100%;
     // .bg("../../assets/image/player_bg.png");
     margin: 0.2933rem auto 0;
     border-radius: 0.32rem;
@@ -276,9 +292,26 @@ export default {
           .score {
             width: 20%;
             text-align: center;
-            padding-top: 0.3333rem;
+            // padding-top: 0.3333rem;
             color: #333;
             font-size: 0.4rem;
+            position: relative;
+            .memberHeadImg0,.memberHeadImg1{
+              position: absolute;
+    
+              width: 1rem;
+              height: 1rem;
+              border-radius: 50%;
+            }
+            .memberHeadImg0{
+              left: .6rem;
+            }
+            .memberHeadImg1{
+              left: -0rem;
+            }
+            .memberHeadImg2{
+              left: -0rem;
+            }
           }
           .finishRound {
             width: 20%;
