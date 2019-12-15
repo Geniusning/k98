@@ -16,10 +16,10 @@ import config from './common/config'
 Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)
 Vue.use(Viewer)
-    // Vue.use(vuePicturePreview)
+// Vue.use(vuePicturePreview)
 FastClick.attach(document.body)
 Vue.config.productionTip = false
-    /* eslint-disable no-new */
+/* eslint-disable no-new */
 new Vue({
     router,
     store,
@@ -45,9 +45,9 @@ new Vue({
         this.loadMutualEvents() //统计约战送礼点赞
         this.loadL98otherSetting() //加载控制开关
         this._loadInviteCoupon() //判断是否有邀新活动
-            // window.addEventListener("unload", () => {
-            //     localStorage.removeItem("friendInfo") //清楚缓存
-            // })
+        // window.addEventListener("unload", () => {
+        //     localStorage.removeItem("friendInfo") //清楚缓存
+        // })
         setTimeout(() => { //13秒过后如果用户没有离开系统则把用户放入待被邀请游戏队列
             this.addWaitingCombatList()
         }, 13000);
@@ -55,14 +55,14 @@ new Vue({
     methods: {
         //创建长连接
         createWebsocket() {
-            // let windowUrL = window.location.href;
-            // let index = windowUrL.indexOf('.com');
-            // let shareurl = windowUrL.slice(0, index);
-            // let websocketUrl = shareurl.slice(8);
-            // this.connectUrl = `wss://${websocketUrl}.com/api/ws`
-            // this.websock = new WebSocket(this.connectUrl);
-            // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
+            let windowUrL = window.location.href;
+            let index = windowUrL.indexOf('.com');
+            let shareurl = windowUrL.slice(0, index);
+            let websocketUrl = shareurl.slice(8);
+            this.connectUrl = `wss://${websocketUrl}.com/api/ws`
+            this.websock = new WebSocket(this.connectUrl);
+            this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
+            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },
@@ -171,7 +171,7 @@ new Vue({
                 if (reg.test(this.$route.fullPath)) {
                     console.log("是否进来标记已读")
                     console.log("message----", message)
-                        // let fromId = message.allInfo.lastMsg.from;
+                    // let fromId = message.allInfo.lastMsg.from;
                     let fromId = message.lastMsg.from;
                     //发送消息表示已读 
                     api.sendMsgReaded(fromId).then(res => {
@@ -207,7 +207,7 @@ new Vue({
                 this.addBange();
                 this.judgeMessType('playGame')
                 this.addMessageIntoQueue(result)
-            }else if (result.msgCode === 24) {
+            } else if (result.msgCode === 24) {
                 this.loadMutualEvents();
                 this.addBange();
                 this.judgeMessType('playGame')
@@ -365,7 +365,7 @@ new Vue({
     },
     watch: {
         //websocket推送的最新消息
-        LastChatMsg: function(newValue) {
+        LastChatMsg: function (newValue) {
             // console.log('在main收到对方手来的消息------------------------------------：', newValue);
             this.compareLastMsg(newValue)
         }

@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "nYA0dKhw5gDTOJurSgMt3HzrLNMnizuVR7l5SRvCO8jj9bS0-PFvJrJJgg26obag9azZBQ==";
+const myToken = "HzNg_5rokefk-5Yy3fYEwppn1ralCF0KCKR677jBFJS2l1C1drrFO-ihLzd-sICmUjvpXA==";
 // ------------------------------
 
 module.exports = {
@@ -19,15 +19,16 @@ module.exports = {
                 // target: "172.18.4.8", //本地
                 target: "https://llwant1.qianz.com", //老友一起玩吧
                 changeOrigin: true,
-                pathRewrite: function(path, req) {
+                pathRewrite: function (path, req) {
                     return path + "&tk=" + myToken
                 }
             },
         },
 
         // Various Dev Server settings
-        host: '172.18.4.8',
-        // host: '192.168.124.18',
+        // host: '172.18.4.8',
+        host: '192.168.124.18',
+
         //host: 'localhost', // can be overwritten by process.env.HOST
         port: 8088, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
         autoOpenBrowser: false,

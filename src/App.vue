@@ -9,11 +9,23 @@
       <!-- 左侧信封弹 -->
       <transition name="envelop">
         <div class="envelop-wrapper" v-if="isShowEnvelop">
-          <img onclick="return false" src="./assets/image/close_ad.png" alt class="close" @click.stop="close">
+          <img
+            onclick="return false"
+            src="./assets/image/close_ad.png"
+            alt=""
+            class="close"
+            @click.stop="close"
+          >
           <div class="top">
-            <img onclick="return false" :src="dynamicFriendEvt.fromInfo.headimgurl?dynamicFriendEvt.fromInfo.headimgurl:shopSettingInfo.image"
-              alt class="avatar">
-            <div class="name">{{dynamicFriendEvt.fromInfo.nickname?dynamicFriendEvt.fromInfo.nickname:'店长'}}</div>
+            <img
+              onclick="return false"
+              :src="dynamicFriendEvt.fromInfo.headimgurl?dynamicFriendEvt.fromInfo.headimgurl:shopSettingInfo.image"
+              alt=""
+              class="avatar"
+            >
+            <div
+              class="name"
+            >{{dynamicFriendEvt.fromInfo.nickname?dynamicFriendEvt.fromInfo.nickname:'店长'}}</div>
           </div>
           <div class="bottom">
             <p class="content">{{dynamicFriendEvt.extMsg.lastMsg.msg}}</p>
@@ -21,31 +33,47 @@
           </div>
           <div @click="showDetail">
             <div class="detail" v-if="messType !='onlineNotice'">&gt;&gt;详情</div>
-            <div class="detail" v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true ">&gt;&gt;去聊天</div>
+            <div
+              class="detail"
+              v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true "
+            >&gt;&gt;去聊天</div>
             <div class="detail" v-else>&gt;&gt;打个招呼</div>
           </div>
         </div>
       </transition>
-      <!-- 回房通知 " -->
+      <!-- 回房通知   " -->
       <div class="backToGame_wrapper" v-if="showBackToGame">
         <p class="backToGame_text">您有未完成对战，对手还在等您</p>
         <div class="btn_wrapper">
-          <button class="reject_btn" @click="rejectBacToGame">放弃</button>
-          <button class="back_btn" @click="goBackGame">再战</button>
+          <div class="reject_btn" @click="rejectBacToGame">放弃</div>
+          <div class="back_btn" @click="goBackGame">再战</div>
         </div>
       </div>
       <div class="mask_bg" v-if="isShowGiftPanel">
         <transition name="gift-Panel" mode="out-in">
           <!-- 好友的约战送礼交互 -->
-          <div class="topUpGiftInfo-wrapper" v-if="isShowGiftPanel && allMutatualInfo_temp.isAlreadyFriends">
+          <div
+            class="topUpGiftInfo-wrapper"
+            v-if="isShowGiftPanel && allMutatualInfo_temp.isAlreadyFriends"
+          >
             <div class="topUpGiftInfo-top" v-if="!isShowGiftGuide">
               <div class="img">
-                <img onclick="return false" class="giftAvatar" :src="allMutatualInfo_temp.headimgurl?allMutatualInfo_temp.headimgurl:shopSettingInfo.image"
-                  alt>
+                <img
+                  onclick="return false"
+                  class="giftAvatar"
+                  :src="allMutatualInfo_temp.headimgurl?allMutatualInfo_temp.headimgurl:shopSettingInfo.image"
+                  alt=""
+                >
               </div>
               <div class="name">
-                <p class="name" v-if="allMutatualInfo_temp.type == 3 && giftFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'店长'}}送您一份礼物</p>
-                <p class="name" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'朋友'}}</p>
+                <p
+                  class="name"
+                  v-if="allMutatualInfo_temp.type == 3 && giftFlag"
+                >{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'店长'}}送您一份礼物</p>
+                <p
+                  class="name"
+                  v-else-if="allMutatualInfo_temp.type == 4 && gameFlag"
+                >{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'朋友'}}</p>
               </div>
             </div>
             <div class="topUpGiftInfo-top" v-if="isShowGiftGuide">
@@ -54,11 +82,41 @@
             <div class="topUpGiftInfo-middle">
               <div class="partition_zone" v-if="allMutatualInfo_temp.type == 3 && giftFlag">
                 <div class="topUpGiftInfo_left">
-                  <img onclick="return false" class="giftImg" v-if="allMutatualInfo_temp.name==='beer'" src="./assets/image/beer.png" alt>
-                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='flower'" src="./assets/image/flower.png" alt>
-                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='house'" src="./assets/image/hutui.png" alt>
-                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='car'" src="./assets/image/boat.png" alt>
-                  <img onclick="return false" class="giftImg" v-else :src="allMutatualInfo_temp.image" alt>
+                  <img
+                    onclick="return false"
+                    class="giftImg"
+                    v-if="allMutatualInfo_temp.name==='beer'"
+                    src="./assets/image/beer.png"
+                    alt=""
+                  >
+                  <img
+                    onclick="return false"
+                    class="giftImg"
+                    v-else-if="allMutatualInfo_temp.name==='flower'"
+                    src="./assets/image/flower.png"
+                    alt=""
+                  >
+                  <img
+                    onclick="return false"
+                    class="giftImg"
+                    v-else-if="allMutatualInfo_temp.name==='house'"
+                    src="./assets/image/hutui.png"
+                    alt=""
+                  >
+                  <img
+                    onclick="return false"
+                    class="giftImg"
+                    v-else-if="allMutatualInfo_temp.name==='car'"
+                    src="./assets/image/boat.png"
+                    alt=""
+                  >
+                  <img
+                    onclick="return false"
+                    class="giftImg"
+                    v-else
+                    :src="allMutatualInfo_temp.image"
+                    alt=""
+                  >
                 </div>
                 <div class="topUpGiftInfo_right">
                   <div>
@@ -68,14 +126,24 @@
                     <p v-else-if="allMutatualInfo_temp.name=='car'" class="desc title_desc">邮轮</p>
                     <p v-else class="desc title_desc">{{allMutatualInfo_temp.name}}</p>
                   </div>
-                  <p class="desc">{{allMutatualInfo_temp.subtopic?allMutatualInfo_temp.subtopic:'土豪赠送'}}</p>
+                  <p
+                    class="desc"
+                  >{{allMutatualInfo_temp.subtopic?allMutatualInfo_temp.subtopic:'土豪赠送'}}</p>
                   <p class="desc">{{allMutatualInfo_temp.limit?allMutatualInfo_temp.limit:""}}</p>
-                  <p class="desc title_desc">积分：{{allMutatualInfo_temp.integral?allMutatualInfo_temp.integral:allMutatualInfo_temp.money}}</p>
+                  <p
+                    class="desc title_desc"
+                  >积分：{{allMutatualInfo_temp.integral?allMutatualInfo_temp.integral:allMutatualInfo_temp.money}}</p>
                 </div>
               </div>
               <div class="partition_zone" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class="topUpGiftInfo_left">
-                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
+                  <img
+                    onclick="return false"
+                    style="width:2.2rem;margin-left:1.2rem"
+                    class="giftImg"
+                    src="./assets/image/game_gift.png"
+                    alt=""
+                  >
                 </div>
                 <div class="topUpGiftInfo_right">
                   <p class="desc title_desc">{{allMutatualInfo_temp.combatID?'约你玩几局大话骰':'约你玩一局大话骰'}}</p>
@@ -85,17 +153,25 @@
             </div>
             <div class="topUpGiftInfo-bottom">
               <div class="bottom_partition" v-if="allMutatualInfo_temp.type == 3 && giftFlag">
-                <div v-if="!isShowGiftGuide" class="handleBtn" @click="respondForGift(allMutatualInfo_temp,false,allMutatualInfo_temp.openid)">拒收</div>
-                <div v-if="!isShowGiftGuide" class="handleBtn" @click="respondForGift(allMutatualInfo_temp,true,allMutatualInfo_temp.openid)">感谢</div>
+                <div
+                  v-if="!isShowGiftGuide"
+                  class="handleBtn rejectBtn"
+                  @click="respondForGift(allMutatualInfo_temp,false,allMutatualInfo_temp.openid)"
+                >拒收</div>
+                <div
+                  v-if="!isShowGiftGuide"
+                  class="handleBtn"
+                  @click="respondForGift(allMutatualInfo_temp,true,allMutatualInfo_temp.openid)"
+                >感谢</div>
                 <div v-if="isShowGiftGuide" class="handleBtn" @click="confirm">确定</div>
-                <div v-if="isShowGiftGuide" class="handleBtn" @click="gotoDetail">详情&gt;&gt;</div>
-               <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
-                  <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                  <span class="scene-text fl">加好友</span>
-                </div> -->
+                <div v-if="isShowGiftGuide" class="handleBtn rejectBtn" @click="gotoDetail">详情</div>
+                <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
+                          <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                          <span class="scene-text fl">加好友</span>
+                </div>-->
               </div>
               <div class="bottom_partition" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
-                <div class="handleBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
+                <div class="handleBtn rejectBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
                 <div class="handleBtn" @click="respondForGame(allMutatualInfo_temp)">应战</div>
               </div>
             </div>
@@ -104,15 +180,23 @@
           <div class="topUpGiftInfo-wrapper" v-else-if="soulFriInfo.msgCode==21">
             <div class="topUpGiftInfo-top" v-if="isShowGiftGuide">
               <div class="img">
-                <img onclick="return false" class="giftAvatar" :src="soulFriInfo.content.fromInfo.headimgurl?soulFriInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
-                  alt>
+                <img
+                  onclick="return false"
+                  class="giftAvatar"
+                  :src="soulFriInfo.content.fromInfo.headimgurl?soulFriInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                  alt=""
+                >
               </div>
               <div class="name">
-                <p class="name">{{soulFriInfo.content.fromInfo.nickname?soulFriInfo.content.fromInfo.nickname:'朋友'}}</p>
+                <p
+                  class="name"
+                >{{soulFriInfo.content.fromInfo.nickname?soulFriInfo.content.fromInfo.nickname:'朋友'}}</p>
               </div>
             </div>
             <div class="topUpGiftInfo-top" v-if="isShowGiftGuide">
-              <p class="giftText">{{isvirtualGift?"收到如下虚拟礼物，积分存入→我的→积分明细":"收到礼物兑换券一份，存入→我的→卡券，可到店使用"}}</p>
+              <p
+                class="giftText"
+              >{{isvirtualGift?"收到如下虚拟礼物，积分存入→我的→积分明细":"收到礼物兑换券一份，存入→我的→卡券，可到店使用"}}</p>
             </div>
             <div class="topUpGiftInfo-middle">
               <div class="partition_zone">
@@ -130,73 +214,179 @@
             </div>
           </div>
           <!-- 不是好友的送礼，约战交互 -->
-          <div class="topUpGiftInfo-wrapper" v-else-if="isShowGiftPanel && !isAlreadyFriend && topUpGameInfo.msgCode !=19">
+          <div
+            class="topUpGiftInfo-wrapper"
+            v-else-if="isShowGiftPanel && !isAlreadyFriend && topUpGameInfo.msgCode !=19"
+          >
             <div class="topUpGiftInfo-top">
               <div class="img">
-                <img class="giftAvatar" v-if="topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12" :src="topUpGiftInfo.content.fromInfo.headimgurl?topUpGiftInfo.content.fromInfo.headimgurl:defaultHeadUrl" alt>
-                <img class="giftAvatar" v-else-if="topUpThumbInfo.msgCode ==2" :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:defaultHeadUrl" alt>
-                <img class="giftAvatar" v-else-if="topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7 || topUpGiftInfo.msgCode==19" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:(userInfo.sex=='男'?defaultfemaletHeadUrl:defaultmaleHeadUrl)" alt>
+                <img
+                  class="giftAvatar"
+                  v-if="topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12"
+                  :src="topUpGiftInfo.content.fromInfo.headimgurl?topUpGiftInfo.content.fromInfo.headimgurl:defaultHeadUrl"
+                  alt=""
+                >
+                <img
+                  class="giftAvatar"
+                  v-else-if="topUpThumbInfo.msgCode ==2"
+                  :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:defaultHeadUrl"
+                  alt=""
+                >
+                <img
+                  class="giftAvatar"
+                  v-else-if="topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7 || topUpGiftInfo.msgCode==19"
+                  :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:(userInfo.sex=='男'?defaultfemaletHeadUrl:defaultmaleHeadUrl)"
+                  alt=""
+                >
               </div>
               <div class="name">
-                <p class="name" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">{{topUpGiftInfo.content.fromInfo.nickname?topUpGiftInfo.content.fromInfo.nickname:'店长'}}送您一份礼物</p>
-                <p class="name" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">{{topUpThumbInfo.content.fromInfo?topUpThumbInfo.content.fromInfo.nickname:'朋友'}}给你点赞了</p>
-                <p class="name" v-else-if="(topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7 || topUpGiftInfo.msgCode==19) && gameFlag">{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:(userInfo.sex=="男"?"邻桌小妹":"邻桌小哥")}}</p>
+                <p
+                  class="name"
+                  v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag"
+                >{{topUpGiftInfo.content.fromInfo.nickname?topUpGiftInfo.content.fromInfo.nickname:'店长'}}送您一份礼物</p>
+                <p
+                  class="name"
+                  v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag"
+                >{{topUpThumbInfo.content.fromInfo?topUpThumbInfo.content.fromInfo.nickname:'朋友'}}给你点赞了</p>
+                <p
+                  class="name"
+                  v-else-if="(topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7 || topUpGiftInfo.msgCode==19) && gameFlag"
+                >{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:(userInfo.sex=="男"?"邻桌小妹":"邻桌小哥")}}</p>
               </div>
             </div>
             <div class="topUpGiftInfo-middle">
-              <div class="partition_zone" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">
+              <div
+                class="partition_zone"
+                v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag"
+              >
                 <div class="topUpGiftInfo_left">
-                  <img class="giftImg" v-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='beer'" src="./assets/image/beer.png" alt>
-                  <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='flower'" src="./assets/image/flower.png" alt>
-                  <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='house'" src="./assets/image/hutui.png" alt>
-                  <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='car'" src="./assets/image/boat.png" alt>
-                  <img class="giftImg" v-else :src="topUpGiftInfo.content.extMsg.goodInfo.extInfo.image" alt>
+                  <img
+                    class="giftImg"
+                    v-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='beer'"
+                    src="./assets/image/beer.png"
+                    alt=""
+                  >
+                  <img
+                    class="giftImg"
+                    v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='flower'"
+                    src="./assets/image/flower.png"
+                    alt=""
+                  >
+                  <img
+                    class="giftImg"
+                    v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='house'"
+                    src="./assets/image/hutui.png"
+                    alt=""
+                  >
+                  <img
+                    class="giftImg"
+                    v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='car'"
+                    src="./assets/image/boat.png"
+                    alt=""
+                  >
+                  <img
+                    class="giftImg"
+                    v-else
+                    :src="topUpGiftInfo.content.extMsg.goodInfo.extInfo.image"
+                    alt=""
+                  >
                 </div>
                 <div class="topUpGiftInfo_right">
                   <div>
-                    <p class="desc title_desc">{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.name}}</p>
+                    <p
+                      class="desc title_desc"
+                    >{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.name}}</p>
                   </div>
-                  <p class="desc">{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.subtopic?topUpGiftInfo.content.extMsg.goodInfo.extInfo.subtopic:'土豪赠送'}}</p>
-                  <p class="desc">{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.limit?topUpGiftInfo.content.extMsg.goodInfo.extInfo.limit:""}}</p>
-                  <p class="desc title_desc">积分：{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.integral?topUpGiftInfo.content.extMsg.goodInfo.extInfo.integral:topUpGiftInfo.content.extMsg.goodInfo.extInfo.money}}</p>
+                  <p
+                    class="desc"
+                  >{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.subtopic?topUpGiftInfo.content.extMsg.goodInfo.extInfo.subtopic:'土豪赠送'}}</p>
+                  <p
+                    class="desc"
+                  >{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.limit?topUpGiftInfo.content.extMsg.goodInfo.extInfo.limit:""}}</p>
+                  <p
+                    class="desc title_desc"
+                  >积分：{{topUpGiftInfo.content.extMsg.goodInfo.extInfo.integral?topUpGiftInfo.content.extMsg.goodInfo.extInfo.integral:topUpGiftInfo.content.extMsg.goodInfo.extInfo.money}}</p>
                 </div>
               </div>
               <div class="partition_zone" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
                 <div class="topUpGiftInfo_left">
-                  <img style="width:2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/thumb_gift.png" alt>
+                  <img
+                    style="width:2rem;margin-left:1.2rem"
+                    class="giftImg"
+                    src="./assets/image/thumb_gift.png"
+                    alt=""
+                  >
                 </div>
                 <div class="topUpGiftInfo_right">
                   <p class="desc title_desc thumb_text">请求加你为好友...</p>
                 </div>
               </div>
-              <div class="partition_zone" v-else-if="(topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7|| topUpGiftInfo.msgCode==19) && gameFlag">
+              <div
+                class="partition_zone"
+                v-else-if="(topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7|| topUpGiftInfo.msgCode==19) && gameFlag"
+              >
                 <div class="topUpGiftInfo_left">
-                  <img style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
+                  <img
+                    style="width:2.2rem;margin-left:1.2rem"
+                    class="giftImg"
+                    src="./assets/image/game_gift.png"
+                    alt=""
+                  >
                 </div>
                 <div class="topUpGiftInfo_right">
-                  <p class="desc title_desc">{{topUpGameInfo.content.extMsg.gameInfo.combatID?'约你玩几局大话骰':'约你玩一局大话骰'}}</p>
-                  <p class="desc title_sub_desc">{{topUpGameInfo.content.extMsg.gameInfo.combatID?'':''}}</p>
+                  <p
+                    class="desc title_desc"
+                  >{{topUpGameInfo.content.extMsg.gameInfo.combatID?'约你玩几局大话骰':'约你玩一局大话骰'}}</p>
+                  <p
+                    class="desc title_sub_desc"
+                  >{{topUpGameInfo.content.extMsg.gameInfo.combatID?'':''}}</p>
                 </div>
               </div>
             </div>
             <div class="topUpGiftInfo-bottom">
-              <div class="bottom_partition" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">
-                <div v-if="!isShowGiftGuide" class="handleBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,false)">拒收</div>
-                <div v-if="!isShowGiftGuide" class="handleBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,true)">感谢</div>
+              <div
+                class="bottom_partition"
+                v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag"
+              >
+                <div
+                  v-if="!isShowGiftGuide"
+                  class="handleBtn rejectBtn"
+                  @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,false)"
+                >拒收</div>
+                <div
+                  v-if="!isShowGiftGuide"
+                  class="handleBtn"
+                  @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,true)"
+                >感谢</div>
                 <div v-if="isShowGiftGuide" class="handleBtn" @click="confirm">确定</div>
-                <div v-if="isShowGiftGuide" class="handleBtn" @click="gotoDetail">详情&gt;&gt;</div>
+                <div v-if="isShowGiftGuide" class="handleBtn rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix">
-                  <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                  <span class="scene-text fl">加好友</span>
-                </div> -->
+                          <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                          <span class="scene-text fl">加好友</span>
+                </div>-->
               </div>
               <div class="bottom_partition" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
-                <div class="handleBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'no',topUpThumbInfo.content.fromInfo)">拒绝</div>
-                <div class="handleBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'yes',topUpThumbInfo.content.fromInfo)">接受</div>
+                <div
+                  class="handleBtn rejectBtn"
+                  @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'no',topUpThumbInfo.content.fromInfo)"
+                >拒绝</div>
+                <div
+                  class="handleBtn"
+                  @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'yes',topUpThumbInfo.content.fromInfo)"
+                >接受</div>
               </div>
-              <div class="bottom_partition" v-else-if="(topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7|| topUpGiftInfo.msgCode==19) && gameFlag">
-                <div class="handleBtn" @click="no_Become_Friend_rejectForGame(topUpGameInfo.content)">免战</div>
-                <div class="handleBtn" @click="no_Become_Friend_respondForGame(topUpGameInfo.content)">应战</div>
+              <div
+                class="bottom_partition"
+                v-else-if="(topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7|| topUpGiftInfo.msgCode==19) && gameFlag"
+              >
+                <div
+                  class="handleBtn rejectBtn"
+                  @click="no_Become_Friend_rejectForGame(topUpGameInfo.content)"
+                >免战</div>
+                <div
+                  class="handleBtn"
+                  @click="no_Become_Friend_respondForGame(topUpGameInfo.content)"
+                >应战</div>
               </div>
             </div>
           </div>
@@ -204,17 +394,29 @@
           <div class="topUpGiftInfo-wrapper" v-else-if="topUpGameInfo.msgCode==19">
             <div class="topUpGiftInfo-top">
               <div class="img">
-                <img onclick="return false" class="giftAvatar" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
-                  alt>
+                <img
+                  onclick="return false"
+                  class="giftAvatar"
+                  :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                  alt=""
+                >
               </div>
               <div class="name">
-                <p class="name">{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:'朋友'}}约你再战</p>
+                <p
+                  class="name"
+                >{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:'朋友'}}约你再战</p>
               </div>
             </div>
             <div class="topUpGiftInfo-middle">
               <div class="partition_zone">
                 <div class="topUpGiftInfo_left">
-                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt>
+                  <img
+                    onclick="return false"
+                    style="width:2.2rem;margin-left:1.2rem"
+                    class="giftImg"
+                    src="./assets/image/game_gift.png"
+                    alt=""
+                  >
                 </div>
                 <div class="topUpGiftInfo_right">
                   <p class="desc title_desc">已在房间等你 约你再战300局</p>
@@ -223,7 +425,7 @@
             </div>
             <div class="topUpGiftInfo-bottom">
               <div class="bottom_partition">
-                <div class="handleBtn" @click="rejectForGame(topUpGameInfo.content)">免战</div>
+                <div class="handleBtn rejectBtn" @click="rejectForGame(topUpGameInfo.content)">免战</div>
                 <div class="handleBtn" @click="respondForGame(topUpGameInfo.content)">应战</div>
               </div>
             </div>
@@ -231,7 +433,7 @@
         </transition>
       </div>
       <div v-show="showClientServiceIconFlag" class="kefu" @click="inToLetter">
-        <img onclick="return false" src="./assets/image/home_letter.png" alt class="pic_kefu" />
+        <img onclick="return false" src="./assets/image/home_letter.png" alt="" class="pic_kefu">
       </div>
     </div>
     <friendPanel v-if="friendPanelFlag"></friendPanel>
@@ -372,7 +574,6 @@ export default {
       // this.addFriendEvtObj(topUpGameInfo)
       this.addMessageIntoQueue(topUpGameInfo);
     }, 30000);
-
     //create setInterval to listen new message
     setInterval(() => {
       //轮训读取队列看是否有未处理消息
@@ -756,7 +957,6 @@ export default {
           console.log(res);
           if (res.errCode == 0) {
             console.log("删除结果-----------", res);
-
             window.location.href = gameInfo.extMsg.gameInfo.url;
           }
         });
@@ -802,7 +1002,6 @@ export default {
         if (res.errCode == 0) {
           console.log("删除结果-----------", res);
           // this.addFriendEvtObj({}) //清空推送内容
-
           window.location.href = gameUrl;
         }
       });
@@ -843,7 +1042,6 @@ export default {
         if (res.errCode == 0) {
           this.isShowGiftPanel = false;
           // this.addFriendEvtObj({}) //清空推送内容
-
           console.log("删除结果-----------", res);
         }
       });
@@ -1166,16 +1364,16 @@ html {
   position: relative;
 }
 .backToGame_wrapper {
-  width: 8.4rem;
+  width: 8.33rem;
   height: 4.6933rem;
   background-image: url("./assets/image/envelop_handle.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   position: fixed;
   z-index: 9999;
-  top: 6rem;
+  top: 5rem;
   left: 50%;
-  transform: translateX(-4.5rem);
+  transform: translateX(-4.4rem);
   padding: 0 0.2667rem;
   .backToGame_text {
     width: 100%;
@@ -1187,18 +1385,21 @@ html {
   }
   .btn_wrapper {
     display: flex;
-    justify-content: space-around;
-    margin-top: 1.4rem;
-    padding: 0 1rem;
+    justify-content: space-between;
+    margin-top: 1.8rem;
+    padding: 0 0.15rem;
     .reject_btn,
     .back_btn {
-      width: 1.8667rem;
       border: none;
-      background: -webkit-linear-gradient(top, #fcd502, #e59305);
-      padding: 0.1rem 0.1667rem;
-      font-weight: 600;
-    } // .back_btn{
-    // }
+      letter-spacing: 0.08rem;
+      font-weight: 800;
+      color: #333;
+      font-size: 0.35rem;
+    }
+    .reject_btn {
+      border: 1px solid #ccc;
+      padding: 0rem;
+    }
   }
 }
 .whole_mask {
@@ -1375,7 +1576,6 @@ html {
         display: flex;
         justify-content: space-between;
         margin-top: 0.2rem;
-      
         padding-bottom: 0.3333rem;
         position: relative;
         width: 100%;
@@ -1397,14 +1597,26 @@ html {
         }
       }
       .handleBtn {
+        position: absolute;
+        right: 0.1rem;
         border-radius: 0.1rem;
-        box-sizing: border-box;
-        letter-spacing: 0.08rem;
+        bottom: -0.4rem;
+        box-sizing: border-box; // letter-spacing: 0.08rem;
         font-weight: 800;
-        color: #333;
+        color: #fff;
         padding: 0.1333rem 0.4rem;
-        font-size: 0.35rem;
-        // background: -webkit-linear-gradient(top, #fedc00, #e39300);
+        font-size: 0.35rem; // background: -webkit-linear-gradient(top, #fedc00, #e39300);
+      }
+      .rejectBtn {
+        position: absolute;
+        bottom: -0.4rem;
+        left: 0.4rem;
+        text-align: center;
+        padding: 0rem;
+        border: 1px solid rgb(97, 3, 3);
+        color: rgb(156, 13, 13);
+        width: 0.8rem;
+        display: inline-block;
       }
     }
   }
