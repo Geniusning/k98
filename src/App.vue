@@ -88,7 +88,7 @@
                 <div v-if="!isShowGiftGuide" class="handleBtn" @click="respondForGift(allMutatualInfo_temp,false,allMutatualInfo_temp.openid)">拒收</div>
                 <div v-if="!isShowGiftGuide" class="handleBtn" @click="respondForGift(allMutatualInfo_temp,true,allMutatualInfo_temp.openid)">感谢</div>
                 <div v-if="isShowGiftGuide" class="handleBtn" @click="confirm">确定</div>
-                <div v-if="isShowGiftGuide" class="handleBtn" @click="gotoDetail">详情&gt;&gt;</div>
+                <div v-if="isShowGiftGuide" class="handleBtn" @click="gotoDetail">详情</div>
                <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
                   <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
                   <span class="scene-text fl">加好友</span>
@@ -184,7 +184,7 @@
                 <div v-if="!isShowGiftGuide" class="handleBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,false)">拒收</div>
                 <div v-if="!isShowGiftGuide" class="handleBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,true)">感谢</div>
                 <div v-if="isShowGiftGuide" class="handleBtn" @click="confirm">确定</div>
-                <div v-if="isShowGiftGuide" class="handleBtn" @click="gotoDetail">详情&gt;&gt;</div>
+                <div v-if="isShowGiftGuide" class="handleBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix">
                   <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
                   <span class="scene-text fl">加好友</span>
@@ -1402,8 +1402,8 @@ html {
         letter-spacing: 0.08rem;
         font-weight: 800;
         color: #333;
-        padding: 0.1333rem 0.4rem;
         font-size: 0.35rem;
+        padding: 0.1333rem 0.4rem;
         // background: -webkit-linear-gradient(top, #fedc00, #e39300);
       }
     }

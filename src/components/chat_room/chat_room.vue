@@ -783,16 +783,16 @@ export default {
         this.expressionShow = false;
       });
       this.input_value = "";
-      // this.$nextTick(function() {
+      this.$nextTick(function() {
         let childNodes = this.$refs.chatList.childNodes;
       //   let chatListHeight = 0;
       //   childNodes.forEach(item => {
       //     chatListHeight += item.clientHeight;
       //   });
       //   this.scrollHeight = chatListHeight;
-      //   // this.$refs.listView.refresh();
-      this.$refs.listView.scrollBy(0, -childNodes[0].clientHeight-10);
-      // });
+      this.$refs.listView.refresh();
+      this.$refs.listView.scrollBy(0, -(childNodes[0].clientHeight+10));
+      });
     },
     // 发送图片
     uploadImage(e) {

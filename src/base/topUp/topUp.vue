@@ -85,10 +85,10 @@
             确认
           </div>
           <div v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">确认</div>
-          <div v-show="userInfo.money<giftIntegral"  class="tips_money">积分不足,请充值>></div>
+          <div v-show="userInfo.money<giftIntegral" class="tips_money">积分不足,请充值>></div>
           <!-- <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor && userInfo.money>giftIntegral "> -->
-            <!-- <input @change="onlineSendGift" type="checkbox" class="checkbox fl">
-            <span class="scene-text fl">现场下单</span> -->
+          <!-- <input @change="onlineSendGift" type="checkbox" class="checkbox fl">
+              <span class="scene-text fl">现场下单</span> -->
           <!-- </div> -->
           <!-- <p class="gotoTopUpText" v-if="userInfo.money<giftIntegral" @click="gotoTopUp">去充值&gt;</p> -->
         </div>
@@ -137,11 +137,11 @@
   export default {
     data() {
       return {
-        clickIndex:null,
+        clickIndex: null,
         showOweText: false,
         panelIndex: null,
         componentGiftInfo: "",
-        moneyPoint:"",
+        moneyPoint: "",
         componentConvertType: null,
         componentGiftList: [],
         successfulText: "送礼失败",
@@ -182,12 +182,12 @@
       }
     },
     computed: {
-      ...mapState(['giftList', 'userInfo',"l98Setting"]),
+      ...mapState(['giftList', 'userInfo', "l98Setting"]),
       ...mapGetters(['recommentList', "sendGiftList"])
     },
     created() {
       this.panelIndex = this.fatherPanelIndex;
-      console.log("this.panelIndex---------",this.panelIndex)
+      console.log("this.panelIndex---------", this.panelIndex)
       this.componentGiftInfo = this.giftInfo;
       if (this.componentGiftInfo) {
         this.giftIntegral = this.componentGiftInfo.goods.integral; //店长推荐和礼品商城
@@ -249,7 +249,6 @@
       }
     },
     activated() {
-
     },
     methods: {
       //现场送
@@ -302,7 +301,7 @@
       },
       //确认赠送店铺项目
       confirmShopItemGift(goodID) {
-        console.log("goodId----",goodID)
+        console.log("goodId----", goodID)
         if (this.userInfo.money < this.giftIntegral) { //当前积分少于项目消耗积分
           this.panelIndex = 0
           this.showOweText = true;
@@ -353,7 +352,7 @@
             } else if (res.errCode == 1023) {
               this.showQrcode(true);
               return
-            }else{
+            } else {
               this.refreshUserInfo()
             }
             Bus.$emit("giftInfoRecomend", this.entityGoodInfo);
@@ -368,7 +367,7 @@
             } else if (res.errCode == 1023) {
               this.showQrcode(true);
               return
-            }else if(res.errCode==0){
+            } else if (res.errCode == 0) {
               this.refreshUserInfo()
             }
             Bus.$emit("giftInfoJiFen", this.entityGoodInfo);
@@ -398,12 +397,12 @@
           })
         }
         setTimeout(() => {
-          if(!this.userInfo.isSubscribe){
+          if (!this.userInfo.isSubscribe) {
             this.changeQrCodeText({
-                  title:"长按关注，即可兑换门店礼物/门店项目",
-                  bottomText:"会员特权:领福利、交群友、参活动"
-              })
-             this.showQrcode(true);
+              title: "长按关注，即可兑换门店礼物/门店项目",
+              bottomText: "会员特权:领福利、交群友、参活动"
+            })
+            this.showQrcode(true);
           }
         }, 1000);
       },
@@ -415,15 +414,15 @@
         })
       },
       //前往兑换
-      changeGoods(){
+      changeGoods() {
         this.panelIndex = 1;
       },
       //   充值
-      payForCoin(id,index,point) {
+      payForCoin(id, index, point) {
         this.moneyPoint = point
-        console.log("this.moneyPoint---",this.moneyPoint)
+        console.log("this.moneyPoint---", this.moneyPoint)
         // console.log(id);
-        if(!this.l98Setting.integralConvertOpen){
+        if (!this.l98Setting.integralConvertOpen) {
           this.$vux.toast.text('商家未开通本功能', 'middle')
           return
         }
@@ -465,7 +464,7 @@
         });
       },
       ...mapMutations({
-         changeQrCodeText:"CHANGEQRCODETEXT",
+        changeQrCodeText: "CHANGEQRCODETEXT",
         showQrcode: "SHOW_QRCODE", //暂时二维码
         getUserInfo: "GET_USERINFO" //获取用户信息
       })
@@ -500,7 +499,8 @@
     background-color: rgba(0, 0, 0, 0.3);
     z-index: 100;
     .coinBox {
-      width: 8.333rem;;// height: 5rem; // transform: translateY(50%);
+      width: 8.333rem;
+      ; // height: 5rem; // transform: translateY(50%);
       margin: 50% auto; // background-color: #fff;
       .bg('../../assets/image/envelop.png');
       .coinBox_top {
@@ -536,9 +536,9 @@
           .coinItem {
             width: 0.9333rem;
             box-sizing: border-box;
-            .bigAndSamll{
-             transition: all .5s linear;
-             transform: scale(.5)
+            .bigAndSamll {
+              transition: all .5s linear;
+              transform: scale(.5)
             }
             .coin200 {
               width: 100%;
@@ -577,7 +577,8 @@
       margin: 40% auto; // background-color: #fff;
       // padding-top: 0.7333rem;
       // width: 100%;
-      width: 8.333rem;;
+      width: 8.333rem;
+      ;
       box-sizing: border-box;
       .bg('../../assets/image/envelop.png'); // background-image: url('../../assets/image/envelop.png')
       .giftPanelBox_title {
@@ -670,7 +671,8 @@
     }
     .sendGiftPanelBox {
       // width: 8.4rem; 
-      width: 8.333rem;; 
+      width: 8.333rem;
+      ;
       padding-bottom: 0.2333rem;
       box-sizing: border-box;
       margin: 50% auto;
@@ -742,16 +744,16 @@
         text-align: right;
         padding-top: 0.3rem;
         padding-bottom: 0.3rem;
-        position: relative; 
+        position: relative;
         padding-right: .35rem;
         box-sizing: border-box;
         position: relative;
-        .tips_money{
+        .tips_money {
           left: 50%;
-          font-weight:700;
-          color: #333; 
+          font-weight: 700;
+          color: #333;
           width: 3.2rem;
-          margin-left:-1.6rem ;
+          margin-left: -1.6rem;
           position: absolute;
           bottom: 0.3rem;
           font-size: 12px;
@@ -760,10 +762,13 @@
           padding: 0.08rem 0.1067rem;
           border: none;
           display: inline-block;
-          font-weight: 600;
+          font-weight: 800;
           color: #333;
-          font-size: 14px;
-          letter-spacing: 0.009rem;
+          font-size: 0.35rem;
+          letter-spacing: 0.06rem;
+          position: relative;
+          bottom: .04rem;
+          right: -.03rem;
         }
         .greyBtn {
           background: gray;
@@ -814,47 +819,49 @@
           font-size: 0.2667rem;
         }
       }
-      .giftContent{
+      .giftContent {
         display: flex;
         justify-content: space-around;
         margin-top: .5rem;
         padding: 0 .7rem;
-        .leftpart{
-          .pic{
-              width: 2.2rem;
-              height: 1.8rem;
+        .leftpart {
+          .pic {
+            width: 2.2rem;
+            height: 1.8rem;
           }
         }
-        .rightpart{
-          .title,.integral{
+        .rightpart {
+          .title,
+          .integral {
             color: #0f0f0f;
             font-weight: 600;
             overflow: hidden;
             font-size: 0.3467rem;
           }
-          .desc,.limit{
+          .desc,
+          .limit {
             color: #5B5B5B;
             font-size: 0.3467rem;
           }
         }
       }
-      .btn_wrapper{
-      display: flex;
-      justify-content: space-around;
-      margin-top: 0.3667rem;
-      padding: 0 .7rem;
-      #btn{
-        border-radius: 0.1rem;
-        box-sizing: border-box;
-        letter-spacing: 0.08rem;
-        font-weight: 800;
-        border: none;
-        color: #333;
-        padding: 0.1333rem 0.4rem;
-        font-size: .35rem;
-        background: -webkit-linear-gradient(top, #fedc00, #e39300);
+      .btn_wrapper {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 0.3667rem;
+        padding: 0 .7rem;
+        #btn {
+          border-radius: 0.1rem;
+          box-sizing: border-box;
+          letter-spacing: 0.08rem;
+          font-weight: 800;
+          border: none;
+          color: #333;
+          padding: 0.1333rem 0.4rem;
+          font-size: .35rem;
+          background: -webkit-linear-gradient(top, #fedc00, #e39300);
+        }
       }
-    }
       .close {
         width: 0.4667rem;
         height: 0.4667rem;
@@ -895,25 +902,24 @@
         color: #8f8f8f;
       }
       .btn {
-        position: absolute;
-        bottom: .6rem;
-        right: .3rem;
-
-        text-align: center;
-        letter-spacing: 0.08rem;
         padding: 0.08rem 0.1067rem;
         border: none;
-        // background: -webkit-linear-gradient(top, #fcd502, #e59305);
-        font-weight: 600;
+        display: inline-block;
+        font-weight: 800;
         color: #333;
-      }
-      .changebtn{
+        font-size: 0.35rem;
         position: absolute;
-        bottom:.6rem;
+        bottom: .55rem;
+        right: .3rem;
+        text-align: center;
+        letter-spacing: 0.06rem;
+      }
+      .changebtn {
+        position: absolute;
+        bottom: .6rem;
         left: .45rem;
         font-weight: 700;
         color: #333;
-
       }
       .gotoTopUpText {
         position: absolute;
