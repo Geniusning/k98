@@ -25,7 +25,7 @@
           </div>
         </div>
       </transition>
-      <!-- 回房通知   " -->
+      <!-- 回房通知   showBackToGame" -->
       <div class="backToGame_wrapper" v-if="showBackToGame">
         <p class="backToGame_text">您有未完成对战，对手还在等您</p>
         <div class="btn_wrapper">
@@ -83,18 +83,18 @@
             </div>
             <div class="topUpGiftInfo-bottom">
               <div class="bottom_partition" v-if="allMutatualInfo_temp.type == 3 && giftFlag">
-                <div v-if="!isShowGiftGuide" class="handleBtn rejectBtn" @click="respondForGift(allMutatualInfo_temp,false,allMutatualInfo_temp.openid)">拒收</div>
-                <div v-if="!isShowGiftGuide" class="handleBtn" @click="respondForGift(allMutatualInfo_temp,true,allMutatualInfo_temp.openid)">感谢</div>
-                <div v-if="isShowGiftGuide" class="handleBtn" @click="confirm">确定</div>
-                <div v-if="isShowGiftGuide" class="handleBtn rejectBtn" @click="gotoDetail">详情</div>
+                <div v-if="!isShowGiftGuide" class=" rejectBtn" @click="respondForGift(allMutatualInfo_temp,false,allMutatualInfo_temp.openid)">拒收</div>
+                <div v-if="!isShowGiftGuide" class="acceptBtn" @click="respondForGift(allMutatualInfo_temp,true,allMutatualInfo_temp.openid)">感谢</div>
+                <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm">确定</div>
+                <div v-if="isShowGiftGuide" class="rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
                             <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
                             <span class="scene-text fl">加好友</span>
                   </div>-->
               </div>
               <div class="bottom_partition" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
-                <div class="handleBtn rejectBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
-                <div class="handleBtn" @click="respondForGame(allMutatualInfo_temp)">应战</div>
+                <div class=" rejectBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
+                <div class="acceptBtn" @click="respondForGame(allMutatualInfo_temp)">应战</div>
               </div>
             </div>
           </div>
@@ -122,8 +122,8 @@
             </div>
             <div class="topUpGiftInfo-bottom soul-Bottom" style="margin-top:.3rem">
               <div class="bottom_partition">
-                <div class="handleBtn" @click="rejectSoulFri()">插肩而过</div>
-                <div class="handleBtn" @click="acceptSoulFri(soulFriInfo.content.fromInfo)">随缘结识</div>
+                <div class="rejectBtn" style="bottom:-0.7rem;" @click="rejectSoulFri()">拒绝</div>
+                <div class="acceptBtn" style="bottom:-.7rem;right:.15rem"  @click="acceptSoulFri(soulFriInfo.content.fromInfo)">结识</div>
               </div>
             </div>
           </div>
@@ -180,22 +180,22 @@
             </div>
             <div class="topUpGiftInfo-bottom">
               <div class="bottom_partition" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">
-                <div v-if="!isShowGiftGuide" class="handleBtn rejectBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,false)">拒收</div>
-                <div v-if="!isShowGiftGuide" class="handleBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,true)">感谢</div>
-                <div v-if="isShowGiftGuide" class="handleBtn" @click="confirm">确定</div>
-                <div v-if="isShowGiftGuide" class="handleBtn rejectBtn" @click="gotoDetail">详情</div>
+                <div v-if="!isShowGiftGuide" class=" rejectBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,false)">拒收</div>
+                <div v-if="!isShowGiftGuide" class="acceptBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,true)">感谢</div>
+                <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm">确定</div>
+                <div v-if="isShowGiftGuide" class=" rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix">
                             <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
                             <span class="scene-text fl">加好友</span>
                   </div>-->
               </div>
               <div class="bottom_partition" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
-                <div class="handleBtn rejectBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'no',topUpThumbInfo.content.fromInfo)">拒绝</div>
-                <div class="handleBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'yes',topUpThumbInfo.content.fromInfo)">接受</div>
+                <div class=" rejectBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'no',topUpThumbInfo.content.fromInfo)">拒绝</div>
+                <div class="acceptBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'yes',topUpThumbInfo.content.fromInfo)">接受</div>
               </div>
               <div class="bottom_partition" v-else-if="(topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7|| topUpGiftInfo.msgCode==19) && gameFlag">
-                <div class="handleBtn rejectBtn" @click="no_Become_Friend_rejectForGame(topUpGameInfo.content)">免战</div>
-                <div class="handleBtn" @click="no_Become_Friend_respondForGame(topUpGameInfo.content)">应战</div>
+                <div class=" rejectBtn" @click="no_Become_Friend_rejectForGame(topUpGameInfo.content)">免战</div>
+                <div class="acceptBtn" @click="no_Become_Friend_respondForGame(topUpGameInfo.content)">应战</div>
               </div>
             </div>
           </div>
@@ -222,8 +222,8 @@
             </div>
             <div class="topUpGiftInfo-bottom">
               <div class="bottom_partition">
-                <div class="handleBtn rejectBtn" @click="rejectForGame(topUpGameInfo.content)">免战</div>
-                <div class="handleBtn" @click="respondForGame(topUpGameInfo.content)">应战</div>
+                <div class=" rejectBtn" @click="rejectForGame(topUpGameInfo.content)">免战</div>
+                <div class="acceptBtn" @click="respondForGame(topUpGameInfo.content)">应战</div>
               </div>
             </div>
           </div>
@@ -1165,7 +1165,7 @@
     position: relative;
   }
   .backToGame_wrapper {
-    width: 8.33rem;
+    width: 9rem;
     height: 4.6933rem;
     background-image: url("./assets/image/envelop_handle.png");
     background-repeat: no-repeat;
@@ -1174,8 +1174,12 @@
     z-index: 9999;
     top: 5rem;
     left: 50%;
-    transform: translateX(-4.4rem);
+    transform: translateX(-4.5rem);
     padding: 0 0.2667rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
     .backToGame_text {
       width: 100%;
       padding-top: 1.2rem;
@@ -1187,19 +1191,33 @@
     .btn_wrapper {
       display: flex;
       justify-content: space-between;
-      margin-top: 1.8rem;
+      margin-bottom: .55rem;
       padding: 0 0.15rem;
+      position: relative;
       .reject_btn,
       .back_btn {
-        border: none;
-        letter-spacing: 0.08rem;
+        border: 1px solid #C62F3B;
         font-weight: 800;
-        color: #333;
+        color: #C62F3B;
         font-size: 0.35rem;
+        box-sizing: border-box;
+        
       }
-      .reject_btn {
-        border: 1px solid #ccc;
+      .reject_btn{
+        width: 0.8rem;
+        text-align: center;
+        position: relative;
+        bottom: .05rem;
+        background-color: #fff;
+      }
+      .back_btn {
+        border: none;
+        color: #fff;
         padding: 0rem;
+        position: absolute;
+        right: .3rem;
+        bottom: .1rem;
+
       }
     }
   }
@@ -1281,7 +1299,7 @@
       }
     }
     .topUpGiftInfo-wrapper {
-      width: 8.333rem; // height: 4rem;
+      width: 9rem; // height: 4rem;
       background-image: url("./assets/image/envelop_handle.png");
       background-repeat: no-repeat;
       background-size: 100% 100%;
@@ -1397,9 +1415,9 @@
             }
           }
         }
-        .handleBtn {
+        .acceptBtn {
           position: absolute;
-          right: 0.1rem;
+          right: 0.15rem;
           border-radius: 0.1rem;
           bottom: -0.4rem;
           box-sizing: border-box; // letter-spacing: 0.08rem;
@@ -1409,14 +1427,20 @@
           font-size: 0.35rem; // background: -webkit-linear-gradient(top, #fedc00, #e39300);
         }
         .rejectBtn {
+          font-weight: 800;
           position: absolute;
-          bottom: -0.4rem;
+          bottom: -0.35rem;
           left: 0.4rem;
           text-align: center;
+          font-size: 0.35rem;
           padding: 0rem;
-          border: 1px solid rgb(97, 3, 3);
+          border: 1px solid rgb(156, 13, 13);
+          background-color: #fff;
           color: rgb(156, 13, 13);
           width: 0.8rem;
+          height: .45rem;
+          line-height: .45rem;
+          box-sizing: border-box;
           display: inline-block;
         }
       }
