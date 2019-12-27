@@ -481,18 +481,20 @@ export default {
         }
       });
       this.input_value = "";
-      this.$refs.listView.refresh();
-      if (this.clientList.length > 5) {
+     
+      // if (this.clientList.length > 5) {
         this.$nextTick(function() {
           let childNodes = this.$refs.chatList.childNodes;
-          let chatListHeight = 0;
-          childNodes.forEach(item => {
-            chatListHeight += item.clientHeight;
-          });
-          this.scrollHeight = chatListHeight;
-          this.$refs.listView.scrollTo(0, -this.scrollHeight);
+          // let chatListHeight = 0;
+          // childNodes.forEach(item => {
+          //   chatListHeight += item.clientHeight;
+          // });
+          // this.scrollHeight = chatListHeight;
+           this.$refs.listView.refresh();
+          this.$refs.listView.scrollBy(0, -childNodes[0].clientHeight-20);
+          // this.$refs.listView.scrollBy(0, -childNodes-10);
         });
-      }
+      // }
     },
     // 发送图片
     uploadImage(e) {

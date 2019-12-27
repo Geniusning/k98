@@ -240,7 +240,8 @@ export default {
     },
     homeShare() {
       this.$router.push({
-        name: "home"
+        name: "home",
+        params:{data:"shareHomePage"}
       })
     },
     //查看优惠券

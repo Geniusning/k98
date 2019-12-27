@@ -29,6 +29,10 @@ Vue.use(Router)
 const router = new Router({
   base: '/k98',
   mode: 'history',
+  scrollBehavior(to, from, savedPosition) {
+    console.log("to.hash-------", to.hash)
+    return { x: 0, y: 0 }
+  },
   routes: [{
       path: '/',
       redirect: "/home",
@@ -170,7 +174,7 @@ const router = new Router({
       name: 'mine',
       component: () => import('../components/mine/mine.vue'),
       meta: {
-        keepAlive: true,
+        // keepAlive: true,
         title: "我的"
       }
     },

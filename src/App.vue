@@ -25,7 +25,7 @@
           </div>
         </div>
       </transition>
-      <!-- 回房通知   showBackToGame" -->
+      <!-- 回房通知   " -->
       <div class="backToGame_wrapper" v-if="showBackToGame">
         <p class="backToGame_text">您有未完成对战，对手还在等您</p>
         <div class="btn_wrapper">
@@ -462,10 +462,10 @@
         });
       },
       //加好友
-      onlineSendGift(e) {
-        // console.log(e.target.checked)
-        this.isMakeFriendBool = e.target.checked;
-      },
+      // onlineSendGift(e) {
+      //   // console.log(e.target.checked)
+      //   this.isMakeFriendBool = e.target.checked;
+      // },
       showDetail() {
         switch (this.messType) {
           case "shareGetIntegral":
@@ -598,7 +598,7 @@
           // }
         });
       },
-      //回赞事件
+      //回赞事件成为好友
       backThumbClick(type, flag, fromInfo) {
         api.giveBackThumb(type, flag).then(res => {
           if (res.errCode === 0) {
@@ -1207,7 +1207,6 @@
         width: 0.8rem;
         text-align: center;
         position: relative;
-        bottom: .05rem;
         background-color: #fff;
       }
       .back_btn {

@@ -791,7 +791,7 @@ export default {
       //   });
       //   this.scrollHeight = chatListHeight;
       this.$refs.listView.refresh();
-      this.$refs.listView.scrollBy(0, -(childNodes[0].clientHeight+10));
+      this.$refs.listView.scrollBy(0, -childNodes[0].clientHeight-20);
       });
     },
     // 发送图片
