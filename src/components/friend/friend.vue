@@ -1065,6 +1065,7 @@
     padding-bottom: 0.1867rem;
     .bg("../../assets/image/bg.png");
     position: relative; // padding: 0.625rem;
+    margin: auto;
     .close {
       position: absolute;
       right: 0.1333rem;

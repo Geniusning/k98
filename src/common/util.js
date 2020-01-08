@@ -208,6 +208,15 @@ util.getCookie = function (cname) {
     }
     return "";
 }
+ //获取url参数
+util.GetQueryString = function(name) {
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+  var r = window.location.search.substr(1).match(reg);
+  if (r != null) {
+    return unescape(r[2]);
+  }
+  return null;
+};
   //判断安卓或者苹果
 util.isAndroid = function () {
     let u = navigator.userAgent;

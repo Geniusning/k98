@@ -91,7 +91,7 @@ new Vue({
         },
         _loadInviteCoupon() {
             api.loadInviteCoupon().then(res => {
-                console.log("获取优惠券---------", res)
+                console.log("获取邀新优惠券---------", res)
                 if (res.errCode === 0) {
                     this.judgeInviteCoupon(res.coupons.isputAway);
                 }
@@ -249,7 +249,7 @@ new Vue({
                 this.addFriendEvtObj(result)
                 this.updateClientMsg(result.content)
                 this.addBange()
-            } else if (result.msgCode === 21) {
+            } else if (result.msgCode === 22) {
                 this.addFriendEvtObj(result)
                 console.log("-----------------------", this.$route)
                 if (this.$route.name === "chat") {

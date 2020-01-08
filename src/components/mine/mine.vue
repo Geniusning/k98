@@ -124,10 +124,10 @@
             <div class="marketing-left">邀新有礼</div>
             <div class="marketing-right" @click="inviteShare">分享-></div>
           </li>
-          <li class="marketing-item">
+          <!-- <li class="marketing-item">
             <div class="marketing-left">大话争霸赛</div>
             <div class="marketing-right" @click="gameShare">分享-></div>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>

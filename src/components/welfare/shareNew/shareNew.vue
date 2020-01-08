@@ -66,6 +66,7 @@
       // alert("cookie="+document.cookie)      
     },
     mounted() {
+      console.log("this.shopSettingInfo--------------",this.shopSettingInfo)
       // let cookie = document.cookie.split("=")[1]
       // document.cookie ="tk="+cookie
       // alert("设置后的cookie"+document.cookie)
@@ -154,7 +155,7 @@
             if (util.isAndroid()) {
               let shareObj = {
                 title: "新人大礼包",
-                desc: `抢了${this.shopSettingInfo.AliasName}一份新人礼包，转送给你，有空去瞅瞅`,
+                desc: `抢了${this.shopSettingInfo.aliasName}一份新人礼包，转送给你，有空去瞅瞅`,
                 link: `${this.shareUrl}k98/shareNew?visitType=4&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
                 imgUrl: `${this.shopSettingInfo.image}`
               }
@@ -164,7 +165,7 @@
             } else {
               let shareObj = {
                 title: "新人大礼包",
-                desc: `抢了${this.shopSettingInfo.AliasName}一份新人礼包，转送给你，有空去瞅瞅`,
+                desc: `抢了${this.shopSettingInfo.aliasName}一份新人礼包，转送给你，有空去瞅瞅`,
                 link: `${this.shareUrl}k98/shareNew?visitType=4&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
                 imgUrl: `${this.shopSettingInfo.image}`
               };

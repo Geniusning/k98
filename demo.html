@@ -64,11 +64,17 @@
         // 	div.className = 'circle';
         // 	cir.appendChild(div);
         // }
-        var url = "https://llwant1.qianz.com/k98/home"
-        var gameUrl = url.split("k98")[0];
-        var arr = [2, 1, 12]
-        arr.shift()
-        console.log(gameUrl)
-            // console.log(003<002)
+        window.location = "https://singledog.qianz.com/k98/home?deskID=052f7506-1c9e-4ea1-ab58-70bdbc67f90e&deskCode=1&visitType=2&isScan=true&code=011X7l2j1NwhIs01NU1j1Hqe2j1X7l2n&state=1"
+        // var url = "https://singledog.qianz.com/k98/home?deskID=052f7506-1c9e-4ea1-ab58-70bdbc67f90e&deskCode=1&visitType=2&isScan=true&code=011X7l2j1NwhIs01NU1j1Hqe2j1X7l2n&state=1"
+       function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return unescape(r[2]);
+            }
+            return null;
+        };
+       var name =  GetQueryString(deskCode)
+       console.log(name)
     </script>
 </body>
