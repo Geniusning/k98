@@ -27,10 +27,10 @@
       </transition>
       <!-- 回房通知   " -->
       <div class="backToGame_wrapper" v-if="showBackToGame">
-        <p class="backToGame_text">您有未完成对战，对手还在等您</p>
+        <p class="backToGame_text">{{appDeskCode?"同桌已开好房等你决战！":"您有未完成对战，对手还在等您"}}</p>
         <div class="btn_wrapper">
-          <div class="reject_btn" @click="rejectBacToGame">放弃</div>
-          <div class="back_btn" @click="goBackGame">再战</div>
+          <div class="reject_btn" @click="rejectBacToGame">{{appDeskCode?"免战":"放弃"}}</div>
+          <div class="back_btn" @click="goBackGame">{{appDeskCode?"应战":"再战"}}</div>
         </div>
       </div>
       <div class="mask_bg" v-if="isShowGiftPanel">
@@ -287,7 +287,8 @@
         defaultmaleHeadUrl: require("./assets/image/dinosourt.png"),
         responseForGameUrl: "",
         showMatchingSoulTimes: 0,
-        timeTick: null
+        timeTick: null,
+        appDeskCode:""
       };
     },
     computed: {
@@ -347,7 +348,9 @@
       let indexGame = _GameUrl.indexOf(".com");
       let shareurlGame = _GameUrl.slice(0, indexGame);
       this.responseForGameUrl = `${shareurlGame}.com/`;
+      this.appDeskCode = util.GetQueryString("deskCode")
       this.loadLastRoomInfo(); //加载回房信息
+      this.loadDeskRoomInfo(); //加载同桌信息
       // alert(`${this.responseForGameUrl}game/?gamePath=game1`)
       this.timeTick = setTimeout(() => {
         this.clearTopUpData();
@@ -441,9 +444,23 @@
         this.showBackToGame = false;
       },
       goBackGame() {
-        window.location.href = `${this.responseForGameUrl}game/?gamePath=${
-          this.gamePath
-        }&roomID=${this.roomID}`;
+        window.location.href = `${this.responseForGameUrl}game/?gamePath=${this.gamePath}&roomID=${this.roomID}`;
+      },
+        //加载同桌信息
+      loadDeskRoomInfo() {
+         console.log("loadDeskRoomInfo---------");
+        // var cacheRoomId = localStorage.getItem("backRoomId") || ""
+        api.loadDeskRoomInfo("1").then(res => {
+          console.log("同桌信息--------", res);
+          if (res.roomID) {
+            this.roomID = res.roomID;
+            this.gamePath = res.gamePath;
+            if (this.roomID) {
+              // localStorage.setItem("backRoomId", this.roomID)
+              this.showBackToGame = true;
+            }
+          }
+        });
       },
       //加载游戏回房信息
       loadLastRoomInfo() {
