@@ -27,10 +27,10 @@
       </transition>
       <!-- 回房通知   " -->
       <div class="backToGame_wrapper" v-if="showBackToGame">
-        <p class="backToGame_text">{{appDeskCode?"同桌已开好房等你决战！":"您有未完成对战，对手还在等您"}}</p>
+        <p class="backToGame_text">{{isDeskRoom?"同桌已开好房等你决战！":"您有未完成对战，对手还在等您"}}</p>
         <div class="btn_wrapper">
-          <div class="reject_btn" @click="rejectBacToGame">{{appDeskCode?"免战":"放弃"}}</div>
-          <div class="back_btn" @click="goBackGame">{{appDeskCode?"应战":"再战"}}</div>
+          <div class="reject_btn" @click="rejectBacToGame">{{isDeskRoom?"免战":"放弃"}}</div>
+          <div class="back_btn" @click="goBackGame">{{isDeskRoom?"应战":"再战"}}</div>
         </div>
       </div>
       <div class="mask_bg" v-if="isShowGiftPanel">
@@ -88,9 +88,9 @@
                 <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm">确定</div>
                 <div v-if="isShowGiftGuide" class="rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
-                            <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                            <span class="scene-text fl">加好友</span>
-                  </div>-->
+                              <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                              <span class="scene-text fl">加好友</span>
+                    </div>-->
               </div>
               <div class="bottom_partition" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class=" rejectBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
@@ -123,7 +123,7 @@
             <div class="topUpGiftInfo-bottom soul-Bottom" style="margin-top:.3rem">
               <div class="bottom_partition">
                 <div class="rejectBtn" style="bottom:-0.7rem;" @click="rejectSoulFri()">拒绝</div>
-                <div class="acceptBtn" style="bottom:-.7rem;right:.15rem"  @click="acceptSoulFri(soulFriInfo.content.fromInfo)">结识</div>
+                <div class="acceptBtn" style="bottom:-.7rem;right:.15rem" @click="acceptSoulFri(soulFriInfo.content.fromInfo)">结识</div>
               </div>
             </div>
           </div>
@@ -185,9 +185,9 @@
                 <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm">确定</div>
                 <div v-if="isShowGiftGuide" class=" rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix">
-                            <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                            <span class="scene-text fl">加好友</span>
-                  </div>-->
+                              <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                              <span class="scene-text fl">加好友</span>
+                    </div>-->
               </div>
               <div class="bottom_partition" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
                 <div class=" rejectBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'no',topUpThumbInfo.content.fromInfo)">拒绝</div>
@@ -288,7 +288,8 @@
         responseForGameUrl: "",
         showMatchingSoulTimes: 0,
         timeTick: null,
-        appDeskCode:""
+        appDeskCode: "",
+        isDeskRoom: null,
       };
     },
     computed: {
@@ -350,7 +351,7 @@
       this.responseForGameUrl = `${shareurlGame}.com/`;
       this.appDeskCode = util.GetQueryString("deskCode")
       this.loadLastRoomInfo(); //加载回房信息
-      this.loadDeskRoomInfo(); //加载同桌信息
+      // this.loadDeskRoomInfo(); //加载同桌信息
       // alert(`${this.responseForGameUrl}game/?gamePath=game1`)
       this.timeTick = setTimeout(() => {
         this.clearTopUpData();
@@ -361,8 +362,7 @@
             fromInfo: {
               openid: "lakdjgjkfh",
               headimgurl: this.userInfo.sex == "男" ?
-                this.defaultfemaletHeadUrl :
-                this.defaultmaleHeadUrl,
+                this.defaultfemaletHeadUrl : this.defaultmaleHeadUrl,
               nickName: this.userInfo.sex == "男" ? "邻桌小妹" : "邻桌小哥"
             },
             extMsg: {
@@ -438,6 +438,10 @@
       },
       //拒绝回房
       rejectBacToGame() {
+        if (this.isDeskRoom) {
+          this.showBackToGame = false;
+          return
+        }
         api.enforceLeaveRoom().then(res => {
           console.log("拒绝回房-----------", res);
         });
@@ -446,27 +450,28 @@
       goBackGame() {
         window.location.href = `${this.responseForGameUrl}game/?gamePath=${this.gamePath}&roomID=${this.roomID}`;
       },
-        //加载同桌信息
-      loadDeskRoomInfo() {
-         console.log("loadDeskRoomInfo---------");
-        // var cacheRoomId = localStorage.getItem("backRoomId") || ""
-        api.loadDeskRoomInfo("1").then(res => {
-          console.log("同桌信息--------", res);
-          if (res.roomID) {
-            this.roomID = res.roomID;
-            this.gamePath = res.gamePath;
-            if (this.roomID) {
-              // localStorage.setItem("backRoomId", this.roomID)
-              this.showBackToGame = true;
-            }
-          }
-        });
-      },
+      //   //加载同桌信息
+      // loadDeskRoomInfo() {
+      //    console.log("loadDeskRoomInfo---------");
+      //   // var cacheRoomId = localStorage.getItem("backRoomId") || ""
+      //   api.loadDeskRoomInfo(1).then(res => {
+      //     console.log("同桌信息--------", res);
+      //     if (res.roomID) {
+      //       this.roomID = res.roomID;
+      //       this.gamePath = res.gamePath;
+      //       if (this.roomID) {
+      //         // localStorage.setItem("backRoomId", this.roomID)
+      //         this.showBackToGame = true;
+      //         this.tongzhuoFlag = true
+      //       }
+      //     }
+      //   });
+      // },
       //加载游戏回房信息
       loadLastRoomInfo() {
         console.log("执行回房信息---------");
         // var cacheRoomId = localStorage.getItem("backRoomId") || ""
-        api.loadLastRoomInfo().then(res => {
+        api.loadLastRoomInfo(this.appDeskCode).then(res => {
           console.log("回房信息--------", res);
           if (res.roomID) {
             this.roomID = res.roomID;
@@ -474,6 +479,7 @@
             if (this.roomID) {
               // localStorage.setItem("backRoomId", this.roomID)
               this.showBackToGame = true;
+              this.isDeskRoom = res.isDeskRoom
             }
           }
         });
@@ -983,45 +989,33 @@
           id: contentStruct.id ? contentStruct.id : "",
           isAgree: contentStruct.chatExtMsg.isAgree,
           name: contentStruct.chatExtMsg.extMsg.name ?
-            contentStruct.chatExtMsg.extMsg.name :
-            "",
+            contentStruct.chatExtMsg.extMsg.name : "",
           isAlreadyFriends: fromImfo.isAlreadyFriends,
           limit: contentStruct.chatExtMsg.extMsg.limit ?
-            contentStruct.chatExtMsg.extMsg.limit :
-            "",
+            contentStruct.chatExtMsg.extMsg.limit : "",
           image: contentStruct.chatExtMsg.extMsg.image ?
-            contentStruct.chatExtMsg.extMsg.image :
-            "",
+            contentStruct.chatExtMsg.extMsg.image : "",
           msgType: contentStruct.chatExtMsg.msgType,
           isHandled: contentStruct.chatExtMsg.isHandled,
           couponID: contentStruct.chatExtMsg.extMsg.couponID ?
-            contentStruct.chatExtMsg.extMsg.couponID :
-            "",
+            contentStruct.chatExtMsg.extMsg.couponID : "",
           integral: contentStruct.chatExtMsg.extMsg.integral ?
-            contentStruct.chatExtMsg.extMsg.integral :
-            "",
+            contentStruct.chatExtMsg.extMsg.integral : "",
           recordID: contentStruct.chatExtMsg.extMsg.recordID ?
-            contentStruct.chatExtMsg.extMsg.recordID :
-            "",
+            contentStruct.chatExtMsg.extMsg.recordID : "",
           subtopic: contentStruct.chatExtMsg.extMsg.subtopic ?
-            contentStruct.chatExtMsg.extMsg.subtopic :
-            "",
+            contentStruct.chatExtMsg.extMsg.subtopic : "",
           money: contentStruct.chatExtMsg.extMsg.money ?
-            contentStruct.chatExtMsg.extMsg.money :
-            "",
+            contentStruct.chatExtMsg.extMsg.money : "",
           combatID: contentStruct.chatExtMsg.extMsg.combatID ?
-            contentStruct.chatExtMsg.extMsg.combatID :
-            "",
+            contentStruct.chatExtMsg.extMsg.combatID : "",
           headImgURL: contentStruct.chatExtMsg.extMsg.headImgURL ?
-            contentStruct.chatExtMsg.extMsg.headImgURL :
-            "",
+            contentStruct.chatExtMsg.extMsg.headImgURL : "",
           inviterID: contentStruct.chatExtMsg.extMsg.inviterID ?
-            contentStruct.chatExtMsg.extMsg.inviterID :
-            "",
+            contentStruct.chatExtMsg.extMsg.inviterID : "",
           // nickName:contentStruct.chatExtMsg.extMsg.nickName?contentStruct.chatExtMsg.extMsg.nickName:"",
           url: contentStruct.chatExtMsg.extMsg.url ?
-            contentStruct.chatExtMsg.extMsg.url :
-            ""
+            contentStruct.chatExtMsg.extMsg.url : ""
         };
         // console.log("allMutatualInfo---------------------", this.allMutatualInfo_temp);
         if (this.allMutatualInfo_temp.type == 3) {
@@ -1218,9 +1212,8 @@
         color: #C62F3B;
         font-size: 0.35rem;
         box-sizing: border-box;
-        
       }
-      .reject_btn{
+      .reject_btn {
         width: 0.8rem;
         text-align: center;
         position: relative;
@@ -1233,7 +1226,6 @@
         position: absolute;
         right: .3rem;
         bottom: .1rem;
-
       }
     }
   }

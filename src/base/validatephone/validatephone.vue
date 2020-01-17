@@ -102,6 +102,7 @@ export default {
   height: 7.8rem;
   .bg("../../assets/image/bg.png");
   position: relative;
+  margin: auto;
   .title {
     padding-top: 0.72rem;
     font-size: 0.4533rem;

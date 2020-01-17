@@ -57,24 +57,23 @@
     </div>
 
     <script>
-        // let cir = document.getElementById('circles');
-        // for(let i=0;i<180;i++){
-        // 	let div = document.createElement('div');
-        // 	div.style = `transform: rotateX(${i}deg);border: 1px solid rgba(74,102,196,.8)`;
-        // 	div.className = 'circle';
-        // 	cir.appendChild(div);
-        // }
-        window.location = "https://singledog.qianz.com/k98/home?deskID=052f7506-1c9e-4ea1-ab58-70bdbc67f90e&deskCode=1&visitType=2&isScan=true&code=011X7l2j1NwhIs01NU1j1Hqe2j1X7l2n&state=1"
-        // var url = "https://singledog.qianz.com/k98/home?deskID=052f7506-1c9e-4ea1-ab58-70bdbc67f90e&deskCode=1&visitType=2&isScan=true&code=011X7l2j1NwhIs01NU1j1Hqe2j1X7l2n&state=1"
-       function GetQueryString(name) {
-            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-            var r = window.location.search.substr(1).match(reg);
-            if (r != null) {
-                return unescape(r[2]);
-            }
-            return null;
-        };
-       var name =  GetQueryString(deskCode)
-       console.log(name)
+    //    function GetQueryString(name) {
+    //         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    //         var r = window.location.search.substr(1).match(reg);
+    //         if (r != null) {
+    //             return unescape(r[2]);
+    //         }
+    //         return null;
+    //     };
+    //    var name =  GetQueryString(deskCode)
+    //    console.log(name)
+        var now = new Date(new Date(new Date().toLocaleDateString()).getTime());
+        var nowTime = now.getTime();
+        var day = now.getDate()-1;
+        console.log(day)
+        var oneDayTime = 24 * 60 * 60 * 1000;
+        var SundayTime = nowTime - day * oneDayTime;//显示周日
+        console.log(new Date(SundayTime))
+       
     </script>
 </body>
