@@ -114,7 +114,7 @@
       },
       //获取优惠券
       _loadInviteCoupon() {
-        api.loadInviteCoupon().then(res => {
+        api.loadInviteCoupon(true).then(res => {
           console.log("获取优惠券---------",res)
           if (!res.coupons) {
             return false
@@ -159,9 +159,10 @@
                 link: `${this.shareUrl}k98/shareNew?visitType=4&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
                 imgUrl: `${this.shopSettingInfo.image}`
               }
-              util._getJssdkInfo(shareObj, this.myShareUrl, 20,  ()=>{
-                this.receiveACouponByID(this.couponList[1].couponID,'b')
-               });
+              // util._getJssdkInfo(shareObj, this.myShareUrl, 20,  ()=>{
+              //   this.receiveACouponByID(this.couponList[1].couponID,'b')
+              //  });
+              util._getJssdkInfo(shareObj, this.myShareUrl, this.couponList[1].couponID, 'b', this.receiveACouponByID);
             } else {
               let shareObj = {
                 title: "新人大礼包",
@@ -170,9 +171,7 @@
                 imgUrl: `${this.shopSettingInfo.image}`
               };
              
-              util._getJssdkInfo(shareObj, this.myShareUrl, 20,  ()=>{
-                 this.receiveACouponByID(this.couponList[1].couponID,'b')
-               });
+              util._getJssdkInfo(shareObj, this.myShareUrl, this.couponList[1].couponID, 'b', this.receiveACouponByID);
             }
           }, 1000);
         })

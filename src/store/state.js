@@ -58,6 +58,7 @@ const state = {
     soulFriInfo:{},
     messageQueue:[], //消息队列
     topUpMessage:"",//
+    sameDeskInfo:{},
 }
 
 export default state

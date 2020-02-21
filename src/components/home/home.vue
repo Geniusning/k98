@@ -853,7 +853,7 @@
         bottom: 0.58rem;
       }
       .gameFriend {
-        left: 1.9667rem;
+        left: 2.4rem;
       }
       .gotoPlay {
         right: 1.5rem;

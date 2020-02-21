@@ -67,13 +67,29 @@
     //     };
     //    var name =  GetQueryString(deskCode)
     //    console.log(name)
-        var now = new Date(new Date(new Date().toLocaleDateString()).getTime());
-        var nowTime = now.getTime();
-        var day = now.getDate()-1;
-        console.log(day)
-        var oneDayTime = 24 * 60 * 60 * 1000;
-        var SundayTime = nowTime - day * oneDayTime;//显示周日
-        console.log(new Date(SundayTime))
+        // var now = new Date(new Date(new Date().toLocaleDateString()).getTime());
+        // var nowTime = now.getTime();
+        // var day = now.getDate()-1;
+        // console.log(day)
+        // var oneDayTime = 24 * 60 * 60 * 1000;
+        // var SundayTime = nowTime - day * oneDayTime;//显示周日
+        // console.log(new Date(SundayTime))
        
+
+       var name = "liuning0"
+       var obj = {
+           name : "liuning1",
+           b:{
+               name:"liuning2",
+               fn:function(){
+                   var name = "liuning3"
+                   console.log(this.name)
+                   console.log(name)
+               }
+           }
+       }
+       obj.b.fn()
+       var test = obj.b.fn
+       test()
     </script>
 </body>

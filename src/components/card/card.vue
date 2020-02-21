@@ -19,7 +19,7 @@
       <!-- 未使用 -->
       <ul class="no_user_list" v-show="tagIndex==0">
         <h3 class="noCouponTips" v-if="!unusedList.length">暂无优惠券</h3>
-        <li v-else class="item" v-for="(item,index) in unusedList">
+        <li v-else class="item" v-for="(item,index) in unusedList" :key="index">
           <div class="myleft">
             <p class="discount_type_text">{{item.coupon.type}}</p>
           </div>

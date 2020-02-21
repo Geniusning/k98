@@ -8,6 +8,11 @@ const mutations = {
     //     state.lastClientMsg = msg
     //     state.client_badgeCount = msg.content.extMsg.count
     // },
+    //获得同一个桌贴的游戏信息
+    [types.GETSAMEDESKINFO](state,deskinfo){
+        console.log("获得同一个桌贴的游戏信息----",deskinfo)
+        state.sameDeskInfo = deskinfo
+    },
     //clear topUpmesage
     [types.CLEARTOPUPMESSAGE](state) {
         state.topUpMessage = ""
@@ -26,7 +31,6 @@ const mutations = {
     },
     [types.SELECTMESSAGEFROMQUEUE](state) {
         state.topUpMessage = state.messageQueue[0]
-            // console.log("state.topUpMessage-------------------------------", state.topUpMessage)
     },
     //切换灵魂匹配模式
     [types.SWITCHSOULFLAG](state, soulFlag) {

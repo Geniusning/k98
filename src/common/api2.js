@@ -605,9 +605,9 @@ api.sendGift = function(params) {
         })
     }
     //拉取待领取的邀请有礼优惠券
-api.loadInviteCoupon = function() {
+api.loadInviteCoupon = function(flag) {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadInviteCoupon?tk=${Url.tk}`)
+            axios.get(`/api/loadInviteCoupon?tk=${Url.tk}&isVisitInvitePage=${flag}`)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)

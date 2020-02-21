@@ -290,10 +290,12 @@
         timeTick: null,
         appDeskCode: "",
         isDeskRoom: null,
+        samedeskInfo:{},
       };
     },
     computed: {
       ...mapState([
+        "sameDeskInfo",
         "messageQueue",
         "topUpMessage",
         "userInfo",
@@ -448,6 +450,10 @@
         this.showBackToGame = false;
       },
       goBackGame() {
+        if(this.samedeskInfo.msgType==25){
+          window.location.href = this.samedeskInfo.url
+          return
+        }
         window.location.href = `${this.responseForGameUrl}game/?gamePath=${this.gamePath}&roomID=${this.roomID}`;
       },
       //   //加载同桌信息
@@ -1090,6 +1096,12 @@
         }
         console.log("topUpGameInfo-------------", newValue);
         this.judgeEveryBool(true, true, false, false);
+      },
+      sameDeskInfo:function(newValue,oldValue){
+        this.samedeskInfo = newValue
+        this.showBackToGame = true
+        this.isDeskRoom = true
+        console.log("this.samedeskInfo-----",this.samedeskInfo)
       },
       $route: function(newValue, oldValue) {
         // console.log("$route---------", oldValue)

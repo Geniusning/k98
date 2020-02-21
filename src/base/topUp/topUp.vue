@@ -307,7 +307,7 @@
         this.successfulText =
           "赠送礼物成功,扣除" + this.componentGiftInfo.goods.integral + "积分";
       },
-      //确认赠送店铺项目
+      //确认赠送
       confirmShopItemGift(goodID) {
         console.log("goodId----", goodID);
         if (this.userInfo.money < this.giftIntegral) {
@@ -319,9 +319,7 @@
         this.showOweText = false;
         if (this.componentConvertType == 0) {
           //店长推荐兑换
-          api
-            .convertRecommend(goodID)
-            .then(res => {
+          api.convertRecommend(goodID).then(res => {
               console.log("店长推荐兑换结果--------------", res);
               if (res.errCode && res.errCode == 1021) {
                 this.successfulText = "您已兑换";

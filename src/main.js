@@ -11,7 +11,8 @@ import Viewer from 'v-viewer'
 // import vuePicturePreview from 'vue-picture-preview'
 import { ToastPlugin, LoadingPlugin } from 'vux'
 import { mapMutations, mapState, mapActions } from 'vuex'
-import api from './common/api'
+import api from 'common/api'
+import util from "common/util";
 import config from './common/config'
 Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)
@@ -31,13 +32,13 @@ new Vue({
             pingNumer: 0,
             timer: "",
             limitTimes: 0,
-            lockReconnect: null
+            lockReconnect: null,
+            deskCode:""
         }
     },
     mounted() {
-        
+        this.deskCode = util.GetQueryString("deskCode")
         this.loadAdvertisingPhoto(); //拉取首页轮播图
-        this.createWebsocket() //创建长链接
         this.getUserInfo(); //获取用户信息
         this.createQrcode(); //创建二维码
         this.loadStoreSetting(); //获取门店信息
@@ -46,6 +47,7 @@ new Vue({
         this.loadMutualEvents() //统计约战送礼点赞
         this.loadL98otherSetting() //加载控制开关
         this._loadInviteCoupon() //判断是否有邀新活动
+        this.createWebsocket() //创建长链接
         // window.addEventListener("unload", () => {
         //     localStorage.removeItem("friendInfo") //清楚缓存
         // })
@@ -60,10 +62,10 @@ new Vue({
             let index = windowUrL.indexOf('.com');
             let shareurl = windowUrL.slice(0, index);
             let websocketUrl = shareurl.slice(8);
-            this.connectUrl = `wss://${websocketUrl}.com/api/ws`
+            this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
             this.websock = new WebSocket(this.connectUrl);
             this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}`); //开发环境 wss://llwant1.qianz.com/api/ws
+            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },
@@ -148,7 +150,7 @@ new Vue({
             // console.log('测试websocket链接--------',e);
             var decc = new TextDecoder("utf-8");
             let result = JSON.parse(decc.decode(e.data));
-            // console.log('websocket接受消息-------------------------', result)
+            console.log('websocket接受消息-------------------------', result)
             if (result.ops == 25) {
                 let msg = {
                     ops: 26,
@@ -266,6 +268,8 @@ new Vue({
                         }
                     });
                 }, 500);
+            }else if (result.msgCode === 25){
+                this.loadSameDeskInfo(result.content.extMsg)
             }
         },
         _websocketclose(e) {
@@ -358,7 +362,8 @@ new Vue({
             judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
             getSendGiftList: "GET_SENDGIFTLIST", //获取积分换礼品列表
             CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
-            LoadL98Setting: "L98OTHERSETTING" //加载功能控制开关
+            LoadL98Setting: "L98OTHERSETTING", //加载功能控制开关
+            loadSameDeskInfo:"GETSAMEDESKINFO" //加载同一个桌贴游戏信息
         }),
         ...mapActions({
             //getFriendEvt: "get_FriendEvt"
