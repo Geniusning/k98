@@ -33,7 +33,7 @@ new Vue({
             timer: "",
             limitTimes: 0,
             lockReconnect: null,
-            deskCode:""
+            deskCode: ""
         }
     },
     mounted() {
@@ -58,14 +58,14 @@ new Vue({
     methods: {
         //创建长连接
         createWebsocket() {
-            let windowUrL = window.location.href;
-            let index = windowUrL.indexOf('.com');
-            let shareurl = windowUrL.slice(0, index);
-            let websocketUrl = shareurl.slice(8);
-            this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-            this.websock = new WebSocket(this.connectUrl);
-            this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+            // let windowUrL = window.location.href;
+            // let index = windowUrL.indexOf('.com');
+            // let shareurl = windowUrL.slice(0, index);
+            // let websocketUrl = shareurl.slice(8);
+            // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+            // this.websock = new WebSocket(this.connectUrl);
+            // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
+            this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },
@@ -268,7 +268,7 @@ new Vue({
                         }
                     });
                 }, 500);
-            }else if (result.msgCode === 25){
+            } else if (result.msgCode === 25) {
                 this.loadSameDeskInfo(result.content.extMsg)
             }
         },
@@ -363,7 +363,7 @@ new Vue({
             getSendGiftList: "GET_SENDGIFTLIST", //获取积分换礼品列表
             CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
             LoadL98Setting: "L98OTHERSETTING", //加载功能控制开关
-            loadSameDeskInfo:"GETSAMEDESKINFO" //加载同一个桌贴游戏信息
+            loadSameDeskInfo: "GETSAMEDESKINFO" //加载同一个桌贴游戏信息
         }),
         ...mapActions({
             //getFriendEvt: "get_FriendEvt"

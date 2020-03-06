@@ -128,7 +128,7 @@ util.calcOnlineTime = function (visitime) {
     return Math.floor(visitime / 60) + "分钟前上线"
   } else if (visitime > 3600 && visitime < 86400) {
     return Math.floor(visitime / 3600) + "小时前上线"
-  } else if (day<=366 && day>=1) {
+  } else if (day <= 366 && day >= 1) {
     return Math.ceil(day) + "天前上线"
   } else {
     return "刚刚上线"
@@ -141,75 +141,81 @@ util.returnDiscountType = (discountTypeNumber) => {
     return "实物券"
   } else if (parseInt(discountTypeNumber) === 2) {
     return "折扣券"
-  } else {
+  } else if (parseInt(discountTypeNumber) === 3) {
     return "兑换券"
+  } else if (parseInt(discountTypeNumber) === 4) {
+    return "满减券"
+  } else if (parseInt(discountTypeNumber) === 5) {
+    return "月卡券"
+  } else if (parseInt(discountTypeNumber) === 6) {
+    return "次卡券"
   }
 }
 //获取微信jssdk
-util._getJssdkInfo = function (shareObj, url, amount,shareType,fn) {
+util._getJssdkInfo = function (shareObj, url, amount, shareType, fn) {
   shareType = shareType || "activity"
-    api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
-      .then(res => {
-        console.log("获取微信jssdk---------",res)
-        wx.config({
-          //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-          appId: res.appId,
-          timestamp: res.timestamp,
-          nonceStr: res.nonceStr,
-          signature: res.signature,
-          jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", "chooseImage","onMenuShareTimeline"]
+  api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
+    .then(res => {
+      console.log("获取微信jssdk---------", res)
+      wx.config({
+        //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: res.appId,
+        timestamp: res.timestamp,
+        nonceStr: res.nonceStr,
+        signature: res.signature,
+        jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", "chooseImage", "onMenuShareTimeline"]
+      });
+      wx.ready(() => {
+        wx.onMenuShareAppMessage({ //分享好友
+          title: shareObj.title,
+          desc: shareObj.desc,
+          link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: shareObj.imgUrl,
+          success: () => {
+            //分享朋友记录
+            console.log("分享好友")
+            api.createShareDaylog("friend")
+            //分享获得积分
+            fn(amount, shareType)
+
+          }
         });
-        wx.ready(() => {
-          wx.onMenuShareAppMessage({ //分享好友
-            title: shareObj.title,
-            desc: shareObj.desc,
-            link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-            imgUrl: shareObj.imgUrl,
-            success: () => {
-              //分享朋友记录
-              console.log("分享好友")
-              api.createShareDaylog("friend")
-              //分享获得积分
-              fn(amount,shareType)
-              
-            }
-          });
-          wx.onMenuShareTimeline({  //朋友圈
-            title: shareObj.title, // 分享标题
-            link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-            imgUrl: shareObj.imgUrl, // 分享图标
-            success:  ()=> {
+        wx.onMenuShareTimeline({  //朋友圈
+          title: shareObj.title, // 分享标题
+          link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: shareObj.imgUrl, // 分享图标
+          success: () => {
             // 用户点击了分享后执行的回调函数
             //分享朋友圈记录
             console.log("分享朋友圈")
             api.createShareDaylog("timeLine")
-            }
-          })
-        });
-        wx.error(function (res) {
-          console.log(res);
-          // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-        });
-      })
-      .catch(err => {
-        console.log(err);
+          }
+        })
       });
+      wx.error(function (res) {
+        console.log(res);
+        // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }
-  //获取cookie
+//获取cookie
 util.getCookie = function (cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(";");
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == " ") c = c.substring(1);
-      if (c.indexOf(name) != -1) {
-        return c.substring(name.length, c.length);
-      }
+  var name = cname + "=";
+  var ca = document.cookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") c = c.substring(1);
+    if (c.indexOf(name) != -1) {
+      return c.substring(name.length, c.length);
     }
-    return "";
+  }
+  return "";
 }
- //获取url参数
-util.GetQueryString = function(name) {
+//获取url参数
+util.GetQueryString = function (name) {
   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
   var r = window.location.search.substr(1).match(reg);
   if (r != null) {
@@ -217,57 +223,61 @@ util.GetQueryString = function(name) {
   }
   return null;
 };
-  //判断安卓或者苹果
+//判断安卓或者苹果
 util.isAndroid = function () {
-    let u = navigator.userAgent;
-    let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-    let isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-    if (isAndroid) {
-      return true;
-    }
-    if (isiOS) {
-      return false;
-    }
-}
-util.isIphonex = () => {
-    if (typeof window !== 'undefined' && window) {
-      return /iphone/gi.test(window.navigator.userAgent) && window.screen.height >= 812;
-    }
+  let u = navigator.userAgent;
+  let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+  let isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+  if (isAndroid) {
+    return true;
+  }
+  if (isiOS) {
     return false;
-}
-util.sortByKey = function(key){
-    return function(obj1,obj2){
-      var v1 = obj1[key]
-      var v2 = obj2[key]
-      return v2-v1
-    }
-}
-util.sortByKeyS2L = function(key){
-  return function(obj1,obj2){
-    var v1 = obj1[key]
-    var v2 = obj2[key]
-    return v1-v2
   }
 }
-util.prefixZero = function(num,n){
-    var len = num.toString().length;
-    while(len < n) {
-        num = "0" + num;
-        len++;
-    }
-    return num;
+util.isIphonex = () => {
+  if (typeof window !== 'undefined' && window) {
+    return /iphone/gi.test(window.navigator.userAgent) && window.screen.height >= 812;
+  }
+  return false;
 }
-util.returnDiscountContent = function(coupon){
+util.sortByKey = function (key) {
+  return function (obj1, obj2) {
+    var v1 = obj1[key]
+    var v2 = obj2[key]
+    return v2 - v1
+  }
+}
+util.sortByKeyS2L = function (key) {
+  return function (obj1, obj2) {
+    var v1 = obj1[key]
+    var v2 = obj2[key]
+    return v1 - v2
+  }
+}
+util.prefixZero = function (num, n) {
+  var len = num.toString().length;
+  while (len < n) {
+    num = "0" + num;
+    len++;
+  }
+  return num;
+}
+util.returnDiscountContent = function (coupon) {
   if (parseInt(coupon.type) === 0) {
-    return "现金券"+coupon.value+"元"
+    return "现金券" + coupon.value + "元"
   } else if (parseInt(coupon.type) === 1) {
-    return "实物券" +coupon.content
+    return "实物券" + coupon.content
   } else if (parseInt(coupon.type) === 2) {
-    return "折扣券" +coupon.value+"折"
-  } else if (parseInt(coupon.type) === 3){
-    return "兑换券"+coupon.content
-  }else {
-    return "满减券"+coupon.content
+    return "折扣券" + coupon.value + "折"
+  } else if (parseInt(coupon.type) === 3) {
+    return "兑换券" + coupon.content
+  } else if (parseInt(coupon.type) === 4) {
+    return "满减券" + coupon.content
+  } else if (parseInt(coupon.type) === 6) {
+    return "月卡券" + coupon.content
+  } else if (parseInt(coupon.type) === 7) {
+    return "次卡券" + coupon.content
   }
 }
 export default util

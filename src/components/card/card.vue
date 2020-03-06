@@ -42,7 +42,7 @@
                 <img onclick="return false" v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
               </div>
             </div>
-            <div class="discount_content">{{item.coupon.name}}</div>
+            <div class="discount_content">{{item.coupon.name}}  <span v-if="item.usingTimes != 0">--剩余{{item.usingTimes}}次</span></div>
             <div class="discount_limitAndTime">
               <div class="limit">积分:{{item.coupon.integral}} &nbsp;&nbsp;&nbsp;{{item.coupon.limit}}</div>
               <p class="time">有效期至:{{item.coupon.time}}</p>
@@ -185,599 +185,606 @@
 </template>
 
 <script type='text/ecmascript-6'>
-  import api from "common/api";
-  import util from "common/util";
-  import scroll from "../../base/scroll/scroll.vue";
-  import {
+import api from "common/api";
+import util from "common/util";
+import scroll from "../../base/scroll/scroll.vue";
+import { Tab, TabItem, XHeader, XButton } from "vux";
+import Validate from "../../base/validatephone/validatephone";
+import { mapGetters, mapMutations, mapState } from "vuex";
+import myHeader from "../../base/myheader/myheader.vue";
+export default {
+  data() {
+    return {
+      flag: false,
+      tagIndex: 0,
+      unusedList: [],
+      unuseCouponsLength: 0,
+      usedCouponsLength: 0,
+      timeOutListLength: 0,
+      usedList: [],
+      timeOutList: [],
+      songLiList: []
+    };
+  },
+  computed: {
+    ...mapGetters(["isShow"]),
+    ...mapState(["userInfo"])
+  },
+  created() {
+    this._loadUserAllCoupon(); //获取优惠券
+  },
+  beforeRouteUpdate(to, from, next) {
+    if (from.name === "cardDetail") {
+      this._loadUserAllCoupon(); //获取优惠券
+    }
+    next();
+  },
+  methods: {
+    //获取优惠券
+    _loadUserAllCoupon() {
+      api.loadUserAllCoupon().then(res => {
+        console.log("优惠券：", res);
+        this.unusedList = [];
+        this.usedList = [];
+        this.timeOutList = [];
+        this.songLiList = [];
+        this.unuseCouponsLength = res.unuseCoupons.length;
+        this.usedCouponsLength = res.usedCoupos.length;
+        this.timeOutListLength = res.expiredCoupos.length;
+        //未使用优惠券
+        this.distributeDiscount(res.unuseCoupons, this.unusedList);
+        // res.unuseCoupons.forEach(element => {
+        //   element.coupon.time = "过期时间：" + element.coupon.endTime;
+        //   element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
+        //   this.unusedList.push(element)
+        // });
+        //已使用优惠券
+        this.distributeDiscount(res.usedCoupos, this.usedList);
+        // res.usedCoupos.forEach(element => {
+        //   element.coupon.time = "过期时间：" + element.coupon.endTime;
+        //   element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
+        //   this.usedList.push(element)
+        // });
+        //过期优惠券
+        this.distributeDiscount(res.expiredCoupos, this.timeOutList);
+        //已送礼优惠券
+        this.distributeDiscount(res.sentCoupos, this.songLiList);
+        // res.expiredCoupos.forEach(element => {
+        //   element.coupon.time = "过期时间：" + element.coupon.endTime;
+        //   element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
+        //   this.timeOutList.push(element);
+        //   console.log(this.timeOutList)
+        // })
+      });
+    },
+    distributeDiscount(resDiscountList, discountList) {
+      // let tempDiscountList = []
+      resDiscountList.forEach(element => {
+        element.coupon.codeNum =
+          util.prefixZero(element.coupon.type, 1) +
+          "-" +
+          util.prefixZero(element.coupon.batch, 3) +
+          "-" +
+          util.prefixZero(element.coupon.acquireNum, 7);
+        element.coupon.time = element.coupon.endTime;
+        element.getTime = util.timestampToTime(element.getTime);
+        switch (element.coupon.type) {
+          case 0:
+            element.coupon.name = element.coupon.value + "元代金券";
+            break;
+          case 1:
+            element.coupon.name = element.coupon.content;
+            break;
+          case 2:
+            element.coupon.name = element.coupon.value + "折";
+            break;
+          case 3:
+            element.coupon.name = element.coupon.content;
+            break;
+          case 4:
+            element.coupon.name = element.coupon.content;
+            break;
+          case 5:
+            element.coupon.name = element.coupon.content;
+            break;
+          case 6:
+            element.coupon.name = element.coupon.content;
+            break;
+          default:
+            break;
+        }
+        element.coupon.type = util.returnDiscountType(element.coupon.type);
+        discountList.push(element);
+      });
+    },
+    //返回上一页
+    goBack() {
+      this.$router.push({
+        name: "card"
+      });
+    },
+    //进入优惠券详情
+    selectDiscout(id) {
+      if (!this.userInfo.isSubscribe) {
+        this.changeQrCodeText({
+          title: "长按关注，以便管理、核销优惠券",
+          bottomText: "会员特权:领福利、交群友、参活动"
+        });
+        this.showQrcode(true);
+        return;
+      }
+      this.$router.push({
+        path: `/card/${id}`
+      });
+    },
+    //绑定手机
+    bindTel() {
+      // this.isShow = true;
+      this.changeValidate(true);
+    },
+    onItemClick(index) {
+      this.tagIndex = index;
+      console.log(this.tagIndex);
+    },
+    onClickBack() {},
+    ...mapMutations({
+      changeQrCodeText: "CHANGEQRCODETEXT",
+      changeValidate: "CHANGE_VALIDATE",
+      showQrcode: "SHOW_QRCODE" //展示二维码
+    })
+  },
+  components: {
     Tab,
     TabItem,
     XHeader,
-    XButton
-  } from "vux";
-  import Validate from "../../base/validatephone/validatephone";
-  import {
-    mapGetters,
-    mapMutations,
-    mapState
-  } from "vuex";
-  import myHeader from "../../base/myheader/myheader.vue";
-  export default {
-    data() {
-      return {
-        flag: false,
-        tagIndex: 0,
-        unusedList: [],
-        unuseCouponsLength: 0,
-        usedCouponsLength: 0,
-        timeOutListLength: 0,
-        usedList: [],
-        timeOutList: [],
-        songLiList: [],
-      };
-    },
-    computed: {
-      ...mapGetters(["isShow"]),
-      ...mapState(["userInfo"])
-    },
-    created() {
-      this._loadUserAllCoupon() //获取优惠券
-    },
-    beforeRouteUpdate(to, from, next) {
-      if (from.name === "cardDetail") {
-        this._loadUserAllCoupon() //获取优惠券
-      }
-      next();
-    },
-    methods: {
-      //获取优惠券
-      _loadUserAllCoupon() {
-        api.loadUserAllCoupon().then(res => {
-          console.log("优惠券：", res);
-          this.unusedList = [];
-          this.usedList = [];
-          this.timeOutList = [];
-          this.songLiList = [];
-          this.unuseCouponsLength = res.unuseCoupons.length;
-          this.usedCouponsLength = res.usedCoupos.length;
-          this.timeOutListLength = res.expiredCoupos.length;
-          //未使用优惠券
-          this.distributeDiscount(res.unuseCoupons, this.unusedList);
-          // res.unuseCoupons.forEach(element => {
-          //   element.coupon.time = "过期时间：" + element.coupon.endTime;
-          //   element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
-          //   this.unusedList.push(element)
-          // });
-          //已使用优惠券
-          this.distributeDiscount(res.usedCoupos, this.usedList);
-          // res.usedCoupos.forEach(element => {
-          //   element.coupon.time = "过期时间：" + element.coupon.endTime;
-          //   element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
-          //   this.usedList.push(element)
-          // });
-          //过期优惠券
-          this.distributeDiscount(res.expiredCoupos, this.timeOutList);
-          //已送礼优惠券
-          this.distributeDiscount(res.sentCoupos, this.songLiList);
-          // res.expiredCoupos.forEach(element => {
-          //   element.coupon.time = "过期时间：" + element.coupon.endTime;
-          //   element.coupon.name = element.coupon.type ? "获得" + element.coupon.content : "获得" + element.coupon.value + "元代金券";
-          //   this.timeOutList.push(element);
-          //   console.log(this.timeOutList)
-          // })
-        });
-      },
-      distributeDiscount(resDiscountList, discountList) {
-        // let tempDiscountList = []
-        resDiscountList.forEach(element => {
-          element.coupon.codeNum =
-            util.prefixZero(element.coupon.type, 1) + "-" +
-            util.prefixZero(element.coupon.batch, 3) + "-" +
-            util.prefixZero(element.coupon.acquireNum, 7)
-          element.coupon.time = element.coupon.endTime;
-          element.getTime = util.timestampToTime(element.getTime);
-          switch (element.coupon.type) {
-            case 0:
-              element.coupon.name = element.coupon.value + "元代金券";
-              break;
-            case 1:
-              element.coupon.name = element.coupon.content;
-              break;
-            case 2:
-              element.coupon.name = element.coupon.value + "折";
-              break;
-            case 3:
-              element.coupon.name = element.coupon.content;
-              break;
-            case 4:
-              element.coupon.name = element.coupon.content;
-              break;
-            default:
-              break;
-          }
-          element.coupon.type = util.returnDiscountType(element.coupon.type);
-          discountList.push(element)
-        });
-      },
-      //返回上一页
-      goBack() {
-        this.$router.push({
-          name: "card"
-        });
-      },
-      //进入优惠券详情
-      selectDiscout(id) {
-        if (!this.userInfo.isSubscribe) {
-          this.changeQrCodeText({
-            title: "长按关注，以便管理、核销优惠券",
-            bottomText: "会员特权:领福利、交群友、参活动"
-          })
-          this.showQrcode(true)
-          return
-        }
-        this.$router.push({
-          path: `/card/${id}`
-        });
-      },
-      //绑定手机
-      bindTel() {
-        // this.isShow = true;
-        this.changeValidate(true);
-      },
-      onItemClick(index) {
-        this.tagIndex = index;
-        console.log(this.tagIndex);
-      },
-      onClickBack() {},
-      ...mapMutations({
-        changeQrCodeText: "CHANGEQRCODETEXT",
-        changeValidate: "CHANGE_VALIDATE",
-        showQrcode: "SHOW_QRCODE", //展示二维码
-      })
-    },
-    components: {
-      Tab,
-      TabItem,
-      XHeader,
-      XButton,
-      Validate,
-      myHeader,
-      scroll
-    }
-  };
+    XButton,
+    Validate,
+    myHeader,
+    scroll
+  }
+};
 </script>
 
 <style scoped lang='less'>
-  @import "../../assets/less/variable.less";
-  @import "../../assets/less/base.less";
-  @import "../../assets/less/mixin.less";
-  @import "../../assets/less/card.less";
-  .card {
-    height: 100%;
+@import "../../assets/less/variable.less";
+@import "../../assets/less/base.less";
+@import "../../assets/less/mixin.less";
+@import "../../assets/less/card.less";
+.card {
+  height: 100%;
+  background: #eee;
+  .tab_wrapper {
+    .vux-tab .vux-tab-item {
+      color: #333;
+    }
+    .vux-tab .vux-tab-item.vux-tab-selected {
+      color: #ffae00;
+    }
+    .border-1px(#ddd);
+  }
+  .warm_tips {
+    padding: 0.175rem 0.25rem;
+    display: flex;
+    justify-content: space-between;
+    .tips {
+      // line-height: 1.8125rem;
+      padding-top: 0.15rem;
+      box-sizing: border-box;
+      font-size: 0.4rem;
+    }
+    .bingTel {
+      display: inline-block;
+      width: 1.8rem;
+      padding: 0.2rem 0;
+      border: 1px solid #ccc;
+      text-align: center;
+      border-radius: 6px;
+      background-color: #ccc;
+      color: #fff;
+    }
+  }
+  .discount_wrapper {
+    margin-top: 0.1133rem;
     background: #eee;
-    .tab_wrapper {
-      .vux-tab .vux-tab-item {
-        color: #333;
-      }
-      .vux-tab .vux-tab-item.vux-tab-selected {
-        color: #ffae00;
-      }
-      .border-1px(#ddd);
+    padding: 0 0.1867rem;
+    .noCouponTips {
+      font-size: 0.5333rem;
+      color: #ccc;
+      width: 100%;
+      text-align: center;
+      margin-top: 50%;
     }
-    .warm_tips {
-      padding: 0.175rem 0.25rem;
-      display: flex;
-      justify-content: space-between;
-      .tips {
-        // line-height: 1.8125rem;
-        padding-top: 0.15rem;
-        box-sizing: border-box;
-        font-size: 0.4rem;
+    .no_user_list {
+      overflow-y: auto;
+      .card("../../assets/image/discount_bg.png", 0.5333rem);
+      .item {
+        display: flex;
       }
-      .bingTel {
-        display: inline-block;
-        width: 1.8rem;
-        padding: 0.2rem 0;
-        border: 1px solid #ccc;
+      .myleft {
+        width: 1.3rem;
         text-align: center;
-        border-radius: 6px;
-        background-color: #ccc;
+        .discount_type_text {
+          display: inline-block;
+          width: 0.4rem;
+          padding-top: 0.2333rem;
+          font-size: 0.45rem;
+          color: #d33700;
+          font-weight: 900;
+        }
+      }
+      .mycenter {
+        margin-left: 0.1rem;
+        flex: 1;
         color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        position: relative;
+        .discount_theme {
+          font-size: 0.3733rem;
+          position: relative;
+          .theme,
+          .receiver_wrapper,
+          .receiverProject_wrapper {
+            float: left;
+          }
+          .theme {
+          }
+          .receiver_wrapper {
+            margin-left: 0.6667rem;
+            .receiver_avartar {
+              width: 0.5333rem;
+              height: 0.5333rem;
+              border-radius: 50%;
+              margin-right: 0.1667rem;
+              float: left;
+            }
+            .receiver_name {
+              float: left;
+              max-width: 1.2rem;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+            }
+          }
+          .receiverProject_wrapper {
+            position: absolute;
+            right: 0.1333rem;
+            .integral_content {
+              font-size: 0.32rem;
+            }
+            .project_img {
+              position: absolute;
+              left: 0.6rem;
+              margin-top: 0.1667rem;
+              width: 1.3rem;
+              height: 1rem;
+            }
+          }
+        }
+        .discount_content {
+          margin-top: 0.3rem;
+          font-size: 0.45rem;
+          text-align: center;
+        }
+        .discount_limitAndTime {
+          margin-top: 0.4rem;
+          display: flex;
+          justify-content: space-between;
+          .limit {
+          }
+          .time {
+            margin-left: 0.2667rem;
+          }
+        }
+      }
+      .myright {
+        width: 1.3rem;
+        text-align: center;
+        box-sizing: border-box;
+        .use_text {
+          display: inline-block;
+          width: 0.4rem;
+          font-size: 0.4rem;
+          color: #d33700;
+          font-weight: 900;
+        }
       }
     }
-    .discount_wrapper {
-      margin-top: 0.1133rem;
-      background: #eee;
-      padding: 0 0.1867rem;
-      .noCouponTips {
-        font-size: 0.5333rem;
-        color: #ccc;
-        width: 100%;
+    .songLiList {
+      overflow-y: auto;
+      .card("../../assets/image/songli_discount_bg.png", 0.5333rem);
+      .item {
+        display: flex;
+      }
+      .myleft {
+        width: 1.3rem;
         text-align: center;
-        margin-top: 50%;
+        .discount_type_text {
+          display: inline-block;
+          width: 0.4rem;
+          padding-top: 0.2333rem;
+          font-size: 0.45rem;
+          color: #d33700;
+          font-weight: 900;
+        }
       }
-      .no_user_list {
-        overflow-y: auto;
-        .card("../../assets/image/discount_bg.png", 0.5333rem);
-        .item {
-          display: flex;
-        }
-        .myleft {
-          width: 1.3rem;
-          text-align: center;
-          .discount_type_text {
-            display: inline-block;
-            width: 0.4rem;
-            padding-top: 0.2333rem;
-            font-size: 0.45rem;
-            color: #D33700;
-            font-weight: 900
-          }
-        }
-        .mycenter {
-          margin-left: .1rem;
-          flex: 1;
-          color: #fff;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-around;
+      .mycenter {
+        margin-left: 0.1rem;
+        flex: 1;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        position: relative;
+        .discount_theme {
+          font-size: 0.3733rem;
           position: relative;
-          .discount_theme {
-            font-size: 0.3733rem;
-            position: relative;
-            .theme,
-            .receiver_wrapper,
-            .receiverProject_wrapper {
+          .theme,
+          .receiver_wrapper,
+          .receiverProject_wrapper {
+            float: left;
+          }
+          .theme {
+          }
+          .receiver_wrapper {
+            margin-left: 0.6667rem;
+            .receiver_avartar {
+              width: 0.5333rem;
+              height: 0.5333rem;
+              border-radius: 50%;
+              margin-right: 0.1667rem;
               float: left;
             }
-            .theme {}
-            .receiver_wrapper {
-              margin-left: 0.6667rem;
-              .receiver_avartar {
-                width: 0.5333rem;
-                height: 0.5333rem;
-                border-radius: 50%;
-                margin-right: 0.1667rem;
-                float: left;
-              }
-              .receiver_name {
-                float: left;
-                max-width: 1.2rem;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-              }
+            .receiver_name {
+              float: left;
+              max-width: 1.2rem;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
             }
-            .receiverProject_wrapper {
+          }
+          .receiverProject_wrapper {
+            position: absolute;
+            right: 0.1333rem;
+            .integral_content {
+              font-size: 0.32rem;
+            }
+            .project_img {
               position: absolute;
-              right: 0.1333rem;
-              .integral_content {
-                font-size: 0.32rem;
-              }
-              .project_img {
-                position: absolute;
-                left: .6rem;
-                margin-top: 0.1667rem;
-                width: 1.3rem;
-                height: 1rem;
-              }
-            }
-          }
-          .discount_content {
-            margin-top: .3rem;
-            font-size: 0.45rem;
-            text-align: center;
-          }
-          .discount_limitAndTime {
-            margin-top: .4rem;
-            display: flex;
-            justify-content: space-between;
-            .limit {}
-            .time {
-              margin-left: 0.2667rem;
+              left: 0.6rem;
+              margin-top: 0.1667rem;
+              width: 1.3rem;
+              height: 1rem;
             }
           }
         }
-        .myright {
-          width: 1.3rem;
+        .discount_content {
+          margin-top: 0.3rem;
+          font-size: 0.45rem;
           text-align: center;
-          box-sizing: border-box;
-          .use_text {
-            display: inline-block;
-            width: 0.4rem;
-            font-size: 0.4rem;
-            color: #D33700;
-            font-weight: 900
+        }
+        .discount_limitAndTime {
+          margin-top: 0.4rem;
+          display: flex;
+          justify-content: space-between;
+          .limit {
+          }
+          .time {
+            margin-left: 0.2667rem;
           }
         }
       }
-      .songLiList {
-        overflow-y: auto;
-        .card("../../assets/image/songli_discount_bg.png", 0.5333rem);
-        .item {
-          display: flex;
+      .myright {
+        width: 1.3rem;
+        text-align: center;
+        padding-top: 0.22rem;
+        box-sizing: border-box;
+        .use_text {
+          display: inline-block;
+          width: 0.4rem;
+          font-size: 0.4rem;
+          color: #d33700;
+          font-weight: 900;
         }
-        .myleft {
-          width: 1.3rem;
-          text-align: center;
-          .discount_type_text {
-            display: inline-block;
-            width: 0.4rem;
-            padding-top: 0.2333rem;
-            font-size: 0.45rem;
-            color: #D33700;
-            font-weight: 900
-          }
+      }
+    }
+    .usered_list {
+      overflow-y: auto;
+      .card("../../assets/image/songli_discount_bg.png", 0.5333rem);
+      .item {
+        display: flex;
+      }
+      .myleft {
+        width: 1.3rem;
+        text-align: center;
+        .discount_type_text {
+          display: inline-block;
+          width: 0.4rem;
+          padding-top: 0.2333rem;
+          font-size: 0.45rem;
+          color: #d33700;
+          font-weight: 900;
         }
-        .mycenter {
-          margin-left: .1rem;
-          flex: 1;
-          color: #fff;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-around;
+      }
+      .mycenter {
+        margin-left: 0.1rem;
+        flex: 1;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        position: relative;
+        .discount_theme {
+          font-size: 0.3733rem;
           position: relative;
-          .discount_theme {
-            font-size: 0.3733rem;
-            position: relative;
-            .theme,
-            .receiver_wrapper,
-            .receiverProject_wrapper {
+          .theme,
+          .receiver_wrapper,
+          .receiverProject_wrapper {
+            float: left;
+          }
+          .theme {
+          }
+          .receiver_wrapper {
+            margin-left: 0.6667rem;
+            .receiver_avartar {
+              width: 0.5333rem;
+              height: 0.5333rem;
+              border-radius: 50%;
+              margin-right: 0.1667rem;
               float: left;
             }
-            .theme {}
-            .receiver_wrapper {
-              margin-left: 0.6667rem;
-              .receiver_avartar {
-                width: 0.5333rem;
-                height: 0.5333rem;
-                border-radius: 50%;
-                margin-right: 0.1667rem;
-                float: left;
-              }
-              .receiver_name {
-                float: left;
-                max-width: 1.2rem;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-              }
+            .receiver_name {
+              float: left;
+              max-width: 1.2rem;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
             }
-            .receiverProject_wrapper {
+          }
+          .receiverProject_wrapper {
+            position: absolute;
+            right: 0.1333rem;
+            .integral_content {
+              font-size: 0.32rem;
+            }
+            .project_img {
               position: absolute;
-              right: 0.1333rem;
-              .integral_content {
-                font-size: 0.32rem;
-              }
-              .project_img {
-                position: absolute;
-                left: .6rem;
-                margin-top: 0.1667rem;
-                width: 1.3rem;
-                height: 1rem;
-              }
-            }
-          }
-          .discount_content {
-            margin-top: .3rem;
-            font-size: 0.45rem;
-            text-align: center;
-          }
-          .discount_limitAndTime {
-            margin-top: .4rem;
-            display: flex;
-            justify-content: space-between;
-            .limit {}
-            .time {
-              margin-left: 0.2667rem;
+              left: 0.6rem;
+              margin-top: 0.1667rem;
+              width: 1.3rem;
+              height: 1rem;
             }
           }
         }
-        .myright {
-          width: 1.3rem;
+        .discount_content {
+          margin-top: 0.3rem;
+          font-size: 0.45rem;
           text-align: center;
-          padding-top: 0.22rem;
-          box-sizing: border-box;
-          .use_text {
-            display: inline-block;
-            width: 0.4rem;
-            font-size: 0.4rem;
-            color: #D33700;
-            font-weight: 900
+        }
+        .discount_limitAndTime {
+          margin-top: 0.4rem;
+          display: flex;
+          justify-content: space-between;
+          .limit {
+          }
+          .time {
+            margin-left: 0.2667rem;
           }
         }
       }
-      .usered_list {
-        overflow-y: auto;
-        .card("../../assets/image/songli_discount_bg.png", 0.5333rem);
-        .item {
-          display: flex;
+      .myright {
+        width: 1.3rem;
+        padding-top: 0.2667rem;
+        text-align: center;
+        box-sizing: border-box;
+        .use_text {
+          display: inline-block;
+          width: 0.4rem;
+          font-size: 0.4rem;
+          color: #d33700;
+          font-weight: 900;
         }
-        .myleft {
-          width: 1.3rem;
-          text-align: center;
-          .discount_type_text {
-            display: inline-block;
-            width: 0.4rem;
-            padding-top: 0.2333rem;
-            font-size: 0.45rem;
-            color: #D33700;
-            font-weight: 900
-          }
+      }
+    }
+    .past_list {
+      overflow-y: auto;
+      .card("../../assets/image/songli_discount_bg.png", 0.5333rem);
+      .item {
+        display: flex;
+      }
+      .myleft {
+        width: 1.3rem;
+        text-align: center;
+        .discount_type_text {
+          display: inline-block;
+          width: 0.4rem;
+          padding-top: 0.2333rem;
+          font-size: 0.45rem;
+          color: #d33700;
+          font-weight: 900;
         }
-        .mycenter {
-          margin-left: .1rem;
-          flex: 1;
-          color: #fff;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-around;
+      }
+      .mycenter {
+        margin-left: 0.1rem;
+        flex: 1;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        position: relative;
+        .discount_theme {
+          font-size: 0.3733rem;
           position: relative;
-          .discount_theme {
-            font-size: 0.3733rem;
-            position: relative;
-            .theme,
-            .receiver_wrapper,
-            .receiverProject_wrapper {
+          .theme,
+          .receiver_wrapper,
+          .receiverProject_wrapper {
+            float: left;
+          }
+          .theme {
+          }
+          .receiver_wrapper {
+            margin-left: 0.6667rem;
+            .receiver_avartar {
+              width: 0.5333rem;
+              height: 0.5333rem;
+              border-radius: 50%;
+              margin-right: 0.1667rem;
               float: left;
             }
-            .theme {}
-            .receiver_wrapper {
-              margin-left: 0.6667rem;
-              .receiver_avartar {
-                width: 0.5333rem;
-                height: 0.5333rem;
-                border-radius: 50%;
-                margin-right: 0.1667rem;
-                float: left;
-              }
-              .receiver_name {
-                float: left;
-                max-width: 1.2rem;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-              }
+            .receiver_name {
+              float: left;
+              max-width: 1.2rem;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
             }
-            .receiverProject_wrapper {
+          }
+          .receiverProject_wrapper {
+            position: absolute;
+            right: 0.1333rem;
+            .integral_content {
+              font-size: 0.32rem;
+            }
+            .project_img {
               position: absolute;
-              right: 0.1333rem;
-              .integral_content {
-                font-size: 0.32rem;
-              }
-              .project_img {
-                position: absolute;
-                left: .6rem;
-                margin-top: 0.1667rem;
-                width: 1.3rem;
-                height: 1rem;
-              }
-            }
-          }
-          .discount_content {
-            margin-top: .3rem;
-            font-size: 0.45rem;
-            text-align: center;
-          }
-          .discount_limitAndTime {
-            margin-top: .4rem;
-            display: flex;
-            justify-content: space-between;
-            .limit {}
-            .time {
-              margin-left: 0.2667rem;
+              left: 0.6rem;
+              margin-top: 0.1667rem;
+              width: 1.3rem;
+              height: 1rem;
             }
           }
         }
-        .myright {
-          width: 1.3rem;
-          padding-top: 0.2667rem;
+        .discount_content {
+          margin-top: 0.3rem;
+          font-size: 0.45rem;
           text-align: center;
-          box-sizing: border-box;
-          .use_text {
-            display: inline-block;
-            width: 0.4rem;
-            font-size: 0.4rem;
-            color: #D33700;
-            font-weight: 900
+        }
+        .discount_limitAndTime {
+          margin-top: 0.4rem;
+          display: flex;
+          justify-content: space-between;
+          .limit {
+          }
+          .time {
+            margin-left: 0.2667rem;
           }
         }
       }
-      .past_list {
-        overflow-y: auto;
-        .card("../../assets/image/songli_discount_bg.png", 0.5333rem);
-        .item {
-          display: flex;
-        }
-        .myleft {
-          width: 1.3rem;
-          text-align: center;
-          .discount_type_text {
-            display: inline-block;
-            width: 0.4rem;
-            padding-top: 0.2333rem;
-            font-size: 0.45rem;
-            color: #D33700;
-            font-weight: 900
-          }
-        }
-        .mycenter {
-          margin-left: .1rem;
-          flex: 1;
-          color: #fff;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-around;
-          position: relative;
-          .discount_theme {
-            font-size: 0.3733rem;
-            position: relative;
-            .theme,
-            .receiver_wrapper,
-            .receiverProject_wrapper {
-              float: left;
-            }
-            .theme {}
-            .receiver_wrapper {
-              margin-left: 0.6667rem;
-              .receiver_avartar {
-                width: 0.5333rem;
-                height: 0.5333rem;
-                border-radius: 50%;
-                margin-right: 0.1667rem;
-                float: left;
-              }
-              .receiver_name {
-                float: left;
-                max-width: 1.2rem;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-              }
-            }
-            .receiverProject_wrapper {
-              position: absolute;
-              right: 0.1333rem;
-              .integral_content {
-                font-size: 0.32rem;
-              }
-              .project_img {
-                position: absolute;
-                left: .6rem;
-                margin-top: 0.1667rem;
-                width: 1.3rem;
-                height: 1rem;
-              }
-            }
-          }
-          .discount_content {
-            margin-top: .3rem;
-            font-size: 0.45rem;
-            text-align: center;
-          }
-          .discount_limitAndTime {
-            margin-top: .4rem;
-            display: flex;
-            justify-content: space-between;
-            .limit {}
-            .time {
-              margin-left: 0.2667rem;
-            }
-          }
-        }
-        .myright {
-          width: 1.3rem;
-          padding-top: 0.2667rem;
-          text-align: center;
-          box-sizing: border-box;
-          .use_text {
-            display: inline-block;
-            width: 0.4rem;
-            font-size: 0.4rem;
-            color: #D33700;
-            font-weight: 900
-          }
+      .myright {
+        width: 1.3rem;
+        padding-top: 0.2667rem;
+        text-align: center;
+        box-sizing: border-box;
+        .use_text {
+          display: inline-block;
+          width: 0.4rem;
+          font-size: 0.4rem;
+          color: #d33700;
+          font-weight: 900;
         }
       }
     }
   }
+}
 </style>

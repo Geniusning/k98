@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "6o3hkX2p_X8x-Kgg2dcuueBTY48g1dEE3Z_WKxKbau7IsHZCItXtVPATfPOz_mPWbYVvRA==";
+const myToken = "U3TAlM_u6cEP72S-KI04K_ajnEUrYSxPOkq0vjRyxe4BohOukm-1zGEkcy7P4ixiYjFdTw==";
 // ------------------------------
 
 module.exports = {
@@ -26,7 +26,7 @@ module.exports = {
         },
 
         // Various Dev Server settings
-        host: '192.168.0.101',
+        host: '192.168.101.9',
         // host: '192.168.124.18',
 
         //host: 'localhost', // can be overwritten by process.env.HOST
