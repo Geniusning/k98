@@ -11,8 +11,8 @@
           <div class="left">
             <img class="shopLogo" :src="shopSettingInfo.image" alt="">
             <!-- <p class="shopName">{{shopSettingInfo.name}}</p> -->
-            <!-- <p class="code">{{item.CouponInfo.codeNum}}</p> -->
-            <p class="time">{{item.CouponInfo.endTime}}</p>
+            <!-- <p class="code">{{item.couponInfo.codeNum}}</p> -->
+            <p class="time">{{item.couponInfo.endTime}}</p>
             <p class="vipTimes">{{item.vipCardType==0?"VIP/"+item.usingMonths+"个月":"VIP/"+item.usingTimes+"次"}}</p>
             <img v-if="item.vipCardType==0" onclick="return false" src="../../assets/image/vipMonths.png" alt class="shopPic" />
             <img v-else onclick="return false" src="../../assets/image/vipTimes.png" alt class="shopPic" />
@@ -20,7 +20,7 @@
           <div class="center">
             <p class="title">{{item.vipCardType==0?"VIP "+item.usingMonths+"个月":"VIP "+item.usingTimes+"次"}}</p>
             <p class="desc">{{item.vipName}}(会员特权)</p>
-            <p class="limit">{{item.CouponInfo.limit}}(限制条件)</p>
+            <p class="limit">{{item.couponInfo.limit}}(限制条件)</p>
             <p class="price">
               <span class="origin_p">积分换：{{item.vipIntegral}}积分</span>
             </p>
@@ -62,6 +62,24 @@
       <div class="btn" @click="goBack">取消</div>
       <div class="btn" @click="book">确认兑换</div>
     </div>
+    <div class="bg" v-if="isshowVipInfo"></div>
+    <div class="topUp" v-if="isshowVipInfo">
+      <div class="userInfo_content">
+        <img class="headUrl" :src="userInfo.headimgurl" alt="">
+        <div class="name">{{userInfo.nickname}}</div>
+      </div>
+      <div class="vipInfo_content">
+        <div class="vipCardIcon">
+          <img v-if="vipCardInfo.couponInfo.type==5" class="Icon" src="../../assets/image/vipMonths.png" alt="">
+          <img v-else class="Icon" src="../../assets/image/vipTimes.png" alt="">
+        </div>
+        <div class="sucText">兑换成功，已存入您的卡券包</div>
+      </div>
+      <div class="handle_content">
+        <div class="btnDetail" @click="gotoDetail">详情</div>
+        <div class="btnUse" @click="gotoUse(vipCardInfo.userCouponID)">使用</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -78,6 +96,8 @@ export default {
       staffList: [],
       radio_vip: "",
       radio_phone: "",
+      isshowVipInfo: false,
+      vipCardInfo: {},
       defaultHeadImg: require("../../assets/image/home_letter.png")
     };
   },
@@ -86,10 +106,30 @@ export default {
     this.loadAllStaff();
   },
   computed: {
-    ...mapState(["shopSettingInfo"])
+    ...mapState(["shopSettingInfo", "userInfo"])
   },
   methods: {
+    gotoDetail() {
+      this.$router.push({
+        name: "card"
+      });
+      this.isshowVipInfo = false;
+    },
+    gotoUse(id) {
+      this.isshowVipInfo = false;
+      this.$router.push({
+        path: `/card/${id}`
+      });
+    },
     book() {
+      if (!this.userInfo.isSubscribe) {
+        this.changeQrCodeText({
+          title: "长按关注，以便管理、核销优惠券",
+          bottomText: "会员特权:领福利、交群友、参活动"
+        });
+        this.showQrcode(true);
+        return;
+      }
       if (!this.radio_vip) {
         this.$vux.toast.text("请选择卡种", "middle");
         return;
@@ -97,7 +137,9 @@ export default {
       api.getVipCard(this.radio_vip, this.radio_phone).then(res => {
         console.log(res);
         if (res.errCode == 0) {
-          this.$vux.toast.text("兑换成功,请前往我的卡券查看", "middle");
+          this.isshowVipInfo = true;
+          this.vipCardInfo = res.vipInfo;
+          // this.$vux.toast.text("兑换成功,请前往我的卡券查看", "middle");
         }
       });
     },
@@ -124,14 +166,18 @@ export default {
         console.log("vipCardlist--------", res);
         this.vipCardList = res;
         this.vipCardList.forEach(item => {
-          item.CouponInfo.codeNum =
-            util.prefixZero(item.CouponInfo.type, 1) +
-            util.prefixZero(item.CouponInfo.batch, 3) +
-            util.prefixZero(item.CouponInfo.acquireNum, 4);
+          item.couponInfo.codeNum =
+            util.prefixZero(item.couponInfo.type, 1) +
+            util.prefixZero(item.couponInfo.batch, 3) +
+            util.prefixZero(item.couponInfo.acquireNum, 4);
         });
       });
     }
   },
+  ...mapMutations({
+    changeQrCodeText: "CHANGEQRCODETEXT",
+    showQrcode: "SHOW_QRCODE" //展示二维码
+  }),
   components: {
     myHeader
   }
@@ -145,6 +191,7 @@ export default {
 @import "~vux/src/styles/close";
 .welfare_wrapper {
   // .titleWrapper;
+  position: relative;
   .title_content_wel {
     // display: flex;
     // justify-content: space-between;
@@ -352,6 +399,88 @@ export default {
       font-weight: 900;
       font-size: 14px;
       border-radius: 0.08rem;
+    }
+  }
+  .bg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  .topUp {
+    width: 9rem;
+    height: 4.7rem;
+    .bg("../../assets/image/envelop_handle.png");
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    margin-top: -2.5rem;
+    top: 50%;
+    margin-left: -4.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .userInfo_content {
+      display: flex;
+      padding: 0.2333rem 0.5333rem 0;
+      .headUrl {
+        width: 1.0667rem;
+        height: 1.0667rem;
+        border-radius: 50%;
+      }
+      .name {
+        margin-left: 0.1333rem;
+        margin-top: 0.2667rem;
+        font-size: 16px;
+      }
+    }
+    .vipInfo_content {
+      display: flex;
+      justify-content: space-around;
+      margin-top: -0.4rem;
+      .vipCardIcon {
+        .Icon {
+          width: 2.3333rem;
+          height: 1.6667rem;
+        }
+      }
+      .sucText {
+        height: 1.6667rem;
+        line-height: 1.6667rem;
+        color: #333;
+        font-size: 14px;
+      }
+    }
+    .handle_content {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      height: 0.7667rem;
+      .btnDetail {
+        border: 1px solid rgb(156, 13, 13);
+        background-color: #fff;
+        color: rgb(156, 13, 13);
+        width: 0.8rem;
+        height: 0.45rem;
+        line-height: 0.45rem;
+        box-sizing: border-box;
+        display: inline-block;
+        text-align: center;
+        position: absolute;
+        left: 0.4rem;
+        bottom: 0.6rem;
+      }
+      .btnUse {
+        box-sizing: border-box; // letter-spacing: 0.08rem;
+        font-weight: 800;
+        color: #fff;
+        position: absolute;
+        right: 0.6rem;
+        bottom: 0.66rem;
+      }
     }
   }
   .ui-radio {
