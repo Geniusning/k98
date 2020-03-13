@@ -41,7 +41,6 @@
               <div v-if="item.type==1" class="message_wrapper">
                 <div class="person_box">
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
-                  <!-- <h2 class="name">{{item.time}}</h2> -->
                   <img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
                     alt class="avatar" v-if="item.friend">
                   <img onclick="return false" :src="userInfo.headimgurl" alt class="avatar" v-else>
@@ -76,8 +75,6 @@
                       <p v-else-if="item.chatExtMsg.type==1" class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?"收到门店项目券,已存入卡券包,到店使用":"无功不受禄，不好意思收礼"}}</p>
                       <p v-else class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?"收礼并表谢意,虚拟礼品存入积分，见'积分明细'":"无功不受禄，不好意思收礼"}}</p>
                     </div>
-                    <!-- <p v-if="item.from==userInfo.openid" class="giftRecord_test received">{{staticChatFriendObj.nickname}}{{item.isAgree?(item.chatExtMsg.type?"收礼并表谢意,门店项目及礼物~已存入'他的卡券'":"感谢送的礼物,虚拟礼物~已存入'他的积分'"):"无功不受禄，不好意思收礼"}}</p>
-                        <p v-else class="giftRecord_test received">{{userInfo.nickname}}{{item.isAgree?(item.chatExtMsg.type?"收礼并表谢意,门店项目及礼物~已存入'我的卡券'":"感谢送的礼物,虚拟礼物~已存入'我的积分'"):"无功不受禄，不好意思收礼"}}</p> -->
                   </div>
                   <div v-else>
                     <div>
@@ -145,7 +142,10 @@
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
-          <input type="text" ref="sendInputRef" placeholder="请输入..." id="send_message" class="send_message" @focus="inputFocus" v-model="input_value">
+          <img class="voiceIcon" v-show="isvoice" @click="isvoice = !isvoice" src="../../assets/image/microphone.png" alt="">
+          <img class="voiceIcon" v-show="!isvoice" @click="isvoice = !isvoice" src="../../assets/image/write.png" alt="">
+          <div v-show="!isvoice" class="send_message btn">按住 说话</div>
+          <input v-show="isvoice" type="text" ref="sendInputRef" placeholder="请输入..." id="send_message" class="send_message" @focus="inputFocus" v-model="input_value">
           <div @click="send" ref="sendBtn" class="action_box clearfix" :class="{active:flag}">
             <img src="../../assets/image/plane.png" alt class="icon_plane fl">
             <span class="send fl" ref="send">发送</span>
@@ -254,6 +254,7 @@
     },
     data() {
       return {
+        isvoice:true,
         alreadyClientListCursor: 0, //拉取客服信息游标
         isStaffOrClient: false,
         sendingTimes: 0,
@@ -1356,15 +1357,26 @@
         padding: 0.2133rem 0;
         height: 1.44rem;
         box-sizing: border-box;
+        .voiceIcon{
+          width: 1rem;
+          height: 1rem;
+          float: left;
+        }
         .send_message {
           outline: none;
           -webkit-appearance: none;
           font-size: 0.3733rem;
           float: left;
-          width: 6.9333rem;
+          width: 5.9333rem;
           height: 1rem;
           text-indent: 0.2667rem;
           border: 1px solid #999;
+        }
+        .btn{
+          line-height: 1rem;
+          text-align: center;
+          border-radius: 10px;
+          font-weight: 700;
         }
         .action_box {
           margin-left: 0.2767rem;

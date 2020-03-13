@@ -19,11 +19,12 @@
       <!-- 未使用 -->
       <ul class="no_user_list" v-show="tagIndex==0">
         <h3 class="noCouponTips" v-if="!unusedList.length">暂无优惠券</h3>
-        <li v-else class="item" v-for="(item,index) in unusedList" :key="index">
+        <li v-else class="item" :class="{'vipmbg':item.coupon.type=='月卡券','viptbg':item.coupon.type=='次卡券' }"  v-for="(item,index) in unusedList" :key="index">
           <div class="myleft">
-            <p class="discount_type_text">{{item.coupon.type}}</p>
+            <p class="discount_type_text" >{{item.coupon.type}}</p>
+            <p class="yuE" v-show="item.usingTimes>0">剩{{item.usingTimes}}次</p>
           </div>
-          <div class="mycenter">
+          <div class="mycenter" style="color:#FDDC69" v-show="item.coupon.type=='月卡券' ||item.coupon.type=='次卡券'">
             <div class="discount_theme clearfix">
               <div class="theme">
                 {{item.coupon.theme?item.coupon.theme:"新人礼包"}}
@@ -32,12 +33,31 @@
                 <img onclick="return false" :src="item.coupon.senderHeadImage" alt="" class="receiver_avartar">
                 <span class="receiver_name">{{item.coupon.senderName}}</span><span>送</span>
               </div>
-              <!-- v-if="item.coupon.integral" -->
               <div class="receiverProject_wrapper">
                 <div class="integral_content">
                   {{item.coupon.codeNum}}
-                  <!-- <img onclick="return false" src="../../assets/image/integralIcon.png" class="integral_icon"> -->
-                  <!-- <span class="integral_text">{{item.coupon.integral}}</span> -->
+                </div>
+                <img onclick="return false" v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
+              </div>
+            </div>
+            <div class="discount_content">{{item.coupon.name}}  <span v-if="item.usingTimes != 0" style="font-size:12px">(会员特权)</span></div>
+            <div class="discount_limitAndTime">
+              <div class="limit">积分:{{item.coupon.integral}} &nbsp;&nbsp;&nbsp;{{item.coupon.limit}}</div>
+              <p class="time">有效期至:{{item.coupon.time}}</p>
+            </div>
+          </div>
+          <div class="mycenter" v-show="item.coupon.type!='月卡券' && item.coupon.type!='次卡券'">
+            <div class="discount_theme clearfix">
+              <div class="theme">
+                {{item.coupon.theme?item.coupon.theme:"新人礼包"}}
+              </div>
+              <div class="receiver_wrapper" v-if="item.coupon.senderHeadImage">
+                <img onclick="return false" :src="item.coupon.senderHeadImage" alt="" class="receiver_avartar">
+                <span class="receiver_name">{{item.coupon.senderName}}</span><span>送</span>
+              </div>
+              <div class="receiverProject_wrapper">
+                <div class="integral_content">
+                  {{item.coupon.codeNum}}
                 </div>
                 <img onclick="return false" v-if="item.coupon.image" :src="item.coupon.image" class="project_img">
               </div>
@@ -56,7 +76,7 @@
       <!-- 已使用 -->
       <ul class="usered_list" v-show="tagIndex==1">
         <h3 class="noCouponTips" v-if="!usedList.length">暂无优惠券</h3>
-        <li v-else class="item" v-for="(item,index) in usedList" :key="index">
+        <li v-else class="item" :class="{'vipmbg':item.coupon.type=='月卡券','viptbg':item.coupon.type=='次卡券' }"  v-for="(item,index) in usedList" :key="index">
           <!-- <div class="left1">
               <p class="name">{{item.coupon.name}}</p>
               <p class="time">{{item.coupon.time}}</p>
@@ -195,6 +215,7 @@ import myHeader from "../../base/myheader/myheader.vue";
 export default {
   data() {
     return {
+      vipColor:"#FDDC69",
       flag: false,
       tagIndex: 0,
       unusedList: [],
@@ -397,19 +418,36 @@ export default {
     .no_user_list {
       overflow-y: auto;
       .card("../../assets/image/discount_bg.png", 0.5333rem);
+      .vipmbg{
+        background-image: url("../../assets/image/discount_vipm_bg.png");
+        background-repeat: no-repeat;
+        background-size: 100%;
+      }
+      .viptbg{
+        background-image: url("../../assets/image/discount_vipt_bg.png");
+        background-repeat: no-repeat;
+        background-size: 100%;
+      }
       .item {
         display: flex;
       }
       .myleft {
         width: 1.3rem;
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
         .discount_type_text {
           display: inline-block;
           width: 0.4rem;
-          padding-top: 0.2333rem;
           font-size: 0.45rem;
           color: #d33700;
           font-weight: 900;
+        }
+        .yuE{
+           color: #d33700;
+           font-size: 0.1333rem;
         }
       }
       .mycenter {
@@ -592,6 +630,16 @@ export default {
     .usered_list {
       overflow-y: auto;
       .card("../../assets/image/songli_discount_bg.png", 0.5333rem);
+      .vipmbg{
+        background-image: url("../../assets/image/discount_vipm_bg.png");
+        background-repeat: no-repeat;
+        background-size: 100%;
+      }
+      .viptbg{
+        background-image: url("../../assets/image/discount_vipt_bg.png");
+        background-repeat: no-repeat;
+        background-size: 100%;
+      }
       .item {
         display: flex;
       }
@@ -622,8 +670,6 @@ export default {
           .receiver_wrapper,
           .receiverProject_wrapper {
             float: left;
-          }
-          .theme {
           }
           .receiver_wrapper {
             margin-left: 0.6667rem;
@@ -720,8 +766,6 @@ export default {
           .receiver_wrapper,
           .receiverProject_wrapper {
             float: left;
-          }
-          .theme {
           }
           .receiver_wrapper {
             margin-left: 0.6667rem;
