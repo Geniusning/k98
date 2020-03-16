@@ -424,43 +424,43 @@ export default {
     // this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
   },
   methods: {
-    addHandler() {
-      this.pushHistory();
-      window.addEventListener("popstate", e => {
-        if (
-          window.history.state.url == "http://es6.ruanyifeng.com" ||
-          window.history.state.url == "https://www.baidu.com"
-        ) {
-          console.log(
-            "---------------window.history.state.url------------------------------",
-            window.history.state.url
-          );
-          console.log(
-            "---------------window.history------------------------------",
-            window.history
-          );
-          var msg = "您真的确定要退出吗";
-          if (confirm(msg) == true) {
-            WeixinJSBridge.invoke("closeWindow", {}, function(res) {});
-          } else {
-            return false;
-          }
-        }
-      });
-    },
-    pushHistory() {
-      //    第一个实体
-      var state = {
-        title: "baidu",
-        url: "https://www.baidu.com"
-      };
-      window.history.pushState(state, "baidu", "");
-      state = {
-        title: "index",
-        url: "http://es6.ruanyifeng.com"
-      };
-      window.history.pushState(state, "index", "");
-    },
+    // addHandler() {
+    //   this.pushHistory();
+    //   window.addEventListener("popstate", e => {
+    //     if (
+    //       window.history.state.url == "http://es6.ruanyifeng.com" ||
+    //       window.history.state.url == "https://www.baidu.com"
+    //     ) {
+    //       console.log(
+    //         "---------------window.history.state.url------------------------------",
+    //         window.history.state.url
+    //       );
+    //       console.log(
+    //         "---------------window.history------------------------------",
+    //         window.history
+    //       );
+    //       var msg = "您真的确定要退出吗";
+    //       if (confirm(msg) == true) {
+    //         WeixinJSBridge.invoke("closeWindow", {}, function(res) {});
+    //       } else {
+    //         return false;
+    //       }
+    //     }
+    //   });
+    // },
+    // pushHistory() {
+    //   //    第一个实体
+    //   var state = {
+    //     title: "baidu",
+    //     url: "https://www.baidu.com"
+    //   };
+    //   window.history.pushState(state, "baidu", "");
+    //   state = {
+    //     title: "index",
+    //     url: "http://es6.ruanyifeng.com"
+    //   };
+    //   window.history.pushState(state, "index", "");
+    // },
     //隐藏分享引导
     share() {
       this.isShow_bg = false;
