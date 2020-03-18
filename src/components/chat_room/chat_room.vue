@@ -142,10 +142,10 @@
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
-          <img class="voiceIcon" v-show="isvoice" @click="isvoice = !isvoice" src="../../assets/image/microphone.png" alt="">
-          <img class="voiceIcon" v-show="!isvoice" @click="isvoice = !isvoice" src="../../assets/image/write.png" alt="">
-          <div v-show="!isvoice" class="send_message btn" @touchstart="touchstart" @touchend="touchend">按住 说话</div>
-          <input v-show="isvoice" type="text" ref="sendInputRef" placeholder="请输入..." id="send_message" class="send_message" @focus="inputFocus" v-model="input_value">
+          <img class="voiceIcon" v-show="!isvoice" @click="toggleVoice" src="../../assets/image/microphone.png" alt="">
+          <img class="voiceIcon" v-show="isvoice" @click="toggleVoice" src="../../assets/image/write.png" alt="">
+          <div v-show="isvoice" class="send_message btn" @touchstart="touchstart" @touchend="touchend">按住 说话</div>
+          <input v-show="!isvoice" type="text" ref="sendInputRef" placeholder="请输入..." id="send_message" class="send_message" @focus="inputFocus" v-model="input_value">
           <div @click="send" ref="sendBtn" class="action_box clearfix" :class="{active:flag}">
             <img src="../../assets/image/plane.png" alt class="icon_plane fl">
             <span class="send fl" ref="send">发送</span>
@@ -258,8 +258,8 @@
     },
     data() {
       return {
-        isVoicing: false,
-        isvoice: true,
+        isVoicing: true,
+        isvoice: false,
         alreadyClientListCursor: 0, //拉取客服信息游标
         isStaffOrClient: false,
         sendingTimes: 0,
@@ -368,7 +368,8 @@
         dontFocus: true,
         isShowSoulPanel: false,
         startTime: 0,
-        endTime: 0
+        endTime: 0,
+        messageType:1,
         // isLoading: false
       };
     },
@@ -489,6 +490,14 @@
       ...mapGetters(["qrIsShow", "LastChatMsg"])
     },
     methods: {
+      toggleVoice(){
+        this.isvoice = ! this.isvoice
+        if(this.isvoice==true){
+          this.messageType = 9  //语音消息
+        }else{
+          this.messageType = 1  //文字消息
+        }
+      },
       _initJssdk(url) {
         api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
           .then(res => {
@@ -825,13 +834,13 @@
         this.componentChatList.push({
           message: this.input_value,
           friend: 0,
-          type: 1,
+          type: this.messageType,
           time: util.timestampToTime(new Date().getTime())
         });
         let messObj = {
           to: this.staticChatFriendObj.openid,
           content: this.input_value,
-          type: 1
+          type: this.messageType
         };
         let textMessObj = JSON.stringify(messObj);
         let decc1 = new TextEncoder("utf-8");
