@@ -1,6 +1,7 @@
 <template>
   <transition name="fade">
     <div id="chat" class="chatRoom">
+      <div class="voice-bg"></div>
       <div class="chat_nav">
         <div class="back_box">
           <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
@@ -15,7 +16,7 @@
             <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
             <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
             <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
-          </div>
+          </div> 
         </div>
         <div class="backHome_box">
           <img onclick="return false" src="../../assets/image/chat_home.png" alt class="home" @click="goHome">
@@ -48,6 +49,29 @@
                 <div class="message_box">
                   <span v-show="item.type===1" class="arrow"></span>
                   <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message"></p>
+                </div>
+              </div>
+              <div v-if="item.type==9" class="message_wrapper">
+                <div class="person_box">
+                  <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
+                  <img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                    alt class="avatar" v-if="item.friend">
+                  <img onclick="return false" :src="userInfo.headimgurl" alt class="avatar" v-else>
+                </div>
+                <div class="message_box">
+                  <span v-show="item.type===9" class="arrow"></span>
+                  <div class="message" style="word-break: break-all; width:2rem;height:.5rem" v-if="item.type===9">
+                    <div class="cricleplay" v-if="item.friend==1" @click="downLoadVoice(item.message,$event,item.friend)">
+                      <div class="small first"></div>
+                      <div class="middle stopanimate"></div>
+                      <div class="large stopanimate"></div>
+                    </div>
+                    <div class="cricleplay" v-else @click="downLoadVoice(item.message,$event,item.friend)">
+                      <div class="large stopanimate"></div>
+                      <div class="middle stopanimate"></div>
+                      <div class="small first"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div v-if="item.type==2" class="message_wrapper">
@@ -137,15 +161,15 @@
           </ul>
         </scroll>
         <!-- <div class="loading-container" v-show="isLoading">
-                                                                              <loading></loading>
-                          </div>-->
+                                                                                            <loading></loading>
+                                        </div>-->
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
-          <img class="voiceIcon" v-show="isvoice" @click="isvoice = !isvoice" src="../../assets/image/microphone.png" alt="">
-          <img class="voiceIcon" v-show="!isvoice" @click="isvoice = !isvoice" src="../../assets/image/write.png" alt="">
-          <div v-show="!isvoice" class="send_message btn" @touchstart="touchstart" @touchend="touchend">按住 说话</div>
-          <input v-show="isvoice" type="text" ref="sendInputRef" placeholder="请输入..." id="send_message" class="send_message" @focus="inputFocus" v-model="input_value">
+          <img class="voiceIcon" v-show="!isvoice" @click="toggleVoice" src="../../assets/image/microphone.png" alt="">
+          <img class="voiceIcon" v-show="isvoice" @click="toggleVoice" src="../../assets/image/write.png" alt="">
+          <div v-show="isvoice" class="send_message btn" @touchstart="touchstart" @touchend="touchend">按住 说话</div>
+          <input v-show="!isvoice" type="text" ref="sendInputRef" placeholder="请输入..." id="send_message" class="send_message" @focus="inputFocus" v-model="input_value">
           <div @click="send" ref="sendBtn" class="action_box clearfix" :class="{active:flag}">
             <img src="../../assets/image/plane.png" alt class="icon_plane fl">
             <span class="send fl" ref="send">发送</span>
@@ -256,7 +280,7 @@ export default {
   data() {
     return {
       isVoicing: false,
-      isvoice: true,
+      isvoice: false,
       alreadyClientListCursor: 0, //拉取客服信息游标
       isStaffOrClient: false,
       sendingTimes: 0,
@@ -367,7 +391,9 @@ export default {
       startTime: 0,
       endTime: 0,
       myShareUrl: "",
-      voiceLocalId: ""
+      voiceLocalId: "",
+      voiceServerId: "",
+      messageType: 1
       // isLoading: false
     };
   },
@@ -390,7 +416,12 @@ export default {
     // })
     // });
     let _url = window.location.href;
-    this.myShareUrl = _url.split("#")[0];
+    if (util.isAndroid()) {
+      this.myShareUrl = _url.split("#")[0];
+    } else {
+      this.myShareUrl = this.shareUrl + "k98/home";
+    }
+    console.log("this.myShareUrl-----", this.myShareUrl);
     this._initJssdk(this.myShareUrl);
     // this._initJssdk(this.myShareUrl)
   },
@@ -487,18 +518,43 @@ export default {
       "inputValue",
       "socket",
       "alreadyFriendListcursor",
-      "giftList"
+      "giftList",
+      "shareUrl"
     ]),
     ...mapGetters(["qrIsShow", "LastChatMsg"])
   },
   methods: {
+    hasClass(element, className) {
+      var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
+      return element.className.match(reg);
+    },
+    addClass(element, className) {
+      if (!this.hasClass(element, className)) {
+        element.className += " " + className;
+      }
+    },
+    removeClass(element, className) {
+      if (this.hasClass(element, className)) {
+        var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
+        element.className = element.className.replace(reg, " ");
+      }
+    },
+    toggleVoice() {
+      this.isvoice = !this.isvoice;
+      if (this.isvoice == true) {
+        this.messageType = 9;
+      } else {
+        this.messageType = 1;
+      }
+      console.log("this.messageType", this.messageType);
+    },
     _initJssdk(url) {
       api
         .getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
         .then(res => {
           console.log("获取微信jssdk---------", res);
           wx.config({
-            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
             appId: res.appId,
             timestamp: res.timestamp,
             nonceStr: res.nonceStr,
@@ -515,6 +571,22 @@ export default {
               "downloadVoice"
             ]
           });
+          wx.ready(() => {
+            if (
+              !localStorage.rainAllowRecord ||
+              localStorage.rainAllowRecord !== "true"
+            ) {
+              wx.startRecord({
+                success: function() {
+                  localStorage.rainAllowRecord = "true";
+                  wx.stopRecord();
+                },
+                cancel: function() {
+                  alert("用户拒绝授权录音");
+                }
+              });
+            }
+          });
           wx.error(function(res) {
             console.log(res);
             // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
@@ -522,30 +594,90 @@ export default {
         });
     },
     touchstart() {
+      var _this = this;
       wx.startRecord();
       this.isVoicing = true;
       this.startTime = new Date().getTime();
-      this.timer = setTimeout(() => {
-        wx.onVoiceRecordEnd({
-          // 录音时间超过一分钟没有停止的时候会执行 complete 回调
-          complete: function(res) {
-            this.voiceLocalId = res.localId;
+      console.log("this.startTime-------", this.startTime);
+      setTimeout(() => {
+        wx.stopRecord({
+          success: function(res) {
+            console.log("res.localId----", res.localId);
+            _this.voiceLocalId = res.localId;
+            console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
+            wx.uploadVoice({
+              localId: _this.voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
+              isShowProgressTips: 1, // 默认为1，显示进度提示
+              success: function(res) {
+                _this.voiceServerId = res.serverId; // 返回音频的服务器端ID
+                console.log(
+                  "wx.uploadVoice-voiceServerId",
+                  _this.voiceServerId
+                );
+                _this.send();
+              }
+            });
           }
         });
-      }, 1000);
-      console.log("this.startTime-------", this.startTime);
+      }, 58000);
     },
     touchend() {
-      clearTimeout(this.timer);
       this.endTime = new Date().getTime();
       console.log("this.endTime----", this.endTime);
-      if (this.endTime - this.startTime < 700) {
+      if (this.endTime - this.startTime < 1000) {
         this.$vux.toast.text("录音时间过短", "middle");
+        wx.stopRecord();
+        this.isVoicing = false;
+        return;
       }
       this.isVoicing = false;
+      var _this = this;
       wx.stopRecord({
         success: function(res) {
-          this.voiceLocalId = res.localId;
+          console.log("res.localId----", res.localId);
+          _this.voiceLocalId = res.localId;
+          console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
+          wx.uploadVoice({
+            localId: _this.voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
+            isShowProgressTips: 0, // 默认为1，显示进度提示
+            success: function(res) {
+              _this.voiceServerId = res.serverId; // 返回音频的服务器端ID
+              console.log("wx.uploadVoice-voiceServerId", _this.voiceServerId);
+              _this.send();
+            }
+          });
+        },
+        fail: function(res) {
+          console.log("wx.stopRecord fail---", res);
+        }
+      });
+    },
+    downLoadVoice(downId, e, isFriend) {
+      var _this = this;
+      console.log("down");
+      console.log("eee", e);
+      wx.downloadVoice({
+        serverId: downId, // 需要下载的音频的服务器端ID，由uploadVoice接口获得
+        isShowProgressTips: 0, // 默认为1，显示进度提示
+        success: function(res) {
+          this.voiceLocalId = res.localId; // 返回音频的本地ID
+          console.log("wx.downloadVoice--voiceId", this.voiceLocalId);
+          wx.playVoice({
+            localId: this.voiceLocalId // 需要播放的音频的本地ID，由stopRecord接口获得
+          });
+          console.log("e---", e);
+          _this.removeClass(e.target.children[0], "stopanimate");
+          _this.removeClass(e.target.children[1], "stopanimate");
+          _this.removeClass(e.target.children[2], "stopanimate");
+          wx.onVoicePlayEnd({
+            success: function(res) {
+              var localId = res.localId; // 返回音频的本地ID
+              console.log("播放完毕localId---", localId);
+              _this.addClass(e.target.children[0], "stopanimate");
+              _this.addClass(e.target.children[1], "stopanimate");
+              _this.addClass(e.target.children[2], "stopanimate");
+            }
+          });
         }
       });
     },
@@ -831,6 +963,7 @@ export default {
     },
     //发送消息事件
     send() {
+      console.log("发送消息");
       this.isShowSoulPanel = false; //发消息隐藏灵魂匹配面板
       // if (util.isAndroid() && this.dontFocus) {  //输入后再次弹起键盘
       //   this.dontFocus = true;
@@ -842,7 +975,7 @@ export default {
         return;
       }
       //  this.blurAdjust();
-      if (!this.input_value) {
+      if (!this.input_value && !this.voiceServerId) {
         return;
       }
       // this.$refs.sendInputRef.focus()
@@ -865,15 +998,15 @@ export default {
       }
       //把自己发送的内容加到聊天列表里面
       this.componentChatList.push({
-        message: this.input_value,
+        message: this.messageType == 1 ? this.input_value : this.voiceServerId,
         friend: 0,
-        type: 1,
+        type: this.messageType,
         time: util.timestampToTime(new Date().getTime())
       });
       let messObj = {
         to: this.staticChatFriendObj.openid,
-        content: this.input_value,
-        type: 1
+        content: this.messageType == 1 ? this.input_value : this.voiceServerId,
+        type: this.messageType
       };
       let textMessObj = JSON.stringify(messObj);
       let decc1 = new TextEncoder("utf-8");
@@ -1354,6 +1487,7 @@ export default {
         }
         .friend {
           .chatList(left, #fff);
+          .border-left();
           .arrow {
             .arrowDot(#fff);
             left: -0.05rem;
@@ -1366,6 +1500,7 @@ export default {
         .mine {
           width: 100%;
           .chatList(right, #ffd800);
+          .border-right();
           .arrow {
             .arrowDot(#ffd800);
             right: -0.05rem;
@@ -1501,6 +1636,12 @@ export default {
         text-align: center;
         border-radius: 10px;
         font-weight: 700;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
       }
       .action_box {
         margin-left: 0.2767rem;
@@ -1523,7 +1664,8 @@ export default {
           font-size: 0.4rem;
         }
       }
-    } //选择区域
+    }
+    //选择区域
     .select_area {
       height: 1.1rem;
       box-sizing: border-box;
@@ -1551,7 +1693,8 @@ export default {
           }
         }
       }
-    } // 表情区域
+    }
+    // 表情区域
     .emotion_area {
       overflow: hidden;
       .grid-center {
@@ -1611,7 +1754,8 @@ export default {
     top: 0;
     bottom: 0;
     left: 0;
-    right: 0; // background-color: rgba(0, 0, 0, 0.3);
+    right: 0;
+    // background-color: rgba(0, 0, 0, 0.3);
     .warning_wrapper {
       background-image: url("../../assets/image/envelop.png");
       background-repeat: no-repeat;
