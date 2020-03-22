@@ -9,13 +9,13 @@ import axios from 'axios'
 import Url from './config'
 let windowUrL = window.location.href;
 let index = windowUrL.indexOf('.com');
-let shareurl = windowUrL.slice(0, index) + ".com/"
+let shareurl = windowUrL.slice(0, index) + ".com"
 
 let api = {};
 //兑换会员卡
 api.getVipCard = function (vipId, phone) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/getVipCard?vipCardId=${vipId}&phone=${phone}`).then(res => {
+        axios.get(shareurl + `/api/getVipCard?vipCardId=${vipId}&phone=${phone}`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -27,7 +27,7 @@ api.getVipCard = function (vipId, phone) {
 //回应游戏带被邀请队列
 api.queueCombatReply = function (p) {
     return new Promise((resolve, reject) => {
-        axios.post(shareurl + `game/dice/queueCombatReply`, p).then(res => {
+        axios.post(shareurl + `/game/dice/queueCombatReply`, p).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -40,7 +40,7 @@ api.queueCombatReply = function (p) {
 //放弃回房
 api.enforceLeaveRoom = function () {
     return new Promise((resolve, reject) => {
-        axios.get(shareurl + `game/dice/enforceLeaveRoom`).then(res => {
+        axios.get(shareurl + `/game/dice/enforceLeaveRoom`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -51,7 +51,7 @@ api.enforceLeaveRoom = function () {
 }
 api.loadAllStaff = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadAllStaff`).then(res => {
+        axios.get(shareurl + `/api/loadAllStaff`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -63,7 +63,7 @@ api.loadAllStaff = function () {
 //加载vip卡券
 api.loadVipCardList = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadVipCard`).then(res => {
+        axios.get(shareurl + `/api/loadVipCard`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -75,7 +75,7 @@ api.loadVipCardList = function () {
 //接受灵魂匹配
 api.acceptSoulFri = function (fromId) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/acceptSoulFri?fromId=${fromId}`).then(res => {
+        axios.get(shareurl + `/api/acceptSoulFri?fromId=${fromId}`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -87,7 +87,7 @@ api.acceptSoulFri = function (fromId) {
 //搜索灵魂匹配用户
 api.searchWaitBeMakeFriUser = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/searchWaitBeMakeFriUser`).then(res => {
+        axios.get(shareurl + `/api/searchWaitBeMakeFriUser`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -99,7 +99,7 @@ api.searchWaitBeMakeFriUser = function () {
 //随机场添加等待约战人名单
 api.addWaitingCombatList = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/addWaitingCombatList`).then(res => {
+        axios.get(shareurl + `/api/addWaitingCombatList`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -111,7 +111,7 @@ api.addWaitingCombatList = function () {
 //加载客服聊天记录
 api.loadChatMsgCliSer = function (cursor, aTalker, bTalker, loadCount) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadChatMsgCliSer?cursor=${cursor}&to=${aTalker}&from=${bTalker}&loadCount=${loadCount}`).then(res => {
+        axios.get(shareurl + `/api/loadChatMsgCliSer?cursor=${cursor}&to=${aTalker}&from=${bTalker}&loadCount=${loadCount}`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -123,7 +123,7 @@ api.loadChatMsgCliSer = function (cursor, aTalker, bTalker, loadCount) {
 //成为留言者
 api.addCommenter = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/addCommenter`).then(res => {
+        axios.get(shareurl + `/api/addCommenter`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -135,7 +135,7 @@ api.addCommenter = function () {
 //加载客服列表
 api.loadClientServiceList = function (phone) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadClientServiceList?phone=${phone}`).then(res => {
+        axios.get(shareurl + `/api/loadClientServiceList?phone=${phone}`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -147,7 +147,7 @@ api.loadClientServiceList = function (phone) {
 //拉取设置信息
 api.loadL98otherSetting = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadL98otherSetting`).then(res => {
+        axios.get(shareurl + `/api/loadL98otherSetting`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -160,7 +160,7 @@ api.loadL98otherSetting = function () {
 //加载回房信息
 api.loadLastRoomInfo = function (deskCode) {
     return new Promise((resolve, reject) => {
-        axios.get(shareurl + `game/dice/loadLastRoomInfo?deskCode=${deskCode}`).then(res => {
+        axios.get(shareurl + `/game/dice/loadLastRoomInfo?deskCode=${deskCode}`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -172,7 +172,7 @@ api.loadLastRoomInfo = function (deskCode) {
 //删除好友quitFriend
 api.quitFriend = function (openId) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/quitFriend?targetID=${openId}`).then(res => {
+        axios.get(shareurl + `/api/quitFriend?targetID=${openId}`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -184,7 +184,7 @@ api.quitFriend = function (openId) {
 //获取用户信息
 api.getUserInfo = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadUserInfo`).then(res => {
+        axios.get(shareurl + `/api/loadUserInfo`).then(res => {
             if (res.status == 200) {
                 // console.log(res.data)
                 resolve(res.data)
@@ -198,7 +198,7 @@ api.getUserInfo = function () {
 // 获取jssdk签名
 api.getJssdkInfo = function (path) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + path).then(res => {
+        axios.get(shareurl + path).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -211,7 +211,7 @@ api.getJssdkInfo = function (path) {
 //拉取全部社群用户
 api.getFriendList = function (params) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/searchCandidates`, params).then(res => {
+        axios.post(shareurl + `/api/searchCandidates`, params).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -224,7 +224,7 @@ api.getFriendList = function (params) {
 //请求加好友
 api.makeFriend = function (xid) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + "/api/makeFriend?targetID=" + xid).then(res => {
+        axios.post(shareurl + "/api/makeFriend?targetID=" + xid).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -237,7 +237,7 @@ api.makeFriend = function (xid) {
 //拉取好友事件
 api.loadFriendEvts = function (cursor) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + "/api/loadFriendEvts?cursor=" + cursor).then(res => {
+        axios.post(shareurl + "/api/loadFriendEvts?cursor=" + cursor).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -250,7 +250,7 @@ api.loadFriendEvts = function (cursor) {
 //回赞事件
 api.giveBackThumb = function (type, flag) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/auditFriend?evtID=${type}&agree=${flag}`).then(res => {
+        axios.post(shareurl + `/api/auditFriend?evtID=${type}&agree=${flag}`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -262,7 +262,7 @@ api.giveBackThumb = function (type, flag) {
 //交互记录加载（包括约战、点赞交友、送礼记录
 api.loadMutualEvents = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadMutualEvents`)
+        axios.get(shareurl + `/api/loadMutualEvents`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -275,7 +275,7 @@ api.loadMutualEvents = function () {
 //获取好友列表
 api.loadFriends = function (cursor) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/loadFriends?cursor=${cursor}`).then(res => {
+        axios.post(shareurl + `/api/loadFriends?cursor=${cursor}`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -287,7 +287,7 @@ api.loadFriends = function (cursor) {
 //发送客服消息
 api.sendChatMsgCliSer = function (param) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/sendChatMsgCliSer`, param).then((res) => {
+        axios.post(shareurl + `/api/sendChatMsgCliSer`, param).then((res) => {
             // console.log(res)
             if (res.status == 200) {
                 resolve(res.data)
@@ -301,7 +301,7 @@ api.sendChatMsgCliSer = function (param) {
 api.postFriendMess = function (param) {
     return new Promise((resolve, reject) => {
         // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
-        axios.post(Url.commonUrl + "/api/sendChatMsg", param).then((res) => {
+        axios.post(shareurl + "/api/sendChatMsg", param).then((res) => {
             console.log(res)
             if (res.status == 200) {
                 resolve(res.data)
@@ -314,7 +314,7 @@ api.postFriendMess = function (param) {
 //发送客服聊天图片
 api.sendImageCliSer = function (fromIconURI, openId, from, fileName, param) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/sendImageCliSer?to=${openId}&from=${from}&fileName=${fileName}&fromIconURI=${fromIconURI}`, param).then((res) => {
+        axios.post(shareurl + `/api/sendImageCliSer?to=${openId}&from=${from}&fileName=${fileName}&fromIconURI=${fromIconURI}`, param).then((res) => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -327,7 +327,7 @@ api.sendImageCliSer = function (fromIconURI, openId, from, fileName, param) {
 api.postFriendPic = function (openId, fileName, param) {
     return new Promise((resolve, reject) => {
         // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
-        axios.post(Url.commonUrl + `/api/sendImage?to=${openId}&fileName=${fileName}`, param).then((res) => {
+        axios.post(shareurl + `/api/sendImage?to=${openId}&fileName=${fileName}`, param).then((res) => {
             // console.log(res)
             if (res.status == 200) {
                 resolve(res.data)
@@ -341,7 +341,7 @@ api.postFriendPic = function (openId, fileName, param) {
 api.getFriendMessList = function (cursor, who) {
     return new Promise((resolve, reject) => {
         // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
-        axios.get(Url.commonUrl + `/api/loadChatMsg?cursor=${cursor}&who=${who}`)
+        axios.get(shareurl + `/api/loadChatMsg?cursor=${cursor}&who=${who}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -354,7 +354,7 @@ api.getFriendMessList = function (cursor, who) {
 //标记客服消息已读
 api.setMsgReadCliSer = function (aTalker, bTalker) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/setMsgReadCliSer?to=${aTalker}&from=${bTalker}`)
+        axios.get(shareurl + `/api/setMsgReadCliSer?to=${aTalker}&from=${bTalker}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -368,7 +368,7 @@ api.setMsgReadCliSer = function (aTalker, bTalker) {
 api.sendMsgReaded = function (who) {
     return new Promise((resolve, reject) => {
         // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
-        axios.get(Url.commonUrl + `/api/setMsgRead?who=${who}`)
+        axios.get(shareurl + `/api/setMsgRead?who=${who}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -382,7 +382,7 @@ api.sendMsgReaded = function (who) {
 api.updateAvatar = function (fileName, param) {
     // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/updatePortrait?fileName=${fileName}`, param)
+        axios.post(shareurl + `/api/updatePortrait?fileName=${fileName}`, param)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -395,7 +395,7 @@ api.updateAvatar = function (fileName, param) {
 //上传生活照
 api.updateLifePic = function (fileName, param) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/photoUploadForLife?fileName=${fileName}`, param)
+        axios.post(shareurl + `/api/photoUploadForLife?fileName=${fileName}`, param)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -408,7 +408,7 @@ api.updateLifePic = function (fileName, param) {
 // 上传全部生活照Btn
 api.uploadAllLifePic = function (param) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/uploadLifePhotoURL`, param)
+        axios.post(shareurl + `/api/uploadLifePhotoURL`, param)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -422,7 +422,7 @@ api.uploadAllLifePic = function (param) {
 api.savePersonalInfo = function (param) {
     // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/updateUserInfo`, param)
+        axios.post(shareurl + `/api/updateUserInfo`, param)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -437,7 +437,7 @@ api.savePersonalInfo = function (param) {
 api.getInOutNum = function () {
     // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadInOutFieldNumber`)
+        axios.get(shareurl + `/api/loadInOutFieldNumber`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -452,7 +452,7 @@ api.getInOutNum = function () {
 api.getLoadInsideCandidates = function (cursor) {
     // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadInsideCandidates?cursor=${cursor}`)
+        axios.get(shareurl + `/api/loadInsideCandidates?cursor=${cursor}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -467,7 +467,7 @@ api.getLoadInsideCandidates = function (cursor) {
 api.getLoadOutsideCandidates = function (cursor) {
     // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadOutsideCandidates?cursor=${cursor}`)
+        axios.get(shareurl + `/api/loadOutsideCandidates?cursor=${cursor}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -481,7 +481,7 @@ api.getLoadOutsideCandidates = function (cursor) {
 // //用户拉取Ai优惠券
 // api.loadUserCoupons = function (channel) {
 //     return new Promise((resolve, reject) => {
-//         axios.get(Url.commonUrl + `/api/loadUserCoupons?channel=${channel}`)
+//         axios.get(shareurl + `/api/loadUserCoupons?channel=${channel}`)
 //             .then(res => {
 //                 if (res.status == 200) {
 //                     resolve(res.data)
@@ -494,7 +494,7 @@ api.getLoadOutsideCandidates = function (cursor) {
 //拉取未领取的优惠券（登录公众号弹出优惠券，目前只有AI发送才有）
 api.acquireWaitGetCoupons = function (condition) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/acquireWaitGetCoupons?condition=${condition}`)
+        axios.get(shareurl + `/api/acquireWaitGetCoupons?condition=${condition}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -507,7 +507,7 @@ api.acquireWaitGetCoupons = function (condition) {
 //拉取所有优惠券
 api.loadUserAllCoupon = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadUserAllCoupon`)
+        axios.get(shareurl + `/api/loadUserAllCoupon`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -520,7 +520,7 @@ api.loadUserAllCoupon = function () {
 //微信支付
 api.createOrder = function (goodsID) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/createOrder?goodsID=${goodsID}`)
+        axios.get(shareurl + `/api/createOrder?goodsID=${goodsID}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -533,7 +533,7 @@ api.createOrder = function (goodsID) {
 //标识已进入过公众号
 api.clearFirstLoadTag = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/clearFirstLoadTag`)
+        axios.get(shareurl + `/api/clearFirstLoadTag`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -886,7 +886,7 @@ api.thanksForGit = function (giftGiverID) {
 //送礼拒绝或接受
 api.respondForGift = function (param) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/respondForGift`, param)
+        axios.post(shareurl + `/api/respondForGift`, param)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -1059,7 +1059,7 @@ api.loadGameScoreRanking = function (rankingType, count, cursor) {
 //分享邀约记录创建
 api.createShareDaylog = function (shareType) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/createShareDaylog?shareType=${shareType}`)
+        axios.get(shareurl + `/api/createShareDaylog?shareType=${shareType}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -1072,7 +1072,7 @@ api.createShareDaylog = function (shareType) {
 //加载积分礼品
 api.loadGoods = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadGoods`)
+        axios.get(shareurl + `/api/loadGoods`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -1085,7 +1085,7 @@ api.loadGoods = function () {
 //兑换积分
 api.convertGoods = function (goodId) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/convertGoods?goodsID=${goodId}`)
+        axios.get(shareurl + `/api/convertGoods?goodsID=${goodId}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -1098,7 +1098,7 @@ api.convertGoods = function (goodId) {
 //分享获得积分
 api.shareToGetIntegral = function (amount, shareType) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/shareToGetIntegral?amount=${amount}&shareType=${shareType}`)
+        axios.get(shareurl + `/api/shareToGetIntegral?amount=${amount}&shareType=${shareType}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -1111,7 +1111,7 @@ api.shareToGetIntegral = function (amount, shareType) {
 //赠送礼品
 api.sentGoods = function (goodsID, targetID) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/sentGoods?goodsID=${goodsID}&targetID=${targetID}`)
+        axios.get(shareurl + `/api/sentGoods?goodsID=${goodsID}&targetID=${targetID}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -1124,7 +1124,7 @@ api.sentGoods = function (goodsID, targetID) {
 //店长推荐赠送礼品
 api.sentRecommend = function (goodsID, targetID) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/sentRecommend?recommendID=${goodsID}&targetID=${targetID}`)
+        axios.get(shareurl + `/api/sentRecommend?recommendID=${goodsID}&targetID=${targetID}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -1138,7 +1138,7 @@ api.sentRecommend = function (goodsID, targetID) {
 api.createQrcode = function () {
     // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/createQrcode`)
+        axios.get(shareurl + `/api/createQrcode`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -1153,7 +1153,7 @@ api.createQrcode = function () {
 api.loadAllQrcode = function () {
     return new Promise((resolve, reject) => {
         // ?tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==
-        axios.get(Url.commonUrl + `/api/loadAllQrcode`)
+        axios.get(shareurl + `/api/loadAllQrcode`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)
@@ -1166,7 +1166,7 @@ api.loadAllQrcode = function () {
 //分享有礼领取优惠券
 api.acquireInviteCoupon = function (couponID, type, activityId) {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/acquireInviteCoupon?couponID=${couponID}&abCoupon=${type}&activityId=${activityId}`)
+        axios.get(shareurl + `/api/acquireInviteCoupon?couponID=${couponID}&abCoupon=${type}&activityId=${activityId}`)
             .then(res => {
                 if (res.status == 200) {
                     // console.log('拉取二维码--------', res)

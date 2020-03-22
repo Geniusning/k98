@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecur-requests"> -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecur-requests">
     <meta name="viewport"
         content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link rel="icon" href="data:image/ico;base64,aWNv">
@@ -32,6 +32,10 @@
             overflow: hidden;
             position: relative;
             height: 100%;
+            -webkit-text-size-adjust: 100% !important;
+            text-size-adjust: 100% !important;
+            -moz-text-size-adjust: 100% !important;
+
         }
     </style>
 </head>
@@ -47,10 +51,32 @@
     <!-- <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script> -->
 </body>
 <script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
-<!-- <script>
+<script>
     // 初始化
     var vConsole = new VConsole();
     console.log('Hello world');
-</script> -->
+</script>
+<script>
+    (function () {
+        if (typeof WeixinJSBridge == "object" && typeof WeixinJSBridge.invoke == "function") {
+            handleFontSize();
+        } else {
+            if (document.addEventListener) {
+                document.addEventListener("WeixinJSBridgeReady", handleFontSize, false);
+            } else if (document.attachEvent) {
+                document.attachEvent("WeixinJSBridgeReady", handleFontSize);
+                document.attachEvent("onWeixinJSBridgeReady", handleFontSize);
+            }
+        }
+        function handleFontSize() {
+            // 设置网页字体为默认大小
+            WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize': 0 });
+            // 重写设置网页字体大小的事件
+            WeixinJSBridge.on('menu:setfont', function () {
+                WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize': 0 });
+            });
+        }
+    })();
+</script>
 
 </html>
