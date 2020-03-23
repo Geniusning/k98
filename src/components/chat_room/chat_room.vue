@@ -52,6 +52,7 @@
                 </div>
               </div>
               <div v-if="item.type==9" class="message_wrapper">
+                <div class="dot" v-show="item.friend&&!item.vocieUnread"></div>
                 <div class="person_box">
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
                   <img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
@@ -60,17 +61,16 @@
                 </div>
                 <div class="message_box">
                   <span v-show="item.type===9" class="arrow"></span>
-                  <div class="dot" v-show="item.friend"></div>
                   <div class="message" style="word-break: break-all; width:2rem;height:.5rem" v-if="item.type===9">
-                    <div class="cricleplay" v-if="item.friend==1" :data-voiceInde="index" @click="downLoadVoice(item.message,$event,index,item.chatMsgID)">
+                    <div class="cricleplay" v-if="item.friend==1" :data-voiceInde="index" @click="downLoadVoice(item.message,$event,index,item.chatMsgID,item.friend)">
                       <div class="vocieDuration">{{item.vocieDuration}}''</div>
                       <div class="small first"></div>
                       <div class="middle stopanimate"></div>
                       <div class="large stopanimate"></div>
                     </div>
-                    <div class="cricleplay" v-else @click="downLoadVoice(item.message,$event,index,item.chatMsgID)">
+                    <div class="cricleplay" v-else @click="downLoadVoice(item.message,$event,index,item.chatMsgID,item.friend)">
                       <!-- :class="{stopanimate:!(index==activeVoiceIndex)}" -->
-                       <div class="vocieDuration">''{{item.vocieDuration}}</div>
+                      <div class="vocieDuration">''{{item.vocieDuration}}</div>
                       <div class="large stopanimate"></div>
                       <div class="middle stopanimate"></div>
                       <div class="small first"></div>
@@ -165,14 +165,14 @@
           </ul>
         </scroll>
         <!-- <div class="loading-container" v-show="isLoading">
-                                                                                                            <loading></loading>
-                                                        </div>-->
+                                                                                                              <loading></loading>
+                                                          </div>-->
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
           <img class="voiceIcon" v-show="!isvoice" @click="toggleVoice" src="../../assets/image/microphone.png" alt="">
           <img class="voiceIcon" v-show="isvoice" @click="toggleVoice" src="../../assets/image/write.png" alt="">
-          <div v-show="isvoice" class="send_message btn" @touchstart="touchstart" @touchend="touchend">按住 说话</div>
+          <div v-show="isvoice" class="send_message btn" @touchstart="touchstart()" @touchend="touchend">按住 说话</div>
           <input v-show="!isvoice" type="text" ref="sendInputRef" placeholder="请输入..." id="send_message" class="send_message" @focus="inputFocus" v-model="input_value">
           <div @click="send" ref="sendBtn" class="action_box clearfix" :class="{active:flag}">
             <img src="../../assets/image/plane.png" alt class="icon_plane fl">
@@ -290,7 +290,7 @@
     },
     data() {
       return {
-        vocieDuration:0, //语音时长
+        vocieDuration: 0, //语音时长
         activeVoiceIndex: null,
         isVoicing: false,
         isvoice: false,
@@ -401,8 +401,6 @@
         isscroll: true,
         dontFocus: true,
         isShowSoulPanel: false,
-        startTime: 0,
-        endTime: 0,
         myShareUrl: "",
         voiceLocalId: "",
         voiceServerId: "",
@@ -625,54 +623,54 @@
           localId: this.voiceLocalId // 需要停止的音频的本地ID，由stopRecord接口获得
         })
         let nodeList = this.$refs.chatList.childNodes
+        var element
         console.log("nodelist---", nodeList)
         for (let i = 0; i < nodeList.length; i++) {
           let messageType = nodeList[i].dataset.messagetype;
           if (messageType === "9") {
-            const element = nodeList[i].children[0].children[1].children[1].children[0];
-            console.log("element", element)
-            this.addClass(element.children[0], "stopanimate");
+            
+            element = nodeList[i].children[0].children[2]?nodeList[i].children[0].children[2].children[1].children[0]:nodeList[i].children[0].children[1].children[1].children[0];
+            // console.log("element", element)
             this.addClass(element.children[1], "stopanimate");
             this.addClass(element.children[2], "stopanimate");
+            this.addClass(element.children[3], "stopanimate");
           }
         }
         this.isVoicing = true;
-        this.startTime = new Date().getTime();
-        console.log("this.startTime-------", this.startTime);
+        this.vocieDurationTimer = setInterval(() => {
+          this.vocieDuration++
+        }, 1000);
         this.timer = setTimeout(() => {
-          wx.stopRecord({
-            success: function(res) {
-              console.log("res.localId----", res.localId);
-              _this.voiceLocalId = res.localId;
-              console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
-              wx.uploadVoice({
-                localId: _this.voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
-                isShowProgressTips: 1, // 默认为1，显示进度提示
-                success: function(res) {
-                  _this.voiceServerId = res.serverId; // 返回音频的服务器端ID
-                  console.log(
-                    "wx.uploadVoice-voiceServerId",
-                    _this.voiceServerId
-                  );
-                  _this.send();
-                }
-              });
-            }
-          });
-        this.vocieDuration = 58
-        }, 58000);
+            wx.stopRecord({
+              success: function(res) {
+                console.log("res.localId----", res.localId);
+                _this.voiceLocalId = res.localId;
+                console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
+                wx.uploadVoice({
+                  localId: _this.voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
+                  isShowProgressTips: 1, // 默认为1，显示进度提示
+                  success: function(res) {
+                    _this.voiceServerId = res.serverId; // 返回音频的服务器端ID
+                    console.log(
+                      "wx.uploadVoice-voiceServerId",
+                      _this.voiceServerId
+                    );
+                    _this.send();
+                  }
+                });
+              }
+            });
+          this.vocieDuration = 59
+        }, 59000);
       },
       touchend() {
-        this.endTime = new Date().getTime();
-        console.log("this.endTime----", this.endTime);
-        
-        if (this.endTime - this.startTime < 1000) {
+        console.log("录音时间---",this.vocieDuration)
+        if (this.vocieDuration < 1) {
           this.$vux.toast.text("录音时间过短", "middle");
           wx.stopRecord();
           this.isVoicing = false;
           return;
         }
-        this.vocieDuration = Math.floor((this.endTime - this.startTime)/1000)
         this.isVoicing = false;
         var _this = this;
         wx.stopRecord({
@@ -681,6 +679,7 @@
             _this.voiceLocalId = res.localId;
             console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
             clearTimeout(_this.timer)
+            clearInterval(_this.vocieDurationTimer)
             wx.uploadVoice({
               localId: _this.voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
               isShowProgressTips: 0, // 默认为1，显示进度提示
@@ -696,20 +695,26 @@
           }
         });
       },
-      downLoadVoice(downId, e, index,voiceMsgID) {
+      downLoadVoice(downId, e, index, voiceMsgID,friend) {
         let nodeList = this.$refs.chatList.childNodes
+        var element
         for (let i = 0; i < nodeList.length; i++) {
           let messageType = nodeList[i].dataset.messagetype;
           if (messageType === "9") {
-            const element = nodeList[i].children[0].children[1].children[1].children[0];
-            console.log("element", element)
-            this.addClass(element.children[0], "stopanimate");
+            if(friend===1){
+              element = nodeList[i].children[0].children[2].children[1].children[0];
+            }else{
+              element = nodeList[i].children[0].children[1].children[1].children[0];
+            }
+            // console.log("element", element)
             this.addClass(element.children[1], "stopanimate");
             this.addClass(element.children[2], "stopanimate");
+            this.addClass(element.children[3], "stopanimate");
           }
         }
-        api.setVoiceRead(voiceMsgID).then(res=>{
-          console.log("设置语音已读--",res)
+        api.setVoiceRead(voiceMsgID).then(res => {
+          console.log("设置语音已读--", res)
+          this.componentChatList[index].vocieUnread = true
         })
         var _this = this;
         wx.downloadVoice({
@@ -725,16 +730,16 @@
               localId: _this.voiceLocalId // 需要播放的音频的本地ID，由stopRecord接口获得
             });
             // console.log("e---", e);
-            _this.removeClass(e.target.children[0], "stopanimate");
             _this.removeClass(e.target.children[1], "stopanimate");
             _this.removeClass(e.target.children[2], "stopanimate");
+            _this.removeClass(e.target.children[3], "stopanimate");
             wx.onVoicePlayEnd({
               success: function(res) {
                 var localId = res.localId; // 返回音频的本地ID
                 console.log("播放完毕localId---", localId);
-                _this.addClass(e.target.children[0], "stopanimate");
                 _this.addClass(e.target.children[1], "stopanimate");
                 _this.addClass(e.target.children[2], "stopanimate");
+                _this.addClass(e.target.children[3], "stopanimate");
               }
             });
           }
@@ -933,8 +938,8 @@
               for (i = resultMessList.length - 1; i >= 0; i--) {
                 let item = resultMessList[i];
                 this.componentChatList.push({
-                  vocieDuration:item.vocieDuration,
-                  vocieUnread:item.vocieUnread,
+                  vocieDuration: item.vocieDuration,
+                  vocieUnread: item.vocieUnread,
                   message: item.content,
                   friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
                   type: item.type,
@@ -1039,7 +1044,7 @@
           for (let i = 0; i < emotionArr.length; i++) {
             for (var j = 0; j < this.emotionList.length; j++) {
               if (this.input_value.indexOf(this.emotionList[j].name) !== -1) {
-                this.input_value = this.input_value.replace(reg,`<img src=${this.emotionList[j].num} style="vertical-align: -6px;">`);
+                this.input_value = this.input_value.replace(reg, `<img src=${this.emotionList[j].num} style="vertical-align: -6px;">`);
               }
             }
           }
@@ -1050,14 +1055,14 @@
           friend: 0,
           type: this.messageType,
           time: util.timestampToTime(new Date().getTime()),
-          vocieUnread:true,
-          vocieDuration:this.vocieDuration
+          vocieUnread: true,
+          vocieDuration: this.vocieDuration
         });
         let messObj = {
           to: this.staticChatFriendObj.openid,
           content: this.messageType == 1 ? this.input_value : this.voiceServerId,
           type: this.messageType,
-          vocieDuration:this.vocieDuration
+          vocieDuration: this.vocieDuration
         };
         let textMessObj = JSON.stringify(messObj);
         let decc1 = new TextEncoder("utf-8");
@@ -1065,6 +1070,7 @@
         api.postFriendMess(result).then(res => {
           this.emotionShow = false;
           this.expressionShow = false;
+          this.vocieDuration = 0;
         });
         this.input_value = "";
         this.$nextTick(function() {
@@ -1166,8 +1172,8 @@
             for (i = resultMessList.length - 1; i >= 0; i--) {
               let item = resultMessList[i];
               this.componentChatList.unshift({
-                vocieDuration:item.vocieDuration,
-                vocieUnread:item.vocieUnread,
+                vocieDuration: item.vocieDuration,
+                vocieUnread: item.vocieUnread,
                 message: item.content,
                 friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
                 type: item.type,
@@ -1515,6 +1521,17 @@
           .chatListItem {
             padding: 0.4rem 0;
             box-sizing: border-box;
+            .message_wrapper {
+              .dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background-color: red;
+                position: absolute;
+                top: 1.6rem;
+                right: 4.6rem;
+              }
+            }
           }
           .friend {
             position: relative;
@@ -1524,10 +1541,7 @@
               .arrowDot(#fff);
               left: -0.05rem;
             }
-            .dot{
-              .unReadDot();
-              left:2.8rem
-            }
+         
           }
           .messRecordPic {
             width: 1.8rem;
@@ -1541,10 +1555,6 @@
             .arrow {
               .arrowDot(#ffd800);
               right: -0.05rem;
-            }
-            .dot{
-              .unReadDot();
-               right:2.8rem
             }
             .message_box {
               margin-right: 0.2667rem;
