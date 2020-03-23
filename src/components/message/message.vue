@@ -36,6 +36,8 @@
                 <p class="message" v-if="item.info.lastMsg?item.info.lastMsg.type===1:''" v-html='item.info.lastMsg?item.info.lastMsg.content:""'></p>
                 <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===2:''">[图片]</p>
                 <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===3:''">约战，送礼信息</p>
+                <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===4:''">约战，送礼信息</p>
+                <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===9:''">语音</p>
                 <p class="message" v-else></p>
               </div>
             </div>

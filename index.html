@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecur-requests">
+    <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecur-requests"> -->
     <meta name="viewport"
         content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link rel="icon" href="data:image/ico;base64,aWNv">
@@ -35,7 +35,20 @@
             -webkit-text-size-adjust: 100% !important;
             text-size-adjust: 100% !important;
             -moz-text-size-adjust: 100% !important;
-
+        }
+        *{
+          -webkit-touch-callout:none;
+          -webkit-user-select:none;
+          -khtml-user-select:none;
+          -moz-user-select:none;
+          -ms-user-select:none;
+          user-select:none;
+        }
+        input,textarea {
+          -webkit-user-select:auto;
+          margin: 0px;
+          padding: 0px;
+          outline: none;
         }
     </style>
 </head>
