@@ -79,8 +79,14 @@
         // var oneDayTime = 24 * 60 * 60 * 1000;
         // var SundayTime = nowTime - day * oneDayTime;//显示周日
         // console.log(new Date(SundayTime))
-
-        console.log(new Date().getSeconds())
+        console.log(22 == "22")
+        var start = new Date().getTime()
+        var end = 0
+        setTimeout(() => {
+            end = new Date().getTime()
+        }, 2000);
+        var result = (end-start)
+        console.log(new Date().getTime())
         var name = "liuning0"
         var obj = {
             name: "liuning1",

@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
     <div id="chat" class="chatRoom">
-      <div class="voice-bg"></div>
+      <div class="voice-bg" v-show="isVoicing"></div>
       <div class="chat_nav">
         <div class="back_box">
           <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
@@ -38,7 +38,7 @@
         <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
         <scroll ref="listView" class="chat_content" :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
           <ul class="chat_list" ref="chatList">
-            <li class="clearfix chatListItem" :data-messageType="item.type" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" :key="index" v-for="(item,index) in componentChatList">
+            <li class="clearfix chatListItem" :data-friend="item.friend" :data-vocieUnread="item.vocieUnread+''" :data-messageType="item.type" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" :key="index" v-for="(item,index) in componentChatList">
               <div v-if="item.type==1" class="message_wrapper">
                 <div class="person_box">
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
@@ -51,8 +51,8 @@
                   <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message"></p>
                 </div>
               </div>
-              <div v-if="item.type==9" class="message_wrapper">
-                <div class="dot" v-show="item.friend&&!item.vocieUnread"></div>
+              <div v-if="item.type==9" class="message_wrapper" >
+                <div class="dot"  v-if="item.friend&&!item.vocieUnread"></div>
                 <div class="person_box">
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
                   <img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
@@ -62,13 +62,13 @@
                 <div class="message_box">
                   <span v-show="item.type===9" class="arrow"></span>
                   <div class="message" style="word-break: break-all; width:2rem;height:.5rem" v-if="item.type===9">
-                    <div class="cricleplay" v-if="item.friend==1" :data-voiceInde="index" @click="downLoadVoice(item.message,$event,index,item.chatMsgID,item.friend)">
+                    <div class="cricleplay" v-if="item.friend==1"  @click="downLoadVoice(item.message,$event,index,item.chatMsgID)">
                       <div class="vocieDuration">{{item.vocieDuration}}''</div>
                       <div class="small first"></div>
                       <div class="middle stopanimate"></div>
                       <div class="large stopanimate"></div>
                     </div>
-                    <div class="cricleplay" v-else @click="downLoadVoice(item.message,$event,index,item.chatMsgID,item.friend)">
+                    <div class="cricleplay" v-else  @click="downLoadVoice(item.message,$event,index,item.chatMsgID)">
                       <!-- :class="{stopanimate:!(index==activeVoiceIndex)}" -->
                       <div class="vocieDuration">''{{item.vocieDuration}}</div>
                       <div class="large stopanimate"></div>
@@ -589,10 +589,7 @@ export default {
             ]
           });
           wx.ready(() => {
-            if (
-              !localStorage.rainAllowRecord ||
-              localStorage.rainAllowRecord !== "true"
-            ) {
+            if (!localStorage.rainAllowRecord ||localStorage.rainAllowRecord !== "true") {
               wx.startRecord({
                 success: function() {
                   localStorage.rainAllowRecord = "true";
@@ -611,11 +608,9 @@ export default {
         });
     },
     touchstart() {
+      console.log("touchStart")
       var _this = this;
-      // wx.startRecord();
-      // wx.stopVoice({
-      //   localId: this.voiceLocalId // 需要停止的音频的本地ID，由stopRecord接口获得
-      // });
+      wx.startRecord();
       let nodeList = this.$refs.chatList.childNodes;
       var element;
       console.log("nodelist---", nodeList);
@@ -660,7 +655,10 @@ export default {
       }, 59000);
     },
     touchend() {
+       console.log("touchEnd")
       console.log("录音时间---", this.vocieDuration);
+      clearInterval(this.vocieDurationTimer);
+      clearTimeout(this.timer);
       if (this.vocieDuration < 1) {
         this.$vux.toast.text("录音时间过短", "middle");
         wx.stopRecord();
@@ -674,8 +672,6 @@ export default {
           console.log("res.localId----", res.localId);
           _this.voiceLocalId = res.localId;
           console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
-          clearTimeout(_this.timer);
-          clearInterval(_this.vocieDurationTimer);
           wx.uploadVoice({
             localId: _this.voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
             isShowProgressTips: 0, // 默认为1，显示进度提示
@@ -691,20 +687,25 @@ export default {
         }
       });
     },
-    downLoadVoice(downId, e, index, voiceMsgID, friend) {
-      let nodeList = this.$refs.chatList.childNodes;
+    downLoadVoice(downId, e, index, voiceMsgID) {
+      console.log("e---",e)
+      var nodeList = this.$refs.chatList.childNodes;
       var element;
-      for (let i = 0; i < nodeList.length; i++) {
-        let messageType = nodeList[i].dataset.messagetype;
-        if (messageType === "9") {
-          if (friend === 1) {
-            element =
-              nodeList[i].children[0].children[2].children[1].children[0];
+      for (var i = 0; i < nodeList.length; i++) {
+        var messageType = nodeList[i].dataset.messagetype;
+        var vocieUnread = nodeList[i].dataset.vocieunread;
+        var friend = nodeList[i].dataset.friend;
+        // console.log("messageType--",messageType)
+        // console.log("vocieUnread--",vocieUnread)
+        // console.log("friend--",friend)
+        if (messageType == "9") {
+          // console.log(vocieUnread)
+          if (friend == "1" && vocieUnread == "false") {
+            element =nodeList[i].children[0].children[2].children[1].children[0];
           } else {
-            element =
-              nodeList[i].children[0].children[1].children[1].children[0];
+            element = nodeList[i].children[0].children[1].children[1].children[0];
           }
-          // console.log("element", element)
+          console.log("element", element)
           this.addClass(element.children[1], "stopanimate");
           this.addClass(element.children[2], "stopanimate");
           this.addClass(element.children[3], "stopanimate");
@@ -1434,6 +1435,14 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
+  .voice-bg{
+    position: fixed;
+    z-index: 8;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
   .chat_nav {
     height: 1.1733rem;
     box-sizing: border-box;
