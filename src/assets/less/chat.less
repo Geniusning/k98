@@ -19,6 +19,15 @@
         float: @direct;
         position: relative;
         margin-left: 0.2667rem;
+        .dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background-color: red;
+          position: absolute;
+          top: 1.2rem;
+          right: -.5rem;
+        }
         .message {
             background-color: @color;
             text-align: left;
@@ -65,7 +74,8 @@
         .vocieDuration{
           color: #ccc;
           position: absolute;
-          right: 1.1rem;
+          left: .9rem;
+          top: .24rem;
         }
     }
     .small{
@@ -79,7 +89,7 @@
         box-sizing: border-box;
         vertical-align: middle;
         display: inline-block;
-       
+        margin-left: -0.1rem;
       }
       .middle{
         width: 30px;
@@ -128,7 +138,7 @@
 
 .border-right(){
     .cricleplay{
-        width: 100%;
+        width: 100%;;
         position: absolute;
         top: -.01rem;
         text-align: right;
@@ -137,7 +147,8 @@
         .vocieDuration{
           color: #333;
           position: absolute;
-          left: 1rem;
+          right: .8rem;
+          top: .25rem;
         }
     }
     .small{
@@ -151,7 +162,7 @@
         box-sizing: border-box;
         vertical-align: middle;
         display: inline-block;
-        
+        margin-right: -.3rem;
       }
       .middle{
         width: 30px;

@@ -2,6 +2,7 @@
   <transition name="fade">
     <div id="chat" class="chatRoom">
       <div class="voice-bg" v-show="isVoicing"></div>
+      <img class="warning" v-show="warning" src="../../assets/image/warning .png" alt="">
       <div class="chat_nav">
         <div class="back_box">
           <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
@@ -51,8 +52,7 @@
                   <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message"></p>
                 </div>
               </div>
-              <div v-if="item.type==9" class="message_wrapper" >
-                <div class="dot"  v-if="item.friend&&!item.vocieUnread"></div>
+              <div v-if="item.type==9" class="message_wrapper clearfix">
                 <div class="person_box">
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
                   <img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
@@ -61,14 +61,15 @@
                 </div>
                 <div class="message_box">
                   <span v-show="item.type===9" class="arrow"></span>
-                  <div class="message" style="word-break: break-all; width:2rem;height:.5rem" v-if="item.type===9">
-                    <div class="cricleplay" v-if="item.friend==1"  @click="downLoadVoice(item.message,$event,index,item.chatMsgID)">
+                  <div class="message" style="word-break: break-all;height:1rem;padding:0" :style="{'width':item.voiceLenth}" v-if="item.type===9">
+                    <div class="cricleplay" v-if="item.friend==1" @click="downLoadVoice(item.message,$event,index,item.chatMsgID)">
                       <div class="vocieDuration">{{item.vocieDuration}}''</div>
                       <div class="small first"></div>
                       <div class="middle stopanimate"></div>
                       <div class="large stopanimate"></div>
+                      <!-- <img v-if="item.outOfDate" src="../../assets/image/outdate.png" class="outDate" alt=""> -->
                     </div>
-                    <div class="cricleplay" v-else  @click="downLoadVoice(item.message,$event,index,item.chatMsgID)">
+                    <div class="cricleplay" v-else @click="downLoadVoice(item.message,$event,index,item.chatMsgID)">
                       <!-- :class="{stopanimate:!(index==activeVoiceIndex)}" -->
                       <div class="vocieDuration">''{{item.vocieDuration}}</div>
                       <div class="large stopanimate"></div>
@@ -76,6 +77,8 @@
                       <div class="small first"></div>
                     </div>
                   </div>
+                  <div class="dot" v-if="item.friend&&!item.vocieUnread"></div>
+                  <img v-if="item.outOfDate" src="../../assets/image/outdate.png" class="outDate" alt="">
                 </div>
               </div>
               <div v-if="item.type==2" class="message_wrapper">
@@ -165,8 +168,8 @@
           </ul>
         </scroll>
         <!-- <div class="loading-container" v-show="isLoading">
-                                                                                                              <loading></loading>
-                                                          </div>-->
+                                                                                                                  <loading></loading>
+                                                              </div>-->
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
@@ -397,7 +400,8 @@ export default {
       myShareUrl: "",
       voiceLocalId: "",
       voiceServerId: "",
-      messageType: 1
+      messageType: 1,
+      warning: false
       // isLoading: false
     };
   },
@@ -430,6 +434,7 @@ export default {
     // this._initJssdk(this.myShareUrl)
   },
   activated() {
+    console.log("-----------------activated");
     console.log(
       "this.staticChatFriendObj-----------",
       this.staticChatFriendObj
@@ -504,9 +509,6 @@ export default {
     });
   },
   deactivated() {
-    wx.stopVoice({
-      localId: this.voiceLocalId // 需要停止的音频的本地ID，由stopRecord接口获得
-    });
     Bus.$off();
     sessionStorage.setItem(this.staticChatFriendObj.openid, this.sendingTimes); //保存对应好友发送信息次数
     this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
@@ -517,15 +519,14 @@ export default {
     this.changeCursor(cursor);
     this.showLaHeiPanel = false;
   },
-  beforeDestroy() {
-    wx.stopVoice({
+  beforeRouteLeave(to, from, next) {
+    console.log("beforeRouteLeave-----", this.voiceLocalId);
+    wx.pauseVoice({
       localId: this.voiceLocalId // 需要停止的音频的本地ID，由stopRecord接口获得
     });
-  },
-  destroyed() {
-    wx.stopVoice({
-      localId: this.voiceLocalId // 需要停止的音频的本地ID，由stopRecord接口获得
-    });
+    next();
+    // 导航离开该组件的对应路由时调用
+    // 可以访问组件实例 `this`
   },
   computed: {
     ...mapState([
@@ -589,7 +590,10 @@ export default {
             ]
           });
           wx.ready(() => {
-            if (!localStorage.rainAllowRecord ||localStorage.rainAllowRecord !== "true") {
+            if (
+              !localStorage.rainAllowRecord ||
+              localStorage.rainAllowRecord !== "true"
+            ) {
               wx.startRecord({
                 success: function() {
                   localStorage.rainAllowRecord = "true";
@@ -608,18 +612,19 @@ export default {
         });
     },
     touchstart() {
-      console.log("touchStart")
+      console.log("touchStart");
       var _this = this;
       wx.startRecord();
+      wx.stopVoice({
+        localId: this.voiceLocalId // 停止正在播放的语音
+      });
       let nodeList = this.$refs.chatList.childNodes;
       var element;
       console.log("nodelist---", nodeList);
       for (let i = 0; i < nodeList.length; i++) {
         let messageType = nodeList[i].dataset.messagetype;
         if (messageType === "9") {
-          element = nodeList[i].children[0].children[2]
-            ? nodeList[i].children[0].children[2].children[1].children[0]
-            : nodeList[i].children[0].children[1].children[1].children[0];
+          element = nodeList[i].children[0].children[1].children[1].children[0];
           // console.log("element", element)
           this.addClass(element.children[1], "stopanimate");
           this.addClass(element.children[2], "stopanimate");
@@ -632,6 +637,7 @@ export default {
         console.log("setInterval", this.vocieDuration);
       }, 1000);
       this.timer = setTimeout(() => {
+        clearInterval(this.vocieDurationTimer);
         wx.stopRecord({
           success: function(res) {
             console.log("res.localId----", res.localId);
@@ -639,7 +645,7 @@ export default {
             console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
             wx.uploadVoice({
               localId: _this.voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
-              isShowProgressTips: 1, // 默认为1，显示进度提示
+              isShowProgressTips: 0, // 默认为1，显示进度提示
               success: function(res) {
                 _this.voiceServerId = res.serverId; // 返回音频的服务器端ID
                 console.log(
@@ -652,16 +658,22 @@ export default {
           }
         });
         this.vocieDuration = 59;
+        this.isVoicing = false;
       }, 59000);
     },
     touchend() {
-       console.log("touchEnd")
+      console.log("touchEnd");
       console.log("录音时间---", this.vocieDuration);
       clearInterval(this.vocieDurationTimer);
       clearTimeout(this.timer);
       if (this.vocieDuration < 1) {
-        this.$vux.toast.text("录音时间过短", "middle");
-        wx.stopRecord();
+        // this.$vux.toast.text("录音时间过短", "middle");
+        this.warning = true;
+        clearTimeout(this.warningTimer);
+        this.warningTimer = setTimeout(() => {
+          this.warning = false;
+        }, 1500);
+        this.vocieDuration = 0;
         this.isVoicing = false;
         return;
       }
@@ -688,9 +700,11 @@ export default {
       });
     },
     downLoadVoice(downId, e, index, voiceMsgID) {
-      console.log("e---",e)
+      console.log("e---", e);
       var nodeList = this.$refs.chatList.childNodes;
       var element;
+      var target =
+        nodeList[index].children[0].children[1].children[1].children[0];
       for (var i = 0; i < nodeList.length; i++) {
         var messageType = nodeList[i].dataset.messagetype;
         var vocieUnread = nodeList[i].dataset.vocieunread;
@@ -699,13 +713,15 @@ export default {
         // console.log("vocieUnread--",vocieUnread)
         // console.log("friend--",friend)
         if (messageType == "9") {
+          element = nodeList[i].children[0].children[1].children[1].children[0];
           // console.log(vocieUnread)
-          if (friend == "1" && vocieUnread == "false") {
-            element =nodeList[i].children[0].children[2].children[1].children[0];
-          } else {
-            element = nodeList[i].children[0].children[1].children[1].children[0];
-          }
-          console.log("element", element)
+          // if (friend == "1" && vocieUnread == "false") {
+          //   element =
+          //     nodeList[i].children[0].children[1].children[1].children[0];
+          // } else {
+          //   element =nodeList[i].children[0].children[1].children[1].children[0];
+          // }
+          console.log("element", element);
           this.addClass(element.children[1], "stopanimate");
           this.addClass(element.children[2], "stopanimate");
           this.addClass(element.children[3], "stopanimate");
@@ -729,18 +745,22 @@ export default {
             localId: _this.voiceLocalId // 需要播放的音频的本地ID，由stopRecord接口获得
           });
           // console.log("e---", e);
-          _this.removeClass(e.target.children[1], "stopanimate");
-          _this.removeClass(e.target.children[2], "stopanimate");
-          _this.removeClass(e.target.children[3], "stopanimate");
+          _this.removeClass(target.children[1], "stopanimate");
+          _this.removeClass(target.children[2], "stopanimate");
+          _this.removeClass(target.children[3], "stopanimate");
           wx.onVoicePlayEnd({
             success: function(res) {
               var localId = res.localId; // 返回音频的本地ID
               console.log("播放完毕localId---", localId);
-              _this.addClass(e.target.children[1], "stopanimate");
-              _this.addClass(e.target.children[2], "stopanimate");
-              _this.addClass(e.target.children[3], "stopanimate");
+              _this.addClass(target.children[1], "stopanimate");
+              _this.addClass(target.children[2], "stopanimate");
+              _this.addClass(target.children[3], "stopanimate");
             }
           });
+        },
+        fail: function(res) {
+          this.$vux.toast.text("录音已过期", "middle");
+          console.log("下载语音失败---", res);
         }
       });
     },
@@ -924,6 +944,73 @@ export default {
         }
       }, 400);
     },
+    _handleVoiceLength(voiceL) {
+      var voiceLength = "";
+      if (voiceL < 10) {
+        voiceLength = "1.8rem";
+      } else if (voiceL >= 10 && voiceL <= 40) {
+        voiceLength = "2.5rem";
+      } else if (voiceL > 40) {
+        voiceLength = "3.5rem";
+      }
+      return voiceLength;
+    },
+    _handleChatList(item, nowTime) {
+      var outOfDate = nowTime - item.stime > 259200; //判断是否大于3天
+      var voiceLength = this._handleVoiceLength(item.vocieDuration);
+      var tempObj = {
+        outOfDate: outOfDate,
+        voiceLenth: voiceLength,
+        vocieDuration: item.vocieDuration,
+        vocieUnread: outOfDate ? true : item.vocieUnread,
+        message: item.content,
+        friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
+        type: item.type,
+        time: util.timestampToTime(item.stime),
+        chatExtMsg: item.type == 3 ? item.chatExtMsg.extMsg : "",
+        isBeFriendModel: item.chatExtMsg
+          ? item.chatExtMsg.isBeFriendModel
+            ? item.chatExtMsg.isBeFriendModel
+            : false
+          : false,
+        from: item.from,
+        chatMsgID: item.id,
+        isAgree: item.chatExtMsg ? item.chatExtMsg.isAgree : "",
+        isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : "",
+        msgType: item.chatExtMsg ? item.chatExtMsg.msgType : "",
+        couponID: item.chatExtMsg
+          ? item.chatExtMsg.extMsg
+            ? item.chatExtMsg.extMsg.couponID
+            : ""
+          : "",
+        recordID: item.chatExtMsg
+          ? item.chatExtMsg.extMsg
+            ? item.chatExtMsg.extMsg.recordID
+            : ""
+          : "",
+        name: item.chatExtMsg
+          ? item.chatExtMsg.extMsg
+            ? item.chatExtMsg.extMsg.name
+            : ""
+          : "",
+        combatID: item.chatExtMsg
+          ? item.chatExtMsg.extMsg
+            ? item.chatExtMsg.extMsg.combatID
+            : ""
+          : "",
+        inviterID: item.chatExtMsg
+          ? item.chatExtMsg.extMsg
+            ? item.chatExtMsg.extMsg.inviterID
+            : ""
+          : "",
+        url: item.chatExtMsg
+          ? item.chatExtMsg.extMsg
+            ? item.chatExtMsg.extMsg.url
+            : ""
+          : ""
+      };
+      return tempObj;
+    },
     //获取好友聊天消息记录列表
     _getChatList() {
       let cursor = this.alreadyFriendListcursor;
@@ -934,58 +1021,12 @@ export default {
             console.log("好友聊天信息---------", res);
             this.changeCursor(res.cursor);
             let resultMessList = res.messages;
+            var nowTime = Math.round(new Date().getTime() / 1000);
             var i;
             for (i = resultMessList.length - 1; i >= 0; i--) {
               let item = resultMessList[i];
-              this.componentChatList.push({
-                vocieDuration: item.vocieDuration,
-                vocieUnread: item.vocieUnread,
-                message: item.content,
-                friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
-                type: item.type,
-                time: util.timestampToTime(item.stime),
-                chatExtMsg: item.type == 3 ? item.chatExtMsg.extMsg : "",
-                isBeFriendModel: item.chatExtMsg
-                  ? item.chatExtMsg.isBeFriendModel
-                    ? item.chatExtMsg.isBeFriendModel
-                    : false
-                  : false,
-                from: item.from,
-                chatMsgID: item.id,
-                isAgree: item.chatExtMsg ? item.chatExtMsg.isAgree : "",
-                isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : "",
-                msgType: item.chatExtMsg ? item.chatExtMsg.msgType : "",
-                couponID: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg
-                    ? item.chatExtMsg.extMsg.couponID
-                    : ""
-                  : "",
-                recordID: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg
-                    ? item.chatExtMsg.extMsg.recordID
-                    : ""
-                  : "",
-                name: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg
-                    ? item.chatExtMsg.extMsg.name
-                    : ""
-                  : "",
-                combatID: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg
-                    ? item.chatExtMsg.extMsg.combatID
-                    : ""
-                  : "",
-                inviterID: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg
-                    ? item.chatExtMsg.extMsg.inviterID
-                    : ""
-                  : "",
-                url: item.chatExtMsg
-                  ? item.chatExtMsg.extMsg
-                    ? item.chatExtMsg.extMsg.url
-                    : ""
-                  : ""
-              });
+              var chatObj = this._handleChatList(item, nowTime);
+              this.componentChatList.push(chatObj);
             }
             console.log("聊天记录-------", this.componentChatList);
             this.componentChatList.forEach(item => {
@@ -1061,6 +1102,7 @@ export default {
           }
         }
       }
+      var voiceLength = this._handleVoiceLength(this.vocieDuration);
       //把自己发送的内容加到聊天列表里面
       this.componentChatList.push({
         message: this.messageType == 1 ? this.input_value : this.voiceServerId,
@@ -1068,7 +1110,8 @@ export default {
         type: this.messageType,
         time: util.timestampToTime(new Date().getTime()),
         vocieUnread: true,
-        vocieDuration: this.vocieDuration
+        vocieDuration: this.vocieDuration,
+        voiceLenth: voiceLength
       });
       let messObj = {
         to: this.staticChatFriendObj.openid,
@@ -1180,53 +1223,12 @@ export default {
           //this.isLoading = false; //加载loading
           this.isscroll = false; //判断下拉刷新
           let resultMessList = res.messages;
+          var nowTime = Math.round(new Date().getTime() / 1000);
           var i;
           for (i = resultMessList.length - 1; i >= 0; i--) {
             let item = resultMessList[i];
-            this.componentChatList.unshift({
-              vocieDuration: item.vocieDuration,
-              vocieUnread: item.vocieUnread,
-              message: item.content,
-              friend: item.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
-              type: item.type,
-              time: util.timestampToTime(item.stime),
-              chatExtMsg: item.type == 3 ? item.chatExtMsg.extMsg : "",
-              from: item.from,
-              chatMsgID: item.id,
-              isAgree: item.chatExtMsg ? item.chatExtMsg.isAgree : "",
-              isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : "",
-              msgType: item.chatExtMsg ? item.chatExtMsg.msgType : "",
-              couponID: item.chatExtMsg
-                ? item.chatExtMsg.extMsg
-                  ? item.chatExtMsg.extMsg.couponID
-                  : ""
-                : "",
-              recordID: item.chatExtMsg
-                ? item.chatExtMsg.extMsg
-                  ? item.chatExtMsg.extMsg.recordID
-                  : ""
-                : "",
-              name: item.chatExtMsg
-                ? item.chatExtMsg.extMsg
-                  ? item.chatExtMsg.extMsg.name
-                  : ""
-                : "",
-              combatID: item.chatExtMsg
-                ? item.chatExtMsg.extMsg
-                  ? item.chatExtMsg.extMsg.combatID
-                  : ""
-                : "",
-              inviterID: item.chatExtMsg
-                ? item.chatExtMsg.extMsg
-                  ? item.chatExtMsg.extMsg.inviterID
-                  : ""
-                : "",
-              url: item.chatExtMsg
-                ? item.chatExtMsg.extMsg
-                  ? item.chatExtMsg.extMsg.url
-                  : ""
-                : ""
-            });
+            var chatObj = this._handleChatList(item, nowTime);
+            this.componentChatList.unshift(chatObj);
           }
           this.$refs.listView.finishPullDown();
           this.$refs.listView.scrollTo(0, 0, 1000);
@@ -1327,51 +1329,58 @@ export default {
       }
       if (messageInfo.from == this.staticChatFriendObj.openid) {
         //判断是否是进入时原来的两个人进行聊天
-        this.componentChatList.push({
-          vocieDuration: messageInfo.vocieDuration,
-          vocieUnread: messageInfo.vocieUnread,
-          message: messageInfo.content ? messageInfo.content : "",
-          friend: messageInfo.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
-          from: messageInfo.from,
-          type: messageInfo.type, //1 聊天消息 2.图标，3.送礼，4.约战
-          time: util.timestampToTime(messageInfo.stime),
-          chatMsgID: messageInfo.id,
-          isAgree: messageInfo.chatExtMsg ? messageInfo.chatExtMsg.isAgree : "",
-          isHandled: messageInfo.chatExtMsg
-            ? messageInfo.chatExtMsg.isHandled
-            : "",
-          msgType: messageInfo.chatExtMsg ? messageInfo.chatExtMsg.msgType : "",
-          couponID: messageInfo.chatExtMsg
-            ? messageInfo.chatExtMsg.extMsg
-              ? messageInfo.chatExtMsg.extMsg.couponID
-              : ""
-            : "",
-          recordID: messageInfo.chatExtMsg
-            ? messageInfo.chatExtMsg.extMsg
-              ? messageInfo.chatExtMsg.extMsg.recordID
-              : ""
-            : "",
-          name: messageInfo.chatExtMsg
-            ? messageInfo.chatExtMsg.extMsg
-              ? messageInfo.chatExtMsg.extMsg.name
-              : ""
-            : "",
-          combatID: messageInfo.chatExtMsg
-            ? messageInfo.chatExtMsg.extMsg
-              ? messageInfo.chatExtMsg.extMsg.combatID
-              : ""
-            : "",
-          inviterID: messageInfo.chatExtMsg
-            ? messageInfo.chatExtMsg.extMsg
-              ? messageInfo.chatExtMsg.extMsg.inviterID
-              : ""
-            : "",
-          url: messageInfo.chatExtMsg
-            ? messageInfo.chatExtMsg.extMsg
-              ? messageInfo.chatExtMsg.extMsg.url
-              : ""
-            : ""
-        });
+        var voiceLength = this._handleVoiceLength(messageInfo.vocieDuration);
+        console.log("推送时长----", voiceLength);
+        var nowTime = Math.round(new Date().getTime() / 1000);
+        var chatObj = this._handleChatList(messageInfo, nowTime);
+        this.componentChatList.push(chatObj);
+        // this.componentChatList.push({
+        //   outOfDate: false,
+        //   voiceLength: voiceLength,
+        //   vocieDuration: messageInfo.vocieDuration,
+        //   vocieUnread: messageInfo.vocieUnread,
+        //   message: messageInfo.content ? messageInfo.content : "",
+        //   friend: messageInfo.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己
+        //   from: messageInfo.from,
+        //   type: messageInfo.type, //1 聊天消息 2.图标，3.送礼，4.约战
+        //   time: util.timestampToTime(messageInfo.stime),
+        //   chatMsgID: messageInfo.id,
+        //   isAgree: messageInfo.chatExtMsg ? messageInfo.chatExtMsg.isAgree : "",
+        //   isHandled: messageInfo.chatExtMsg
+        //     ? messageInfo.chatExtMsg.isHandled
+        //     : "",
+        //   msgType: messageInfo.chatExtMsg ? messageInfo.chatExtMsg.msgType : "",
+        //   couponID: messageInfo.chatExtMsg
+        //     ? messageInfo.chatExtMsg.extMsg
+        //       ? messageInfo.chatExtMsg.extMsg.couponID
+        //       : ""
+        //     : "",
+        //   recordID: messageInfo.chatExtMsg
+        //     ? messageInfo.chatExtMsg.extMsg
+        //       ? messageInfo.chatExtMsg.extMsg.recordID
+        //       : ""
+        //     : "",
+        //   name: messageInfo.chatExtMsg
+        //     ? messageInfo.chatExtMsg.extMsg
+        //       ? messageInfo.chatExtMsg.extMsg.name
+        //       : ""
+        //     : "",
+        //   combatID: messageInfo.chatExtMsg
+        //     ? messageInfo.chatExtMsg.extMsg
+        //       ? messageInfo.chatExtMsg.extMsg.combatID
+        //       : ""
+        //     : "",
+        //   inviterID: messageInfo.chatExtMsg
+        //     ? messageInfo.chatExtMsg.extMsg
+        //       ? messageInfo.chatExtMsg.extMsg.inviterID
+        //       : ""
+        //     : "",
+        //   url: messageInfo.chatExtMsg
+        //     ? messageInfo.chatExtMsg.extMsg
+        //       ? messageInfo.chatExtMsg.extMsg.url
+        //       : ""
+        //     : ""
+        // });
         // console.log('聊天记录-------------', this.componentChatList)
         setTimeout(() => {
           let childNodes = this.$refs.chatList.childNodes;
@@ -1435,13 +1444,25 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  .voice-bg{
+  .voice-bg {
     position: fixed;
     z-index: 8;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+  }
+  .warning {
+    position: fixed;
+    width: 3rem;
+    height: 3rem;
+    left: 50%;
+    right: 0;
+    top: 50%;
+    bottom: 0;
+    margin-left: -1.5rem;
+    margin-top: -2rem;
+    z-index: 10;
   }
   .chat_nav {
     height: 1.1733rem;
@@ -1566,15 +1587,6 @@ export default {
           padding: 0.4rem 0;
           box-sizing: border-box;
           .message_wrapper {
-            .dot {
-              width: 10px;
-              height: 10px;
-              border-radius: 50%;
-              background-color: red;
-              position: absolute;
-              top: 1.6rem;
-              right: 4.6rem;
-            }
           }
         }
         .friend {
@@ -1584,6 +1596,13 @@ export default {
           .arrow {
             .arrowDot(#fff);
             left: -0.05rem;
+          }
+          .outDate {
+            position: absolute;
+            top: 1rem;
+            right: -0.8rem;
+            width: 0.6667rem;
+            height: 0.6667rem;
           }
         }
         .messRecordPic {
@@ -1598,6 +1617,13 @@ export default {
           .arrow {
             .arrowDot(#ffd800);
             right: -0.05rem;
+          }
+          .outDate {
+            position: absolute;
+            top: 1rem;
+            left: -0.8rem;
+            width: 0.6667rem;
+            height: 0.6667rem;
           }
           .message_box {
             margin-right: 0.2667rem;

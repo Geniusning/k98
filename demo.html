@@ -55,7 +55,7 @@
 
     <div class="wrapper">
         <div class="box" id="circles">
-        <input type="text" id="input" value="1111">
+            <input type="text" id="input" value="1111">
         </div>
     </div>
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
@@ -85,7 +85,7 @@
         setTimeout(() => {
             end = new Date().getTime()
         }, 2000);
-        var result = (end-start)
+        var result = (end - start)
         console.log(new Date().getTime())
         var name = "liuning0"
         var obj = {
@@ -106,8 +106,10 @@
         var teststr = "xxadf,adfagafg,adgfdg,adsfag"
         console.log(teststr.split(","))
 
-        console.log(new Date().getSeconds())
-         // this.stopRecord().then(voiceId => {
+        var st = Math.round(new Date().getTime() / 1000)
+        console.log(st)
+        console.log((1585183198 - 1584842278) > 259200)
+        // this.stopRecord().then(voiceId => {
       //   wx.uploadVoice({
       //     localId: voiceId, // 需要上传的音频的本地ID，由stopRecord接口获得
       //     isShowProgressTips: 1, // 默认为1，显示进度提示
