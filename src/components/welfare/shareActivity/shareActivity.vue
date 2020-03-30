@@ -8,11 +8,11 @@
       </div>
     </div>
     <div class="rule-container">
-      <p class="theme">活动主题：{{activityContent.name}}</p>
+      <p class="theme"><span class="rule-title">活动主题:</span>{{activityContent.name}}</p>
       <h3 class="title">活动细则：</h3>
       <p class="desc">{{activityContent.content}}</p>
-      <p class="limit">限制条件：{{activityContent.limit}}</p>
-      <p class="time">活动时间：{{activityContent.startTime}} 至 {{activityContent.endTime}}</p>
+      <p class="limit"><span class="rule-title">限制条件：</span>{{activityContent.limit}}</p>
+      <p class="time"><span class="rule-title">活动时间：</span>{{activityContent.startTime}} 至 {{activityContent.endTime}}</p>
     </div>
     <div class="btn-container">
       <img onclick="return false" @click="back" class="btn" src="../../../assets/image/tuichu.png" alt="">
@@ -163,10 +163,13 @@
     }
     .rule-container {
       margin-top: 0.9867rem;
-      font-size: 0.3467rem;
-      color: #fff;
+      font-size: 16px;
+      color: #333;
+      .rule-title{
+        font-weight: 900;
+        font-size: 18px;
+      }
       .title {
-        font-size: 0.3733rem;
         font-weight: bold;
       }
       .desc {
@@ -184,6 +187,7 @@
       }
     }
     .btn-container {
+      margin-top: 4rem;
       display: flex;
       justify-content: space-around;
       .btn {

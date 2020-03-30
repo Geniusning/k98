@@ -157,7 +157,7 @@ const router = new Router({
       component: () => import('../components/welfare/shareActivity/shareActivity.vue'),
       meta: {
         // keepAlive: true,
-        title: "分享活动"
+        title: "告示板"
       }
     },
     {

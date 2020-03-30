@@ -98,7 +98,7 @@
     <!-- 活动通知 -->
     <div style="background:#fff;padding:.2667rem">
       <div class="activity-wrapper">
-        <div class="title"><span class="title_text">活动通知</span></div>
+        <div class="title"><span class="title_text">告示板</span></div>
         <ul class="activityList" v-if="activityNoticeList.length>0">
           <li class="item-active" v-for="(item,index) in activityNoticeList" :key="index">
             <img onclick="return false" :src="item.image" style="width:2.8533rem;height:2.1333rem" alt class="picActive">

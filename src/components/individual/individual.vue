@@ -95,7 +95,7 @@
     <!-- </scroll> -->
     <!-- 标签选择 -->
     <div v-transfer-dom>
-      <x-dialog v-model="tagShow" class="dialog-demo">
+      <x-dialog v-model="tagShow" class="dialog-demo" style="height:100%">
         <div class="tag_wrapper">
           <h2 class="signatureTitle">个性标签</h2>
           <div class="close_tabBox" @click="closeTag">
@@ -103,8 +103,8 @@
           </div>
           <h3 class="title">最多选五个标签</h3>
           <ul class="tag_list clearfix" ref="tagList">
-            <li class="tag fl" v-for="(item,index) in tagList" :data-index="index" :key="index" @click="selectTag($event,item,index)">
-              {{item}}
+            <li class="tag fl" :class="{active:item.checked}" v-for="(item,index) in tagList" :data-index="index" :key="index" @click="selectTag($event,item,index)">
+              {{item.name}}
             </li>
           </ul>
           <div class="DIY_tag clearfix">
@@ -207,14 +207,41 @@
           ]
         ],
         tagList: [
-          "小逗比",
-          "萌萌哒",
-          "幽默",
-          "二货",
-          "逗比",
-          "二货",
-          "小萌萌",
-          "帅呆了"
+          {
+            name:"小逗比",
+            id:0,
+            checked:false
+          },
+           {
+            name:"萌萌哒",
+            id:1,
+            checked:false
+          },
+           {
+            name: "幽默",
+            id:2,
+            checked:false
+          },
+           {
+            name: "二货",
+            id:3,
+            checked:false
+          },
+           {
+            name:"逗比",
+            id:4,
+            checked:false
+          },
+           {
+            name:"小萌萌",
+            id:5,
+            checked:false
+          },
+           {
+            name: "帅呆了",
+            id:6,
+            checked:false
+          },
         ],
         height: ""
       };
@@ -238,6 +265,15 @@
       this.isQuiet = this.userInfo.isQuiet;
       this.isBattle = this.userInfo.isBattle;
       this.signature = this.userInfo.signature ? this.userInfo.signature : this.signature;
+      this.userInfoTags = this.userInfo.tags.split("、")
+      console.log("this.userInfoTags---",this.userInfoTags)
+      this.tagList.forEach((localUseTag,index)=>{
+        this.userInfoTags.forEach(serverUseTag=>{
+          if(serverUseTag == localUseTag.name){
+            localUseTag.checked = true
+          }
+        })
+      })
     },
     methods: {
       //隐身状态 上线不通知好友
@@ -289,8 +325,9 @@
             });
             return;
           }
-          this.commonList.push(item);
-          e.target.className = "tag fl active";
+          this.commonList.push(item.name);
+          item.checked = true
+          e.target.className = "tag fl";
         } else {
           e.target.className = "tag fl";
           let index = this.commonList.indexOf(item);
@@ -656,6 +693,8 @@
     background-repeat: no-repeat;
     background-size: 100%;
     padding-left: 0.4rem;
+    width: 8rem;
+    display: inline-block;
     background-color: #fff;
     .signatureTitle {
       width: 100%;
@@ -733,6 +772,8 @@
     }
   }
   .btn_box {
+     display: inline-block;
+     width: 8.4rem;
     text-align: center;
     height: 0.8rem;
     line-height: 0.8rem;
