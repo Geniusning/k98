@@ -668,11 +668,12 @@ export default {
       clearTimeout(this.timer);
       if (this.vocieDuration < 1) {
         // this.$vux.toast.text("录音时间过短", "middle");
+        wx.stopRecord({})
         this.warning = true;
         clearTimeout(this.warningTimer);
         this.warningTimer = setTimeout(() => {
           this.warning = false;
-        }, 1500);
+        }, 1000);
         this.vocieDuration = 0;
         this.isVoicing = false;
         return;
