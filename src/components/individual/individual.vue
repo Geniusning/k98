@@ -19,15 +19,15 @@
       </div>
       <!-- 头像选择 -->
       <!-- <div class="select_list_wrapper">
-              <h3>候选头像</h3>
-                <ul class="avatar_lsit">
-                    <li><img onclick="return false" src="../../assets/image/avatar3.jpg" alt=""></li>
-                    <li><img onclick="return false" src="../../assets/image/avatar2.jpg" alt=""></li>
-                    <li><img onclick="return false" src="../../assets/image/avatar.jpg" alt=""></li>
-                    <li><img onclick="return false" src="../../assets/image/avatar.jpg" alt=""></li>
-                    <li><img onclick="return false" src="../../assets/image/avatar2.jpg" alt=""></li>
-                </ul>
-            </div> -->
+                    <h3>候选头像</h3>
+                      <ul class="avatar_lsit">
+                          <li><img onclick="return false" src="../../assets/image/avatar3.jpg" alt=""></li>
+                          <li><img onclick="return false" src="../../assets/image/avatar2.jpg" alt=""></li>
+                          <li><img onclick="return false" src="../../assets/image/avatar.jpg" alt=""></li>
+                          <li><img onclick="return false" src="../../assets/image/avatar.jpg" alt=""></li>
+                          <li><img onclick="return false" src="../../assets/image/avatar2.jpg" alt=""></li>
+                      </ul>
+                  </div> -->
       <!-- 修改信息 -->
       <div class="userInfo_wrapper">
         <ul class="userInfo_list">
@@ -63,8 +63,8 @@
             <!-- 通知权限 -->
             <div class="authority_wrapper">
               <!-- <h4 class="title">通知权限
-                  <span class="star">#</span>
-                </h4> -->
+                        <span class="star">#</span>
+                      </h4> -->
               <ul class="authority_list">
                 <li style="font-size: 0.3733rem;" class="authorItem">
                   <group style="padding:0">
@@ -165,7 +165,7 @@
       return {
         isStealth: null,
         isQuiet: null,
-        isBattle:false,
+        isBattle: false,
         signatureList: "",
         title: "最多选5个",
         diyTag: "",
@@ -187,6 +187,7 @@
         resText: "",
         length: "0",
         onceClick: true,
+        userInfoTags: [],
         sexList: [
           ["男", "女"]
         ],
@@ -206,41 +207,40 @@
             "双鱼座(2.19-3.20)"
           ]
         ],
-        tagList: [
+        tagList: [{
+            name: "小逗比",
+            id: 0,
+            checked: false
+          },
           {
-            name:"小逗比",
-            id:0,
-            checked:false
+            name: "萌萌哒",
+            id: 1,
+            checked: false
           },
-           {
-            name:"萌萌哒",
-            id:1,
-            checked:false
-          },
-           {
+          {
             name: "幽默",
-            id:2,
-            checked:false
+            id: 2,
+            checked: false
           },
-           {
+          {
             name: "二货",
-            id:3,
-            checked:false
+            id: 3,
+            checked: false
           },
-           {
-            name:"逗比",
-            id:4,
-            checked:false
+          {
+            name: "逗比",
+            id: 4,
+            checked: false
           },
-           {
-            name:"小萌萌",
-            id:5,
-            checked:false
+          {
+            name: "小萌萌",
+            id: 5,
+            checked: false
           },
-           {
+          {
             name: "帅呆了",
-            id:6,
-            checked:false
+            id: 6,
+            checked: false
           },
         ],
         height: ""
@@ -266,11 +266,12 @@
       this.isBattle = this.userInfo.isBattle;
       this.signature = this.userInfo.signature ? this.userInfo.signature : this.signature;
       this.userInfoTags = this.userInfo.tags.split("、")
-      console.log("this.userInfoTags---",this.userInfoTags)
-      this.tagList.forEach((localUseTag,index)=>{
-        this.userInfoTags.forEach(serverUseTag=>{
-          if(serverUseTag == localUseTag.name){
+      console.log("this.userInfoTags---", this.userInfoTags)
+      this.tagList.forEach((localUseTag, index) => {
+        this.userInfoTags.forEach(serverUseTag => {
+          if (serverUseTag == localUseTag.name) {
             localUseTag.checked = true
+            this.commonList.push(localUseTag.name)
           }
         })
       })
@@ -285,7 +286,7 @@
       changeQuiet(e) {
         this.isQuiet = e
       },
-      changeBattle(e){
+      changeBattle(e) {
         this.isBattle = e
       },
       blurAdjust() {
@@ -313,7 +314,7 @@
           this.diyTag = "";
         }
       },
-      //选择自定义属性
+      //选择标签
       selectTag(e, item, index) {
         console.log(index);
         if (e.target.className.indexOf("active") == -1) {
@@ -327,11 +328,10 @@
           }
           this.commonList.push(item.name);
           item.checked = true
-          e.target.className = "tag fl";
         } else {
-          e.target.className = "tag fl";
-          let index = this.commonList.indexOf(item);
-          console.log(index);
+          item.checked = false
+          let index = this.commonList.indexOf(item.name);
+          console.log("commonList---index", index)
           this.commonList.splice(index, 1);
         }
       },
@@ -343,24 +343,38 @@
         this.diyTag = "";
         console.log(this.signatureList);
       },
+      unique(arr) {
+        return Array.from(new Set(arr))
+      },
       //关闭个性表情模态框
       closeTag() {
         this.tagShow = false;
-        this.commonList = [];
-        this.diyTag = "";
-        let elObj = this.$refs.tagList.childNodes;
-        for (const key in elObj) {
-          if (elObj[key].tagName == "LI") {
-            elObj[key].className = "tag fl";
+        this.tagList.forEach((localUseTag, index) => {
+          if (localUseTag.checked) {
+            this.commonList.push(localUseTag.name)
           }
-        }
+        })
+        this.userInfoTags = this.unique(this.commonList)
+        this.diyTag = "";
       },
       change(val, label) {
         console.log("change", val);
       },
-      // 标签选择
+      // 显示标签弹框
       showTag() {
         this.tagShow = true;
+        this.commonList = [];
+        console.log("this.userInfoTags", this.userInfoTags)
+        console.log("this.tagList", this.tagList)
+        this.tagList.forEach((localUseTag, index) => {
+          this.userInfoTags.forEach(serverUseTag => {
+            if (serverUseTag == localUseTag.name) {
+              localUseTag.checked = true
+              console.log("localUseTag---", localUseTag)
+              this.commonList.push(localUseTag.name)
+            }
+          })
+        })
       },
       //性别选择
       onHide() {
@@ -404,7 +418,7 @@
           signature: this.signature,
           isStealth: this.isStealth,
           isQuiet: this.isQuiet,
-          isBattle:this.isBattle
+          isBattle: this.isBattle
         };
         let strUserInfoParam = JSON.stringify(userInfoParam);
         let decc = new TextEncoder("utf-8");
@@ -437,7 +451,7 @@
           }
         });
         //核对员工电话
-        api.verifyPhoneNumber(this.phone,this.userInfo.headimgurl).then(res => {
+        api.verifyPhoneNumber(this.phone, this.userInfo.headimgurl).then(res => {
           console.log('核对员工电话结果-------------------', res);
         }).catch(err => {
           console.log(err);
@@ -772,8 +786,8 @@
     }
   }
   .btn_box {
-     display: inline-block;
-     width: 8.4rem;
+    display: inline-block;
+    width: 8.4rem;
     text-align: center;
     height: 0.8rem;
     line-height: 0.8rem;

@@ -509,6 +509,11 @@ export default {
     });
   },
   deactivated() {
+    console.log("deactivated----------------")
+    console.log("this.voiceLocalId-------------",this.voiceLocalId)
+     wx.stopVoice({
+        localId: this.voiceLocalId // 停止正在播放的语音
+      });
     Bus.$off();
     sessionStorage.setItem(this.staticChatFriendObj.openid, this.sendingTimes); //保存对应好友发送信息次数
     this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
@@ -518,15 +523,6 @@ export default {
     let cursor = 0;
     this.changeCursor(cursor);
     this.showLaHeiPanel = false;
-  },
-  beforeRouteLeave(to, from, next) {
-    console.log("beforeRouteLeave-----", this.voiceLocalId);
-    wx.pauseVoice({
-      localId: this.voiceLocalId // 需要停止的音频的本地ID，由stopRecord接口获得
-    });
-    next();
-    // 导航离开该组件的对应路由时调用
-    // 可以访问组件实例 `this`
   },
   computed: {
     ...mapState([
@@ -597,7 +593,7 @@ export default {
               wx.startRecord({
                 success: function() {
                   localStorage.rainAllowRecord = "true";
-                  wx.stopRecord();
+                  wx.stopRecord({});
                 },
                 cancel: function() {
                   alert("用户拒绝授权录音");
@@ -1253,6 +1249,10 @@ export default {
     // },
     //返回
     goBack() {
+      console.log("stop-------------",this.voiceLocalId)
+      wx.stopVoice({
+        localId: this.voiceLocalId // 停止正在播放的语音
+      });
       this.showLaHeiPanel = false;
       this.$router.go(-1);
     },

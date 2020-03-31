@@ -240,7 +240,6 @@
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
     beforeRouteEnter(to, from, next) {
-      console.log("to", to)
       console.log("from", from)
       if (to.params.routeParamNum === 1) {
         next(vm => {
@@ -269,6 +268,14 @@
       if (from.name === "clientChat") {
         this.loadClientServiceList()
       }
+      let _url = window.location.href;
+      if (util.isAndroid()) {
+        this.myShareUrl = _url.split("#")[0];
+      } else {
+        this.myShareUrl = this.shareUrl + "k98/home";
+      }
+      console.log("this.myShareUrl-----", this.myShareUrl);
+      this._initJssdk(this.myShareUrl);
       next()
     },
     computed: {
@@ -283,7 +290,8 @@
         "manualEventsList_badgeCount",
         "userInfo",
         "client_badgeCount",
-        "qrCode"
+        "qrCode",
+        "shareUrl"
       ]),
       messageTime() {
         return
@@ -311,6 +319,25 @@
       // console.log("组件销毁");
     },
     methods: {
+      _initJssdk(url) {
+        api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url)).then(res => {
+          console.log("获取微信jssdk---------", res);
+          wx.config({
+            // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: res.appId,
+            timestamp: res.timestamp,
+            nonceStr: res.nonceStr,
+            signature: res.signature,
+            jsApiList: ["playVoice", "pauseVoice", "stopVoice"]
+          });
+          wx.ready(() => {
+          });
+          wx.error(function(res) {
+            console.log(res);
+            // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+          });
+        });
+      },
       closeQrCode() {
         this.isShowQrCode = false
         localStorage.setItem("isShowQrCode", false)
@@ -397,7 +424,6 @@
             this.$nextTick(function() {
               this.$refs.clientScroll.scrollTo(0, 0)
             })
-
           }, 50);
         }
       },
@@ -575,7 +601,7 @@
         });
       },
       ...mapMutations({
-         getUserInfo: "GET_USERINFO", //获取用户信息
+        getUserInfo: "GET_USERINFO", //获取用户信息
         chanageFriendPanelFlag: "CHANGEFRIENDPANELFLAG", //显示好友匹配成功弹框
         CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
