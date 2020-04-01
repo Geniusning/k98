@@ -509,11 +509,11 @@ export default {
     });
   },
   deactivated() {
-    console.log("deactivated----------------")
-    console.log("this.voiceLocalId-------------",this.voiceLocalId)
-     wx.stopVoice({
-        localId: this.voiceLocalId // 停止正在播放的语音
-      });
+    console.log("deactivated----------------");
+    console.log("this.voiceLocalId-------------", this.voiceLocalId);
+    wx.stopVoice({
+      localId: this.voiceLocalId // 停止正在播放的语音
+    });
     Bus.$off();
     sessionStorage.setItem(this.staticChatFriendObj.openid, this.sendingTimes); //保存对应好友发送信息次数
     this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
@@ -664,7 +664,7 @@ export default {
       clearTimeout(this.timer);
       if (this.vocieDuration < 1) {
         // this.$vux.toast.text("录音时间过短", "middle");
-        wx.stopRecord({})
+        wx.stopRecord({});
         this.warning = true;
         clearTimeout(this.warningTimer);
         this.warningTimer = setTimeout(() => {
@@ -1249,7 +1249,7 @@ export default {
     // },
     //返回
     goBack() {
-      console.log("stop-------------",this.voiceLocalId)
+      console.log("stop-------------", this.voiceLocalId);
       wx.stopVoice({
         localId: this.voiceLocalId // 停止正在播放的语音
       });
@@ -1282,11 +1282,15 @@ export default {
     },
     //展示表情面板
     show_emotion() {
+      this.messageType = 1;
+      this.isvoice = false;
       this.emotionShow = !this.emotionShow;
       this.expressionShow = false;
     },
     //切换常用语
     show_expression() {
+      this.messageType = 1;
+      this.isvoice = false;
       this.expressionShow = !this.expressionShow;
       this.emotionShow = false;
     },
