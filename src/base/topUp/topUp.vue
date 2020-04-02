@@ -215,12 +215,12 @@
                 return item;
                 break;
               case 2:
-                item.imgUrl = require("../../assets/image/hutui.png");
+                item.imgUrl = require("../../assets/image/car.png");
                 item.name = "一栋别墅";
                 return item;
                 break;
               case 3:
-                item.imgUrl = require("../../assets/image/boat.png");
+                item.imgUrl = require("../../assets/image/boat.jpg");
                 item.name = "一艘邮轮";
                 return item;
                 break;
