@@ -537,7 +537,7 @@
             this.$router.push({
               name: `message`,
               params: {
-                routeParamNum: 3
+                routeParamNum: 2
               }
             });
             break;

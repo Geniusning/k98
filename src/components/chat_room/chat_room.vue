@@ -184,11 +184,11 @@
         </div>
         <div class="select_area">
           <ul class="selectList clearfix">
-            <li class="item fl">
-              <img onclick="return false" src="../../assets/image/chat_emotion.png" alt @click="show_emotion">
+            <li class="item fl" @click="show_emotion">
+              <img onclick="return false" src="../../assets/image/chat_emotion.png" alt >
             </li>
-            <li class="item fl">
-              <img onclick="return false" src="../../assets/image/message_chat.png" alt @click="show_expression">
+            <li class="item fl" @click="show_expression">
+              <img onclick="return false" src="../../assets/image/message_chat.png" alt >
             </li>
             <li class="item fl" @click="showToastGift">
               <img onclick="return false" src="../../assets/image/chat_gift.png" alt>
@@ -197,8 +197,8 @@
               <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
               <input type="file" class="file" accept="image/*" @change="uploadImage">
             </li>
-            <li class="item fl">
-              <img onclick="return false" src="../../assets/image/hei.png" alt @click="laHei(true)">
+            <li class="item fl" @click="laHei(true)">
+              <img onclick="return false" src="../../assets/image/hei.png" alt >
             </li>
             <li class="item fl" @click="playGame" style="padding:.06rem">
               <img onclick="return false" src="../../assets/image/game.png" alt class="game" style="width:0.8069rem;height:0.8067rem">
@@ -1827,6 +1827,7 @@ export default {
           img {
             width: 0.5333rem;
             height: 0.5333rem;
+            pointer-events: none;
           }
         }
       }
