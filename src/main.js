@@ -48,9 +48,9 @@ new Vue({
         this.loadL98otherSetting() //加载控制开关
         this._loadInviteCoupon() //判断是否有邀新活动
         this.createWebsocket() //创建长链接
-        // window.addEventListener("unload", () => {
-        //     localStorage.removeItem("friendInfo") //清楚缓存
-        // })
+        window.addEventListener("unload", () => {
+            localStorage.removeItem("rainAllowRecord") //清楚缓存
+        })
         setTimeout(() => { //13秒过后如果用户没有离开系统则把用户放入待被邀请游戏队列
             this.addWaitingCombatList()
         }, 13000);

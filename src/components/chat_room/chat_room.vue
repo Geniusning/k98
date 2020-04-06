@@ -62,14 +62,14 @@
                 <div class="message_box">
                   <span v-show="item.type===9" class="arrow"></span>
                   <div class="message" style="word-break: break-all;height:1rem;padding:0" :style="{'width':item.voiceLenth}" v-if="item.type===9">
-                    <div class="cricleplay" v-if="item.friend==1" @click="downLoadVoice(item.message,$event,index,item.chatMsgID)">
+                    <div class="cricleplay" v-if="item.friend==1" @click="downLoadVoice(item.message,$event,index,item.chatMsgID,item.outOfDate)">
                       <div class="vocieDuration">{{item.vocieDuration}}''</div>
                       <div class="small first"></div>
                       <div class="middle stopanimate"></div>
                       <div class="large stopanimate"></div>
                       <!-- <img v-if="item.outOfDate" src="../../assets/image/outdate.png" class="outDate" alt=""> -->
                     </div>
-                    <div class="cricleplay" v-else @click="downLoadVoice(item.message,$event,index,item.chatMsgID)">
+                    <div class="cricleplay" v-else @click="downLoadVoice(item.message,$event,index,item.chatMsgID,item.outOfDate)">
                       <!-- :class="{stopanimate:!(index==activeVoiceIndex)}" -->
                       <div class="vocieDuration">''{{item.vocieDuration}}</div>
                       <div class="large stopanimate"></div>
@@ -586,20 +586,15 @@ export default {
             ]
           });
           wx.ready(() => {
-            if (
-              !localStorage.rainAllowRecord ||
-              localStorage.rainAllowRecord !== "true"
-            ) {
-              wx.startRecord({
-                success: function() {
-                  localStorage.rainAllowRecord = "true";
-                  wx.stopRecord({});
-                },
-                cancel: function() {
-                  alert("用户拒绝授权录音");
-                }
-              });
-            }
+            wx.startRecord({
+              success: function() {
+                localStorage.rainAllowRecord = "true";
+                wx.stopRecord({});
+              },
+              cancel: function() {
+                alert("用户拒绝授权录音");
+              }
+            });
           });
           wx.error(function(res) {
             console.log(res);
@@ -696,7 +691,11 @@ export default {
         }
       });
     },
-    downLoadVoice(downId, e, index, voiceMsgID) {
+    downLoadVoice(downId, e, index, voiceMsgID, outOfDate) {
+      if (outOfDate) {
+        this.$vux.toast.text("录音已过期", "middle");
+        return;
+      }
       console.log("e---", e);
       var nodeList = this.$refs.chatList.childNodes;
       var element;
