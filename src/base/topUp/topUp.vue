@@ -32,8 +32,8 @@
           <img onclick="return false" v-show="componentGiftList.length>0" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
           <p v-show="componentGiftList.length>0" class="giftListpart_desc0">虚拟</p>
           <p v-show="componentGiftList.length>0" class="giftListpart_desc1">礼物</p>
-          <ul class="list">
-            <li class="item" v-for="(item,index) in componentGiftList" :key="index" @click="sendVirtualGift(item.id,index,item)">
+          <ul class="list ">
+            <li class="item virtual" v-for="(item,index) in componentGiftList" :key="index" @click="sendVirtualGift(item.id,index,item)">
               <img onclick="return false" :src="item.imgUrl" alt="" class="giftIcon">
               <p class="price">{{item.money}}</p>
             </li>
@@ -215,13 +215,13 @@
                 return item;
                 break;
               case 2:
-                item.imgUrl = require("../../assets/image/car.png");
-                item.name = "一栋别墅";
+                item.imgUrl = require("../../assets/image/car.jpg");
+                item.name = "一辆跑车";
                 return item;
                 break;
               case 3:
                 item.imgUrl = require("../../assets/image/boat.jpg");
-                item.name = "一艘邮轮";
+                item.name = "一艘游艇";
                 return item;
                 break;
               default:
@@ -651,6 +651,9 @@
               width: 1.4rem;
               text-align: center;
             }
+          }
+          .virtual:nth-child(3) img,.virtual:nth-child(4) img{
+            transform: scale(1.3)
           }
         }
       }

@@ -49,10 +49,35 @@
             transform: rotateY(360deg);
         }
     }
+    .child:nth-child(2) p{
+        background-color: red;
+    }
+    .child:nth-child(3) p{
+        background-color: green;
+    }
 </style>
 
 <body>
-
+    <div class="father">
+        <div class="child">
+            <p>1111</p>
+        </div>
+        <div class="child">
+            <p>2222</p>
+        </div>
+        <div class="child">
+            <p>333</p>
+        </div>
+        <div class="child">
+            <p></p>
+        </div>
+        <div class="child">
+            <p>444</p>
+        </div>
+        <div class="child">
+            <p>44</p>
+        </div>
+    </div>
     <div class="wrapper">
         <div class="box" id="circles">
             <input type="text" id="input" value="1111">
