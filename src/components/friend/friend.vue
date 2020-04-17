@@ -276,10 +276,46 @@
     },
     activated() {
       this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
-        Bus.$on("changeFriendConnetion", (openid) => {
-          this.isFriend = true
-          this.changeFriIcon(openid)
-        })
+      Bus.$on("changeFriendConnetion", (openid) => {
+        this.isFriend = true
+        this.changeFriIcon(openid)
+      })
+      let _url = window.location.href;
+        this.myShareUrl = _url.split("#")[0];
+        this.gameUrl = _url.split("k98")[0];
+        if (util.isAndroid()) {
+          let shareObj = {
+            title: "找朋友",
+            desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
+            link: `${this.shareUrl}k98/friend?visitType=3&phone=${
+                this.userInfo.phone
+              }&role=${this.userInfo.role}`,
+            imgUrl: `${this.shopSettingInfo.image}`
+          };
+          util._getJssdkInfo(
+            shareObj,
+            this.myShareUrl,
+            20,
+            "activity",
+            this.shareGetJifen
+          );
+        } else {
+          let shareObj = {
+            title: "找朋友",
+            desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
+            link: `${this.shareUrl}k98/friend?visitType=3&phone=${
+                this.userInfo.phone
+              }&role=${this.userInfo.role}`,
+            imgUrl: `${this.shopSettingInfo.image}`
+          };
+          util._getJssdkInfo(
+            shareObj,
+            this.myShareUrl,
+            20,
+            "activity",
+            this.shareGetJifen
+          );
+        }
     },
     deactivated() {
       this.modalSwitch = false

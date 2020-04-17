@@ -132,7 +132,7 @@
             <div class="title clearfix">
               <img onclick="return false" src="../../assets/image/recomment.png" alt class="icon fl" />
               <h2 class="shop_title" @click="closeWebPage">店长推荐</h2>
-              <span class="desc">预订享优惠</span>
+              <span class="desc">积分兑换更优惠</span>
             </div>
             <div class="more fr">
               <img onclick="return false" src="../../assets/image/fuli.png" alt class="letter" v-show="noCouponsFlag" @click="toWelfare" />
@@ -187,7 +187,7 @@
                   <img onclick="return false" src="../../assets/image/hutuishop1.png" alt="" class="shopPic">
                 </div>
                 <div class="center">
-                  <p class="title">爱尚KTV</p>
+                  <p class="title" style="font-weight:900">爱尚KTV</p>
                   <p class="desc">{{item.goods.subtopic}}</p>
                   <p class="limit">{{item.goods.limit}}</p>
                   <p class="price">
