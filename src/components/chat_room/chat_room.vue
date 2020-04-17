@@ -132,7 +132,7 @@
                             <img onclick="return false" v-if="item.chatExtMsg.image" :src="item.chatExtMsg.image" alt="">
                             <img onclick="return false" class="giftImg" v-else-if="item.name==='beer'" src="../../assets/image/beer.png" alt>
                             <img onclick="return false" class="giftImg" v-else-if="item.name==='flower'" src="../../assets/image/flower.png" alt>
-                            <img onclick="return false" class="giftImg" v-else-if="item.name==='house'" src="../../assets/image/cat.jpg" alt>
+                            <img onclick="return false" class="giftImg" v-else-if="item.name==='house'" src="../../assets/image/car.jpg" alt>
                             <img onclick="return false" class="giftImg" v-else-if="item.name==='car'" src="../../assets/image/boat.jpg" alt>
                           </div>
                           <div class="giftDesc">

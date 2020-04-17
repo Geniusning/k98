@@ -54,7 +54,7 @@
                 <div class="topUpGiftInfo_left">
                   <img onclick="return false" class="giftImg" v-if="allMutatualInfo_temp.name==='beer'" src="./assets/image/beer.png" alt="">
                   <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='flower'" src="./assets/image/flower.png" alt="">
-                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='house'" src="./assets/image/cat.jpg" alt="">
+                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='house'" src="./assets/image/car.jpg" alt="">
                   <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='car'" src="./assets/image/boat.jpg" alt="">
                   <img onclick="return false" class="giftImg" v-else :src="allMutatualInfo_temp.image" alt="">
                 </div>
@@ -147,8 +147,8 @@
                 <div class="topUpGiftInfo_left">
                   <img class="giftImg" v-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='beer'" src="./assets/image/beer.png" alt="">
                   <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='flower'" src="./assets/image/flower.png" alt="">
-                  <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='house'" src="./assets/image/hutui.png" alt="">
-                  <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='car'" src="./assets/image/boat.png" alt="">
+                  <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='house'" src="./assets/image/car.jpg" alt="">
+                  <img class="giftImg" v-else-if="topUpGiftInfo.content.extMsg.goodInfo.extInfo.type==='car'" src="./assets/image/boat.jpg" alt="">
                   <img class="giftImg" v-else :src="topUpGiftInfo.content.extMsg.goodInfo.extInfo.image" alt="">
                 </div>
                 <div class="topUpGiftInfo_right">

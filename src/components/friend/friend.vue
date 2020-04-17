@@ -23,15 +23,8 @@
       </div>
       <!-- 相册··················································begin -->
       <!-- 相册··················································end -->
-      <stack ref="stack" :pages="someList" :visible="visible" 
-      :currentIndex="currentPage" 
-      :resultSoulText="soulText" 
-      :searchResult="isEndResultSearchBtnBox"
-      :stopSearch="searching" 
-      @getMoreFriend="sonGetMoreFriend" 
-      @heartBeat="thumbHeartBeat" 
-      @showAblum="showAblum"
-       @firstData="listenFirstdata">
+      <stack ref="stack" :pages="someList" :visible="visible" :currentIndex="currentPage" :resultSoulText="soulText" :searchResult="isEndResultSearchBtnBox" :stopSearch="searching" @getMoreFriend="sonGetMoreFriend" @heartBeat="thumbHeartBeat" @showAblum="showAblum"
+        @firstData="listenFirstdata">
         暂时没有好友</stack>
       <div class="loading-container" v-show="!someList.length">
         <loading></loading>
@@ -39,8 +32,8 @@
     </div>
     <div class="control_wrapper">
       <!-- <p class="control_guide" v-show="isFirstLoad">互赞成为好友。
-                                <br>下面分别是送礼、点赞、约Ta玩大话骰
-              </p> -->
+                                    <br>下面分别是送礼、点赞、约Ta玩大话骰
+                  </p> -->
       <div class="soulBtns_wrapper" v-show="isEndResultSearchBtnBox">
         <button class="btn" @click="cancleSoulSearch">退出</button>
         <button class="btn" @click="intoSetting">去完善</button>
@@ -104,7 +97,7 @@
     <!-- 点赞 -->
     <toast v-model="showPositionValue" type="text" :time="2000" is-show-mask width="10em" :text="text" :position="position"></toast>
     <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad"   isFirstLoad-->
-    <div class="guide_bg" v-show="isFirstLoad" >
+    <div class="guide_bg" v-show="isFirstLoad">
       <!-- <img onclick="return false" class="thumb" src="../../assets/image/thumb.png" alt> -->
       <p class="know" @click="isFirstLoad=false">知道了</p>
       <p class="intro">设置个人资料</p>
@@ -244,52 +237,23 @@
     //   }
     // },
     computed: {
-      ...mapState(["friendList", "inAndOutFriendCursor",
+      ...mapState(["shopSettingInfo","friendList", "inAndOutFriendCursor",
         "friendListCursor", "giftList", "userInfo", "loadFriendSexType",
-        "staticChatFriendObj", "focusThumbTimes", "unfocusThumbTimes", "focusPlayTimes", "unfocusPlayTimes", "soulSwitch"
+        "staticChatFriendObj", "focusThumbTimes", "unfocusThumbTimes", "focusPlayTimes", "unfocusPlayTimes", "soulSwitch", "shareUrl"
       ]),
       ...mapGetters(["qrIsShow"]),
     },
-    mounted() {
-      let param = {
-        // mySex: Number(this.loadFriendSexType),
-        cursor: 0,
-        sex: this.loadFriendSexType,
-        range: this.rangeType,
-        sortType: this.sortType
-      }
-      console.log("---------------------------------",param)
-      this.getAllCommunityFriend(param)
-      if(this.userInfo.sex==="男"){
-        this.sexType = 0
-      }else{
-         this.sexType = 1
-      }
-      
-      if (this.userInfo.firstLoad) {
-        this.isFirstLoad = true;
-      } else {
-        this.isFirstLoad = false;
-      }
-      this._clearFirstLoadTag(); //标识已经进入过公众号
-      this._loadAllGift();
-    },
-    activated() {
-      this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
-      Bus.$on("changeFriendConnetion", (openid) => {
-        this.isFriend = true
-        this.changeFriIcon(openid)
-      })
-      let _url = window.location.href;
+    created() {
+      setTimeout(() => {
+        let _url = window.location.href;
         this.myShareUrl = _url.split("#")[0];
         this.gameUrl = _url.split("k98")[0];
         if (util.isAndroid()) {
+          console.log("进入安卓了--------this.myShareUrl", this.myShareUrl)
           let shareObj = {
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
-            link: `${this.shareUrl}k98/friend?visitType=3&phone=${
-                this.userInfo.phone
-              }&role=${this.userInfo.role}`,
+            link: `${this.shareUrl}k98/friend?visitType=3&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(
@@ -304,8 +268,8 @@
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
             link: `${this.shareUrl}k98/friend?visitType=3&phone=${
-                this.userInfo.phone
-              }&role=${this.userInfo.role}`,
+                    this.userInfo.phone
+                  }&role=${this.userInfo.role}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(
@@ -316,6 +280,37 @@
             this.shareGetJifen
           );
         }
+      }, 100);
+    },
+    mounted() {
+      let param = {
+        // mySex: Number(this.loadFriendSexType),
+        cursor: 0,
+        sex: this.loadFriendSexType,
+        range: this.rangeType,
+        sortType: this.sortType
+      }
+      console.log("---------------------------------", param)
+      this.getAllCommunityFriend(param)
+      if (this.userInfo.sex === "男") {
+        this.sexType = 0
+      } else {
+        this.sexType = 1
+      }
+      if (this.userInfo.firstLoad) {
+        this.isFirstLoad = true;
+      } else {
+        this.isFirstLoad = false;
+      }
+      this._clearFirstLoadTag(); //标识已经进入过公众号
+      this._loadAllGift();
+    },
+    activated() {
+      this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
+        Bus.$on("changeFriendConnetion", (openid) => {
+          this.isFriend = true
+          this.changeFriIcon(openid)
+        })
     },
     deactivated() {
       this.modalSwitch = false
@@ -557,9 +552,9 @@
       },
       //玩游戏
       playGame() {
-        if(this.friendInfo.info.isBattle){ //群友挂免战功能，不能邀约战
-        this.$vux.toast.text('已挂免战牌,暂不接受群友挑战', 'middle')
-          return 
+        if (this.friendInfo.info.isBattle) { //群友挂免战功能，不能邀约战
+          this.$vux.toast.text('已挂免战牌,暂不接受群友挑战', 'middle')
+          return
         }
         let playTimes = localStorage.getItem("playTimes") ?
           localStorage.getItem("playTimes") : {
@@ -732,9 +727,8 @@
       position: relative;
       height: 1.3333rem;
       .switchBtn_wrapper {
-        position: relative; 
-        margin-left: .1rem; 
-        // z-index: 99;
+        position: relative;
+        margin-left: .1rem; // z-index: 99;
         .intro_soulText {
           position: absolute;
           top: .4rem;
@@ -793,7 +787,7 @@
         color: #ff7900;
         font-weight: 700;
       }
-      .setting{
+      .setting {
         position: relative;
         z-index: 99;
       }
@@ -1058,7 +1052,7 @@
       //   top: 0.2667rem;
       //   right: 0.3933rem;
       // }
-      .know{
+      .know {
         position: absolute;
         display: inline-block;
         bottom: 36%;
@@ -1176,7 +1170,7 @@
       color: @baseColor;
       font-size: 0.4267rem;
       font-family: "PingFang-SC-Bold";
-      padding:.3333rem 0;
+      padding: .3333rem 0;
     }
     .cancel_btn {
       margin-right: 0.875rem;
