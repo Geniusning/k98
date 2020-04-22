@@ -5,7 +5,7 @@
         <router-view v-if="$route.meta.keepAlive"></router-view>
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive"></router-view>
-      <!-- <lg-preview></lg-preview> -->
+      <lg-preview></lg-preview>
       <!-- 左侧信封弹 -->
       <transition name="envelop">
         <div class="envelop-wrapper" v-if="isShowEnvelop">

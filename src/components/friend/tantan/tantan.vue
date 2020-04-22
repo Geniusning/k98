@@ -265,7 +265,7 @@
       },
       //点击相册
       showAlbum() {
-        const num = 1
+        console.log("点击相册")
         this.$emit('showAblum', this.backToParentData ? this.backToParentData : this.pages[0]);
       },
       touchstart(e) {

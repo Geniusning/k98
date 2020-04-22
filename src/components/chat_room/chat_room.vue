@@ -600,7 +600,7 @@
                   wx.stopRecord({});
                 },
                 cancel: function() {
-                  alert("用户拒绝授权录音");
+                  alert("拒绝授权录音,暂无法语音聊天");
                 }
               });
             });
@@ -613,7 +613,12 @@
       touchstart() {
         console.log("touchStart");
         var _this = this;
-        wx.startRecord();
+        wx.startRecord({
+          cancel:function(){
+            _this.isVoicing = false;
+            wx.stopRecord({});
+          }
+        });
         wx.stopVoice({
           localId: this.voiceLocalId // 停止正在播放的语音
         });
@@ -639,18 +644,12 @@
           clearInterval(this.vocieDurationTimer);
           wx.stopRecord({
             success: function(res) {
-              console.log("res.localId----", res.localId);
               _this.voiceLocalId = res.localId;
-              console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
               wx.uploadVoice({
                 localId: _this.voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
                 isShowProgressTips: 0, // 默认为1，显示进度提示
                 success: function(res) {
                   _this.voiceServerId = res.serverId; // 返回音频的服务器端ID
-                  console.log(
-                    "wx.uploadVoice-voiceServerId",
-                    _this.voiceServerId
-                  );
                   _this.send();
                 }
               });
@@ -661,7 +660,6 @@
         }, 59000);
       },
       touchend() {
-        console.log("touchEnd");
         console.log("录音时间---", this.vocieDuration);
         clearInterval(this.vocieDurationTimer);
         clearTimeout(this.timer);
@@ -890,11 +888,14 @@
         this.showLaHeiPanel = flag;
       },
       //删除好友
-      quitFriend() {
+      quitFriend() { 
         api.quitFriend(this.staticChatFriendObj.openid).then(res => {
           console.log("删除结果-------", res);
           this.$router.push({
-            name: "message"
+            name: "message",
+            query:{
+              routeParamNum:0,
+            }
           });
         });
       },

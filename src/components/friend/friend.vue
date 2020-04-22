@@ -237,7 +237,7 @@
     //   }
     // },
     computed: {
-      ...mapState(["shopSettingInfo","friendList", "inAndOutFriendCursor",
+      ...mapState(["lifeImgList","shopSettingInfo","friendList", "inAndOutFriendCursor",
         "friendListCursor", "giftList", "userInfo", "loadFriendSexType",
         "staticChatFriendObj", "focusThumbTimes", "unfocusThumbTimes", "focusPlayTimes", "unfocusPlayTimes", "soulSwitch", "shareUrl"
       ]),

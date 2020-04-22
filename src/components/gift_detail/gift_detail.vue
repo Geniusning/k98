@@ -265,11 +265,11 @@
         }
       }
       .scroll {
-        // height: 11rem;
-        flex: 1;
+        height: 13.333rem;
+        // flex: 1;
         overflow: hidden;
         padding-bottom: 0.1333rem;
-        border-bottom: 1px solid #ccc;
+        // border-bottom: 1px solid #ccc;
         .gift_list {
           padding-bottom: 0.1333rem;
           .item {

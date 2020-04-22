@@ -1,11 +1,14 @@
 <template>
     <div id="personalInfo" class="personalInfo">
         <img onclick="return false" src="../../../assets/image/close.png" alt="" class="close" @click="closeAlbum">
-        <swiper class="swiper" :show-dots='false' v-if="lifeImgList.length">
-            <swiper-item class="swiper-demo-img" v-for="(item, index) in lifeImgList" :key="index">
-                <img onclick="return false" style="width:100%;height:100%" :src="item">
+        <swiper height="250px" class="swiper" :show-dots='false' v-if="lifeImgList.length">
+            <swiper-item class="swiper-demo-img" v-for="(item, index) in lifeImgList" :key="index" style="text-align:center">
+                <img onclick="return false" style="margin:0 auto;height:100%" :src="item">
             </swiper-item>
         </swiper>
+        <img src="../../../assets/image/arrow left.png" alt class="arrow_left">
+         <p class="arrow_desc">左右划动，看更多照片</p>
+        <img src="../../../assets/image/Arrow Right.png" alt class="arrow_right">
     </div>
 </template>
 
@@ -56,7 +59,55 @@ export default {
   }
   .swiper {
     margin-top: 50%;
-    height: 5.3333rem;
+    // height: 5.3333rem;
+  }
+     @keyframes leftMove {
+        0% {
+          transform: translateX(5px); //  opacity: 1;
+        }
+        50% {
+          transform: translateX(10px);
+        }
+        100% {
+          transform: translateX(5px);
+        }
+      }
+      @keyframes rightMove {
+        0% {
+          transform: translateX(-5px); //  opacity: 1;
+        }
+        50% {
+          transform: translateX(-10px);
+        }
+        100% {
+          transform: translateX(-5px);
+        }
+      }
+  .arrow_left{
+        position: absolute;
+        z-index: 99;
+        bottom: 3.5rem;
+        left: -.3rem;
+        width: 1.3333rem;
+        animation: leftMove 1s linear infinite;
+  }
+  .arrow_right{
+       width: 1.3333rem;
+        position: absolute;
+        z-index: 99;
+        bottom: 3.5rem;
+        right: -.3rem;
+        animation: rightMove 1s linear infinite;
+  }
+  .arrow_desc{
+        width: 100%;
+        text-align: center;
+        font-size: .45rem;
+        font-weight: 900;
+        position: absolute;
+        bottom: 3.8rem;
+        z-index: 99;
+        color: #fff;
   }
 }
 </style>
