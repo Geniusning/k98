@@ -1,6 +1,6 @@
 <template>
   <div class="gift_detail">
-    <my-header title="财富明细" ref="header"></my-header>
+    <my-header height="30px" title="财富明细" ref="header"></my-header>
     <div class="gift_wrapper vux-1px-t">
       <div class="title_content vux-1px-b">
         <div class="title_content_item">
@@ -204,7 +204,8 @@
     display: flex;
     flex-direction: column;
     .gift_wrapper {
-      flex: 1;
+      // flex: 1;
+      height: 92%;
       display: flex;
       flex-direction: column;
       .title_content {
@@ -213,7 +214,8 @@
         justify-content: space-around;
         padding: 0.3rem 0.1rem;
         box-sizing: border-box;
-        height: 1.3rem;
+        // height: 1.3rem;
+        height: 8.5%;
         .title_content_item {
           margin-right: 0.6667rem;
           box-sizing: border-box;
@@ -247,7 +249,8 @@
         justify-content: space-between;
         text-align: center;
         font-size: 0.35rem;
-        height: 0.5667rem;
+        // height: 0.5667rem;
+        height: 1.5%;
         .total {
           width: 20%;
         }
@@ -265,8 +268,9 @@
         }
       }
       .scroll {
-        height: 13.333rem;
-        // flex: 1;
+        // height: 14rem;
+        height: 94%;
+        // flex:1;
         overflow: hidden;
         padding-bottom: 0.1333rem;
         // border-bottom: 1px solid #ccc;

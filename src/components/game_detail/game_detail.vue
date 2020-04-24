@@ -1,6 +1,6 @@
 <template>
   <div class="gift_detail">
-    <my-header title="大话战绩" ref="header"></my-header>
+    <my-header height="30px" title="大话战绩" ref="header"></my-header>
     <div class="gift_wrapper vux-1px-t">
       <div class="title_content vux-1px-b">
         <div class="title_content_item clearfix">
@@ -122,7 +122,7 @@ export default {
   display: flex;
   flex-direction: column;
   .gift_wrapper {
-    flex: 1;
+    height: 92%;
     display: flex;
     flex-direction: column;
     .title_content {
@@ -130,7 +130,7 @@ export default {
       display: flex;
       padding: 0.4rem 0.4rem;
       box-sizing: border-box;
-      height: 1.3rem;
+      height: 8%;
       .title_content_item {
         margin-right: 0.6667rem;
         box-sizing: border-box;
@@ -156,7 +156,7 @@ export default {
       justify-content: space-between;
       text-align: center;
       font-size: 0.35rem;
-      height: 0.5667rem;
+      height: 1.5%;
       .total {
         width: 20%;
       }
@@ -174,7 +174,8 @@ export default {
       }
     }
     .scroll {
-      height: 13.3333rem;
+      height: 90%;
+      // height: 13.3333rem;
       // flex: 1;
       overflow: hidden;
       padding-bottom: 0.1333rem;

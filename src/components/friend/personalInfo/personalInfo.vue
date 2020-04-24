@@ -86,7 +86,7 @@ export default {
   .arrow_left{
         position: absolute;
         z-index: 99;
-        bottom: 3.5rem;
+        bottom: 1.8rem;
         left: -.3rem;
         width: 1.3333rem;
         animation: leftMove 1s linear infinite;
@@ -95,7 +95,7 @@ export default {
        width: 1.3333rem;
         position: absolute;
         z-index: 99;
-        bottom: 3.5rem;
+        bottom: 1.8rem;
         right: -.3rem;
         animation: rightMove 1s linear infinite;
   }
@@ -105,7 +105,7 @@ export default {
         font-size: .45rem;
         font-weight: 900;
         position: absolute;
-        bottom: 3.8rem;
+        bottom: 1.9rem;
         z-index: 99;
         color: #fff;
   }

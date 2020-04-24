@@ -167,15 +167,15 @@
             </li>
           </ul>
         </scroll>
-        <!-- <div class="loading-container" v-show="isLoading">
-                                                                                                                        <loading></loading>
-                                                                    </div>-->
+        <!-- div class="loading-container" v-show="isLoading">
+                 <loading></loading>
+            </div>-->
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
           <img class="voiceIcon" v-show="!isvoice" @click="toggleVoice" src="../../assets/image/microphone.png" alt="">
           <img class="voiceIcon" v-show="isvoice" @click="toggleVoice" src="../../assets/image/write.png" alt="">
-          <div v-show="isvoice" class="send_message btn" @touchstart="touchstart()" @touchend="touchend">按住 说话</div>
+          <div v-show="isvoice" class="send_message btn" @touchstart="touchstart()" @touchend="touchend" @touchcancel="touchcancel">按住 说话</div>
           <input v-show="!isvoice" type="text" ref="sendInputRef" placeholder="请输入..." id="send_message" class="send_message" @focus="inputFocus" v-model="input_value">
           <div @click="send" ref="sendBtn" class="action_box clearfix" :class="{active:flag}">
             <img src="../../assets/image/plane.png" alt class="icon_plane fl">
@@ -608,6 +608,13 @@ export default {
           });
         });
     },
+    touchcancel(){
+      console.log("touch cancel")
+      this.isVoicing = false;
+      wx.stopRecord({});
+      clearInterval(this.vocieDurationTimer);
+      clearTimeout(this.timer);
+    },
     touchstart() {
       console.log("touchStart");
       var _this = this;
@@ -662,6 +669,7 @@ export default {
       }, 59000);
     },
     touchend() {
+      this.isVoicing = false;
       console.log("录音时间---", this.vocieDuration);
       clearInterval(this.vocieDurationTimer);
       clearTimeout(this.timer);
@@ -677,7 +685,6 @@ export default {
         this.isVoicing = false;
         return;
       }
-      this.isVoicing = false;
       var _this = this;
       wx.stopRecord({
         success: function(res) {

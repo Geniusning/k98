@@ -1,6 +1,6 @@
 <template>
  <div>
-     <div class="nav_wrapper clearfix" :style="{background:bg}">
+     <div class="nav_wrapper clearfix" :style="{background:bg,height:height}">
        <div class="back_content fl" @click="goBack">
          <img onclick="return false" src="../../assets/image/back_chat.png" alt="" class="backArrow">
        </div>
@@ -21,6 +21,10 @@ export default {
       type: String,
       default: "#fff"
     },
+    height:{
+      type:String,
+      default:"50px"
+    }
   },
   data() {
     return {};
@@ -46,7 +50,7 @@ export default {
   position: relative;
   // padding: 0 0.4rem;
   box-sizing: border-box;
-  // height: 1.1733rem;
+  height: 50px;
   .backHome{
     position: absolute;
     width: .7rem;

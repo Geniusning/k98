@@ -7,154 +7,66 @@
 </head>
 <style>
     body {
-        padding: 100px 0 0 150px;
-    }
-
-    .wrapper {
-        /* animation: rotate 4s infinite linear; */
-        transform-style: preserve-3d;
-        width: 300px;
-        height: 300px;
-        /* margin:150px 0 0 150px; */
-    }
-
-    .box {
-        width: 100%;
-        height: 100%;
-        position: relative;
-        transform-style: preserve-3d;
-        transform: rotateY(0deg) rotateX(0deg);
-    }
-
-    .circle {
-        border-radius: 50%;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        border: 1px solid red;
-    }
-
-    @keyframes rotate {
-        0% {
-            transform: rotateY(0deg);
-        }
-
-        50% {
-            transform: rotateY(180deg);
-        }
-
-        100% {
-            transform: rotateY(360deg);
-        }
-    }
-    .child:nth-child(2) p{
-        background-color: red;
-    }
-    .child:nth-child(3) p{
-        background-color: green;
-    }
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+#chartdiv {
+  width: 100%;
+  height: 98vh;
+}
 </style>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
 
 <body>
-    <div class="father">
-        <div class="child">
-            <p>1111</p>
-        </div>
-        <div class="child">
-            <p>2222</p>
-        </div>
-        <div class="child">
-            <p>333</p>
-        </div>
-        <div class="child">
-            <p></p>
-        </div>
-        <div class="child">
-            <p>444</p>
-        </div>
-        <div class="child">
-            <p>44</p>
-        </div>
-    </div>
-    <div class="wrapper">
-        <div class="box" id="circles">
-            <input type="text" id="input" value="1111">
-        </div>
-    </div>
-    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
-    <script>
-        console.log($("#input"))
-        console.log($("#input").val())
-        //    function GetQueryString(name) {
-        //         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-        //         var r = window.location.search.substr(1).match(reg);
-        //         if (r != null) {
-        //             return unescape(r[2]);
-        //         }
-        //         return null;
-        //     };
-        //    var name =  GetQueryString(deskCode)
-        //    console.log(name)
-        // var now = new Date(new Date(new Date().toLocaleDateString()).getTime());
-        // var nowTime = now.getTime();
-        // var day = now.getDate()-1;
-        // console.log(day)
-        // var oneDayTime = 24 * 60 * 60 * 1000;
-        // var SundayTime = nowTime - day * oneDayTime;//显示周日
-        // console.log(new Date(SundayTime))
-        console.log(22 == "22")
-        var start = new Date().getTime()
-        var end = 0
-        setTimeout(() => {
-            end = new Date().getTime()
-        }, 2000);
-        var result = (end - start)
-        console.log(new Date().getTime())
-        var name = "liuning0"
-        var obj = {
-            name: "liuning1",
-            b: {
-                name: "liuning2",
-                fn: function () {
-                    var name = "liuning3"
-                    console.log(this.name)
-                    console.log(name)
-                }
-            }
-        }
-        obj.b.fn()
-        var test = obj.b.fn
-        test()
-
-        var teststr = "xxadf,adfagafg,adgfdg,adsfag"
-        console.log(teststr.split(","))
-
-        var st = Math.round(new Date().getTime() / 1000)
-        console.log(st)
-        console.log((1585183198 - 1584842278) > 259200)
-        // this.stopRecord().then(voiceId => {
-      //   wx.uploadVoice({
-      //     localId: voiceId, // 需要上传的音频的本地ID，由stopRecord接口获得
-      //     isShowProgressTips: 1, // 默认为1，显示进度提示
-      //     success: function(res) {
-      //       this.voiceServerId = res.serverId; // 返回音频的服务器端ID
-      //       console.log("wx.uploadVoice-voiceServerId", this.voiceServerId);
-      //     }
-      //   });
-      // });
-
-          // stopRecord() {
-    //   return new Promise((resolve, reject) => {
-    //     wx.stopRecord({
-    //       success: function(res) {
-    //         this.voiceLocalId = res.localId;
-    //         console.log("stopRecord---voiceLocalId", this.voiceLocalId);
-    //         resolve(this.voiceLocalId);
-    //       }
-    //     });
-    //   });
-    // },
-    </script>
+    <div id="chartdiv"></div>
 </body>
+<script>
+    /**
+     * ---------------------------------------
+     * This demo was created using amCharts 4.
+     *
+     * For more information visit:
+     * https://www.amcharts.com/
+     *
+     * Documentation is available at:
+     * https://www.amcharts.com/docs/v4/
+     * ---------------------------------------
+     */
+
+        am4core.useTheme(am4themes_animated);
+
+        var chart = am4core.create("chartdiv", am4charts.PieChart3D);
+        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+        chart.data = [
+            {
+                country: "Lithuania",
+                litres: 501.9
+            },
+            {
+                country: "Czech Republic",
+                litres: 301.
+            },
+            {
+                country: "Ireland",
+                litres: 201.1
+            }
+        ];
+
+        chart.innerRadius = am4core.percent(40);
+        chart.depth = 200;
+
+        chart.legend = new am4charts.Legend();
+        chart.legend.position = "right";
+
+        var series = chart.series.push(new am4charts.PieSeries3D());
+        series.dataFields.value = "litres";
+        series.dataFields.depthValue = "litres";
+        series.dataFields.category = "country";
+        series.slices.template.cornerRadius = 2;
+        series.colors.step = 3;
+
+</script>
