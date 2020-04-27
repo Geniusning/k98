@@ -8,6 +8,19 @@
 import axios from 'axios'
 import Url from './config'
 let api = {};
+//拉取友商物品
+api.loadAlliance = function (param) {
+    return new Promise((resolve, reject) => {
+        axios.post(Url.commonUrl + `/api/loadAlliance?tk=${Url.tk}`, param).then((res) => {
+            // console.log(res)
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
 //设置语音消息已读
 api.setVoiceRead = function (messageId) {
     return new Promise((resolve, reject) => {
