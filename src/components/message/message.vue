@@ -32,7 +32,17 @@
                 <!-- <i class="dot" v-cloak v-show="item.info.unReadMsgCount">{{item.info.unReadMsgCount}}</i> -->
               </div>
               <div class="name_and_message">
-                <p class="name">{{item.info.nickname}}</p>
+                <div class="personStatus">
+                  <p class="name">{{item.info.nickname}}</p>
+                  <div class="sex-box">
+                    <img src="../../assets/image/female.png" v-if="item.info.sex===0" class="sex-icon">
+                    <img src="../../assets/image/female.png" v-else-if="item.info.sex===2" class="sex-icon">
+                    <img src="../../assets/image/male.png" v-else class="sex-icon">
+                  </div>
+                  <img src="../../assets/image/dot_green.png" v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="online_dot">
+                  <span v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="friendStatus">{{item.isInDoor?"店内":"店外"}}</span>
+                  <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}</span>
+                </div>
                 <p class="message" v-if="item.info.lastMsg?item.info.lastMsg.type===1:''" v-html='item.info.lastMsg?item.info.lastMsg.content:""'></p>
                 <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===2:''">[图片]</p>
                 <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===3:''">约战，送礼信息</p>
@@ -43,9 +53,6 @@
             </div>
             <div class="info_time">
               <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,10)==today?item.info.lastMsg.stime.slice(10,16):item.info.lastMsg.stime.slice(5,10):""}}</p>
-              <img src="../../assets/image/dot_green.png" v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="online_dot">
-              <span v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="friendStatus">{{item.isInDoor?"店内":"店外"}}</span>
-              <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}</span>
             </div>
           </li>
           <p v-if="!alreadyFriendList.length" class="noFriend">暂无好友</p>
@@ -126,12 +133,14 @@
                 <i class="dot" v-cloak v-show="item.unReadMsgCount && client_badgeCount"></i>
               </div>
               <div class="name_and_message">
-                <p class="name">{{item.nickname?item.nickname:"客服小哥"}}</p>
+                <div class="personStatus">
+                  <p class="name">{{item.nickname?item.nickname:"客服小哥"}}</p>
+                  <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
+                  <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
+                  <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}</span>
+                </div>
                 <p class="captainMessage">{{userInfo.role?"请查看用户留言消息":"欢迎光临! 有任何问题或建议，请留言"}}</p>
                 <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p>
-                <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
-                <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
-                <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}</span>
               </div>
             </div>
           </li>
@@ -330,8 +339,7 @@
             signature: res.signature,
             jsApiList: ["playVoice", "pauseVoice", "stopVoice"]
           });
-          wx.ready(() => {
-          });
+          wx.ready(() => {});
           wx.error(function(res) {
             console.log(res);
             // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
@@ -739,7 +747,7 @@
               text-align: center;
               height: 0.6133rem;
               top: 6.7rem; // left: 3.4167rem;
-              z-index: 10000;
+              z-index: 1;
               font-size: 0.4533rem;
               font-weight: 700;
               color: #232323;
@@ -981,43 +989,58 @@
               font-size: 0.3733rem;
               color: #999;
             }
-            .online_dot {
-              width: 0.4rem;
-              position: absolute;
-              bottom: 0.48rem;
-              right: 1.8rem;
-              color: #333;
-              font-weight: 600;
-            }
-            .friendStatus {
-              display: inline-block;
-              width: 1.4rem;
-              position: absolute;
-              bottom: 0.5rem;
-              color: #333;
-              right: 0.3rem;
-              font-size: 15px;
-            }
-            .roomNum {
-              position: absolute;
-              bottom: 0.55rem;
-              color: #333;
-              right: 0rem;
-              display: inline-block;
-              padding: 0rem 0.1067rem;
-              line-height: .3rem;
-              ;
-              border: 1px solid #333;
-              font-size: 11px;
-            }
-            .name {
-              color: #333333;
-              font-size: 0.4267rem;
-              font-weight: 800;
-              width: 3rem;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
+            .personStatus {
+              width: 4rem;
+              display: flex;
+              .name {
+                color: #333333;
+                font-size: 0.4267rem;
+                font-weight: 800;
+                // width: 3rem;
+                margin-right: .05rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+               
+              }
+              .sex-icon{
+                margin-top: .05rem;
+                width: .4rem;
+                height: .4rem;
+              }
+              .online_dot {
+                width: 0.4rem;
+                height: .4rem;
+                margin-top: .1rem;
+                // position: absolute;
+                // bottom: 0.18rem;
+                // right: 0rem; // color: #333;
+                font-weight: 600;
+                // z-index: 2;
+              }
+              .friendStatus {
+                display: inline-block;
+                width: 1.4rem;
+                color: #333;
+                font-size: 15px;
+                // position: absolute;
+                // bottom: 0.1rem;
+                // right: -1.5rem;
+                // z-index: 2;
+              }
+              .roomNum {
+                // position: absolute;
+                // bottom: 0.1rem;
+                // right: 0rem;
+                color: #333;
+                z-index: 2;
+                display: inline-block;
+                padding: 0rem 0.1067rem;
+                line-height: .3rem;
+                ;
+                border: 1px solid #333;
+                font-size: 11px;
+              }
             }
             .message {
               color: #666;
@@ -1049,35 +1072,6 @@
           font-size: 0.3733rem;
           color: #999;
           position: relative;
-          .online_dot {
-            width: 0.4rem;
-            position: absolute;
-            bottom: 0.48rem;
-            right: 1.8rem;
-            color: #333;
-            font-weight: 600;
-          }
-          .friendStatus {
-            display: inline-block;
-            width: 1.4rem;
-            position: absolute;
-            bottom: 0.5rem;
-            color: #333;
-            right: 0.3rem;
-            font-size: 15px;
-          }
-          .roomNum {
-            position: absolute;
-            bottom: 0.55rem;
-            color: #333;
-            right: 0rem;
-            display: inline-block;
-            padding: 0rem 0.1067rem;
-            line-height: .3rem;
-            ;
-            border: 1px solid #333;
-            font-size: 11px;
-          }
           .deleteBtn {
             position: absolute;
             right: 0.2667rem;

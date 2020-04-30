@@ -88,9 +88,9 @@
                 <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm">确定</div>
                 <div v-if="isShowGiftGuide" class="rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
-                              <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                              <span class="scene-text fl">加好友</span>
-                    </div>-->
+                                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                                <span class="scene-text fl">加好友</span>
+                      </div>-->
               </div>
               <div class="bottom_partition" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class=" rejectBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
@@ -128,7 +128,7 @@
             </div>
           </div>
           <!-- 不是好友的送礼，约战交互 -->
-          <div class="topUpGiftInfo-wrapper" v-else-if="isShowGiftPanel && !isAlreadyFriend && topUpGameInfo.msgCode !=19">
+          <div class="topUpGiftInfo-wrapper" v-else-if="isShowGiftPanel && !isAlreadyFriend && topUpGameInfo.msgCode !=19 && topUpGameInfo.msgCode != 30">
             <div class="topUpGiftInfo-top">
               <div class="img">
                 <img class="giftAvatar" v-if="topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12" :src="topUpGiftInfo.content.fromInfo.headimgurl?topUpGiftInfo.content.fromInfo.headimgurl:defaultHeadUrl" alt="">
@@ -184,10 +184,6 @@
                 <div v-if="!isShowGiftGuide" class="acceptBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,true)">感谢</div>
                 <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm">确定</div>
                 <div v-if="isShowGiftGuide" class=" rejectBtn" @click="gotoDetail">详情</div>
-                <!-- <div class="checkBox_scene clearfix">
-                              <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                              <span class="scene-text fl">加好友</span>
-                    </div>-->
               </div>
               <div class="bottom_partition" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
                 <div class=" rejectBtn" @click="backThumbClick(topUpThumbInfo.content.extMsg.thumbInfo.evtID,'no',topUpThumbInfo.content.fromInfo)">拒绝</div>
@@ -213,10 +209,10 @@
             <div class="topUpGiftInfo-middle">
               <div class="partition_zone">
                 <div class="topUpGiftInfo_left">
-                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt="">
+                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" :src="topUpGameInfo.content.extMsg.resImg" alt="">
                 </div>
                 <div class="topUpGiftInfo_right">
-                  <p class="desc title_desc">已在房间等你 约你再战300局</p>
+                  <p class="desc title_desc">欢迎光临，一份礼品已经存入您的卡券包！</p>
                 </div>
               </div>
             </div>
@@ -224,6 +220,34 @@
               <div class="bottom_partition">
                 <div class=" rejectBtn" @click="rejectForGame(topUpGameInfo.content)">免战</div>
                 <div class="acceptBtn" @click="respondForGame(topUpGameInfo.content)">应战</div>
+              </div>
+            </div>
+          </div>
+          <!-- 友商领券 -->
+          <div class="topUpGiftInfo-wrapper" v-else-if="topUpGameInfo.msgCode==30">
+            <div class="topUpGiftInfo-top">
+              <div class="img">
+                <!-- <img onclick="return false" class="giftAvatar" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                    alt=""> -->
+              </div>
+              <div class="name">
+                <p class="name">{{topUpGameInfo.content.fromInfo.nickName?topUpGameInfo.content.fromInfo.nickName:'朋友'}}店长送礼</p>
+              </div>
+            </div>
+            <div class="topUpGiftInfo-middle">
+              <div class="partition_zone">
+                <div class="topUpGiftInfo_left">
+                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" :src="topUpGameInfo.content.fromInfo.headimgurl" alt="">
+                </div>
+                <div class="topUpGiftInfo_right">
+                  <p class="desc title_desc">欢迎光临，一份礼品已经存入您的卡券包</p>
+                </div>
+              </div>
+            </div>
+            <div class="topUpGiftInfo-bottom">
+              <div class="bottom_partition">
+                <div class=" rejectBtn" @click="gotoDetail">详情</div>
+                <div class="acceptBtn" @click="confirm">知道</div>
               </div>
             </div>
           </div>
@@ -290,7 +314,7 @@
         timeTick: null,
         appDeskCode: "",
         isDeskRoom: null,
-        samedeskInfo:{},
+        samedeskInfo: {},
       };
     },
     computed: {
@@ -450,7 +474,7 @@
         this.showBackToGame = false;
       },
       goBackGame() {
-        if(this.samedeskInfo.msgType==25){
+        if (this.samedeskInfo.msgType == 25) {
           window.location.href = this.samedeskInfo.url
           return
         }
@@ -1097,11 +1121,11 @@
         console.log("topUpGameInfo-------------", newValue);
         this.judgeEveryBool(true, true, false, false);
       },
-      sameDeskInfo:function(newValue,oldValue){
+      sameDeskInfo: function(newValue, oldValue) {
         this.samedeskInfo = newValue
         this.showBackToGame = true
         this.isDeskRoom = true
-        console.log("this.samedeskInfo-----",this.samedeskInfo)
+        console.log("this.samedeskInfo-----", this.samedeskInfo)
       },
       $route: function(newValue, oldValue) {
         // console.log("$route---------", oldValue)

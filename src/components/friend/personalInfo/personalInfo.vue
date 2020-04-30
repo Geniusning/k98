@@ -1,9 +1,9 @@
 <template>
     <div id="personalInfo" class="personalInfo">
         <img onclick="return false" src="../../../assets/image/close.png" alt="" class="close" @click="closeAlbum">
-        <swiper height="250px" class="swiper" :show-dots='false' v-if="lifeImgList.length">
+        <swiper height="300px" class="swiper" :show-dots='false' v-if="lifeImgList.length">
             <swiper-item class="swiper-demo-img" v-for="(item, index) in lifeImgList" :key="index" style="text-align:center">
-                <img onclick="return false" style="margin:0 auto;height:100%" :src="item">
+                <img onclick="return false" style="margin:0 auto;width:90%;height:100%" :src="item">
             </swiper-item>
         </swiper>
         <img src="../../../assets/image/arrow left.png" alt class="arrow_left">
@@ -58,7 +58,7 @@ export default {
     right: 0.2667rem;
   }
   .swiper {
-    margin-top: 50%;
+    margin-top: 40%;
     // height: 5.3333rem;
   }
      @keyframes leftMove {
@@ -86,7 +86,7 @@ export default {
   .arrow_left{
         position: absolute;
         z-index: 99;
-        bottom: 1.8rem;
+        bottom: 1rem;
         left: -.3rem;
         width: 1.3333rem;
         animation: leftMove 1s linear infinite;
@@ -95,7 +95,7 @@ export default {
        width: 1.3333rem;
         position: absolute;
         z-index: 99;
-        bottom: 1.8rem;
+        bottom: 1rem;
         right: -.3rem;
         animation: rightMove 1s linear infinite;
   }
@@ -105,7 +105,7 @@ export default {
         font-size: .45rem;
         font-weight: 900;
         position: absolute;
-        bottom: 1.9rem;
+        bottom: 1.2rem;
         z-index: 99;
         color: #fff;
   }

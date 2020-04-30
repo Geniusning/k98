@@ -9,7 +9,8 @@
         </div>
         <div class="name">
           <div class="sex_box">
-            <img v-if="staticChatFriendObj.sex===2" src="../../assets/image/female.png" alt="">
+            <img v-if="staticChatFriendObj.sex===0" src="../../assets/image/female.png" alt="">
+            <img v-else-if="staticChatFriendObj.sex===2" src="../../assets/image/female.png" alt="">
             <img v-else src="../../assets/image/male.png" alt="">
           </div>
           {{staticChatFriendObj.nickname}}

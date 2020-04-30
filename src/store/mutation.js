@@ -429,15 +429,19 @@ const mutations = {
                 state.soulFriInfo = friendEvtObj
                 break;
             case 24:
-            friendEvtObj.content.extMsg = {
-                lastMsg: {},
-                gameInfo: friendEvtObj.content.extMsg
-            };
-            // friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
-            // state.dynamicFriendEvt = friendEvtObj.content;
-            state.topUpGameInfo = friendEvtObj
-            console.log('队列约战你进游戏玩-----------', friendEvtObj)
-            break;
+                friendEvtObj.content.extMsg = {
+                    lastMsg: {},
+                    gameInfo: friendEvtObj.content.extMsg
+                };
+                // friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
+                // state.dynamicFriendEvt = friendEvtObj.content;
+                state.topUpGameInfo = friendEvtObj
+                console.log('队列约战你进游戏玩-----------', friendEvtObj)
+                break;
+            case 30:
+                state.topUpGameInfo = friendEvtObj
+                console.log('mutation 友商互推-----------', friendEvtObj)
+                break;
             default:
                 break;
         }
