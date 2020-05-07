@@ -8,7 +8,7 @@
         <div :class="{active:isShowTab==0}" class="fri_btn fl" @click="selectList(0)">好友</div>
         <div :class="{active:isShowTab==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
         <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"值班客服":"用户留言"}}</div>
-        <!-- <div :class="{active:isShowTab==3}" class="vux-1px-l hello_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendGiftList.length"></i></div> -->
+        <div :class="{active:isShowTab==4}" class="vux-1px-l fenShen fl" @click="selectList(4)">分身<i class="dot" v-show="friendGiftList.length"></i></div>
         <div :class="{active:isShowTab==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendEvtList.length"></i></div>
       </div>
       <!-- <div class="dot" v-if="hello"></div> -->
@@ -277,14 +277,6 @@
       if (from.name === "clientChat") {
         this.loadClientServiceList()
       }
-      let _url = window.location.href;
-      if (util.isAndroid()) {
-        this.myShareUrl = _url.split("#")[0];
-      } else {
-        this.myShareUrl = this.shareUrl + "k98/home";
-      }
-      console.log("this.myShareUrl-----", this.myShareUrl);
-      this._initJssdk(this.myShareUrl);
       next()
     },
     computed: {
@@ -324,28 +316,7 @@
       // this.isShowTab = this.getQueryString("routeParamNum")
       this.isShowQrCode = localStorage.getItem("isShowQrCode") === "false" ? false : true
     },
-    destroyed() {
-      // console.log("组件销毁");
-    },
     methods: {
-      _initJssdk(url) {
-        api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url)).then(res => {
-          console.log("获取微信jssdk---------", res);
-          wx.config({
-            // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-            appId: res.appId,
-            timestamp: res.timestamp,
-            nonceStr: res.nonceStr,
-            signature: res.signature,
-            jsApiList: ["playVoice", "pauseVoice", "stopVoice"]
-          });
-          wx.ready(() => {});
-          wx.error(function(res) {
-            console.log(res);
-            // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-          });
-        });
-      },
       closeQrCode() {
         this.isShowQrCode = false
         localStorage.setItem("isShowQrCode", false)
@@ -858,7 +829,7 @@
     height: 1rem;
     .btn_box {
       .fri_btn {
-        width: 2rem;
+        width: 1.5rem;
         text-align: center;
         height: 0.8533rem;
         line-height: 0.8533rem;
@@ -898,8 +869,29 @@
           .dot(-0.1rem, -0.1rem);
         }
       }
+      .fenShen{
+         width: 1.5rem;
+        text-align: center;
+        height: 0.8533rem;
+        line-height: 0.8533rem;
+        box-sizing: border-box;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        box-sizing: border-box;
+        font-size: 0.4rem;
+        position: relative;
+        &.active {
+          background: #ffd800;
+          color: #fff;
+          border-top: 1px solid #ffd800;
+          border-bottom: 1px solid #ffd800;
+        }
+        .dot {
+          .dot(-0.1rem, -0.1rem);
+        }
+      }
       .system_btn {
-        width: 2rem;
+        width: 1.5rem;
         text-align: center;
         height: 0.8533rem;
         line-height: 0.8533rem;

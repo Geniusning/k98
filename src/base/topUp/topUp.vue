@@ -87,13 +87,13 @@
         </div>
         <div class="handle">
           <!-- :class="{greyBtn:userInfo.money<giftIntegral}" -->
-          <div  class="cancle" @click="closeIntegralPanel">取消</div>
+          <div class="cancle" @click="closeIntegralPanel">取消</div>
           <div v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">确认</div>
           <div v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">确认</div>
           <div v-show="userInfo.money<giftIntegral" class="tips_money">积分不足,请充值>></div>
           <!-- <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor && userInfo.money>giftIntegral "> -->
           <!-- <input @change="onlineSendGift" type="checkbox" class="checkbox fl">
-            <span class="scene-text fl">现场下单</span>-->
+              <span class="scene-text fl">现场下单</span>-->
           <!-- </div> -->
           <!-- <p class="gotoTopUpText" v-if="userInfo.money<giftIntegral" @click="gotoTopUp">去充值&gt;</p> -->
         </div>
@@ -332,8 +332,8 @@
                 this.refreshUserInfo();
               }
               this.successful_desc = `一张${util.returnDiscountType(
-                this.componentGiftInfo.coupInfo.type
-              )}已存入'我的卡券'`;
+                  this.componentGiftInfo.coupInfo.type
+                )}已存入'我的卡券'`;
             })
             .catch(err => {
               console.log(err);
@@ -355,8 +355,8 @@
               this.successfulText = "兑换成功";
             }
             this.successful_desc = `一张${util.returnDiscountType(
-              this.componentGiftInfo.coupInfo.type
-            )}已存入'我的卡券'`;
+                this.componentGiftInfo.coupInfo.type
+              )}已存入'我的卡券'`;
           });
         } else if (this.componentConvertType == 2) {
           //赠送店长推荐项目
@@ -374,8 +374,8 @@
             }
             Bus.$emit("giftInfoRecomend", this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(
-              this.componentGiftInfo.coupInfo.type
-            )}已存入对方'我的卡券'`;
+                this.componentGiftInfo.coupInfo.type
+              )}已存入对方'我的卡券'`;
           });
         } else if (this.componentConvertType == 3) {
           //赠送积分换礼品项目
@@ -392,8 +392,8 @@
             }
             Bus.$emit("giftInfoJiFen", this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(
-              this.componentGiftInfo.coupInfo.type
-            )}已存入对方'我的卡券'`;
+                this.componentGiftInfo.coupInfo.type
+              )}已存入对方'我的卡券'`;
             // console.log('积分赠送结果---------', res)
           });
         } else if (this.componentConvertType == 4) {
@@ -652,7 +652,8 @@
               text-align: center;
             }
           }
-          .virtual:nth-child(3) img,.virtual:nth-child(4) img{
+          .virtual:nth-child(3) img,
+          .virtual:nth-child(4) img {
             transform: scale(1.3)
           }
         }
@@ -791,12 +792,11 @@
           bottom: 0.3rem;
           font-size: 12px;
         }
-        .cancle{
+        .cancle {
           font-weight: 800;
           position: relative;
           bottom: -.16rem;
           left: 0.4rem;
-           
           text-align: center;
           font-size: 0.35rem;
           padding: 0rem;
@@ -949,7 +949,7 @@
         text-align: center;
         color: #8f8f8f;
       }
-      .payBtn{
+      .payBtn {
         position: absolute;
         bottom: 0.55rem;
         left: 0.38rem;

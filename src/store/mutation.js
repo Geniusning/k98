@@ -1,3 +1,9 @@
+/*
+ * @Author: liuning 
+ * @Date: 2020-05-04 14:46:23 
+ * @Last Modified by: liuning
+ * @Last Modified time: 2020-05-05 15:43:21
+ */
 import * as types from './mutation-types'
 import util from "common/util";
 import router from '../router/index.js';
@@ -10,7 +16,6 @@ const mutations = {
     // },
     //获得同一个桌贴的游戏信息
     [types.GETSAMEDESKINFO](state,deskinfo){
-        console.log("获得同一个桌贴的游戏信息----",deskinfo)
         state.sameDeskInfo = deskinfo
     },
     //clear topUpmesage
@@ -23,11 +28,7 @@ const mutations = {
     },
     //delete message from messageQueue
     [types.DELMESSAGEQUEUE](state) {
-        // if(state.messageQueue.length===0){
-        //     return false
-        // }
         state.messageQueue.shift()
-
     },
     [types.SELECTMESSAGEFROMQUEUE](state) {
         state.topUpMessage = state.messageQueue[0]
@@ -473,9 +474,7 @@ const mutations = {
     //   state.friendGiftList = data;
     // },
     //获取店长消息列表
-    [types.GET_CAPTAINMESSAGELIST](state, {
-        data
-    }) {
+    [types.GET_CAPTAINMESSAGELIST](state, {data}) {
         state.captainMessageList = data;
     },
     //获取约战消息列表

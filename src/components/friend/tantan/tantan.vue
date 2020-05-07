@@ -822,10 +822,10 @@
           border-radius: 50%;
         }
         .friend_icon,.staff_icon {
-          width: 0.84rem;
-          height: 0.84rem;
+          width: .8rem;
+          height: .8rem;
           position: absolute;
-          bottom: 0;
+          bottom: -.1rem;
           right: 0.8rem;
         }
         .staff_icon{

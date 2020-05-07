@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: liuning
- * @Last Modified time: 2019-10-29 17:05:04
+ * @Last Modified time: 2020-05-06 10:27:22
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -222,7 +222,7 @@ util.GetQueryString = function (name) {
   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
   var r = window.location.search.substr(1).match(reg);
   if (r != null) {
-    return unescape(r[2]);
+    return decodeURI(r[2]);
   }
   return null;
 };

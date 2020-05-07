@@ -88,9 +88,9 @@
                 <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm">确定</div>
                 <div v-if="isShowGiftGuide" class="rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
-                                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                                <span class="scene-text fl">加好友</span>
-                      </div>-->
+                                      <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                                      <span class="scene-text fl">加好友</span>
+                            </div>-->
               </div>
               <div class="bottom_partition" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class=" rejectBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
@@ -228,7 +228,7 @@
             <div class="topUpGiftInfo-top">
               <div class="img">
                 <!-- <img onclick="return false" class="giftAvatar" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
-                    alt=""> -->
+                          alt=""> -->
               </div>
               <div class="name">
                 <p class="name">{{topUpGameInfo.content.fromInfo.nickName?topUpGameInfo.content.fromInfo.nickName:'朋友'}}店长送礼</p>
@@ -338,6 +338,7 @@
       ...mapGetters(["qrIsShow"])
     },
     created() {
+      console.log("app.vue create")
       if (
         this.$route.name === "home" ||
         this.$route.name === "friend" ||
@@ -419,6 +420,18 @@
           this.clearTopUpMessage();
         }
       }, 3000);
+      window.onunload = function(event) {
+        var e = window.event || event;
+        this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
+        localStorage.removeItem("friendInfo");
+        e.returnValue = '确定关闭么？'
+      }
+      window.οnbefοreunlοad = function(event) {
+        var e = window.event || event;
+        this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
+        localStorage.removeItem("friendInfo");
+        e.returnValue = '确定关闭么？'
+      }
     },
     methods: {
       confirm() {

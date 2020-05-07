@@ -20,11 +20,14 @@
 <script src="https://www.amcharts.com/lib/4/charts.js"></script>
 <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
 
-<body>
+<body οnunlοad="checkLeave()">
     <div id="chartdiv"></div>
 </body>
 <script>
-  let a = 1
-   console.log(a === 1)
+
+ 　function checkLeave() {
+    event.returnValue = "确定离开当前页面吗？";
+  }
+  console.log(decodeURI("%E8%80%81%E5%8F%8B%E4%B8%80%E8%B5%B7%E7%8E%A9%E5%90%A7"))
 
 </script>

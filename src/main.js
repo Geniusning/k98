@@ -1,3 +1,9 @@
+/*
+ * @Author: liuning 
+ * @Date: 2020-05-04 14:49:48 
+ * @Last Modified by: liuning
+ * @Last Modified time: 2020-05-07 08:40:37
+ */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
@@ -37,6 +43,7 @@ new Vue({
         }
     },
     mounted() {
+        console.log("main.js")
         this.deskCode = util.GetQueryString("deskCode")
         this.loadAdvertisingPhoto(); //拉取首页轮播图
         this.getUserInfo(); //获取用户信息
@@ -48,7 +55,13 @@ new Vue({
         this.loadL98otherSetting() //加载控制开关
         this._loadInviteCoupon() //判断是否有邀新活动
         this.createWebsocket() //创建长链接
+        window.οnbefοreunlοad = function (event) {
+            var e = window.event || event;
+            e.returnValue = '确定关闭么？'
+        }
         window.addEventListener("unload", () => {
+            this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
+            localStorage.removeItem("friendInfo");
             localStorage.removeItem("rainAllowRecord") //清楚缓存
         })
         setTimeout(() => { //13秒过后如果用户没有离开系统则把用户放入待被邀请游戏队列
@@ -58,14 +71,14 @@ new Vue({
     methods: {
         //创建长连接
         createWebsocket() {
-            let windowUrL = window.location.href;
-            let index = windowUrL.indexOf('.com');
-            let shareurl = windowUrL.slice(0, index);
-            let websocketUrl = shareurl.slice(8);
-            this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-            this.websock = new WebSocket(this.connectUrl);
-            this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+            // let windowUrL = window.location.href;
+            // let index = windowUrL.indexOf('.com');
+            // let shareurl = windowUrL.slice(0, index);
+            // let websocketUrl = shareurl.slice(8);
+            // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+            // this.websock = new WebSocket(this.connectUrl);
+            // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
+            this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },
