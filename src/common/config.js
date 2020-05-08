@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:30 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-06 15:02:03
+ * @Last Modified time: 2020-05-08 10:44:56
  */
 export default {
     commonUrl: '',
@@ -14,5 +14,5 @@ export default {
     // appId: "wx2bbe97c9b7e6d747",
     // websocketUrl: "wss://llwant1.qianz.com/api/ws",
     // shareUrl: "https://llwant1.qianz.com/",
-    tk: "Ep7M14oi_wuvczAlOBUIstdfzEz5j2oIPdwEZ7Z10x7iD6AqKVZpcvA1S2jaXAk3kDEwtQ=="
+    tk: "NEDk4y6qtBq4RmJ0Cs5RSnay9NW51XkkMnVyf_Llt8Ot5fQhl2f7TlE7sG36nri9IU43PA=="
 }

@@ -219,6 +219,14 @@ const router = new Router({
       }
     },
     {
+      path: "/divide",
+      name: "divide",
+      component: () => import('../components/individual/divide.vue'),
+      meta: {
+        title: "新增分身"
+      }
+    },
+    {
       path: "/game_detail",
       name: "gameDetail",
       component: () => import('../components/game_detail/game_detail.vue'),

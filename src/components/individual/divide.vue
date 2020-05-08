@@ -1,21 +1,17 @@
 <template>
   <div id="individual" class="individual">
-    <my-header title="编辑资料" bg="#fff"></my-header>
+    <my-header title="新增分身" bg="#fff"></my-header>
     <!-- <scroll> -->
     <div class="scrollBox vux-1px-t">
       <!-- 上传头像 -->
-      <div class="avatar_wrapper clearfix">
+      <!-- <div class="avatar_wrapper clearfix">
         <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
           alt="" class="pic_avatar fl" ref="avatar">
         <div @click="updateAvatar" class="upload">
           <p class="upload_title">更换头像、生活照</p>
           <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
         </div>
-        <div class="divideBTn" @click="goToDivide">新增分身</div>
-      </div>
-      <!-- <div class="tailor_wrapper" v-if="showTailor">
-        <vueCropper ref="cropper" :img="option.img" :canMove="false" :autoCrop="option.autoCrop" :autoCropWidth="option.width" :autoCropHeight="option.height" class="cropper"></vueCropper>
-        <p @click="stop" class="confirm">确定</p>
+        <div class="divideBTn">新增分身</div>
       </div> -->
       <!-- 修改信息 -->
       <div class="userInfo_wrapper">
@@ -53,16 +49,6 @@
             <div class="authority_wrapper">
               <ul class="authority_list">
                 <li style="font-size: 0.3733rem;" class="authorItem">
-                  <group style="padding:0">
-                    <x-switch title="我要隐身，上线不通知好友" :value-map="[false, true]" @on-change="stealth" v-model="isStealth"></x-switch>
-                  </group>
-                </li>
-                <li style="font-size: 0.3733rem;" class="authorItem">
-                  <group>
-                    <x-switch title="我要静静，好友上线不通知我" :value-map="[false, true]" @on-change="changeQuiet" v-model="isQuiet"></x-switch>
-                  </group>
-                </li>
-                <li style="font-size: 0.3733rem;" class="authorItem">
                   <group>
                     <x-switch title="挂免战牌" :value-map="[false, true]" @on-change="changeBattle" v-model="isBattle"></x-switch>
                   </group>
@@ -75,7 +61,7 @@
       <router-view></router-view>
       <!-- 保存按钮 -->
       <div class="btn_wrapper">
-        <div class="btn" @click="saveUserInfo">保存</div>
+        <div class="btn" @click="saveUserInfo">下一步</div>
       </div>
     </div>
     <!-- </scroll> -->
@@ -121,10 +107,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
-  import {
-    mapState,
-    mapMutations
-  } from "vuex";
+  import {mapMutations} from "vuex";
   import {
     XButton,
     XHeader,
@@ -135,14 +118,10 @@
     Group,
     XSwitch
   } from "vux";
-  import VueCropper from "vue-cropper";
   import axios from "axios";
   import api from "common/api";
   import Scroll from "../../base/scroll/scroll";
   import myHeader from "../../base/myheader/myheader";
-  import {
-    userInfo
-  } from "os";
   export default {
     directives: {
       TransferDom
@@ -240,30 +219,6 @@
         window.scrollTo(0, 0); //解决ios键盘留白的bug
       });
     },
-    computed: {
-      ...mapState(["userInfo"])
-    },
-    mounted() {
-      this.name = this.userInfo.nickname;
-      this.gender = this.userInfo.sex;
-      this.constellation = this.userInfo.constellation;
-      this.signatureList = this.userInfo.tags;
-      this.phone = this.userInfo.phone;
-      this.isStealth = this.userInfo.isStealth;
-      this.isQuiet = this.userInfo.isQuiet;
-      this.isBattle = this.userInfo.isBattle;
-      this.signature = this.userInfo.signature ? this.userInfo.signature : this.signature;
-      this.userInfoTags = this.userInfo.tags.split("、")
-      console.log("this.userInfoTags---", this.userInfoTags)
-      this.tagList.forEach((localUseTag, index) => {
-        this.userInfoTags.forEach(serverUseTag => {
-          if (serverUseTag == localUseTag.name) {
-            localUseTag.checked = true
-            this.commonList.push(localUseTag.name)
-          }
-        })
-      })
-    },
     methods: {
       //隐身状态 上线不通知好友
       stealth(e) {
@@ -279,12 +234,6 @@
       },
       blurAdjust() {
         window.scrollTo(0, 0);
-      },
-      //进入分身页面
-      goToDivide(){
-         this.$router.push({
-          name: `divide`
-        });
       },
       //进入修改头像页面
       updateAvatar() {
@@ -390,6 +339,17 @@
       goBack() {
         this.$router.go(-1);
       },
+      clip() {
+        this.$refs.cropper.startCrop();
+      },
+      stop() {
+        this.$refs.cropper.getCropData(data => {
+          // do something
+          this.$refs.avatar.src = data;
+          this.showTailor = false;
+          console.log(data);
+        });
+      },
       //保存修改
       saveUserInfo() {
         let userInfoParam = {
@@ -457,7 +417,6 @@
       XHeader,
       Previewer,
       XButton,
-      VueCropper,
       PopupPicker,
       XDialog,
       Scroll,

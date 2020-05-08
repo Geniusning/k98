@@ -32,8 +32,8 @@
     </div>
     <div class="control_wrapper">
       <!-- <p class="control_guide" v-show="isFirstLoad">互赞成为好友。
-                                    <br>下面分别是送礼、点赞、约Ta玩大话骰
-                  </p> -->
+                                      <br>下面分别是送礼、点赞、约Ta玩大话骰
+                    </p> -->
       <div class="soulBtns_wrapper" v-show="isEndResultSearchBtnBox">
         <button class="btn" @click="cancleSoulSearch">退出</button>
         <button class="btn" @click="intoSetting">去完善</button>
@@ -102,6 +102,11 @@
       <p class="know" @click="isFirstLoad=false">知道了</p>
       <p class="intro">设置个人资料</p>
     </div>
+    <!-- 分享引导 -->
+    <div class="bg" v-if="isShow_bg" @click="share">
+      <img onclick="return false" src="../../assets/image/share.png" alt="">
+      <p class="shareText">点击“...”分享好友</p>
+    </div>
     <keep-alive>
       <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
     </keep-alive>
@@ -146,6 +151,7 @@
     },
     data() {
       return {
+        isShow_bg:false,
         searching: false,
         soulText: `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
         isAlreadyFriend: false,
@@ -237,7 +243,7 @@
     //   }
     // },
     computed: {
-      ...mapState(["lifeImgList","shopSettingInfo","friendList", "inAndOutFriendCursor",
+      ...mapState(["lifeImgList", "shopSettingInfo", "friendList", "inAndOutFriendCursor",
         "friendListCursor", "giftList", "userInfo", "loadFriendSexType",
         "staticChatFriendObj", "focusThumbTimes", "unfocusThumbTimes", "focusPlayTimes", "unfocusPlayTimes", "soulSwitch", "shareUrl"
       ]),
@@ -268,8 +274,8 @@
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
             link: `${this.shareUrl}k98/friend?visitType=3&phone=${
-                    this.userInfo.phone
-                  }&role=${this.userInfo.role}`,
+                      this.userInfo.phone
+                    }&role=${this.userInfo.role}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(
@@ -306,6 +312,9 @@
       this._loadAllGift();
     },
     activated() {
+       if (this.$route.params.data == "sharefriPage") {
+        this.isShow_bg = true;
+      }
       this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
         Bus.$on("changeFriendConnetion", (openid) => {
           this.isFriend = true
@@ -321,6 +330,10 @@
       clearTimeout(this.soulTimer)
     },
     methods: {
+        //隐藏分享引导
+      share() {
+        this.isShow_bg = false;
+      },
       //取消灵魂匹配
       cancleSoulSearch() {
         this.modalSwitch = false
@@ -709,6 +722,28 @@
   @import "../../assets/less/variable.less";
   @import "../../assets/less/friend_common.less";
   @import "../../assets/less/mixin.less";
+    .bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    img {
+      width: 100px;
+      height: 100px;
+      position: fixed;
+      right: 0;
+    }
+    .shareText {
+      font-size: 0.7rem;
+      color: #fff;
+      position: fixed;
+      top: 110px;
+      right: 0;
+    }
+  }
   .friend {
     height: 100%;
     background-color: #fff;

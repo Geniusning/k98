@@ -118,16 +118,24 @@
         <ul class="marketing-list">
           <li class="marketing-item">
             <div class="marketing-left">门店名片(首页)</div>
+            <div class="marketing-c">(点右上角，送20分)</div>
             <div class="marketing-right" @click="homeShare">分享-></div>
           </li>
           <li class="marketing-item" v-show="noCouponsFlag">
             <div class="marketing-left">邀新有礼</div>
+            <div class="marketing-c">(点右上角，送20分)</div>
             <div class="marketing-right" @click="inviteShare">分享-></div>
           </li>
-          <!-- <li class="marketing-item">
-            <div class="marketing-left">大话争霸赛</div>
+          <li class="marketing-item" v-show="noCouponsFlag">
+            <div class="marketing-left">找朋友，缘分送好友</div>
+            <div class="marketing-c">(点右上角，送20分)</div>
+            <div class="marketing-right" @click="friShare">分享-></div>
+          </li>
+          <li class="marketing-item">
+            <div class="marketing-left">大话赛，智商大比拼</div>
+            <div class="marketing-c">(点右上角，送20分)</div>
             <div class="marketing-right" @click="gameShare">分享-></div>
-          </li> -->
+          </li>
         </ul>
       </div>
     </div>
@@ -242,6 +250,12 @@ export default {
       this.$router.push({
         name: "home",
         params:{data:"shareHomePage"}
+      })
+    },
+    friShare(){
+      this.$router.push({
+        name: "friend",
+        params:{data:"sharefriPage"}
       })
     },
     //查看优惠券
@@ -650,6 +664,10 @@ export default {
           .marketing-left {
             font-size: 0.3733rem;
             margin-top: 0.1333rem;
+          }
+          .marketing-c{
+            box-sizing: border-box;
+            padding-top: 0.1533rem;
           }
           .marketing-right {
             font-size: 0.3733rem;

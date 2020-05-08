@@ -8,7 +8,6 @@
         <div :class="{active:isShowTab==0}" class="fri_btn fl" @click="selectList(0)">好友</div>
         <div :class="{active:isShowTab==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
         <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"值班客服":"用户留言"}}</div>
-        <div :class="{active:isShowTab==4}" class="vux-1px-l fenShen fl" @click="selectList(4)">分身<i class="dot" v-show="friendGiftList.length"></i></div>
         <div :class="{active:isShowTab==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendEvtList.length"></i></div>
       </div>
       <!-- <div class="dot" v-if="hello"></div> -->
@@ -824,12 +823,12 @@
   }
   .title {
     text-align: center;
-    padding: 0.11rem 0.5rem;
+    padding: 0.11rem 0.7rem;
     margin-top: 0.1333rem;
     height: 1rem;
     .btn_box {
       .fri_btn {
-        width: 1.5rem;
+        width: 2rem;
         text-align: center;
         height: 0.8533rem;
         line-height: 0.8533rem;
@@ -891,7 +890,7 @@
         }
       }
       .system_btn {
-        width: 1.5rem;
+        width: 2rem;
         text-align: center;
         height: 0.8533rem;
         line-height: 0.8533rem;
