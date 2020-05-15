@@ -1,10 +1,10 @@
 <template>
     <transition name="update">
         <div class="avatar-container">
-            <my-header title="修改头像"></my-header>
+            <my-header title="修改头像" identity=""></my-header>
             <div class="avatar-wrapper vux-1px-t vux-1px-b">
                 <div class="pic-box">
-                    <img :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="" class="pic_avatar" ref="avatar">
+                    <img :src="fromPage=='individual'?userInfo.headimgurl:addPic" alt="" class="pic_avatar" ref="avatar">
                 </div>
                 <div class="file-box">
                     <p class="text">更换头像</p>
@@ -23,7 +23,7 @@
                   <input type="file" accept="image/*" class="imageBtn" @change="uploadLifePic">
                 </li>
               </ul>
-             <button class="btn" style="margin-top:10px" @click="uploadAllLifePicBtn">确定</button>
+             <button class="btn" style="margin-top:10px" @click="uploadAllLifePicBtn">保存</button>
             </div>
             <div class="tailor_wrapper" v-if="showTailor">
                 <vueCropper
@@ -57,24 +57,38 @@ import lrz from "lrz";
 export default {
   data() {
     return {
+      addPic:require('../../assets/image/divide_add_avatar.png'),
       uploadAvatarShow: true,
       showTailor: false,
       isShowAddImg: true,
+      fromPage:"individual",
       option: {
         img: "",
         width: 300,
         height: 250,
         autoCrop: true
       },
-      lifePhotoList: []
+      lifePhotoList: [],
+      clearSessionData:false,
     };
   },
-  mounted() {
-    if (this.userInfo.lifePhotoURL.lifePhotoURL) {
-      this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
-      if (this.userInfo.lifePhotoURL.lifePhotoURL.length == 4) {
-        this.isShowAddImg = false;
+  created(){
+    this.fromPage = this.$route.params.type //判断从哪个页面跳转过来
+    if(this.fromPage ==='divide'){
+      console.log("userInfo----",this.userInfo)
+    }else{
+      if (this.userInfo.lifePhotoURL.lifePhotoURL) {
+        this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
+        if (this.userInfo.lifePhotoURL.lifePhotoURL.length == 4) {
+          this.isShowAddImg = false;
+        }
       }
+    }
+  },
+  destroyed(){
+    console.log("updateAvatar-destroyed")
+    if(this.fromPage ==='divide'){
+      sessionStorage.removeItem("identity")
     }
   },
   computed: {
@@ -114,8 +128,12 @@ export default {
         api.updateLifePic(this.lifePicName, this.resultLife).then(res => {
           console.log(res)
           if (res.photoURL) {
-            this.addLifeImg(res.photoURL);
-            this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
+            if(this.fromPage==='divide'){
+              this.lifePhotoList.push(res.photoURL)
+            }else{
+              this.addLifeImg(res.photoURL);
+              this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
+            }
             if (this.lifePhotoList.length === 4) {
               this.isShowAddImg = false;
             }
@@ -134,13 +152,21 @@ export default {
           this.$vux.toast.show({
             text: "保存成功"
           });
+        }else{
+           this.$vux.toast.show({
+            text: `失败${res.errMsg}`
+          });
         }
       })
     },
     //删除生活照
     close(index) {
-      this.deleteLifeImg(index);
-      this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
+      if(this.fromPage==="divide"){
+        this.lifePhotoList.splice(index,1)
+      }else{
+        this.deleteLifeImg(index);
+        this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
+      }
       if (this.lifePhotoList.length === 4) {
         this.isShowAddImg = false;
       } else {
@@ -171,10 +197,13 @@ export default {
         //更新头像
         api.updateAvatar(this.fileName, this.resultAvatar).then(res => {
           // console.log(res);
+          this.addPic = res.imgURL
           if (res.imgURL.length > 0) {
             api.getUserInfo().then(res => {
               console.log(res);
-              this.getuserInfo(res);
+              if(this.fromPage ==="individual"){  //如果主身份则按正常流程走，更新个人信息
+                this.getuserInfo(res);
+              }
               this.$vux.toast.show({
                 text: "保存成功"
               });
@@ -280,8 +309,9 @@ export default {
       width: 100%;
       border: none;
       padding: 0.2667rem 0;
-      background-color: #ccc;
+      background-color: #FFD800;
       color: #fff;
+      
     }
   }
   .tailor_wrapper {

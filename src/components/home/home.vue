@@ -67,7 +67,7 @@
           </div>
         </div>
         <!-- 福利 -->
-        <div class="welfare_wrapper">
+        <div class="welfare_wrapper" v-show="recommentList.length">
           <div class="title_content_wel">
             <div class="title clearfix">
               <img onclick="return false" src="../../assets/image/recomment.png" alt class="icon fl" />
@@ -135,10 +135,6 @@
                   <p class="title" style="font-weight:900">{{item.res.name}}</p>
                   <p class="desc">{{item.res.content}}</p>
                   <p class="limit">{{item.res.limit}}</p>
-                  <!-- <p class="price">
-                        <span class="discount_p" style="font-size:.3rem">粉丝：57</span>
-                        <span class="discount_p" style="font-size:.3rem">昨日访问量：10</span>
-                      </p> -->
                 </div>
                 <div class="right">
                   <div class="thunb_box clearfix">
@@ -383,7 +379,6 @@ export default {
     getAllianceCoupon() {
       var allianceData = {
         storeName: decodeURI(this.storeName),
-        resId: this.resId
       };
       console.log("allianceData---", allianceData);
       api.getAllianceCoupon(allianceData).then(res => {
@@ -1669,10 +1664,11 @@ export default {
           }
           .shop-name {
             font-weight: 800;
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: rgba(0, 0, 0, 0.2);
             color: #fff;
             font-size: 0.36rem;
             display: inline-block;
+            padding: 0 0.1333rem;
           }
           .distance {
             color: #8f8f8f;

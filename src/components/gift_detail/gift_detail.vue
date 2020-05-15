@@ -103,7 +103,6 @@
           this._loadWealthDetail();
           this.$refs.scroll.finishPullUp()
         } else {
-          alert(111)
           this.$vux.toast.text('没有啦', 'middle')
         }
       },

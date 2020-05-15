@@ -108,9 +108,10 @@
             <span class="star">#</span>
           </p>
       </div>-->
-      <!-- 分享赚积分 -->
+      <!-- 分享赚积分 v-show="noCouponsFlag"
+v-show="noCouponsFlag" -->
       <div class="marketing_wrapper">
-        <!-- <div class="marketing_wrapper" v-show="userInfo.role"> -->
+        <!--  <div class="marketing_wrapper" v-show="userInfo.role"> -->
         <h2 class="marketing_title">
           分享赚积分
           <span class="star">#</span>
@@ -121,12 +122,12 @@
             <div class="marketing-c">(点右上角，送20分)</div>
             <div class="marketing-right" @click="homeShare">分享-></div>
           </li>
-          <li class="marketing-item" v-show="noCouponsFlag">
+          <li class="marketing-item">
             <div class="marketing-left">邀新有礼</div>
             <div class="marketing-c">(点右上角，送20分)</div>
             <div class="marketing-right" @click="inviteShare">分享-></div>
           </li>
-          <li class="marketing-item" v-show="noCouponsFlag">
+          <li class="marketing-item">
             <div class="marketing-left">找朋友，缘分送好友</div>
             <div class="marketing-c">(点右上角，送20分)</div>
             <div class="marketing-right" @click="friShare">分享-></div>

@@ -29,10 +29,6 @@ Vue.use(Router)
 const router = new Router({
   base: '/k98',
   mode: 'history',
-  scrollBehavior(to, from, savedPosition) {
-    console.log("to.hash-------", to.hash)
-    return { x: 0, y: 0 }
-  },
   routes: [{
       path: '/',
       redirect: "/home",
@@ -206,16 +202,16 @@ const router = new Router({
       path: "/individual",
       name: "individual",
       component: () => import('../components/individual/individual.vue'),
-      children: [{
-        path: ':id',
-        component: () => import('../components/individual/updateAvatar.vue'),
-        name: "updateAvatar",
-        meta: {
-          title: "修改头像"
-        }
-      }],
       meta: {
         title: "个人信息"
+      }
+    },
+    {
+      path: '/updateAvatar',
+      component: () => import('../components/individual/updateAvatar.vue'),
+      name: "updateAvatar",
+      meta: {
+        title: "修改头像"
       }
     },
     {

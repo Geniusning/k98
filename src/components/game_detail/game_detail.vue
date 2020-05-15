@@ -72,7 +72,6 @@ export default {
           this._LoadGameScoreDetail();
            this.$refs.scroll.finishPullUp()
         }else{
-          console.log('没有啦');
         this.$vux.toast.text('没有啦', 'middle')
         }
     },

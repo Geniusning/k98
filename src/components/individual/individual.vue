@@ -11,7 +11,10 @@
           <p class="upload_title">更换头像、生活照</p>
           <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
         </div>
-        <div class="divideBTn" @click="goToDivide">新增分身</div>
+        <div class="divideBTn" @click="goToDivide" v-if="userInfo.role !=''">
+          <span>新增</span>
+          <span>分身</span>
+        </div>
       </div>
       <!-- <div class="tailor_wrapper" v-if="showTailor">
         <vueCropper ref="cropper" :img="option.img" :canMove="false" :autoCrop="option.autoCrop" :autoCropWidth="option.width" :autoCropHeight="option.height" class="cropper"></vueCropper>
@@ -72,7 +75,7 @@
           </li>
         </ul>
       </div>
-      <router-view></router-view>
+      <!-- <router-view></router-view> -->
       <!-- 保存按钮 -->
       <div class="btn_wrapper">
         <div class="btn" @click="saveUserInfo">保存</div>
@@ -288,9 +291,11 @@
       },
       //进入修改头像页面
       updateAvatar() {
-        let id = 0;
         this.$router.push({
-          path: `/individual/${id}`
+          name: `updateAvatar`,
+          params:{
+            type:"individual"
+          }
         });
       },
       //增加自定义标签
@@ -550,14 +555,14 @@
           width: .9rem;
           height: .9rem;
           border-radius: 50%;
-          overflow: hidden;
-          white-space: normal;
           background-color: #FFD800;
           color: #fff;
           position: absolute;
           right: 1rem;
           bottom: -.2rem;
-          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
       }
       .tailor_wrapper {

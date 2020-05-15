@@ -420,11 +420,6 @@ export default {
       //软键盘关闭事件
       window.scrollTo(0, 0); //解决ios键盘留白的bug
     });
-    // let sendBtn = this.$refs.sendBtn
-    // sendBtn.addEventListener("tap",()=>{
-    //    this.$refs.sendInputRef.focus()
-    // })
-    // });
     let _url = window.location.href;
     if (util.isAndroid()) {
       this.myShareUrl = _url.split("#")[0];

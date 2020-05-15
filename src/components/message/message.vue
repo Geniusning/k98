@@ -13,6 +13,28 @@
       <!-- <div class="dot" v-if="hello"></div> -->
     </div>
     <div class="message_wrapper">
+      <!-- 分身切换弹框 -->
+      <div class="divide-topUp" v-show="isShowDivideList">
+        <div class="bg"></div>
+        <div class="divide-title">
+          <img class="divide-icon" src="../../assets/image/divide_avatar.png" alt="">
+          <span class="divide-titleText">分身消息</span>
+          <img @click="isShowDivideList=false" class="divide-close" src="../../assets/image/divide_close.png" alt="">
+        </div>
+        <ul class="divide-list">
+          <li class="divide-item" v-for="(divide,index) in divideList" :key="index">
+            <img class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
+            <p class="divide-name">{{divide.nickName}}</p>
+            <p class="divide-time">16:00</p>
+            <img @click="switchToDivide(divide)" class="divide-arrow" src="../../assets/image/divide_right.png" alt="">
+          </li>
+        </ul>
+      </div>
+      <!-- 分身信封入口 -->
+      <div class="divide_wrapper" @click="isShowDivideList=true" v-show="isShowEnvelope">
+        <img src="../../assets/image/divide_envelope.png" class="divide-env" alt="">
+        <span class="divide-dot">1</span>
+      </div>
       <!-- 好友 -->
       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1 || isShowTab==2)) " class="qrCode_wrapper">
         <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
@@ -223,11 +245,15 @@
   export default {
     data() {
       return {
+        isShowEnvelope: true,
+        isShowDivideList: false,
+        divideList: [],
         isShowQrCode: true,
         isClientListFlag: false,
         clientTitleFlag: false,
         clientObj: {},
         customerObj: {},
+        divideAvartar:require('../../assets/image/divide_add_avatar.png'),
         clientImg: require("../../assets/image/home_letter.png"),
         color: "#ffd800",
         hello: false,
@@ -273,6 +299,7 @@
     },
     beforeRouteUpdate(to, from, next) {
       console.log("beforeRouteUpdate---------", from)
+      this.isShowEnvelope = true;
       if (from.name === "clientChat") {
         this.loadClientServiceList()
       }
@@ -312,10 +339,39 @@
       this._loadMutualEvents(); //拉取送礼，约战，
       this.getCaptainMessList(); //获取店长信  
       this.loadClientServiceList() //加载客服列表  
+      this.loadIdentityList() //加载分身 
       // this.isShowTab = this.getQueryString("routeParamNum")
       this.isShowQrCode = localStorage.getItem("isShowQrCode") === "false" ? false : true
     },
     methods: {
+      //拉取分身
+      loadIdentityList() {
+        api.loadIdentityList().then(res => {
+          console.log("拉取分身---", res)
+          if (res.errorCode === 0) {
+            this.divideList = res.info.filter(item=>{
+              return item.openid != this.userInfo.openid
+            })
+            console.log("this.divideList-------",this.divideList)
+          } else {
+            this.$vux.toast.show({
+              text: "res.errorMsg"
+            });
+          }
+        })
+      },
+      //切换分身
+      switchToDivide(item) {
+        sessionStorage.setItem("identity", item.openid)
+        api.getUserInfo("/api/loadUserInfo").then(res => {
+          this.getUserInfo(res);
+          this._loadFriends(); //拉取好友
+          this._loadMutualEvents(); //拉取送礼，约战，
+          this.$vux.toast.show({
+            text: "切换分身成功"
+          });
+        })
+      },
       closeQrCode() {
         this.isShowQrCode = false
         localStorage.setItem("isShowQrCode", false)
@@ -544,8 +600,9 @@
         this.greeting_flag = index;
         console.log(index);
       },
-      //向客服发消息
+      //进入客服发消息
       ChatToClient() {
+        this.isShowEnvelope = false;
         this.clientObj["openid"] = this.clientObj.CliSerID
         this.setChatFriend(this.clientObj);
         this.$router.push({
@@ -555,8 +612,9 @@
           }
         });
       },
-      //向留言用户发消息
+      //进入留言用户发消息
       clientChat(client) {
+        this.isShowEnvelope = false;
         client["CliSerID"] = this.customerObj.CliSerID
         this.setChatFriend(client);
         console.log("向留言用户发消息 client-------------", client)
@@ -569,6 +627,7 @@
       },
       //发起好友聊天
       chat(item) {
+        this.isShowEnvelope = false;
         this.setChatFriend(item);
         this.$router.push({
           name: "chat",
@@ -868,8 +927,8 @@
           .dot(-0.1rem, -0.1rem);
         }
       }
-      .fenShen{
-         width: 1.5rem;
+      .fenShen {
+        width: 1.5rem;
         text-align: center;
         height: 0.8533rem;
         line-height: 0.8533rem;
@@ -936,6 +995,127 @@
     .list-wrapper {
       position: relative;
     }
+    .divide-topUp {
+      position: fixed;
+      z-index: 11;
+      top: 42%;
+      left: 50%;
+      margin-left: -3.3rem;
+      width: 6.6rem;
+      height: 11.6rem;
+      margin-top: -5.8rem;
+      .bg {
+        position: fixed;
+        background-color: rgba(0, 0, 0, .2);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+      }
+      .bg("../../assets/image/divide_bg.png");
+      .divide-title {
+        height: 1.3rem;
+        line-height: 1.3rem;
+        position: relative;
+        text-align: center;
+        .divide-icon {
+          width: 0.8rem;
+          vertical-align: middle;
+        }
+        .divide-titleText {
+          font-size: 14px;
+          font-weight: 800;
+          color: #fff;
+          padding-top: .2rem;
+        }
+        .divide-close {
+          position: absolute;
+          top: .2rem;
+          right: .2rem;
+          width: 0.6rem;
+          height: 0.6rem;
+          border-radius: 50%;
+          padding: 4px;
+        }
+      }
+      .divide-list {
+        padding: 0 0.2333rem;
+        .divide-item {
+          margin: 0 auto;
+          margin-bottom: .1rem;
+          width: 95%;
+          height: 1rem;
+          line-height: 1rem;
+          background-color: #fff;
+          display: flex;
+          justify-content: space-between;
+          border-radius: 4px;
+          .divide-avatar {
+            width: .7rem;
+            height: .7rem;
+            border-radius: 50%;
+            margin-top: .15rem;
+            margin-left: .2rem;
+            margin-right: .2rem;
+          }
+          .divide-name {
+            font-size: 12px;
+            color: #333;
+            width: 2rem;
+            margin-left: -.7rem;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis
+          }
+          .divide-time {
+            font-size: 10px;
+            color: #333;
+          }
+          .divide-arrow {
+            width: .6rem;
+            height: .6rem;
+            border-radius: 50%;
+            margin-top: .2rem;
+            margin-right: .2rem
+          }
+        }
+      }
+    }
+    .divide_wrapper {
+      position: absolute;
+      top: 40%;
+      right: .4rem;
+      z-index: 9;
+      animation: jump 1500ms linear 500ms infinite normal;
+      @keyframes jump {
+        10% {
+          top: 40%;
+        }
+        50% {
+          top: 41%;
+        }
+        100% {
+          top: 40%;
+        }
+      }
+      .divide-env {
+        width: 1.4rem;
+        height: 1rem;
+      }
+      .divide-dot {
+        position: absolute;
+        top: 0rem;
+        right: 0rem;
+        width: 0.5rem;
+        height: .5rem;
+        text-align: center;
+        line-height: .5rem;
+        border-radius: 50%;
+        background-color: red;
+        color: #fff;
+      }
+    }
     .message_list {
       // height: 100%;
       padding: 0 0.2667rem;
@@ -986,15 +1166,13 @@
               .name {
                 color: #333333;
                 font-size: 0.4267rem;
-                font-weight: 800;
-                // width: 3rem;
+                font-weight: 800; // width: 3rem;
                 margin-right: .05rem;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-               
               }
-              .sex-icon{
+              .sex-icon {
                 margin-top: .05rem;
                 width: .4rem;
                 height: .4rem;
@@ -1002,19 +1180,16 @@
               .online_dot {
                 width: 0.4rem;
                 height: .4rem;
-                margin-top: .1rem;
-                // position: absolute;
+                margin-top: .1rem; // position: absolute;
                 // bottom: 0.18rem;
                 // right: 0rem; // color: #333;
-                font-weight: 600;
-                // z-index: 2;
+                font-weight: 600; // z-index: 2;
               }
               .friendStatus {
                 display: inline-block;
                 width: 1.4rem;
                 color: #333;
-                font-size: 15px;
-                // position: absolute;
+                font-size: 15px; // position: absolute;
                 // bottom: 0.1rem;
                 // right: -1.5rem;
                 // z-index: 2;

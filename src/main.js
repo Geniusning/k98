@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:49:48 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-07 08:40:37
+ * @Last Modified time: 2020-05-14 11:03:41
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -71,14 +71,14 @@ new Vue({
     methods: {
         //创建长连接
         createWebsocket() {
-            let windowUrL = window.location.href;
-            let index = windowUrL.indexOf('.com');
-            let shareurl = windowUrL.slice(0, index);
-            let websocketUrl = shareurl.slice(8);
-            this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-            this.websock = new WebSocket(this.connectUrl);
-            this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+            // let windowUrL = window.location.href;
+            // let index = windowUrL.indexOf('.com');
+            // let shareurl = windowUrL.slice(0, index);
+            // let websocketUrl = shareurl.slice(8);
+            // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+            // this.websock = new WebSocket(this.connectUrl);
+            // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
+            this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },

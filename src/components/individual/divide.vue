@@ -5,14 +5,14 @@
     <div class="scrollBox vux-1px-t">
       <!-- 上传头像 -->
       <!-- <div class="avatar_wrapper clearfix">
-        <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-          alt="" class="pic_avatar fl" ref="avatar">
-        <div @click="updateAvatar" class="upload">
-          <p class="upload_title">更换头像、生活照</p>
-          <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
-        </div>
-        <div class="divideBTn">新增分身</div>
-      </div> -->
+          <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+            alt="" class="pic_avatar fl" ref="avatar">
+          <div @click="updateAvatar" class="upload">
+            <p class="upload_title">更换头像、生活照</p>
+            <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
+          </div>
+          <div class="divideBTn">新增分身</div>
+        </div> -->
       <!-- 修改信息 -->
       <div class="userInfo_wrapper">
         <ul class="userInfo_list">
@@ -107,7 +107,9 @@
 </template>
 
 <script type='text/ecmascript-6'>
-  import {mapMutations} from "vuex";
+  import {
+    mapMutations
+  } from "vuex";
   import {
     XButton,
     XHeader,
@@ -210,8 +212,7 @@
         height: ""
       };
     },
-    updated(){
-
+    updated() {
     },
     created() {
       this.height = document.body.clientHeight - 50;
@@ -359,48 +360,38 @@
           tags: this.signatureList,
           phone: this.phone,
           signature: this.signature,
-          isStealth: this.isStealth,
-          isQuiet: this.isQuiet,
           isBattle: this.isBattle
         };
-        let strUserInfoParam = JSON.stringify(userInfoParam);
-        let decc = new TextEncoder("utf-8");
-        let param = decc.encode(strUserInfoParam);
+        console.log("userInfoParam---------", userInfoParam)
+        // let strUserInfoParam = JSON.stringify(userInfoParam);
+        // let decc = new TextEncoder("utf-8");
+        // let param = decc.encode(strUserInfoParam);
         //保存信息
-        api.savePersonalInfo(param).then(res => {
+        api.createIdentity(userInfoParam).then(res => {
           if (res.errorCode === 0) {
-            api.getUserInfo("/api/loadUserInfo").then(res => {
-                this.getuserInfo(res);
-                this.$vux.toast.show({
-                  text: "保存成功"
-                });
-                setTimeout(() => {
-                  if (!this.userInfo.isSubscribe) {
-                    if (this.onceClick) {
-                      this.onceClick = false;
-                      this.changeQrCodeText({
-                        title: "长按关注，好友才能联系到你",
-                        bottomText: "会员特权:领福利、交群友、参活动"
-                      })
-                      this.showQrcode(true);
-                      return
-                    }
-                  }
-                }, 500);
-              })
-              .catch(err => {
-                console.log(err);
+            console.log("保存分身成功---", res)
+            sessionStorage.setItem("identity",res.info.openid)
+            this.$router.push({
+              name: "updateAvatar",
+              params: {
+                type: "divide"
+              }
+            });
+          }else if(res.errorCode === 1049){
+               this.$vux.toast.show({
+                type: "text",
+                text: `创建分身已满`,
+                width: "12em"
               });
+            }else{
+               this.$vux.toast.show({
+                type: "text",
+                text: `失败${res.errorMsg}`,
+                width: "12em"
+              });
+
           }
         });
-        //核对员工电话
-        if(this.phone != '') {
-          api.verifyPhoneNumber(this.phone, this.userInfo.headimgurl).then(res => {
-            console.log('核对员工电话结果-------------------', res);
-          }).catch(err => {
-            console.log(err);
-          })
-        }
       },
       ...mapMutations({
         getuserInfo: "GET_USERINFO",
@@ -505,7 +496,7 @@
             .arrow(-0.3rem);
           }
         }
-        .divideBTn{
+        .divideBTn {
           width: .9rem;
           height: .9rem;
           border-radius: 50%;

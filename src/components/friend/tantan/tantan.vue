@@ -721,8 +721,8 @@
         left: .3rem;
       }
       .dislike {
-        width: 1.5667rem;
-        height: 1.5667rem;
+        width: 1.2667rem;
+        height: 1.2667rem;
         position: absolute;
         top: 1.2rem;
         right: .3rem;
