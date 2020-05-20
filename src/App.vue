@@ -408,7 +408,9 @@
       //create setInterval to listen new message
       setInterval(() => {
         //轮训读取队列看是否有未处理消息
-        // console.log("length--------",this.messageQueue.length)
+        // console.log("轮训读取队列看是否有未处理消息--------",this.messageQueue)
+        //   console.log("this.isHandleMessageFromQueue------",this.isHandleMessageFromQueue)
+        //   console.log("this.topUpMessage------",this.topUpMessage)
         if (!this.isHandleMessageFromQueue) {
           return;
         }
@@ -679,6 +681,12 @@
               Bus.$emit("changeFriendConnetion", fromInfo.openid);
             }
             // this.addFriendEvtObj({}) //清空推送内容
+          }else{
+              this.$vux.toast.show({
+                type: "text",
+                text: `失败${res.errMsg}`,
+                width: "12em"
+              });
           }
         });
       },

@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:49:48 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-14 11:03:41
+ * @Last Modified time: 2020-05-20 17:30:50
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -19,7 +19,8 @@ import { ToastPlugin, LoadingPlugin } from 'vux'
 import { mapMutations, mapState, mapActions } from 'vuex'
 import api from 'common/api'
 import util from "common/util";
-import config from './common/config'
+import config from 'common/config'
+import VueBus from 'common/bus'
 Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)
 Vue.use(Viewer)
@@ -31,7 +32,7 @@ new Vue({
     router,
     store,
     computed: {
-        ...mapState(['socket', "staticChatFriendObj", "LastChatMsg"])
+        ...mapState(['socket', "staticChatFriendObj", "LastChatMsg","userInfo"])
     },
     data() {
         return {
@@ -42,11 +43,12 @@ new Vue({
             deskCode: ""
         }
     },
+    created(){
+        this.getUserInfo(); //获取用户信息
+    },
     mounted() {
-        console.log("main.js")
         this.deskCode = util.GetQueryString("deskCode")
         this.loadAdvertisingPhoto(); //拉取首页轮播图
-        this.getUserInfo(); //获取用户信息
         this.createQrcode(); //创建二维码
         this.loadStoreSetting(); //获取门店信息
         this.loadGoods(); //拉取积分换礼品列表
@@ -71,14 +73,14 @@ new Vue({
     methods: {
         //创建长连接
         createWebsocket() {
-            // let windowUrL = window.location.href;
-            // let index = windowUrL.indexOf('.com');
-            // let shareurl = windowUrL.slice(0, index);
-            // let websocketUrl = shareurl.slice(8);
-            // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-            // this.websock = new WebSocket(this.connectUrl);
-            // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+            let windowUrL = window.location.href;
+            let index = windowUrL.indexOf('.com');
+            let shareurl = windowUrL.slice(0, index);
+            let websocketUrl = shareurl.slice(8);
+            this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+            this.websock = new WebSocket(this.connectUrl);
+            this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
+            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },
@@ -161,6 +163,7 @@ new Vue({
         _websocketonmessage(e) {
             //数据接收
             // console.log('测试websocket链接--------',e);
+            let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : this.userInfo.openid
             var decc = new TextDecoder("utf-8");
             let result = JSON.parse(decc.decode(e.data));
             console.log('websocket接受消息-------------------------', result)
@@ -197,18 +200,35 @@ new Vue({
                     })
                 }
                 this.judgeMessType('message')
+                if (result.identiry != cacheOpenId) {
+                    VueBus.$emit('incre', 1)
+                    return
+                }
+              
             }
             //处理好友点赞事件
             else if (result.msgCode === 2) {
                 this.loadMutualEvents();
                 this.judgeMessType('thumb')
-                this.addMessageIntoQueue(result)
+               
+                if (result.identiry != cacheOpenId) {
+                    VueBus.$emit('incre', 1)
+                    return
+                }else{
+                    this.addMessageIntoQueue(result)
+                }
             }
             //处理送礼
             else if (result.msgCode === 3) {
                 this.loadMutualEvents();
                 this.judgeMessType('gift')
-                this.addMessageIntoQueue(result)
+                
+                if (result.identiry != cacheOpenId) {
+                    VueBus.$emit('incre', 1)
+                    return
+                }else{
+                    this.addMessageIntoQueue(result)
+                }
             } else if (result.msgCode === 4) { //发布优惠券
                 this.judgeMessType('discount')
                 this.addFriendEvtObj(result)
@@ -222,12 +242,23 @@ new Vue({
                 this.loadMutualEvents();
                 this.addBange();
                 this.judgeMessType('playGame')
-                this.addMessageIntoQueue(result)
+                if (result.identiry != cacheOpenId) {
+                    VueBus.$emit('incre', 1)
+                    return
+                }else{
+                    this.addMessageIntoQueue(result)
+                }
             } else if (result.msgCode === 24) {
                 this.loadMutualEvents();
                 this.addBange();
                 this.judgeMessType('playGame')
-                this.addMessageIntoQueue(result)
+               
+                if (result.identiry != cacheOpenId) {
+                    VueBus.$emit('incre', 1)
+                    return
+                }else{
+                    this.addMessageIntoQueue(result)
+                }
                 // this.addFriendEvtObj(result)
             }
             //上线通知
@@ -238,11 +269,17 @@ new Vue({
                 //分享获得积分通知
                 this.addFriendEvtObj(result)
                 this.judgeMessType('shareGetIntegral');
-            } else if (result.msgCode === 12) {
+            } else if (result.msgCode === 12) { //好友送礼
                 this.loadMutualEvents();
                 this.addBange();
                 this.judgeMessType('gift')
-                this.addMessageIntoQueue(result)
+                
+                if (result.identiry != cacheOpenId) {
+                    VueBus.$emit('incre', 1)
+                    return
+                }else{
+                    this.addMessageIntoQueue(result)
+                }
             } else if (result.msgCode === 13) { //对方操作回赞后返回结果通知
                 this.judgeMessType('backThumb');
                 this.addFriendEvtObj(result)
@@ -339,13 +376,11 @@ new Vue({
             api.loadMutualEvents().then(res => {
                 if (res.errCode === 0) {
                     let mutualEventsObj = res.mutualEvents;
-                    console.log(mutualEventsObj);
                     let mutualEventsList = [];
                     mutualEventsList = mutualEventsList.concat(mutualEventsObj.combatsEvents)
                     mutualEventsList = mutualEventsList.concat(mutualEventsObj.giftEvents)
                     mutualEventsList = mutualEventsList.concat(mutualEventsObj.friendEvents)
                     let count = mutualEventsList.length;
-                    console.log('count--------', count)
                     this.CalcManualEventsCount(count);
                 }
                 this.addBange();

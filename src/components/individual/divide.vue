@@ -5,14 +5,14 @@
     <div class="scrollBox vux-1px-t">
       <!-- 上传头像 -->
       <!-- <div class="avatar_wrapper clearfix">
-          <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-            alt="" class="pic_avatar fl" ref="avatar">
-          <div @click="updateAvatar" class="upload">
-            <p class="upload_title">更换头像、生活照</p>
-            <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
-          </div>
-          <div class="divideBTn">新增分身</div>
-        </div> -->
+            <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+              alt="" class="pic_avatar fl" ref="avatar">
+            <div @click="updateAvatar" class="upload">
+              <p class="upload_title">更换头像、生活照</p>
+              <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
+            </div>
+            <div class="divideBTn">新增分身</div>
+          </div> -->
       <!-- 修改信息 -->
       <div class="userInfo_wrapper">
         <ul class="userInfo_list">
@@ -212,8 +212,7 @@
         height: ""
       };
     },
-    updated() {
-    },
+    updated() {},
     created() {
       this.height = document.body.clientHeight - 50;
       document.body.addEventListener('focusout', () => { //软键盘关闭事件
@@ -353,6 +352,14 @@
       },
       //保存修改
       saveUserInfo() {
+        if (!this.name) {
+          this.$vux.toast.show({
+            type: "text",
+            text: `请输入名称`,
+            width: "12em"
+          });
+          return
+        }
         let userInfoParam = {
           nickName: this.name,
           sex: this.gender === "男" ? 1 : 0,
@@ -370,26 +377,25 @@
         api.createIdentity(userInfoParam).then(res => {
           if (res.errorCode === 0) {
             console.log("保存分身成功---", res)
-            sessionStorage.setItem("identity",res.info.openid)
+            sessionStorage.setItem("identity", res.info.openid)
             this.$router.push({
               name: "updateAvatar",
               params: {
                 type: "divide"
               }
             });
-          }else if(res.errorCode === 1049){
-               this.$vux.toast.show({
-                type: "text",
-                text: `创建分身已满`,
-                width: "12em"
-              });
-            }else{
-               this.$vux.toast.show({
-                type: "text",
-                text: `失败${res.errorMsg}`,
-                width: "12em"
-              });
-
+          } else if (res.errorCode === 1049) {
+            this.$vux.toast.show({
+              type: "text",
+              text: `创建分身已满`,
+              width: "12em"
+            });
+          } else {
+            this.$vux.toast.show({
+              type: "text",
+              text: `失败${res.errorMsg}`,
+              width: "12em"
+            });
           }
         });
       },

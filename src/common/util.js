@@ -163,10 +163,10 @@ util._getJssdkInfo = function (shareObj, url, amount, shareType, fn) {
         timestamp: res.timestamp,
         nonceStr: res.nonceStr,
         signature: res.signature,
-        jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage", 
-          "chooseImage", "onMenuShareTimeline", 
-          "startRecord", "stopRecord", "onVoiceRecordEnd", "playVoice","pauseVoice",
-          "stopVoice", "onVoicePlayEnd", "uploadVoice","downloadVoice"]
+        jsApiList: ["openLocation", "getLocation", "onMenuShareAppMessage",
+          "chooseImage", "onMenuShareTimeline",
+          "startRecord", "stopRecord", "onVoiceRecordEnd", "playVoice", "pauseVoice",
+          "stopVoice", "onVoicePlayEnd", "uploadVoice", "downloadVoice"]
       });
       wx.ready(() => {
         wx.onMenuShareAppMessage({ //分享好友

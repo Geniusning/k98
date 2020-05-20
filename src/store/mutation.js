@@ -2,11 +2,11 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-05 15:43:21
+ * @Last Modified time: 2020-05-20 16:26:09
  */
 import * as types from './mutation-types'
 import util from "common/util";
-import router from '../router/index.js';
+import VueBus from 'common/bus';
 
 const mutations = {
     //监听客服推送消息
@@ -256,6 +256,13 @@ const mutations = {
     },
     //更新好友事件消息框内容
     [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
+        //判断是当前分身才弹框提醒
+        console.log("friendEvtObj----------", friendEvtObj)
+        let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : state.userInfo.openid
+        if (friendEvtObj.identiry != cacheOpenId){
+            console.log("coming")
+            return
+        }
         //如果和本人聊天信封弹框不在对话框弹出
         if (!friendEvtObj.content.fromInfo) { //粗暴解决msgCode=4  无法推送的bug
             friendEvtObj.content.extMsg = {

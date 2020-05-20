@@ -23,17 +23,19 @@
         </div>
         <ul class="divide-list">
           <li class="divide-item" v-for="(divide,index) in divideList" :key="index">
-            <img class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
-            <p class="divide-name">{{divide.nickName}}</p>
-            <p class="divide-time">16:00</p>
-            <img @click="switchToDivide(divide)" class="divide-arrow" src="../../assets/image/divide_right.png" alt="">
+            <img  class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
+            <i class="avatar-dot" v-show="divide.unreadMsgCount"></i>
+            <p  style="width:40%;text-align: center" class="divide-name">{{divide.nickName}}</p>
+            <!-- <p class="divide-time" @click="delDivide(divide.openid)">{{divide.latesMsgTime?divide.latesMsgTime:0}}</p> -->
+            <p  style="width:20%" class="divide-time" @click="delDivide(divide.openid)">{{divide.latesMsgTime?divide.latesMsgTime.slice(8,10)==today?divide.latesMsgTime.slice(10,16):divide.latesMsgTime.slice(5,10):""}}</p>
+            <img  @click="switchToDivide(divide)" class="divide-arrow" src="../../assets/image/divide_right.png" alt="">
           </li>
         </ul>
       </div>
       <!-- 分身信封入口 -->
-      <div class="divide_wrapper" @click="isShowDivideList=true" v-show="isShowEnvelope">
+      <div class="divide_wrapper" @click="isShowDivideList=true" v-if="isShowEnvelope">
         <img src="../../assets/image/divide_envelope.png" class="divide-env" alt="">
-        <span class="divide-dot">1</span>
+        <span v-show="divideUnreadNum" class="divide-dot">{{divideUnreadNum}}</span>
       </div>
       <!-- 好友 -->
       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1 || isShowTab==2)) " class="qrCode_wrapper">
@@ -245,6 +247,7 @@
   export default {
     data() {
       return {
+        divideUnreadNum: 0,
         isShowEnvelope: true,
         isShowDivideList: false,
         divideList: [],
@@ -253,7 +256,7 @@
         clientTitleFlag: false,
         clientObj: {},
         customerObj: {},
-        divideAvartar:require('../../assets/image/divide_add_avatar.png'),
+        divideAvartar: require('../../assets/image/divide_add_avatar.png'),
         clientImg: require("../../assets/image/home_letter.png"),
         color: "#ffd800",
         hello: false,
@@ -299,8 +302,8 @@
     },
     beforeRouteUpdate(to, from, next) {
       console.log("beforeRouteUpdate---------", from)
-      this.isShowEnvelope = true;
-      if (from.name === "clientChat") {
+      if (from.name === "clientChat" || from.name === 'chat') {
+        this.isShowEnvelope = true;
         this.loadClientServiceList()
       }
       next()
@@ -332,6 +335,11 @@
       } else {
         this.today = this.today.toString();
       }
+      Bus.$on('incre', (num) => {
+        this.divideUnreadNum += num
+        this.loadIdentityList()
+        console.log("bus----------message", num)
+      })
     },
     mounted() {
       console.log("mounted--------")
@@ -344,29 +352,57 @@
       this.isShowQrCode = localStorage.getItem("isShowQrCode") === "false" ? false : true
     },
     methods: {
+      // 临时方法 删除分身
+      delDivide(targetId) {
+        api.delIdentity(targetId).then(res => {
+          console.log("删除结果-----", res)
+        })
+      },
       //拉取分身
       loadIdentityList() {
+        this.divideUnreadNum = 0
         api.loadIdentityList().then(res => {
-          console.log("拉取分身---", res)
           if (res.errorCode === 0) {
-            this.divideList = res.info.filter(item=>{
+            this.divideList = res.info.filter(item => {
+              if (item.openid != this.userInfo.openid) {
+                this.divideUnreadNum += item.unreadMsgCount
+              }
+              item.latesMsgTime = item.latesMsgTime?util.timestampToTime(item.latesMsgTime):0
               return item.openid != this.userInfo.openid
             })
-            console.log("this.divideList-------",this.divideList)
+            console.log("拉取分身-------", this.divideList)
           } else {
             this.$vux.toast.show({
-              text: "res.errorMsg"
+              text: res.errorMsg
             });
           }
         })
       },
       //切换分身
       switchToDivide(item) {
+        let identity = sessionStorage.getItem("identity")
+        console.log("identity--------", identity)
+        if (identity === "") {
+          let data = {
+            offlineOpenid: this.userInfo.openid
+          }
+          api.loginIdentity(data).then(res => {
+            console.log("分身下线", res)
+          })
+        } else {
+          let data = {
+            offlineOpenid: identity
+          }
+          api.loginIdentity(data).then(res => {
+            console.log("分身下线", res)
+          })
+        }
         sessionStorage.setItem("identity", item.openid)
         api.getUserInfo("/api/loadUserInfo").then(res => {
           this.getUserInfo(res);
           this._loadFriends(); //拉取好友
           this._loadMutualEvents(); //拉取送礼，约战，
+          this.loadIdentityList();
           this.$vux.toast.show({
             text: "切换分身成功"
           });
@@ -402,7 +438,9 @@
             this.clientTitleFlag = true
             this.clientObj = res
             unReadCount = this.clientObj.unReadMsgCount
-            this.clientObj.lastMsg.stime = util.timestampToTime(res.lastMsg.stime)
+            if(this.clientObj.lastMsg){
+              this.clientObj.lastMsg.stime =util.timestampToTime(res.lastMsg.stime)
+            }
           } else { //客服进入
             this.customerObj = res
             var tempArr = res.uerInfos
@@ -603,6 +641,7 @@
       //进入客服发消息
       ChatToClient() {
         this.isShowEnvelope = false;
+        console.log("this.isShowEnvelope--------", this.isShowEnvelope)
         this.clientObj["openid"] = this.clientObj.CliSerID
         this.setChatFriend(this.clientObj);
         this.$router.push({
@@ -1051,6 +1090,16 @@
           display: flex;
           justify-content: space-between;
           border-radius: 4px;
+          position: relative;
+          .avatar-dot {
+            position: absolute;
+            top: 0.1rem;
+            left: .7rem;
+            width: .3rem;
+            height: .3rem;
+            border-radius: 50%;
+            background-color: red;
+          }
           .divide-avatar {
             width: .7rem;
             height: .7rem;
