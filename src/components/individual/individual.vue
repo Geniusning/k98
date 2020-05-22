@@ -5,7 +5,7 @@
     <div class="scrollBox vux-1px-t">
       <!-- 上传头像 -->
       <div class="avatar_wrapper clearfix">
-        <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+        <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:tempPic"
           alt="" class="pic_avatar fl" ref="avatar">
         <div @click="updateAvatar" class="upload">
           <p class="upload_title">更换头像、生活照</p>
@@ -152,6 +152,7 @@
     },
     data() {
       return {
+        tempPic:require('../../assets/image/divide_add_avatar.png'),
         isStealth: null,
         isQuiet: null,
         isBattle: false,

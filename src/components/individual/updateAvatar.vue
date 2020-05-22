@@ -4,7 +4,7 @@
             <my-header title="修改头像" identity=""></my-header>
             <div class="avatar-wrapper vux-1px-t vux-1px-b">
                 <div class="pic-box">
-                    <img :src="fromPage=='individual'?userInfo.headimgurl:addPic" alt="" class="pic_avatar" ref="avatar">
+                    <img :src="fromPage=='individual'?userInfo.headimgurl?userInfo.headimgurl:addPic:addPic" alt="" class="pic_avatar" ref="avatar">
                 </div>
                 <div class="file-box">
                     <p class="text">更换头像</p>

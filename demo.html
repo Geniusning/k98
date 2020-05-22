@@ -22,14 +22,19 @@
     <div id="chartdiv"></div>
 </body>
 <script>
-var a = {
-  a:1
-}
-console.log(a)
-var v = Object.create({},{
-  a:{
-    value: 3
+let target = 40
+let testArr = [10,30,1,2,4,38,39,30,38]
+let result = {}
+let different 
+let index
+for ( index = 0; index < testArr.length; index++) {
+  const element = testArr[index];
+  let tempArr = []
+  different = target-element
+  let i = testArr.indexOf(different)
+  if(i>index){
+    result[index] = [index,i]
   }
-})
-console.log(v)
+}
+console.log(result)
 </script>

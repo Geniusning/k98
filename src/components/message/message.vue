@@ -342,7 +342,6 @@
       })
     },
     mounted() {
-      console.log("mounted--------")
       this._loadFriends(); //拉取好友
       this._loadMutualEvents(); //拉取送礼，约战，
       this.getCaptainMessList(); //获取店长信  
@@ -380,9 +379,10 @@
       },
       //切换分身
       switchToDivide(item) {
+      
         let identity = sessionStorage.getItem("identity")
         console.log("identity--------", identity)
-        if (identity === "") {
+        if (!identity) {
           let data = {
             offlineOpenid: this.userInfo.openid
           }
@@ -397,6 +397,7 @@
             console.log("分身下线", res)
           })
         }
+        
         sessionStorage.setItem("identity", item.openid)
         api.getUserInfo("/api/loadUserInfo").then(res => {
           this.getUserInfo(res);
