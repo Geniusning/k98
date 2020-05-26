@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-20 16:26:09
+ * @Last Modified time: 2020-05-25 16:40:57
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -256,11 +256,13 @@ const mutations = {
     },
     //更新好友事件消息框内容
     [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
-        //判断是当前分身才弹框提醒
-        console.log("friendEvtObj----------", friendEvtObj)
+        //判断是否发送给当前分身，是才弹框
+        console.log("mutation friendEvtObj----------", friendEvtObj)
         let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : state.userInfo.openid
-        if (friendEvtObj.identiry != cacheOpenId){
-            console.log("coming")
+        if (friendEvtObj.identiry && (friendEvtObj.identiry != cacheOpenId)){
+            return
+        }
+        if (friendEvtObj.content.fromInfo.openid === cacheOpenId){ //切换分身时不给自己发上线通知
             return
         }
         //如果和本人聊天信封弹框不在对话框弹出
@@ -497,16 +499,21 @@ const mutations = {
     [types.GETCLIENTUNREADCOUNT](state, count) {
         state.client_badgeCount = count
     },
+    //统计分身未读消息
+    [types.ADDDIVIDEUNREADMSG](state, count) {
+        state.divide_badgeCount = count
+    },
+    //累加分身未读消息
+    [types.ADDDIVIDENUM](state, count) {
+        state.divide_badgeCount += count
+    },
     //统计约战，送礼，点赞数量
     [types.GET_ALLEVENTS_BADGECOUNT](state, count) {
         state.manualEventsList_badgeCount = count
     },
     //所有类型的未读消息累加总的未读消息里面
     [types.ADD_BADGE](state) {
-        let total = 0;
-        // state.gift_badgeCount + state.game_badgeCount+
-        total = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount + state.client_badgeCount;
-        state.badgeCount = total;
+        state.badgeCount = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount + state.client_badgeCount;
     },
     //设置候选人聊天的信息
     [types.SET_CHAT_FRIEND](state, data) {

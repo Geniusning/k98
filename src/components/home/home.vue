@@ -5,9 +5,7 @@
       <div class="barLogo_wrapper">
         <div class="logo_wrapper">
           <img onclick="return false" class="logo" :src="shopSettingInfo.image" alt />
-          <!-- <p class="bar_name">{{shopSettingInfo.name}}</p> -->
           <p class="bar_name"><a style="color:#fff;" href="#homeShare">{{shopSettingInfo.name}}</a></p>
-          <!-- <p class="bar_name" v-if="shopInfo.name1">{{shopInfo.name1}}</p> -->
         </div>
       </div>
       <swiper :show-dots="false" :auto="false" class="slider" :loop="true" :list="demo01_list" v-model="demo01_index"></swiper>
@@ -204,6 +202,7 @@ import axios from "axios";
 import Config from "common/config";
 import { mapMutations, mapActions, mapState, mapGetters } from "vuex";
 import envelope from "base/envelope/envelope";
+  import Bus from "common/bus.js";
 // import mySwiper from '../../libs/swiper/swiper-4.3.3.min.js'
 // import {setInterval,clearInterval} from 'timers';
 export default {
@@ -262,16 +261,6 @@ export default {
       storeName: "" //友商门店名称
     };
   },
-  created() {
-    // alert("cookie="+document.cookie)
-    // this.arrowTimer = setInterval(() => {
-    //   this.arrowIndex++;
-    //   if (this.arrowIndex == 5) {
-    //     this.arrowIndex = 0;
-    //   }
-    // }, 100)
-    console.log("home.vue create");
-  },
   computed: {
     ...mapState([
       "l98Setting",
@@ -288,7 +277,6 @@ export default {
     ...mapGetters(["recommentList"])
   },
   mounted() {
-    console.log("home.vue mounted");
     this.deskCode = util.GetQueryString("deskCode");
     this.storeName = util.GetQueryString("storeName");
     console.log("this.storeName---", this.storeName);
@@ -526,7 +514,14 @@ export default {
     },
     //去游戏
     gotoPlay() {
-      window.location.href = `${this.gameUrl}game`;
+      var identity_h = sessionStorage.getItem("identity")
+      console.log("home-identity--",identity_h)
+      if(identity_h){
+        let isMasterId = identity_h.indexOf("@master")
+        identity_h = isMasterId > 0 ? identity_h : "" 
+      }
+      window.location.href = `${this.gameUrl}game?identity=${identity_h}`;
+     
     },
     gotoFriend() {
       // util.routerTo("friend", this, {

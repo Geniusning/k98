@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:49:48 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-22 17:33:31
+ * @Last Modified time: 2020-05-25 18:19:56
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -70,14 +70,14 @@ new Vue({
     methods: {
         //创建长连接
         createWebsocket() {
-            // let windowUrL = window.location.href;
-            // let index = windowUrL.indexOf('.com');
-            // let shareurl = windowUrL.slice(0, index);
-            // let websocketUrl = shareurl.slice(8);
-            // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-            // this.websock = new WebSocket(this.connectUrl);
-            // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
-            this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+            let windowUrL = window.location.href;
+            let index = windowUrL.indexOf('.com');
+            let shareurl = windowUrL.slice(0, index);
+            let websocketUrl = shareurl.slice(8);
+            this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+            this.websock = new WebSocket(this.connectUrl);
+            this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名 
+            // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
             this.websock.binaryType = "arraybuffer";
             this._initWebsocket()
         },
@@ -157,9 +157,8 @@ new Vue({
             console.log("WebSocket连接发生错误");
             this.reconnectWebsocket() //重连
         },
+        //数据接收
         _websocketonmessage(e) {
-            //数据接收
-            // console.log('测试websocket链接--------',e);
             let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : this.userInfo.openid
             var decc = new TextDecoder("utf-8");
             let result = JSON.parse(decc.decode(e.data));
@@ -198,7 +197,7 @@ new Vue({
                 }
                 this.judgeMessType('message')
                 if (result.identiry != cacheOpenId) {
-                    VueBus.$emit('incre', 1)
+                    this.addDivideNum(1)
                     return
                 }
               
@@ -209,7 +208,7 @@ new Vue({
                 this.judgeMessType('thumb')
                
                 if (result.identiry != cacheOpenId) {
-                    VueBus.$emit('incre', 1)
+                    this.addDivideNum(1)
                     return
                 }else{
                     this.addMessageIntoQueue(result)
@@ -221,7 +220,7 @@ new Vue({
                 this.judgeMessType('gift')
                 
                 if (result.identiry != cacheOpenId) {
-                    VueBus.$emit('incre', 1)
+                    this.addDivideNum(1)
                     return
                 }else{
                     this.addMessageIntoQueue(result)
@@ -240,7 +239,7 @@ new Vue({
                 this.addBange();
                 this.judgeMessType('playGame')
                 if (result.identiry != cacheOpenId) {
-                    VueBus.$emit('incre', 1)
+                    this.addDivideNum(1)
                     return
                 }else{
                     this.addMessageIntoQueue(result)
@@ -251,7 +250,7 @@ new Vue({
                 this.judgeMessType('playGame')
                
                 if (result.identiry != cacheOpenId) {
-                    VueBus.$emit('incre', 1)
+                    this.addDivideNum(1)
                     return
                 }else{
                     this.addMessageIntoQueue(result)
@@ -272,7 +271,7 @@ new Vue({
                 this.judgeMessType('gift')
                 
                 if (result.identiry != cacheOpenId) {
-                    VueBus.$emit('incre', 1)
+                    this.addDivideNum(1)
                     return
                 }else{
                     this.addMessageIntoQueue(result)
@@ -396,10 +395,8 @@ new Vue({
             judgeInviteCoupon: "JUDGE_INVITE_COUPON", //判断是否还有邀请有礼
             compareLastMsg: "COMPARE_LASTMESS",
             getAdvertisingImg: "GET_ADVERTISINGIMG", //获取首页轮播图
-            //addFriendEvt: "ADD_FRIENDEVTLIST", //新增好友事件列表
             addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框
             addMessageIntoQueue: "ADDMESSAGEQUEUE", //add message into messagequeue
-            //getChallengeGamelist: "GET_CHALLENGEGAMELIST", //更新新增约战列表
             updateShareUrl: "UPDATE_SHAREURL", //分享地址
             getuserInfo: "GET_USERINFO", //获取用户信息
             getShopSetting: "GET_SHOPINFO", //获取门店信息
@@ -408,7 +405,8 @@ new Vue({
             getSendGiftList: "GET_SENDGIFTLIST", //获取积分换礼品列表
             CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
             LoadL98Setting: "L98OTHERSETTING", //加载功能控制开关
-            loadSameDeskInfo: "GETSAMEDESKINFO" //加载同一个桌贴游戏信息
+            loadSameDeskInfo: "GETSAMEDESKINFO", //加载同一个桌贴游戏信息
+            addDivideNum:"ADDDIVIDENUM" //累加分身未读消息
         }),
         ...mapActions({
             //getFriendEvt: "get_FriendEvt"

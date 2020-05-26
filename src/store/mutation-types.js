@@ -1,12 +1,13 @@
 
-// export const TESTSEXTYPE  = "TESTSEXTYPE"\
-//推送客服小
-// export const LISTENCLIENTMSG="LISTENCLIENTMSG"
+//累加分身未读消息
+export const ADDDIVIDENUM = "ADDDIVIDENUM"
+//统计分身未读消息
+export const ADDDIVIDEUNREADMSG = "ADDDIVIDEUNREADMSG"
 //获得同一个桌贴的游戏信息
 export const GETSAMEDESKINFO = "GETSAMEDESKINFO"
 //select message at start
 export const SELECTMESSAGEFROMQUEUE = "SELECTMESSAGEFROMQUEUE"
-//清楚消息队列里删除的消息
+//清除消息队列里删除的消息
 export const CLEARTOPUPMESSAGE = "CLEARTOPUPMESSAGE"
 //add message into queue
 export const ADDMESSAGEQUEUE = "ADDMESSAGEQUEUE"

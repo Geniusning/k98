@@ -2,6 +2,21 @@
   <div id="friend" class="friend">
     <div class="nav">
       <img onclick="return false" src="../../assets/image/select.png" alt @click="showToast=true">
+      <!-- <div class="switchBtn_wrapper" @click="switchMakeFriModal">
+              <div class="imgBox">
+                <img onclick="return false" class="soulIcon" src="../../assets/image/soulIcon.png" alt="">
+                <span class="dot left"></span>
+                <span class="dot right"></span>
+              </div>
+              <p class="soulText">{{modalSwitch?"自己找":"1键找玩伴"}}</p>
+              <p class="intro_soulText" v-show="isFirstLoad">1键找到你的幸运玩伴</p>
+            </div> -->
+      <div class="shopInfo">
+        <img :src="shopSettingInfo.image" class="logo" alt="">
+        <span class="name">{{shopSettingInfo.name}}</span>
+      </div>
+    </div>
+    <div class="stack-wrapper">
       <div class="switchBtn_wrapper" @click="switchMakeFriModal">
         <div class="imgBox">
           <img onclick="return false" class="soulIcon" src="../../assets/image/soulIcon.png" alt="">
@@ -11,9 +26,6 @@
         <p class="soulText">{{modalSwitch?"自己找":"1键找玩伴"}}</p>
         <p class="intro_soulText" v-show="isFirstLoad">1键找到你的幸运玩伴</p>
       </div>
-      <img onclick="return false" src="../../assets/image/setting.png" class="setting" alt @click="intoSetting">
-    </div>
-    <div class="stack-wrapper">
       <!-- isFirstLoad -->
       <div v-if="isFirstLoad">
         <p class="intro_mfTips">绿灯在线，红灯离线</p>
@@ -21,8 +33,6 @@
         <img src="../../assets/image/Arrow Right.png" alt class="arrow_right">
         <p class="arrow_desc">左划换人，右划喜欢</p>
       </div>
-      <!-- 相册··················································begin -->
-      <!-- 相册··················································end -->
       <stack ref="stack" :pages="someList" :visible="visible" :currentIndex="currentPage" :resultSoulText="soulText" :searchResult="isEndResultSearchBtnBox" :stopSearch="searching" @getMoreFriend="sonGetMoreFriend" @heartBeat="thumbHeartBeat" @showAblum="showAblum"
         @firstData="listenFirstdata">
         暂时没有好友</stack>
@@ -31,9 +41,6 @@
       </div>
     </div>
     <div class="control_wrapper">
-      <!-- <p class="control_guide" v-show="isFirstLoad">互赞成为好友。
-                                      <br>下面分别是送礼、点赞、约Ta玩大话骰
-                    </p> -->
       <div class="soulBtns_wrapper" v-show="isEndResultSearchBtnBox">
         <button class="btn" @click="cancleSoulSearch">退出</button>
         <button class="btn" @click="intoSetting">去完善</button>
@@ -151,7 +158,7 @@
     },
     data() {
       return {
-        isShow_bg:false,
+        isShow_bg: false,
         searching: false,
         soulText: `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
         isAlreadyFriend: false,
@@ -225,23 +232,6 @@
         soulTimer: null
       };
     },
-    //路由判断，判断是场内还是场外1场内2场外
-    // beforeRouteEnter(to, from, next) {
-    //   console.log(to);
-    //   if (to.query.id === "0") {
-    //     next(vm => {
-    //       console.log("loadFriendSexType-----------", vm.loadFriendSexType)
-    //       let param = {
-    //         mySex: Number(vm.loadFriendSexType),
-    //         cursor: 0,
-    //         sex: vm.sexType,
-    //         range: vm.rangeType,
-    //         sortType: vm.sortType
-    //       }
-    //       vm.getAllCommunityFriend(param)
-    //     });
-    //   }
-    // },
     computed: {
       ...mapState(["lifeImgList", "shopSettingInfo", "friendList", "inAndOutFriendCursor",
         "friendListCursor", "giftList", "userInfo", "loadFriendSexType",
@@ -274,8 +264,8 @@
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
             link: `${this.shareUrl}k98/friend?visitType=3&phone=${
-                      this.userInfo.phone
-                    }&role=${this.userInfo.role}`,
+                              this.userInfo.phone
+                            }&role=${this.userInfo.role}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(
@@ -312,7 +302,7 @@
       this._loadAllGift();
     },
     activated() {
-       if (this.$route.params.data == "sharefriPage") {
+      if (this.$route.params.data == "sharefriPage") {
         this.isShow_bg = true;
       }
       this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
@@ -330,7 +320,7 @@
       clearTimeout(this.soulTimer)
     },
     methods: {
-        //隐藏分享引导
+      //隐藏分享引导
       share() {
         this.isShow_bg = false;
       },
@@ -722,7 +712,7 @@
   @import "../../assets/less/variable.less";
   @import "../../assets/less/friend_common.less";
   @import "../../assets/less/mixin.less";
-    .bg {
+  .bg {
     position: fixed;
     top: 0;
     left: 0;
@@ -761,70 +751,27 @@
       box-sizing: border-box;
       position: relative;
       height: 1.3333rem;
-      .switchBtn_wrapper {
-        position: relative;
-        margin-left: .1rem; // z-index: 99;
-        .intro_soulText {
-          position: absolute;
-          top: .4rem;
-          left: 1.5rem;
-          color: #fff;
-          font-size: 0.4rem;
-          font-weight: 700;
-          z-index: 99;
-          width: 3.6667rem;
-        }
-        .imgBox {
-          .soulIcon {
-            margin-left: .1rem;
-            margin-bottom: -.15rem;
-            width: 1.2533rem;
-            height: 0.8533rem;
-            position: relative;
-          }
-          .dot {
-            position: absolute;
-            top: 0.236rem;
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: #fff; // background:linear-gradient(top left,#fff,#317FBB) ;
-            animation: bling 1000ms linear infinite normal;
-          }
-          .left {
-            left: .4rem;
-          }
-          .right {
-            left: .9rem;
-          }
-        }
-        @keyframes bling {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        .soulText {
-          background-color: rgba(0, 0, 0, 0.2);
-          color: #fff;
-          text-align: center;
-          padding: 0 0.08rem;
-          font-size: 12px;
-          border-radius: 5px;
-          position: relative;
-        }
-      }
       .select {
         font-size: 13px;
         color: #ff7900;
         font-weight: 700;
       }
-      .setting {
-        position: relative;
-        z-index: 99;
+      .shopInfo {
+        display: flex;
+        height: 0.5rem;
+        background-color: rgba(0, 0, 0, 0.1);
+        line-height: 0.5rem;
+        margin-top: .3rem;
+        border-radius: 10px;
+        padding: 0 .1rem;
+        .logo {
+          width: .5rem;
+          height: .5rem;
+          border-radius: 50%;
+        }
+        .name {
+          color: #fff;
+        }
       }
       img {
         width: 0.6667rem;
@@ -978,6 +925,63 @@
       width: 8.9rem; // width: 100%;
       height: 9.8rem;
       list-style: none;
+      .switchBtn_wrapper {
+        position: absolute;
+        top: -1.3rem;
+        left: 3.8rem;
+        .intro_soulText {
+          position: absolute;
+          top: .4rem;
+          left: 1.5rem;
+          color: #fff;
+          font-size: 0.4rem;
+          font-weight: 700;
+          z-index: 99;
+          width: 3.6667rem;
+        }
+        .imgBox {
+          .soulIcon {
+            margin-left: .1rem;
+            margin-bottom: -.15rem;
+            width: 1.2533rem;
+            height: 0.8533rem;
+            position: relative;
+          }
+          .dot {
+            position: absolute;
+            top: 0.236rem;
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #fff; // background:linear-gradient(top left,#fff,#317FBB) ;
+            animation: bling 1000ms linear infinite normal;
+          }
+          .left {
+            left: .4rem;
+          }
+          .right {
+            left: .9rem;
+          }
+        }
+        @keyframes bling {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        .soulText {
+          background-color: rgba(0, 0, 0, 0.2);
+          color: #fff;
+          text-align: center;
+          padding: 0 0.08rem;
+          font-size: 12px;
+          border-radius: 5px;
+          position: relative;
+        }
+      }
       @keyframes leftMove {
         0% {
           transform: translateX(5px); //  opacity: 1;

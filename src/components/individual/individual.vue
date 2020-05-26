@@ -559,10 +559,11 @@
           background-color: #FFD800;
           color: #fff;
           position: absolute;
-          right: 1rem;
-          bottom: -.2rem;
+          left: 1.8rem;
+          bottom: .2rem;
           display: flex;
           flex-direction: column;
+          justify-content: space-between;
           align-items: center;
         }
       }

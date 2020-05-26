@@ -33,10 +33,10 @@
         </ul>
       </div>
       <!-- 分身信封入口 -->
-      <div class="divide_wrapper" @click="isShowDivideList=true" v-if="isShowEnvelope">
+      <!-- <div class="divide_wrapper" @click="isShowDivideList=true" v-if="isShowEnvelope">
         <img src="../../assets/image/divide_envelope.png" class="divide-env" alt="">
-        <span v-show="divideUnreadNum" class="divide-dot">{{divideUnreadNum}}</span>
-      </div>
+        <span v-show="divide_badgeCount" class="divide-dot">{{divide_badgeCount}}</span>
+      </div> -->
       <!-- 好友 -->
       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1 || isShowTab==2)) " class="qrCode_wrapper">
         <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
@@ -247,7 +247,6 @@
   export default {
     data() {
       return {
-        divideUnreadNum: 0,
         isShowEnvelope: true,
         isShowDivideList: false,
         divideList: [],
@@ -321,7 +320,8 @@
         "userInfo",
         "client_badgeCount",
         "qrCode",
-        "shareUrl"
+        "shareUrl",
+        "divide_badgeCount"
       ]),
       messageTime() {
         return
@@ -336,7 +336,7 @@
         this.today = this.today.toString();
       }
       Bus.$on('incre', (num) => {
-        this.divideUnreadNum += num
+        this.divide_badgeCount += num
         this.loadIdentityList()
         console.log("bus----------message", num)
       })
@@ -359,12 +359,13 @@
       },
       //拉取分身
       loadIdentityList() {
-        this.divideUnreadNum = 0
+        var count = 0
         api.loadIdentityList().then(res => {
           if (res.errorCode === 0) {
             this.divideList = res.info.filter(item => {
               if (item.openid != this.userInfo.openid) {
-                this.divideUnreadNum += item.unreadMsgCount
+                count += item.unreadMsgCount
+                this.addDivideUnreadCount(count)
               }
               item.latesMsgTime = item.latesMsgTime?util.timestampToTime(item.latesMsgTime):0
               return item.openid != this.userInfo.openid
@@ -379,7 +380,6 @@
       },
       //切换分身
       switchToDivide(item) {
-      
         let identity = sessionStorage.getItem("identity")
         console.log("identity--------", identity)
         if (!identity) {
@@ -397,7 +397,6 @@
             console.log("分身下线", res)
           })
         }
-        
         sessionStorage.setItem("identity", item.openid)
         api.getUserInfo("/api/loadUserInfo").then(res => {
           this.getUserInfo(res);
@@ -407,6 +406,7 @@
           this.$vux.toast.show({
             text: "切换分身成功"
           });
+          this.isShowDivideList = false
         })
       },
       closeQrCode() {
@@ -690,6 +690,7 @@
         getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量
         changeQrCodeText: "CHANGEQRCODETEXT",
         showQrcode: "SHOW_QRCODE",
+        addDivideUnreadCount:"ADDDIVIDEUNREADMSG" //累计分身未读消息
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
@@ -1130,40 +1131,6 @@
             margin-right: .2rem
           }
         }
-      }
-    }
-    .divide_wrapper {
-      position: absolute;
-      top: 40%;
-      right: .4rem;
-      z-index: 9;
-      animation: jump 1500ms linear 500ms infinite normal;
-      @keyframes jump {
-        10% {
-          top: 40%;
-        }
-        50% {
-          top: 41%;
-        }
-        100% {
-          top: 40%;
-        }
-      }
-      .divide-env {
-        width: 1.4rem;
-        height: 1rem;
-      }
-      .divide-dot {
-        position: absolute;
-        top: 0rem;
-        right: 0rem;
-        width: 0.5rem;
-        height: .5rem;
-        text-align: center;
-        line-height: .5rem;
-        border-radius: 50%;
-        background-color: red;
-        color: #fff;
       }
     }
     .message_list {

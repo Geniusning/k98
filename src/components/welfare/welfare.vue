@@ -152,6 +152,7 @@
       //拉取已经发布的比赛场
       _loadPublishArenas() {
         api.loadPublishArenas().then(res => {
+          console.log("---------------------",res)
           var reverseArr = res.arenaInfos.reverse();
           console.log('拉取已经发布的比赛场:', reverseArr)
           if (reverseArr.length > 0) {

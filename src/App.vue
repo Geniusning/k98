@@ -88,9 +88,9 @@
                 <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm">确定</div>
                 <div v-if="isShowGiftGuide" class="rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
-                                      <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                                      <span class="scene-text fl">加好友</span>
-                            </div>-->
+                                                    <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                                                    <span class="scene-text fl">加好友</span>
+                                          </div>-->
               </div>
               <div class="bottom_partition" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class=" rejectBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
@@ -228,7 +228,7 @@
             <div class="topUpGiftInfo-top">
               <div class="img">
                 <!-- <img onclick="return false" class="giftAvatar" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
-                          alt=""> -->
+                                        alt=""> -->
               </div>
               <div class="name">
                 <p class="name">{{topUpGameInfo.content.fromInfo.nickName?topUpGameInfo.content.fromInfo.nickName:'朋友'}}店长送礼</p>
@@ -255,6 +255,29 @@
       </div>
       <div v-show="showClientServiceIconFlag" class="kefu" @click="inToLetter">
         <img onclick="return false" src="./assets/image/home_letter.png" alt="" class="pic_kefu">
+      </div>
+      <!-- 分身切换弹框 -->
+      <div class="divide-topUp" v-show="isShowDivideList">
+        <div class="bg"></div>
+        <div class="divide-title">
+          <img class="divide-icon" src="./assets/image/divide_avatar.png" alt="">
+          <span class="divide-titleText">分身消息</span>
+          <img @click="isShowDivideList=false" class="divide-close" src="./assets/image/divide_close.png" alt="">
+        </div>
+        <ul class="divide-list">
+          <li class="divide-item" v-for="(divide,index) in divideList" :key="index">
+            <img class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
+            <i class="avatar-dot" v-show="divide.unreadMsgCount"></i>
+            <p style="width:40%;text-align: center" class="divide-name">{{divide.nickName}}</p>
+            <p style="width:20%" class="divide-time" @click="delDivide(divide.openid)">{{divide.latesMsgTime?divide.latesMsgTime.slice(8,10)==today?divide.latesMsgTime.slice(10,16):divide.latesMsgTime.slice(5,10):""}}</p>
+            <img @click="switchToDivide(divide)" class="divide-arrow" src="./assets/image/divide_right.png" alt="">
+          </li>
+        </ul>
+      </div>
+      <!-- 分身信封入口 -->
+      <div class="divide_wrapper" @click="showDivideList" v-if="divide_badgeCount || isShowDivideEnv">
+        <img src="./assets/image/divide_envelope.png" class="divide-env" alt="">
+        <span v-show="divide_badgeCount" class="divide-dot">{{divide_badgeCount}}</span>
       </div>
     </div>
     <friendPanel v-if="friendPanelFlag"></friendPanel>
@@ -288,6 +311,8 @@
     name: "app",
     data() {
       return {
+        isShowDivideEnv: false, //控制分身信封显示
+        isShowDivideList: false, //控制分身列表显示
         isHandleMessageFromQueue: true,
         isShowGiftGuide: false,
         isvirtualGift: false,
@@ -333,7 +358,8 @@
         "allMutatualInfo",
         "soulFriInfo",
         "staticChatFriendObj",
-        "shopSettingInfo"
+        "shopSettingInfo",
+        "divide_badgeCount"
       ]),
       ...mapGetters(["qrIsShow"])
     },
@@ -378,8 +404,7 @@
       this.responseForGameUrl = `${shareurlGame}.com/`;
       this.appDeskCode = util.GetQueryString("deskCode")
       this.loadLastRoomInfo(); //加载回房信息
-      // this.loadDeskRoomInfo(); //加载同桌信息
-      // alert(`${this.responseForGameUrl}game/?gamePath=game1`)
+      this.loadIdentityList(); //拉取分身
       this.timeTick = setTimeout(() => {
         this.clearTopUpData();
         this.allMutatualInfo_temp = {};
@@ -405,12 +430,8 @@
         // this.addFriendEvtObj(topUpGameInfo)
         this.addMessageIntoQueue(topUpGameInfo);
       }, 30000);
-      //create setInterval to listen new message
       setInterval(() => {
         //轮训读取队列看是否有未处理消息
-        // console.log("轮训读取队列看是否有未处理消息--------",this.messageQueue)
-        //   console.log("this.isHandleMessageFromQueue------",this.isHandleMessageFromQueue)
-        //   console.log("this.topUpMessage------",this.topUpMessage)
         if (!this.isHandleMessageFromQueue) {
           return;
         }
@@ -422,20 +443,91 @@
           this.clearTopUpMessage();
         }
       }, 3000);
-      window.onunload = function(event) {
-        var e = window.event || event;
-        this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
-        localStorage.removeItem("friendInfo");
-        e.returnValue = '确定关闭么？'
-      }
-      window.οnbefοreunlοad = function(event) {
-        var e = window.event || event;
-        this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
-        localStorage.removeItem("friendInfo");
-        e.returnValue = '确定关闭么？'
-      }
     },
     methods: {
+      showDivideList() {
+        this.isShowDivideList = true
+        this.loadIdentityList()
+      },
+      getAllCommunityFriend() {
+        var mySex = this.userInfo.sex == "男" ? 1 : 0;
+        let params = {
+          cursor: 0,
+          sex: mySex,
+          range: 0,
+          sortType: 0
+        };
+        api.getFriendList(params).then(res => {
+          console.log("拉取候选人：·····················", res);
+          this.getFriend(res);
+        });
+      },
+      //拉取分身
+      loadIdentityList() {
+        var count = 0
+        api.loadIdentityList().then(res => {
+          if (res.errorCode === 0) {
+            this.divideList = res.info.filter(item => {
+              if (item.openid != this.userInfo.openid) {
+                count += item.unreadMsgCount
+                this.addDivideUnreadCount(count)
+              }
+              item.latesMsgTime = item.latesMsgTime ? util.timestampToTime(item.latesMsgTime) : 0
+              return item.openid != this.userInfo.openid
+            })
+            console.log("拉取分身-------", this.divideList)
+          } else {
+            this.$vux.toast.show({
+              text: res.errorMsg
+            });
+          }
+        })
+      },
+      //切换分身
+      switchToDivide(item) {
+        let identity = sessionStorage.getItem("identity")
+        console.log("identity--------", identity)
+        if (!identity) {
+          let data = {
+            offlineOpenid: this.userInfo.openid
+          }
+          api.loginIdentity(data).then(res => {
+            console.log("分身下线", res)
+          })
+        } else {
+          let data = {
+            offlineOpenid: identity
+          }
+          api.loginIdentity(data).then(res => {
+            console.log("分身下线", res)
+          })
+        }
+        this.loadIdentityList()
+        sessionStorage.setItem("identity", item.openid)
+        api.getUserInfo("/api/loadUserInfo").then(res => {
+          this.getUserInfo(res);
+          this._loadFriends(); //拉取好友
+          this._loadMutualEvents(); //拉取送礼，约战，
+          this.loadIdentityList();
+          this.getAllCommunityFriend() //拉取候选人好友
+          this.$vux.toast.show({
+            text: "切换分身成功"
+          });
+          this.isShowDivideList = false
+          setTimeout(() => {
+            this.$router.push({
+              path: "/message",
+              query: {
+                routeParamNum: 0
+              }
+            })
+          }, 200);
+          this.identity = sessionStorage.getItem("identity")
+          console.log("app-identity--", this.identity)
+          let isMasterId = this.identity.indexOf("@master")
+          this.identity = isMasterId > 0 ? this.identity : "" //是分身id才给赋值，不是则置为空
+        })
+      },
       confirm() {
         if (!this.userInfo.isSubscribe) {
           this.changeQrCodeText({
@@ -681,12 +773,12 @@
               Bus.$emit("changeFriendConnetion", fromInfo.openid);
             }
             // this.addFriendEvtObj({}) //清空推送内容
-          }else{
-              this.$vux.toast.show({
-                type: "text",
-                text: `失败${res.errMsg}`,
-                width: "12em"
-              });
+          } else {
+            this.$vux.toast.show({
+              type: "text",
+              text: `失败${res.errMsg}`,
+              width: "12em"
+            });
           }
         });
       },
@@ -775,10 +867,6 @@
       },
       //未成为好友拒绝游戏
       no_Become_Friend_rejectForGame(gameInfo) {
-        console.log(
-          "no_Become_Friend_rejectForGame_gameInfo-----------",
-          gameInfo
-        );
         let params = {
           agree: false, //是否接受
           combatID: gameInfo.extMsg.gameInfo.combatID,
@@ -791,7 +879,7 @@
             agree: false,
             openID: gameInfo.fromInfo.openid
           };
-          api.queueCombatReply(p).then(res => {
+          api.queueCombatReply(p, this.identity).then(res => {
             console.log("队列邀请拒绝结果---", res);
           });
         }
@@ -817,12 +905,12 @@
           combatID: gameInfo.extMsg.gameInfo.combatID,
           fromID: gameInfo.fromInfo.openid
         };
-        if (this.topUpGameInfo.msgCode == 24) {
+        if (this.topUpGameInfo.msgCode == 24) { //队列邀请得
           let p = {
             agree: true,
             openID: gameInfo.fromInfo.openid
           };
-          api.queueCombatReply(p).then(res => {
+          api.queueCombatReply(p, this.identity).then(res => {
             console.log("队列邀请接受结果---", res);
           });
         }
@@ -853,7 +941,7 @@
             agree: true,
             openID: game.openid
           };
-          api.queueCombatReply(p).then(res => {
+          api.queueCombatReply(p, this.identity).then(res => { //
             console.log("队列邀请接受结果---", res);
           });
         }
@@ -892,7 +980,7 @@
             agree: true,
             openID: gameInfo.fromInfo.openid
           };
-          api.queueCombatReply(p).then(res => {
+          api.queueCombatReply(p, this.identity).then(res => {
             console.log("队列邀请拒接结果---", res);
           });
         }
@@ -968,7 +1056,9 @@
         addMessageIntoQueue: "ADDMESSAGEQUEUE",
         clearTopUpMessage: "CLEARTOPUPMESSAGE", //清除队列消息
         selectMessageFromQueue: "SELECTMESSAGEFROMQUEUE", //选择队列消息第一个
-        clearTopUpData: "CLEARTOPUPDATA"
+        clearTopUpData: "CLEARTOPUPDATA",
+        addDivideUnreadCount: "ADDDIVIDEUNREADMSG", //累计分身未读消息
+        getFriend: "GET_FRIENDlIST", //获取候选人,
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList" //加载已经成为好友列表
@@ -1150,6 +1240,11 @@
       },
       $route: function(newValue, oldValue) {
         // console.log("$route---------", oldValue)
+        if (newValue.name == "message") { //控制显示分身信封
+          this.isShowDivideEnv = true
+        } else {
+          this.isShowDivideEnv = false
+        }
         if (
           newValue.name == "message" ||
           newValue.name === "chat" ||
@@ -1529,6 +1624,139 @@
       .pic_kefu {
         width: 1rem;
         height: 1rem;
+      }
+    }
+    .divide-topUp {
+      position: fixed;
+      z-index: 11;
+      top: 42%;
+      left: 50%;
+      margin-left: -3.3rem;
+      width: 6.6rem;
+      height: 11.6rem;
+      margin-top: -5.8rem;
+      .bg {
+        position: fixed;
+        background-color: rgba(0, 0, 0, .2);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+      } // .bg("./assets/image/divide_bg.png");
+      background-image: url("./assets/image/divide_bg.png");
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      .divide-title {
+        height: 1.3rem;
+        line-height: 1.3rem;
+        position: relative;
+        text-align: center;
+        .divide-icon {
+          width: 0.8rem;
+          vertical-align: middle;
+        }
+        .divide-titleText {
+          font-size: 14px;
+          font-weight: 800;
+          color: #fff;
+          padding-top: .2rem;
+        }
+        .divide-close {
+          position: absolute;
+          top: .2rem;
+          right: .2rem;
+          width: 0.6rem;
+          height: 0.6rem;
+          border-radius: 50%;
+          padding: 4px;
+        }
+      }
+      .divide-list {
+        padding: 0 0.2333rem;
+        .divide-item {
+          margin: 0 auto;
+          margin-bottom: .1rem;
+          width: 95%;
+          height: 1rem;
+          line-height: 1rem;
+          background-color: #fff;
+          display: flex;
+          justify-content: space-between;
+          border-radius: 4px;
+          position: relative;
+          .avatar-dot {
+            position: absolute;
+            top: 0.1rem;
+            left: .7rem;
+            width: .3rem;
+            height: .3rem;
+            border-radius: 50%;
+            background-color: red;
+          }
+          .divide-avatar {
+            width: .7rem;
+            height: .7rem;
+            border-radius: 50%;
+            margin-top: .15rem;
+            margin-left: .2rem;
+            margin-right: .2rem;
+          }
+          .divide-name {
+            font-size: 12px;
+            color: #333;
+            width: 2rem;
+            margin-left: -.7rem;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis
+          }
+          .divide-time {
+            font-size: 10px;
+            color: #333;
+          }
+          .divide-arrow {
+            width: .6rem;
+            height: .6rem;
+            border-radius: 50%;
+            margin-top: .2rem;
+            margin-right: .2rem
+          }
+        }
+      }
+    }
+    .divide_wrapper {
+      position: absolute;
+      top: 35%;
+      right: .2rem;
+      z-index: 9;
+      animation: jump2 1500ms linear 500ms infinite normal;
+      @keyframes jump2 {
+        10% {
+          top: 35%;
+        }
+        50% {
+          top: 36%;
+        }
+        100% {
+          top: 35%;
+        }
+      }
+      .divide-env {
+        width: 1.4rem;
+        height: 1rem;
+      }
+      .divide-dot {
+        position: absolute;
+        top: 0rem;
+        right: 0rem;
+        width: 0.5rem;
+        height: .5rem;
+        text-align: center;
+        line-height: .5rem;
+        border-radius: 50%;
+        background-color: red;
+        color: #fff;
       }
     }
   }
