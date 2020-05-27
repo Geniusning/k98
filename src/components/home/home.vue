@@ -518,10 +518,10 @@ export default {
       console.log("home-identity--",identity_h)
       if(identity_h){
         let isMasterId = identity_h.indexOf("@master")
-        identity_h = isMasterId > 0 ? identity_h : "" 
+        identity_h = isMasterId > 0 ? identity_h : this.userInfo.openid
       }
       window.location.href = `${this.gameUrl}game?identity=${identity_h}`;
-     
+
     },
     gotoFriend() {
       // util.routerTo("friend", this, {
