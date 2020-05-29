@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-25 16:40:57
+ * @Last Modified time: 2020-05-29 16:33:31
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -15,7 +15,7 @@ const mutations = {
     //     state.client_badgeCount = msg.content.extMsg.count
     // },
     //获得同一个桌贴的游戏信息
-    [types.GETSAMEDESKINFO](state,deskinfo){
+    [types.GETSAMEDESKINFO](state, deskinfo) {
         state.sameDeskInfo = deskinfo
     },
     //clear topUpmesage
@@ -64,24 +64,40 @@ const mutations = {
     //获取店长推荐
     [types.GET_RECOMMENTLIST](state, recommentList) {
         let now = new Date().getTime()
-        recommentList.forEach(recomment => {
-                let endTime = new Date(recomment.coupInfo.endTime).getTime()
-                if (endTime > now) { //判断优惠券是否过期
-                    state.recommentList.push(recomment)
-                }
-            })
-            // state.recommentList = recommentList;
+        for (let i = 0; i < recommentList.length; i++) {
+            const recomment = recommentList[i];
+            let endTime = new Date(recomment.coupInfo.endTime).getTime()
+            if (!recomment.coupInfo) {//如果优惠券被删除了，直接过滤此项目
+                continue
+            }
+            if (recomment.coupInfo.startTimeOption === 1) { //即时生效的就不需要判断过期
+                state.recommentList.push(recomment)
+                continue
+            }
+            if (endTime > now) { //判断优惠券是否过期
+                state.recommentList.push(recomment)
+            }
+        }
+        // state.recommentList = recommentList;
     },
     //获取积分换礼品列表
     [types.GET_SENDGIFTLIST](state, sendGiftList) {
         let now = new Date().getTime()
-        sendGiftList.forEach(gift => {
-                let endTime = new Date(gift.coupInfo.endTime).getTime()
-                if (endTime >= now) { //判断优惠券是否过期
-                    state.sendGiftList.push(gift)
-                }
-            })
-            // state.sendGiftList = sendGiftList;
+        for (let index = 0; index < sendGiftList.length; index++) {
+            const gift = sendGiftList[index];
+            let endTime = new Date(gift.coupInfo.endTime).getTime()
+            if (!gift.coupInfo){  //如果优惠券被删除了，直接过滤此项目
+                continue
+            }
+            if (gift.coupInfo.startTimeOption === 1) {  //即时生效的就不需要判断过期
+                state.sendGiftList.push(gift)
+                continue
+            }
+            if (endTime > now) { //判断优惠券是否过期
+                state.sendGiftList.push(gift)
+            }
+        }
+        // state.sendGiftList = sendGiftList;
     },
     //判断消息类型
     [types.JUDGE_MESSTYPE](state, type) {
@@ -120,7 +136,7 @@ const mutations = {
     [types.GET_USERINFO](state, userinfo) {
         state.loadFriendSexType = userinfo.sex === 1 ? 0 : 1
         // state.loadFriendSexType = userinfo.sex
-            // console.log("state.loadFriendSexType-------------", state.loadFriendSexType)
+        // console.log("state.loadFriendSexType-------------", state.loadFriendSexType)
         userinfo.sex = userinfo.sex === 1 ? "男" : "女"
         state.userInfo = userinfo;
     },
@@ -209,7 +225,7 @@ const mutations = {
             }
             if (item.info.deskCode != 0) {
                 item.info.deskCode = util.prefixZero(item.info.deskCode, 3)
-                    // console.log(item.deskCode)
+                // console.log(item.deskCode)
             }
             totalCount += item.info.unReadMsgCount //累计未读消息
         })
@@ -259,10 +275,10 @@ const mutations = {
         //判断是否发送给当前分身，是才弹框
         console.log("mutation friendEvtObj----------", friendEvtObj)
         let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : state.userInfo.openid
-        if (friendEvtObj.identiry && (friendEvtObj.identiry != cacheOpenId)){
+        if (friendEvtObj.identiry && (friendEvtObj.identiry != cacheOpenId)) {
             return
         }
-        if (friendEvtObj.content.fromInfo.openid === cacheOpenId){ //切换分身时不给自己发上线通知
+        if (friendEvtObj.content.fromInfo.openid === cacheOpenId) { //切换分身时不给自己发上线通知
             return
         }
         //如果和本人聊天信封弹框不在对话框弹出
@@ -359,7 +375,7 @@ const mutations = {
                 friendEvtObj.content.extMsg = {
                     lastMsg: {},
                 };
-                friendEvtObj.content.extMsg.lastMsg['msg'] = friendEvtObj.content.fromInfo.nickname + (friendEvtObj.content.fromInfo.onlineType === "k98" ?"进入找朋友专区啦":"进入游戏大厅啦");
+                friendEvtObj.content.extMsg.lastMsg['msg'] = friendEvtObj.content.fromInfo.nickname + (friendEvtObj.content.fromInfo.onlineType === "k98" ? "进入找朋友专区啦" : "进入游戏大厅啦");
                 friendEvtObj.content["notifyType"] = 8;
                 state.dynamicFriendEvt = friendEvtObj.content;
                 break;
@@ -483,7 +499,7 @@ const mutations = {
     //   state.friendGiftList = data;
     // },
     //获取店长消息列表
-    [types.GET_CAPTAINMESSAGELIST](state, {data}) {
+    [types.GET_CAPTAINMESSAGELIST](state, { data }) {
         state.captainMessageList = data;
     },
     //获取约战消息列表
