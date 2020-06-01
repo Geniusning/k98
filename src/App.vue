@@ -406,6 +406,7 @@
       this.loadLastRoomInfo(); //加载回房信息
       this.loadIdentityList(); //拉取分身
       this.timeTick = setTimeout(() => {
+        this.identity = sessionStorage.getItem("identity")
         this.clearTopUpData();
         this.allMutatualInfo_temp = {};
         this.isAlreadyFriend = false;
@@ -422,7 +423,7 @@
               headImgURL: "",
               inviterID: "",
               nickName: "",
-              url: `${this.responseForGameUrl}game/?gamePath=game1`
+              url: `${this.responseForGameUrl}game/?gamePath=game1?identity=${this.identity}`
             }
           },
           msgCode: 7
@@ -485,9 +486,9 @@
       },
       //切换分身
       switchToDivide(item) {
-        let identity = sessionStorage.getItem("identity")
-        console.log("identity--------", identity)
-        if (!identity) {
+        this.identity = sessionStorage.getItem("identity")
+        console.log("identity--------", this.identity)
+        if (!this.identity) {
           let data = {
             offlineOpenid: this.userInfo.openid
           }
@@ -496,7 +497,7 @@
           })
         } else {
           let data = {
-            offlineOpenid: identity
+            offlineOpenid: this.identity
           }
           api.loginIdentity(data).then(res => {
             console.log("分身下线", res)
@@ -894,6 +895,7 @@
       },
       //未成为好友接受游戏
       no_Become_Friend_respondForGame(gameInfo) {
+
         console.log(
           "no_Become_Friend_respondForGame_gameInfo-----------",
           gameInfo
@@ -920,13 +922,13 @@
             console.log(res);
             if (res.errCode == 0) {
               console.log("删除结果-----------", res);
-              window.location.href = gameInfo.extMsg.gameInfo.url;
+              window.location.href = gameInfo.extMsg.gameInfo.url+`&identity=${this.identity}`;
             }
           });
         } else {
           //应战
           // alert(gameInfo.extMsg.gameInfo.url)
-          window.location.href = gameInfo.extMsg.gameInfo.url;
+          window.location.href = gameInfo.extMsg.gameInfo.url+`&identity=${this.identity}`;
         }
       },
       //成为好友后接受游戏
@@ -947,7 +949,7 @@
         }
         if (this.topUpGameInfo.msgCode == 19) {
           gameUrl = game.extMsg.gameInfo.url;
-          window.location.href = gameUrl;
+          window.location.href = gameUrl+`&identity=${this.identity}`;
           return false;
         } else {
           params = {
@@ -965,7 +967,7 @@
           if (res.errCode == 0) {
             console.log("删除结果-----------", res);
             // this.addFriendEvtObj({}) //清空推送内容
-            window.location.href = gameUrl;
+            window.location.href = gameUrl+`&identity=${this.identity}`;
           }
         });
       },
