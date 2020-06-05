@@ -28,7 +28,10 @@
               <img onclick="return false" class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
                 alt="暂无头像">
               <img onclick="return false" src="../../../assets/image/friend_icon.png" alt="" class="friend_icon" v-show="item.isAlreadyFriend">
-              <img onclick="return false" src="../../../assets/image/hat.png" alt="" class="staff_icon" v-show="item.info.role != ''">
+              <div class="role_wrapper">
+                <img onclick="return false" src="../../../assets/image/hat.png" alt="" class="staff_icon" v-show="item.info.role != ''">
+                <span class="position_name">酒水营销</span>
+              </div>
               <!-- <img onclick="return false" src="../../../assets/image/like1.png" alt="" class="friend_icon" v-show="alreadySendThumbFlag"> -->
             </div>
             <p class="name">{{item.info.nickname}}</p>
@@ -821,17 +824,37 @@
           height: 4.5333rem;
           border-radius: 50%;
         }
-        .friend_icon,.staff_icon {
+        .friend_icon{
           width: .8rem;
           height: .8rem;
           position: absolute;
           bottom: -.1rem;
           right: 0.8rem;
         }
-        .staff_icon{
-          bottom: 3.7rem;
-          right: 0rem;
-          transform: rotate(-2deg)
+        .role_wrapper{
+          position: absolute;
+           bottom: 3.5rem;
+            right: .3rem;
+            width: 1.2rem;
+            height: 1.2rem;
+          .staff_icon{
+            position: absolute;
+            width: 1.2rem;
+            height: 1.2rem;
+            transform: rotate(-2deg)
+          }
+          .position_name{
+            position: absolute;
+            bottom: .4rem;
+            right: -.65rem;
+            transform: rotate(50deg);
+            display: inline-block;
+            width: 1.5rem;
+            z-index: 2;
+            color: #fff;
+            text-align: center;
+            // font-size: 0.16rem;
+          }
         }
       }
     }

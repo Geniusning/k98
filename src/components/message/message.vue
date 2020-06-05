@@ -5,12 +5,11 @@
     </div>
     <div class="title">
       <div class="btn_box clearfix">
-        <div :class="{active:isShowTab==0}" class="fri_btn fl" @click="selectList(0)">好友</div>
+        <div :class="{active:isShowTab==0}" class="fri_btn fl" @click="selectList(0)">好友<i class="dot" v-show="msg_badgeCount"></i></div>
         <div :class="{active:isShowTab==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
         <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"值班客服":"用户留言"}}</div>
-        <div :class="{active:isShowTab==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="friendEvtList.length"></i></div>
+        <div :class="{active:isShowTab==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="group_badgeCount"></i></div>
       </div>
-      <!-- <div class="dot" v-if="hello"></div> -->
     </div>
     <div class="message_wrapper">
       <!-- 分身切换弹框 -->
@@ -23,20 +22,20 @@
         </div>
         <ul class="divide-list">
           <li class="divide-item" v-for="(divide,index) in divideList" :key="index">
-            <img  class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
+            <img class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
             <i class="avatar-dot" v-show="divide.unreadMsgCount"></i>
-            <p  style="width:40%;text-align: center" class="divide-name">{{divide.nickName}}</p>
+            <p style="width:40%;text-align: center" class="divide-name">{{divide.nickName}}</p>
             <!-- <p class="divide-time" @click="delDivide(divide.openid)">{{divide.latesMsgTime?divide.latesMsgTime:0}}</p> -->
-            <p  style="width:20%" class="divide-time" @click="delDivide(divide.openid)">{{divide.latesMsgTime?divide.latesMsgTime.slice(8,10)==today?divide.latesMsgTime.slice(10,16):divide.latesMsgTime.slice(5,10):""}}</p>
-            <img  @click="switchToDivide(divide)" class="divide-arrow" src="../../assets/image/divide_right.png" alt="">
+            <p style="width:20%" class="divide-time" @click="delDivide(divide.openid)">{{divide.latesMsgTime?divide.latesMsgTime.slice(8,10)==today?divide.latesMsgTime.slice(10,16):divide.latesMsgTime.slice(5,10):""}}</p>
+            <img @click="switchToDivide(divide)" class="divide-arrow" src="../../assets/image/divide_right.png" alt="">
           </li>
         </ul>
       </div>
       <!-- 分身信封入口 -->
       <!-- <div class="divide_wrapper" @click="isShowDivideList=true" v-if="isShowEnvelope">
-        <img src="../../assets/image/divide_envelope.png" class="divide-env" alt="">
-        <span v-show="divide_badgeCount" class="divide-dot">{{divide_badgeCount}}</span>
-      </div> -->
+                <img src="../../assets/image/divide_envelope.png" class="divide-env" alt="">
+                <span v-show="divide_badgeCount" class="divide-dot">{{divide_badgeCount}}</span>
+              </div> -->
       <!-- 好友 -->
       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1 || isShowTab==2)) " class="qrCode_wrapper">
         <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
@@ -141,7 +140,7 @@
                 <i class="dot" v-cloak v-show="clientObj.unReadMsgCount && client_badgeCount"></i>
               </div>
               <div class="name_and_message">
-                <p class="name">客服小哥</p>
+                <p class="name" style="font-weight:800;font-size:15px">客服小哥</p>
                 <p class="captainMessage">欢迎光临! 有任何问题或建议，请留言</p>
                 <p class="time"> {{clientObj.lastMsg?clientObj.lastMsg.stime.slice(8,10)==today?clientObj.lastMsg.stime.slice(10,16):clientObj.lastMsg.stime.slice(5,10):""}}</p>
               </div>
@@ -173,14 +172,23 @@
       <!-- 通知 -->
       <scroll :data="captainMessageList" v-else-if="isShowTab==3">
         <ul class="message_list" style="margin-top:0.4rem">
-          <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index" @click="gotoActivity(item.activityInfo)">
+          <li class="item vux-1px-b" v-for="(item,index) in captainMessageList" :key="index">
             <div class="info_message">
               <div class="avatar">
-                <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg" alt="">
+                <img v-if="item.type===1" src='../../assets/image/1.png' style="border-radius:0" alt="">
+                <img v-else-if="item.type===2" src='../../assets/image/2.png' style="border-radius:0" alt="">
+                <img v-else-if="item.type===3" src='../../assets/image/3.png' style="border-radius:0" alt="">
+                <img v-else-if="item.type===4" src='../../assets/image/4.png' style="border-radius:0" alt="">
+                <img v-else-if="item.type===5" src='../../assets/image/5.png' style="border-radius:0" alt="">
+                <img v-else-if="item.type===6" src='../../assets/image/6.png' style="border-radius:0" alt="">
+                <i v-show="item.unread" class="dot" style="top:-.2rem;right:-.1rem"></i>
               </div>
               <div class="name_and_message">
-                <p class="name">店长</p>
-                <p class="captainMessage">活动通知:{{item.activityInfo.name}}>时间:{{item.activityInfo.startTime}}</p>
+                <p class="captainMessage">{{item.name}} <span class="time">{{item.time}}</span></p>
+                <p class="handle-wrapper">
+                  <span class="del" @click="delNotice(item.id)">删除</span>
+                  <span class="lookUp" @click="setUnreadNotice(item.id,item.type)">查看</span>
+                </p>
               </div>
             </div>
           </li>
@@ -258,7 +266,6 @@
         divideAvartar: require('../../assets/image/divide_add_avatar.png'),
         clientImg: require("../../assets/image/home_letter.png"),
         color: "#ffd800",
-        hello: false,
         isShowTab: 2, //最上面tab切换
         selected_num: 0,
         greeting_flag: 0,
@@ -281,7 +288,19 @@
         next(vm => {
           vm.isShowTab = 1;
         });
-      } else if (from.name === "shareActivity") {
+      } else if (from.name === "welfare") {
+        next(vm => {
+          vm.isShowTab = 3;
+        });
+      } else if (from.name === "gameRecord") {
+        next(vm => {
+          vm.isShowTab = 3;
+        });
+      } else if (from.name === "shareNew") {
+        next(vm => {
+          vm.isShowTab = 3;
+        });
+      } else if (from.name === "card") {
         next(vm => {
           vm.isShowTab = 3;
         });
@@ -295,7 +314,7 @@
         });
       } else {
         next(vm => {
-          vm.isShowTab = 2;
+          vm.isShowTab = 0;
         });
       }
     },
@@ -313,15 +332,17 @@
         "alreadyFriendList",
         "staticChatFriendObj",
         "LastChatMsg",
+        'captainMessageList',
         "friendGiftList",
-        "captainMessageList",
         "challengeGameList",
         "manualEventsList_badgeCount",
         "userInfo",
         "client_badgeCount",
         "qrCode",
         "shareUrl",
-        "divide_badgeCount"
+        "divide_badgeCount",
+        "group_badgeCount",
+        "msg_badgeCount"
       ]),
       messageTime() {
         return
@@ -344,7 +365,7 @@
     mounted() {
       this._loadFriends(); //拉取好友
       this._loadMutualEvents(); //拉取送礼，约战，
-      this.getCaptainMessList(); //获取店长信  
+      this.getCaptainMessList(); //加载群发通知
       this.loadClientServiceList() //加载客服列表  
       this.loadIdentityList() //加载分身 
       // this.isShowTab = this.getQueryString("routeParamNum")
@@ -357,6 +378,59 @@
           console.log("删除结果-----", res)
         })
       },
+      //删除群发通知
+      delNotice(noticeId) {
+        api.delNotice(noticeId).then(res => {
+          console.log('删除群发消息', res)
+          if (res.errCode === 0) {
+            this.$vux.toast.text('删除成功');
+            this.getCaptainMessList()
+          } else {
+            this.$vux.toast.text(res, errMsg);
+          }
+        })
+      },
+      //设置群发通知已读
+      setUnreadNotice(noticeId, type) {
+        api.setUnreadNotice(noticeId).then(res => {
+          console.log('群发消息已读---', res)
+          if (res.errCode === 0) {
+            switch (type) {
+              case 1:
+                this.$router.push({
+                  name: 'welfare'
+                })
+                break;
+              case 2:
+                let _url = window.location.href;
+                this.gameUrl = _url.split("k98")[0];
+                window.location.href = `${this.gameUrl}game/?gamePath=game2`;
+                break;
+              case 3:
+                this.$router.push({
+                  name: 'shareNew'
+                })
+                break;
+              case 4:
+                break;
+              case 5:
+                this.$router.push({
+                  name: 'gameRecord'
+                })
+                break;
+              case 6:
+                this.$router.push({
+                  name: 'card'
+                })
+                break;
+              default:
+                break;
+            }
+          } else {
+            this.$vux.toast.text(res, errMsg);
+          }
+        })
+      },
       //拉取分身
       loadIdentityList() {
         var count = 0
@@ -367,14 +441,12 @@
                 count += item.unreadMsgCount
                 this.addDivideUnreadCount(count)
               }
-              item.latesMsgTime = item.latesMsgTime?util.timestampToTime(item.latesMsgTime):0
+              item.latesMsgTime = item.latesMsgTime ? util.timestampToTime(item.latesMsgTime) : 0
               return item.openid != this.userInfo.openid
             })
             console.log("拉取分身-------", this.divideList)
           } else {
-            this.$vux.toast.show({
-              text: res.errorMsg
-            });
+            this.$vux.toast.text(res.errorMsg);
           }
         })
       },
@@ -413,15 +485,6 @@
         this.isShowQrCode = false
         localStorage.setItem("isShowQrCode", false)
       },
-      //进入活动详情
-      gotoActivity(activetyInfo) {
-        this.$router.push({
-          name: "shareActivity",
-          params: {
-            id: activetyInfo.activityID
-          }
-        });
-      },
       getQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(reg);
@@ -439,8 +502,8 @@
             this.clientTitleFlag = true
             this.clientObj = res
             unReadCount = this.clientObj.unReadMsgCount
-            if(this.clientObj.lastMsg){
-              this.clientObj.lastMsg.stime =util.timestampToTime(res.lastMsg.stime)
+            if (this.clientObj.lastMsg) {
+              this.clientObj.lastMsg.stime = util.timestampToTime(res.lastMsg.stime)
             }
           } else { //客服进入
             this.customerObj = res
@@ -493,11 +556,16 @@
         this.isShowTab = index;
         console.log(this.isShowTab)
         if (this.isShowTab === 2) {
+          Bus.$emit("hideEnvelop",true)
           setTimeout(() => {
             this.$nextTick(function() {
               this.$refs.clientScroll.scrollTo(0, 0)
             })
           }, 50);
+        }else if(this.isShowTab === 3){
+          Bus.$emit("hideEnvelop",false)
+        }else{
+           Bus.$emit("hideEnvelop",true)
         }
       },
       //拉取约战、点赞、送礼列表
@@ -690,7 +758,7 @@
         getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量
         changeQrCodeText: "CHANGEQRCODETEXT",
         showQrcode: "SHOW_QRCODE",
-        addDivideUnreadCount:"ADDDIVIDEUNREADMSG" //累计分身未读消息
+        addDivideUnreadCount: "ADDDIVIDEUNREADMSG" //累计分身未读消息
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList", //加载已经成为好友列表
@@ -1197,24 +1265,16 @@
               .online_dot {
                 width: 0.4rem;
                 height: .4rem;
-                margin-top: .1rem; // position: absolute;
-                // bottom: 0.18rem;
-                // right: 0rem; // color: #333;
-                font-weight: 600; // z-index: 2;
+                margin-top: .1rem;
+                font-weight: 600;
               }
               .friendStatus {
                 display: inline-block;
                 width: 1.4rem;
                 color: #333;
-                font-size: 15px; // position: absolute;
-                // bottom: 0.1rem;
-                // right: -1.5rem;
-                // z-index: 2;
+                font-size: 15px;
               }
               .roomNum {
-                // position: absolute;
-                // bottom: 0.1rem;
-                // right: 0rem;
                 color: #333;
                 z-index: 2;
                 display: inline-block;
@@ -1237,29 +1297,50 @@
               text-align: left;
             }
             .captainMessage {
-              color: #666;
+              color: #333;
               width: 7rem;
-              overflow: hidden; // text-overflow: ellipsis;
-              // white-space: nowrap;
+              overflow: hidden;
               height: 0.6667rem;
-              font-size: 0.3467rem;
-              margin-top: 0.4rem;
+              font-size: 14px;
               text-align: left;
+              font-weight: 800;
+              position: relative;
+              .time {
+                position: absolute;
+                color: #666;
+                font-size: 12px;
+              }
             }
           }
         }
         .info_time {
-          // padding-top: 0.3333rem;
           margin-right: 0.4rem;
           margin-top: 0.1rem;
           font-size: 0.3733rem;
           color: #999;
           position: relative;
-          .deleteBtn {
-            position: absolute;
-            right: 0.2667rem;
-            bottom: 0.2667rem
+        }
+        .handle-wrapper {
+          display: flex;
+          justify-content: flex-end;
+          .del {
+            padding: 0.1067rem 0.1867rem;
+            background-color: #B5B5B5;
+            color: #fff;
+            border-radius: 0.1333rem
           }
+          .lookUp {
+            margin-left: 0.6rem;
+            padding: 0.1067rem 0.1867rem;
+            background-color: #FFD800;
+            color: #fff;
+            border-radius: 0.1333rem
+          }
+        }
+        .deleteBtn {
+          position: absolute;
+          right: 0.2667rem;
+          bottom: 0.2667rem
         }
       }
       .noContent {
@@ -1333,7 +1414,6 @@
               overflow: hidden; // text-overflow: ellipsis;
               // white-space: nowrap;
             }
-            .captainMessage {}
           }
         }
         .thumb_wrapper {

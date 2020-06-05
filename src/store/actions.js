@@ -47,11 +47,12 @@ const actions = {
     //         commit('ADD_BADGE');
     //     })
     // },
-    //获取店长消息
+    //获取店长群发通知
     get_captainMessageList({ commit }) {
-        api.loadManagerNoticeInfo().then(res => {
-            console.log('店长消息-----------------', res)
-            commit("GET_CAPTAINMESSAGELIST", { data: res.managerNoticeInfo })
+        api.loadUserNotice().then(res => {
+            console.log('店长群发消息-----------------', res)
+            commit("GET_CAPTAINMESSAGELIST", { data: res.info })
+            commit('ADD_BADGE')
         })
     },
     //场内好友接口

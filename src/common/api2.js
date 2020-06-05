@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:04 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-25 14:42:39
+ * @Last Modified time: 2020-06-02 08:53:29
  */
 import axios from 'axios'
 import Url from './config'
@@ -26,6 +26,42 @@ api.delIdentity = function (targetID) {
     return new Promise((resolve, reject) => {
         axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
             // console.log(res)
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//删除系统通知消息
+api.delNotice = function (noticeID) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/delNotice?noticeID=${noticeID}&tk=${Url.tk}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//设置系统通知消息已读
+api.setUnreadNotice = function (noticeID) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/setUnreadNotice?noticeID=${noticeID}&tk=${Url.tk}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//加载系统通知消息
+api.loadUserNotice = function () {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/loadUserNotice?tk=${Url.tk}`).then((res) => {
             if (res.status == 200) {
                 resolve(res.data)
             }

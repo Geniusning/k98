@@ -77,6 +77,10 @@
               <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
               <input type="file" class="file" accept="image/*" @change="uploadImage">
             </li>
+            <!-- v-if="isClientFlag" -->
+            <li class="item fl" style="padding:0">
+              <img style="width:100%;height:100%" onclick="return false" src="../../assets/image/quan-icon.jpg" @click="sendDiscount" alt>
+            </li>
           </ul>
         </div>
         <div class="emotion_area" v-if="emotionShow">
@@ -271,6 +275,10 @@
       ...mapGetters(["qrIsShow"])
     },
     methods: {
+      //员工送券
+      sendDiscount(){
+
+      },
       //标记客服消息已读
       setMsgReadCliSer() {
         if (this.isClientFlag) {

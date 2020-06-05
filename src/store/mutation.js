@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-29 16:33:31
+ * @Last Modified time: 2020-06-02 15:25:16
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -500,6 +500,46 @@ const mutations = {
     // },
     //获取店长消息列表
     [types.GET_CAPTAINMESSAGELIST](state, { data }) {
+        state.group_badgeCount = 0
+        data.forEach(item=>{
+            item.time = util.timestampToTime(item.time).slice(5,10)
+            if(item.unread){
+                state.group_badgeCount++
+            }
+            switch (item.type) {
+                case 1:
+                    item['name'] = `门店公告新活动啦，去看看>`
+                    item['img'] = `../../assets/image/${item.type}.png`
+                break;
+                case 2:
+                    item['name'] = `大话骰比赛开始啦，不服来战>`
+                    item['img'] = `../../assets/image/${item.type}.png`
+                break;
+                case 3:
+                    item['name'] = `邀请新朋友，双重厚礼送您俩>`
+                    item['img'] = `../../assets/image/${item.type}.png`
+                break;
+                case 4:
+                    item['name'] = `1元团购，兄弟们一起抢劫老板啰>`
+                    item['img'] = `../../assets/image/${item.type}.png`
+                break;
+                case 5:
+                    item['name'] = `您参与得比赛结束啦！查看名次>`
+                    item['img'] = `../../assets/image/${item.type}.png`
+                break;
+                case 6:
+                    item['name'] = `一张优惠券已经存入卡券包>`
+                    item['img'] = `../../assets/image/${item.type}.png`
+                break;
+                case 7:
+                    item['name'] = `一张优惠券已经存入卡券包>`
+                    item['img'] = `../../assets/image/${item.type}.png`
+                break;
+            
+                default:
+                    break;
+            }
+        })
         state.captainMessageList = data;
     },
     //获取约战消息列表
@@ -529,14 +569,12 @@ const mutations = {
     },
     //所有类型的未读消息累加总的未读消息里面
     [types.ADD_BADGE](state) {
-        state.badgeCount = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount + state.client_badgeCount;
+        state.badgeCount = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount + state.client_badgeCount + state.group_badgeCount;
     },
     //设置候选人聊天的信息
     [types.SET_CHAT_FRIEND](state, data) {
         // data.info.isIndoor = data.isInDoor
         state.staticChatFriendObj = data.info ? data.info : data
-
-        // console.log('state.staticChatFriendObj-------------------', state.staticChatFriendObj);
     },
     //设置动态聊天朋友信息
     [types.GET_DYNAMICFRIENDOBJ](state, data) {
@@ -547,12 +585,12 @@ const mutations = {
     },
     //更新聊天列表
     [types.UPDATE_CHATLIST](state, obj) {
-        console.log('state.LastChatMsg：```````````````````````````````````````', obj)
+        // console.log('state.LastChatMsg：```````````````````````````````````````', obj)
         state.LastChatMsg = obj
     },
-    //更新客服聊天劣币
+    //更新客服聊天
     [types.UPDATE_CLIENTMSG](state, obj) {
-        console.log('state.clientLastChatMsg```````````````````````````````````````', obj)
+        // console.log('state.clientLastChatMsg```````````````````````````````````````', obj)
         state.clientLastChatMsg = obj
         state.client_badgeCount = obj.extMsg.count
     },

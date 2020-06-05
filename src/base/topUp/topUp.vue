@@ -27,6 +27,7 @@
         <div class="giftPanelBox_title vux-1px-b">
           <p class="desc">请选择赠送对方的礼物</p>
           <img onclick="return false" src="../../assets/image/close-round.png" alt="" class="close" @click="closeIntegralPanel">
+          <img src="../../assets/image/quan-icon.jpg" class="staff-discount" v-if="userInfo.role"  alt="">
         </div>
         <div class="giftListpart vux-1px-b">
           <img onclick="return false" v-show="componentGiftList.length>0" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
@@ -615,6 +616,15 @@
         justify-content: space-between;
         padding: 0.4rem 0.3rem 0.1rem 0.3rem;
         box-sizing: border-box;
+        position: relative;
+        .staff-discount{
+          position: absolute;
+          width: 1rem;
+          height: 1rem;
+          top: .1rem;
+          right: 2rem;
+          z-index: 2;
+        }
         .desc {
           font-size: 0.4rem;
           color: #f7c600;

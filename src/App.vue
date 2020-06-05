@@ -405,8 +405,9 @@
       this.appDeskCode = util.GetQueryString("deskCode")
       this.loadLastRoomInfo(); //加载回房信息
       this.loadIdentityList(); //拉取分身
+      this.identity = sessionStorage.getItem("identity")
+      this.identity = this.identity?this.identity:""
       this.timeTick = setTimeout(() => {
-        this.identity = sessionStorage.getItem("identity")
         this.clearTopUpData();
         this.allMutatualInfo_temp = {};
         this.isAlreadyFriend = false;
@@ -444,6 +445,9 @@
           this.clearTopUpMessage();
         }
       }, 3000);
+      Bus.$on("hideEnvelop",(result)=>{
+        console.log("隐藏信封------",result)
+      })
     },
     methods: {
       showDivideList() {
@@ -922,13 +926,13 @@
             console.log(res);
             if (res.errCode == 0) {
               console.log("删除结果-----------", res);
-              window.location.href = gameInfo.extMsg.gameInfo.url+`&identity=${this.identity}`;
+              window.location.href = gameInfo.extMsg.gameInfo.url;
             }
           });
         } else {
           //应战
           // alert(gameInfo.extMsg.gameInfo.url)
-          window.location.href = gameInfo.extMsg.gameInfo.url+`&identity=${this.identity}`;
+          window.location.href = gameInfo.extMsg.gameInfo.url;
         }
       },
       //成为好友后接受游戏
@@ -949,7 +953,7 @@
         }
         if (this.topUpGameInfo.msgCode == 19) {
           gameUrl = game.extMsg.gameInfo.url;
-          window.location.href = gameUrl+`&identity=${this.identity}`;
+          window.location.href = gameUrl;
           return false;
         } else {
           params = {
@@ -967,7 +971,7 @@
           if (res.errCode == 0) {
             console.log("删除结果-----------", res);
             // this.addFriendEvtObj({}) //清空推送内容
-            window.location.href = gameUrl+`&identity=${this.identity}`;
+            window.location.href = gameUrl;
           }
         });
       },
@@ -1728,7 +1732,7 @@
       }
     }
     .divide_wrapper {
-      position: absolute;
+      position: fixed;
       top: 35%;
       right: .2rem;
       z-index: 9;
@@ -1738,7 +1742,7 @@
           top: 35%;
         }
         50% {
-          top: 36%;
+          top: 34%;
         }
         100% {
           top: 35%;

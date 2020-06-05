@@ -2,7 +2,7 @@
  * @Author: nicky 
  * @Date: 2018-04-12 15:44:17 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-06 10:27:22
+ * @Last Modified time: 2020-06-02 09:47:40
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -61,6 +61,16 @@ util.GetOpenIdByCode = function (code) {
   xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
   var data = "code=" + code + "&appId=wx2684abab04c7017d";
   xhr.send(data);
+}
+//比较日期前后
+util.compareDate = (beginDate, endDate) => {
+  // console.log(beginDate, endDate)
+  let d1 = new Date(beginDate.replace(/\-/g, "\/"))
+  let d2 = new Date(endDate.replace(/\-/g, "\/"))
+  if (beginDate != "" && endDate != "" && d1 > d2) {
+    return false
+  }
+  return true
 }
 //时间戳转化成地址  格式xxxx-xx-xx xx-xx-xx
 util.timestampToTime = function (timestamp) {
@@ -268,19 +278,19 @@ util.prefixZero = function (num, n) {
 }
 util.returnDiscountContent = function (coupon) {
   if (parseInt(coupon.type) === 0) {
-    return "现金券" + coupon.value + "元"
+    return  coupon.value + "元"
   } else if (parseInt(coupon.type) === 1) {
-    return "实物券" + coupon.content
+    return coupon.content
   } else if (parseInt(coupon.type) === 2) {
-    return "折扣券" + coupon.value + "折"
+    return  coupon.value + "折"
   } else if (parseInt(coupon.type) === 3) {
-    return "兑换券" + coupon.content
+    return  coupon.content
   } else if (parseInt(coupon.type) === 4) {
-    return "满减券" + coupon.content
+    return  coupon.content
   } else if (parseInt(coupon.type) === 6) {
-    return "月卡券" + coupon.content
+    return  coupon.content
   } else if (parseInt(coupon.type) === 7) {
-    return "次卡券" + coupon.content
+    return  coupon.content
   }
 }
 export default util

@@ -42,6 +42,11 @@
             <input type="text" class="input_name" v-model="signatureList" disabled>
             <img onclick="return false" src="../../assets/image/add.png" alt="" class="add" @click="showTag">
           </li>
+          <li class="item vux-1px-b" v-if="userInfo.role">
+            <span class="item_name">员工标签</span>
+            <input type="text" class="input_name" disabled v-model="staffTag">
+            <img onclick="return false" src="../../assets/image/add.png" alt="" class="add" @click="showStaffTag">
+          </li>
           <li class="item vux-1px-b">
             <span class="item_name">手机</span>
             <input type="text" class="input_name" v-model="phone" @blur="blurAdjust">
@@ -82,7 +87,7 @@
       </div>
     </div>
     <!-- </scroll> -->
-    <!-- 标签选择 -->
+    <!-- 个性标签选择 -->
     <div v-transfer-dom>
       <x-dialog v-model="tagShow" class="dialog-demo" style="height:100%">
         <div class="tag_wrapper">
@@ -108,6 +113,36 @@
                 {{item}}
               </li>
             </ul>
+          </div>
+        </div>
+        <div class="btn_box">
+          <!-- <span class="vux-close"></span> -->
+          <span class="btn" @click="save">确定</span>
+        </div>
+      </x-dialog>
+    </div>
+    <!-- 员工标签选择 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="StaffTagShow" class="dialog-demo" style="height:100%">
+        <div class="tag_wrapper">
+          <h2 class="signatureTitle">员工标签</h2>
+          <div class="close_tabBox" @click="closeStaffTag">
+            <img onclick="return false" src="../../assets/image/close.png" alt="" class="close">
+          </div>
+          <h3 class="title">最多选1个标签</h3>
+          <ul class="tag_list clearfix" ref="tagList">
+            <li class="tag fl" :class="{active:item.checked}" v-for="(item,index) in StaffTagList" :data-index="index" :key="index" @click="selectStaffTag($event,item,index)">
+              {{item.name}}
+            </li>
+          </ul>
+          <div class="DIY_tag clearfix">
+            <h3 class="title">自定义标签</h3>
+            <input type="text" class="diy_input fl"  maxlength="4" v-model="diyStaffTag">
+            <img onclick="return false" src="../../assets/image/plus.png" alt="" class="plus fl" @click="plusStaffTag">
+          </div>
+          <div class="selected_wrapper">
+            <h3 class="title">已选择标签</h3>
+            <p class="selectedStaffTag" v-show="staffTag">{{staffTag}}</p>
           </div>
         </div>
         <div class="btn_box">
@@ -159,9 +194,12 @@
         signatureList: "",
         title: "最多选5个",
         diyTag: "",
-        commonList: [], //标签
+        diyStaffTag:'',
+        commonList: [], //个性标签
+        staffTag: '', //员工标签
         checklist003: [],
         tagShow: false,
+        StaffTagShow:false,
         name: "",
         showPopupPickerSex: false,
         showPopupPickerC: false,
@@ -195,6 +233,47 @@
             "水瓶座(1.20-2.18)",
             "双鱼座(2.19-3.20)"
           ]
+        ],
+        StaffTagList: [{
+            name: "店长",
+            id: 0,
+            checked: false
+          },
+          {
+            name: "经理",
+            id: 1,
+            checked: false
+          },
+          {
+            name: "服务生",
+            id: 2,
+            checked: false
+          },
+          {
+            name: "酒水营销",
+            id: 3,
+            checked: false
+          },
+          {
+            name: "小蜜蜂",
+            id: 4,
+            checked: false
+          },
+          {
+            name: "公主",
+            id: 5,
+            checked: false
+          },
+          {
+            name: "技师",
+            id: 6,
+            checked: false
+          },
+          {
+            name: "陪练",
+            id: 7,
+            checked: false
+          },
         ],
         tagList: [{
             name: "小逗比",
@@ -236,7 +315,6 @@
       };
     },
     updated(){
-
     },
     created() {
       this.height = document.body.clientHeight - 50;
@@ -314,6 +392,13 @@
           this.diyTag = "";
         }
       },
+      //增加自定义员工标签
+      plusStaffTag() {
+        this.staffTag = this.diyStaffTag
+        this.StaffTagList.forEach((item,i)=>{
+           item.checked = false
+          })
+      },
       //选择标签
       selectTag(e, item, index) {
         console.log(index);
@@ -335,12 +420,36 @@
           this.commonList.splice(index, 1);
         }
       },
+      //选择员工标签
+      selectStaffTag(e, item, index) {
+        console.log(index);
+        if(this.diyStaffTag){
+          this.$vux.toast.text('已选择自定义标签','middle')
+          return
+        }
+        if(e.target.className.indexOf("active") != -1){
+          item.checked = false
+          this.staffTag = ''
+        }else{
+          this.StaffTagList.forEach((item,i)=>{
+            if(i===index){
+              item.checked = true
+              this.staffTag = item.name
+            }else{
+              item.checked = false
+            }
+          })
+        }
+        console.log("this.staffTag-----",this.staffTag)
+      },
       //保存自定义标签
       save() {
         this.tagShow = false;
+        this.StaffTagShow = false;
         this.signatureList = this.commonList.join("、");
         this.commonList = [];
         this.diyTag = "";
+        this.diyStaffTag = '';
         console.log(this.signatureList);
       },
       unique(arr) {
@@ -356,6 +465,11 @@
         })
         this.userInfoTags = this.unique(this.commonList)
         this.diyTag = "";
+      },
+      //关闭员工标签模态框
+      closeStaffTag() {
+        this.StaffTagShow = false;
+        this.diyStaffTag = '';
       },
       change(val, label) {
         console.log("change", val);
@@ -375,6 +489,10 @@
             }
           })
         })
+      },
+      // 显示员工标签弹框
+      showStaffTag() {
+        this.StaffTagShow = true
       },
       //性别选择
       onHide() {
@@ -407,7 +525,8 @@
           signature: this.signature,
           isStealth: this.isStealth,
           isQuiet: this.isQuiet,
-          isBattle: this.isBattle
+          isBattle: this.isBattle,
+          staffTag:this.staffTag
         };
         let strUserInfoParam = JSON.stringify(userInfoParam);
         let decc = new TextEncoder("utf-8");
@@ -775,8 +894,18 @@
       }
     }
     .selected_wrapper {
+      text-align: left;
       .title {
         margin-top: 0.3333rem;
+      }
+      .selectedStaffTag{
+        display: inline-block;
+        text-align: left;
+        font-size: 14px;
+        padding: 0.1333rem 0.2667rem;
+        background: @baseColor;
+          color: #333;
+          border-radius: 0.08rem;
       }
       .selected_list {
         .item {

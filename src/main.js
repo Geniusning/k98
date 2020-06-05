@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-29 15:55:47
+ * @Last Modified time: 2020-06-05 15:37:24
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -57,6 +57,7 @@ new Vue({
     this.loadL98otherSetting() //加载控制开关
     this._loadInviteCoupon() //判断是否有邀新活动
     this.createWebsocket() //创建长链接
+    this.getCaptainMessList()//店长群发通知
     window.addEventListener("unload", () => {
       this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
       localStorage.removeItem("friendInfo");
@@ -410,6 +411,7 @@ new Vue({
     }),
     ...mapActions({
       //getFriendEvt: "get_FriendEvt"
+      getCaptainMessList: "get_captainMessageList" //获取店长信息
     })
   },
   watch: {

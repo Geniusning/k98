@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:45:54 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-05-25 14:42:41
+ * @Last Modified time: 2020-06-02 08:53:31
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,6 +24,42 @@ axios.interceptors.request.use(
     }
 )
 let api = {};
+//删除系统通知消息
+api.delNotice = function (noticeID) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/delNotice?noticeID=${noticeID}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//设置系统通知消息已读
+api.setUnreadNotice = function (noticeID) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/setUnreadNotice?noticeID=${noticeID}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//加载系统通知消息
+api.loadUserNotice = function () {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/loadUserNotice`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
 //分身登陆
 api.loginIdentity = function (data) {
     return new Promise((resolve, reject) => {
