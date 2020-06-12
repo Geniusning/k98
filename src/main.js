@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-06-05 15:37:24
+ * @Last Modified time: 2020-06-11 18:10:34
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -55,7 +55,7 @@ new Vue({
     this.loadRecommends(); //获取店长推荐
     this.loadMutualEvents() //统计约战送礼点赞
     this.loadL98otherSetting() //加载控制开关
-    this._loadInviteCoupon() //判断是否有邀新活动
+    this.loadInviteCoupon() //判断是否有邀新活动
     this.createWebsocket() //创建长链接
     this.getCaptainMessList()//店长群发通知
     window.addEventListener("unload", () => {
@@ -71,24 +71,24 @@ new Vue({
   methods: {
     //创建长连接
     createWebsocket() {
-      let windowUrL = window.location.href;
-      let index = windowUrL.indexOf('.com');
-      let shareurl = windowUrL.slice(0, index);
-      let websocketUrl = shareurl.slice(8);
-      this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-      this.websock = new WebSocket(this.connectUrl);
-      this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+      // let windowUrL = window.location.href;
+      // let index = windowUrL.indexOf('.com');
+      // let shareurl = windowUrL.slice(0, index);
+      // let websocketUrl = shareurl.slice(8);
+      // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+      // this.websock = new WebSocket(this.connectUrl);
+      // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
+      this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
-      this._initWebsocket()
+      this.initWebsocket()
     },
 
     //初始化长连接
-    _initWebsocket() {
-      this.websock.onopen = this._websocketonopen;
-      this.websock.onerror = this._websocketonerror;
-      this.websock.onmessage = this._websocketonmessage;
-      this.websock.onclose = this._websocketclose
+    initWebsocket() {
+      this.websock.onopen = this.websocketonopen;
+      this.websock.onerror = this.websocketonerror;
+      this.websock.onmessage = this.websocketonmessage;
+      this.websock.onclose = this.websocketclose
     },
     //重连长链接
     reconnectWebsocket() {
@@ -105,7 +105,7 @@ new Vue({
         this.limitTimes++
       }
     },
-    _loadInviteCoupon() {
+    loadInviteCoupon() {
       api.loadInviteCoupon().then(res => {
         console.log("获取邀新优惠券---------", res)
         if (res.errCode === 0) {
@@ -137,7 +137,7 @@ new Vue({
       let url = window.location.href.split('/#')[0];
       this.getUrl(url);
     },
-    _websocketonopen(e) {
+    websocketonopen(e) {
       console.log("WebSocket连接成功");
       this.timer = setInterval(() => {
         let msg = {
@@ -153,13 +153,13 @@ new Vue({
         }
       }, 50000);
     },
-    _websocketonerror(e) {
+    websocketonerror(e) {
       //错误
       console.log("WebSocket连接发生错误");
       this.reconnectWebsocket() //重连
     },
     //数据接收
-    _websocketonmessage(e) {
+    websocketonmessage(e) {
       let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : this.userInfo.openid
       var decc = new TextDecoder("utf-8");
       let result = JSON.parse(decc.decode(e.data));
@@ -319,7 +319,7 @@ new Vue({
         this.loadSameDeskInfo(result.content.extMsg)
       }
     },
-    _websocketclose(e) {
+    websocketclose(e) {
       //关闭
       console.log("websocket关闭-----------", e)
       this.reconnectWebsocket() //重连
@@ -382,6 +382,12 @@ new Vue({
         }
         this.addBange();
         // console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
+      })
+    },
+    //拉取员工送券活动
+    loadStaffCouponAct(){
+      api.loadStaffCouponAct().then(res=>{
+        console.log("员工送券活动-------",res)
       })
     },
     ...mapMutations({

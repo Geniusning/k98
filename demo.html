@@ -36,6 +36,26 @@
 //     result[index] = [index,i]
 //   }
 // }
+var arr = [1,2,3,4]
+function xxxx(params) {
+  var leftArr = []
+  var rightArr = []
+  var result = []
+  leftArr[0] = 1
+  rightArr[params.length-1] = 1
+  debugger
+  for (let i = 1; i < params.length; i++) {   //left[1] = 1*1 = 1  left[2] = 1*2= 2   left[3] = 2*3 = 6 
+   leftArr[i] = leftArr[i-1] * params[i-1]
+  }
+  for (let j = params.length-2; j > -1; j--) { //right[]
+   rightArr[j] = rightArr[j+1] * params[j+1]
+  }
+  for (let z = 0; z < params.length; z++) {
+   result[z] = leftArr[z]* rightArr[z]
+  }
+  return result
+}
+console.log(xxxx(arr))
 // console.log(result)
 let str = "oqWlD1h6Zurgr6YZVTYAqe5JL9oM@master_707fe"
 console.log(str.indexOf("@master"))
