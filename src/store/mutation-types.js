@@ -1,4 +1,7 @@
 
+//存储员工送券活动
+export const GETSTAFFCOUPONINFO = "GETSTAFFCOUPONINFO"
+
 //累加分身未读消息
 export const ADDDIVIDENUM = "ADDDIVIDENUM"
 //统计分身未读消息

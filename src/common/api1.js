@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:45:54 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-06-11 18:04:30
+ * @Last Modified time: 2020-06-18 17:01:41
  */
 import axios from 'axios'
 import Url from './config'
@@ -989,7 +989,7 @@ api.convertRecommend = function (recommendID) {
 //验证员工
 api.verifyPhoneNumber = function (phone, avatarImg) {
     return new Promise((resolve, reject) => {
-        axios.get(`/api/verifyPhoneNumber?phone=${phone}&avatarImg=${avatarImg}`)
+        axios.get(`/api/verifyPhone?phone=${phone}&avatarImg=${avatarImg}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)

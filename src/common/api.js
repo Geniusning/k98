@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:04 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-06-11 18:04:10
+ * @Last Modified time: 2020-06-17 11:35:07
  */
 import axios from 'axios'
 import Url from './config'
@@ -37,7 +37,7 @@ api.delIdentity = function (targetID) {
 //赠送员工送券活动
 api.sendStaffCouponToUser = function (data) {
     return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/sendStaffCouponToUser&tk=${Url.tk}`,data).then((res) => {
+        axios.post(Url.commonUrl + `/api/sendStaffCouponToUser?tk=${Url.tk}`,data).then((res) => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -49,7 +49,7 @@ api.sendStaffCouponToUser = function (data) {
 //加载员工送券活动
 api.loadStaffCouponAct = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadStaffCouponAct&tk=${Url.tk}`).then((res) => {
+        axios.get(Url.commonUrl + `/api/loadStaffCouponAct?tk=${Url.tk}`).then((res) => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -1004,7 +1004,7 @@ api.convertRecommend = function (recommendID) {
 //验证员工
 api.verifyPhoneNumber = function (phone, avatarImg) {
     return new Promise((resolve, reject) => {
-        axios.get(`/api/verifyPhoneNumber?phone=${phone}&avatarImg=${avatarImg}&tk=${Url.tk}`)
+        axios.get(`/api/verifyPhone?phone=${phone}&avatarImg=${avatarImg}&tk=${Url.tk}`)
             .then(res => {
                 if (res.status == 200) {
                     resolve(res.data)

@@ -37,8 +37,8 @@
                   <span v-show="item.type===1" class="arrow"></span>
                   <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message">
                     <!-- 你是我的眼
-                      <img :src="emotionList[0].num" alt="">
-                      <img :src="emotionList[2].num" alt=""> -->
+                        <img :src="emotionList[0].num" alt="">
+                        <img :src="emotionList[2].num" alt=""> -->
                   </p>
                 </div>
               </div>
@@ -77,9 +77,9 @@
               <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
               <input type="file" class="file" accept="image/*" @change="uploadImage">
             </li>
-            <!-- v-if="isClientFlag" -->
-            <li class="item fl" style="padding:0">
-              <img style="width:100%;height:100%" onclick="return false" src="../../assets/image/quan-icon.jpg" @click="sendDiscount" alt>
+            <!--  -->
+            <li class="item fl" style="padding:0" v-if="isClientFlag"  @click="sendStaffCouponToUser">
+              <img style="width:100%;height:100%" onclick="return false" src="../../assets/image/quan-icon.jpg" alt>
             </li>
           </ul>
         </div>
@@ -270,14 +270,28 @@
         "inputValue",
         "socket",
         "alreadyFriendListcursor",
-        "giftList"
+        "giftList",
+        "staffCouponInfo"
       ]),
       ...mapGetters(["qrIsShow"])
     },
     methods: {
       //员工送券
-      sendDiscount(){
-
+      sendStaffCouponToUser() {
+        let ToId = this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : sessionStorage.getItem("staffCouponToId")
+        console.log("ToId-----", ToId)
+        let data = {
+          to: ToId,
+          from: this.userInfo.openid,
+          CouponId: this.staffCouponInfo.couponId
+        }
+        // return
+        api.sendStaffCouponToUser(data).then(res => {
+          console.log("送券结果-------", res)
+          if(res.errCode===0){
+             this.$vux.toast.text("赠送成功", "middle");
+          }
+        })
       },
       //标记客服消息已读
       setMsgReadCliSer() {
@@ -446,8 +460,8 @@
                 this.input_value = this.input_value.replace(
                   reg,
                   `<img src=${
-                    this.emotionList[j].num
-                  } style="vertical-align: -6px;">`
+                      this.emotionList[j].num
+                    } style="vertical-align: -6px;">`
                 );
               }
             }
@@ -470,13 +484,11 @@
         });
         let messObj = {
           to: this.isClientFlag ?
-            this.staticChatFriendObj.openid :
-            this.staticChatFriendObj.CliSerID,
+            this.staticChatFriendObj.openid : this.staticChatFriendObj.CliSerID,
           content: this.input_value,
           type: 1,
           from: this.isClientFlag ?
-            this.staticChatFriendObj.CliSerID :
-            this.userInfo.openid,
+            this.staticChatFriendObj.CliSerID : this.userInfo.openid,
           fromIconURI: this.userInfo.headimgurl
         };
         let textMessObj = JSON.stringify(messObj);

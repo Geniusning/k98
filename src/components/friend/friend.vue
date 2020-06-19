@@ -233,7 +233,7 @@
       };
     },
     computed: {
-      ...mapState(["lifeImgList", "shopSettingInfo", "friendList", "inAndOutFriendCursor",
+      ...mapState(["l98Setting","lifeImgList", "shopSettingInfo", "friendList", "inAndOutFriendCursor",
         "friendListCursor", "giftList", "userInfo", "loadFriendSexType",
         "staticChatFriendObj", "focusThumbTimes", "unfocusThumbTimes", "focusPlayTimes", "unfocusPlayTimes", "soulSwitch", "shareUrl"
       ]),
@@ -421,9 +421,14 @@
         console.log('滑动页面传回给父级数据：', data)
         let openId = data.info.openid;
         this.friendId = openId;
+        sessionStorage.setItem("staffCouponToId",openId)
         // this.setChatFriend(data);
         this.friendInfo = data;
-        this.isFriend = data.isAlreadyFriend;
+        if(this.l98Setting.friConverOpen){ //开启开关，所有游客都可以和员工直接对话
+          this.isFriend = true
+        }else{
+          this.isFriend = data.isAlreadyFriend ;
+        }
         this.xid = openId;
         this.isInDoor = data.isInDoor;
       },

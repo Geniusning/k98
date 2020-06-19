@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-06-02 15:25:16
+ * @Last Modified time: 2020-06-15 16:07:47
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -14,6 +14,10 @@ const mutations = {
     //     state.lastClientMsg = msg
     //     state.client_badgeCount = msg.content.extMsg.count
     // },
+    //存储员工送券活动
+    [types.GETSTAFFCOUPONINFO](state, staffCoupon) {
+        state.staffCouponInfo = staffCoupon
+    },
     //获得同一个桌贴的游戏信息
     [types.GETSAMEDESKINFO](state, deskinfo) {
         state.sameDeskInfo = deskinfo
@@ -464,6 +468,16 @@ const mutations = {
                 state.topUpGameInfo = friendEvtObj
                 console.log('队列约战你进游戏玩-----------', friendEvtObj)
                 break;
+            case 27: //店员送券活动
+                friendEvtObj.content.extMsg = {
+                    lastMsg: {},
+                    goodInfo: friendEvtObj.content.extMsg
+                };
+                // friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
+                // state.dynamicFriendEvt = friendEvtObj.content;
+                console.log('friendEvtObj.content------', friendEvtObj.content)
+                state.topUpGiftInfo = friendEvtObj;
+                break
             case 30:
                 state.topUpGameInfo = friendEvtObj
                 console.log('mutation 友商互推-----------', friendEvtObj)

@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-06-11 18:10:34
+ * @Last Modified time: 2020-06-19 12:03:15
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -58,6 +58,7 @@ new Vue({
     this.loadInviteCoupon() //判断是否有邀新活动
     this.createWebsocket() //创建长链接
     this.getCaptainMessList()//店长群发通知
+    this.loadStaffCouponAct()//员工送券活动通知
     window.addEventListener("unload", () => {
       this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
       localStorage.removeItem("friendInfo");
@@ -122,7 +123,7 @@ new Vue({
     //加载L98控制开关信息
     loadL98otherSetting() {
       api.loadL98otherSetting().then(res => {
-        // console.log("控制开关--------", res)
+        console.log("控制开关--------", res)
         this.LoadL98Setting(res)
       })
     },
@@ -317,6 +318,9 @@ new Vue({
         }, 500);
       } else if (result.msgCode === 25) {
         this.loadSameDeskInfo(result.content.extMsg)
+      } else if (result.msgCode === 27){
+        this.judgeMessType('successGift');
+        this.addFriendEvtObj(result)
       }
     },
     websocketclose(e) {
@@ -343,7 +347,7 @@ new Vue({
     //获取门店信息
     loadStoreSetting() {
       api.loadStoreSetting().then(res => {
-        // console.log('门店信息---------------------------------：', res)
+        console.log('门店信息---------------------------------：', res)
         this.getShopSetting(res)
       })
     },
@@ -388,9 +392,13 @@ new Vue({
     loadStaffCouponAct(){
       api.loadStaffCouponAct().then(res=>{
         console.log("员工送券活动-------",res)
+        if(res.errCode===0){
+          this.getStaffCouponInfo(res.coupon)
+        }
       })
     },
     ...mapMutations({
+      getStaffCouponInfo:"GETSTAFFCOUPONINFO",//存储员工送券活动数据
       setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
       updateClientMsg: "UPDATE_CLIENTMSG", //推送更新客服消息
       saveQrCode: "SAVEQRCODE",

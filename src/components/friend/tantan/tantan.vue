@@ -19,8 +19,13 @@
             </div>
             <!-- <p class="makeFriTips">绿灯闪烁表示好友在线哦，赶紧去找朋友吧...</p> -->
             <span class="time_desc">{{item.visitTime}}</span>
-            <div class="avatarList-wrapper clearfix" @touchstart="showAlbum" v-if="item.info.lifePhotoURL.lifePhotoURL &&item.info.lifePhotoURL.lifePhotoURL.length>0">
-              <img onclick="return false" src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
+            <div class="comment-photo">
+              <div class="comment-wrapper clearfix" @touchstart="goToComment" v-show="item.info.role != '' && l98Setting.staffCommentOpen">
+                <img onclick="return false" src="../../../assets/image/thumb1.png" alt="" class="avatar fl"><span class="count fl">999</span>
+              </div>
+              <div class="avatarList-wrapper clearfix" @touchstart="showAlbum(item.info.role)" v-if="item.info.lifePhotoURL.lifePhotoURL &&item.info.lifePhotoURL.lifePhotoURL.length>0">
+                <img onclick="return false" src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
+              </div>
             </div>
             <img onclick="return false" v-show="like && currentLikeIndex==index" class='like' src="../../../assets/image/tantan_thumb.png">
             <img onclick="return false" v-show="dislike && currentLikeIndex==index" class='dislike' src="../../../assets/image/tantan_close.png">
@@ -29,8 +34,8 @@
                 alt="暂无头像">
               <img onclick="return false" src="../../../assets/image/friend_icon.png" alt="" class="friend_icon" v-show="item.isAlreadyFriend">
               <div class="role_wrapper">
-                <img onclick="return false" src="../../../assets/image/hat.png" alt="" class="staff_icon" v-show="item.info.role != ''">
-                <span class="position_name">酒水营销</span>
+                <img onclick="return false" src="../../../assets/image/hat.png" alt="" class="staff_icon" v-show="item.info.role != '' && item.info.staffTag !=''">
+                <span class="position_name">{{item.info.staffTag}}</span>
               </div>
               <!-- <img onclick="return false" src="../../../assets/image/like1.png" alt="" class="friend_icon" v-show="alreadySendThumbFlag"> -->
             </div>
@@ -45,15 +50,15 @@
               <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>
               <span class="gift">富豪榜 {{item.info.wealthRanking}}</span>
               <div class="thumb">战神榜 {{item.info.gameScoreRanking}}
-                  <img onclick="return false" class="battle" v-if="item.info.isBattle || !item.info.isSubscribe"  src="../../../assets/image/noBattle.png" alt="">
-                  <img onclick="return false" class="battle" v-else-if="item.info.onlineDiceServer"  src="../../../assets/image/battle.png" alt="">
-                  <img onclick="return false" class="battle" v-else  src="../../../assets/image/comeBattle.png" alt="">
+                <img onclick="return false" class="battle" v-if="item.info.isBattle || !item.info.isSubscribe" src="../../../assets/image/noBattle.png" alt="">
+                <img onclick="return false" class="battle" v-else-if="item.info.onlineDiceServer" src="../../../assets/image/battle.png" alt="">
+                <img onclick="return false" class="battle" v-else src="../../../assets/image/comeBattle.png" alt="">
               </div>
             </div>
             <div class="tag_wrapper">
               <span v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')" :key="index">{{item}}</span>
               <!-- <span>招人爱</span>
-                                  <span>大胃王</span> -->
+                                          <span>大胃王</span> -->
             </div>
             <div class="signature_wrapper">
               <!-- <p class="word">生活不止眼前的苟且，还有诗和远方的田野</p> -->
@@ -66,9 +71,9 @@
     <div class="souling_wrapper" v-if="soulSwitch">
       <img ref="souling" class="souling" src="../../../assets/image/earth1.gif" alt="">
       <!-- <div class="text_content">
-          <p class="text">{{stopSearch === false?"正在地球的某个角落":""}}</p>
-          <p ref="dot" class="text dot">{{stopSearch === false?"寻找你的灵魂玩伴":""}}</p>
-        </div> -->
+                  <p class="text">{{stopSearch === false?"正在地球的某个角落":""}}</p>
+                  <p ref="dot" class="text dot">{{stopSearch === false?"寻找你的灵魂玩伴":""}}</p>
+                </div> -->
       <div class="result_icon">
         <img class="found_result" v-if="searchResult" src="../../../assets/image/no_found.png" alt="">
         <img class="found_result" v-else src="../../../assets/image/finding.png" alt="">
@@ -89,9 +94,9 @@
   } from "vuex";
   export default {
     props: {
-      searchResult:{
-        type:Boolean,
-        default:false
+      searchResult: {
+        type: Boolean,
+        default: false
       },
       resultSoulText: {
         type: String,
@@ -156,9 +161,9 @@
       };
     },
     watch: {
-      stopSearch(newValue){
-        console.log("newValue----------",newValue)
-        if(newValue){
+      stopSearch(newValue) {
+        console.log("newValue----------", newValue)
+        if (newValue) {
           // this.$refs.souling.className = "souling_noRotate"
           this.$refs.dot.className = "resultSoulText"
         }
@@ -178,7 +183,7 @@
     },
     computed: {
       // ...mapGetters(["friendList"]),
-      ...mapState(["friendListCursor", "userInfo", "tampSexFlag", "focusThumbTimes", "unfocusThumbTimes", "soulSwitch"]),
+      ...mapState(["l98Setting","friendListCursor", "userInfo", "tampSexFlag", "focusThumbTimes", "unfocusThumbTimes", "soulSwitch"]),
       // 划出面积比例
       offsetRatio() {
         let width = this.$el.offsetWidth;
@@ -268,9 +273,20 @@
         });
       },
       //点击相册
-      showAlbum() {
+      showAlbum(role) {
+        if (role != '') {
+          this.$router.push({
+            name: "comment"
+          })
+          return
+        }
         console.log("点击相册")
         this.$emit('showAblum', this.backToParentData ? this.backToParentData : this.pages[0]);
+      },
+      goToComment() {
+        this.$router.push({
+          name: "comment"
+        })
       },
       touchstart(e) {
         if (this.tracking) {
@@ -619,14 +635,13 @@
       .souling {
         margin-left: .5rem;
         width: 4.5rem;
-        height: 4.5rem; 
-        // animation: rotating 3s infinite linear;
+        height: 4.5rem; // animation: rotating 3s infinite linear;
       }
-      .result_icon{
+      .result_icon {
         position: absolute;
         top: 4.2rem;
         right: 1.2rem;
-        .found_result{
+        .found_result {
           width: 1.5rem;
           height: 1.5rem;
         }
@@ -730,23 +745,42 @@
         top: 1.2rem;
         right: .3rem;
       }
-      .avatarList-wrapper {
+      .comment-photo {
         position: absolute;
         z-index: 10000;
         top: 0.5rem;
         right: 0.5rem;
-        background-color: #dfdfdf;
-        padding: 0.066rem 0.1667rem;
-        color: #fff;
-        box-sizing: border-box;
-        .avatar {
-          width: 0.4rem;
-          height: 0.3967rem;
-          margin-right: 0.1333rem;
+        display: flex;
+        .avatarList-wrapper {
+          margin-left: 4px;
+          background-color: #dfdfdf;
+          padding: 0.066rem 0.1667rem;
+          color: #fff;
+          box-sizing: border-box;
+          .avatar {
+            width: 0.4rem;
+            height: 0.3967rem;
+            margin-right: 0.1333rem;
+          }
+          .count {
+            margin-top: -0.0267rem;
+            font-size: 14px;
+          }
         }
-        .count {
-          margin-top: -0.0267rem;
-          font-size: 14px;
+        .comment-wrapper {
+          background-color: #dfdfdf;
+          padding: 0.066rem 0.1667rem;
+          color: #fff;
+          box-sizing: border-box;
+          .avatar {
+            width: 0.4rem;
+            height: 0.3967rem;
+            margin-right: 0.1333rem;
+          }
+          .count {
+            margin-top: -0.0267rem;
+            font-size: 14px;
+          }
         }
       }
       .icon_box {
@@ -824,26 +858,26 @@
           height: 4.5333rem;
           border-radius: 50%;
         }
-        .friend_icon{
+        .friend_icon {
           width: .8rem;
           height: .8rem;
           position: absolute;
           bottom: -.1rem;
           right: 0.8rem;
         }
-        .role_wrapper{
+        .role_wrapper {
           position: absolute;
-           bottom: 3.5rem;
-            right: .3rem;
-            width: 1.2rem;
-            height: 1.2rem;
-          .staff_icon{
+          bottom: 3.5rem;
+          right: .3rem;
+          width: 1.2rem;
+          height: 1.2rem;
+          .staff_icon {
             position: absolute;
             width: 1.2rem;
             height: 1.2rem;
             transform: rotate(-2deg)
           }
-          .position_name{
+          .position_name {
             position: absolute;
             bottom: .4rem;
             right: -.65rem;
@@ -852,8 +886,7 @@
             width: 1.5rem;
             z-index: 2;
             color: #fff;
-            text-align: center;
-            // font-size: 0.16rem;
+            text-align: center; // font-size: 0.16rem;
           }
         }
       }

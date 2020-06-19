@@ -11,7 +11,7 @@
           <p class="upload_title">更换头像、生活照</p>
           <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
         </div>
-        <div class="divideBTn" @click="goToDivide" v-if="userInfo.role !=''">
+        <div class="divideBTn" @click="goToDivide" v-if="userInfo.role !=''&& !(userInfo.openid.indexOf('master')>-1)">
           <span>新增</span>
           <span>分身</span>
         </div>
@@ -145,10 +145,10 @@
             <p class="selectedStaffTag" v-show="staffTag">{{staffTag}}</p>
           </div>
         </div>
-        <div class="btn_box">
-          <!-- <span class="vux-close"></span> -->
+        <!-- <div class="btn_box">
+          <span class="vux-close"></span>
           <span class="btn" @click="save">确定</span>
-        </div>
+        </div> -->
       </x-dialog>
     </div>
     <!-- 星座选择 -->
@@ -330,6 +330,7 @@
       this.gender = this.userInfo.sex;
       this.constellation = this.userInfo.constellation;
       this.signatureList = this.userInfo.tags;
+      this.staffTag = this.userInfo.staffTag;
       this.phone = this.userInfo.phone;
       this.isStealth = this.userInfo.isStealth;
       this.isQuiet = this.userInfo.isQuiet;
@@ -833,6 +834,7 @@
     background-size: 100%;
     padding-left: 0.4rem;
     width: 8rem;
+    padding-bottom: 0.2667rem;
     display: inline-block;
     background-color: #fff;
     .signatureTitle {

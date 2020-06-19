@@ -84,6 +84,15 @@ const router = new Router({
       }
     },
     {
+      path: '/comment',
+      name: 'comment',
+      component: () => import('../components/friend/comment.vue'),
+      meta: {
+        keepAlive: true,
+        title: "请您评价"
+      }
+    },
+    {
       path: '/message',
       name: 'message',
       component: () => import('../components/message/message.vue'),

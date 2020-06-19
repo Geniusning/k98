@@ -27,7 +27,7 @@
         <div class="giftPanelBox_title vux-1px-b">
           <p class="desc">请选择赠送对方的礼物</p>
           <img onclick="return false" src="../../assets/image/close-round.png" alt="" class="close" @click="closeIntegralPanel">
-          <img src="../../assets/image/quan-icon.jpg" class="staff-discount" v-if="userInfo.role"  alt="">
+          <img src="../../assets/image/quan-icon.jpg" class="staff-discount" @click="sendCouponToUser" v-if="userInfo.role" alt="">
         </div>
         <div class="giftListpart vux-1px-b">
           <img onclick="return false" v-show="componentGiftList.length>0" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
@@ -94,7 +94,7 @@
           <div v-show="userInfo.money<giftIntegral" class="tips_money">积分不足,请充值>></div>
           <!-- <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor && userInfo.money>giftIntegral "> -->
           <!-- <input @change="onlineSendGift" type="checkbox" class="checkbox fl">
-              <span class="scene-text fl">现场下单</span>-->
+                <span class="scene-text fl">现场下单</span>-->
           <!-- </div> -->
           <!-- <p class="gotoTopUpText" v-if="userInfo.money<giftIntegral" @click="gotoTopUp">去充值&gt;</p> -->
         </div>
@@ -189,7 +189,7 @@
       };
     },
     computed: {
-      ...mapState(["giftList", "userInfo", "l98Setting"]),
+      ...mapState(["giftList", "userInfo", "l98Setting", "staffCouponInfo","staticChatFriendObj"]),
       ...mapGetters(["recommentList", "sendGiftList"])
     },
     created() {
@@ -258,11 +258,28 @@
     },
     activated() {},
     methods: {
-      //现场送
-      onlineSendGift(e) {
-        console.log(e.target.checked);
-        console.log("触发现场送");
+      //员工送券
+      sendCouponToUser() {
+        console.log("this.staticChatFriendObj----",this.staticChatFriendObj)
+        let ToId = this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:sessionStorage.getItem("staffCouponToId")
+        console.log("ToId-----",ToId)
+        let data = {
+          to:ToId,
+          from: this.userInfo.openid,
+          CouponId: this.staffCouponInfo.couponId
+        }
+        api.sendStaffCouponToUser(data).then(res => {
+          console.log("送券结果-------", res)
+          if(res.errCode===0){
+             this.$vux.toast.text("赠送成功", "middle");
+          }
+        })
       },
+      //现场送
+      // onlineSendGift(e) {
+      //   console.log(e.target.checked);
+      //   console.log("触发现场送");
+      // },
       closeIntegralPanel() {
         this.$emit("closeIntegralPanel", false);
         this.panelIndex = 1;
@@ -333,8 +350,8 @@
                 this.refreshUserInfo();
               }
               this.successful_desc = `一张${util.returnDiscountType(
-                  this.componentGiftInfo.coupInfo.type
-                )}已存入'我的卡券'`;
+                    this.componentGiftInfo.coupInfo.type
+                  )}已存入'我的卡券'`;
             })
             .catch(err => {
               console.log(err);
@@ -356,8 +373,8 @@
               this.successfulText = "兑换成功";
             }
             this.successful_desc = `一张${util.returnDiscountType(
-                this.componentGiftInfo.coupInfo.type
-              )}已存入'我的卡券'`;
+                  this.componentGiftInfo.coupInfo.type
+                )}已存入'我的卡券'`;
           });
         } else if (this.componentConvertType == 2) {
           //赠送店长推荐项目
@@ -375,8 +392,8 @@
             }
             Bus.$emit("giftInfoRecomend", this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(
-                this.componentGiftInfo.coupInfo.type
-              )}已存入对方'我的卡券'`;
+                  this.componentGiftInfo.coupInfo.type
+                )}已存入对方'我的卡券'`;
           });
         } else if (this.componentConvertType == 3) {
           //赠送积分换礼品项目
@@ -393,8 +410,8 @@
             }
             Bus.$emit("giftInfoJiFen", this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(
-                this.componentGiftInfo.coupInfo.type
-              )}已存入对方'我的卡券'`;
+                  this.componentGiftInfo.coupInfo.type
+                )}已存入对方'我的卡券'`;
             // console.log('积分赠送结果---------', res)
           });
         } else if (this.componentConvertType == 4) {
@@ -617,7 +634,7 @@
         padding: 0.4rem 0.3rem 0.1rem 0.3rem;
         box-sizing: border-box;
         position: relative;
-        .staff-discount{
+        .staff-discount {
           position: absolute;
           width: 1rem;
           height: 1rem;
