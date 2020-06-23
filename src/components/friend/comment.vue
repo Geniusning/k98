@@ -11,7 +11,7 @@
 				</div>
 			</header>
 			<div class="comment-slider">
-				<swiper height="256px" :list="demo04_list" :interval="2000" :auto="true" :show-dots="false" v-model="swiperItemIndex" :min-moving-distance="120" @on-index-change="demo01_onIndexChange"></swiper>
+				<swiper height="256px" :list="lifePhotolist" :interval="2000" :auto="true" :show-dots="false" v-model="swiperItemIndex" :min-moving-distance="120" @on-index-change="demo01_onIndexChange"></swiper>
 			</div>
 			<div class="comment-result">
 				<ul class="comment-header-list">
@@ -61,9 +61,9 @@
 		</div>
 		<div class="comment-send">
 			<div>
-				<input type="text" class="input-comment" placeholder="请输入评价">
+				<input v-model="inputValue" type="text" class="input-comment" placeholder="请输入评价">
 				<img src="../../assets/image/chat_emotion.png" @click="showEmotion" class="face-icon" alt="">
-				<div class="btn">发送</div>
+				<div class="btn" @click="send">发送</div>
 			</div>
 			<div class="emotion_area" v-if="emotionShow">
 				<div @click="selectEmtion(item.name)" :key="index" v-for="(item,index) in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.18rem">
@@ -82,6 +82,11 @@
 		GridItem,
 	} from 'vux';
 	import Scroll from "../../base/scroll/scroll.vue";
+	import api from "common/api"
+	import {
+		mapState,
+		mapMutations,
+	} from "vuex";
 	export default {
 		data() {
 			return {
@@ -125,29 +130,59 @@
 				emotionShow: false,
 				swiperItemIndex: 0,
 				avatarList: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-				demo04_list: [{
-						url: 'javascript:',
-						img: require("../../assets/image/avatar1.jpeg"),
-						title: '求点赞'
-					},
-					{
-						url: 'javascript:',
-						img: require("../../assets/image/avatar2.jpg"),
-						title: '求点赞'
-					},
-				], //员工照片
+				lifePhotolist: [], //员工照片
+				inputValue: "", // 输入框内容
 			}
 		},
-		created() {},
-		mounted() {},
+		created() {
+			document.body.addEventListener("focusout", () => {
+				//软键盘关闭事件
+				window.scrollTo(0, 0); //解决ios键盘留白的bug
+			});
+		},
+		mounted() {
+			console.log("params---",this.$route.params.phone)
+			if (this.userInfo.lifePhotoURL.lifePhotoURL.length === 0) {
+				this.lifePhotolist.push({
+					url: 'javascript:',
+					img: this.userInfo.headimgurl,
+					title: '求点赞'
+				})
+			} else {
+				this.userInfo.lifePhotoURL.lifePhotoURL.forEach(img => {
+					this.lifePhotolist.push({
+						url: 'javascript:',
+						img: img,
+						title: '求点赞'
+					})
+				})
+			}
+			console.log("lifeImgList---", this.lifePhotolist)
+			this.loadStaffCommentInfo()
+		},
+		computed: {
+			...mapState(["l98Setting", "lifeImgList", "userInfo", ]),
+		},
 		methods: {
-			goHome(){
+			goHome() {
 				this.$router.push({
-					name:"home"
+					name: "home"
 				})
 			},
-			showEmotion(){
+			showEmotion() {
 				this.emotionShow = !this.emotionShow
+			},
+			//发布留言
+			send() {
+				console.log(this.inputValue)
+			},
+			selectEmtion(item) {
+				this.inputValue += item;
+			},
+			loadStaffCommentInfo(){
+				api.loadStaffCommentInfo(this.$route.params.phone).then(res=>{
+					console.log("员工评价内容---",res)
+				})
 			}
 		},
 		components: {

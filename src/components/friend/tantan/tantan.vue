@@ -276,7 +276,10 @@
       showAlbum(role) {
         if (role != '') {
           this.$router.push({
-            name: "comment"
+            name: "comment",
+            params:{
+            phone:this.userInfo.phone
+          }
           })
           return
         }
@@ -285,7 +288,10 @@
       },
       goToComment() {
         this.$router.push({
-          name: "comment"
+          name: "comment",
+          params:{
+            phone:this.userInfo.phone
+          }
         })
       },
       touchstart(e) {

@@ -424,10 +424,14 @@
         sessionStorage.setItem("staffCouponToId",openId)
         // this.setChatFriend(data);
         this.friendInfo = data;
-        if(this.l98Setting.friConverOpen){ //开启开关，所有游客都可以和员工直接对话
+        if(this.l98Setting.friConverOpen || this.userInfo.role != ""){ //开启开关，所有游客都可以和员工直接对话
           this.isFriend = true
         }else{
-          this.isFriend = data.isAlreadyFriend ;
+          if(this.friendInfo.info.role != ""){
+             this.isFriend = true
+          }else{
+            this.isFriend = data.isAlreadyFriend ;
+          }
         }
         this.xid = openId;
         this.isInDoor = data.isInDoor;

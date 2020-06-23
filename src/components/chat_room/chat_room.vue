@@ -20,8 +20,8 @@
             <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
           </div>
         </div>
-        <!-- v-show="staticChatFriendObj.role != '' && l98Setting.staffCommentOpen" -->
-        <div class="comment-wrapper clearfix" @click="goToComment">
+        <!--  -->
+        <div v-show="staticChatFriendObj.role != '' && l98Setting.staffCommentOpen" class="comment-wrapper clearfix" @click="goToComment">
           <img onclick="return false" src="../../assets/image/thumb1.png" alt="" class="avatar fl"><span class="count fl">999</span>
         </div>
         <div class="backHome_box">

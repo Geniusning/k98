@@ -312,6 +312,10 @@
         next(vm => {
           vm.isShowTab = 0;
         });
+      } else if (to.params.routeParamNum === 2) {
+        next(vm => {
+          vm.isShowTab = 2;
+        });
       } else {
         next(vm => {
           vm.isShowTab = 0;
