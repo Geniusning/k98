@@ -20,10 +20,10 @@
             <!-- <p class="makeFriTips">绿灯闪烁表示好友在线哦，赶紧去找朋友吧...</p> -->
             <span class="time_desc">{{item.visitTime}}</span>
             <div class="comment-photo">
-              <div class="comment-wrapper clearfix" @touchstart="goToComment" v-show="item.info.role != '' && l98Setting.staffCommentOpen">
+              <div class="comment-wrapper clearfix" @touchstart="goToComment(item.info)" v-show="item.info.role != '' && l98Setting.staffCommentOpen">
                 <img onclick="return false" src="../../../assets/image/thumb1.png" alt="" class="avatar fl"><span class="count fl">999</span>
               </div>
-              <div class="avatarList-wrapper clearfix" @touchstart="showAlbum(item.info.role)" v-if="item.info.lifePhotoURL.lifePhotoURL &&item.info.lifePhotoURL.lifePhotoURL.length>0">
+              <div class="avatarList-wrapper clearfix" @touchstart="showAlbum(item.info)" v-if="item.info.lifePhotoURL.lifePhotoURL &&item.info.lifePhotoURL.lifePhotoURL.length>0">
                 <img onclick="return false" src="../../../assets/image/picture.png" alt="" class="avatar fl"><span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
               </div>
             </div>
@@ -273,20 +273,23 @@
         });
       },
       //点击相册
-      showAlbum(role) {
-        if (role != '') {
+      showAlbum(info) {
+        Bus.$emit("useInfo",info)
+        if (info.role != '') {
           this.$router.push({
             name: "comment",
             params:{
             phone:this.userInfo.phone
           }
           })
+         
           return
         }
         console.log("点击相册")
         this.$emit('showAblum', this.backToParentData ? this.backToParentData : this.pages[0]);
       },
-      goToComment() {
+      goToComment(info) {
+         Bus.$emit("useInfo",info)
         this.$router.push({
           name: "comment",
           params:{

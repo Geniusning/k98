@@ -15,41 +15,42 @@
 			</div>
 			<div class="comment-result">
 				<ul class="comment-header-list">
-					<li class="comment-divide">
+					<li class="comment-divide" @click="giveThumb">
 						<img src="../../assets/image/thumb_up.png" class="comment-icon" alt="">
-						<span class="comment-count">999</span>
+						<span class="comment-count">{{staffCommentInfo.thumbCount}}</span>
 					</li>
-					<li class="comment-divide">
+					<li class="comment-divide" @click="unGiveThumb">
 						<img src="../../assets/image/thumb_down.png" class="comment-icon" alt="">
-						<span class="comment-count">999</span>
+						<span class="comment-count">{{staffCommentInfo.unThumbCount}}</span>
 					</li>
 					<li class="comment-divide">
 						<img src="../../assets/image/message_comment.png" class="comment-icon" alt="">
-						<span class="comment-count">999</span>
+						<span class="comment-count">{{staffCommentInfo.messageCount}}</span>
 					</li>
 				</ul>
-				<scroll>
-					<div style="height:6rem;background:#f1f1f1;">
-						<div class="comment-thums-list">
+				<scroll ref="listView" class="comment_content" style="background:#f1f1f1;" :data="staffCommentInfo.messageList">
+					<div>
+						<div v-if="staffCommentInfo.thumbAvatarList" class="comment-thums-list">
 							<img src="../../assets/image/thumb_up.png" alt="">
 							<ul class="thumb-avatar-list">
-								<li class="avatar" v-for="(avatar,index) in avatarList" :key="index">
-									<img src="../../assets/image/avatar1.jpeg" alt="">
+								<li class="avatar" v-for="(avatar,index) in staffCommentInfo.thumbAvatarList" :key="index">
+									<!-- <img src="../../assets/image/avatar1.jpeg" alt=""> -->
+									<img :src="avatar" alt="">
 								</li>
 							</ul>
 						</div>
-						<div class="comment-message-list">
+						<div class="comment-message-list" v-show="staffCommentInfo.messageList.length>0?true:false">
 							<img src="../../assets/image/message_comment.png" alt="">
 							<ul class="message-list">
-								<li class="message-item">
-									<img src="../../assets/image/avatar2.jpg" alt="">
+								<li class="message-item" v-for="(staff,index) in staffCommentInfo.messageList" :key="index">
+									<img :src="staff.headImgUrl" alt="">
 									<div class="message">
 										<div class="message-top">
-											<span class="name">员工A</span>
-											<span class="time">2020年01月01日 22:00:00</span>
+											<span class="name">{{staff.nickname}}</span>
+											<span class="time">{{staff.time}}</span>
 										</div>
 										<div class="message-bottom">
-											你是我的眼哦
+											<p v-html="staff.message"></p>
 										</div>
 									</div>
 								</li>
@@ -62,10 +63,10 @@
 		<div class="comment-send">
 			<div>
 				<input v-model="inputValue" type="text" class="input-comment" placeholder="请输入评价">
-				<img src="../../assets/image/chat_emotion.png" @click="showEmotion" class="face-icon" alt="">
+				<!-- <img src="../../assets/image/chat_emotion.png" @click="showEmotion" class="face-icon" alt=""> -->
 				<div class="btn" @click="send">发送</div>
 			</div>
-			<div class="emotion_area" v-if="emotionShow">
+			<div class="emotion_area">
 				<div @click="selectEmtion(item.name)" :key="index" v-for="(item,index) in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.18rem">
 					<img onclick="return false" :src="item.num" alt>
 				</div>
@@ -83,6 +84,8 @@
 	} from 'vux';
 	import Scroll from "../../base/scroll/scroll.vue";
 	import api from "common/api"
+	import util from "common/util"
+	import Bus from "common/bus"
 	import {
 		mapState,
 		mapMutations,
@@ -132,16 +135,23 @@
 				avatarList: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 				lifePhotolist: [], //员工照片
 				inputValue: "", // 输入框内容
+				staffCommentInfo: {
+					messageList: [],
+				}
 			}
 		},
 		created() {
+			this.loadStaffCommentInfo()
 			document.body.addEventListener("focusout", () => {
 				//软键盘关闭事件
 				window.scrollTo(0, 0); //解决ios键盘留白的bug
 			});
 		},
 		mounted() {
-			console.log("params---",this.$route.params.phone)
+			Bus.$on("userInfo",userInfo=>{
+				console.log("userInfo----------",userInfo)
+			})
+			console.log("params---", this.$route.params.phone)
 			if (this.userInfo.lifePhotoURL.lifePhotoURL.length === 0) {
 				this.lifePhotolist.push({
 					url: 'javascript:',
@@ -158,7 +168,6 @@
 				})
 			}
 			console.log("lifeImgList---", this.lifePhotolist)
-			this.loadStaffCommentInfo()
 		},
 		computed: {
 			...mapState(["l98Setting", "lifeImgList", "userInfo", ]),
@@ -172,16 +181,85 @@
 			showEmotion() {
 				this.emotionShow = !this.emotionShow
 			},
+			//点赞
+			giveThumb() {
+				api.giveThumb(this.$route.params.phone).then(res => {
+					if (res.errCode === 0) {
+						this.loadStaffCommentInfo()
+					} else {
+						this.$vux.toast.show({
+							text: res.errMsg
+						});
+					}
+				})
+			},
+			//鄙视
+			unGiveThumb() {
+				api.giveUnThumb(this.$route.params.phone).then(res => {
+					if (res.errCode === 0) {
+						this.loadStaffCommentInfo()
+					} else {
+						this.$vux.toast.show({
+							text: res.errMsg
+						});
+					}
+				})
+			},
 			//发布留言
 			send() {
+				var emotionArr = this.inputValue.match(/\[.{1,2}\]/g);
+				var reg = /\[.{1,2}\]/;
+				if (emotionArr) {
+					for (let i = 0; i < emotionArr.length; i++) {
+						for (var j = 0; j < this.emotionList.length; j++) {
+							if (this.inputValue.indexOf(this.emotionList[j].name) !== -1) {
+								this.inputValue = this.inputValue.replace(
+									reg,
+									`<img src=${
+	                      this.emotionList[j].num
+	                    } style="vertical-align: -6px;">`
+								);
+							}
+						}
+					}
+				}
+				let data = {
+					message: this.inputValue,
+					phone: this.$route.params.phone,
+					time: new Date().getTime(),
+					nickname: this.userInfo.nickname,
+					headImgUrl: this.userInfo.headimgurl
+				}
+				api.sendCommentMessage(data).then(res => {
+					console.log("发布留言----", res)
+					if (res.errCode === 0) {
+						this.loadStaffCommentInfo()
+						this.inputValue = ""
+					} else {
+						this.$vux.toast.show({
+							text: res.errMsg
+						});
+					}
+				})
 				console.log(this.inputValue)
 			},
 			selectEmtion(item) {
 				this.inputValue += item;
 			},
-			loadStaffCommentInfo(){
-				api.loadStaffCommentInfo(this.$route.params.phone).then(res=>{
-					console.log("员工评价内容---",res)
+			loadStaffCommentInfo() {
+				api.loadStaffCommentInfo(this.$route.params.phone).then(res => {
+					console.log("员工评价内容---", res)
+					if (res.errCode === 0) {
+						this.staffCommentInfo = res.staffCommentInfo
+						this.staffCommentInfo.messageList.forEach(message => {
+							message.time = util.timestampToTime(message.time)
+						})
+					} else {
+						this.$vux.toast.show({
+							text: res.errMsg
+						});
+					}
+					console.log("this.staffCommentInfo------", this.staffCommentInfo)
 				})
 			}
 		},
@@ -200,10 +278,12 @@
 		height: 100%;
 		background-color: #fff;
 		color: #333;
-		display: flex;
-		flex-direction: column;
+		// display: flex;
+		// flex-direction: column;
 		.content {
-			flex: 1;
+			height: 88%;
+			display: flex;
+			flex-direction: column;
 			header {
 				display: flex;
 				justify-content: space-between;
@@ -239,9 +319,16 @@
 			.comment-result {
 				padding: 0.1333rem 0.4667rem;
 				box-sizing: border-box;
+				border-radius: 20px;
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				height: 45%;
 				.comment-header-list {
 					display: flex;
 					justify-content: space-between;
+					height: 0.8333rem;
+					line-height: .8333rem;
 					.comment-divide {
 						display: flex;
 						align-items: center;
@@ -253,64 +340,68 @@
 						}
 					}
 				}
-				.comment-thums-list {
-					display: flex;
-					margin-top: 0.2667rem;
-					background-color: #f1f1f1;
-					border-radius: 10px;
-					padding-right: 0rem;
-					img {
-						margin-top: 0.1333rem;
-						width: 0.6667rem;
-						height: .6667rem;
-					}
-					.thumb-avatar-list {
+				.comment_content{
+					// height: 6.5rem;
+					.comment-thums-list {
 						display: flex;
-						flex-wrap: wrap;
-						.avatar {
-							margin-left: 0.1333rem;
-							img {
-								width: .8rem;
-								height: .8rem;
-								border-radius: 6px;
+						margin-top: 0.2667rem;
+						background-color: #f1f1f1;
+						border-radius: 10px;
+						padding-right: 0rem;
+						img {
+							margin-top: 0.1333rem;
+							width: 0.6667rem;
+							height: .6667rem;
+						}
+						.thumb-avatar-list {
+							display: flex;
+							flex-wrap: wrap;
+							.avatar {
+								margin-left: 0.1333rem;
+								img {
+									width: .8rem;
+									height: .8rem;
+									border-radius: 6px;
+								}
 							}
 						}
 					}
-				}
-				.comment-message-list {
-					margin-top: 0.1333rem;
-					background-color: #f1f1f1;
-					border-radius: 4px;
-					display: flex;
-					img {
-						width: 0.6667rem;
-						height: 0.6667rem;
-					}
-					.message-list {
-						margin-left: 0.1067rem;
-						flex: 1;
-						.message-item {
-							display: flex;
-							img {
-								width: .8rem;
-								height: .8rem;
-								border-radius: 6px;
-							}
-							.message {
-								flex: 1;
-								margin-left: 0.1333rem;
-								.message-top {
-									width: 100%;
-									display: flex;
-									justify-content: space-between;
-									.name {
-										color: #2E7CFD;
-									}
-									.time {
-										color: #ccc
-									}
+					.comment-message-list {
+						margin-top: 0.1333rem;
+						background-color: #f1f1f1;
+						border-radius: 4px;
+						display: flex;
+						img {
+							width: 0.6667rem;
+							height: 0.6667rem;
+						}
+						.message-list {
+							margin-left: 0.1067rem;
+							flex: 1;
+							.message-item {
+								display: flex;
+								margin-bottom: 0.2333rem;
+								img {
+									width: .8rem;
+									height: .8rem;
+									border-radius: 6px;
 								}
-								.message-bottom {}
+								.message {
+									flex: 1;
+									margin-left: 0.1333rem;
+									.message-top {
+										width: 100%;
+										display: flex;
+										justify-content: space-between;
+										.name {
+											color: #2E7CFD;
+										}
+										.time {
+											color: #ccc
+										}
+									}
+									.message-bottom {}
+								}
 							}
 						}
 					}
@@ -320,7 +411,7 @@
 		.comment-send {
 			position: relative;
 			padding: 0.1333rem 0.4667rem;
-			height: 2.6667rem;
+			height: 12%;
 			display: flex;
 			flex-direction: column;
 			.emotion_area {
