@@ -318,7 +318,7 @@ new Vue({
         }, 500);
       } else if (result.msgCode === 25) {
         this.loadSameDeskInfo(result.content.extMsg)
-      } else if (result.msgCode === 27){
+      } else if (result.msgCode === 27) {
         this.judgeMessType('successGift');
         this.addFriendEvtObj(result)
       }
@@ -389,16 +389,16 @@ new Vue({
       })
     },
     //拉取员工送券活动
-    loadStaffCouponAct(){
-      api.loadStaffCouponAct().then(res=>{
-        console.log("员工送券活动-------",res)
-        if(res.errCode===0){
+    loadStaffCouponAct() {
+      api.loadStaffCouponAct().then(res => {
+        console.log("员工送券活动-------", res)
+        if (res.errCode === 0) {
           this.getStaffCouponInfo(res.coupon)
         }
       })
     },
     ...mapMutations({
-      getStaffCouponInfo:"GETSTAFFCOUPONINFO",//存储员工送券活动数据
+      getStaffCouponInfo: "GETSTAFFCOUPONINFO",//存储员工送券活动数据
       setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
       updateClientMsg: "UPDATE_CLIENTMSG", //推送更新客服消息
       saveQrCode: "SAVEQRCODE",
