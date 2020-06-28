@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "T6W7o_Zeb4d8OAZjuTgVTOcooBH3jWBCA8H5Q2D6j8Q1V3Var8zoLl-R6johZOosTxV-kg==";
+const myToken = "QsIu4XA-38uq549lTLnsmpIxPkYE_xCNSQrfw-qk-q7a_kJpQZnr9gqqedlMxXYoXUY0Cg==";
 // ------------------------------
 
 module.exports = {
