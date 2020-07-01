@@ -69,7 +69,7 @@
             </div>
           </div>
           <div class="myright" @click="selectDiscout(item.id,item.canIuse)">
-            <p class="use_text">立即使用</p>
+            <p class="use_text">用券买单</p>
           </div>
         </li>
       </ul>

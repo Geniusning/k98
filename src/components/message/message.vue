@@ -7,7 +7,7 @@
       <div class="btn_box clearfix">
         <div :class="{active:isShowTab==0}" class="fri_btn fl" @click="selectList(0)">好友<i class="dot" v-show="msg_badgeCount"></i></div>
         <div :class="{active:isShowTab==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
-        <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"值班客服":"用户留言"}}</div>
+        <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"客服/收银":"用户留言"}}</div>
         <div :class="{active:isShowTab==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="group_badgeCount"></i></div>
       </div>
     </div>
@@ -146,6 +146,19 @@
               </div>
             </div>
           </li>
+          <li class="item vux-1px-b" >
+            <div class="info_message">
+              <div class="avatar">
+                <img :src="clientImg" alt="">
+                <i class="dot" v-cloak v-show="clientObj.unReadMsgCount && client_badgeCount"></i>
+              </div>
+              <div class="name_and_message">
+                <p class="name" style="font-weight:800;font-size:15px">收银员</p>
+                <button class="discount-pay">有券买单</button>
+                <button class="noDiscount-pay">无券买单</button>
+              </div>
+            </div>
+          </li>
         </ul>
         <ul v-else class="message_list">
           <li class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
@@ -156,7 +169,7 @@
               </div>
               <div class="name_and_message">
                 <div class="personStatus">
-                  <p class="name">{{item.nickname?item.nickname:"客服小哥"}}</p>
+                  <p class="name">{{item.nickname?item.nickname:"游客"}}</p>
                   <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
                   <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
                   <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}</span>
@@ -288,10 +301,6 @@
         next(vm => {
           vm.isShowTab = 1;
         });
-      } else if (from.name === "welfare") {
-        next(vm => {
-          vm.isShowTab = 3;
-        });
       } else if (from.name === "gameRecord") {
         next(vm => {
           vm.isShowTab = 3;
@@ -321,6 +330,11 @@
           vm.isShowTab = 0;
         });
       }
+      //  else if (from.name === "welfare") {
+      //   next(vm => {
+      //     vm.isShowTab = 3;
+      //   });
+      // }
     },
     beforeRouteUpdate(to, from, next) {
       console.log("beforeRouteUpdate---------", from)
@@ -1242,6 +1256,26 @@
             flex-direction: column;
             justify-content: space-between;
             position: relative;
+            .discount-pay{
+              position: absolute;
+              top: 0.4rem;
+              right: -4rem;
+              background: red;
+              color: #fff;
+              padding: 0.08rem 0.1333rem;
+              border: none;
+              border-radius: 4px;
+            }
+            .noDiscount-pay{
+               position: absolute;
+              top: 0.4rem;
+               right: -6rem;
+              background: #ccc;
+              color: red;
+              border: none;
+               border-radius: 4px;
+              padding: 0.08rem 0.1333rem;
+            }
             .time {
               position: absolute;
               right: .1rem;

@@ -60,21 +60,16 @@
 // let str = "oqWlD1h6Zurgr6YZVTYAqe5JL9oM@master_707fe"
 // console.log(str.indexOf("@master"))
 
-  var romanToInt = function (s) {
-    let map = { 'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000 },
-      sum = 0, loop = 0, num = 0, now = 0;
-    while (loop < s.length) {
-      now = map[s[loop]];
-      if (num < now) {
-        sum -= num;
-      } else {
-        sum += num;
-      }
-      num = now;
-      loop++;
-    }
-    sum += num;
-    return sum;
-  };
-  console.log(romanToInt("I"))
+  var heightChecker = function (heights) {
+      let count = 0
+      let sortArr = [...heights].sort(function(a,b){return a-b})
+      sortArr.forEach((item,index)=>{
+        if(item != heights[index]){
+          count ++
+        }
+      })
+      return count
+    };
+
+    console.log(heightChecker([5, 1, 2, 3, 4]))
 </script>

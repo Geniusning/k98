@@ -455,7 +455,7 @@
         };
         // this.addFriendEvtObj(topUpGameInfo)
         this.addMessageIntoQueue(topUpGameInfo);
-      }, 30000);
+      }, 20000);
       setInterval(() => {
         //轮训读取队列看是否有未处理消息
         if (!this.isHandleMessageFromQueue) {

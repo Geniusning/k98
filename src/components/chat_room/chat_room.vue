@@ -21,8 +21,8 @@
           </div>
         </div>
         <!--  -->
-        <div v-show="staticChatFriendObj.role != '' && l98Setting.staffCommentOpen" class="comment-wrapper clearfix" @click="goToComment">
-          <img onclick="return false" src="../../assets/image/thumb1.png" alt="" class="avatar fl"><span class="count fl">999</span>
+        <div v-show="staticChatFriendObj.role != '' && l98Setting.staffCommentOpen" class="comment-wrapper clearfix" @click="goToComment(staticChatFriendObj.phone)">
+          <img onclick="return false" src="../../assets/image/thumb1.png" alt="" class="avatar fl"><span class="count fl">{{thumbCount}}</span>
         </div>
         <div class="backHome_box">
           <img onclick="return false" src="../../assets/image/chat_home.png" alt class="home" @click="goHome">
@@ -173,8 +173,8 @@
           </ul>
         </scroll>
         <!-- div class="loading-container" v-show="isLoading">
-                     <loading></loading>
-                </div>-->
+                         <loading></loading>
+                    </div>-->
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
@@ -298,6 +298,7 @@
     },
     data() {
       return {
+        thumbCount: 0, //员工评价点赞次数
         times: 0,
         vocieDuration: 0, //语音时长
         activeVoiceIndex: null,
@@ -442,7 +443,7 @@
       // this._initJssdk(this.myShareUrl)
     },
     activated() {
-      console.log("-----------------activated");
+      this.loadStaffCommentInfo(this.staticChatFriendObj.phone)
       console.log(
         "this.staticChatFriendObj-----------",
         this.staticChatFriendObj
@@ -517,14 +518,15 @@
       });
     },
     deactivated() {
-      console.log("deactivated----------------");
-      console.log("this.voiceLocalId-------------", this.voiceLocalId);
       wx.stopVoice({
         localId: this.voiceLocalId // 停止正在播放的语音
       });
       Bus.$off();
       sessionStorage.setItem(this.staticChatFriendObj.openid, this.sendingTimes); //保存对应好友发送信息次数
-      this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
+      console.log("this.$route-deactivated", this.$route)
+      if (this.$route.name != "comment") {
+        this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
+      }
       localStorage.removeItem("friendInfo"); //清除缓存中对应的好友信息，避免每次进入聊天页面都是同一个好友
       this.endCursor = null;
       this.componentChatList = [];
@@ -561,10 +563,36 @@
           element.className = element.className.replace(reg, " ");
         }
       },
+      // 拉取员工评价内容 
+      loadStaffCommentInfo(phone) {
+        api.loadStaffCommentInfo(phone).then(res => {
+          console.log("员工评价内容---", res);
+          if (res.errCode === 0) {
+            this.thumbCount = res.staffCommentInfo.thumbCount;
+          } else {
+            this.$vux.toast.show({
+              text: res.errMsg
+            });
+          }
+          console.log("this.staffCommentInfo------", this.thumbCount);
+        });
+      },
       //去评价
       goToComment() {
+        let lifePhotoURL = {
+          lifePhotoList: this.staticChatFriendObj.lifePhotoURL.lifePhotoURL
+        }
+        let storeInfo = {
+          nickname: this.staticChatFriendObj.nickname,
+          headImgUrl: this.staticChatFriendObj.headimgurl
+        };
+        sessionStorage.setItem("info", JSON.stringify(storeInfo));
+        sessionStorage.setItem("lifePhotoList", JSON.stringify(lifePhotoURL));
         this.$router.push({
-          name: "comment"
+          name: "comment",
+          params: {
+            phone: this.staticChatFriendObj.phone
+          }
         })
       },
       toggleVoice() {
@@ -1134,8 +1162,8 @@
                 this.input_value = this.input_value.replace(
                   reg,
                   `<img src=${
-                      this.emotionList[j].num
-                    } style="vertical-align: -6px;">`
+                          this.emotionList[j].num
+                        } style="vertical-align: -6px;">`
                 );
               }
             }
