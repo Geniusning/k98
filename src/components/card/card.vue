@@ -239,7 +239,7 @@
     },
     computed: {
       ...mapGetters(["isShow"]),
-      ...mapState(["userInfo"])
+      ...mapState(["userInfo","deskCode"])
     },
     created() {
       this._loadUserAllCoupon(); //获取优惠券
@@ -300,6 +300,10 @@
           this.$vux.toast.text('未到时间时间', 'middle')
           return
         }
+        // if(!this.deskCode){
+        //    this.$vux.toast.text('请到店使用', 'middle')
+        //   return
+        // }
         if (!this.userInfo.isSubscribe) {
           this.changeQrCodeText({
             title: "长按关注，以便管理、核销优惠券",

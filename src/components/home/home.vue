@@ -163,7 +163,7 @@
                     <!-- <p class="count fl">{{item.distance}}</p> -->
                   </div>
                   <div style="margin-left:.3rem" class="show_detail_btn" @click="goToFriShop(item)">
-                    领取
+                    领&nbsp;&nbsp;&nbsp;取
                   </div>
                 </div>
               </li>
@@ -1841,7 +1841,7 @@ import { clearInterval } from 'timers';
                 margin-right: 0.1333rem;
               }
               .booking_btn {
-                // width: 1.4667rem;
+                width: 1.4rem;
                 padding: 0.1067rem 0.1067rem;
                 text-align: center;
                 line-height: 0.5067rem;
@@ -1851,9 +1851,10 @@ import { clearInterval } from 'timers';
               }
             }
             .show_detail_btn {
-              width: 1.2rem;
-              padding: 0.1067rem 0;
+              width: 1.4rem;
               text-align: center;
+              padding: 0.1067rem;
+              // letter-spacing: 5px;
               line-height: 0.5067rem; // background: @baseColor;
               background: -webkit-linear-gradient( left, #fff800, #fef200, #fccc00, #fbbc00);
               color: #1d1d1d;

@@ -147,6 +147,7 @@
     },
     mounted() {
       this._loadPublishArenas(); //拉取是否有比赛场
+      console.log("this.AdvertisingPhoto",this.AdvertisingPhoto)
     },
     methods: {
       //拉取已经发布的比赛场

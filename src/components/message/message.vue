@@ -7,7 +7,7 @@
       <div class="btn_box clearfix">
         <div :class="{active:isShowTab==0}" class="fri_btn fl" @click="selectList(0)">好友<i class="dot" v-show="msg_badgeCount"></i></div>
         <div :class="{active:isShowTab==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
-        <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"客服/收银":"用户留言"}}</div>
+        <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"客服/收银":"留言/结账"}}</div>
         <div :class="{active:isShowTab==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="group_badgeCount"></i></div>
       </div>
     </div>
@@ -31,11 +31,6 @@
           </li>
         </ul>
       </div>
-      <!-- 分身信封入口 -->
-      <!-- <div class="divide_wrapper" @click="isShowDivideList=true" v-if="isShowEnvelope">
-                <img src="../../assets/image/divide_envelope.png" class="divide-env" alt="">
-                <span v-show="divide_badgeCount" class="divide-dot">{{divide_badgeCount}}</span>
-              </div> -->
       <!-- 好友 -->
       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1 || isShowTab==2)) " class="qrCode_wrapper">
         <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
@@ -121,10 +116,10 @@
                   <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
                 </div>
               </div>
-              <div class="checkBox_scene clearfix" v-show="item.integral">
-                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                <span class="scene-text fl">加好友</span>
-              </div>
+              <!-- <div class="checkBox_scene clearfix" v-show="item.integral">
+                      <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                      <span class="scene-text fl">加好友</span>
+                    </div> -->
             </div>
           </li>
           <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
@@ -146,7 +141,7 @@
               </div>
             </div>
           </li>
-          <li class="item vux-1px-b" >
+          <li class="item vux-1px-b" @click="userToCashierChat">
             <div class="info_message">
               <div class="avatar">
                 <img :src="clientImg" alt="">
@@ -176,6 +171,25 @@
                 </div>
                 <p class="captainMessage">{{userInfo.role?"请查看用户留言消息":"欢迎光临! 有任何问题或建议，请留言"}}</p>
                 <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p>
+              </div>
+            </div>
+          </li>
+          <li class="item vux-1px-b" style="width:100%;text-align:center;height:30px;line-height:22px;font-size:16px;font-weight:900">收银情况</li>
+          <li class="item vux-1px-b" @click="cashierChat(item)" v-for="(item,index) in cashierServiceList" :key="index">
+            <div class="info_message">
+              <div class="avatar">
+                <img :src="item.headimgurl?item.headimgurl:clientImg" alt="">
+                <i class="dot" v-cloak v-show="item.unReadMsgCount && client_badgeCount"></i>
+              </div>
+              <div class="name_and_message">
+                <div class="personStatus">
+                  <p class="name">{{item.nickname?item.nickname:"游客"}}</p>
+                  <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
+                  <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
+                  <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}</span>
+                </div>
+                <p class="captainMessage">请查看结账情况</p>
+                <!-- <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p> -->
               </div>
             </div>
           </li>
@@ -268,14 +282,15 @@
   export default {
     data() {
       return {
-        isShowEnvelope: true,
         isShowDivideList: false,
         divideList: [],
         isShowQrCode: true,
-        isClientListFlag: false,
+        isClientListFlag: false, //判断是否是客服
+        isCashierListFlag: true, //判断是否是收银员
         clientTitleFlag: false,
-        clientObj: {},
+        clientObj: {}, //客服对象
         customerObj: {},
+        cashierObj: {}, //收银对象
         divideAvartar: require('../../assets/image/divide_add_avatar.png'),
         clientImg: require("../../assets/image/home_letter.png"),
         color: "#ffd800",
@@ -287,11 +302,12 @@
         position: "default",
         thumb_flag: true, //回赞的box的flag
         showPositionValue: false, //回赞的toast的flag
-        isMakeFriendBool: true,
+        // isMakeFriendBool: true,
         friendInfo: {},
         showFriendInfoFlag: false,
         sign: "爱情陷阱",
-        clientServiceList: []
+        clientServiceList: [], //客服留言列表
+        cashierServiceList: [] //收银员买单列表
       };
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
@@ -339,7 +355,6 @@
     beforeRouteUpdate(to, from, next) {
       console.log("beforeRouteUpdate---------", from)
       if (from.name === "clientChat" || from.name === 'chat') {
-        this.isShowEnvelope = true;
         this.loadClientServiceList()
       }
       next()
@@ -385,6 +400,7 @@
       this._loadMutualEvents(); //拉取送礼，约战，
       this.getCaptainMessList(); //加载群发通知
       this.loadClientServiceList() //加载客服列表  
+      this.loadCashierList() //加载收银员列表  
       this.loadIdentityList() //加载分身 
       // this.isShowTab = this.getQueryString("routeParamNum")
       this.isShowQrCode = localStorage.getItem("isShowQrCode") === "false" ? false : true
@@ -549,6 +565,35 @@
           this.addBandge()
         })
       },
+      //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
+      loadCashierList() {
+        api.loadCashierList().then(res => {
+          console.log("收银员列表---", res)
+          let unReadCount = 0
+          this.cashierObj = res
+          if (!res.uerInfos) { //普通用户进入
+            this.isCashierListFlag = false
+            this.clientTitleFlag = true
+            unReadCount = this.cashierObj.unReadMsgCount
+          } else { //收银员进入
+            var tempArr = res.uerInfos
+            if (tempArr.length > 0) {
+              tempArr.forEach((client, index) => {
+                unReadCount += client.unReadMsgCount
+                if (client.deskCode != 0 && client.deskCode) {
+                  client.deskCode = util.prefixZero(client.deskCode, 3)
+                }
+                if (client.unReadMsgCount > 0) { //把未读消息放到数组前面
+                  var item = tempArr.splice(index, 1)
+                  tempArr.unshift(item[0])
+                }
+              })
+              this.cashierServiceList = tempArr.sort(util.sortByKey("stime"))
+              console.log("客服列表-------------", this.cashierServiceList)
+            }
+          }
+        })
+      },
       //瞅瞅他好友信息
       showFriendInfo(userInfo) {
         this.showFriendInfoFlag = true;
@@ -566,24 +611,24 @@
         this._loadMutualEvents();
       },
       //勾选是否加好友
-      onlineSendGift(e) {
-        console.log(e.target.checked)
-        this.isMakeFriendBool = e.target.checked
-      },
+      // onlineSendGift(e) {
+      //   console.log(e.target.checked)
+      //   this.isMakeFriendBool = e.target.checked
+      // },
       selectList(index) {
         this.isShowTab = index;
         console.log(this.isShowTab)
         if (this.isShowTab === 2) {
-          Bus.$emit("hideEnvelop",true)
+          Bus.$emit("hideEnvelop", true)
           setTimeout(() => {
             this.$nextTick(function() {
               this.$refs.clientScroll.scrollTo(0, 0)
             })
           }, 50);
-        }else if(this.isShowTab === 3){
-          Bus.$emit("hideEnvelop",false)
-        }else{
-           Bus.$emit("hideEnvelop",true)
+        } else if (this.isShowTab === 3) {
+          Bus.$emit("hideEnvelop", false)
+        } else {
+          Bus.$emit("hideEnvelop", true)
         }
       },
       //拉取约战、点赞、送礼列表
@@ -727,8 +772,6 @@
       },
       //进入客服发消息
       ChatToClient() {
-        this.isShowEnvelope = false;
-        console.log("this.isShowEnvelope--------", this.isShowEnvelope)
         this.clientObj["openid"] = this.clientObj.CliSerID
         this.setChatFriend(this.clientObj);
         this.$router.push({
@@ -740,7 +783,6 @@
       },
       //进入留言用户发消息
       clientChat(client) {
-        this.isShowEnvelope = false;
         client["CliSerID"] = this.customerObj.CliSerID
         this.setChatFriend(client);
         console.log("向留言用户发消息 client-------------", client)
@@ -748,6 +790,31 @@
           name: "clientChat",
           params: {
             isClient: true,
+          }
+        });
+      },
+      //以收银员身份进入结账页面
+      cashierChat(user) {
+        this.setChatFriend(user);
+        this.$router.push({
+          name: "cashierChat",
+          params: {
+            to: user.openid,
+            from: this.cashierObj.CashierID,
+            isCashier: true,
+          }
+        });
+      },
+      //以用户身份进入结账页面
+      userToCashierChat() {
+        this.cashierObj["openid"] = this.cashierObj.CliSerID
+        this.setChatFriend(this.cashierObj);
+        this.$router.push({
+          name: "cashierChat",
+          params: {
+            to: this.cashierObj.CashierID,
+            from: this.userInfo.openid,
+            isCashier: false,
           }
         });
       },
@@ -1256,7 +1323,7 @@
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            .discount-pay{
+            .discount-pay {
               position: absolute;
               top: 0.4rem;
               right: -4rem;
@@ -1266,14 +1333,14 @@
               border: none;
               border-radius: 4px;
             }
-            .noDiscount-pay{
-               position: absolute;
+            .noDiscount-pay {
+              position: absolute;
               top: 0.4rem;
-               right: -6rem;
+              right: -6rem;
               background: #ccc;
               color: red;
               border: none;
-               border-radius: 4px;
+              border-radius: 4px;
               padding: 0.08rem 0.1333rem;
             }
             .time {

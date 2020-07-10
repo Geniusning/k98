@@ -1,75 +1,123 @@
-
 <!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset=utf-8 />
-    <title>zimv-css 3d ball</title>
+  <meta charset=utf-8 />
+  <title>zimv-css 3d ball</title>
 </head>
 <style>
-    body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-}
-#chartdiv {
-  width: 100%;
-  height: 98vh;
-}
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+      Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+
+  #chartdiv {
+    width: 100%;
+    height: 98vh;
+  }
 </style>
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
 
 <body οnunlοad="checkLeave()">
-    <div id="chartdiv"></div>
+  <div id="chartdiv"></div>
 </body>
 <script>
-// let target = 40
-// let testArr = [10,30,1,2,4,38,39,30,38]
-// let result = {}
-// let different 
-// let index
-// for ( index = 0; index < testArr.length; index++) {
-//   const element = testArr[index];
-//   let tempArr = []
-//   different = target-element
-//   let i = testArr.indexOf(different)
-//   if(i>index){
-//     result[index] = [index,i]
-//   }
-// }
-// var arr = [1,2,3,4]
-// function xxxx(params) {
-//   var leftArr = []
-//   var rightArr = []
-//   var result = []
-//   leftArr[0] = 1
-//   rightArr[params.length-1] = 1
-//   debugger
-//   for (let i = 1; i < params.length; i++) {   //left[1] = 1*1 = 1  left[2] = 1*2= 2   left[3] = 2*3 = 6 
-//    leftArr[i] = leftArr[i-1] * params[i-1]
-//   }
-//   for (let j = params.length-2; j > -1; j--) { //right[]
-//    rightArr[j] = rightArr[j+1] * params[j+1]
-//   }
-//   for (let z = 0; z < params.length; z++) {
-//    result[z] = leftArr[z]* rightArr[z]
-//   }
-//   return result
-// }
-// console.log(xxxx(arr))
-// // console.log(result)
-// let str = "oqWlD1h6Zurgr6YZVTYAqe5JL9oM@master_707fe"
-// console.log(str.indexOf("@master"))
+  // let target = 40
+  // let testArr = [10,30,1,2,4,38,39,30,38]
+  // let result = {}
+  // let different 
+  // let index
+  // for ( index = 0; index < testArr.length; index++) {
+  //   const element = testArr[index];
+  //   let tempArr = []
+  //   different = target-element
+  //   let i = testArr.indexOf(different)
+  //   if(i>index){
+  //     result[index] = [index,i]
+  //   }
+  // }
+  // var arr = [1,2,3,4]
+  // function xxxx(params) {
+  //   var leftArr = []
+  //   var rightArr = []
+  //   var result = []
+  //   leftArr[0] = 1
+  //   rightArr[params.length-1] = 1
+  //   debugger
+  //   for (let i = 1; i < params.length; i++) {   //left[1] = 1*1 = 1  left[2] = 1*2= 2   left[3] = 2*3 = 6 
+  //    leftArr[i] = leftArr[i-1] * params[i-1]
+  //   }
+  //   for (let j = params.length-2; j > -1; j--) { //right[]
+  //    rightArr[j] = rightArr[j+1] * params[j+1]
+  //   }
+  //   for (let z = 0; z < params.length; z++) {
+  //    result[z] = leftArr[z]* rightArr[z]
+  //   }
+  //   return result
+  // }
+  // console.log(xxxx(arr))
+  // // console.log(result)
+  // let str = "oqWlD1h6Zurgr6YZVTYAqe5JL9oM@master_707fe"
+  // console.log(str.indexOf("@master"))
 
-  var heightChecker = function (heights) {
-      let count = 0
-      let sortArr = [...heights].sort(function(a,b){return a-b})
-      sortArr.forEach((item,index)=>{
-        if(item != heights[index]){
-          count ++
-        }
-      })
-      return count
-    };
+  // var heightChecker = function (heights) {
+  //     let count = 0
+  //     let sortArr = [...heights].sort(function(a,b){return a-b})
+  //     sortArr.forEach((item,index)=>{
+  //       if(item != heights[index]){
+  //         count ++
+  //       }
+  //     })
+  //     return count
+  //   };
 
-    console.log(heightChecker([5, 1, 2, 3, 4]))
+  //   console.log(heightChecker([5, 1, 2, 3, 4]))
+
+  // var findLengthOfLCIS = function (nums) {
+  //   // 1.检测边界条件
+  //   if (nums.length < 2) return nums.length
+
+  //   // 2.滑动窗口，找到最长连续字串
+  //   let left = 0, current = 0, right = 1, len = 1
+  //   while (right < nums.length) {
+  //     // 不是递增，移动 left 指向
+  //     debugger
+  //     if (nums[right] <= nums[current]) {
+  //       left = right
+  //     }
+  //     // 计算当前的最大字串长度
+  //     len = Math.max(len, right - left + 1)
+  //     current++
+  //     right++
+  //   }
+  //   return len
+  // };
+  //   findLengthOfLCIS([1,2,3,2,4,7])
+
+  //原地去重1
+  // var removeDuplicates = function (nums) {
+  //   var count = 0
+  //   var len = nums.length
+  //   for (let i = 1; i < len; i++) {
+  //     if (nums[i] != nums[i - 1]) {
+  //       nums[i - count] = nums[i]
+  //     } else {
+  //       count++
+  //     }
+  //   }
+  //   return len - count
+  // };
+  // console.log(removeDuplicates([1, 3, 4, 4, 4, 5, 5]))
+
+  //原地去重2
+  // var removeDuplicates = function (nums) {
+  //   let j = 0, i;
+  //   for (i = 1; i < nums.length; i++) {
+  //     if (nums[i] != nums[j]) {
+  //       j++
+  //       nums[j] = nums[i]
+  //     }
+  //   }
+  //   return j + 1
+  // };
 </script>

@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "7C5ZOPzyRRWXlZShdB3wSbGAoYoL55WWAmzOtP3vQfFQmHKOYEGfQ1h0XfLExDKvEkjB5A==";
+const myToken = "TjHQvsIDHHrJHtnB9psmtixeXNh91aKRxZfNyToNwhNCpaOMIjSrqWAvK8scsJPsfuNoHQ==";
 // ------------------------------
 
 module.exports = {
@@ -26,9 +26,9 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    // host: '172.18.6.237',
+    host: '172.18.6.237',
 
-    host: '192.168.101.6',
+    // host: '192.168.101.6',
 
     // host: 'localhost', // can be overwritten by process.env.HOST
     port: 8088, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined

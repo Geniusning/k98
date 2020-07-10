@@ -1,4 +1,5 @@
 const state = {
+    deskCode:null, //桌贴号
     staffCouponInfo:{},  //保存员工送券活动
     focusThumbTimes:30,   //关注的用户点赞次数
     unfocusThumbTimes:10,//未关注用户的点赞次数
@@ -17,7 +18,6 @@ const state = {
     userInfo: {},
     giftList: [],
     shareUrl: "",
-    test: "",
     inAndOutFriendCursor: 0, //拉取场内场外好友的游标
     position: {},
     friendList: [], //候选人列表

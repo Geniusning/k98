@@ -16,9 +16,8 @@
           </div>
           <div class="bottom">
             <p class="content">{{dynamicFriendEvt.extMsg.lastMsg.msg}}</p>
-            <!-- <p class="content">你试试我的眼的</p> -->
           </div>
-          <div @click="showDetail">
+          <div @click="showDetail" v-show="isShowEnvelopHandle">
             <div class="detail" v-if="messType !='onlineNotice'">&gt;&gt;详情</div>
             <div class="detail" v-else-if="dynamicFriendEvt.fromInfo.isAlreadyFriends == true ">&gt;&gt;去聊天</div>
             <div class="detail" v-else>&gt;&gt;打个招呼</div>
@@ -85,7 +84,7 @@
               <div class="bottom_partition" v-if="allMutatualInfo_temp.type == 3 && giftFlag">
                 <div v-if="!isShowGiftGuide" class=" rejectBtn" @click="respondForGift(allMutatualInfo_temp,false,allMutatualInfo_temp.openid)">拒收</div>
                 <div v-if="!isShowGiftGuide" class="acceptBtn" @click="respondForGift(allMutatualInfo_temp,true,allMutatualInfo_temp.openid)">感谢</div>
-                <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm">确定</div>
+                <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm(allMutatualInfo_temp)">确定</div>
                 <div v-if="isShowGiftGuide" class="rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
                                                       <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
@@ -122,8 +121,8 @@
             </div>
             <div class="topUpGiftInfo-bottom soul-Bottom" style="margin-top:.3rem">
               <div class="bottom_partition">
-                <div class="rejectBtn" style="bottom:-0.7rem;" @click="rejectSoulFri()">拒绝</div>
-                <div class="acceptBtn" style="bottom:-.7rem;right:.15rem" @click="acceptSoulFri(soulFriInfo.content.fromInfo)">结识</div>
+                <div class="rejectBtn" style="bottom:-0.8rem;" @click="rejectSoulFri()">拒绝</div>
+                <div class="acceptBtn" style="bottom:-.8rem;right:.15rem" @click="acceptSoulFri(soulFriInfo.content.fromInfo)">结识</div>
               </div>
             </div>
           </div>
@@ -147,7 +146,7 @@
             <div class="topUpGiftInfo-bottom">
               <div class="bottom_partition">
                 <div class=" rejectBtn" @click="gotoDetail">详情</div>
-                <div class="acceptBtn" @click="confirm">知道</div>
+                <div class="acceptBtn" @click="confirm(topUpGiftInfo.content.fromInfo)">知道</div>
               </div>
             </div>
           </div>
@@ -206,7 +205,7 @@
               <div class="bottom_partition" v-if="(topUpGiftInfo.msgCode == 3 || topUpGiftInfo.msgCode==12) && giftFlag">
                 <div v-if="!isShowGiftGuide" class=" rejectBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,false)">拒收</div>
                 <div v-if="!isShowGiftGuide" class="acceptBtn" @click="no_Become_Friend_respondForGift(topUpGiftInfo.content,true)">感谢</div>
-                <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm">确定</div>
+                <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm(topUpGiftInfo.content.fromInfo)">确定</div>
                 <div v-if="isShowGiftGuide" class=" rejectBtn" @click="gotoDetail">详情</div>
               </div>
               <div class="bottom_partition" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
@@ -271,7 +270,7 @@
             <div class="topUpGiftInfo-bottom">
               <div class="bottom_partition">
                 <div class=" rejectBtn" @click="gotoDetail">详情</div>
-                <div class="acceptBtn" @click="confirm">知道</div>
+                <div class="acceptBtn" @click="confirm(topUpGameInfo.content.fromInfo)">知道</div>
               </div>
             </div>
           </div>
@@ -299,7 +298,7 @@
         </ul>
       </div>
       <!-- 分身信封入口 -->
-      <div class="divide_wrapper" @click="showDivideList" v-if="divide_badgeCount || isShowDivideEnv">
+      <div class="divide_wrapper" @click="showDivideList" v-if="(divide_badgeCount || isShowDivideEnv) && userInfo.role">
         <img src="./assets/image/divide_envelope.png" class="divide-env" alt="">
         <span v-show="divide_badgeCount" class="divide-dot">{{divide_badgeCount}}</span>
       </div>
@@ -335,6 +334,7 @@
     name: "app",
     data() {
       return {
+        isShowEnvelopHandle:true,
         isShowDivideEnv: false, //控制分身信封显示
         isShowDivideList: false, //控制分身列表显示
         isHandleMessageFromQueue: true,
@@ -383,7 +383,8 @@
         "soulFriInfo",
         "staticChatFriendObj",
         "shopSettingInfo",
-        "divide_badgeCount"
+        "divide_badgeCount",
+        "deskCode"
       ]),
       ...mapGetters(["qrIsShow"])
     },
@@ -426,7 +427,6 @@
       let indexGame = _GameUrl.indexOf(".com");
       let shareurlGame = _GameUrl.slice(0, indexGame);
       this.responseForGameUrl = `${shareurlGame}.com/`;
-      this.appDeskCode = util.GetQueryString("deskCode")
       this.loadLastRoomInfo(); //加载回房信息
       this.loadIdentityList(); //拉取分身
       this.identity = sessionStorage.getItem("identity")
@@ -557,21 +557,35 @@
           this.identity = isMasterId > 0 ? this.identity : "" //是分身id才给赋值，不是则置为空
         })
       },
-      confirm() {
+      confirm(userInfo) {
+        console.log("userInfo------",userInfo)
         if (!this.userInfo.isSubscribe) {
           this.changeQrCodeText({
-            title: "长按关注，每天获签到积分及更多特权",
+            title: "长按关注，以便查找、使用您的礼品券/优惠券",
             bottomText: "会员特权:领福利、交群友、参活动"
           });
           this.showQrcode(true);
         }
+        let leftEnvelopInfo = {
+          fromInfo:{
+            nickname:userInfo.nickname,
+            headimgurl:userInfo.headimgurl
+          },
+          extMsg:{
+            lastMsg:{
+              msg:`${userInfo.nickname}送你一张优惠券，已存入卡券包`
+            }
+          }
+        }
+        this.isShowEnvelopHandle = false
+        this.changeEnvelopContent(leftEnvelopInfo)
         this.isShowGiftPanel = false;
         this.isShowGiftGuide = false;
       },
       gotoDetail() {
         if (!this.userInfo.isSubscribe) {
           this.changeQrCodeText({
-            title: "长按关注，每天获签到积分及更多特权",
+            title: "长按关注，可以便捷使用或查询您的卡券",
             bottomText: "会员特权:领福利、交群友、参活动"
           });
           this.showQrcode(true);
@@ -635,9 +649,7 @@
       // },
       //加载游戏回房信息
       loadLastRoomInfo() {
-        console.log("执行回房信息---------");
-        // var cacheRoomId = localStorage.getItem("backRoomId") || ""
-        api.loadLastRoomInfo(this.appDeskCode).then(res => {
+        api.loadLastRoomInfo(this.deskCode).then(res => {
           console.log("回房信息--------", res);
           if (res.roomID) {
             this.roomID = res.roomID;
@@ -823,11 +835,13 @@
           isSysSendGift: false
         };
         api.respondForGift(giftParam).then(res => {
+           console.log("好友送礼回复结果---",res)
           if (res.errCode == 0) {
             //重新拉取约战，送礼，点赞列表
             api.getUserInfo("/api/loadUserInfo").then(res => {
               this.getUserInfo(res);
             });
+           
             this._loadMutualEvents();
             this.isMakeFriendBool = true;
             this.isHandleMessageFromQueue = true;
@@ -862,7 +876,7 @@
           respondType: giftInfo.msgType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
           isMakeFriend: this.isMakeFriendBool,
           // chatMsgID: giftInfo.isAlreadyFriends?giftInfo.id:""
-          chatMsgID: giftInfo.id,
+          chatMsgID: Number(giftInfo.id),
           isSysSendGift: false
         };
         api.respondForGift(giftParam).then(res => {
@@ -1088,6 +1102,7 @@
         clearTopUpData: "CLEARTOPUPDATA",
         addDivideUnreadCount: "ADDDIVIDEUNREADMSG", //累计分身未读消息
         getFriend: "GET_FRIENDlIST", //获取候选人,
+        changeEnvelopContent:"CHANGEENVELOPECONTENT",//更改左侧弹框内容
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList" //加载已经成为好友列表

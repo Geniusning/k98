@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-01 11:37:34
+ * @Last Modified time: 2020-07-10 11:45:29
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -44,10 +44,12 @@ new Vue({
     }
   },
   created() {
+    this.deskCode = util.GetQueryString("deskCode")
+    this.saveDeskCode(this.deskCode)
     this.getUserInfo(); //获取用户信息
   },
   mounted() {
-    this.deskCode = util.GetQueryString("deskCode")
+  
     this.loadAdvertisingPhoto(); //拉取首页轮播图
     this.createQrcode(); //创建二维码
     this.loadStoreSetting(); //获取门店信息
@@ -72,14 +74,14 @@ new Vue({
   methods: {
     //创建长连接
     createWebsocket() {
-      let windowUrL = window.location.href;
-      let index = windowUrL.indexOf('.com');
-      let shareurl = windowUrL.slice(0, index);
-      let websocketUrl = shareurl.slice(8);
-      this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-      this.websock = new WebSocket(this.connectUrl);
-      this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+      // let windowUrL = window.location.href;
+      // let index = windowUrL.indexOf('.com');
+      // let shareurl = windowUrL.slice(0, index);
+      // let websocketUrl = shareurl.slice(8);
+      // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+      // this.websock = new WebSocket(this.connectUrl);
+      // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
+      this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()
     },
@@ -129,7 +131,7 @@ new Vue({
     },
     loadAdvertisingPhoto() {
       api.loadAdvertisingPhoto().then(res => {
-        // console.log('轮播图-------------------------：', res.adPhotoURL)
+        console.log('轮播图-------------------------：', res.adPhotoURL)
         this.getAdvertisingImg(res.adPhotoURL);
 
       })
@@ -276,6 +278,7 @@ new Vue({
           this.addDivideNum(1)
           return
         } else {
+          console.log("添加消息进队列")
           this.addMessageIntoQueue(result)
         }
       } else if (result.msgCode === 13) { //对方操作回赞后返回结果通知
@@ -300,6 +303,8 @@ new Vue({
         this.addFriendEvtObj(result)
         this.updateClientMsg(result.content)
         this.addBange()
+      } else if (result.msgCode === 21){
+        this.addFriendEvtObj(result)
       } else if (result.msgCode === 22) {
         this.addFriendEvtObj(result)
         console.log("-----------------------", this.$route)
@@ -421,7 +426,8 @@ new Vue({
       CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
       LoadL98Setting: "L98OTHERSETTING", //加载功能控制开关
       loadSameDeskInfo: "GETSAMEDESKINFO", //加载同一个桌贴游戏信息
-      addDivideNum: "ADDDIVIDENUM" //累加分身未读消息
+      addDivideNum: "ADDDIVIDENUM", //累加分身未读消息
+      saveDeskCode: "SAVEDESKCODE",//保存桌贴号
     }),
     ...mapActions({
       //getFriendEvt: "get_FriendEvt"

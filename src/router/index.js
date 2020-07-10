@@ -13,6 +13,7 @@ import Card from 'components/card/card'
 import cardDetail from 'components/card_detail/card_detail'
 import Chat from 'components/chat_room/chat_room'
 import clientChat from 'components/chat_room/client_chatroom'
+import cashierChat from 'components/chat_room/cashier_chatroom'
 import Individual from 'components/individual/individual'
 import GameDetail from 'components/game_detail/game_detail'
 import GiftDetail from 'components/gift_detail/gift_detail'
@@ -114,6 +115,14 @@ const router = new Router({
       component: clientChat,
       meta: {
         title: "客服聊天"
+      }
+    },
+    {
+      path: "cashierChat",
+      name: "cashierChat",
+      component: cashierChat,
+      meta: {
+        title: "收银结账"
       }
     },
     ]

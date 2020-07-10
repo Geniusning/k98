@@ -3,11 +3,11 @@
     <div class="card_detail">
       <my-header title="卡券详情" bg="#fff"></my-header>
       <!-- <div class="discount_pic vux-1px-t"> 
-                        <div class="banner_bg">
-                            <div class="desc">入场送一扎啤酒</div>
-                            <p class="time">截止日期：2018.5.5-2018-6-5</p>
-                        </div>
-                    </div> -->
+                            <div class="banner_bg">
+                                <div class="desc">入场送一扎啤酒</div>
+                                <p class="time">截止日期：2018.5.5-2018-6-5</p>
+                            </div>
+                        </div> -->
       <div class="QRcode_wrapper">
         <p class="desc">到店核销时 请出示此二维码或点击<span @click="lauchCheckOutCoupon" class="check">发起核销</span></p>
         <!-- <img src="../../assets/image/QRcode.png" alt="" class="QR_pic"> -->
@@ -40,6 +40,7 @@
   import api from 'common/api';
   import envelope from 'base/envelope/envelope';
   import {
+    mapState,
     mapMutations
   } from 'vuex'
   export default {
@@ -50,8 +51,13 @@
         couponObj: {},
         isShowEnvelope: false, //信封弹框判断
         envelopeText: "",
-        startTime: ""
+        startTime: "",
+        cashierID: "",
+        checkoutCouponInfo: {}
       };
+    },
+    computed: {
+      ...mapState(["userInfo","deskCode"])
     },
     mounted() {
       let startTime = new Date();
@@ -66,26 +72,31 @@
         canvas = document.getElementById('canvas')
       })
       this.couponId = this.$route.params.id;
-      api.loadUserCouponByID(this.couponId).then(res => {
-        if (res.errCode === 0) {
-          console.log(res)
-          this.qrUrl = res.verifyURL;
-          this.couponObj = res.userCoupon.coupon;
-          this.couponObj["codeNum"] =
-            util.prefixZero(this.couponObj.type, 1) + "-" +
-            util.prefixZero(this.couponObj.batch, 3) + "-" +
-            util.prefixZero(this.couponObj.acquireNum, 7)
-          QRcode.toCanvas(canvas, this.qrUrl, (error) => {
-            if (error) {
-              console.log(error)
-            } else {
-              console.log('success')
-            }
-          })
-        }
-      })
+      this.loadUserCouponByID()
+      this.loadCashierList()
     },
     methods: {
+      loadUserCouponByID() {
+        api.loadUserCouponByID(this.couponId).then(res => {
+          if (res.errCode === 0) {
+            console.log(res)
+            this.qrUrl = res.verifyURL
+            this.couponObj = res.userCoupon.coupon
+            this.checkoutCouponInfo = res.userCoupon
+            this.couponObj["codeNum"] =
+              util.prefixZero(this.couponObj.type, 1) + "-" +
+              util.prefixZero(this.couponObj.batch, 3) + "-" +
+              util.prefixZero(this.couponObj.acquireNum, 7)
+            QRcode.toCanvas(canvas, this.qrUrl, (error) => {
+              if (error) {
+                console.log(error)
+              } else {
+                console.log('success')
+              }
+            })
+          }
+        })
+      },
       //自动领取优惠券
       acquireWaitGetCoupons() {
         let condition = 1 //channel为1是AI优惠券类型
@@ -95,21 +106,16 @@
           }
           if (res.coupons.length > 0) {
             this._animationToast("店长再送您一张优惠券,谢谢光临")
-            // let result = {
-            //   msgCode: 4,
-            //   content: {
-            //     extMsg: {},
-            //     fromInfo: {
-            //       openid: "",
-            //       headimgurl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
-            //     },
-            //   }
-            // }
-            // this.addFriendEvtObj(result);
-            // this.judgeMessType('discount');
           }
         }).catch(err => {
           console.log(err)
+        })
+      },
+      //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
+      loadCashierList() {
+        api.loadCashierList().then(res => {
+          console.log("收银员列表---", res)
+          this.cashierID = res.CashierID
         })
       },
       _animationToast(text) {
@@ -125,8 +131,29 @@
           if (res.errCode === 0) {
             this.acquireWaitGetCoupons()
             this._animationToast("已发起核销，待收银同意确认")
+            let data = {
+              from: this.userInfo.openid,
+              to: this.cashierID,
+              stime: new Date().getTime(),
+              openID: this.userInfo.openid,
+              userCouponID: this.checkoutCouponInfo.id
+            }
+            api.sendToCashier(data).then(res => {
+              console.log("通知收银员结账---", res)
+              setTimeout(() => {
+                this.$router.push({
+                  name: "cashierChat",
+                  params:{
+                    from:this.userInfo.openid,
+                    to:this.cashierID,
+                    deskCode:this.deskCode,
+                     isCashier: false,
+                  }
+                })
+              }, 500);
+            })
           } else if (res.errCode === 1) {
-             this._animationToast("已核销完毕")
+            this._animationToast("已核销完毕")
           } else if (res.errCode === 1018) {
             this._animationToast("您已发起核销，请稍等")
           }

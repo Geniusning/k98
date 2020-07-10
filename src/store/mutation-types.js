@@ -1,4 +1,8 @@
 
+//存储桌贴号
+export const CHANGEENVELOPECONTENT = "CHANGEENVELOPECONTENT"
+//存储桌贴号
+export const SAVEDESKCODE = "SAVEDESKCODE"
 //存储员工送券活动
 export const GETSTAFFCOUPONINFO = "GETSTAFFCOUPONINFO"
 

@@ -1,210 +1,416 @@
 .chatList(@direct, @color) {
-    .person_box {
-        float: @direct;
-        text-align: center;
-        .name {
-            font-size: 0.2667rem;
-            color: #999;
-            margin-bottom: 0.1333rem;
+  .person_box {
+    float     : @direct;
+    text-align: center;
+
+    .name {
+      font-size    : 0.2667rem;
+      color        : #999;
+      margin-bottom: 0.1333rem;
+    }
+
+    .avatar {
+      width        : 1.3067rem;
+      height       : 1.3067rem;
+      border-radius: 50%;
+    }
+  }
+
+  .message_box {
+    box-sizing : border-box; // padding: 0.225rem 0px;
+    padding-top: 0.78rem;
+    float      : @direct;
+    position   : relative;
+    margin-left: 0.2667rem;
+
+    .dot {
+      width           : 10px;
+      height          : 10px;
+      border-radius   : 50%;
+      background-color: red;
+      position        : absolute;
+      top             : 1.2rem;
+      right           : -.5rem;
+    }
+
+    .message {
+      background-color: @color;
+      text-align      : left;
+      color           : #333;
+      padding         : 0.275rem;
+      border-radius   : 6px;
+      max-width       : 5rem;
+      font-size       : 0.35rem;
+      position        : relative;
+
+      .stopanimate {
+        -moz-animation-name   : none;
+        -webkit-animation-name: none;
+        -ms-animation-name    : none;
+        animation-name        : none;
+      }
+    }
+  }
+
+  .couponInfo {
+    height           : 2.3rem;
+    background-image : url(../../assets/image/discount_bg.png);
+    background-repeat: no-repeat;
+    background-size  : 100% 100%;
+    display          : flex;
+    justify-content  : space-between;
+    box-sizing       : border-box;
+
+    .myleft {
+      width          : 1.3rem;
+      text-align     : center;
+      display        : flex;
+      flex-direction : column;
+      align-items    : center;
+      justify-content: space-around;
+
+      .discount_type_text {
+        display    : inline-block;
+        width      : 0.4rem;
+        font-size  : 16px;
+        color      : #d33700;
+        font-weight: 900;
+        margin-top : -.3rem;
+      }
+
+      .yuE {
+        color    : #d33700;
+        font-size: 0.1333rem;
+      }
+    }
+
+    .mycenter {
+      margin-left    : 0.1rem;
+      flex           : 1;
+      color          : #fff;
+      display        : flex;
+      flex-direction : column;
+      justify-content: space-around;
+      position       : relative;
+
+      .discount_theme {
+        font-size: 0.3733rem;
+        position : relative;
+
+        .theme,
+        .receiver_wrapper,
+        .receiverProject_wrapper {
+          float: left;
         }
-        .avatar {
-            width: 1.3067rem;
-            height: 1.3067rem;
+
+        .theme {}
+
+        .receiver_wrapper {
+          margin-left: 0.3rem;
+
+          .receiver_avartar {
+            width        : 0.5333rem;
+            height       : 0.5333rem;
             border-radius: 50%;
+            margin-right : 0.1667rem;
+            float        : left;
+          }
+
+          .receiver_name {
+            float        : left;
+            max-width    : 1.2rem;
+            text-overflow: ellipsis;
+            overflow     : hidden;
+            white-space  : nowrap;
+          }
         }
-    }
-    .message_box {
-        box-sizing: border-box; // padding: 0.225rem 0px;
-        padding-top: 0.78rem;
-        float: @direct;
-        position: relative;
-        margin-left: 0.2667rem;
-        .dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          background-color: red;
+
+        .receiverProject_wrapper {
           position: absolute;
-          top: 1.2rem;
-          right: -.5rem;
+          right   : 0rem;
+
+          .integral_content {
+            font-size: 0.32rem;
+          }
+
+          .project_img {
+            position  : absolute;
+            left      : 0.6rem;
+            margin-top: 0.1667rem;
+            width     : 1.3rem;
+            height    : 1rem;
+          }
         }
-        .message {
-            background-color: @color;
-            text-align: left;
-            color: #333;
-            padding: 0.275rem;
-            border-radius: 6px;
-            max-width: 5rem;
-            font-size: 0.4rem;
-            position: relative;
-            .stopanimate {
-                -moz-animation-name: none;
-                -webkit-animation-name: none;
-                -ms-animation-name: none;
-                animation-name: none;
-              }
+      }
+
+      .discount_content {
+        margin-top : 0.3rem;
+        margin-left: -1.5rem;
+        font-size  : 0.45rem;
+        text-align : center;
+      }
+
+      .discount_limitAndTime {
+        margin-top     : 0.4rem;
+        display        : flex;
+        justify-content: space-between;
+
+        .limit {}
+
+        .time {
+          margin-left: 0.2667rem;
         }
+      }
     }
+
+    .myright {
+      width     : 1.3rem;
+      text-align: center;
+      box-sizing: border-box;
+
+      .result {
+        display  : inline-block;
+        width    : 0.4rem;
+        font-size: 16px;
+        color    : #d33700;
+      }
+
+      .result-people {
+        margin-top: 0.1rem;
+      }
+
+      .auditing {
+        display  : inline-block;
+        width    : 0.4rem;
+        font-size: 16px;
+        color    : #d33700;
+        margin-top: 0.2333rem;
+      }
+
+      .reject {
+        margin-top: 0.2rem;
+        width     : 1rem;
+        padding   : 0.08rem 0.1333rem;
+        background: -webkit-linear-gradient(top, #FD8D53, #D63907);
+        color     : #fff;
+        border    : none;
+      }
+
+      .agree {
+        margin-top: 0.6rem;
+        width     : 1rem;
+        padding   : 0.08rem 0.1333rem;
+        background: -webkit-linear-gradient(top, #FEDC00, #E69900);
+        color     : #fff;
+        border    : none;
+      }
+    }
+  }
 }
 
 .arrowDot(@color) {
-    position: absolute;
-    width: 0.1333rem;
-    height: 0.1333rem;
-    background: @color;
-    top: 1.2rem;
-    transform: rotate(45deg);
-}
-.unReadDot(){
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: red;
-  position: absolute;
-  top: 1.2rem;
-}
-.border-left() {
-    .cricleplay{
-        color:#ccc;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: -.01rem;
-        left: -.2rem;
-        .vocieDuration{
-          color: #ccc;
-          position: absolute;
-          left: .9rem;
-          top: .24rem;
-        }
-    }
-    .small{
-        width: 20px;
-        height: 20px;
-        border-style: solid;
-        border-top-color: transparent;
-        border-left-color: transparent;
-        border-bottom-color: transparent;
-        border-radius: 50%;
-        box-sizing: border-box;
-        vertical-align: middle;
-        display: inline-block;
-        margin-left: -0.1rem;
-      }
-      .middle{
-        width: 30px;
-        height: 30px;
-        border-style: solid;
-        border-top-color: transparent;
-        border-left-color: transparent;
-        border-bottom-color: transparent;
-        border-radius: 50%;
-        box-sizing: border-box;
-        vertical-align: middle;
-        display: inline-block;
-        margin-left: -28px;
-        animation: show2 1s ease-in-out infinite;
-        opacity: 1;
-        
-      }
-      @keyframes show2 {
-        0% { opacity: 0;}
-        30% { opacity: 1;}
-        100% { opacity: 0;}
-      }
-     
-      .large{
-        width: 40px;
-        height: 40px;
-        border-style: solid;
-        border-top-color: transparent;
-        border-left-color: transparent;
-        border-bottom-color: transparent;
-        border-radius: 50%;
-        box-sizing: border-box;
-        vertical-align: middle;
-        display: inline-block;
-        margin-left: -37px;
-        animation: show3 1s ease-in-out infinite;
-        opacity: 1;
-       
-      }
-      @keyframes show3 {
-        0% { opacity: 0;}
-        60% { opacity: 1;}
-        100% { opacity: 0;}
-      }
+  position  : absolute;
+  width     : 0.1333rem;
+  height    : 0.1333rem;
+  background: @color;
+  top       : 1.2rem;
+  transform : rotate(45deg);
 }
 
-.border-right(){
-    .cricleplay{
-        width: 100%;;
-        position: absolute;
-        top: -.01rem;
-        text-align: right;
-        height: 100%;
-        color:#333;
-        .vocieDuration{
-          color: #333;
-          position: absolute;
-          right: .8rem;
-          top: .25rem;
-        }
+.unReadDot() {
+  width           : 10px;
+  height          : 10px;
+  border-radius   : 50%;
+  background-color: red;
+  position        : absolute;
+  top             : 1.2rem;
+}
+
+.border-left() {
+  .cricleplay {
+    color   : #ccc;
+    width   : 100%;
+    height  : 100%;
+    position: absolute;
+    top     : -.01rem;
+    left    : -.2rem;
+
+    .vocieDuration {
+      color   : #ccc;
+      position: absolute;
+      left    : .9rem;
+      top     : .24rem;
     }
-    .small{
-        width: 20px;
-        height: 20px;
-        border-style: solid;
-        border-top-color: transparent;
-        border-right-color: transparent;
-        border-bottom-color: transparent;
-        border-radius: 50%;
-        box-sizing: border-box;
-        vertical-align: middle;
-        display: inline-block;
-        margin-right: -.3rem;
-      }
-      .middle{
-        width: 30px;
-        height: 30px;
-        border-style: solid;
-        border-top-color: transparent;
-        border-right-color: transparent;
-        border-bottom-color: transparent;
-        border-radius: 50%;
-        box-sizing: border-box;
-        vertical-align: middle;
-        display: inline-block;
-        margin-right: -26px;
-        animation: show2 1s ease-in-out infinite;
-        opacity: 1;
-        
-      }
-      @keyframes show2 {
-        0% { opacity: 0;}
-        30% { opacity: 1;}
-        100% { opacity: 0;}
-      }
-     
-      .large{
-        width: 40px;
-        height: 40px;
-        border-style: solid;
-        border-top-color: transparent;
-        border-right-color: transparent;
-        border-bottom-color: transparent;
-        border-radius: 50%;
-        box-sizing: border-box;
-        vertical-align: middle;
-        display: inline-block;
-        margin-right: -37px;
-        animation: show3 1s ease-in-out infinite;
-        opacity: 1;
-        
-      }
-      @keyframes show3 {
-        0% { opacity: 0;}
-        60% { opacity: 1;}
-        100% { opacity: 0;}
-      }
+  }
+
+  .small {
+    width              : 20px;
+    height             : 20px;
+    border-style       : solid;
+    border-top-color   : transparent;
+    border-left-color  : transparent;
+    border-bottom-color: transparent;
+    border-radius      : 50%;
+    box-sizing         : border-box;
+    vertical-align     : middle;
+    display            : inline-block;
+    margin-left        : -0.1rem;
+  }
+
+  .middle {
+    width              : 30px;
+    height             : 30px;
+    border-style       : solid;
+    border-top-color   : transparent;
+    border-left-color  : transparent;
+    border-bottom-color: transparent;
+    border-radius      : 50%;
+    box-sizing         : border-box;
+    vertical-align     : middle;
+    display            : inline-block;
+    margin-left        : -28px;
+    animation          : show2 1s ease-in-out infinite;
+    opacity            : 1;
+
+  }
+
+  @keyframes show2 {
+    0% {
+      opacity: 0;
+    }
+
+    30% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .large {
+    width              : 40px;
+    height             : 40px;
+    border-style       : solid;
+    border-top-color   : transparent;
+    border-left-color  : transparent;
+    border-bottom-color: transparent;
+    border-radius      : 50%;
+    box-sizing         : border-box;
+    vertical-align     : middle;
+    display            : inline-block;
+    margin-left        : -37px;
+    animation          : show3 1s ease-in-out infinite;
+    opacity            : 1;
+
+  }
+
+  @keyframes show3 {
+    0% {
+      opacity: 0;
+    }
+
+    60% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+.border-right() {
+  .cricleplay {
+    width: 100%;
+    ;
+    position  : absolute;
+    top       : -.01rem;
+    text-align: right;
+    height    : 100%;
+    color     : #333;
+
+    .vocieDuration {
+      color   : #333;
+      position: absolute;
+      right   : .8rem;
+      top     : .25rem;
+    }
+  }
+
+  .small {
+    width              : 20px;
+    height             : 20px;
+    border-style       : solid;
+    border-top-color   : transparent;
+    border-right-color : transparent;
+    border-bottom-color: transparent;
+    border-radius      : 50%;
+    box-sizing         : border-box;
+    vertical-align     : middle;
+    display            : inline-block;
+    margin-right       : -.3rem;
+  }
+
+  .middle {
+    width              : 30px;
+    height             : 30px;
+    border-style       : solid;
+    border-top-color   : transparent;
+    border-right-color : transparent;
+    border-bottom-color: transparent;
+    border-radius      : 50%;
+    box-sizing         : border-box;
+    vertical-align     : middle;
+    display            : inline-block;
+    margin-right       : -26px;
+    animation          : show2 1s ease-in-out infinite;
+    opacity            : 1;
+
+  }
+
+  @keyframes show2 {
+    0% {
+      opacity: 0;
+    }
+
+    30% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .large {
+    width              : 40px;
+    height             : 40px;
+    border-style       : solid;
+    border-top-color   : transparent;
+    border-right-color : transparent;
+    border-bottom-color: transparent;
+    border-radius      : 50%;
+    box-sizing         : border-box;
+    vertical-align     : middle;
+    display            : inline-block;
+    margin-right       : -37px;
+    animation          : show3 1s ease-in-out infinite;
+    opacity            : 1;
+
+  }
+
+  @keyframes show3 {
+    0% {
+      opacity: 0;
+    }
+
+    60% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
 }

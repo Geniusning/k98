@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-06-15 16:07:47
+ * @Last Modified time: 2020-07-08 15:58:00
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -14,6 +14,14 @@ const mutations = {
     //     state.lastClientMsg = msg
     //     state.client_badgeCount = msg.content.extMsg.count
     // },
+    //更改左侧信封弹窗内容 CHANGEENVELOPECONTENT
+    [types.CHANGEENVELOPECONTENT](state, info) {
+        state.dynamicFriendEvt = info
+    },
+    //存储桌贴号
+    [types.SAVEDESKCODE](state, deskCode) {
+        state.deskCode = deskCode
+    },
     //存储员工送券活动
     [types.GETSTAFFCOUPONINFO](state, staffCoupon) {
         state.staffCouponInfo = staffCoupon
@@ -512,9 +520,10 @@ const mutations = {
     //   })
     //   state.friendGiftList = data;
     // },
-    //获取店长消息列表
+    //获取系统消息列表
     [types.GET_CAPTAINMESSAGELIST](state, { data }) {
         state.group_badgeCount = 0
+        console.log("系统通知列表---",data)
         data.forEach(item=>{
             item.time = util.timestampToTime(item.time).slice(5,10)
             if(item.unread){
