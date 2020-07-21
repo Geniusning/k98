@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-08 15:58:00
+ * @Last Modified time: 2020-07-20 17:38:06
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -18,9 +18,14 @@ const mutations = {
     [types.CHANGEENVELOPECONTENT](state, info) {
         state.dynamicFriendEvt = info
     },
+    //存储买单收款码
+    [types.SAVECHECKQRCODE](state, checkQrCode) {
+        state.checkQrCode = checkQrCode
+    },
     //存储桌贴号
-    [types.SAVEDESKCODE](state, deskCode) {
+    [types.SAVEDESKCODE](state, deskCode,deskId) {
         state.deskCode = deskCode
+        state.deskId = deskId
     },
     //存储员工送券活动
     [types.GETSTAFFCOUPONINFO](state, staffCoupon) {
@@ -151,6 +156,7 @@ const mutations = {
         // console.log("state.loadFriendSexType-------------", state.loadFriendSexType)
         userinfo.sex = userinfo.sex === 1 ? "男" : "女"
         state.userInfo = userinfo;
+        
     },
     // 获取地理位置
     [types.GET_POSITION](state, position) {
@@ -578,6 +584,10 @@ const mutations = {
     [types.GETCLIENTUNREADCOUNT](state, count) {
         state.client_badgeCount = count
     },
+    //统计收银未读数量
+    [types.GETCASHIERUNREADCOUNT](state, count) {
+        state.cashier_badgeCount = count
+    },
     //统计分身未读消息
     [types.ADDDIVIDEUNREADMSG](state, count) {
         state.divide_badgeCount = count
@@ -592,7 +602,9 @@ const mutations = {
     },
     //所有类型的未读消息累加总的未读消息里面
     [types.ADD_BADGE](state) {
-        state.badgeCount = state.msg_badgeCount + state.event_badgeCount + state.manualEventsList_badgeCount + state.client_badgeCount + state.group_badgeCount;
+        state.badgeCount = state.msg_badgeCount + state.event_badgeCount + 
+        state.manualEventsList_badgeCount + state.client_badgeCount + 
+            state.group_badgeCount + state.cashier_badgeCount;
     },
     //设置候选人聊天的信息
     [types.SET_CHAT_FRIEND](state, data) {
@@ -616,6 +628,12 @@ const mutations = {
         // console.log('state.clientLastChatMsg```````````````````````````````````````', obj)
         state.clientLastChatMsg = obj
         state.client_badgeCount = obj.extMsg.count
+    },
+    //更新收银聊天
+    [types.UPDATE_CASHIERMSG](state, obj) {
+        console.log('收银未读消息state.cashierLastChatMsg```````````````````````````````````````', obj)
+        state.cashierLastChatMsg = obj
+        state.cashier_badgeCount = obj.extMsg.count
     },
     //更新聊天输入框
     [types.UPDATE_INPUTVALUE](state, val) {

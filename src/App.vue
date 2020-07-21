@@ -278,6 +278,7 @@
       </div>
       <div v-show="showClientServiceIconFlag" class="kefu" @click="inToLetter">
         <img onclick="return false" src="./assets/image/home_letter.png" alt="" class="pic_kefu">
+        <p class="kefu-text" >客服/收银</p>
       </div>
       <!-- 分身切换弹框 -->
       <div class="divide-topUp" v-show="isShowDivideList">
@@ -297,8 +298,8 @@
           </li>
         </ul>
       </div>
-      <!-- 分身信封入口 -->
-      <div class="divide_wrapper" @click="showDivideList" v-if="(divide_badgeCount || isShowDivideEnv) && userInfo.role">
+      <!-- 分身信封入口 divide_badgeCount ||isShowDivideEnv -->
+      <div class="divide_wrapper" @click="showDivideList" v-if="(hasDivideIdentity || userInfo.role)">
         <img src="./assets/image/divide_envelope.png" class="divide-env" alt="">
         <span v-show="divide_badgeCount" class="divide-dot">{{divide_badgeCount}}</span>
       </div>
@@ -330,12 +331,13 @@
   import util from "common/util";
   import api from "common/api";
   import Bus from "common/bus.js";
+import { userInfo } from 'os';
   export default {
     name: "app",
     data() {
       return {
         isShowEnvelopHandle:true,
-        isShowDivideEnv: false, //控制分身信封显示
+        // isShowDivideEnv: true, //控制分身信封显示
         isShowDivideList: false, //控制分身列表显示
         isHandleMessageFromQueue: true,
         isShowGiftGuide: false,
@@ -364,6 +366,7 @@
         appDeskCode: "",
         isDeskRoom: null,
         samedeskInfo: {},
+        hasDivideIdentity:false,
       };
     },
     computed: {
@@ -389,7 +392,7 @@
       ...mapGetters(["qrIsShow"])
     },
     created() {
-      console.log("app.vue create")
+      
       if (
         this.$route.name === "home" ||
         this.$route.name === "friend" ||
@@ -469,6 +472,7 @@
           this.clearTopUpMessage();
         }
       }, 3000);
+      console.log("this.hasDivideIdentity----",this.hasDivideIdentity)
       Bus.$on("hideEnvelop", (result) => {
         console.log("隐藏信封------", result)
       })
@@ -515,6 +519,7 @@
       //切换分身
       switchToDivide(item) {
         this.identity = sessionStorage.getItem("identity")
+        this.hasDivideIdentity = true;
         console.log("identity--------", this.identity)
         if (!this.identity) {
           let data = {
@@ -1284,11 +1289,11 @@
       },
       $route: function(newValue, oldValue) {
         // console.log("$route---------", oldValue)
-        if (newValue.name == "message") { //控制显示分身信封
-          this.isShowDivideEnv = true
-        } else {
-          this.isShowDivideEnv = false
-        }
+        // if (newValue.name == "message") { //控制显示分身信封
+        //   this.isShowDivideEnv = true
+        // } else {
+        //   this.isShowDivideEnv = false
+        // }
         if (
           newValue.name == "message" ||
           newValue.name === "chat" ||
@@ -1655,6 +1660,7 @@
       bottom: 80px;
       right: 0.1333rem;
       animation: jump 1500ms linear 500ms infinite normal;
+      text-align: center;
       @keyframes jump {
         10% {
           bottom: 80px;
@@ -1669,6 +1675,12 @@
       .pic_kefu {
         width: 1rem;
         height: 1rem;
+        
+      }
+      .kefu-text{
+        color: #317AB1;
+        width: 100%;
+        text-align: center;
       }
     }
     .divide-topUp {

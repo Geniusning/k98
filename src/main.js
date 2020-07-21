@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-10 11:45:29
+ * @Last Modified time: 2020-07-20 19:05:19
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -45,7 +45,8 @@ new Vue({
   },
   created() {
     this.deskCode = util.GetQueryString("deskCode")
-    this.saveDeskCode(this.deskCode)
+    this.deskId = util.GetQueryString("deskID")
+    this.saveDeskCode(this.deskCode, this.deskId)
     this.getUserInfo(); //获取用户信息
   },
   mounted() {
@@ -303,6 +304,10 @@ new Vue({
         this.addFriendEvtObj(result)
         this.updateClientMsg(result.content)
         this.addBange()
+      } else if (result.msgCode === 28){
+        this.addFriendEvtObj(result)
+        this.updateCashierMsg(result.content)
+        this.addBange()
       } else if (result.msgCode === 21){
         this.addFriendEvtObj(result)
       } else if (result.msgCode === 22) {
@@ -406,6 +411,7 @@ new Vue({
       getStaffCouponInfo: "GETSTAFFCOUPONINFO",//存储员工送券活动数据
       setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
       updateClientMsg: "UPDATE_CLIENTMSG", //推送更新客服消息
+      updateCashierMsg: "UPDATE_CASHIERMSG", //推送更新收银消息
       saveQrCode: "SAVEQRCODE",
       getRecommentList: "GET_RECOMMENTLIST", //获取店长推荐
       connect_websocket: "CONNECT_WEBSOCKET",
@@ -427,7 +433,7 @@ new Vue({
       LoadL98Setting: "L98OTHERSETTING", //加载功能控制开关
       loadSameDeskInfo: "GETSAMEDESKINFO", //加载同一个桌贴游戏信息
       addDivideNum: "ADDDIVIDENUM", //累加分身未读消息
-      saveDeskCode: "SAVEDESKCODE",//保存桌贴号
+      saveDeskCode: "SAVEDESKCODE",//保存桌贴号,桌号id
     }),
     ...mapActions({
       //getFriendEvt: "get_FriendEvt"

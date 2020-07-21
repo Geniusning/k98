@@ -1,5 +1,7 @@
 const state = {
+    checkQrCode:{},//买单核销码
     deskCode:null, //桌贴号
+    deskId:null, //桌字id
     staffCouponInfo:{},  //保存员工送券活动
     focusThumbTimes:30,   //关注的用户点赞次数
     unfocusThumbTimes:10,//未关注用户的点赞次数
@@ -34,6 +36,7 @@ const state = {
     gift_badgeCount: 0, //送礼事件未读消息
     game_badgeCount: 0, //约战事件未读消息
     client_badgeCount:0,// 客服未读消息
+    cashier_badgeCount:0,// 收银未读消息
     divide_badgeCount:0,//分身未读消息
     group_badgeCount:0,//群发通知
     manualEventsList_badgeCount:0,//约战，送礼，点赞未读消息数量
@@ -41,6 +44,7 @@ const state = {
     chatFriendObj_id: "", //动态获取聊天对象的id
     LastChatMsg: {}, //聊天列表
     clientLastChatMsg:{},//客服推送消息
+    cashierLastChatMsg:{},//收银推送消息
     inputValue: "", //聊天输入框内容
     socket: null,
     friendListCursor: 0, //候选人浮标

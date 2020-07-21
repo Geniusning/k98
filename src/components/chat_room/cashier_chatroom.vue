@@ -1,6 +1,13 @@
 <template>
 	<transition name="fade">
 		<div id="chat" class="chatRoom">
+			<div class="bg" v-show="isShowAccount" @click="closeMoneyBg">
+				<div class="account_statement_wrapper" v-show="isShowAccount">
+					<input type="number" placeholder="请输入消费金额" class="preMoney" v-model="preMoney">
+					<input type="number" placeholder="请输入实际金额" class="actMoney" v-model="actMoney">
+					<button class="account_btn">确定</button>
+				</div>
+			</div>
 			<div class="chat_nav">
 				<div class="back_box">
 					<img onclick="return false" src="../../assets/image/back_chat.png" alt="" class="back_arrow" @click="goBack">
@@ -26,19 +33,19 @@
 				<scroll ref="listView" class="chat_content" :scrollHeight="scrollHeight" :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
 					<ul class="chat_list" ref="chatList">
 						<li class="clearfix chatListItem" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" :key="index" v-for="(item,index) in componentChatList">
-							<div v-if="item.type==1" class="message_wrapper">
+							<div v-if="item.type===1" class="message_wrapper">
 								<div class="person_box">
 									<h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
 									<!-- <h2 class="name">{{item.time}}</h2> -->
 									<img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:clientImg" alt="" class="avatar" v-if="item.friend">
-									<img onclick="return false" :src="item.fromIconURI?item.fromIconURI:clientImg" alt="" class="avatar" v-else>
+									<img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:clientImg" alt="" class="avatar" v-else>
 								</div>
 								<div class="message_box">
 									<span v-show="item.type===1" class="arrow"></span>
 									<p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message"></p>
 								</div>
 							</div>
-							<div v-if="item.type==2" class="message_wrapper">
+							<div v-else-if="item.type===2" class="message_wrapper">
 								<div class="person_box">
 									<h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
 									<img :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:clientImg" alt="" class="avatar" v-if="item.friend">
@@ -49,7 +56,7 @@
 									<img :src="item.message" @load="onImgLoaded" alt="" class="messRecordPic" ref="picture">
 								</div>
 							</div>
-							<div v-if="item.type==3" class="message_wrapper cashier_wrapper">
+							<div v-else-if="item.type===3" class="message_wrapper cashier_wrapper">
 								<div>
 									<div class="person_box">
 										<h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
@@ -58,13 +65,15 @@
 									</div>
 									<div class="message_box">
 										<span v-show="item.type===3" class="arrow" style="background:none"></span>
-										<p class="message" style="word-break: break-all;"><span style="color:red;font-size:18px">118号</span>，申请用如下卡券买单</p>
+										<p class="message" style="word-break: break-all;">
+											<span style="color:red;font-size:18px">台/房号:118号</span>，申请用如下卡券买单
+										</p>
 									</div>
 								</div>
-								<div v-if="item.userCouponInfo" class="couponInfo" :class="{'vipmbg':item.userCouponInfo.coupon.type=='月卡券','viptbg':item.userCouponInfo.coupon.type=='次卡券' }">
+								<div style="margin-top:8px;" v-if="item.userCouponInfo" class="couponInfo" :class="{'vipmbg':item.userCouponInfo.coupon.type=='月卡券','viptbg':item.userCouponInfo.coupon.type=='次卡券' }">
 									<div class="myleft">
 										<p class="discount_type_text">{{item.userCouponInfo.coupon.type}}</p>
-										<p class="yuE" v-show="item.userCouponInfo.usingTimes>0">剩{{item.usingTimes}}次</p>
+										<p class="yuE" v-show="item.userCouponInfo.usingTimes>0">剩{{item.userCouponInfo.usingTimes}}次</p>
 									</div>
 									<div class="mycenter" style="color:#FDDC69" v-show="item.userCouponInfo.coupon.type=='月卡券' ||item.userCouponInfo.coupon.type=='次卡券'">
 										<div class="discount_theme clearfix">
@@ -112,15 +121,41 @@
 									</div>
 									<div class="myright">
 										<div v-if="isCashierFlag">
-											<button v-if="!item.isHandle" class="reject" @click="check(item.userCouponInfo,false)">拒绝</button>
-											<button v-if="!item.isHandle" class="agree" @click="check(item.userCouponInfo,true)">同意</button>
-											<p class="result" v-if="item.isHandle">处理人</p>
-											<p class="result-people" v-if="item.isHandle">周杰伦</p>
+											<button v-if="!item.isHandle" class="reject" @click="check(item,false)">拒绝</button>
+											<button v-if="!item.isHandle" class="agree" @click="check(item,true)">同意</button>
+											<p class="result" v-if="item.isHandle">核销人</p>
+											<p class="result-people" style="color:red" v-if="item.isHandle">{{item.checkPeople?item.checkPeople:userInfo.nickname}}</p>
 										</div>
 										<div v-else>
 											<p v-if="!item.isHandle" class="auditing">待审核</p>
-											<p v-else class="auditing">已处理</p>
+											<p v-else class="auditing">已审核</p>
 										</div>
+									</div>
+								</div>
+							</div>
+							<div v-else-if="item.type===4" class="account_statement">
+								<div class="account_wrapper">
+									<div class="account_line">
+										<article class="line-title">台/房号：</article>
+										<span class="deskCode">118</span>
+										<span class="date">07/12 18:45</span>
+									</div>
+									<div class="account_line">
+										<article class="line-title">消费金额：</article>
+										<span class="money">888元</span>
+									</div>
+									<div class="account_line">
+										<article class="line-title">卡券名称：</article>
+										<span class="cardname">折扣券8折</span>
+									</div>
+									<div class="account_line">
+										<article class="line-title">实收金额：</article>
+										<span class="realMoney">666元</span>
+									</div>
+									<div class="account_remar">
+										<article class="line-title">自助买单须知：</article>
+										<p class="p1">1.点最下栏<span class="receiveBtn">收款码</span>输入实收金额买单</p>
+										<p class="p2">2.支付后,点最下栏<span class="payBtn">已付款</span>通知收银查收</p>
 									</div>
 								</div>
 							</div>
@@ -130,7 +165,7 @@
 			</div>
 			<div class="input_wrapper">
 				<div class="input_area clearfix">
-					<input type="text" ref="sendWrapper" id="send_message" class="send_message" @focus.prevent="myfocus" v-model="input_value">
+					<input type="number" ref="sendWrapper" id="send_message" class="send_message" @focus.prevent="myfocus" v-model="input_value">
 					<div @click="send" class="action_box clearfix" :class="{active:flag}">
 						<img src="../../assets/image/plane.png" alt="" class="icon_plane fl">
 						<span class="send fl" ref="send">发送</span>
@@ -146,7 +181,15 @@
 						</li>
 						<li class="item fl">
 							<img onclick="return false" src="../../assets/image/chat_pic.png" alt="">
-							<input type="file" class="file" accept="image/*" @change="uploadImage">
+							<input type="file" class="file" accept="image/gif,image/jpeg,image/jpg,image/png" @change="uploadImage">
+						</li>
+						<li class=" fl">
+							<button v-if="isCashierFlag" class="cashier-l" @click="showAccountStateMent">对账单</button>
+							<button v-else class="cashier-l">收款码</button>
+						</li>
+						<li class=" fl">
+							<button v-if="isCashierFlag" class="cashier-r">已收款</button>
+							<button v-else class="cashier-r">已付款</button>
 						</li>
 					</ul>
 				</div>
@@ -210,6 +253,9 @@
 		},
 		data() {
 			return {
+				isShowAccount: false,
+				preMoney: "",
+				actMoney: "",
 				clientImg: require("../../assets/image/home_letter.png"),
 				isCashierFlag: false,
 				sendingTimes: 0,
@@ -273,7 +319,7 @@
 				componentChatList: [],
 				isscroll: true,
 				cashierEndCursor: 0,
-				isLoadMore: false
+				isLoadMore: false,
 				// isLoading: false
 			};
 		},
@@ -326,7 +372,7 @@
 			...mapState([
 				"userInfo",
 				"staticChatFriendObj",
-				"clientLastChatMsg",
+				"cashierLastChatMsg",
 				"inputValue",
 				"socket",
 				"alreadyFriendListcursor",
@@ -336,10 +382,34 @@
 			...mapGetters(["qrIsShow"])
 		},
 		methods: {
-			check(couponInfo, flag) {
-				console.log("couponInfo--------", couponInfo)
-				api.setOffUserCoupon(couponInfo.id, this.staticChatFriendObj.openid, flag).then(res => {
+			closeMoneyBg(){
+					this.isShowAccount = false
+			},
+			showAccountStateMent() {
+				this.isShowAccount = true
+			},
+			check(item, flag) {
+				console.log("item--------", item)
+				console.log("item.userCouponInfo--------", item.userCouponInfo)
+				item.isHandle = true
+				let data = {
+					cashierID: this.$route.params.from,
+					couponUserID: this.$route.params.to,
+					userCouponID: item.userCouponInfo.id,
+					setOffWay: 2,
+					isAgree: flag,
+					operationTime: new Date().getTime()
+				}
+				api.setOffUserCoupon(data).then(res => {
 					console.log("核销结果----", res)
+					if (res.errCode === 0) {
+						if (flag) {
+							this.input_value = "同意核销。您可以买单啦！"
+						} else {
+							this.input_value = "对不起，不能用券，未达到使用条件"
+						}
+						this.send()
+					}
 				})
 			},
 			onImgLoaded() {
@@ -384,6 +454,7 @@
 				};
 				api.loadCashierChatMsg(data).then(res => {
 						return new Promise((resolve, reject) => {
+							console.log("收银员消息---res", res)
 							var resultMessList = res.messages;
 							this.cashierEndCursor = res.cursor;
 							this.clientList = res.messages;
@@ -396,11 +467,11 @@
 									this.componentChatList.push({
 										message: msg.content,
 										friend: msg.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
-										type: 3,
+										type: msg.type,
+										// type: 4,
 										time: util.timestampToTime(msg.stime),
 										from: msg.from,
 										chatMsgID: msg.id,
-										fromIconURI: msg.fromIconURI,
 										isHandle: msg.isHandle,
 										userCouponInfo: msg.userCoupon
 									});
@@ -411,11 +482,11 @@
 									this.componentChatList.unshift({
 										message: msg.content,
 										friend: msg.from === this.staticChatFriendObj.openid ? 1 : 0, //1为朋友，0为自己,
-										type: 3,
+										type: msg.type,
+										// type: 4,
 										time: util.timestampToTime(msg.stime),
 										from: msg.from,
 										chatMsgID: msg.id,
-										fromIconURI: msg.fromIconURI,
 										isHandle: msg.isHandle,
 										userCouponInfo: msg.userCoupon
 									});
@@ -471,12 +542,7 @@
 					for (let i = 0; i < emotionArr.length; i++) {
 						for (var j = 0; j < this.emotionList.length; j++) {
 							if (this.input_value.indexOf(this.emotionList[j].name) !== -1) {
-								this.input_value = this.input_value.replace(
-									reg,
-									`<img src=${
-						                  this.emotionList[j].num
-						                } style="vertical-align: -6px;">`
-								);
+								this.input_value = this.input_value.replace(reg, `<img src=${this.emotionList[j].num} style="vertical-align: -6px;">`);
 							}
 						}
 					}
@@ -488,21 +554,19 @@
 					friend: 0,
 					type: 1,
 					time: util.timestampToTime(new Date().getTime()),
-					fromIconURI: this.userInfo.headimgurl
 				});
 				let messObj = {
-					to: this.isCashierFlag ?
-						this.staticChatFriendObj.openid : this.staticChatFriendObj.CliSerID,
+					to: this.isCashierFlag ? this.staticChatFriendObj.openid : this.staticChatFriendObj.CashierID,
 					content: this.input_value,
 					type: 1,
-					from: this.isCashierFlag ?
-						this.staticChatFriendObj.CliSerID : this.userInfo.openid,
-					fromIconURI: this.userInfo.headimgurl
+					from: this.isCashierFlag ? this.staticChatFriendObj.CashierID : this.userInfo.openid,
 				};
+				console.log("this.isCashierFlag----", this.isCashierFlag)
+				console.log("messObj----", messObj)
 				let textMessObj = JSON.stringify(messObj);
 				let decc1 = new TextEncoder("utf-8");
 				let result = decc1.encode(textMessObj);
-				api.sendChatMsgCliSer(result).then(res => {
+				api.sendTextCashier(result).then(res => {
 					this.emotionShow = false;
 					this.expressionShow = false;
 					let childNodes = this.$refs.chatList.childNodes;
@@ -512,14 +576,8 @@
 				// if (this.clientList.length > 5) {
 				this.$nextTick(function() {
 					let childNodes = this.$refs.chatList.childNodes;
-					// let chatListHeight = 0;
-					// childNodes.forEach(item => {
-					//   chatListHeight += item.clientHeight;
-					// });
-					// this.scrollHeight = chatListHeight;
 					this.$refs.listView.refresh();
 					this.$refs.listView.scrollBy(0, -childNodes[0].clientHeight - 20);
-					// this.$refs.listView.scrollBy(0, -childNodes-10);
 				});
 				// }
 			},
@@ -527,6 +585,13 @@
 			uploadImage(e) {
 				if (!e.target.files[0]) {
 					return;
+				}
+				if (e.target.files[0].type === "video/mp4") {
+					this.$vux.toast.text(
+						"你所选的文件格式不符合，请重新选择",
+						"middle"
+					);
+					return
 				}
 				console.log("点击发送图片");
 				let vm = this;
@@ -544,11 +609,9 @@
 						console.log("dataURL--------", dataURL);
 						if (vm.isCashierFlag) {
 							console.log(vm.staticChatFriendObj);
-							api
-								.sendImageCliSer(
-									vm.userInfo.headimgurl,
+							api.sendImageCashier(
 									vm.staticChatFriendObj.openid,
-									vm.staticChatFriendObj.CliSerID,
+									vm.staticChatFriendObj.CashierID,
 									filename,
 									dataURL
 								)
@@ -563,10 +626,8 @@
 									vm.$refs.listView.refresh();
 								});
 						} else {
-							api
-								.sendImageCliSer(
-									vm.staticChatFriendObj.headimgurl,
-									vm.staticChatFriendObj.CliSerID,
+							api.sendImageCashier(
+									vm.staticChatFriendObj.CashierID,
 									vm.userInfo.openid,
 									filename,
 									dataURL
@@ -667,12 +728,10 @@
 			})
 		},
 		watch: {
-			clientLastChatMsg: function(newValue) {
-				console.log(newValue);
+			cashierLastChatMsg: function(newValue) {
+				console.log("cashierLastChatMsg----------", newValue);
 				let messageInfo = newValue.extMsg.lastMsg;
-				messageInfo["nickname"] = newValue.fromInfo.nickname;
 				messageInfo["to"] = newValue.extMsg.lastMsg.to;
-				console.log("客服页面的lastchatMsg------------", messageInfo);
 				this.componentChatList.push({
 					message: messageInfo.content ? messageInfo.content : "",
 					friend: 1, //1为朋友，0为自己
@@ -724,6 +783,42 @@
 		height: 100%;
 		display: flex;
 		flex-direction: column;
+		.bg {
+			z-index: 9;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			position: fixed;
+			background-color: rgba(0, 0, 0, 0.2);
+			.account_statement_wrapper {
+				position: fixed;
+				display: flex;
+				top: 20%;
+				justify-content: space-around;
+				align-items: center;
+				flex-direction: column;
+				width: 100%;
+				height: 5rem;
+				background-color: #fff;
+				.preMoney,
+				.actMoney {
+					width: 4rem;
+					height: .5rem;
+					border: none;
+					border-bottom: 1px solid #ccc;
+					text-indent: 0.1333rem;
+				}
+				.account_btn {
+					padding: 0.2667rem 0.4rem;
+					border: none;
+					width: 2rem;
+					border-radius: 6px;
+					background: -webkit-linear-gradient(top, #FEDC00, #E69900);
+					color: #fff;
+				}
+			}
+		}
 		.chat_nav {
 			height: 1.1733rem;
 			box-sizing: border-box;
@@ -814,6 +909,82 @@
 								background-image: url("../../assets/image/discount_vipt_bg.png");
 								background-repeat: no-repeat;
 								background-size: 100% 100%;
+							}
+						}
+						.account_statement {
+							margin: 0 auto;
+							background-image: url("../../assets/image/autoCheck_bg.png");
+							background-repeat: no-repeat;
+							width: 6rem;
+							height: 8.8rem;
+							background-size: 100% 100%;
+							overflow: hidden;
+							.account_wrapper {
+								margin-top: 1.7rem;
+								padding: 0 0.4rem;
+								.account_line {
+									display: flex;
+									align-items: center;
+									margin-bottom: 0.5rem;
+									font-weight: 900;
+									.line-title {
+										color: #875728;
+										font-size: 16px;
+									}
+									.deskCode {
+										margin-left: 0.1rem;
+										font-size: 16px;
+										color: #875728;
+									}
+									.date {
+										margin-left: 0.4rem;
+										font-size: 14px;
+										color: #875728;
+									}
+									.money {
+										font-size: 20px;
+										color: #922222;
+										font-weight: 800;
+									}
+									.cardname {
+										font-size: 17px;
+										color: #922222;
+										font-weight: 800;
+									}
+									.realMoney {
+										font-size: 20px;
+										color: #922222;
+										font-weight: 800;
+									}
+								}
+								.account_remar {
+									.line-title {
+										font-size: 16px;
+										font-weight: 600;
+										color: #9A7656;
+										margin-bottom: 4px;
+									}
+									.p1,
+									.p2 {
+										font-size: 14px;
+										font-weight: 400;
+										color: #9A7656;
+									}
+									.receiveBtn {
+										padding: 0.08rem 0.1067rem;
+										background-color: #EB5D57;
+										color: #fff;
+										border-radius: 4px;
+										margin: 0 5px;
+									}
+									.payBtn {
+										padding: 0.08rem 0.1067rem;
+										background-color: #80D491;
+										color: #fff;
+										border-radius: 4px;
+										margin: 0 5px;
+									}
+								}
 							}
 						}
 					}
@@ -1003,6 +1174,19 @@
 							width: 0.5333rem;
 							height: 0.5333rem;
 						}
+					}
+					.cashier-l,
+					.cashier-r {
+						background-color: #EB5D57;
+						color: #fff;
+						border-radius: 4px;
+						padding: 0.18rem 0.2667rem;
+						border: none;
+						margin-right: .46rem;
+						margin-top: .1rem;
+					}
+					.cashier-r {
+						background-color: #80D491;
 					}
 				}
 			} // 表情区域

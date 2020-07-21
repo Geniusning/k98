@@ -3,11 +3,11 @@
     <div class="card_detail">
       <my-header title="卡券详情" bg="#fff"></my-header>
       <!-- <div class="discount_pic vux-1px-t"> 
-                            <div class="banner_bg">
-                                <div class="desc">入场送一扎啤酒</div>
-                                <p class="time">截止日期：2018.5.5-2018-6-5</p>
-                            </div>
-                        </div> -->
+                                    <div class="banner_bg">
+                                        <div class="desc">入场送一扎啤酒</div>
+                                        <p class="time">截止日期：2018.5.5-2018-6-5</p>
+                                    </div>
+                                </div> -->
       <div class="QRcode_wrapper">
         <p class="desc">到店核销时 请出示此二维码或点击<span @click="lauchCheckOutCoupon" class="check">发起核销</span></p>
         <!-- <img src="../../assets/image/QRcode.png" alt="" class="QR_pic"> -->
@@ -53,11 +53,11 @@
         envelopeText: "",
         startTime: "",
         cashierID: "",
-        checkoutCouponInfo: {}
+        checkoutCouponInfo: {},
       };
     },
     computed: {
-      ...mapState(["userInfo","deskCode"])
+      ...mapState(["userInfo", "deskCode", "checkQrCode", "deskId"])
     },
     mounted() {
       let startTime = new Date();
@@ -74,8 +74,16 @@
       this.couponId = this.$route.params.id;
       this.loadUserCouponByID()
       this.loadCashierList()
+      this.loadQRCode()
     },
     methods: {
+      //加载自助买单二维码
+      loadQRCode() {
+        api.loadQRCode().then(res => {
+          console.log("自助买单二维码信息---", res)
+          this.saveCheckQrCode(res.info)
+        })
+      },
       loadUserCouponByID() {
         api.loadUserCouponByID(this.couponId).then(res => {
           if (res.errCode === 0) {
@@ -125,43 +133,58 @@
           this.isShowEnvelope = false;
         }, 2000);
       },
-      lauchCheckOutCoupon() {
-        api.launchSetOffUserCoupon(this.couponId).then(res => {
-          console.log(res)
-          if (res.errCode === 0) {
-            this.acquireWaitGetCoupons()
-            this._animationToast("已发起核销，待收银同意确认")
-            let data = {
-              from: this.userInfo.openid,
-              to: this.cashierID,
-              stime: new Date().getTime(),
-              openID: this.userInfo.openid,
-              userCouponID: this.checkoutCouponInfo.id
-            }
-            api.sendToCashier(data).then(res => {
-              console.log("通知收银员结账---", res)
-              setTimeout(() => {
-                this.$router.push({
-                  name: "cashierChat",
-                  params:{
-                    from:this.userInfo.openid,
-                    to:this.cashierID,
-                    deskCode:this.deskCode,
-                     isCashier: false,
-                  }
-                })
-              }, 500);
+      async lauchCheckOutCoupon() {
+        let res1 = await api.launchSetOffUserCoupon(this.couponId)
+        console.log(res1)
+        if (res1.errCode === 0) {
+          this.acquireWaitGetCoupons()
+          this._animationToast("已发起核销，待收银同意确认")
+          // setTimeout(() => {
+          //   this.$router.push({
+          //     name: "cashierChat",
+          //     params: {
+          //       from: this.userInfo.openid,
+          //       to: this.cashierID,
+          //       deskCode: this.deskCode,
+          //       isCashier: false,
+          //     }
+          //   })
+          // }, 500);
+        } else if (res1.errCode === 1) {
+          this._animationToast("已核销完毕")
+        } else if (res1.errCode === 1018) {
+          this._animationToast("您已发起核销，请稍等")
+        }
+        let data = {
+          deskid: this.deskId || "fefd338f-b59c-49c0-b918-5ed3d28e4cd1",
+          deskcode: this.deskCode || 1,
+          payuserid: this.userInfo.openid,
+          payuserheadimgurl: this.userInfo.nickname,
+          usercouponid: this.checkoutCouponInfo.id,
+          usercouponname: util.returnDiscountContent(this.couponObj),
+          qrcodename: this.checkQrCode.Name,
+          content:`台/房号:${this.deskCode}`
+        }
+        let res2 = await api.launchSelfPay(data)
+        if (res.errCode) {
+          setTimeout(() => {
+            this.$router.push({
+              name: "cashierChat",
+              params: {
+                from: this.userInfo.openid,
+                to: this.cashierID,
+                deskCode: this.deskCode,
+                isCashier: false,
+                cashierId:res.info.id //账单id
+              }
             })
-          } else if (res.errCode === 1) {
-            this._animationToast("已核销完毕")
-          } else if (res.errCode === 1018) {
-            this._animationToast("您已发起核销，请稍等")
-          }
-        })
+          }, 500);
+        }
       },
       ...mapMutations({
         addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
         judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
+        saveCheckQrCode: "SAVECHECKQRCODE", //保存买单码
       })
     },
     components: {

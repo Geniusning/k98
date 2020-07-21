@@ -31,7 +31,7 @@
                   <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
                   <!-- <h2 class="name">{{item.time}}</h2> -->
                   <img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:clientImg" alt class="avatar" v-if="item.friend">
-                  <img onclick="return false" :src="item.fromIconURI?item.fromIconURI:clientImg" alt class="avatar" v-else>
+                  <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:clientImg" alt class="avatar" v-else>
                 </div>
                 <div class="message_box">
                   <span v-show="item.type===1" class="arrow"></span>
@@ -75,7 +75,7 @@
             </li>
             <li class="item fl">
               <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
-              <input type="file" class="file" accept="image/*" @change="uploadImage">
+              <input type="file" class="file" accept="image/gif,image/jpeg,image/jpg,image/png"  @change="uploadImage">
             </li>
             <!--  -->
             <li class="item fl" style="padding:0" v-if="isClientFlag"  @click="sendStaffCouponToUser">
@@ -521,6 +521,13 @@
         if (!e.target.files[0]) {
           return;
         }
+        if (e.target.files[0].type === "video/mp4") {
+					this.$vux.toast.text(
+						"你所选的文件格式不符合，请重新选择",
+						"middle"
+					);
+					return
+				}
         console.log("点击发送图片");
         let vm = this;
         lrz(e.target.files[0], {

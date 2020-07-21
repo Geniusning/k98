@@ -304,14 +304,14 @@
         //    this.$vux.toast.text('请到店使用', 'middle')
         //   return
         // }
-        if (!this.userInfo.isSubscribe) {
-          this.changeQrCodeText({
-            title: "长按关注，以便管理、核销优惠券",
-            bottomText: "会员特权:领福利、交群友、参活动"
-          });
-          this.showQrcode(true);
-          return;
-        }
+        // if (!this.userInfo.isSubscribe) {
+        //   this.changeQrCodeText({
+        //     title: "长按关注，以便管理、核销优惠券",
+        //     bottomText: "会员特权:领福利、交群友、参活动"
+        //   });
+        //   this.showQrcode(true);
+        //   return;
+        // }
         this.$router.push({
           path: `/card/${id}`
         });

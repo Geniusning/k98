@@ -8,7 +8,7 @@
         </div>
         <div class="file-box">
           <p class="text">更换头像</p>
-          <input type="file" class="file" @change="uploadAvatar">
+          <input type="file" accept="image/gif,image/jpeg,image/jpg,image/png" class="file" @change="uploadAvatar">
         </div>
       </div>
       <div class="dailyLifePhoto-wrapper">
@@ -20,7 +20,7 @@
           </li>
           <li class="photo" v-show="isShowAddImg">
             <img src="../../assets/image/add_pic.png" alt="" class="imgItem">
-            <input type="file" accept="image/*" class="imageBtn" @change="uploadLifePic">
+            <input type="file" accept="image/gif,image/jpeg,image/jpg,image/png" class="imageBtn" @change="uploadLifePic">
           </li>
         </ul>
         <!-- <button class="btn" style="margin-top:10px" @click="uploadAllLifePicBtn">保存</button> -->
@@ -94,10 +94,17 @@
       //选择上传生活照
       uploadLifePic(e) {
         let _this = this;
-        this.uploadAvatarShow = false;
         let file = e.target.files[0];
         this.lifePicName = file.name;
         console.log("file------", file)
+        if (file.type === "video/mp4") {
+          this.$vux.toast.text(
+            "你所选的文件格式不符合，请重新选择",
+            "middle"
+          );
+          return
+        }
+        this.uploadAvatarShow = false;
         lrz(e.target.files[0], {
           quality: 0.4
         }).then(compressedImg => {
@@ -159,9 +166,17 @@
       },
       //选择头像图片
       uploadAvatar(e) {
-        this.uploadAvatarShow = true;
         let file = e.target.files[0];
+        console.log("file----", file)
+        if (file.type === "video/mp4") {
+          this.$vux.toast.text(
+            "你所选的文件格式不符合，请重新选择",
+            "middle"
+          );
+          return
+        }
         this.fileName = file.name;
+        this.uploadAvatarShow = true;
         let _this = this;
         let reader = new FileReader();
         reader.readAsDataURL(file);

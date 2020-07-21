@@ -162,7 +162,7 @@
                   <div class="thunb_box clearfix">
                     <!-- <p class="count fl">{{item.distance}}</p> -->
                   </div>
-                  <div style="margin-left:.3rem" class="show_detail_btn" @click="goToFriShop(item)">
+                  <div style="margin-left:.3rem" class="receive_btn" @click="goToFriShop(item)">
                     领&nbsp;&nbsp;&nbsp;取
                   </div>
                 </div>
@@ -356,6 +356,7 @@ import { clearInterval } from 'timers';
         this.isShow_bg = true;
       }
       this.loadClientServiceList();
+      this.loadCashierList();
       setTimeout(() => {
         // console.log('门店logo--------------------', this.shopSettingInfo.image)
         let _url = window.location.href;
@@ -476,24 +477,37 @@ import { clearInterval } from 'timers';
         api.loadClientServiceList(phone).then(res => {
           console.log("客服----------------", res);
           if (res.CliSerID && !res.uerInfos) {
-            this.isClientListFlag = true;
-            this.clientTitleFlag = true;
-            this.clientObj = res;
             unReadCount = res.unReadMsgCount;
           } else {
-            this.customerObj = res;
             var tempArr = res.uerInfos;
             if (tempArr.length > 0) {
               tempArr.forEach((client, index) => {
                 unReadCount += client.unReadMsgCount;
               });
-              // this.clientServiceList = tempArr
-              // console.log("客服列表-------------", this.clientServiceList)
               this.getClientUnreadCount(unReadCount);
               this.addBandge();
             }
           }
         });
+      },
+      //加载收银员列表
+      loadCashierList() {
+        api.loadCashierList().then(res => {
+          console.log("收银员列表---", res)
+          let unReadCount = 0
+          if (!res.uerInfos) { //普通用户进入
+            unReadCount = res.unReadMsgCount
+          } else { //收银员进入
+            var tempArr = res.uerInfos
+            if (tempArr.length > 0) {
+              tempArr.forEach((client, index) => {
+                unReadCount += client.unReadMsgCount
+              })
+            }
+          }
+          this.getCashierUnreadCount(unReadCount)
+          this.addBandge()
+        })
       },
       gotoCardList() {
         this.$router.push({
@@ -761,6 +775,7 @@ import { clearInterval } from 'timers';
         getRecommentList: "GET_RECOMMENTLIST",
         addBandge: "ADD_BADGE", //动态变化未读消息数量
         getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量
+         getCashierUnreadCount: "GETCASHIERUNREADCOUNT", //收银未读消息数量
         clearTopUpData: "CLEARTOPUPDATA",
         addMessageIntoQueue: "ADDMESSAGEQUEUE"
       }),
@@ -1848,13 +1863,14 @@ import { clearInterval } from 'timers';
                 background: -webkit-linear-gradient( left, #fff800, #fef200, #fccc00, #fbbc00);
                 color: #1d1d1d;
                 border-radius: 0.08rem;
+                font-size: .32rem;
               }
             }
-            .show_detail_btn {
+            .receive_btn {
               width: 1.4rem;
               text-align: center;
               padding: 0.1067rem;
-              // letter-spacing: 5px;
+              font-size: .32rem;
               line-height: 0.5067rem; // background: @baseColor;
               background: -webkit-linear-gradient( left, #fff800, #fef200, #fccc00, #fbbc00);
               color: #1d1d1d;

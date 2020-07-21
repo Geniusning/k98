@@ -7,7 +7,7 @@
       <div class="btn_box clearfix">
         <div :class="{active:isShowTab==0}" class="fri_btn fl" @click="selectList(0)">好友<i class="dot" v-show="msg_badgeCount"></i></div>
         <div :class="{active:isShowTab==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
-        <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount"></i>{{clientTitleFlag?"客服/收银":"留言/结账"}}</div>
+        <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount || cashier_badgeCount"></i>{{clientTitleFlag?"客服/收银":"留言/结账"}}</div>
         <div :class="{active:isShowTab==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="group_badgeCount"></i></div>
       </div>
     </div>
@@ -127,8 +127,8 @@
       </scroll>
       <!-- 客服通知 -->
       <scroll ref="clientScroll" :data="clientServiceList" v-else-if="isShowTab===2">
-        <ul v-if="isClientListFlag" class="message_list">
-          <li class="item vux-1px-b" @click="ChatToClient">
+        <ul class="message_list">
+          <li v-if="!isClientListFlag" class="item vux-1px-b" @click="ChatToClient">
             <div class="info_message">
               <div class="avatar">
                 <img :src="clientImg" alt="">
@@ -141,26 +141,26 @@
               </div>
             </div>
           </li>
-          <li class="item vux-1px-b" @click="userToCashierChat">
+          <li v-if="!isCashierListFlag" class="item vux-1px-b" @click="userToCashierChat">
             <div class="info_message">
               <div class="avatar">
-                <img :src="clientImg" alt="">
-                <i class="dot" v-cloak v-show="clientObj.unReadMsgCount && client_badgeCount"></i>
+                <img :src="cashierImg" alt="">
+                <i class="dot" v-cloak v-show="cashier_badgeCount"></i>
               </div>
               <div class="name_and_message">
                 <p class="name" style="font-weight:800;font-size:15px">收银员</p>
-                <button class="discount-pay">有券买单</button>
+                <button class="discount-pay" @click.stop="goToCard">有券买单</button>
                 <button class="noDiscount-pay">无券买单</button>
               </div>
             </div>
           </li>
         </ul>
-        <ul v-else class="message_list">
-          <li class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
+        <ul class="message_list">
+          <li v-if="isClientListFlag" class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
             <div class="info_message">
               <div class="avatar">
                 <img :src="item.headimgurl?item.headimgurl:clientImg" alt="">
-                <i class="dot" v-cloak v-show="item.unReadMsgCount && client_badgeCount"></i>
+                <i class="dot" v-cloak v-show="item.unReadMsgCount"></i>
               </div>
               <div class="name_and_message">
                 <div class="personStatus">
@@ -174,12 +174,12 @@
               </div>
             </div>
           </li>
-          <li class="item vux-1px-b" style="width:100%;text-align:center;height:30px;line-height:22px;font-size:16px;font-weight:900">收银情况</li>
-          <li class="item vux-1px-b" @click="cashierChat(item)" v-for="(item,index) in cashierServiceList" :key="index">
+          <!-- <li class="item vux-1px-b" style="width:100%;text-align:center;height:30px;line-height:22px;font-size:16px;font-weight:900">收银情况</li> -->
+          <li v-if="isCashierListFlag" class="item vux-1px-b" @click="cashierChat(item)" v-for="(item,index) in cashierServiceList" :key="index">
             <div class="info_message">
               <div class="avatar">
-                <img :src="item.headimgurl?item.headimgurl:clientImg" alt="">
-                <i class="dot" v-cloak v-show="item.unReadMsgCount && client_badgeCount"></i>
+                <img :src="item.headimgurl?item.headimgurl:cashierImg" alt="">
+                <i class="dot" v-cloak v-show="item.unReadMsgCount"></i>
               </div>
               <div class="name_and_message">
                 <div class="personStatus">
@@ -193,7 +193,7 @@
               </div>
             </div>
           </li>
-          <p v-show="!clientServiceList.length" class="noContent">未有访客留言</p>
+          <p v-show="(!clientServiceList.length && isClientListFlag)" class="noContent">未有留言者</p>
         </ul>
       </scroll>
       <!-- 通知 -->
@@ -285,7 +285,7 @@
         isShowDivideList: false,
         divideList: [],
         isShowQrCode: true,
-        isClientListFlag: false, //判断是否是客服
+        isClientListFlag: true, //判断是否是客服
         isCashierListFlag: true, //判断是否是收银员
         clientTitleFlag: false,
         clientObj: {}, //客服对象
@@ -293,6 +293,7 @@
         cashierObj: {}, //收银对象
         divideAvartar: require('../../assets/image/divide_add_avatar.png'),
         clientImg: require("../../assets/image/home_letter.png"),
+        cashierImg: require("../../assets/image/cashierIcon.png"),
         color: "#ffd800",
         isShowTab: 2, //最上面tab切换
         selected_num: 0,
@@ -321,6 +322,10 @@
         next(vm => {
           vm.isShowTab = 3;
         });
+      } else if (from.params.type === "cashier") {
+        next(vm => {
+          vm.isShowTab = 2;
+        });
       } else if (from.name === "shareNew") {
         next(vm => {
           vm.isShowTab = 3;
@@ -346,16 +351,12 @@
           vm.isShowTab = 0;
         });
       }
-      //  else if (from.name === "welfare") {
-      //   next(vm => {
-      //     vm.isShowTab = 3;
-      //   });
-      // }
     },
     beforeRouteUpdate(to, from, next) {
       console.log("beforeRouteUpdate---------", from)
-      if (from.name === "clientChat" || from.name === 'chat') {
+      if (from.name === "clientChat" || from.name === 'chat' || from.name==="cashierChat") {
         this.loadClientServiceList()
+         this.loadCashierList() 
       }
       next()
     },
@@ -371,6 +372,7 @@
         "manualEventsList_badgeCount",
         "userInfo",
         "client_badgeCount",
+        "cashier_badgeCount",
         "qrCode",
         "shareUrl",
         "divide_badgeCount",
@@ -410,6 +412,14 @@
       delDivide(targetId) {
         api.delIdentity(targetId).then(res => {
           console.log("删除结果-----", res)
+        })
+      },
+      goToCard(){
+        this.$router.push({
+          name:"card",
+          params:{
+            type:"cashier"
+          }
         })
       },
       //删除群发通知
@@ -532,7 +542,7 @@
         api.loadClientServiceList(phone).then(res => {
           console.log("客服----------------", res)
           if (res.CliSerID && !res.uerInfos) { //用户进入
-            this.isClientListFlag = true
+            this.isClientListFlag = false
             this.clientTitleFlag = true
             this.clientObj = res
             unReadCount = this.clientObj.unReadMsgCount
@@ -592,6 +602,8 @@
               console.log("客服列表-------------", this.cashierServiceList)
             }
           }
+          this.getCashierUnreadCount(unReadCount)
+          this.addBandge()
         })
       },
       //瞅瞅他好友信息
@@ -770,7 +782,7 @@
         this.greeting_flag = index;
         console.log(index);
       },
-      //进入客服发消息
+      //以用户身份进入客服发消息
       ChatToClient() {
         this.clientObj["openid"] = this.clientObj.CliSerID
         this.setChatFriend(this.clientObj);
@@ -781,7 +793,7 @@
           }
         });
       },
-      //进入留言用户发消息
+      //以客服身份进入页面
       clientChat(client) {
         client["CliSerID"] = this.customerObj.CliSerID
         this.setChatFriend(client);
@@ -795,6 +807,7 @@
       },
       //以收银员身份进入结账页面
       cashierChat(user) {
+        user["CashierID"] = this.cashierObj.CashierID
         this.setChatFriend(user);
         this.$router.push({
           name: "cashierChat",
@@ -807,7 +820,7 @@
       },
       //以用户身份进入结账页面
       userToCashierChat() {
-        this.cashierObj["openid"] = this.cashierObj.CliSerID
+        this.cashierObj["openid"] = this.cashierObj.CashierID
         this.setChatFriend(this.cashierObj);
         this.$router.push({
           name: "cashierChat",
@@ -841,6 +854,7 @@
         // clearChallengeGameList: "CLEAR_CHALLENGEGAMELIST",//清空约战记录
         addBandge: "ADD_BADGE", //动态变化未读消息数量
         getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量
+        getCashierUnreadCount: "GETCASHIERUNREADCOUNT", //收银未读消息数量
         changeQrCodeText: "CHANGEQRCODETEXT",
         showQrcode: "SHOW_QRCODE",
         addDivideUnreadCount: "ADDDIVIDEUNREADMSG" //累计分身未读消息
@@ -1310,7 +1324,7 @@
             img {
               width: 1.4133rem;
               height: 1.4133rem;
-              border-radius: 50%;
+              border-radius: 10%;
             }
             .dot {
               .dot(0, 0);
@@ -1329,19 +1343,23 @@
               right: -4rem;
               background: red;
               color: #fff;
-              padding: 0.08rem 0.1333rem;
+              padding: 0.08rem 0.2333rem;
               border: none;
               border-radius: 4px;
+              font-size: 14px;
+              border: 1px solid red;
             }
             .noDiscount-pay {
               position: absolute;
               top: 0.4rem;
               right: -6rem;
-              background: #ccc;
+              background: #fff;
               color: red;
               border: none;
+              border: 1px solid red;
               border-radius: 4px;
-              padding: 0.08rem 0.1333rem;
+              padding: 0.08rem 0.2333rem;
+              font-size: 14px;
             }
             .time {
               position: absolute;
@@ -1490,7 +1508,7 @@
             img {
               width: 1.4133rem;
               height: 1.4133rem;
-              border-radius: 50%;
+              border-radius: 10%;
             }
             .dot {
               .dot(0, 0);

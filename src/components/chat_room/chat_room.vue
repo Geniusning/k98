@@ -200,7 +200,7 @@
             </li>
             <li class="item fl">
               <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
-              <input type="file" class="file" accept="image/*" @change="uploadImage">
+              <input type="file" class="file" accept="image/gif,image/jpeg,image/jpg,image/png" @change="uploadImage">
             </li>
             <li class="item fl" @click="laHei(true)">
               <img onclick="return false" src="../../assets/image/hei.png" alt>
@@ -1208,6 +1208,13 @@
       },
       // 发送图片
       uploadImage(e) {
+        if (e.target.files[0].type === "video/mp4") {
+					this.$vux.toast.text(
+						"你所选的文件格式不符合，请重新选择",
+						"middle"
+					);
+					return
+				}
         this.sendingTimes++;
         if (this.sendingTimes > 3) {
           this.$vux.toast.text("朋友一直未回复，稍后再发送吧", "middle");

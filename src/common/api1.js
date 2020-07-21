@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:45:54 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-09 17:23:31
+ * @Last Modified time: 2020-07-20 17:12:57
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,10 +24,118 @@ axios.interceptors.request.use(
     }
 )
 let api = {};
-//核销优惠券
-api.setOffUserCoupon = function (userCouponID, openId, agree) {
+//加载自助买单流水信息
+api.loadSelfPay = function () {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/setOffUserCoupon?setOffWay=2&userCouponID=${userCouponID}&userID=${openId}&agree=${agree}`).then((res) => {
+        axios.get(Url.commonUrl + `/api/loadSelfPay`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//收银员确认收款
+api.confirmSelfPay = function () {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/confirmSelfPay`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//用户已付款
+api.paymentSelfPay = function () {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/paymentSelfPay`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//收银员确认对账单，并写入对话消息，账单ID、消费金额、实付金额 必填
+api.matchSelfPay = function (data) {
+    return new Promise((resolve, reject) => {
+        axios.post(Url.commonUrl + `/api/matchSelfPay`, data).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//加载指定ID的自助买单信息，即刚刚用户发起自助买单的信息
+api.loadSelfPayByID = function () {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/loadSelfPayByID`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//用户发起自助买单
+api.launchSelfPay = function (data) {
+    return new Promise((resolve, reject) => {
+        axios.post(Url.commonUrl + `/api/launchSelfPay`, data).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//加载自助买单二维码
+api.loadQRCode = function () {
+    return new Promise((resolve, reject) => {
+        axios.post(Url.commonUrl + `/api/loadQRCode`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//收银员发送图片消息
+api.sendImageCashier = function (to, from, fileName, data) {
+    return new Promise((resolve, reject) => {
+        axios.post(Url.commonUrl + `/api/sendImageCashier?to=${to}&from=${from}&fileName=${fileName}`, data).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//收银员发送语言消息
+api.sendTextCashier = function (data) {
+    return new Promise((resolve, reject) => {
+        axios.post(Url.commonUrl + `/api/sendTextCashier`, data).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//核销优惠券
+api.setOffUserCoupon = function (data) {
+    return new Promise((resolve, reject) => {
+        axios.post(Url.commonUrl + `/api/setOffUserCoupon`,data).then((res) => {
             if (res.status == 200) {
                 resolve(res.data)
             }
@@ -52,18 +160,6 @@ api.loadCashierChatMsg = function (data) {
 api.loadCashierList = function () {
     return new Promise((resolve, reject) => {
         axios.get(Url.commonUrl + `/api/loadCashierList`).then((res) => {
-            if (res.status == 200) {
-                resolve(res.data)
-            }
-        }).catch(err => {
-            reject(err)
-        })
-    })
-}
-//发送核销消息给收银员
-api.sendToCashier = function (data) {
-    return new Promise((resolve, reject) => {
-        axios.post(Url.commonUrl + `/api/sendToCashier`, data).then((res) => {
             if (res.status == 200) {
                 resolve(res.data)
             }
