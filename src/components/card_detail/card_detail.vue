@@ -2,14 +2,17 @@
   <transition name="slider">
     <div class="card_detail">
       <my-header title="卡券详情" bg="#fff"></my-header>
-      <!-- <div class="discount_pic vux-1px-t"> 
-                                    <div class="banner_bg">
-                                        <div class="desc">入场送一扎啤酒</div>
-                                        <p class="time">截止日期：2018.5.5-2018-6-5</p>
-                                    </div>
-                                </div> -->
+      <!-- <div class="discount_pic vux-1px-t">
+                                      <div class="banner_bg">
+                                          <div class="desc">入场送一扎啤酒</div>
+                                          <p class="time">截止日期：2018.5.5-2018-6-5</p>
+                                      </div>
+      </div>-->
       <div class="QRcode_wrapper">
-        <p class="desc">到店核销时 请出示此二维码或点击<span @click="lauchCheckOutCoupon" class="check">发起核销</span></p>
+        <p class="desc">
+          到店核销时 请出示此二维码或点击
+          <span @click="lauchCheckOutCoupon" class="check">发起核销</span>
+        </p>
         <!-- <img src="../../assets/image/QRcode.png" alt="" class="QR_pic"> -->
         <canvas id="canvas" ref="canvas" style="width:220px;height:220px;"></canvas>
         <div class="card_number">券码：{{couponObj.codeNum}}</div>
@@ -27,283 +30,276 @@
       </div>
       <!-- 信封弹框 -->
       <transition name="appear">
-        <envelope v-show="isShowEnvelope" :text='envelopeText'></envelope>
+        <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
       </transition>
     </div>
   </transition>
 </template>
 
 <script type='text/ecmascript-6'>
-  import util from "common/util";
-  import myHeader from "../../base/myheader/myheader";
-  import QRcode from 'qrcode';
-  import api from 'common/api';
-  import envelope from 'base/envelope/envelope';
-  import {
-    mapState,
-    mapMutations
-  } from 'vuex'
-  export default {
-    data() {
-      return {
-        couponId: "",
-        qrUrl: "",
-        couponObj: {},
-        isShowEnvelope: false, //信封弹框判断
-        envelopeText: "",
-        startTime: "",
-        cashierID: "",
-        checkoutCouponInfo: {},
-      };
+import util from "common/util";
+import myHeader from "../../base/myheader/myheader";
+import QRcode from "qrcode";
+import api from "common/api";
+import envelope from "base/envelope/envelope";
+import { mapState, mapMutations } from "vuex";
+export default {
+  data() {
+    return {
+      couponId: "",
+      qrUrl: "",
+      couponObj: {},
+      isShowEnvelope: false, //信封弹框判断
+      envelopeText: "",
+      startTime: "",
+      cashierID: "",
+      checkoutCouponInfo: {}
+    };
+  },
+  computed: {
+    ...mapState(["userInfo", "deskCode", "checkQrCode", "deskId"])
+  },
+  mounted() {
+    let startTime = new Date();
+    let year = startTime.getFullYear();
+    let month = startTime.getMonth() + 1;
+    let date = startTime.getDate();
+    this.startTime = `${year}-${month > 10 ? month : "0" + month}-${
+      date > 10 ? date : "0" + date
+    }`;
+    console.log(this.startTime);
+    var canvas = "";
+    this.$nextTick(function() {
+      // DOM操作
+      canvas = document.getElementById("canvas");
+    });
+    this.couponId = this.$route.params.id;
+    this.loadUserCouponByID();
+    this.loadCashierList();
+    this.loadQRCode();
+  },
+  methods: {
+    //加载自助买单二维码
+    loadQRCode() {
+      api.loadQRCode().then(res => {
+        console.log("自助买单二维码信息---", res);
+        this.saveCheckQrCode(res.info);
+      });
     },
-    computed: {
-      ...mapState(["userInfo", "deskCode", "checkQrCode", "deskId"])
+    loadUserCouponByID() {
+      api.loadUserCouponByID(this.couponId).then(res => {
+        if (res.errCode === 0) {
+          console.log(res);
+          this.qrUrl = res.verifyURL;
+          this.couponObj = res.userCoupon.coupon;
+          this.checkoutCouponInfo = res.userCoupon;
+          this.couponObj["codeNum"] =
+            util.prefixZero(this.couponObj.type, 1) +
+            "-" +
+            util.prefixZero(this.couponObj.batch, 3) +
+            "-" +
+            util.prefixZero(this.couponObj.acquireNum, 7);
+          QRcode.toCanvas(canvas, this.qrUrl, error => {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log("success");
+            }
+          });
+        }
+      });
     },
-    mounted() {
-      let startTime = new Date();
-      let year = startTime.getFullYear();
-      let month = startTime.getMonth() + 1;
-      let date = startTime.getDate();
-      this.startTime = `${year}-${month>10?month:'0'+month}-${date>10?date:'0'+date}`;
-      console.log(this.startTime)
-      var canvas = ""
-      this.$nextTick(function() {
-        // DOM操作
-        canvas = document.getElementById('canvas')
-      })
-      this.couponId = this.$route.params.id;
-      this.loadUserCouponByID()
-      this.loadCashierList()
-      this.loadQRCode()
-    },
-    methods: {
-      //加载自助买单二维码
-      loadQRCode() {
-        api.loadQRCode().then(res => {
-          console.log("自助买单二维码信息---", res)
-          this.saveCheckQrCode(res.info)
-        })
-      },
-      loadUserCouponByID() {
-        api.loadUserCouponByID(this.couponId).then(res => {
-          if (res.errCode === 0) {
-            console.log(res)
-            this.qrUrl = res.verifyURL
-            this.couponObj = res.userCoupon.coupon
-            this.checkoutCouponInfo = res.userCoupon
-            this.couponObj["codeNum"] =
-              util.prefixZero(this.couponObj.type, 1) + "-" +
-              util.prefixZero(this.couponObj.batch, 3) + "-" +
-              util.prefixZero(this.couponObj.acquireNum, 7)
-            QRcode.toCanvas(canvas, this.qrUrl, (error) => {
-              if (error) {
-                console.log(error)
-              } else {
-                console.log('success')
-              }
-            })
-          }
-        })
-      },
-      //自动领取优惠券
-      acquireWaitGetCoupons() {
-        let condition = 1 //channel为1是AI优惠券类型
-        api.acquireWaitGetCoupons(condition).then(res => {
+    //自动领取优惠券
+    acquireWaitGetCoupons() {
+      let condition = 1; //channel为1是AI优惠券类型
+      api
+        .acquireWaitGetCoupons(condition)
+        .then(res => {
           if (!res.coupons) {
-            return
+            return;
           }
           if (res.coupons.length > 0) {
-            this._animationToast("店长再送您一张优惠券,谢谢光临")
+            this._animationToast("店长再送您一张优惠券,谢谢光临");
           }
-        }).catch(err => {
-          console.log(err)
         })
-      },
-      //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
-      loadCashierList() {
-        api.loadCashierList().then(res => {
-          console.log("收银员列表---", res)
-          this.cashierID = res.CashierID
-        })
-      },
-      _animationToast(text) {
-        this.isShowEnvelope = true;
-        this.envelopeText = text
-        setTimeout(() => {
-          this.isShowEnvelope = false;
-        }, 2000);
-      },
-      async lauchCheckOutCoupon() {
-        let res1 = await api.launchSetOffUserCoupon(this.couponId)
-        console.log(res1)
-        if (res1.errCode === 0) {
-          this.acquireWaitGetCoupons()
-          this._animationToast("已发起核销，待收银同意确认")
-          // setTimeout(() => {
-          //   this.$router.push({
-          //     name: "cashierChat",
-          //     params: {
-          //       from: this.userInfo.openid,
-          //       to: this.cashierID,
-          //       deskCode: this.deskCode,
-          //       isCashier: false,
-          //     }
-          //   })
-          // }, 500);
-        } else if (res1.errCode === 1) {
-          this._animationToast("已核销完毕")
-        } else if (res1.errCode === 1018) {
-          this._animationToast("您已发起核销，请稍等")
-        }
-        let data = {
-          deskid: this.deskId || "fefd338f-b59c-49c0-b918-5ed3d28e4cd1",
-          deskcode: this.deskCode || 1,
-          payuserid: this.userInfo.openid,
-          payuserheadimgurl: this.userInfo.nickname,
-          usercouponid: this.checkoutCouponInfo.id,
-          usercouponname: util.returnDiscountContent(this.couponObj),
-          qrcodename: this.checkQrCode.Name,
-          content:`台/房号:${this.deskCode}`
-        }
-        let res2 = await api.launchSelfPay(data)
-        if (res.errCode) {
-          setTimeout(() => {
-            this.$router.push({
-              name: "cashierChat",
-              params: {
-                from: this.userInfo.openid,
-                to: this.cashierID,
-                deskCode: this.deskCode,
-                isCashier: false,
-                cashierId:res.info.id //账单id
-              }
-            })
-          }, 500);
-        }
-      },
-      ...mapMutations({
-        addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
-        judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
-        saveCheckQrCode: "SAVECHECKQRCODE", //保存买单码
-      })
+        .catch(err => {
+          console.log(err);
+        });
     },
-    components: {
-      myHeader,
-      envelope
-    }
-  };
+    //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
+    loadCashierList() {
+      api.loadCashierList().then(res => {
+        console.log("收银员列表---", res);
+        this.cashierID = res.CashierID;
+      });
+    },
+    _animationToast(text) {
+      this.isShowEnvelope = true;
+      this.envelopeText = text;
+      setTimeout(() => {
+        this.isShowEnvelope = false;
+      }, 2000);
+    },
+    async lauchCheckOutCoupon() {
+      let data = {
+        deskid: this.deskId || "fefd338f-b59c-49c0-b918-5ed3d28e4cd1",
+        deskcode: this.deskCode || 1,
+        payuserid: this.userInfo.openid,
+        payuserheadimgurl: this.userInfo.nickname,
+        usercouponid: this.checkoutCouponInfo.id,
+        usercouponname: util.returnDiscountContent(this.couponObj),
+        qrcodename: this.checkQrCode.Name,
+        content: `台/房号:${this.deskCode ? this.deskCode : 1}`
+      };
+      let res1 = await api.launchSetOffUserCoupon(data);
+      console.log("res1------------", res1);
+      if (res1.errCode === 0) {
+        this.acquireWaitGetCoupons();
+        this._animationToast("已发起核销，待收银同意确认");
+      } else if (res1.errCode === 1) {
+        this._animationToast("已核销完毕");
+      } else if (res1.errCode === 1018) {
+        this._animationToast("您已发起核销，请稍等");
+      }
+      let res2 = await api.launchSelfPay(data);
+      console.log("res2-------------", res2);
+      if (res2.errCode === 0) {
+        setTimeout(() => {
+          this.$router.push({
+            name: "cashierChat",
+            params: {
+              from: this.userInfo.openid,
+              to: this.cashierID,
+              deskCode: this.deskCode,
+              isCashier: false
+            }
+          });
+        }, 500);
+      }
+    },
+    ...mapMutations({
+      addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
+      judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
+      saveCheckQrCode: "SAVECHECKQRCODE" //保存买单码
+    })
+  },
+  components: {
+    myHeader,
+    envelope
+  }
+};
 </script>
 
 <style scoped lang='less'>
-  @import "../../assets/less/variable.less";
-  @import "../../assets/less/mixin.less";
-  .card_detail {
-    position: fixed;
-    z-index: 100;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #eee;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    overflow-y: auto;
-    .discount_pic {
-      padding: 0.2667rem;
-      background: #fff;
-      height: 2.9067rem;
+@import "../../assets/less/variable.less";
+@import "../../assets/less/mixin.less";
+.card_detail {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #eee;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  overflow-y: auto;
+  .discount_pic {
+    padding: 0.2667rem;
+    background: #fff;
+    height: 2.9067rem;
+    box-sizing: border-box;
+    .banner_bg {
+      width: 9.4933rem;
+      height: 2.3733rem;
+      .bg("../../assets/image/discount1.png");
+      padding-top: 1.1333rem;
       box-sizing: border-box;
-      .banner_bg {
-        width: 9.4933rem;
-        height: 2.3733rem;
-        .bg("../../assets/image/discount1.png");
-        padding-top: 1.1333rem;
-        box-sizing: border-box;
-        .desc {
-          border-radius: 0.1333rem;
-          background: #fbeca2;
-          box-sizing: border-box;
-          width: 4.64rem;
-          padding: 0.1033rem 1rem;
-          color: #666;
-          margin-left: 2.4rem;
-          font-size: 0.3733rem;
-        }
-        .time {
-          margin-top: 0.1rem;
-          width: 100%;
-          text-align: center;
-          font-size: 0.32rem;
-          color: #fff;
-        }
-      }
-    }
-    .QRcode_wrapper {
-      padding-top: 0.4rem;
-      padding-bottom: 0.2rem;
-      margin-top: 0.2667rem; // height: 7.1333rem;
-      width: 100%;
-      background: #fff;
-      box-sizing: border-box;
-      text-align: center;
       .desc {
-        width: 100%;
-        text-align: center;
+        border-radius: 0.1333rem;
+        background: #fbeca2;
+        box-sizing: border-box;
+        width: 4.64rem;
+        padding: 0.1033rem 1rem;
+        color: #666;
+        margin-left: 2.4rem;
         font-size: 0.3733rem;
-        color: #4b4b4b;
-        .check {
-          font-size: .5rem;
-          text-decoration: underline;
-          color: red;
-        }
       }
-      .QR_pic {
-        width: 4.7733rem;
-        height: 4.7733rem;
-        margin: 0.3067rem 2.5933rem;
-      }
-      .card_number {
-        font-size: .4rem;
-        letter-spacing: .16rem;
-        text-align: center;
-      }
-    }
-    .infoMessage_wrapper {
-      box-sizing: border-box;
-      padding-top: 0.4rem;
-      background: #fff;
-      margin-top: 0.2667rem;
-      flex: 1;
-      padding-bottom: 0.6667rem;
-      .infoList {
+      .time {
+        margin-top: 0.1rem;
         width: 100%;
-        padding-left: 0.5667rem;
-        .item {
-          margin-top: 0.2267rem;
-          .title {
-            font-size: 0.4267rem;
-            font-weight: 700;
-            color: #4b4b4b;
-            margin-bottom: 0.1133rem;
-          }
-          .desc {
-            font-size: 0.3733rem;
-            color: #666;
-            margin-top: 0.1333rem;
-          }
+        text-align: center;
+        font-size: 0.32rem;
+        color: #fff;
+      }
+    }
+  }
+  .QRcode_wrapper {
+    padding-top: 0.4rem;
+    padding-bottom: 0.2rem;
+    margin-top: 0.2667rem; // height: 7.1333rem;
+    width: 100%;
+    background: #fff;
+    box-sizing: border-box;
+    text-align: center;
+    .desc {
+      width: 100%;
+      text-align: center;
+      font-size: 0.3733rem;
+      color: #4b4b4b;
+      .check {
+        font-size: 0.5rem;
+        text-decoration: underline;
+        color: red;
+      }
+    }
+    .QR_pic {
+      width: 4.7733rem;
+      height: 4.7733rem;
+      margin: 0.3067rem 2.5933rem;
+    }
+    .card_number {
+      font-size: 0.4rem;
+      letter-spacing: 0.16rem;
+      text-align: center;
+    }
+  }
+  .infoMessage_wrapper {
+    box-sizing: border-box;
+    padding-top: 0.4rem;
+    background: #fff;
+    margin-top: 0.2667rem;
+    flex: 1;
+    padding-bottom: 0.6667rem;
+    .infoList {
+      width: 100%;
+      padding-left: 0.5667rem;
+      .item {
+        margin-top: 0.2267rem;
+        .title {
+          font-size: 0.4267rem;
+          font-weight: 700;
+          color: #4b4b4b;
+          margin-bottom: 0.1133rem;
+        }
+        .desc {
+          font-size: 0.3733rem;
+          color: #666;
+          margin-top: 0.1333rem;
         }
       }
     }
-  } // 切换动画
-  .slider-enter-active,
-  .slider-leave-active {
-    transition: all 0.3s;
   }
-  .slider-enter {
-    transform: translate3d(100%, 0, 0);
-  }
-  .slider-leave-to {
-    transform: translate3d(-100%, 0, 0);
-  }
+} // 切换动画
+.slider-enter-active,
+.slider-leave-active {
+  transition: all 0.3s;
+}
+.slider-enter {
+  transform: translate3d(100%, 0, 0);
+}
+.slider-leave-to {
+  transform: translate3d(-100%, 0, 0);
+}
 </style>

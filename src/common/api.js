@@ -47,9 +47,9 @@ api.loadSelfPay = function () {
   })
 }
 //收银员确认收款
-api.confirmSelfPay = function () {
+api.confirmSelfPay = function (data) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/confirmSelfPay?tk=${Url.tk}`).then((res) => {
+    axios.post(Url.commonUrl + `/api/confirmSelfPay?tk=${Url.tk}`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -59,9 +59,9 @@ api.confirmSelfPay = function () {
   })
 }
 //用户已付款
-api.paymentSelfPay = function () {
+api.paymentSelfPay = function (data) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/paymentSelfPay?tk=${Url.tk}`).then((res) => {
+    axios.post(Url.commonUrl + `/api/paymentSelfPay?tk=${Url.tk}`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -74,7 +74,7 @@ api.paymentSelfPay = function () {
 //收银员确认对账单，并写入对话消息，账单ID、消费金额、实付金额 必填
 api.matchSelfPay = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/matchSelfPay?tk=${Url.tk}`,data).then((res) => {
+    axios.post(Url.commonUrl + `/api/matchSelfPay?tk=${Url.tk}`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -84,9 +84,9 @@ api.matchSelfPay = function (data) {
   })
 }
 //加载指定ID的自助买单信息，即刚刚用户发起自助买单的信息
-api.loadSelfPayByID = function () {
+api.loadSelfPayByID = function (id) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadSelfPayByID?tk=${Url.tk}`).then((res) => {
+    axios.get(Url.commonUrl + `/api/loadSelfPayByID?tk=${Url.tk}&id=${id}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -120,7 +120,7 @@ api.loadQRCode = function () {
   })
 }
 //收银员发送图片消息
-api.sendImageCashier = function (to, from,fileName,data) {
+api.sendImageCashier = function (to, from, fileName, data) {
   return new Promise((resolve, reject) => {
     axios.post(Url.commonUrl + `/api/sendImageCashier?tk=${Url.tk}&to=${to}&from=${from}&fileName=${fileName}`, data).then((res) => {
       if (res.status == 200) {
@@ -146,7 +146,7 @@ api.sendTextCashier = function (data) {
 //核销优惠券
 api.setOffUserCoupon = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/setOffUserCoupon?tk=${Url.tk}`,data).then((res) => {
+    axios.post(Url.commonUrl + `/api/setOffUserCoupon?tk=${Url.tk}`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -158,7 +158,7 @@ api.setOffUserCoupon = function (data) {
 //拉取收银员消息
 api.loadCashierChatMsg = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/loadCashierChatMsg?tk=${Url.tk}`,data).then((res) => {
+    axios.post(Url.commonUrl + `/api/loadCashierChatMsg?tk=${Url.tk}`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -754,7 +754,7 @@ api.updateAvatar = function (fileName, param) {
   })
 }
 //上传生活照
-api.updateLifePic = function (fileName,param) {
+api.updateLifePic = function (fileName, param) {
   return new Promise((resolve, reject) => {
     axios.post(Url.commonUrl + `/api/uploadLifePhoto?tk=${Url.tk}&fileName=${fileName}`, param)
       .then(res => {
@@ -1039,9 +1039,9 @@ api.loadUserCouponByID = function (couponId) {
   })
 }
 //C端主动发起核销发起
-api.launchSetOffUserCoupon = function (couponId) {
+api.launchSetOffUserCoupon = function (data) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/launchSetOffUserCoupon?userCouponID=${couponId}&tk=${Url.tk}`)
+    axios.post(`/api/launchSetOffUserCoupon?tk=${Url.tk}`, data)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

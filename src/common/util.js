@@ -1,6 +1,6 @@
 /*
- * @Author: nicky 
- * @Date: 2018-04-12 15:44:17 
+ * @Author: nicky
+ * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
  * @Last Modified time: 2020-06-02 09:47:40
  */
@@ -45,7 +45,7 @@ util.WcLogin = function (openId) {
   var img = document.createElement('img')
 }
 
-//微信code 获取 openid  
+//微信code 获取 openid
 util.GetOpenIdByCode = function (code) {
   xhr = new XMLHttpRequest()
   xhr.open('POST', "http://m.tairunmh.com/mobile/mooncake/queryOpenIdByCode", true)
@@ -128,6 +128,31 @@ util.timestampToTimeNoLine = function (timestamp) {
     var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
     var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
     return Y + M + D + h + m + s;
+
+  }
+}
+//时间格式 07/12 10:00
+util.timestampToTimeNoYear = function (timestamp) {
+  if (typeof timestamp != "number") { //如果传入的不是整型就提示
+    // console.error('传入的数据不是Number类型')
+    return timestamp;
+  }
+  timestamp = Number(timestamp);
+  console.log(timestamp.toString().length)
+  if (timestamp.toString().length > 11) {
+    var date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + "/";
+    var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
+    var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+    var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes();
+    return M + D + h + m;
+  } else {
+    var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + "/";
+    var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
+    var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+    var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes();
+    return M + D + h + m;
 
   }
 }
@@ -278,19 +303,19 @@ util.prefixZero = function (num, n) {
 }
 util.returnDiscountContent = function (coupon) {
   if (parseInt(coupon.type) === 0) {
-    return  coupon.value + "元"
+    return coupon.value + "元"
   } else if (parseInt(coupon.type) === 1) {
     return coupon.content
   } else if (parseInt(coupon.type) === 2) {
-    return  coupon.value + "折"
+    return coupon.value + "折"
   } else if (parseInt(coupon.type) === 3) {
-    return  coupon.content
+    return coupon.content
   } else if (parseInt(coupon.type) === 4) {
-    return  coupon.content
+    return coupon.content
   } else if (parseInt(coupon.type) === 6) {
-    return  coupon.content
+    return coupon.content
   } else if (parseInt(coupon.type) === 7) {
-    return  coupon.content
+    return coupon.content
   }
 }
 export default util

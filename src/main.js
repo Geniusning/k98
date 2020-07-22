@@ -50,7 +50,7 @@ new Vue({
     this.getUserInfo(); //获取用户信息
   },
   mounted() {
-  
+
     this.loadAdvertisingPhoto(); //拉取首页轮播图
     this.createQrcode(); //创建二维码
     this.loadStoreSetting(); //获取门店信息
@@ -304,11 +304,11 @@ new Vue({
         this.addFriendEvtObj(result)
         this.updateClientMsg(result.content)
         this.addBange()
-      } else if (result.msgCode === 28){
+      } else if (result.msgCode === 28) {
         this.addFriendEvtObj(result)
         this.updateCashierMsg(result.content)
         this.addBange()
-      } else if (result.msgCode === 21){
+      } else if (result.msgCode === 21) {
         this.addFriendEvtObj(result)
       } else if (result.msgCode === 22) {
         this.addFriendEvtObj(result)
