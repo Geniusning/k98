@@ -144,7 +144,7 @@
 		},
 		created() {
 			this.phone = util.GetQueryString("phone")
-			console.log("this.phone----",this.phone)
+			//console.log("this.phone----",this.phone)
 			this.loadStaffCommentInfo();
 			document.body.addEventListener("focusout", () => {
 				//软键盘关闭事件
@@ -152,14 +152,14 @@
 			});
 		},
 		mounted() {
-			console.log("$route", this.$route)
+			//console.log("$route", this.$route)
 			if (!this.l98Setting.staffCommentOpen) {
 				this.$route.meta.title = "看Ta的评价"
 			}
 			this.staffInfo = JSON.parse(sessionStorage.getItem("info"));
 			this.storePhotoList = JSON.parse(sessionStorage.getItem("lifePhotoList"));
-			console.log("params---", this.$route.params.phone);
-			console.log("storePhotoList---", this.storePhotoList);
+			//console.log("params---", this.$route.params.phone);
+			//console.log("storePhotoList---", this.storePhotoList);
 			if (!this.storePhotoList) {
 				this.lifePhotolist.push({
 					url: "javascript:",
@@ -175,7 +175,7 @@
 					});
 				});
 			}
-			console.log("lifeImgList---", this.lifePhotolist);
+			//console.log("lifeImgList---", this.lifePhotolist);
 		},
 		computed: {
 			...mapState(["l98Setting", "lifeImgList", "userInfo"])
@@ -195,7 +195,7 @@
 			},
 			//点赞
 			giveThumb() {
-				console.log("!(this.l98Setting.staffCommentOpen || this.phone)---",!(this.l98Setting.staffCommentOpen || this.phone))
+				//console.log("!(this.l98Setting.staffCommentOpen || this.phone)---",!(this.l98Setting.staffCommentOpen || this.phone))
 				if (!(this.l98Setting.staffCommentOpen || this.phone)) {
 					this.$vux.toast.text(
 					"现场消费才能评论"
@@ -262,7 +262,7 @@
 					headImgUrl: this.userInfo.headimgurl
 				};
 				api.sendCommentMessage(data).then(res => {
-					console.log("发布留言----", res);
+					//console.log("发布留言----", res);
 					if (res.errCode === 0) {
 						this.loadStaffCommentInfo();
 						this.inputValue = "";
@@ -272,14 +272,14 @@
 						});
 					}
 				});
-				console.log(this.inputValue);
+				//console.log(this.inputValue);
 			},
 			selectEmtion(item) {
 				this.inputValue += item;
 			},
 			loadStaffCommentInfo() {
 				api.loadStaffCommentInfo(this.$route.params.phone ? this.$route.params.phone : this.phone).then(res => {
-					console.log("员工评价内容---", res);
+					//console.log("员工评价内容---", res);
 					if (res.errCode === 0) {
 						this.staffCommentInfo = res.staffCommentInfo;
 						this.staffCommentInfo.messageList.forEach(message => {
@@ -290,7 +290,7 @@
 							text: res.errMsg
 						});
 					}
-					console.log("this.staffCommentInfo------", this.staffCommentInfo);
+					//console.log("this.staffCommentInfo------", this.staffCommentInfo);
 				});
 			}
 		},

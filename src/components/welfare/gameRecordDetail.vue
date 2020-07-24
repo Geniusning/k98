@@ -43,20 +43,20 @@
     },
     mounted() {
       let arenaID = this.$route.params.id;
-      console.log(arenaID)
+      //console.log(arenaID)
       this._loadArenaTopRank(arenaID);
     },
     methods: {
       _loadArenaTopRank(arenaID) {
         var topNumber = 10;
         api.loadArenaTopRank(arenaID, topNumber).then(res => {
-          console.log('比赛排名详细信息------------------', res)
+          //console.log('比赛排名详细信息------------------', res)
           if (res.errCode == 0) {
             this.gameList = this._nomalizeGameList(res.userRanks) ;
             this.ownRank = res.ownRank
           }
         }).catch(err => {
-          console.log(err)
+          //console.log(err)
         })
       },
       _nomalizeGameList(list){
@@ -66,13 +66,13 @@
           //   let imgUrl = item.headURI.slice(18)
           //   item.headURI = require(`../../assets/image/${imgUrl}.png`)
           // }
-            // console.log(item.userID.indexOf("Robot"))
+            // //console.log(item.userID.indexOf("Robot"))
           if(item.userID.indexOf("Robot")===-1){
             gameList.push(item)
           }
         })
         // if(item.userID.indexOf("Robot")>)
-        console.log("gameList------------",gameList)
+        //console.log("gameList------------",gameList)
         return gameList
       }
     },

@@ -65,12 +65,12 @@ import api from "common/api";
        },
     //监听送礼面板状态
       closeIntegralPanel(flag) {
-        console.log('面板状态-----------', flag);
+        //console.log('面板状态-----------', flag);
         this.isGiftPanel = flag;
       },
        sendGift(){
            this.isGiftPanel = true
-           console.log("见面礼")
+           //console.log("见面礼")
        },
        chat(){
           this.$router.push({
@@ -88,7 +88,7 @@ import api from "common/api";
          //玩游戏
       playGame() {
         api.sentPlayGameMsg(this.staticChatFriendObj.openid).then(res => {
-          console.log('约战返回--------', res)
+          //console.log('约战返回--------', res)
           if (res.errCode == 0) {
             // this.text = "您已发出邀请  等待对方的回应";
             this.isShowEnvelope = true;

@@ -67,7 +67,7 @@ export default {
     this.startTime = `${year}-${month > 10 ? month : "0" + month}-${
       date > 10 ? date : "0" + date
     }`;
-    console.log(this.startTime);
+    //console.log(this.startTime);
     var canvas = "";
     this.$nextTick(function() {
       // DOM操作
@@ -82,14 +82,14 @@ export default {
     //加载自助买单二维码
     loadQRCode() {
       api.loadQRCode().then(res => {
-        console.log("自助买单二维码信息---", res);
+        //console.log("自助买单二维码信息---", res);
         this.saveCheckQrCode(res.info);
       });
     },
     loadUserCouponByID() {
       api.loadUserCouponByID(this.couponId).then(res => {
         if (res.errCode === 0) {
-          console.log(res);
+          //console.log(res);
           this.qrUrl = res.verifyURL;
           this.couponObj = res.userCoupon.coupon;
           this.checkoutCouponInfo = res.userCoupon;
@@ -101,9 +101,9 @@ export default {
             util.prefixZero(this.couponObj.acquireNum, 7);
           QRcode.toCanvas(canvas, this.qrUrl, error => {
             if (error) {
-              console.log(error);
+              //console.log(error);
             } else {
-              console.log("success");
+              //console.log("success");
             }
           });
         }
@@ -123,13 +123,14 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err);
+          //console.log(err);
         });
     },
     //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
     loadCashierList() {
       api.loadCashierList().then(res => {
-        console.log("收银员列表---", res);
+        //console.log("收银员列表---", res);
+        this.cashierObj = res
         this.cashierID = res.CashierID;
       });
     },
@@ -145,27 +146,17 @@ export default {
         deskid: this.deskId || "fefd338f-b59c-49c0-b918-5ed3d28e4cd1",
         deskcode: this.deskCode || 1,
         payuserid: this.userInfo.openid,
-        payuserheadimgurl: this.userInfo.nickname,
+        payuserheadimgurl: this.userInfo.headimgurl,
         usercouponid: this.checkoutCouponInfo.id,
         usercouponname: util.returnDiscountContent(this.couponObj),
         qrcodename: this.checkQrCode.Name,
-        content: `台/房号:${this.deskCode ? this.deskCode : 1}`
       };
       let res1 = await api.launchSetOffUserCoupon(data);
-      console.log("res1------------", res1);
-      if (res1.errCode === 0) {
-        this.acquireWaitGetCoupons();
-        this._animationToast("已发起核销，待收银同意确认");
-      } else if (res1.errCode === 1) {
-        this._animationToast("已核销完毕");
-      } else if (res1.errCode === 1018) {
-        this._animationToast("您已发起核销，请稍等");
-      }
-      let res2 = await api.launchSelfPay(data);
-      console.log("res2-------------", res2);
-      if (res2.errCode === 0) {
-        setTimeout(() => {
-          this.$router.push({
+      console.log("res1----",res1)
+      if (res1.errorCode === 0) {
+        this.cashierObj["openid"] = this.cashierObj.CashierID
+        this.setChatFriend(this.cashierObj);
+        this.$router.push({
             name: "cashierChat",
             params: {
               from: this.userInfo.openid,
@@ -174,13 +165,35 @@ export default {
               isCashier: false
             }
           });
-        }, 500);
+        
+        this.acquireWaitGetCoupons();
+        this._animationToast("已发起核销，待收银同意确认");
+      } else if (res1.errorCode === 1) {
+        this._animationToast("已核销完毕");
+      } else if (res1.errorCode === 1018) {
+        this._animationToast("您已发起核销，请稍等");
       }
+      // let res2 = await api.launchSelfPay(data);
+      // //console.log("res2-------------", res2);
+      // if (res2.errCode === 0) {
+      //   setTimeout(() => {
+      //     this.$router.push({
+      //       name: "cashierChat",
+      //       params: {
+      //         from: this.userInfo.openid,
+      //         to: this.cashierID,
+      //         deskCode: this.deskCode,
+      //         isCashier: false
+      //       }
+      //     });
+      //   }, 500);
+      // }
     },
     ...mapMutations({
       addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
       judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
-      saveCheckQrCode: "SAVECHECKQRCODE" //保存买单码
+      saveCheckQrCode: "SAVECHECKQRCODE", //保存买单码
+      setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
     })
   },
   components: {

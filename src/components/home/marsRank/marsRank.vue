@@ -60,35 +60,8 @@
           </div>
         </li>
       </ul>
-      <p v-else class="noData">暂无数据</p>
+      <!-- <p v-else class="noData">暂无数据</p> -->
     </scroll>
-  </div>
-  <!-- <div class="body-right" v-else>
-          <scroll ref="scrollList" class="scrollList">
-            <ul class="marsList">
-              <li class="mars-item-title">
-                <div class="title_item">头像</div>
-                <div class="title_item">名字</div>
-                <div class="title_item">杯数</div>
-                <div class="title_item">排名</div>
-              </li>
-              <li class="mars-item" v-for="(item,index) in friendList" :key="index">
-                <div class="avatar-box">
-                  <img :src="item.headImgURL" alt class="avatar">
-                </div>
-                <div class="name">{{item.nickName}}</div>
-                <div class="score">{{item.score}}</div>
-                <div class="title_item">
-                  <img v-if="index===0" src="../../../assets/image/img_rank1.png" alt class="rankIcon">
-                  <img v-else-if="index===1" src="../../../assets/image/img_rank2.png" alt class="rankIcon">
-                  <img v-else-if="index===2" src="../../../assets/image/img_rank3.png" alt class="rankIcon">
-                  <div v-else class="rank">{{index+1}}</div>
-                </div>
-              </li>
-            </ul>
-          </scroll>
-        </div>
-      </div> -->
   </div>
 </template>
 
@@ -125,14 +98,14 @@ import {mapState} from 'vuex';
           if (res.errCode === 0) {
             this.friendList = res.scoreRanking.gameScoreInfos
           }
-          console.log('拉取好友排名----------', res);
+          //console.log('拉取好友排名----------', res);
         })
       },
       _loadGameAllPeopleRanking() {
         let type = 'allPerson';
         let count = 20;
         api.loadGameScoreRanking(type, count, this.allPeopleCursor).then(res => {
-          console.log('战神榜全部排行信息----------------', res)
+          //console.log('战神榜全部排行信息----------------', res)
           this.allPeopleList = res.scoreRanking.gameScoreInfos;
           this.allPeopleCursor = res.scoreRanking.cursor;
         })

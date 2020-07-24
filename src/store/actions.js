@@ -4,7 +4,7 @@ const actions = {
     //获取候选人列表
     get_Friendlist({commit,state}, cursor,sex) {
         api.getFriendList(cursor,sex).then(res => {
-            console.log('候选人数据：·····················', res);
+            //console.log('候选人数据：·····················', res);
             commit("CHANGE_FRIENDlISTCURSOR", res.cursor);
             commit("GET_FRIENDlIST", res);
         })
@@ -12,7 +12,7 @@ const actions = {
     //获取更多候选人信息
     get_moreFriendList({commit,state}, cursor,sex) {
         api.getFriendList(cursor,sex).then(res => {
-            console.log('更多候选人数据：·····················', res);
+            //console.log('更多候选人数据：·····················', res);
             if (res.cursor == 0) {
                 commit("get_LESSTHAN10FRIENDLIST", res.candidates);
                 commit("CHANGE_FRIENDlISTCURSOR", res.cursor);
@@ -25,7 +25,7 @@ const actions = {
     //获取已经成为好友列表
     get_alreadyFriendList({commit,state}, cursor) {
         api.loadFriends().then(res => {
-            // console.log(res)
+            // //console.log(res)
             commit('GET_ALREADYFRIENDEVTLIST', {
                 data: res.friends
             });
@@ -50,7 +50,7 @@ const actions = {
     //获取店长群发通知
     get_captainMessageList({ commit }) {
         api.loadUserNotice().then(res => {
-            console.log('店长群发消息-----------------', res)
+            //console.log('店长群发消息-----------------', res)
             commit("GET_CAPTAINMESSAGELIST", { data: res.info })
             commit('ADD_BADGE')
         })

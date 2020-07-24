@@ -192,7 +192,7 @@ export default {
   methods: {
     //监听充值面板状态
     closeIntegralPanel(flag) {
-      console.log('面板状态-----------', flag);
+      //console.log('面板状态-----------', flag);
       this.isGiftPanel = flag;
     },
     //进入好友
@@ -224,16 +224,9 @@ export default {
       }
       this.isGiftPanel = true;
       this.fatherPanelIndex = 2,
-        console.log('选中的礼品-----------------', this.sendGiftList[index])
+        //console.log('选中的礼品-----------------', this.sendGiftList[index])
       this.recommendItemIndo = this.sendGiftList[index];
     },
-    //店长推荐
-    // _loadRecommends() {
-    //   api.loadRecommends().then(res => {
-    //     console.log('店长推荐数据---------------------', res)
-    //     this.integralGoodList = res.slice(0, 2);
-    //   })
-    // },
     activetyShare() {
       this.$router.push({
         name: "shareActivity"
@@ -280,7 +273,7 @@ export default {
     //签到
     sign_in() {
       api.checkIn().then(res => {
-        console.log('签到---------------------------', res);
+        //console.log('签到---------------------------', res);
         if (res.errCode === 0) {
           this.$vux.toast.show({
             text: "签到成功 +2积分",
@@ -298,37 +291,6 @@ export default {
         }
       })
     },
-    // 新增标签
-    // plusTag() {
-    //   this.showTag = true;
-    // },
-    // 保存新增标签
-    // save() {
-    //   let tag = this.$refs.tag.value;
-    //   if (!tag) {
-    //     this.$vux.toast.show({
-    //       type: "text",
-    //       width: "9rem",
-    //       text: "请输入您的个性标签"
-    //     });
-    //     return;
-    //   }
-    //   if (this.tagList.length > 4) {
-    //     this.$vux.toast.show({
-    //       type: "text",
-    //       text: "最多设置5个标签哦"
-    //     });
-    //     return;
-    //   }
-    //   this.tagList.push(tag);
-    //   console.log(this.tagList.length);
-    //   this.showTag = false;
-    //   this.$refs.tag.value = "";
-    // },
-    // 关闭标签
-    // closeTag() {
-    //   this.showTag = false;
-    // },
     showTelBind() {
       this.changeValidate(true);
     },

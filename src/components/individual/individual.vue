@@ -337,7 +337,7 @@
       this.isBattle = this.userInfo.isBattle;
       this.signature = this.userInfo.signature ? this.userInfo.signature : this.signature;
       this.userInfoTags = this.userInfo.tags.split("、")
-      console.log("this.userInfoTags---", this.userInfoTags)
+      //console.log("this.userInfoTags---", this.userInfoTags)
       this.tagList.forEach((localUseTag, index) => {
         this.userInfoTags.forEach(serverUseTag => {
           if (serverUseTag == localUseTag.name) {
@@ -350,7 +350,7 @@
     methods: {
       //隐身状态 上线不通知好友
       stealth(e) {
-        console.log(e)
+        //console.log(e)
         this.isStealth = e
       },
       //安静状态，不接受好友的上线通知
@@ -402,7 +402,7 @@
       },
       //选择标签
       selectTag(e, item, index) {
-        console.log(index);
+        //console.log(index);
         if (e.target.className.indexOf("active") == -1) {
           if (this.commonList.length > 4) {
             this.$vux.toast.show({
@@ -417,13 +417,13 @@
         } else {
           item.checked = false
           let index = this.commonList.indexOf(item.name);
-          console.log("commonList---index", index)
+          //console.log("commonList---index", index)
           this.commonList.splice(index, 1);
         }
       },
       //选择员工标签
       selectStaffTag(e, item, index) {
-        console.log(index);
+        //console.log(index);
         if(this.diyStaffTag){
           this.$vux.toast.text('已选择自定义标签','middle')
           return
@@ -441,7 +441,7 @@
             }
           })
         }
-        console.log("this.staffTag-----",this.staffTag)
+        //console.log("this.staffTag-----",this.staffTag)
       },
       //保存自定义标签
       save() {
@@ -451,7 +451,7 @@
         this.commonList = [];
         this.diyTag = "";
         this.diyStaffTag = '';
-        console.log(this.signatureList);
+        //console.log(this.signatureList);
       },
       unique(arr) {
         return Array.from(new Set(arr))
@@ -473,19 +473,19 @@
         this.diyStaffTag = '';
       },
       change(val, label) {
-        console.log("change", val);
+        //console.log("change", val);
       },
       // 显示标签弹框
       showTag() {
         this.tagShow = true;
         this.commonList = [];
-        console.log("this.userInfoTags", this.userInfoTags)
-        console.log("this.tagList", this.tagList)
+        //console.log("this.userInfoTags", this.userInfoTags)
+        //console.log("this.tagList", this.tagList)
         this.tagList.forEach((localUseTag, index) => {
           this.userInfoTags.forEach(serverUseTag => {
             if (serverUseTag == localUseTag.name) {
               localUseTag.checked = true
-              console.log("localUseTag---", localUseTag)
+              //console.log("localUseTag---", localUseTag)
               this.commonList.push(localUseTag.name)
             }
           })
@@ -500,9 +500,9 @@
         this.showPopupPickerSex = false;
       },
       onChange_S(val1) {
-        console.log(val1);
+        //console.log(val1);
         this.gender = val1[0];
-        console.log(this.gender);
+        //console.log(this.gender);
       },
       //星座选择
       onHide_C() {
@@ -555,16 +555,16 @@
                 }, 500);
               })
               .catch(err => {
-                console.log(err);
+                //console.log(err);
               });
           }
         });
         //核对员工电话
         if(this.phone != '') {
           api.verifyPhoneNumber(this.phone, this.userInfo.headimgurl).then(res => {
-            console.log('核对员工电话结果-------------------', res);
+            //console.log('核对员工电话结果-------------------', res);
           }).catch(err => {
-            console.log(err);
+            //console.log(err);
           })
         }
       },

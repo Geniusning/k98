@@ -194,7 +194,7 @@
     },
     created() {
       this.panelIndex = this.fatherPanelIndex;
-      console.log("this.panelIndex---------", this.panelIndex);
+      //console.log("this.panelIndex---------", this.panelIndex);
       this.componentGiftInfo = this.giftInfo;
       if (this.componentGiftInfo) {
         this.giftIntegral = this.componentGiftInfo.goods.integral; //店长推荐和礼品商城
@@ -260,16 +260,16 @@
     methods: {
       //员工送券
       sendCouponToUser() {
-        console.log("this.staticChatFriendObj----",this.staticChatFriendObj)
+        //console.log("this.staticChatFriendObj----",this.staticChatFriendObj)
         let ToId = this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:sessionStorage.getItem("staffCouponToId")
-        console.log("ToId-----",ToId)
+        //console.log("ToId-----",ToId)
         let data = {
           to:ToId,
           from: this.userInfo.openid,
           CouponId: this.staffCouponInfo.couponId
         }
         api.sendStaffCouponToUser(data).then(res => {
-          console.log("送券结果-------", res)
+          //console.log("送券结果-------", res)
           if(res.errCode===0){
              this.$vux.toast.text("赠送成功", "middle");
           }
@@ -277,8 +277,8 @@
       },
       //现场送
       // onlineSendGift(e) {
-      //   console.log(e.target.checked);
-      //   console.log("触发现场送");
+      //   //console.log(e.target.checked);
+      //   //console.log("触发现场送");
       // },
       closeIntegralPanel() {
         this.$emit("closeIntegralPanel", false);
@@ -327,7 +327,7 @@
       },
       //确认赠送
       confirmShopItemGift(goodID) {
-        console.log("goodId----", goodID);
+        //console.log("goodId----", goodID);
         if (this.userInfo.money < this.giftIntegral) {
           //当前积分少于项目消耗积分
           this.panelIndex = 0;
@@ -338,7 +338,7 @@
         if (this.componentConvertType == 0) {
           //店长推荐兑换
           api.convertRecommend(goodID).then(res => {
-              console.log("店长推荐兑换结果--------------", res);
+              //console.log("店长推荐兑换结果--------------", res);
               if (res.errCode && res.errCode == 1021) {
                 this.successfulText = "您已兑换";
               } else if (res.errCode == 1029) {
@@ -354,12 +354,12 @@
                   )}已存入'我的卡券'`;
             })
             .catch(err => {
-              console.log(err);
+              //console.log(err);
             });
         } else if (this.componentConvertType == 1) {
           //积分换礼品兑换
           api.convertGoods(goodID).then(res => {
-            console.log("积分换礼品兑换结果---------", res);
+            //console.log("积分换礼品兑换结果---------", res);
             if (res.errCode && res.errCode == 1021) {
               this.successfulText = "您已兑换";
             } else if (res.errCode == 1029) {
@@ -379,7 +379,7 @@
         } else if (this.componentConvertType == 2) {
           //赠送店长推荐项目
           api.sentRecommend(goodID, this.friendId).then(res => {
-            console.log("店长推荐赠送结果---------", res);
+            //console.log("店长推荐赠送结果---------", res);
             if (res.errCode == 1029) {
               this.successfulText = "积分不足";
               this.successful_desc = ``;
@@ -412,7 +412,7 @@
             this.successful_desc = `一张${util.returnDiscountType(
                   this.componentGiftInfo.coupInfo.type
                 )}已存入对方'我的卡券'`;
-            // console.log('积分赠送结果---------', res)
+            // //console.log('积分赠送结果---------', res)
           });
         } else if (this.componentConvertType == 4) {
           //赠送虚拟礼物
@@ -421,7 +421,7 @@
             to: this.friendId
           };
           api.sendGift(params).then(res => {
-            console.log("赠送礼物返回结果", res);
+            //console.log("赠送礼物返回结果", res);
             if (res.errCode === 0) {
               this.refreshUserInfo();
               this.successfulText =
@@ -455,7 +455,7 @@
       },
       refreshUserInfo() {
         api.getUserInfo("/api/loadUserInfo").then(res => {
-          console.log("个人信息-------", res);
+          //console.log("个人信息-------", res);
           this.getUserInfo(res);
           this.panelIndex = 3;
         });
@@ -467,8 +467,8 @@
       //   充值
       payForCoin(id, index, point) {
         this.moneyPoint = point;
-        console.log("this.moneyPoint---", this.moneyPoint);
-        // console.log(id);
+        //console.log("this.moneyPoint---", this.moneyPoint);
+        // //console.log(id);
         if (!this.l98Setting.integralConvertOpen) {
           this.$vux.toast.text("商家未开通本功能", "middle");
           return;
@@ -480,7 +480,7 @@
         api.createOrder(id).then(res => {
           if (res.errCode === 0) {
             let resultInfo = res.data;
-            console.log("resultInfo----------", resultInfo);
+            //console.log("resultInfo----------", resultInfo);
             let _this = this;
             WeixinJSBridge.invoke(
               "getBrandWCPayRequest", {
@@ -492,7 +492,7 @@
                 paySign: resultInfo.paySign //微信签名
               },
               res => {
-                console.log("WeixinJSBridge.invoke-res", res);
+                //console.log("WeixinJSBridge.invoke-res", res);
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   alert("微信支付成功");
@@ -503,7 +503,7 @@
                       this.panelIndex = 4;
                     })
                     .catch(err => {
-                      console.log(err);
+                      //console.log(err);
                     });
                   //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                 }

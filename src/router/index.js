@@ -18,7 +18,7 @@ import Individual from 'components/individual/individual'
 import GameDetail from 'components/game_detail/game_detail'
 import GiftDetail from 'components/gift_detail/gift_detail'
 import updateAvatar from 'components/individual/updateAvatar'
-import Award from 'components/welfare/award/award'
+// import Award from 'components/welfare/award/award'
 import ShareNew from 'components/welfare/ShareNew/ShareNew'
 import ShareActivity from 'components/welfare/shareActivity/shareActivity'
 import NewUserGetDiscount from 'components/welfare/newUserGetDiscount/newUserGetDiscount'
@@ -135,11 +135,11 @@ const router = new Router({
       title: "福利",
       keepAlive: true,
     },
-    children: [{
-      path: "award",
-      name: "award",
-      component: Award,
-    },]
+    // children: [{
+    //   path: "award",
+    //   name: "award",
+    //   component: Award,
+    // },]
   },
   {
     path: '/gameRecord',

@@ -316,7 +316,7 @@ import { clearInterval } from 'timers';
     mounted() {
       this.deskCode = util.GetQueryString("deskCode");
       this.storeName = util.GetQueryString("storeName");
-      console.log("this.storeName---", this.storeName);
+      //console.log("this.storeName---", this.storeName);
       this.resId = util.GetQueryString("resId");
       if (this.resId) {
         setTimeout(() => {
@@ -358,7 +358,7 @@ import { clearInterval } from 'timers';
       this.loadClientServiceList();
       this.loadCashierList();
       setTimeout(() => {
-        // console.log('门店logo--------------------', this.shopSettingInfo.image)
+        // //console.log('门店logo--------------------', this.shopSettingInfo.image)
         let _url = window.location.href;
         this.myShareUrl = _url.split("#")[0];
         this.gameUrl = _url.split("k98")[0];
@@ -406,9 +406,9 @@ import { clearInterval } from 'timers';
         var allianceData = {
           storeName: decodeURI(this.storeName),
         };
-        console.log("allianceData---", allianceData);
+        //console.log("allianceData---", allianceData);
         api.getAllianceCoupon(allianceData).then(res => {
-          console.log("通过友商获得的优惠券-------", res);
+          //console.log("通过友商获得的优惠券-------", res);
           if (res.errCode === 0) {
             var topUpInfo = {
               content: {
@@ -427,10 +427,10 @@ import { clearInterval } from 'timers';
             storename: decodeURI(this.storeName),
             type: 2
           };
-          console.log("data=----", data);
+          //console.log("data=----", data);
           api.statAlliCount(data).then(res => {
             if (res.errCode === 0) {
-              console.log("统计友商2数据---------", res);
+              //console.log("统计友商2数据---------", res);
             }
           });
         });
@@ -441,10 +441,10 @@ import { clearInterval } from 'timers';
           storename: shopInfo.storename,
           type: 1
         };
-        console.log("data=----", data);
+        //console.log("data=----", data);
         api.statAlliCount(data).then(res => {
           if (res.errCode === 0) {
-            console.log("统计友商数据---------", res);
+            //console.log("统计友商数据---------", res);
           }
           window.location.href = `${shopInfo.url}/k98/home?resId=${
                   shopInfo.res.id
@@ -457,7 +457,7 @@ import { clearInterval } from 'timers';
       //拉取友商物品
       loadAlliance() {
         api.loadAlliance().then(res => {
-          console.log("拉取友商物品-------", res);
+          //console.log("拉取友商物品-------", res);
           if (res.errCode === 0) {
             this.friendLeagleList = res.info.map(shop => {
               shop.distance = "<" + shop.distance.toFixed(1) + "km";
@@ -475,7 +475,7 @@ import { clearInterval } from 'timers';
         let phone = this.userInfo.phone ? this.userInfo.phone : "7777";
         var unReadCount = 0;
         api.loadClientServiceList(phone).then(res => {
-          console.log("客服----------------", res);
+          //console.log("客服----------------", res);
           if (res.CliSerID && !res.uerInfos) {
             unReadCount = res.unReadMsgCount;
           } else {
@@ -493,7 +493,7 @@ import { clearInterval } from 'timers';
       //加载收银员列表
       loadCashierList() {
         api.loadCashierList().then(res => {
-          console.log("收银员列表---", res)
+          //console.log("收银员列表---", res)
           let unReadCount = 0
           if (!res.uerInfos) { //普通用户进入
             unReadCount = res.unReadMsgCount
@@ -527,7 +527,7 @@ import { clearInterval } from 'timers';
           api
             .acquireWaitGetCoupons(condition)
             .then(res => {
-              console.log("AI优惠券------------------------------", res);
+              //console.log("AI优惠券------------------------------", res);
               if (!res.coupon) {
                 return;
               }
@@ -545,7 +545,7 @@ import { clearInterval } from 'timers';
               this.judgeMessType("discount");
             })
             .catch(err => {
-              console.log(err);
+              //console.log(err);
             });
         }, 6000);
       },
@@ -559,13 +559,13 @@ import { clearInterval } from 'timers';
       },
       //监听充值面板状态
       closeIntegralPanel(flag) {
-        console.log("面板状态-----------", flag);
+        //console.log("面板状态-----------", flag);
         this.isGiftPanel = flag;
       },
       //去游戏
       gotoPlay() {
         var identity_h = sessionStorage.getItem("identity")
-        console.log("home-identity--", identity_h)
+        //console.log("home-identity--", identity_h)
         if (identity_h) {
           let isMasterId = identity_h.indexOf("@master")
           identity_h = isMasterId > 0 ? identity_h : ''
@@ -588,13 +588,13 @@ import { clearInterval } from 'timers';
         // this.set(this.shopInfo, "name1", "hahaha")
         window.location.href = `tel://${this.shopSettingInfo.phone}`;
         api.statCalls().then(res => {
-          // console.log('打电话记录------------------', res);
+          // //console.log('打电话记录------------------', res);
         });
       },
       //判断是否已经分享过优惠券 (福利优惠券)
       // _loadInviteWaitGetCoupon() {
       //   api.loadInviteCoupon().then(res => {
-      //     console.log('邀新有礼优惠券----------------------------------:', res)
+      //     //console.log('邀新有礼优惠券----------------------------------:', res)
       //     if (res.errCode === 0 && res.coupons === null) {
       //     }
       //   })
@@ -608,7 +608,7 @@ import { clearInterval } from 'timers';
       //进入游戏
       intoReadyGame() {
         this.gameShow = false;
-        console.log("url------", `${this.gameUrl}game/?gamePath=game2`);
+        //console.log("url------", `${this.gameUrl}game/?gamePath=game2`);
         window.location.href = `${this.gameUrl}game/?gamePath=game2`;
       },
       // 关闭游戏
@@ -618,7 +618,7 @@ import { clearInterval } from 'timers';
       //拉取已经发布的比赛场
       _loadPublishArenas() {
         api.loadPublishArenas().then(res => {
-          console.log("拉取发布的比赛---------", res);
+          //console.log("拉取发布的比赛---------", res);
           var reverseArr = res.arenaInfos.reverse();
           if (reverseArr.length > 0) {
             this.game_giftInfo.firstPrize.content = util.returnDiscountContent(
@@ -632,13 +632,13 @@ import { clearInterval } from 'timers';
             );
             this.gameShow = true;
           }
-          // console.log('拉取已经发布的比赛场:', res)
+          // //console.log('拉取已经发布的比赛场:', res)
         });
       },
       //拉取首页轮播图
       // _loadAdvertisingPhoto() {
       //   api.loadAdvertisingPhoto().then(res => {
-      //     // console.log('轮播图-------------------------：', res)
+      //     // //console.log('轮播图-------------------------：', res)
       //     this.getAdvertisingImg(res.adPhotoURL);
       //     this.$nextTick(() => {
       //       let swiperList = [];
@@ -665,7 +665,7 @@ import { clearInterval } from 'timers';
             });
           });
           this.demo01_list = swiperList;
-          console.log("this.demo01_list----------", this.demo01_list);
+          //console.log("this.demo01_list----------", this.demo01_list);
         });
       },
       closeWebPage() {
@@ -696,7 +696,7 @@ import { clearInterval } from 'timers';
       //获取地图位置
       getMapPosition() {
         //获取地理位置
-        console.log("获取地理位置");
+        //console.log("获取地理位置");
         let _this = this;
         wx.getLocation({
           // type: "wgs84", // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
@@ -718,7 +718,7 @@ import { clearInterval } from 'timers';
       //获取场内场外人数
       _getInOutNum() {
         api.getInOutNum().then(res => {
-          console.log("场内外在线数-------", res);
+          //console.log("场内外在线数-------", res);
           this.inFriendNum = res.inFieldNumber;
           this.outFriendNum = res.outFiledNumber;
         });
@@ -732,7 +732,7 @@ import { clearInterval } from 'timers';
       //拉取候选人
       getAllCommunityFriend(params) {
         api.getFriendList(params).then(res => {
-          console.log("拉取候选人：·····················", res);
+          //console.log("拉取候选人：·····················", res);
           this.getFriend(res);
         });
       },
@@ -796,7 +796,7 @@ import { clearInterval } from 'timers';
         this.demo01_list = swiperList;
       },
       userInfo: function(newvalue) {
-        // console.log('newvalue--------------------', newvalue);
+        // //console.log('newvalue--------------------', newvalue);
         if (newvalue.firstLoad) {
           this.isFirstLoad = true;
         } else {
@@ -804,7 +804,7 @@ import { clearInterval } from 'timers';
         }
       },
       friendList: function(newValue) {
-        console.log("newValue-----------", newValue);
+        //console.log("newValue-----------", newValue);
         if (newValue.length < 6) {
           this.friendIconList1 = [{
               headimgurl: require("../../assets/image/avatar1.jpeg")
@@ -823,7 +823,7 @@ import { clearInterval } from 'timers';
             }
           ];
           this.friendIconList2 = this.friendIconList1
-          console.log("this.friendIconList1------", this.friendIconList1);
+          //console.log("this.friendIconList1------", this.friendIconList1);
           return;
         }
         let tempArr = this.friendList.map((item, index) => {

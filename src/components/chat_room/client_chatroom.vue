@@ -226,19 +226,19 @@
       this.isClientFlag = this.$route.params.isClient;
     },
     // mounted() {
-    //   console.log("mounted")
+    //   //console.log("mounted")
     //   this.loadChatMsgCliSer(); //获取客服聊天记录
     // },
     activated() {
       if (!(JSON.stringify(this.$route.query) === "{}")) {
         this.setChatFriend(this.$route.query.info);
       }
-      console.log("this.staticChatFriendObj", this.staticChatFriendObj);
+      //console.log("this.staticChatFriendObj", this.staticChatFriendObj);
       // this.setMsgReadCliSer(); //标识已读
       this.loadChatMsgCliSer(); //获取客服聊天记录
       // this.friendId = this.$route.params.id;
       this.isClientFlag = this.$route.params.isClient;
-      console.log("this.$route-------------", this.$route);
+      //console.log("this.$route-------------", this.$route);
       if (this.isClientFlag) {
         this.expressionList = [
           "客官，有啥吩咐？",
@@ -279,7 +279,7 @@
       //员工送券
       sendStaffCouponToUser() {
         let ToId = this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : sessionStorage.getItem("staffCouponToId")
-        console.log("ToId-----", ToId)
+        //console.log("ToId-----", ToId)
         let data = {
           to: ToId,
           from: this.userInfo.openid,
@@ -287,7 +287,7 @@
         }
         // return
         api.sendStaffCouponToUser(data).then(res => {
-          console.log("送券结果-------", res)
+          //console.log("送券结果-------", res)
           if(res.errCode===0){
              this.$vux.toast.text("赠送成功", "middle");
           }
@@ -303,7 +303,7 @@
               this.staticChatFriendObj.CliSerID
             )
             .then(res => {
-              console.log("客服消息已读------", res);
+              //console.log("客服消息已读------", res);
             });
         } else {
           api
@@ -312,12 +312,12 @@
               this.userInfo.openid
             )
             .then(res => {
-              console.log("客服消息已读------", res);
+              //console.log("客服消息已读------", res);
             });
         }
       },
       onImgLoaded() {
-        console.log("图片加载完成了");
+        //console.log("图片加载完成了");
         if (this.clientList.length > 5) {
           let childNodes = this.$refs.chatList.childNodes;
           this.$refs.listView.scrollBy(0, -(childNodes[0].clientHeight + 10));
@@ -359,7 +359,7 @@
       },
       //获取客服聊天消息记录列表
       loadChatMsgCliSer() {
-        console.log("加载留言记录时this.isClientFlag--------", this.isClientFlag);
+        //console.log("加载留言记录时this.isClientFlag--------", this.isClientFlag);
         if (this.isClientFlag) {
           //客服账号  加载聊天列表
           this._getChatMsgCliList(
@@ -383,7 +383,7 @@
               var resultMessList = res.messages;
               this.ClientEndCursor = res.cursor;
               this.clientList = res.messages;
-              console.log("客服聊天信息-----------", res);
+              //console.log("客服聊天信息-----------", res);
               var i;
               if (!this.isLoadMore) {
                 for (i = resultMessList.length - 1; i >= 0; i--) {
@@ -412,7 +412,7 @@
                   });
                 }
               }
-              console.log("客服聊天记录-------------", this.componentChatList);
+              //console.log("客服聊天记录-------------", this.componentChatList);
               resolve();
             });
           })
@@ -435,7 +435,7 @@
       //成为留言者
       addCommenter() {
         api.addCommenter().then(res => {
-          // console.log("成为留言者--------",res)
+          // //console.log("成为留言者--------",res)
         });
       },
       //发送消息事件
@@ -449,7 +449,7 @@
         //这段代码是绝壁垃圾，暂时这样吧  下次头脑清醒时再来搞,功能如下两行
         //this.input_value------ [大哭]大风歌[晕]
         // this.input_value------- <img src=/static/face/3.gif style="vertical-align: -6px;">大风歌<img src=/static/face/7.gif style="vertical-align: -6px;">
-        console.log("this.input_value------", this.input_value);
+        //console.log("this.input_value------", this.input_value);
         var emotionArr = this.input_value.match(/\[.{1,2}\]/g);
         var reg = /\[.{1,2}\]/;
         if (emotionArr) {
@@ -472,7 +472,7 @@
         //     this.input_value = this.input_value.replace(reg, `<img src=${this.emotionList[i].num} style="vertical-align: -6px;">`);
         //   }
         // }
-        console.log("this.input_value-------", this.input_value);
+        //console.log("this.input_value-------", this.input_value);
         //把自己发送的内容加到聊天列表里面
         this.componentChatList.push({
           message: this.input_value,
@@ -528,21 +528,21 @@
 					);
 					return
 				}
-        console.log("点击发送图片");
+        //console.log("点击发送图片");
         let vm = this;
         lrz(e.target.files[0], {
             quality: 0.1
           }).then(function(rst) {
             // if (rst.base64Len > 1024 * 1024 * 1) {
             //   // vm.$toast("图片不能超过1MB");
-            //   console.log("图片不能超过1MB");
+            //   //console.log("图片不能超过1MB");
             //   return;
             // }
             let filename = rst.origin.name;
             let dataURL = rst.file;
-            console.log("dataURL--------", dataURL)
+            //console.log("dataURL--------", dataURL)
             if (vm.isClientFlag) {
-              console.log(vm.staticChatFriendObj);
+              //console.log(vm.staticChatFriendObj);
               api.sendImageCliSer(
                   vm.userInfo.headimgurl,
                   vm.staticChatFriendObj.openid,
@@ -551,7 +551,7 @@
                   dataURL
                 )
                 .then(res => {
-                  console.log("图片发送--------", res);
+                  //console.log("图片发送--------", res);
                   vm.componentChatList.push({
                     message: res.content,
                     friend: 0,
@@ -599,7 +599,7 @@
         this.showPreview = true;
         let htmlImage = `<img src="${pic}" style="width:9rem;height:9rem;margin:25% auto;" class="preview-img"/>`;
         this.$refs.preview_pic.innerHTML = htmlImage;
-        console.log(pic);
+        //console.log(pic);
       },
       //关闭展示图
       closePreview() {
@@ -607,7 +607,7 @@
       },
       //下拉刷新
       pullingDown() {
-        console.log("下拉刷新");
+        //console.log("下拉刷新");
         if (this.ClientEndCursor == 0) {
           return;
         }
@@ -634,7 +634,7 @@
       },
       //选择表情
       select_emotion(item) {
-        console.log(item);
+        //console.log(item);
         this.input_value += item;
       },
       //选择常用语
@@ -666,11 +666,11 @@
     },
     watch: {
       clientLastChatMsg: function(newValue) {
-        console.log(newValue);
+        //console.log(newValue);
         let messageInfo = newValue.extMsg.lastMsg;
         messageInfo["nickname"] = newValue.fromInfo.nickname;
         messageInfo["to"] = newValue.extMsg.lastMsg.to;
-        console.log("客服页面的lastchatMsg------------", messageInfo);
+        //console.log("客服页面的lastchatMsg------------", messageInfo);
         this.componentChatList.push({
           message: messageInfo.content ? messageInfo.content : "",
           friend: 1, //1为朋友，0为自己
@@ -681,7 +681,7 @@
         });
         setTimeout(() => {
           let childNodes = this.$refs.chatList.childNodes;
-          console.log("LastChatMsg_childNodes-------------", childNodes);
+          //console.log("LastChatMsg_childNodes-------------", childNodes);
           this.$refs.listView.scrollBy(0, -(childNodes[0].clientHeight - 10));
         }, 100);
         this.setMsgReadCliSer(); //消息已读

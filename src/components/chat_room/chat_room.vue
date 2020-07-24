@@ -438,16 +438,16 @@
       } else {
         this.myShareUrl = this.shareUrl + "k98/home";
       }
-      console.log("this.myShareUrl-----", this.myShareUrl);
+      //console.log("this.myShareUrl-----", this.myShareUrl);
       this._initJssdk(this.myShareUrl);
       // this._initJssdk(this.myShareUrl)
     },
     activated() {
       this.loadStaffCommentInfo(this.staticChatFriendObj.phone)
-      console.log(
-        "this.staticChatFriendObj-----------",
-        this.staticChatFriendObj
-      );
+      //console.log(
+      //   "this.staticChatFriendObj-----------",
+      //   this.staticChatFriendObj
+      // );
       if (!localStorage.getItem("friendInfo")) {
         //解决微信内置浏览器刷新获得好友信息
         localStorage.setItem(
@@ -464,7 +464,7 @@
       if (!(JSON.stringify(this.$route.query) === "{}")) {
         this.setChatFriend(this.$route.query.info);
       }
-      console.log(this.$route);
+      //console.log(this.$route);
       this.friendId = this.$route.params.id;
       if (this.$route.params.isSoul) {
         this.isShowSoulPanel = true;
@@ -472,7 +472,7 @@
       this._getChatList(); //前端获取聊天记录
       this._loadAllGift(); //获取礼物
       Bus.$on("VirtualGiftInfo", giftInfo => {
-        console.log("聊天页面bus的虚拟礼物--------", giftInfo);
+        //console.log("聊天页面bus的虚拟礼物--------", giftInfo);
         this.componentChatList.push({
           time: util.timestampToTime(new Date().getTime()),
           isHandled: false,
@@ -487,7 +487,7 @@
         });
       });
       Bus.$on("giftInfoRecomend", giftInfo => {
-        console.log("聊天页面bus的实体推荐礼物--------", giftInfo);
+        //console.log("聊天页面bus的实体推荐礼物--------", giftInfo);
         this.componentChatList.push({
           time: util.timestampToTime(new Date().getTime()),
           isHandled: false,
@@ -502,7 +502,7 @@
         });
       });
       Bus.$on("giftInfoJiFen", giftInfo => {
-        console.log("聊天页面bus的实体积分礼物--------", giftInfo);
+        //console.log("聊天页面bus的实体积分礼物--------", giftInfo);
         this.componentChatList.push({
           time: util.timestampToTime(new Date().getTime()),
           isHandled: false,
@@ -523,7 +523,7 @@
       });
       Bus.$off();
       sessionStorage.setItem(this.staticChatFriendObj.openid, this.sendingTimes); //保存对应好友发送信息次数
-      console.log("this.$route-deactivated", this.$route)
+      //console.log("this.$route-deactivated", this.$route)
       if (this.$route.name != "comment") {
         this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
       }
@@ -566,7 +566,7 @@
       // 拉取员工评价内容 
       loadStaffCommentInfo(phone) {
         api.loadStaffCommentInfo(phone).then(res => {
-          console.log("员工评价内容---", res);
+          //console.log("员工评价内容---", res);
           if (res.errCode === 0) {
             this.thumbCount = res.staffCommentInfo.thumbCount;
           } else {
@@ -574,7 +574,7 @@
               text: res.errMsg
             });
           }
-          console.log("this.staffCommentInfo------", this.thumbCount);
+          //console.log("this.staffCommentInfo------", this.thumbCount);
         });
       },
       //去评价
@@ -607,13 +607,13 @@
         } else {
           this.messageType = 1;
         }
-        console.log("this.messageType", this.messageType);
+        //console.log("this.messageType", this.messageType);
       },
       _initJssdk(url) {
         api
           .getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
           .then(res => {
-            console.log("获取微信jssdk---------", res);
+            //console.log("获取微信jssdk---------", res);
             wx.config({
               // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
               appId: res.appId,
@@ -644,20 +644,20 @@
               });
             });
             wx.error(function(res) {
-              console.log(res);
+              //console.log(res);
               // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
             });
           });
       },
       touchcancel() {
-        console.log("touch cancel")
+        //console.log("touch cancel")
         this.isVoicing = false;
         wx.stopRecord({});
         clearInterval(this.vocieDurationTimer);
         clearTimeout(this.timer);
       },
       touchstart() {
-        console.log("touchStart");
+        //console.log("touchStart");
         var _this = this;
         wx.startRecord({
           success: function() {
@@ -674,12 +674,12 @@
         });
         let nodeList = this.$refs.chatList.childNodes;
         var element;
-        // console.log("nodelist---", nodeList);
+        // //console.log("nodelist---", nodeList);
         for (let i = 0; i < nodeList.length; i++) {
           let messageType = nodeList[i].dataset.messagetype;
           if (messageType === "9") {
             element = nodeList[i].children[0].children[1].children[1].children[0];
-            // console.log("element", element)
+            // //console.log("element", element)
             this.addClass(element.children[1], "stopanimate");
             this.addClass(element.children[2], "stopanimate");
             this.addClass(element.children[3], "stopanimate");
@@ -688,7 +688,7 @@
         this.isVoicing = true;
         this.vocieDurationTimer = setInterval(() => {
           this.vocieDuration++;
-          console.log("setInterval", this.vocieDuration);
+          //console.log("setInterval", this.vocieDuration);
         }, 1000);
         this.timer = setTimeout(() => {
           clearInterval(this.vocieDurationTimer);
@@ -711,7 +711,7 @@
       },
       touchend() {
         this.isVoicing = false;
-        console.log("录音时间---", this.vocieDuration);
+        //console.log("录音时间---", this.vocieDuration);
         clearInterval(this.vocieDurationTimer);
         clearTimeout(this.timer);
         if (this.vocieDuration < 1) {
@@ -729,21 +729,21 @@
         var _this = this;
         wx.stopRecord({
           success: function(res) {
-            console.log("res.localId----", res.localId);
+            //console.log("res.localId----", res.localId);
             _this.voiceLocalId = res.localId;
-            console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
+            //console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
             wx.uploadVoice({
               localId: _this.voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
               isShowProgressTips: 0, // 默认为1，显示进度提示
               success: function(res) {
                 _this.voiceServerId = res.serverId; // 返回音频的服务器端ID
-                console.log("wx.uploadVoice-voiceServerId", _this.voiceServerId);
+                //console.log("wx.uploadVoice-voiceServerId", _this.voiceServerId);
                 _this.send();
               }
             });
           },
           fail: function(res) {
-            console.log("wx.stopRecord fail---", res);
+            //console.log("wx.stopRecord fail---", res);
           }
         });
       },
@@ -752,7 +752,7 @@
           this.$vux.toast.text("录音已过期", "middle");
           return;
         }
-        // console.log("e---", e);
+        // //console.log("e---", e);
         var nodeList = this.$refs.chatList.childNodes;
         var element;
         var target =
@@ -761,26 +761,26 @@
           var messageType = nodeList[i].dataset.messagetype;
           var vocieUnread = nodeList[i].dataset.vocieunread;
           var friend = nodeList[i].dataset.friend;
-          // console.log("messageType--",messageType)
-          // console.log("vocieUnread--",vocieUnread)
-          // console.log("friend--",friend)
+          // //console.log("messageType--",messageType)
+          // //console.log("vocieUnread--",vocieUnread)
+          // //console.log("friend--",friend)
           if (messageType == "9") {
             element = nodeList[i].children[0].children[1].children[1].children[0];
-            // console.log(vocieUnread)
+            // //console.log(vocieUnread)
             // if (friend == "1" && vocieUnread == "false") {
             //   element =
             //     nodeList[i].children[0].children[1].children[1].children[0];
             // } else {
             //   element =nodeList[i].children[0].children[1].children[1].children[0];
             // }
-            // console.log("element", element);
+            // //console.log("element", element);
             this.addClass(element.children[1], "stopanimate");
             this.addClass(element.children[2], "stopanimate");
             this.addClass(element.children[3], "stopanimate");
           }
         }
         api.setVoiceRead(voiceMsgID).then(res => {
-          console.log("设置语音已读--", res);
+          //console.log("设置语音已读--", res);
           this.componentChatList[index].vocieUnread = true;
         });
         var _this = this;
@@ -792,37 +792,37 @@
           isShowProgressTips: 0, // 默认为1，显示进度提示
           success: function(res) {
             _this.voiceLocalId = res.localId; // 返回音频的本地ID
-            console.log("wx.downloadVoice--res", res);
+            //console.log("wx.downloadVoice--res", res);
             // setInterval(() => {
             //   _this.times ++
             //   wx.playVoice({
             //     localId: _this.voiceLocalId, // 需要播放的音频的本地ID，由stopRecord接口获得
             //     success: function(res) {
-            //       console.log("playVoice success----", res)
+            //       //console.log("playVoice success----", res)
             //     },
             //     fail: function(res) {
-            //       console.log("playVoice failed----", res)
+            //       //console.log("playVoice failed----", res)
             //     }
             //   });
-            //   console.log("this.times -------",_this.times)
+            //   //console.log("this.times -------",_this.times)
             // }, 4000);
             wx.playVoice({
               localId: _this.voiceLocalId, // 需要播放的音频的本地ID，由stopRecord接口获得
               success: function(res) {
-                console.log("playVoice success----", res);
+                //console.log("playVoice success----", res);
               },
               fail: function(res) {
-                console.log("playVoice failed----", res);
+                //console.log("playVoice failed----", res);
               }
             });
-            // console.log("e---", e);
+            // //console.log("e---", e);
             _this.removeClass(target.children[1], "stopanimate");
             _this.removeClass(target.children[2], "stopanimate");
             _this.removeClass(target.children[3], "stopanimate");
             wx.onVoicePlayEnd({
               success: function(res) {
                 var localId = res.localId; // 返回音频的本地ID
-                console.log("播放完毕localId---", localId);
+                //console.log("播放完毕localId---", localId);
                 _this.addClass(target.children[1], "stopanimate");
                 _this.addClass(target.children[2], "stopanimate");
                 _this.addClass(target.children[3], "stopanimate");
@@ -831,7 +831,7 @@
           },
           fail: function(res) {
             this.$vux.toast.text("录音已过期", "middle");
-            console.log("下载语音失败---", res);
+            //console.log("下载语音失败---", res);
           }
         });
       },
@@ -843,7 +843,7 @@
       },
       //接受或拒绝礼物
       respondForGift(giftInfo, flag, isSysSendGift) {
-        console.log("giftInfo----------------", giftInfo);
+        //console.log("giftInfo----------------", giftInfo);
         let giftParam = {
           agree: flag, //是否接受
           recordID: giftInfo.recordID, //送礼记录ID
@@ -852,9 +852,9 @@
           chatMsgID: giftInfo.chatMsgID,
           isSysSendGift: isSysSendGift ? true : false
         };
-        console.log("giftParam------------", giftParam);
+        //console.log("giftParam------------", giftParam);
         api.respondForGift(giftParam).then(res => {
-          console.log("送礼操作结果-------------------", res);
+          //console.log("送礼操作结果-------------------", res);
           if (res.errCode == 0) {
             if (flag) {
               setTimeout(() => {
@@ -883,7 +883,7 @@
       },
       //接受游戏
       respondForGame(gameInfo) {
-        console.log("gameInfo-----------", gameInfo);
+        //console.log("gameInfo-----------", gameInfo);
         let params = {
           agree: true, //是否接受
           combatID: gameInfo.combatID,
@@ -894,9 +894,9 @@
         if (gameInfo.combatID) {
           //约战
           api.responseCombat(params).then(res => {
-            console.log(res);
+            //console.log(res);
             if (res.errCode == 0) {
-              console.log("删除结果-----------", res);
+              //console.log("删除结果-----------", res);
               window.location.href = gameInfo.url;
             }
           });
@@ -907,7 +907,7 @@
       },
       //拒绝游戏
       rejectForGame(gameInfo) {
-        console.log("gameInfo0-----------", gameInfo);
+        //console.log("gameInfo0-----------", gameInfo);
         let params = {
           agree: false, //是否接受
           combatID: gameInfo.combatID,
@@ -915,9 +915,9 @@
           chatMsgID: gameInfo.chatMsgID,
           isAgainPlay: false
         };
-        console.log(params);
+        //console.log(params);
         api.responseCombat(params).then(res => {
-          console.log(res);
+          //console.log(res);
           if (res.errCode == 0) {
             this.componentChatList.forEach(item => {
               if (params.chatMsgID == item.chatMsgID) {
@@ -930,7 +930,7 @@
               }
             });
             this.$refs.listView.refresh();
-            console.log("删除结果-----------", res);
+            //console.log("删除结果-----------", res);
           }
         });
       },
@@ -940,7 +940,7 @@
       //删除好友
       quitFriend() {
         api.quitFriend(this.staticChatFriendObj.openid).then(res => {
-          console.log("删除结果-------", res);
+          //console.log("删除结果-------", res);
           this.$router.push({
             name: "message",
             query: {
@@ -951,7 +951,7 @@
       },
       //监听充值面板状态
       closeIntegralPanel(flag) {
-        console.log("面板状态-----------", flag);
+        //console.log("面板状态-----------", flag);
         this.isGiftPanel = flag;
       },
       //约战
@@ -959,7 +959,7 @@
         this.isShowEnvelope = true;
         this.envelopeText = "您已发出邀请  等待对方的回应";
         api.sentPlayGameMsg(this.friendId).then(res => {
-          console.log("约战返回--------", res);
+          //console.log("约战返回--------", res);
           if (res.errCode == 0) {
             // this.text = "您已发出邀请  等待对方的回应";
             this.componentChatList.push({
@@ -982,7 +982,7 @@
         });
       },
       onImgLoaded() {
-        console.log("图片加载完成了");
+        //console.log("图片加载完成了");
         this.$refs.listView.refresh();
       },
       // 选择表情
@@ -1085,7 +1085,7 @@
           .getFriendMessList(cursor, this.staticChatFriendObj.openid)
           .then(res => {
             return new Promise((resolve, reject) => {
-              console.log("好友聊天信息---------", res);
+              //console.log("好友聊天信息---------", res);
               this.changeCursor(res.cursor);
               let resultMessList = res.messages;
               var nowTime = Math.round(new Date().getTime() / 1000);
@@ -1095,7 +1095,7 @@
                 var chatObj = this._handleChatList(item, nowTime);
                 this.componentChatList.push(chatObj);
               }
-              console.log("聊天记录-------", this.componentChatList);
+              //console.log("聊天记录-------", this.componentChatList);
               this.componentChatList.forEach(item => {
                 switch (item.chatExtMsg ? item.chatExtMsg.name : "") {
                   case "beer":
@@ -1118,16 +1118,16 @@
             });
           })
           .then(() => {
-            // console.log(data)
+            // //console.log(data)
             this.$nextTick(function() {
-              console.log("dom更新后执行");
+              //console.log("dom更新后执行");
               let childNodes = this.$refs.chatList.childNodes;
               let chatListHeight = 0;
               childNodes.forEach(item => {
                 chatListHeight += item.clientHeight;
               });
               this.scrollHeight = chatListHeight;
-              console.log("this.scrollHeight----------", this.scrollHeight);
+              //console.log("this.scrollHeight----------", this.scrollHeight);
               this.$refs.listView.finishPullDown();
               this.$refs.listView.refresh();
               this.$refs.listView.scrollTo(0, -this.scrollHeight);
@@ -1136,7 +1136,7 @@
       },
       //发送消息事件
       send() {
-        console.log("发送消息");
+        //console.log("发送消息");
         this.isShowSoulPanel = false; //发消息隐藏灵魂匹配面板
         // if (util.isAndroid() && this.dontFocus) {  //输入后再次弹起键盘
         //   this.dontFocus = true;
@@ -1230,7 +1230,7 @@
           .then(function(rst) {
             if (rst.base64Len > 1024 * 1024 * 1) {
               // vm.$toast("图片不能超过1MB");
-              console.log("图片不能超过1MB");
+              //console.log("图片不能超过1MB");
               return;
             }
             let filename = rst.origin.name;
@@ -1253,12 +1253,12 @@
                   vm.scrollHeight = chatListHeight;
                   vm.$refs.listView.refresh();
                   // vm.$refs.listView.scrollBy(0, -childNodes[0].clientHeight-20);
-                  console.log();
+                  //console.log();
                   vm.$refs.listView.scrollTo(0, -vm.scrollHeight - 10);
                 });
               })
               .catch(err => {
-                console.log(err);
+                //console.log(err);
               });
           })
           .catch(function(err) {
@@ -1270,7 +1270,7 @@
         this.showPreview = true;
         let htmlImage = `<img src="${pic}" style="width:9rem;height:9rem;margin:25% auto;" class="preview-img"/>`;
         this.$refs.preview_pic.innerHTML = htmlImage;
-        console.log(pic);
+        //console.log(pic);
       },
       //关闭展示图
       closePreview() {
@@ -1278,7 +1278,7 @@
       },
       //下拉刷新
       pullingDown() {
-        console.log("下拉刷新");
+        //console.log("下拉刷新");
         if (!this.alreadyFriendListcursor || this.endCursor == 0) {
           return;
         }
@@ -1287,7 +1287,7 @@
         api
           .getFriendMessList(cursor, this.staticChatFriendObj.openid)
           .then(res => {
-            console.log(res);
+            //console.log(res);
             if (!res.messages.length) {
               //如果有新消息才更改游标
               return;
@@ -1311,7 +1311,7 @@
       },
       getIndex(val) {
         // this.chatListIndex = val;
-        // console.log("getIndex--------------------------:", val);
+        // //console.log("getIndex--------------------------:", val);
       },
       //监听滚动
       myscroll(pos) {},
@@ -1326,7 +1326,7 @@
       // },
       //返回
       goBack() {
-        console.log("stop-------------", this.voiceLocalId);
+        //console.log("stop-------------", this.voiceLocalId);
         wx.stopVoice({
           localId: this.voiceLocalId // 停止正在播放的语音
         });
@@ -1341,7 +1341,7 @@
       },
       //选择表情
       select_emotion(item) {
-        console.log(item);
+        //console.log(item);
         this.input_value += item;
       },
       //选择常用语
@@ -1351,7 +1351,7 @@
       },
       //展示送礼面板
       showToastGift() {
-        console.log("click");
+        //console.log("click");
         // this.showToast_gift = true;
         this.isGiftPanel = true;
         this.expressionShow = false;
@@ -1372,7 +1372,7 @@
         this.emotionShow = false;
       },
       onItemClick(index) {
-        console.log(index);
+        //console.log(index);
         if (index == 0) {
           this.showTab = true;
         } else {
@@ -1402,7 +1402,7 @@
     watch: {
       LastChatMsg: function(newValue) {
         this.isShowSoulPanel = false; //当有消息隐藏灵魂匹配面板
-        // console.log("在聊天页面收到对方发来的消息-------------------------------：",newValue);
+        // //console.log("在聊天页面收到对方发来的消息-------------------------------：",newValue);
         this.sendingTimes = 0; //清空限制连续发送消息次数
         let messageInfo = newValue.lastMsg;
         if (messageInfo.type == 3 || messageInfo.type == 4) {
@@ -1412,7 +1412,7 @@
         if (messageInfo.from == this.staticChatFriendObj.openid) {
           //判断是否是进入时原来的两个人进行聊天
           var voiceLength = this._handleVoiceLength(messageInfo.vocieDuration);
-          console.log("推送时长----", voiceLength);
+          //console.log("推送时长----", voiceLength);
           var nowTime = Math.round(new Date().getTime() / 1000);
           var chatObj = this._handleChatList(messageInfo, nowTime);
           this.componentChatList.push(chatObj);
@@ -1463,10 +1463,10 @@
           //       : ""
           //     : ""
           // });
-          // console.log('聊天记录-------------', this.componentChatList)
+          // //console.log('聊天记录-------------', this.componentChatList)
           setTimeout(() => {
             let childNodes = this.$refs.chatList.childNodes;
-            console.log("LastChatMsg_childNodes-------------", childNodes);
+            //console.log("LastChatMsg_childNodes-------------", childNodes);
             this.$refs.listView.scrollBy(0, -childNodes[0].clientHeight - 10);
           }, 100);
           // this.$refs.listView.refresh();
@@ -1483,13 +1483,13 @@
       //   if (this.isscroll) {
       //     this.$nextTick(function() {
       //       let childNodes = this.$refs.chatList.childNodes;
-      //       console.log(childNodes)
+      //       //console.log(childNodes)
       //       let chatListHeight = 0;
       //       childNodes.forEach(item => {
       //         chatListHeight += item.clientHeight
       //       })
       //       this.scrollHeight = chatListHeight;
-      //       console.log('父页面scrollHeight：', this.scrollHeight);
+      //       //console.log('父页面scrollHeight：', this.scrollHeight);
       //     });
       //   }
       // }

@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-20 19:05:19
+ * @Last Modified time: 2020-07-24 18:07:46
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -75,14 +75,14 @@ new Vue({
   methods: {
     //创建长连接
     createWebsocket() {
-      // let windowUrL = window.location.href;
-      // let index = windowUrL.indexOf('.com');
-      // let shareurl = windowUrL.slice(0, index);
-      // let websocketUrl = shareurl.slice(8);
-      // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-      // this.websock = new WebSocket(this.connectUrl);
-      // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-      this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+      let windowUrL = window.location.href;
+      let index = windowUrL.indexOf('.com');
+      let shareurl = windowUrL.slice(0, index);
+      let websocketUrl = shareurl.slice(8);
+      this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+      this.websock = new WebSocket(this.connectUrl);
+      this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
+      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()
     },
@@ -111,7 +111,7 @@ new Vue({
     },
     loadInviteCoupon() {
       api.loadInviteCoupon().then(res => {
-        console.log("获取邀新优惠券---------", res)
+        //console.log("获取邀新优惠券---------", res)
         if (res.errCode === 0) {
           this.judgeInviteCoupon(res.coupons.isputAway);
         }
@@ -120,19 +120,19 @@ new Vue({
     //成为待被邀请队列成员
     addWaitingCombatList() {
       api.addWaitingCombatList().then(res => {
-        console.log("成为待被邀请队列成员-----------", res)
+        //console.log("成为待被邀请队列成员-----------", res)
       })
     },
     //加载L98控制开关信息
     loadL98otherSetting() {
       api.loadL98otherSetting().then(res => {
-        console.log("控制开关--------", res)
+        //console.log("控制开关--------", res)
         this.LoadL98Setting(res)
       })
     },
     loadAdvertisingPhoto() {
       api.loadAdvertisingPhoto().then(res => {
-        console.log('轮播图-------------------------：', res.adPhotoURL)
+        //console.log('轮播图-------------------------：', res.adPhotoURL)
         this.getAdvertisingImg(res.adPhotoURL);
 
       })
@@ -142,7 +142,7 @@ new Vue({
       this.getUrl(url);
     },
     websocketonopen(e) {
-      console.log("WebSocket连接成功");
+      //console.log("WebSocket连接成功");
       this.timer = setInterval(() => {
         let msg = {
           ops: 25,
@@ -150,7 +150,7 @@ new Vue({
         var decc = new TextEncoder()
         this.websock.send(decc.encode((JSON.stringify(msg)))); //给服务器发送ping
         this.pingNumer++;
-        // console.log("this.pingNumer", this.pingNumer)
+        // //console.log("this.pingNumer", this.pingNumer)
         if (this.pingNumer > 5) { //发送三次无响应后重连
           this.reconnectWebsocket()
           clearTimeout(this.timer)
@@ -159,7 +159,7 @@ new Vue({
     },
     websocketonerror(e) {
       //错误
-      console.log("WebSocket连接发生错误");
+      //console.log("WebSocket连接发生错误");
       this.reconnectWebsocket() //重连
     },
     //数据接收
@@ -174,7 +174,7 @@ new Vue({
         }
         this.websock.send(JSON.stringify(msg)); //给服务器发送ping
         this.pingNumer = 0;
-        // console.log('客户端发送pong心跳----', this.pingNumer);
+        // //console.log('客户端发送pong心跳----', this.pingNumer);
       } else if (result.ops == 26) {
         this.pingNumer = 0;
       } else {
@@ -189,14 +189,14 @@ new Vue({
         // // 判断是否在聊天页面；是在聊天页面返回from给服务器表示消息已读
         let reg = new RegExp("/message/chat")
         if (reg.test(this.$route.fullPath)) {
-          console.log("是否进来标记已读")
-          console.log("message----", message)
+          //console.log("是否进来标记已读")
+          //console.log("message----", message)
           // let fromId = message.allInfo.lastMsg.from;
           let fromId = message.lastMsg.from;
           //发送消息表示已读
           api.sendMsgReaded(fromId).then(res => {
             if (res.errorCode == 0) {
-              console.log('消息已读')
+              //console.log('消息已读')
             }
           })
         }
@@ -279,7 +279,7 @@ new Vue({
           this.addDivideNum(1)
           return
         } else {
-          console.log("添加消息进队列")
+          //console.log("添加消息进队列")
           this.addMessageIntoQueue(result)
         }
       } else if (result.msgCode === 13) { //对方操作回赞后返回结果通知
@@ -312,7 +312,7 @@ new Vue({
         this.addFriendEvtObj(result)
       } else if (result.msgCode === 22) {
         this.addFriendEvtObj(result)
-        console.log("-----------------------", this.$route)
+        //console.log("-----------------------", this.$route)
         if (this.$route.name === "chat") {
           this.$router.go(-1)
         }
@@ -335,29 +335,29 @@ new Vue({
     },
     websocketclose(e) {
       //关闭
-      console.log("websocket关闭-----------", e)
+      //console.log("websocket关闭-----------", e)
       this.reconnectWebsocket() //重连
     },
     //拉取积分换礼品列表
     loadGoods() {
       api.loadGoods().then(res => {
-        console.log('积分换礼品列表------', res);
+        //console.log('积分换礼品列表------', res);
         this.getSendGiftList(res.slice(0));
       })
     },
     // 获取用户信息
     getUserInfo() {
       api.getUserInfo().then(res => {
-        console.log('个人信息-------------------------：', res);
+        //console.log('个人信息-------------------------：', res);
         this.getuserInfo(res);
       }).catch(err => {
-        console.log(err);
+        //console.log(err);
       });
     },
     //获取门店信息
     loadStoreSetting() {
       api.loadStoreSetting().then(res => {
-        console.log('门店信息---------------------------------：', res)
+        //console.log('门店信息---------------------------------：', res)
         this.getShopSetting(res)
       })
     },
@@ -367,9 +367,9 @@ new Vue({
         this.saveQrCode(res.urls[0])
         if (!res.urls.length || !res.urls) {
           api.createQrcode().then(res => {
-            // console.log('创建二维码接口--------', res);
+            // //console.log('创建二维码接口--------', res);
           });
-          // console.log('进来创建二维码了')
+          // //console.log('进来创建二维码了')
         }
 
       });
@@ -377,7 +377,7 @@ new Vue({
     //获取店长推荐
     loadRecommends() {
       api.loadRecommends().then(res => {
-        console.log('店长推荐数据---------------------', res)
+        //console.log('店长推荐数据---------------------', res)
         this.recommendList = res;
         this.getRecommentList(this.recommendList);
       })
@@ -395,13 +395,13 @@ new Vue({
           this.CalcManualEventsCount(count);
         }
         this.addBange();
-        // console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
+        // //console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
       })
     },
     //拉取员工送券活动
     loadStaffCouponAct() {
       api.loadStaffCouponAct().then(res => {
-        console.log("员工送券活动-------", res)
+        //console.log("员工送券活动-------", res)
         if (res.errCode === 0) {
           this.getStaffCouponInfo(res.coupon)
         }
@@ -443,7 +443,7 @@ new Vue({
   watch: {
     //websocket推送的最新消息
     LastChatMsg: function (newValue) {
-      // console.log('在main收到对方手来的消息------------------------------------：', newValue);
+      // //console.log('在main收到对方手来的消息------------------------------------：', newValue);
       this.compareLastMsg(newValue)
     }
   },

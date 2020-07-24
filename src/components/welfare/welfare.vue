@@ -147,15 +147,15 @@
     },
     mounted() {
       this._loadPublishArenas(); //拉取是否有比赛场
-      console.log("this.AdvertisingPhoto",this.AdvertisingPhoto)
+      //console.log("this.AdvertisingPhoto",this.AdvertisingPhoto)
     },
     methods: {
       //拉取已经发布的比赛场
       _loadPublishArenas() {
         api.loadPublishArenas().then(res => {
-          console.log("---------------------",res)
+          //console.log("---------------------",res)
           var reverseArr = res.arenaInfos.reverse();
-          console.log('拉取已经发布的比赛场:', reverseArr)
+          //console.log('拉取已经发布的比赛场:', reverseArr)
           if (reverseArr.length > 0) {
             this.gameShow = true;
             this.isShowGameEntry = true;
@@ -186,7 +186,7 @@
             this.rankList[1] = arenaInfo.secondPrize;
             this.rankList[2] = arenaInfo.thirdPrize;
           }
-          console.log('this.rankList------------------', this.rankList)
+          //console.log('this.rankList------------------', this.rankList)
         })
       },
       //查看往期赛事
@@ -207,7 +207,7 @@
       //拉取活动通知
       _loadActivityInfo() {
         api.loadActivityInfo().then(res => {
-          console.log("活动通知列表-------------",res)
+          //console.log("活动通知列表-------------",res)
           this.getActivityNoticeList(res.slice(0, 2));
         })
       },

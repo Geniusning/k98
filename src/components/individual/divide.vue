@@ -222,7 +222,7 @@
     methods: {
       //隐身状态 上线不通知好友
       stealth(e) {
-        console.log(e)
+        //console.log(e)
         this.isStealth = e
       },
       //安静状态，不接受好友的上线通知
@@ -259,7 +259,7 @@
       },
       //选择标签
       selectTag(e, item, index) {
-        console.log(index);
+        //console.log(index);
         if (e.target.className.indexOf("active") == -1) {
           if (this.commonList.length > 4) {
             this.$vux.toast.show({
@@ -274,7 +274,7 @@
         } else {
           item.checked = false
           let index = this.commonList.indexOf(item.name);
-          console.log("commonList---index", index)
+          //console.log("commonList---index", index)
           this.commonList.splice(index, 1);
         }
       },
@@ -284,7 +284,7 @@
         this.signatureList = this.commonList.join("、");
         this.commonList = [];
         this.diyTag = "";
-        console.log(this.signatureList);
+        //console.log(this.signatureList);
       },
       unique(arr) {
         return Array.from(new Set(arr))
@@ -301,19 +301,19 @@
         this.diyTag = "";
       },
       change(val, label) {
-        console.log("change", val);
+        //console.log("change", val);
       },
       // 显示标签弹框
       showTag() {
         this.tagShow = true;
         this.commonList = [];
-        console.log("this.userInfoTags", this.userInfoTags)
-        console.log("this.tagList", this.tagList)
+        //console.log("this.userInfoTags", this.userInfoTags)
+        //console.log("this.tagList", this.tagList)
         this.tagList.forEach((localUseTag, index) => {
           this.userInfoTags.forEach(serverUseTag => {
             if (serverUseTag == localUseTag.name) {
               localUseTag.checked = true
-              console.log("localUseTag---", localUseTag)
+              //console.log("localUseTag---", localUseTag)
               this.commonList.push(localUseTag.name)
             }
           })
@@ -324,9 +324,9 @@
         this.showPopupPickerSex = false;
       },
       onChange_S(val1) {
-        console.log(val1);
+        //console.log(val1);
         this.gender = val1[0];
-        console.log(this.gender);
+        //console.log(this.gender);
       },
       //星座选择
       onHide_C() {
@@ -347,7 +347,7 @@
           // do something
           this.$refs.avatar.src = data;
           this.showTailor = false;
-          console.log(data);
+          //console.log(data);
         });
       },
       //保存修改
@@ -369,14 +369,14 @@
           signature: this.signature,
           isBattle: this.isBattle
         };
-        console.log("userInfoParam---------", userInfoParam)
+        //console.log("userInfoParam---------", userInfoParam)
         // let strUserInfoParam = JSON.stringify(userInfoParam);
         // let decc = new TextEncoder("utf-8");
         // let param = decc.encode(strUserInfoParam);
         //保存信息
         api.createIdentity(userInfoParam).then(res => {
           if (res.errorCode === 0) {
-            console.log("保存分身成功---", res)
+            //console.log("保存分身成功---", res)
             sessionStorage.setItem("identity", res.info.openid)
             this.$router.push({
               name: "updateAvatar",

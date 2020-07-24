@@ -33,7 +33,7 @@ export default {
         //拉取比赛按照结束时间重新排名
         _loadAllArenaInfo() {
             api.loadAllArenaInfo().then(res => {
-                console.log('比赛排名赛事--------------------', res);
+                //console.log('比赛排名赛事--------------------', res);
                 let tempGameList = [];
                 res.arenaInfos.forEach(item => {
                     tempGameList.push({
@@ -41,9 +41,9 @@ export default {
                         value: util.timestampToTime(item.endTime)
                     })
                 })
-                console.log('tempGameList---------------------', tempGameList)
+                //console.log('tempGameList---------------------', tempGameList)
                 this.gameList = tempGameList;
-                console.log(this.gameList)
+                //console.log(this.gameList)
             })
         },
         getDetailGameInfo(key) {

@@ -98,7 +98,7 @@ export default {
   mounted() {
     this._loadArenaRank();//拉取比赛场排名
     //this._loadAllQrcode();//拉取二维码
-    console.log('arenaID------------------------------', this.$route.params.arenaID);
+    //console.log('arenaID------------------------------', this.$route.params.arenaID);
   },
   methods: {
     //拉取比赛场排名
@@ -114,7 +114,7 @@ export default {
         this.arenaID = this.$route.params.arenaID
       }
       api.loadArenaRank(this.arenaID).then(res => {
-        console.log('比赛排名信息-----------', res)
+        //console.log('比赛排名信息-----------', res)
         var tempArr = []
         if (res.errCode === 0) {
           if (res.arenaType==1) {    //arenaType=0个人赛  arenaType=1团体赛
@@ -124,7 +124,7 @@ export default {
             tempArr = res.userRanks;
              this.isTeamGame = false
           }
-          console.log("this.isTeamGame-----",this.isTeamGame)
+          //console.log("this.isTeamGame-----",this.isTeamGame)
           tempArr.forEach(player => {
               this.playList.push(player)
           });
@@ -151,7 +151,7 @@ export default {
     //拉取二维码
     // _loadAllQrcode() {
     //   api.loadAllQrcode().then(res => {
-    //     console.log('二维码----------------', res)
+    //     //console.log('二维码----------------', res)
     //     this.QRcodeUrl = res.urls[0]
     //   })
     // },

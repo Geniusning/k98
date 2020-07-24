@@ -14,7 +14,7 @@ export default {
     created() {
         window.addEventListener('resize', () => {
             if (document.activeElement.tagName === "INPUT") {
-                console.log('input')
+                //console.log('input')
                 document.activeElement.scrollIntoView()
             }
         })

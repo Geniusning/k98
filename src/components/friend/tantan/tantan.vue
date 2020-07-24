@@ -167,7 +167,7 @@
     },
     watch: {
       stopSearch(newValue) {
-        console.log("newValue----------", newValue);
+        //console.log("newValue----------", newValue);
         if (newValue) {
           // this.$refs.souling.className = "souling_noRotate"
           this.$refs.dot.className = "resultSoulText";
@@ -178,10 +178,10 @@
         this.currentLikeIndex = 0; //条件筛选群友后重置喜欢图标显示index
       },
       pages(newValue) {
-        console.log(
-          "子组件候选人数据----------------------------------------",
-          newValue
-        );
+        // //console.log(
+        //   "子组件候选人数据----------------------------------------",
+        //   newValue
+        // );
         let data = newValue[0];
         this.loadStaffCommentInfo(data.info.phone);
         this.backToParentData = data;
@@ -223,7 +223,7 @@
       // 拉取员工评价内容 
       loadStaffCommentInfo(phone) {
         api.loadStaffCommentInfo(phone).then(res => {
-          console.log("员工评价内容---", res);
+          //console.log("员工评价内容---", res);
           if (res.errCode === 0) {
             this.thumbCount = res.staffCommentInfo.thumbCount;
           } else {
@@ -231,7 +231,7 @@
               text: res.errMsg
             });
           }
-          console.log("this.staffCommentInfo------", this.thumbCount);
+          //console.log("this.staffCommentInfo------", this.thumbCount);
         });
       },
       //点赞
@@ -249,7 +249,7 @@
         if (typeof thumbTimes === "string") {
           thumbTimes = JSON.parse(thumbTimes);
         }
-        console.log("thumbTimes---------", thumbTimes);
+        //console.log("thumbTimes---------", thumbTimes);
         // 判断未关注用户今天点赞次数是否达到10次，达到10次弹框提醒关注
         if (!this.userInfo.isSubscribe) {
           //判断是否关注公众号
@@ -303,7 +303,7 @@
         }
         let xid = this.friendData.info.openid;
         api.makeFriend(xid).then(res => {
-          console.log("api.makeFriend(xid)-----------", res);
+          //console.log("api.makeFriend(xid)-----------", res);
           if (res.errCode === 0) {
             this.$emit("heartBeat", this.friendData);
           } else if (res.errCode === 1023) {
@@ -337,7 +337,7 @@
           sessionStorage.setItem("lifePhotoList", JSON.stringify(lifePhotoURL));
           return;
         }
-        console.log("点击相册");
+        //console.log("点击相册");
         this.$emit(
           "showAblum",
           this.backToParentData ? this.backToParentData : this.pages[0]
@@ -457,7 +457,7 @@
         this.lastRotate = this.rotate;
         this.lastZindex = 20;
         // 循环currentPage
-        // console.log('this.currentPage：', this.currentPage)
+        // //console.log('this.currentPage：', this.currentPage)
         if (
           this.currentPage == this.pages.length - 3 &&
           this.friendListCursor != 0
@@ -469,12 +469,12 @@
           this.currentLikeIndex = -1;
         }
         this.friendData = this.pages[this.currentPage];
-        console.log("friendData-------------------", this.friendData);
+        //console.log("friendData-------------------", this.friendData);
         this.currentPage =
           this.currentPage === this.pages.length - 1 ? 0 : this.currentPage + 1;
         this.backToParentData = this.pages[this.currentPage];
-        // console.log("this.friendData----------",this.friendData)
-        // console.log("this.backToParentData----------",this.backToParentData)
+        // //console.log("this.friendData----------",this.friendData)
+        // //console.log("this.backToParentData----------",this.backToParentData)
         this.$emit("firstData", this.backToParentData);
         if (this.backToParentData.info.phone != "") {
           //显示员工被点赞次数
@@ -488,11 +488,11 @@
         ];
         let index = Math.floor(Math.random() * 4);
         this.sign = signList[index];
-        // console.log("currentLikeIndex---------", this.currentLikeIndex)
+        // //console.log("currentLikeIndex---------", this.currentLikeIndex)
         this.currentLikeIndex++;
-        // console.log("this pages.length--------", this.pages.length)
+        // //console.log("this pages.length--------", this.pages.length)
         if (this.distant > 0) {
-          // console.log("往右划朋友信息-------",this.friendData)
+          // //console.log("往右划朋友信息-------",this.friendData)
           if (!this.friendData.isAlreadyFriend) {
             //不是朋友才右滑点赞
             this.giveThumb();
@@ -501,11 +501,11 @@
             // this.alreadySendThumbFlag = false
           }
         } else {
-          console.log("往左滑");
+          //console.log("往左滑");
           this.dislike = true;
           // this.alreadySendThumbFlag = false
         }
-        // console.log(this.currentPage);
+        // //console.log(this.currentPage);
         // let index = this.currentPage;
         // if (this.distant > 0) {
         //   this.currentPage =
@@ -537,7 +537,7 @@
         this.lastRotate = this.rotate;
         this.lastZindex = 20;
         // 循环currentPage
-        console.log(this.currentPage);
+        //console.log(this.currentPage);
         this.currentPage =
           this.currentPage === this.pages.length - 1 ? 0 : this.currentPage - 1;
         // currentPage切换，整体dom进行变化，把第一层滑动置最低

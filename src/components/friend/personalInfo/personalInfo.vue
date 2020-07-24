@@ -29,7 +29,7 @@ export default {
     },
     methods: {
         closeAlbum() {
-            console.log("关闭相册")
+            //console.log("关闭相册")
             this.$emit("closeAlbum",false);
         },
     },

@@ -82,7 +82,7 @@ export default {
         text:"loading"
       })
       api.LoadGameScoreDetail(this.gameCursor,count).then(res => {
-        console.log('游戏详情-------------------', res);
+        //console.log('游戏详情-------------------', res);
         this.gameContent =this.gameContent.concat(this._nomalizeGameList(res.coupon.details));
         this.gameCursor = res.coupon.cursor;
         this.gameContent.forEach(item => {
@@ -90,7 +90,7 @@ export default {
         })
         this.$vux.loading.hide()
       }).then(()=>{
-        console.log("refresh")
+        //console.log("refresh")
        
       })
     },
@@ -103,7 +103,7 @@ export default {
           }
           gameList.push(item)
         })
-        console.log("gameList------------",gameList)
+        //console.log("gameList------------",gameList)
         return gameList
       }
   },

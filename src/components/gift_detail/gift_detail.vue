@@ -120,11 +120,11 @@
           text: "loading"
         })
         api.loadWealthDetail(this.giftCursor, count).then(res => {
-          console.log('礼物明细-----------------------------', res);
+          //console.log('礼物明细-----------------------------', res);
           if (res.errCode == 0) {
             this.$vux.loading.hide()
             this.giftContent = this.giftContent.concat(res.wealthDetailRanking.details);
-            console.log('this.giftContent---------------', this.giftContent)
+            //console.log('this.giftContent---------------', this.giftContent)
             this.giftCursor = res.wealthDetailRanking.cursor;
             this.giftContent.forEach(item => {
               if (item.headimgurl.indexOf("http") === -1) {
@@ -145,14 +145,14 @@
       },
       // selectMoney(index, event) {
       //   this.moneyIndex = Number(index);
-      //   console.log(this.moneyIndex)
+      //   //console.log(this.moneyIndex)
       //   this.moneyInitValue = event.target.dataset.money;
       // },
       pay() {
         api.createOrder(this.moneyIndex).then(res => {
           if (res.errCode === 0) {
             let resultInfo = res.data;
-            console.log(resultInfo);
+            //console.log(resultInfo);
             let _this = this;
             WeixinJSBridge.invoke(
               "getBrandWCPayRequest", {
@@ -164,7 +164,7 @@
                 "paySign": resultInfo.paySign //微信签名
               },
               (res) => {
-                console.log(res);
+                //console.log(res);
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   alert("微信支付成功");
@@ -172,7 +172,7 @@
                       this.getUserInfo(res);
                     })
                     .catch(err => {
-                      console.log(err);
+                      //console.log(err);
                     });
                   //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                 }

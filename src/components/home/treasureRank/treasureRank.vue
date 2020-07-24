@@ -151,7 +151,7 @@ export default {
     _loadWealthRanking() {
       let type = 'friend';
       api.loadWealthRanking(type).then(res => {
-        console.log('财富好友排行信息----------------', res);
+        //console.log('财富好友排行信息----------------', res);
         if (res.errCode === 0) {
           this.friendList = res.wealthRanking.wealthInfos
         }
@@ -161,7 +161,7 @@ export default {
       let type = 'allPerson';
       let count = 20;
       api.loadWealthRanking(type, count, this.allPeopleCursor).then(res => {
-        console.log('财富全部排行信息----------------', res)
+        //console.log('财富全部排行信息----------------', res)
         this.allPeopleList = res.wealthRanking.wealthInfos.slice(0,10);
         this.allPeopleCursor = res.wealthRanking.cursor;
       })

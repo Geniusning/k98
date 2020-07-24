@@ -66,7 +66,7 @@ export default {
     // alert("cookie="+document.cookie)
   },
   mounted() {
-    console.log("this.shopSettingInfo--------------", this.shopSettingInfo);
+    //console.log("this.shopSettingInfo--------------", this.shopSettingInfo);
     // let cookie = document.cookie.split("=")[1]
     // document.cookie ="tk="+cookie
     // alert("设置后的cookie"+document.cookie)
@@ -90,7 +90,7 @@ export default {
     //领取优惠券
     receiveACouponByID(couponId, type) {
       api.acquireInviteCoupon(couponId, type).then(res => {
-        console.log("领取结果------------", res);
+        //console.log("领取结果------------", res);
         if (res.errCode === 0) {
           this.$vux.toast.show({
             text: "领取成功"
@@ -119,7 +119,7 @@ export default {
     //获取优惠券
     _loadInviteCoupon() {
       api.loadInviteCoupon(true).then(res => {
-        console.log("获取优惠券---------", res);
+        //console.log("获取优惠券---------", res);
         if (!res.coupons) {
           return false;
         }
@@ -129,7 +129,7 @@ export default {
           tempArr[1] = res.coupons.bCoupon;
           this.activityId = res.coupons.activityId;
         }
-        console.log("tempArr------", tempArr);
+        //console.log("tempArr------", tempArr);
         tempArr.forEach(element => {
           switch (element.type) {
             case 0:
@@ -151,11 +151,11 @@ export default {
               break;
           }
         });
-        console.log("分享的优惠券-----------------------：", tempArr);
+        //console.log("分享的优惠券-----------------------：", tempArr);
         this.couponList = tempArr;
         let _url = window.location.href;
         this.myShareUrl = _url.split("#")[0];
-        console.log("this.myShareUrl----", this.myShareUrl);
+        //console.log("this.myShareUrl----", this.myShareUrl);
         setTimeout(() => {
           if (util.isAndroid()) {
             let shareObj = {
@@ -217,8 +217,8 @@ export default {
   },
   watch: {
     $route: function(newValue, oldValue) {
-      console.log(oldValue);
-      console.log(newValue);
+      //console.log(oldValue);
+      //console.log(newValue);
     }
   },
   components: {}

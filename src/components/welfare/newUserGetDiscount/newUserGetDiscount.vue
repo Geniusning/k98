@@ -94,7 +94,7 @@
           // userBCouponID: 'b1419e9f-6de9-437e-9d5b-9987d9ff02e4'
         };
         api.acquireInviteWaitGetCoupons(params).then(res => {
-          console.log('res------------',res)
+          //console.log('res------------',res)
           if (res.errCode === 0) {
             let tempObj = res.aCoupon;
             switch (tempObj.coupon.type) {
@@ -130,7 +130,7 @@
       //拉取二维码
       // _loadAllQrcode() {
       //   api.loadAllQrcode().then(res => {
-      //     console.log('二维码----------------', res)
+      //     //console.log('二维码----------------', res)
       //     this.QRcodeUrl = res.urls[0]
       //   })
       // },
@@ -150,8 +150,8 @@
     },
     watch: {
       $route: function(newValue, oldValue) {
-        console.log(oldValue);
-        console.log(newValue);
+        //console.log(oldValue);
+        //console.log(newValue);
       }
     },
     components: {

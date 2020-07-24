@@ -47,9 +47,9 @@ export default {
     },
     //获取验证码
     sendVerifyCode() {
-      console.log(this.phoneNum);
+      //console.log(this.phoneNum);
       api.getVerifyCode(this.phoneNum).then(res => {
-        console.log(res)
+        //console.log(res)
         if (res.errCode === 0) {
           this.codeText = 60;
           this.isShowCodeText = true;
@@ -70,7 +70,7 @@ export default {
         return;
       }
       api.checkVerifyCode(this.phoneNum,this.vcode).then(res=>{
-        console.log('是否验证成功',res);
+        //console.log('是否验证成功',res);
         if(res.errCode===0){
           api.getUserInfo().then(res=>{
             this.getuserInfo(res);

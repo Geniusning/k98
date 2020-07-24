@@ -254,7 +254,7 @@
       //获取优惠券
       _loadUserAllCoupon() {
         api.loadUserAllCoupon().then(res => {
-          console.log("优惠券：", res);
+          //console.log("优惠券：", res);
           this.unusedList = [];
           this.usedList = [];
           this.timeOutList = [];
@@ -323,7 +323,7 @@
       },
       onItemClick(index) {
         this.tagIndex = index;
-        console.log(this.tagIndex);
+        //console.log(this.tagIndex);
       },
       onClickBack() {},
       ...mapMutations({

@@ -335,7 +335,7 @@ export default {
       this.myShareUrl = _url.split("#")[0];
       this.gameUrl = _url.split("k98")[0];
       if (util.isAndroid()) {
-        console.log("进入安卓了--------this.myShareUrl", this.myShareUrl);
+        //console.log("进入安卓了--------this.myShareUrl", this.myShareUrl);
         let shareObj = {
           title: "找朋友",
           desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
@@ -378,7 +378,7 @@ export default {
       range: this.rangeType,
       sortType: this.sortType
     };
-    console.log("---------------------------------", param);
+    //console.log("---------------------------------", param);
     this.getAllCommunityFriend(param);
     if (this.userInfo.sex === "男") {
       this.sexType = 0;
@@ -399,7 +399,7 @@ export default {
     }
     (this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`),
       Bus.$on("changeFriendConnetion", openid => {
-        console.log("bus-openid---------", openid);
+        //console.log("bus-openid---------", openid);
         this.isFriend = true;
         this.changeFriIcon(openid);
       });
@@ -432,7 +432,7 @@ export default {
       this.switchSoulModal(this.modalSwitch);
       if (this.modalSwitch) {
         api.searchWaitBeMakeFriUser().then(res => {
-          console.log("搜索结果----------", res);
+          //console.log("搜索结果----------", res);
         });
       }
       if (!this.modalSwitch) {
@@ -451,7 +451,7 @@ export default {
     //拉取候选人
     getAllCommunityFriend(params) {
       api.getFriendList(params).then(res => {
-        console.log("拉取候选人：·····················", res);
+        //console.log("拉取候选人：·····················", res);
         this.changeFriendCursor(res.cursor);
         this.getFriend(res);
       });
@@ -481,7 +481,7 @@ export default {
           this.getuserInfo(res);
         })
         .catch(err => {
-          console.log(err);
+          //console.log(err);
         });
     },
     //进入个人信息设置页面
@@ -500,12 +500,12 @@ export default {
     },
     //监听关闭相册
     closeAlbum(flag) {
-      console.log(flag);
+      //console.log(flag);
       this.showAblumFlag = flag;
     },
     // 监听点击相册
     showAblum(data) {
-      // console.log('监听点击相册------------------------------：', data);
+      // //console.log('监听点击相册------------------------------：', data);
       this.showAblumFlag = true;
       this.changeUserLifeImgList(data.info.lifePhotoURL.lifePhotoURL);
       // this.$router.push({
@@ -515,7 +515,7 @@ export default {
     listenFirstdata(data) {
       // 下面是传回父级的数据;
       this.friendOnlineStatus = data.info.onlineL98Server; //好友在线状态
-      console.log("滑动页面传回给父级数据：", data);
+      //console.log("滑动页面传回给父级数据：", data);
       let openId = data.info.openid;
       this.friendId = openId;
       sessionStorage.setItem("staffCouponToId", openId);
@@ -536,7 +536,7 @@ export default {
     },
     //监听右滑心跳
     thumbHeartBeat(data) {
-      console.log("heartBeat--------------", data);
+      //console.log("heartBeat--------------", data);
       this.$refs.thumbHeartBeat.className = "heartBeat";
       setTimeout(() => {
         this.$refs.thumbHeartBeat.className = "";
@@ -544,7 +544,7 @@ export default {
     },
     //获取更多朋友
     sonGetMoreFriend() {
-      console.log("触发获取更多的朋友");
+      //console.log("触发获取更多的朋友");
       this.getMoreFriendList(this.friendListCursor, this.loadFriendSexType);
     },
     getMoreFriendList(cursor, sex) {
@@ -579,7 +579,7 @@ export default {
       if (typeof thumbTimes === "string") {
         thumbTimes = JSON.parse(thumbTimes);
       }
-      console.log("thumbTimes---------", thumbTimes);
+      //console.log("thumbTimes---------", thumbTimes);
       // 判断未关注用户今天点赞次数是否达到10次，达到10次弹框提醒关注
       if (!this.userInfo.isSubscribe) {
         //判断是否关注公众号
@@ -613,7 +613,7 @@ export default {
           thumbTimes.date == todayDate &&
           Number(thumbTimes.focusThumbTimes) < 1
         ) {
-          console.log("进来了");
+          //console.log("进来了");
           thumbTimes["date"] = new Date().getDate();
           let focusThumbNum = Number(thumbTimes.focusThumbTimes);
           focusThumbNum--;
@@ -631,7 +631,7 @@ export default {
         }
       }
       api.makeFriend(this.xid).then(res => {
-        console.log("giveThumb----", res);
+        //console.log("giveThumb----", res);
         if (res.errCode === 0) {
           this.isShowEnvelope = true;
           this.envelopeText = "飞奔个赞过去,等待对方回赞成为好友";
@@ -656,7 +656,7 @@ export default {
     //发起聊天
     chat() {
       // util.routerTo("chat", this);
-      console.log("jinrula");
+      //console.log("jinrula");
       this.setChatFriend(this.friendInfo);
       this.$router.push({
         name: "chat",
@@ -667,7 +667,7 @@ export default {
             : item.phone
         }
       });
-      // console.log()
+      // //console.log()
       // this.$router.push({
       //   path: `/message/${this.friendId}`,
       //   query: this.friendInfo
@@ -691,7 +691,7 @@ export default {
       if (typeof playTimes === "string") {
         playTimes = JSON.parse(playTimes);
       }
-      console.log("playTimes---------", playTimes);
+      //console.log("playTimes---------", playTimes);
       // 判断未关注用户今天点赞次数是否达到10次，达到10次弹框提醒关注
       if (!this.userInfo.isSubscribe) {
         //判断是否关注公众号
@@ -725,7 +725,7 @@ export default {
           playTimes.date == todayDate &&
           Number(playTimes.focusPlayTimes) < 1
         ) {
-          console.log("进来了");
+          //console.log("进来了");
           playTimes["date"] = new Date().getDate();
           let focusPlayTimes = Number(playTimes.focusPlayTimes);
           focusPlayTimes--;
@@ -743,7 +743,7 @@ export default {
         }
       }
       api.sentPlayGameMsg(this.friendId).then(res => {
-        console.log("约战返回--------", res);
+        //console.log("约战返回--------", res);
         if (res.errCode == 0) {
           // this.text = "您已发出邀请  等待对方的回应";
           this.isShowEnvelope = true;
@@ -787,7 +787,7 @@ export default {
         sortType: this.sortType
       };
       api.getFriendList(params).then(res => {
-        // console.log('拉取排序后的候选人：·····················', res);
+        // //console.log('拉取排序后的候选人：·····················', res);
         this.changeFriendCursor(res.cursor);
         this.getFriend(res);
         this.showToast = false;
@@ -805,12 +805,12 @@ export default {
       changeFocusPlayTimes: "CHANGEFOCUSPLAYTIMES", //关注用户约战次数
       changeUnfocusThumbTimes: "CHANGEUNFOCUSTHUMBTIMES", //未关注用户点赞次数
       changeFocusThumbTimes: "CHANGEFOCUSTHUMBTIMES", //关注用户点赞次数
-      changeQrCodeText: "CHANGEQRCODETEXT",
       changeFriIcon: "CHANGEFRIENDICON", //回赞后更改好友页面图标
       changeSexType: "CHANGESEXTYPE", //改变拉取候选人性别参数
       MutationGetMoreFriendList: "GET_MOREFRIENDlIST", //获取更多候选人
       getLessThan10friendList: "GET_LESSTHAN10FRIENDLIST", //获取少于10个候选人
       changeFriendCursor: "CHANGE_FRIENDlISTCURSOR", //改变游标
+      changeQrCodeText: "CHANGEQRCODETEXT",
       showQrcode: "SHOW_QRCODE", //展示二维码
       setChatFriend: "SET_CHAT_FRIEND",
       getuserInfo: "GET_USERINFO", //获取用户信息

@@ -472,9 +472,8 @@ import { userInfo } from 'os';
           this.clearTopUpMessage();
         }
       }, 3000);
-      console.log("this.hasDivideIdentity----",this.hasDivideIdentity)
       Bus.$on("hideEnvelop", (result) => {
-        console.log("隐藏信封------", result)
+        //console.log("隐藏信封------", result)
       })
     },
     methods: {
@@ -491,7 +490,7 @@ import { userInfo } from 'os';
           sortType: 0
         };
         api.getFriendList(params).then(res => {
-          console.log("拉取候选人：·····················", res);
+          //console.log("拉取候选人：·····················", res);
           this.getFriend(res);
         });
       },
@@ -508,7 +507,7 @@ import { userInfo } from 'os';
               item.latesMsgTime = item.latesMsgTime ? util.timestampToTime(item.latesMsgTime) : 0
               return item.openid != this.userInfo.openid
             })
-            console.log("拉取分身-------", this.divideList)
+            //console.log("拉取分身-------", this.divideList)
           } else {
             this.$vux.toast.show({
               text: res.errorMsg
@@ -520,20 +519,20 @@ import { userInfo } from 'os';
       switchToDivide(item) {
         this.identity = sessionStorage.getItem("identity")
         this.hasDivideIdentity = true;
-        console.log("identity--------", this.identity)
+        //console.log("identity--------", this.identity)
         if (!this.identity) {
           let data = {
             offlineOpenid: this.userInfo.openid
           }
           api.loginIdentity(data).then(res => {
-            console.log("分身下线", res)
+            //console.log("分身下线", res)
           })
         } else {
           let data = {
             offlineOpenid: this.identity
           }
           api.loginIdentity(data).then(res => {
-            console.log("分身下线", res)
+            //console.log("分身下线", res)
           })
         }
         this.loadIdentityList()
@@ -557,13 +556,13 @@ import { userInfo } from 'os';
             })
           }, 200);
           this.identity = sessionStorage.getItem("identity")
-          console.log("app-identity--", this.identity)
+          //console.log("app-identity--", this.identity)
           let isMasterId = this.identity.indexOf("@master")
           this.identity = isMasterId > 0 ? this.identity : "" //是分身id才给赋值，不是则置为空
         })
       },
       confirm(userInfo) {
-        console.log("userInfo------",userInfo)
+        //console.log("userInfo------",userInfo)
         if (!this.userInfo.isSubscribe) {
           this.changeQrCodeText({
             title: "长按关注，以便查找、使用您的礼品券/优惠券",
@@ -609,7 +608,7 @@ import { userInfo } from 'os';
       },
       //监听充值面板状态
       closeIntegralPanel(flag) {
-        // console.log('面板状态-----------', flag);
+        // //console.log('面板状态-----------', flag);
         this.isGiftPanel = flag;
       },
       inToLetter() {
@@ -624,7 +623,7 @@ import { userInfo } from 'os';
           return
         }
         api.enforceLeaveRoom().then(res => {
-          console.log("拒绝回房-----------", res);
+          //console.log("拒绝回房-----------", res);
         });
         this.showBackToGame = false;
       },
@@ -637,10 +636,10 @@ import { userInfo } from 'os';
       },
       //   //加载同桌信息
       // loadDeskRoomInfo() {
-      //    console.log("loadDeskRoomInfo---------");
+      //    //console.log("loadDeskRoomInfo---------");
       //   // var cacheRoomId = localStorage.getItem("backRoomId") || ""
       //   api.loadDeskRoomInfo(1).then(res => {
-      //     console.log("同桌信息--------", res);
+      //     //console.log("同桌信息--------", res);
       //     if (res.roomID) {
       //       this.roomID = res.roomID;
       //       this.gamePath = res.gamePath;
@@ -655,7 +654,7 @@ import { userInfo } from 'os';
       //加载游戏回房信息
       loadLastRoomInfo() {
         api.loadLastRoomInfo(this.deskCode).then(res => {
-          console.log("回房信息--------", res);
+          //console.log("回房信息--------", res);
           if (res.roomID) {
             this.roomID = res.roomID;
             this.gamePath = res.gamePath;
@@ -669,7 +668,7 @@ import { userInfo } from 'os';
       },
       //加好友
       // onlineSendGift(e) {
-      //   // console.log(e.target.checked)
+      //   // //console.log(e.target.checked)
       //   this.isMakeFriendBool = e.target.checked;
       // },
       showDetail() {
@@ -681,10 +680,7 @@ import { userInfo } from 'os';
             break;
           case "message":
             this.setChatFriend(this.dynamicFriendEvt.fromInfo);
-            console.log(
-              "this.dynamicFriendEvt.fromInfo-----------",
-              this.dynamicFriendEvt.fromInfo
-            );
+          
             this.$router.push({
               // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
               name: "chat",
@@ -732,7 +728,7 @@ import { userInfo } from 'os';
             });
             break;
           case "onlineNotice":
-            // console.log(this.dynamicFriendEvt.fromInfo.nickname);
+            // //console.log(this.dynamicFriendEvt.fromInfo.nickname);
             this.setChatFriend(this.dynamicFriendEvt.fromInfo);
             if (this.dynamicFriendEvt.fromInfo.isAlreadyFriends) {
               this.$router.push({
@@ -745,7 +741,7 @@ import { userInfo } from 'os';
               });
             } else {
               api.makeFriend(this.dynamicFriendEvt.fromInfo.openid).then(res => {
-                // console.log(res);
+                // //console.log(res);
                 if (res.errcode === 0) {
                   this.isShowEnvelope = true;
                   this.envelopeText = "飞奔个赞过去,等待对方回赞成为好友";
@@ -830,7 +826,7 @@ import { userInfo } from 'os';
       },
       //未成为好友的送礼回复
       no_Become_Friend_respondForGift(giftInfo, flag) {
-        console.log("未成为好友的送礼回复----------------", giftInfo);
+        //console.log("未成为好友的送礼回复----------------", giftInfo);
         let giftParam = {
           agree: flag, //是否接受
           recordID: giftInfo.extMsg.goodInfo.extInfo.recordID, //送礼记录ID
@@ -840,7 +836,7 @@ import { userInfo } from 'os';
           isSysSendGift: false
         };
         api.respondForGift(giftParam).then(res => {
-           console.log("好友送礼回复结果---",res)
+           //console.log("好友送礼回复结果---",res)
           if (res.errCode == 0) {
             //重新拉取约战，送礼，点赞列表
             api.getUserInfo("/api/loadUserInfo").then(res => {
@@ -873,7 +869,7 @@ import { userInfo } from 'os';
       },
       //已成为好友的送礼回复
       respondForGift(giftInfo, flag) {
-        console.log("成为好友的送礼回复----------------", giftInfo);
+        //console.log("成为好友的送礼回复----------------", giftInfo);
         let giftParam = {
           agree: flag, //是否接受
           recordID: giftInfo.recordID, //送礼记录ID
@@ -928,12 +924,12 @@ import { userInfo } from 'os';
             openID: gameInfo.fromInfo.openid
           };
           api.queueCombatReply(p, this.identity).then(res => {
-            console.log("队列邀请拒绝结果---", res);
+            //console.log("队列邀请拒绝结果---", res);
           });
         }
         api.responseCombat(params).then(res => {
           if (res.errCode == 0) {
-            console.log("删除结果-----------", res);
+            //console.log("删除结果-----------", res);
           }
         });
         this.isShowGiftPanel = false;
@@ -942,10 +938,7 @@ import { userInfo } from 'os';
       },
       //未成为好友接受游戏
       no_Become_Friend_respondForGame(gameInfo) {
-        console.log(
-          "no_Become_Friend_respondForGame_gameInfo-----------",
-          gameInfo
-        );
+      
         this.isHandleMessageFromQueue = true;
         this.clearTopUpMessage();
         let params = {
@@ -959,15 +952,15 @@ import { userInfo } from 'os';
             openID: gameInfo.fromInfo.openid
           };
           api.queueCombatReply(p, this.identity).then(res => {
-            console.log("队列邀请接受结果---", res);
+            //console.log("队列邀请接受结果---", res);
           });
         }
         if (params.combatID) {
           //约战
           api.responseCombat(params).then(res => {
-            console.log(res);
+            //console.log(res);
             if (res.errCode == 0) {
-              console.log("删除结果-----------", res);
+              //console.log("删除结果-----------", res);
               window.location.href = gameInfo.extMsg.gameInfo.url;
             }
           });
@@ -981,7 +974,7 @@ import { userInfo } from 'os';
       respondForGame(game) {
         this.isHandleMessageFromQueue = true;
         this.clearTopUpMessage();
-        console.log("respondForGame_gameInfo-----------", game);
+        //console.log("respondForGame_gameInfo-----------", game);
         var params = {};
         var gameUrl = "";
         if (this.topUpGameInfo.msgCode == 24) {
@@ -990,7 +983,7 @@ import { userInfo } from 'os';
             openID: game.openid
           };
           api.queueCombatReply(p, this.identity).then(res => { //
-            console.log("队列邀请接受结果---", res);
+            //console.log("队列邀请接受结果---", res);
           });
         }
         if (this.topUpGameInfo.msgCode == 19) {
@@ -1009,9 +1002,9 @@ import { userInfo } from 'os';
         }
         //约战
         api.responseCombat(params).then(res => {
-          console.log(res);
+          //console.log(res);
           if (res.errCode == 0) {
-            console.log("删除结果-----------", res);
+            //console.log("删除结果-----------", res);
             // this.addFriendEvtObj({}) //清空推送内容
             window.location.href = gameUrl;
           }
@@ -1019,7 +1012,7 @@ import { userInfo } from 'os';
       },
       //拒绝游戏
       rejectForGame(gameInfo) {
-        console.log("rejectForGame_gameInfo0-----------", gameInfo);
+        //console.log("rejectForGame_gameInfo0-----------", gameInfo);
         this.isHandleMessageFromQueue = true;
         this.clearTopUpMessage();
         var params = {};
@@ -1029,7 +1022,7 @@ import { userInfo } from 'os';
             openID: gameInfo.fromInfo.openid
           };
           api.queueCombatReply(p, this.identity).then(res => {
-            console.log("队列邀请拒接结果---", res);
+            //console.log("队列邀请拒接结果---", res);
           });
         }
         if (this.topUpGameInfo.msgCode == 19) {
@@ -1049,11 +1042,11 @@ import { userInfo } from 'os';
           };
         }
         api.responseCombat(params).then(res => {
-          console.log(res);
+          //console.log(res);
           if (res.errCode == 0) {
             this.isShowGiftPanel = false;
             // this.addFriendEvtObj({}) //清空推送内容
-            console.log("删除结果-----------", res);
+            //console.log("删除结果-----------", res);
           }
         });
         this._loadMutualEvents();
@@ -1138,8 +1131,7 @@ import { userInfo } from 'os';
             let notifyUser = this.notifyUserIdList.filter(user => {
               return user.openid === onlineUser.openid;
             });
-            let isMore300s =
-              new Date().getTime() - notifyUser[0].loginTime > 300000;
+            let isMore300s =new Date().getTime() - notifyUser[0].loginTime > 300000;
             if (isMore300s) {
               this.isThrottle = true;
               this.notifyUserIdList.forEach(user => {
@@ -1155,6 +1147,8 @@ import { userInfo } from 'os';
         } else {
           this.isThrottle = true;
         }
+        console.log("this.isThrottle----",this.isThrottle)
+        console.log("this.isShowEnvelop----",this.isShowEnvelop)
         if (this.isThrottle) {
           this.isShowEnvelop = true;
           setTimeout(() => {
@@ -1207,7 +1201,7 @@ import { userInfo } from 'os';
           url: contentStruct.chatExtMsg.extMsg.url ?
             contentStruct.chatExtMsg.extMsg.url : ""
         };
-        // console.log("allMutatualInfo---------------------", this.allMutatualInfo_temp);
+        // //console.log("allMutatualInfo---------------------", this.allMutatualInfo_temp);
         if (this.allMutatualInfo_temp.type == 3) {
           this.giftFlag = true;
           this.gameFlag = false;
@@ -1221,7 +1215,7 @@ import { userInfo } from 'os';
         if (!newValue.msgCode) {
           return;
         }
-        console.log("topUpGiftInfo----------", newValue);
+        //console.log("topUpGiftInfo----------", newValue);
         this.judgeEveryBool(true, false, true, false);
         switch (newValue.content.extMsg.goodInfo.extInfo.name) {
           case "beer":
@@ -1251,14 +1245,14 @@ import { userInfo } from 'os';
           default:
             break;
         }
-        // console.log('送的礼物----------', newValue);
+        // //console.log('送的礼物----------', newValue);
       },
       topUpThumbInfo: function(newValue) {
         clearTimeout(this.timeTick);
         if (!newValue.msgCode) {
           return;
         }
-        console.log("topUpThumbInfo-------------", newValue);
+        //console.log("topUpThumbInfo-------------", newValue);
         this.judgeEveryBool(true, false, false, true);
       },
       soulFriInfo: function(newValue) {
@@ -1278,17 +1272,17 @@ import { userInfo } from 'os';
         if (!newValue.msgCode) {
           return;
         }
-        console.log("topUpGameInfo-------------", newValue);
+        //console.log("topUpGameInfo-------------", newValue);
         this.judgeEveryBool(true, true, false, false);
       },
       sameDeskInfo: function(newValue, oldValue) {
         this.samedeskInfo = newValue
         this.showBackToGame = true
         this.isDeskRoom = true
-        console.log("this.samedeskInfo-----", this.samedeskInfo)
+        //console.log("this.samedeskInfo-----", this.samedeskInfo)
       },
       $route: function(newValue, oldValue) {
-        // console.log("$route---------", oldValue)
+        // //console.log("$route---------", oldValue)
         // if (newValue.name == "message") { //控制显示分身信封
         //   this.isShowDivideEnv = true
         // } else {

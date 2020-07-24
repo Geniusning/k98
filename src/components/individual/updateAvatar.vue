@@ -71,7 +71,7 @@
     created() {
       this.fromPage = this.$route.params.type //判断从哪个页面跳转过来
       if (this.fromPage === 'divide') {
-        console.log("userInfo----", this.userInfo)
+        //console.log("userInfo----", this.userInfo)
       } else {
         if (this.userInfo.lifePhotoURL.lifePhotoURL) {
           this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
@@ -82,7 +82,7 @@
       }
     },
     destroyed() {
-      console.log("updateAvatar-destroyed")
+      //console.log("updateAvatar-destroyed")
       if (this.fromPage === 'divide') {
         sessionStorage.removeItem("identity")
       }
@@ -96,7 +96,7 @@
         let _this = this;
         let file = e.target.files[0];
         this.lifePicName = file.name;
-        console.log("file------", file)
+        //console.log("file------", file)
         if (file.type === "video/mp4") {
           this.$vux.toast.text(
             "你所选的文件格式不符合，请重新选择",
@@ -108,7 +108,7 @@
         lrz(e.target.files[0], {
           quality: 0.4
         }).then(compressedImg => {
-          console.log("compressedImg---------", compressedImg);
+          //console.log("compressedImg---------", compressedImg);
           _this.showTailor = true;
           _this.option.img = compressedImg.base64;
         })
@@ -116,15 +116,15 @@
       //确定生活照
       LifePicupComfirmBtn() {
         this.$refs.cropper.getCropBlob(data => {
-          console.log('this.$refs.cropper.getCropBlob----------', data);
+          //console.log('this.$refs.cropper.getCropBlob----------', data);
           this.resultLife = data;
           this.showTailor = false;
           //上传生活照
           api.updateLifePic(this.lifePicName, this.resultLife).then(res => {
-            console.log(res)
+            //console.log(res)
             if (res.errorCode === 0) {
               api.getUserInfo().then(res => {
-                console.log(res);
+                //console.log(res);
                 this.getuserInfo(res);
                 if (this.userInfo.lifePhotoURL.lifePhotoURL) {
                   this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
@@ -148,9 +148,9 @@
         let data = {
           url: photoImg
         }
-        console.log("photoImg----", photoImg)
+        //console.log("photoImg----", photoImg)
         api.delLifePhoto(data).then(res => {
-          console.log("删除生活照---", res)
+          //console.log("删除生活照---", res)
         })
         if (this.fromPage === "divide") {
           this.lifePhotoList.splice(index, 1)
@@ -167,7 +167,7 @@
       //选择头像图片
       uploadAvatar(e) {
         let file = e.target.files[0];
-        console.log("file----", file)
+        //console.log("file----", file)
         if (file.type === "video/mp4") {
           this.$vux.toast.text(
             "你所选的文件格式不符合，请重新选择",
@@ -182,24 +182,24 @@
         reader.readAsDataURL(file);
         reader.onload = function() {
           _this.result = this.result;
-          console.log(_this.result);
+          //console.log(_this.result);
           _this.showTailor = true;
           _this.option.img = this.result;
         };
       },
       avatarPicupLoad() {
         this.$refs.cropper.getCropBlob(data => {
-          console.log('this.$refs.cropper.getCropBlob----------', data);
+          //console.log('this.$refs.cropper.getCropBlob----------', data);
           this.resultAvatar = data;
           this.$refs.avatar.src = data;
           this.showTailor = false;
           //更新头像
           api.updateAvatar(this.fileName, this.resultAvatar).then(res => {
-            // console.log(res);
+            // //console.log(res);
             this.addPic = res.imgURL
             if (res.imgURL.length > 0) {
               api.getUserInfo().then(res => {
-                  console.log(res);
+                  //console.log(res);
                   if (this.fromPage === "individual") { //如果主身份则按正常流程走，更新个人信息
                     this.getuserInfo(res);
                   }
@@ -208,7 +208,7 @@
                   });
                 })
                 .catch(err => {
-                  console.log(err);
+                  //console.log(err);
                 });
             }
           });

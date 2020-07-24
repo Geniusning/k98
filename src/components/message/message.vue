@@ -1,5 +1,6 @@
 <template>
   <div id="message" class="message_wrapper">
+    <div @click="showCashierList" class="showCheckFlow" v-if="(isShowTab===2) && (isCashierListFlag)">查流水</div>
     <div class="mask" v-if="showFriendInfoFlag">
       <img @click="close" src="../../assets/image/close.png" class="close" alt="">
     </div>
@@ -12,25 +13,30 @@
       </div>
     </div>
     <div class="message_wrapper">
-      <!-- 分身切换弹框 -->
-      <div class="divide-topUp" v-show="isShowDivideList">
-        <div class="bg"></div>
-        <div class="divide-title">
-          <img class="divide-icon" src="../../assets/image/divide_avatar.png" alt="">
-          <span class="divide-titleText">分身消息</span>
-          <img @click="isShowDivideList=false" class="divide-close" src="../../assets/image/divide_close.png" alt="">
-        </div>
-        <ul class="divide-list">
-          <li class="divide-item" v-for="(divide,index) in divideList" :key="index">
-            <img class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
-            <i class="avatar-dot" v-show="divide.unreadMsgCount"></i>
-            <p style="width:40%;text-align: center" class="divide-name">{{divide.nickName}}</p>
-            <!-- <p class="divide-time" @click="delDivide(divide.openid)">{{divide.latesMsgTime?divide.latesMsgTime:0}}</p> -->
-            <p style="width:20%" class="divide-time" @click="delDivide(divide.openid)">{{divide.latesMsgTime?divide.latesMsgTime.slice(8,10)==today?divide.latesMsgTime.slice(10,16):divide.latesMsgTime.slice(5,10):""}}</p>
-            <img @click="switchToDivide(divide)" class="divide-arrow" src="../../assets/image/divide_right.png" alt="">
-          </li>
+      <Popup @close="closePopUp" :show="showCashierFlow">
+        <ul class="cashier_stream_title">
+          <li class="title_name" style="width:25%">买单时间</li>
+          <li class="title_name" style="width:15%">台/房号</li>
+          <li class="title_name">金额</li>
+          <li class="title_name">收款码</li>
+          <li class="title_name">券名称</li>
+          <li class="title_name">买单人</li>
         </ul>
-      </div>
+        <scroll :data="cashierFlowList" :pullDownRefresh="true" @pullingUp="pullingUp">
+          <ul class="cashier_stream_detail">
+            <li v-for="(cashier,index) in cashierFlowList" :key="index" class="stream_detail_item">
+              <span class="detail_name" style="width:25%">{{cashier.time}}</span>
+              <span class="detail_name" style="width:15%">{{cashier.deskcode}}</span>
+              <span class="detail_name">{{cashier.consumeamount}}</span>
+              <span class="detail_name">{{cashier.qrcodename?cashier.qrcodename:"无券买单"}}</span>
+              <span class="detail_name">{{cashier.usercouponname?cashier.usercouponname:"无券买单"}}</span>
+              <div class="detail_name">
+                <img :src="cashier.payuserheadimgurl" class="headUrl">
+              </div>
+            </li>
+          </ul>
+        </scroll>
+      </Popup>
       <!-- 好友 -->
       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1 || isShowTab==2)) " class="qrCode_wrapper">
         <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
@@ -72,7 +78,7 @@
               <p>{{item.info.lastMsg?item.info.lastMsg.stime.slice(8,10)==today?item.info.lastMsg.stime.slice(10,16):item.info.lastMsg.stime.slice(5,10):""}}</p>
             </div>
           </li>
-          <p v-if="!alreadyFriendList.length" class="noFriend">暂无好友</p>
+          <!-- <p v-if="!alreadyFriendList.length" class="noFriend">暂无好友</p> -->
         </ul>
       </scroll>
       <!-- 新朋友 -->
@@ -117,9 +123,9 @@
                 </div>
               </div>
               <!-- <div class="checkBox_scene clearfix" v-show="item.integral">
-                      <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                      <span class="scene-text fl">加好友</span>
-                    </div> -->
+                            <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                            <span class="scene-text fl">加好友</span>
+                          </div> -->
             </div>
           </li>
           <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
@@ -150,7 +156,7 @@
               <div class="name_and_message">
                 <p class="name" style="font-weight:800;font-size:15px">收银员</p>
                 <button class="discount-pay" @click.stop="goToCard">有券买单</button>
-                <button class="noDiscount-pay">无券买单</button>
+                <button class="noDiscount-pay" @click.stop="payNoCashier">无券买单</button>
               </div>
             </div>
           </li>
@@ -264,6 +270,7 @@
 <script type='text/ecmascript-6'>
   import api from "common/api"
   import Scroll from 'base/scroll/scroll'
+  import Popup from 'base/popUp/popUp'
   import Bus from 'common/bus.js'
   import {
     mapMutations,
@@ -282,8 +289,8 @@
   export default {
     data() {
       return {
-        isShowDivideList: false,
-        divideList: [],
+        showCashierFlow: false,
+        cashierFlowList: [], //收银账单
         isShowQrCode: true,
         isClientListFlag: true, //判断是否是客服
         isCashierListFlag: true, //判断是否是收银员
@@ -308,12 +315,13 @@
         showFriendInfoFlag: false,
         sign: "爱情陷阱",
         clientServiceList: [], //客服留言列表
-        cashierServiceList: [] //收银员买单列表
+        cashierServiceList: [], //收银员买单列表
+        cashierCursor: 0,
       };
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
     beforeRouteEnter(to, from, next) {
-      console.log("from", from)
+      //console.log("from", from)
       if (to.params.routeParamNum === 1) {
         next(vm => {
           vm.isShowTab = 1;
@@ -353,10 +361,10 @@
       }
     },
     beforeRouteUpdate(to, from, next) {
-      console.log("beforeRouteUpdate---------", from)
-      if (from.name === "clientChat" || from.name === 'chat' || from.name==="cashierChat") {
+      //console.log("beforeRouteUpdate---------", from)
+      if (from.name === "clientChat" || from.name === 'chat' || from.name === "cashierChat") {
         this.loadClientServiceList()
-         this.loadCashierList() 
+        this.loadCashierList()
       }
       next()
     },
@@ -377,7 +385,9 @@
         "shareUrl",
         "divide_badgeCount",
         "group_badgeCount",
-        "msg_badgeCount"
+        "msg_badgeCount",
+        "deskId",
+        "deskCode"
       ]),
       messageTime() {
         return
@@ -385,7 +395,7 @@
     },
     created() {
       this.today = new Date().getDate();
-      // console.log(this.today);
+      // //console.log(this.today);
       if (this.today < 10) {
         this.today = "0" + this.today;
       } else {
@@ -394,7 +404,7 @@
       Bus.$on('incre', (num) => {
         this.divide_badgeCount += num
         this.loadIdentityList()
-        console.log("bus----------message", num)
+        //console.log("bus----------message", num)
       })
     },
     mounted() {
@@ -404,6 +414,7 @@
       this.loadClientServiceList() //加载客服列表  
       this.loadCashierList() //加载收银员列表  
       this.loadIdentityList() //加载分身 
+      this.loadSelfPay() //买单流水
       // this.isShowTab = this.getQueryString("routeParamNum")
       this.isShowQrCode = localStorage.getItem("isShowQrCode") === "false" ? false : true
     },
@@ -411,21 +422,78 @@
       // 临时方法 删除分身
       delDivide(targetId) {
         api.delIdentity(targetId).then(res => {
-          console.log("删除结果-----", res)
+          //console.log("删除结果-----", res)
         })
       },
-      goToCard(){
+      async payNoCashier() {
+        let data = {
+          deskid: this.deskId || "fefd338f-b59c-49c0-b918-5ed3d28e4cd1",
+          deskcode: this.deskCode || 1,
+          payuserid: this.userInfo.openid,
+          payuserheadimgurl: this.userInfo.headimgurl,
+        };
+        let res2 = await api.launchSelfPay(data);
+        console.log("res2------", res2)
+        if (res2.errorCode === 0) {
+          this.cashierObj["openid"] = this.cashierObj.CashierID
+          this.setChatFriend(this.cashierObj);
+          setTimeout(() => {
+            this.$router.push({
+              name: "cashierChat",
+              params: {
+                from: this.userInfo.openid,
+                to: this.cashierObj.CashierID,
+                deskCode: this.deskCode,
+                isCashier: false,
+              }
+            });
+          }, 500);
+        }
+      },
+      closePopUp(flag) {
+        this.showCashierFlow = flag
+      },
+      //显示收银流水
+      showCashierList() {
+        this.showCashierFlow = true;
+      },
+      //买单流水
+      async loadSelfPay() {
+        let res = await api.loadSelfPay(this.cashierCursor, 50)
+        console.log("买单流水-------", res)
+        if (res.errCode === 0) {
+          this.cashierFlowList = res.info.selfpayes
+          this.cashierFlowList.forEach(item => {
+            item.time = util.timestampToTimeNoYear(item.time)
+          })
+          this.cashierCursor = res.info.cursor
+        }
+      },
+      async pullingUp(){
+        if(this.cashierCursor != 0){
+           let res = await api.loadSelfPay(this.cashierCursor, 50)
+           console.log("更多买单流水----",res)
+           if(res.errCode === 0){
+             res.info.selfpayes.forEach(item=>{
+               item.time = util.timestampToTimeNoYear(item.time)
+               this.cashierFlowList.push(item)
+             })
+            this.cashierCursor = res.info.cursor
+           }
+        }
+      },
+      goToCard() {
         this.$router.push({
-          name:"card",
-          params:{
-            type:"cashier"
+          name: "card",
+          params: {
+            type: "cashier"
           }
         })
       },
       //删除群发通知
       delNotice(noticeId) {
         api.delNotice(noticeId).then(res => {
-          console.log('删除群发消息', res)
+          //console.log('删除群发消息', res)
           if (res.errCode === 0) {
             this.$vux.toast.text('删除成功');
             this.getCaptainMessList()
@@ -437,7 +505,7 @@
       //设置群发通知已读
       setUnreadNotice(noticeId, type) {
         api.setUnreadNotice(noticeId).then(res => {
-          console.log('群发消息已读---', res)
+          //console.log('群发消息已读---', res)
           if (res.errCode === 0) {
             switch (type) {
               case 1:
@@ -488,41 +556,10 @@
               item.latesMsgTime = item.latesMsgTime ? util.timestampToTime(item.latesMsgTime) : 0
               return item.openid != this.userInfo.openid
             })
-            console.log("拉取分身-------", this.divideList)
+            //console.log("拉取分身-------", this.divideList)
           } else {
             this.$vux.toast.text(res.errorMsg);
           }
-        })
-      },
-      //切换分身
-      switchToDivide(item) {
-        let identity = sessionStorage.getItem("identity")
-        console.log("identity--------", identity)
-        if (!identity) {
-          let data = {
-            offlineOpenid: this.userInfo.openid
-          }
-          api.loginIdentity(data).then(res => {
-            console.log("分身下线", res)
-          })
-        } else {
-          let data = {
-            offlineOpenid: identity
-          }
-          api.loginIdentity(data).then(res => {
-            console.log("分身下线", res)
-          })
-        }
-        sessionStorage.setItem("identity", item.openid)
-        api.getUserInfo("/api/loadUserInfo").then(res => {
-          this.getUserInfo(res);
-          this._loadFriends(); //拉取好友
-          this._loadMutualEvents(); //拉取送礼，约战，
-          this.loadIdentityList();
-          this.$vux.toast.show({
-            text: "切换分身成功"
-          });
-          this.isShowDivideList = false
         })
       },
       closeQrCode() {
@@ -540,7 +577,7 @@
         let phone = this.userInfo.phone ? this.userInfo.phone : "7777"
         var unReadCount = 0;
         api.loadClientServiceList(phone).then(res => {
-          console.log("客服----------------", res)
+          //console.log("客服----------------", res)
           if (res.CliSerID && !res.uerInfos) { //用户进入
             this.isClientListFlag = false
             this.clientTitleFlag = true
@@ -568,7 +605,7 @@
                 }
               })
               this.clientServiceList = tempArr.sort(util.sortByKey("stime"))
-              console.log("客服列表-------------", this.clientServiceList)
+              //console.log("客服列表-------------", this.clientServiceList)
             }
           }
           this.getClientUnreadCount(unReadCount)
@@ -578,7 +615,7 @@
       //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
       loadCashierList() {
         api.loadCashierList().then(res => {
-          console.log("收银员列表---", res)
+          //console.log("收银员列表---", res)
           let unReadCount = 0
           this.cashierObj = res
           if (!res.uerInfos) { //普通用户进入
@@ -599,7 +636,7 @@
                 }
               })
               this.cashierServiceList = tempArr.sort(util.sortByKey("stime"))
-              console.log("客服列表-------------", this.cashierServiceList)
+              //console.log("客服列表-------------", this.cashierServiceList)
             }
           }
           this.getCashierUnreadCount(unReadCount)
@@ -616,20 +653,17 @@
       },
       //删除点赞，约战，送礼列表
       removeEventList() {
-        // this.mutualEventsList.splice(index,1)
         this._loadFriends();
-        // this.addBandge();
-        //重新拉取约战，送礼，点赞列表
         this._loadMutualEvents();
       },
       //勾选是否加好友
       // onlineSendGift(e) {
-      //   console.log(e.target.checked)
+      //   //console.log(e.target.checked)
       //   this.isMakeFriendBool = e.target.checked
       // },
       selectList(index) {
         this.isShowTab = index;
-        console.log(this.isShowTab)
+        //console.log(this.isShowTab)
         if (this.isShowTab === 2) {
           Bus.$emit("hideEnvelop", true)
           setTimeout(() => {
@@ -649,7 +683,7 @@
           if (res.errCode === 0) {
             let mutualEventsObj = res.mutualEvents;
             let tempEventList = [];
-            console.log("mutualEventsObj------------", mutualEventsObj);
+            //console.log("mutualEventsObj------------", mutualEventsObj);
             this.mutualEventsList = []; //先清空
             tempEventList = tempEventList.concat(mutualEventsObj.combatsEvents)
             tempEventList = tempEventList.concat(mutualEventsObj.giftEvents)
@@ -666,12 +700,12 @@
               }
             })
           }
-          console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
+          // //console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
         })
       },
       //接受或拒接送礼
       respondForGift(index, giftInfo, flag) {
-        console.log('giftInfo----------------', giftInfo)
+        // //console.log('giftInfo----------------', giftInfo)
         let giftType = giftInfo.integral ? 1 : 0;
         let giftParam = {
           agree: flag, //是否接受
@@ -681,13 +715,12 @@
           isMakeFriend: this.isMakeFriendBool,
         }
         api.respondForGift(giftParam).then(res => {
-          console.log('送礼操作结果-------------------', res);
+          // //console.log('送礼操作结果-------------------', res);
           if (res.errCode == 0) {
             this.removeEventList()
             if (flag) {
               this.text = "已感谢";
               api.getUserInfo("/api/loadUserInfo").then(res => {
-                console.log("个人信息-------", res)
                 this.getUserInfo(res);
               })
               setTimeout(() => {
@@ -702,18 +735,16 @@
             } else {
               this.text = "已拒接";
             }
-            //重新拉取约战，送礼，点赞列表
-            // this._loadMutualEvents();
             this.showPositionValue = true;
           }
         })
       },
       //回赞事件
       backThumbClick(index, type, flag, fromInfo) {
-        console.log(fromInfo)
+        //console.log(fromInfo)
         this.fromUserInfo = fromInfo
         api.giveBackThumb(type, flag).then(res => {
-          console.log("回赞事件----------", res);
+          //console.log("回赞事件----------", res);
           if (res.errCode === 0) {
             this.setChatFriend(fromInfo)
             //重新拉取已经成为好友列表
@@ -740,9 +771,9 @@
         }
         //约战
         api.responseCombat(params).then(res => {
-          console.log(res)
+          //console.log(res)
           if (res.errCode == 0) {
-            console.log('删除结果-----------', res);
+            //console.log('删除结果-----------', res);
             window.location.href = url;
           }
         })
@@ -755,7 +786,7 @@
           fromID: openId
         }
         api.responseCombat(params).then(res => {
-          console.log('拒接结果-----------', res);
+          //console.log('拒接结果-----------', res);
           if (res.errCode == 0) {
             this.text = "已拒绝";
             this.removeEventList()
@@ -766,7 +797,7 @@
       },
       clearHistory(combatID, url) {
         api.deleteInviteCombat(combatID).then(res => {
-          console.log('删除结果-----------', res);
+          //console.log('删除结果-----------', res);
           if (res.errCode == 0) {
             window.location.href = url;
           }
@@ -780,7 +811,7 @@
       // tab事件
       onItemClick(index) {
         this.greeting_flag = index;
-        console.log(index);
+        //console.log(index);
       },
       //以用户身份进入客服发消息
       ChatToClient() {
@@ -797,7 +828,7 @@
       clientChat(client) {
         client["CliSerID"] = this.customerObj.CliSerID
         this.setChatFriend(client);
-        console.log("向留言用户发消息 client-------------", client)
+        //console.log("向留言用户发消息 client-------------", client)
         this.$router.push({
           name: "clientChat",
           params: {
@@ -873,12 +904,12 @@
       },
       //监听最新的一条消息
       LastChatMsg: function(newValue) {
-        // console.log('在消息列表收到对方手来的消息------------------------------------：',newValue);
+        // //console.log('在消息列表收到对方手来的消息------------------------------------：',newValue);
         // this.compareLastMsg(newValue);
         //把最新的一条消息放到最顶部
         let tempAlreadyFriendList = [];
         this.alreadyFriendList.forEach((element, index) => {
-          // console.log(element);
+          // //console.log(element);
           if (newValue.lastMsg.from == element.info.openid) {
             tempAlreadyFriendList.unshift(element);
           } else {
@@ -886,7 +917,7 @@
           }
         });
         this.toTopFriend(tempAlreadyFriendList)
-        // console.log(tempAlreadyFriendList)
+        // //console.log(tempAlreadyFriendList)
       },
       $route: function(newRoute) {
         if (newRoute.name == "message") {
@@ -900,7 +931,8 @@
       Tab,
       TabItem,
       Toast,
-      Scroll
+      Scroll,
+      Popup
     }
   };
 </script>
@@ -925,6 +957,19 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    .showCheckFlow {
+      right: 0.1333rem;
+      bottom: 20%;
+      position: absolute;
+      width: 1.0667rem;
+      height: 1.0667rem;
+      line-height: 1.0667rem;
+      border-radius: 50%;
+      text-align: center;
+      background-color: red;
+      color: #fff;
+      z-index: 3;
+    }
     .close {
       width: 0.8rem;
       position: absolute;
@@ -1198,105 +1243,33 @@
   }
   .message_wrapper {
     width: 100%;
-    flex-grow: 1; // overflow-y: auto;
-    // position: relative;
-    .list-wrapper {
-      position: relative;
-    }
-    .divide-topUp {
-      position: fixed;
-      z-index: 11;
-      top: 42%;
-      left: 50%;
-      margin-left: -3.3rem;
-      width: 6.6rem;
-      height: 11.6rem;
-      margin-top: -5.8rem;
-      .bg {
-        position: fixed;
-        background-color: rgba(0, 0, 0, .2);
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: -1;
-      }
-      .bg("../../assets/image/divide_bg.png");
-      .divide-title {
-        height: 1.3rem;
-        line-height: 1.3rem;
-        position: relative;
+    flex-grow: 1;
+    .cashier_stream_title {
+      height: 1rem;
+      line-height: 1rem;
+      display: flex;
+      .title_name {
+        width: 20%;
         text-align: center;
-        .divide-icon {
-          width: 0.8rem;
-          vertical-align: middle;
-        }
-        .divide-titleText {
-          font-size: 14px;
-          font-weight: 800;
-          color: #fff;
-          padding-top: .2rem;
-        }
-        .divide-close {
-          position: absolute;
-          top: .2rem;
-          right: .2rem;
-          width: 0.6rem;
-          height: 0.6rem;
-          border-radius: 50%;
-          padding: 4px;
-        }
       }
-      .divide-list {
-        padding: 0 0.2333rem;
-        .divide-item {
-          margin: 0 auto;
-          margin-bottom: .1rem;
-          width: 95%;
-          height: 1rem;
-          line-height: 1rem;
-          background-color: #fff;
-          display: flex;
-          justify-content: space-between;
-          border-radius: 4px;
-          position: relative;
-          .avatar-dot {
-            position: absolute;
-            top: 0.1rem;
-            left: .7rem;
-            width: .3rem;
-            height: .3rem;
-            border-radius: 50%;
-            background-color: red;
-          }
-          .divide-avatar {
-            width: .7rem;
-            height: .7rem;
-            border-radius: 50%;
-            margin-top: .15rem;
-            margin-left: .2rem;
-            margin-right: .2rem;
-          }
-          .divide-name {
-            font-size: 12px;
-            color: #333;
-            width: 2rem;
-            margin-left: -.7rem;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis
-          }
-          .divide-time {
-            font-size: 10px;
-            color: #333;
-          }
-          .divide-arrow {
-            width: .6rem;
-            height: .6rem;
-            border-radius: 50%;
-            margin-top: .2rem;
-            margin-right: .2rem
-          }
+    }
+    .cashier_stream_detail {
+      // height: 8rem;
+      flex: 1;
+      .stream_detail_item {
+        display: flex;
+        margin-bottom: 0.1333rem;
+        .detail_name {
+          display: inline-block;
+          width: 20%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          text-align: center;
+        }
+        .headUrl {
+          width: 0.5333rem;
+          height: 0.5333rem;
         }
       }
     }

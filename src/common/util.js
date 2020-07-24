@@ -2,7 +2,7 @@
  * @Author: nicky
  * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
- * @Last Modified time: 2020-06-02 09:47:40
+ * @Last Modified time: 2020-07-23 15:24:37
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -28,8 +28,8 @@ util.WcLogin = function (openId) {
   xhr.open('POST', "http://m.tairunmh.com/mobile/user/app/login", true)
   xhr.addEventListener("readystatechange", function () {
     if (this.readyState === 4) {
-      console.log(this.responseText);
-      console.log('loginbackbakckckckckckckckckkc')
+      //console.log(this.responseText);
+      //console.log('loginbackbakckckckckckckckckkc')
       var result = JSON.parse(this.responseText)
       if (result.status == 1) {
         sessionStorage.setItem('loginStatus', 1)
@@ -51,8 +51,8 @@ util.GetOpenIdByCode = function (code) {
   xhr.open('POST', "http://m.tairunmh.com/mobile/mooncake/queryOpenIdByCode", true)
   xhr.addEventListener("readystatechange", function () {
     if (this.readyState === 4) {
-      console.log(this.responseText);
-      console.log('backbakckckckckckckckckkc')
+      //console.log(this.responseText);
+      //console.log('backbakckckckckckckckckkc')
       var res = JSON.parse(this.responseText)
       localStorage.setItem('trOpenId', res.data.openId)
       WcLogin(res.data.openId)
@@ -64,7 +64,7 @@ util.GetOpenIdByCode = function (code) {
 }
 //比较日期前后
 util.compareDate = (beginDate, endDate) => {
-  // console.log(beginDate, endDate)
+  // //console.log(beginDate, endDate)
   let d1 = new Date(beginDate.replace(/\-/g, "\/"))
   let d2 = new Date(endDate.replace(/\-/g, "\/"))
   if (beginDate != "" && endDate != "" && d1 > d2) {
@@ -74,12 +74,12 @@ util.compareDate = (beginDate, endDate) => {
 }
 //时间戳转化成地址  格式xxxx-xx-xx xx-xx-xx
 util.timestampToTime = function (timestamp) {
-  // console.log("timestamp----------------",timestamp)
+  // //console.log("timestamp----------------",timestamp)
   if (typeof timestamp == "string") {
     return timestamp
   }
   timestamp = Number(timestamp);
-  // console.log(timestamp.toString().length)
+  // //console.log(timestamp.toString().length)
   if (timestamp.toString().length > 11) {
     var date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
     var Y = date.getFullYear() + '-';
@@ -88,7 +88,7 @@ util.timestampToTime = function (timestamp) {
     var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
     var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
     var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
-    // console.log("处理后的时间----------",Y + M + D + h + m + s)
+    // //console.log("处理后的时间----------",Y + M + D + h + m + s)
     return Y + M + D + h + m + s;
   } else {
     var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
@@ -98,7 +98,7 @@ util.timestampToTime = function (timestamp) {
     var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
     var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes() + ':';
     var s = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
-    // console.log("处理后的时间----------",Y + M + D + h + m + s)
+    // //console.log("处理后的时间----------",Y + M + D + h + m + s)
     return Y + M + D + h + m + s;
 
   }
@@ -109,7 +109,6 @@ util.timestampToTimeNoLine = function (timestamp) {
     return timestamp;
   }
   timestamp = Number(timestamp);
-  console.log(timestamp.toString().length)
   if (timestamp.toString().length > 11) {
     var date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
     var Y = date.getFullYear() + '';
@@ -138,20 +137,19 @@ util.timestampToTimeNoYear = function (timestamp) {
     return timestamp;
   }
   timestamp = Number(timestamp);
-  console.log(timestamp.toString().length)
   if (timestamp.toString().length > 11) {
     var date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
     var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + "/";
     var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
     var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
-    var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes();
+    var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + "" : date.getMinutes();
     return M + D + h + m;
   } else {
     var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
     var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + "/";
     var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
     var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
-    var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + ":" : date.getMinutes();
+    var m = (date.getMinutes() < 10) ? '0' + date.getMinutes()  : date.getMinutes();
     return M + D + h + m;
 
   }
@@ -191,7 +189,7 @@ util._getJssdkInfo = function (shareObj, url, amount, shareType, fn) {
   shareType = shareType || "activity"
   api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
     .then(res => {
-      console.log("获取微信jssdk---------", res)
+      //console.log("获取微信jssdk---------", res)
       wx.config({
         // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
         appId: res.appId,
@@ -211,7 +209,7 @@ util._getJssdkInfo = function (shareObj, url, amount, shareType, fn) {
           imgUrl: shareObj.imgUrl,
           success: () => {
             //分享朋友记录
-            console.log("分享好友")
+            //console.log("分享好友")
             api.createShareDaylog("friend")
             //分享获得积分
             fn(amount, shareType)
@@ -225,18 +223,18 @@ util._getJssdkInfo = function (shareObj, url, amount, shareType, fn) {
           success: () => {
             // 用户点击了分享后执行的回调函数
             //分享朋友圈记录
-            console.log("分享朋友圈")
+            //console.log("分享朋友圈")
             api.createShareDaylog("timeLine")
           }
         })
       });
       wx.error(function (res) {
-        console.log(res);
+        //console.log(res);
         // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
       });
     })
     .catch(err => {
-      console.log(err);
+      //console.log(err);
     });
 }
 //获取cookie

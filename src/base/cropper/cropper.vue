@@ -88,7 +88,7 @@ export default {
         }
         // Crop
         croppedCanvas = this.cropper.getCroppedCanvas();
-        console.log(this.cropper)
+        //console.log(this.cropper)
         // Round
         roundedCanvas = this.getRoundedCanvas(croppedCanvas);
  

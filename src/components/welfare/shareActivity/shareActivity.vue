@@ -68,8 +68,8 @@
       }
     },
      beforeRouteEnter(to, from, next) {
-      console.log("路由判断to---------------",to)
-      console.log("路由判断from---------------",from)
+      //console.log("路由判断to---------------",to)
+      //console.log("路由判断from---------------",from)
       if(from.name==="message" || from.name==="welfare"){
         next(vm=>{
         vm.toHomeFlag = true
@@ -95,7 +95,7 @@
       //加载活动详情
       _loadActivityDetail() {
         api.loadActivityDetail(this.activityID).then(res => {
-          console.log('活动详情-----------------------', res);
+          //console.log('活动详情-----------------------', res);
           this.activityContent = res;
         })
       },

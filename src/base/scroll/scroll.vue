@@ -94,7 +94,7 @@
         }
         if (this.pullup) {
           this.scroll.on("pullingUp", () => {
-            console.log('触发上拉加载更多')
+            //console.log('触发上拉加载更多')
             this.$emit("pullingUp");
           });
         }
@@ -156,13 +156,13 @@
     },
     watch: {
       // scrollHeight: function(newValue) {
-      //   console.log("scrollHeight------",newValue)
+      //   //console.log("scrollHeight------",newValue)
       //   this.scroll.scrollTo(0, -newValue);
       // },
       data(newValue) {
         let len = newValue.length;
         
-        console.log('scrollData---------------------', this.data);
+        // //console.log('scrollData---------------------', this.data);
         this.$emit("getIndex", len);
         setTimeout(() => {
           this.refresh();

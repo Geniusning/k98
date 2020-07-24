@@ -33,7 +33,7 @@ export default {
     default: true
   },
   mounted() {
-    console.log(this.$slots.default);
+    //console.log(this.$slots.default);
     setTimeout(() => {
       this._setSilderWidth();
       this._initDots();
@@ -56,10 +56,10 @@ export default {
       let width = 0;
       //获取轮播容器的宽度
       let sliderWidth = this.$refs.Slider.clientWidth;
-      console.log(sliderWidth);
+      //console.log(sliderWidth);
       for (let i = 0; i < this.children.length; i++) {
         let child = this.children[i];
-        // console.log(child);
+        // //console.log(child);
         //给每一个子元素添加样式
         addClass(child, "slider-item");
         child.style.width = sliderWidth + "px";
