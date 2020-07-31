@@ -145,10 +145,10 @@
             <p class="selectedStaffTag" v-show="staffTag">{{staffTag}}</p>
           </div>
         </div>
-        <!-- <div class="btn_box">
-          <span class="vux-close"></span>
-          <span class="btn" @click="save">确定</span>
-        </div> -->
+        <div class="btn_box">
+          <!-- <span class="vux-close"></span> -->
+          <span class="btn" @click="closeStaffTag">确定</span>
+        </div>
       </x-dialog>
     </div>
     <!-- 星座选择 -->
@@ -245,12 +245,12 @@
             checked: false
           },
           {
-            name: "服务生",
+            name: "客服",
             id: 2,
             checked: false
           },
           {
-            name: "酒水营销",
+            name: "营销",
             id: 3,
             checked: false
           },
