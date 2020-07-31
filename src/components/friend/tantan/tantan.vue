@@ -178,10 +178,7 @@
         this.currentLikeIndex = 0; //条件筛选群友后重置喜欢图标显示index
       },
       pages(newValue) {
-        // //console.log(
-        //   "子组件候选人数据----------------------------------------",
-        //   newValue
-        // );
+        //console.log("子组件候选人数据----------------------------------------", newValue)
         let data = newValue[0];
         this.loadStaffCommentInfo(data.info.phone);
         this.backToParentData = data;
@@ -321,10 +318,7 @@
       showAlbum(info) {
         if (info.role != "") {
           this.$router.push({
-            name: "comment",
-            params: {
-              phone: info.phone
-            }
+            path: "/comment/"+info.phone,
           });
           let storeInfo = {
             nickname: info.nickname,

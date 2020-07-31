@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-24 18:07:46
+ * @Last Modified time: 2020-07-30 15:26:28
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -249,7 +249,7 @@ new Vue({
         } else {
           this.addMessageIntoQueue(result)
         }
-      } else if (result.msgCode === 24) {//游戏队列约战
+      }else if (result.msgCode === 24) {//游戏队列约战
         this.loadMutualEvents();
         this.addBange();
         this.judgeMessType('playGame')
@@ -261,13 +261,11 @@ new Vue({
           this.addMessageIntoQueue(result)
         }
         // this.addFriendEvtObj(result)
-      }
-      //上线通知
-      else if (result.msgCode === 8) {
+      }else if (result.msgCode === 8) {  //上线通知
         this.judgeMessType('onlineNotice');
         this.addFriendEvtObj(result)
-      } else if (result.msgCode === 9) {
-        //分享获得积分通知
+      } else if (result.msgCode === 9) {  //分享获得积分通知
+        console.log("分享获得积分")
         this.addFriendEvtObj(result)
         this.judgeMessType('shareGetIntegral');
       } else if (result.msgCode === 12) { //好友送礼
@@ -348,10 +346,10 @@ new Vue({
     // 获取用户信息
     getUserInfo() {
       api.getUserInfo().then(res => {
-        //console.log('个人信息-------------------------：', res);
+        console.log('个人信息-------------------------：', res);
         this.getuserInfo(res);
       }).catch(err => {
-        //console.log(err);
+        console.log(err);
       });
     },
     //获取门店信息
@@ -371,7 +369,6 @@ new Vue({
           });
           // //console.log('进来创建二维码了')
         }
-
       });
     },
     //获取店长推荐

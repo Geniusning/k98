@@ -3,15 +3,18 @@
 		<div class="content">
 			<header>
 				<div class="comment-header-left">
-					<img :src="staffInfo?staffInfo.headImgUrl:userInfo.headimgurl" class="comment-avatarUrl" alt="">
-					<span class="comment-name">{{staffInfo?staffInfo.nickname:userInfo.nickname}}</span>
+					<img :src="staffInfo?staffInfo.headImgUrl:staffInfoByPhone.headimgurl" class="comment-avatarUrl" alt="">
+					<span class="comment-name">{{staffInfo?staffInfo.nickname:staffInfoByPhone.nickname}}</span>
 				</div>
 				<div class="comment-header-right" @click="goHome">
 					<img src="../../assets/image/chat_home.png" class="comment-home" alt="">
 				</div>
 			</header>
-			<div class="comment-slider">
-				<swiper height="256px" :list="lifePhotolist" :interval="2000" :auto="true" :show-dots="false" v-model="swiperItemIndex" :min-moving-distance="120" @on-index-change="demo01_onIndexChange"></swiper>
+			<div v-if="lifePhotolist.length>=0" class="comment-slider">
+				<swiper height="256px" :list="lifePhotolist" :interval="2000" :auto="true" :show-dots="false" v-model="swiperItemIndex" :min-moving-distance="10"></swiper>
+			</div>
+			<div v-else class="comment-slider">
+				<p class="comment-staffData">暂无员工信息</p>
 			</div>
 			<div class="comment-result">
 				<ul class="comment-header-list">
@@ -93,6 +96,7 @@
 	export default {
 		data() {
 			return {
+				staffInfoByPhone: {},
 				phone: "",
 				emotionList: [{
 						name: "[大哭]",
@@ -143,30 +147,26 @@
 			};
 		},
 		created() {
-			this.phone = util.GetQueryString("phone")
-			//console.log("this.phone----",this.phone)
+			this.queryPhone = util.GetQueryString("phone")
+			console.log("this.queryPhone----",this.queryPhone)
+			console.log("this.param----",this.$route.params.phone)
 			this.loadStaffCommentInfo();
+			this.loadUserInfoByPhone()
 			document.body.addEventListener("focusout", () => {
 				//软键盘关闭事件
 				window.scrollTo(0, 0); //解决ios键盘留白的bug
 			});
 		},
 		mounted() {
-			//console.log("$route", this.$route)
+			console.log("$route", this.$route)
 			if (!this.l98Setting.staffCommentOpen) {
 				this.$route.meta.title = "看Ta的评价"
 			}
 			this.staffInfo = JSON.parse(sessionStorage.getItem("info"));
+			console.log("this.staffInfo---",this.staffInfo)
 			this.storePhotoList = JSON.parse(sessionStorage.getItem("lifePhotoList"));
-			//console.log("params---", this.$route.params.phone);
-			//console.log("storePhotoList---", this.storePhotoList);
-			if (!this.storePhotoList) {
-				this.lifePhotolist.push({
-					url: "javascript:",
-					img: this.userInfo.headimgurl,
-					title: "求点赞"
-				});
-			} else {
+			console.log("this.storePhotoList",this.storePhotoList)
+			if (this.storePhotoList) {
 				this.storePhotoList.lifePhotoList.forEach(img => {
 					this.lifePhotolist.push({
 						url: "javascript:",
@@ -177,13 +177,41 @@
 			}
 			//console.log("lifeImgList---", this.lifePhotolist);
 		},
+		watch:{
+			$route(newRoute){
+				console.log("newRoute----",newRoute)
+			}
+		},
 		computed: {
 			...mapState(["l98Setting", "lifeImgList", "userInfo"])
 		},
 		methods: {
 			...mapMutations({
 				setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
+				addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
+				judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
 			}),
+			//通过手机号获得员工信息
+			async loadUserInfoByPhone() {
+				let res = await api.loadUserInfoByPhone(this.queryPhone?this.queryPhone:this.$route.params.phone)
+				console.log("通过手机号码获得员工信息----", res)
+				console.log("this.storePhotoList----", this.storePhotoList)
+				if (res.errCode === 0) {
+					this.staffInfoByPhone = res.info
+					if (!this.storePhotoList) {
+						var temp = []
+						this.staffInfoByPhone.lifePhotoURL.lifePhotoURL.forEach(img => {
+							temp.push({
+								url: "javascript:",
+								img: img,
+								title: "求点赞"
+							});
+						})
+						this.lifePhotolist = temp
+						console.log("this.lifePhotolist----",this.lifePhotolist)
+					}
+				}
+			},
 			goHome() {
 				this.setChatFriend({}) //清空全局聊天对象
 				this.$router.push({
@@ -195,14 +223,14 @@
 			},
 			//点赞
 			giveThumb() {
-				//console.log("!(this.l98Setting.staffCommentOpen || this.phone)---",!(this.l98Setting.staffCommentOpen || this.phone))
-				if (!(this.l98Setting.staffCommentOpen || this.phone)) {
+				//console.log("!(this.l98Setting.staffCommentOpen || this.queryPhone)---",!(this.l98Setting.staffCommentOpen || this.queryPhone))
+				if (!(this.l98Setting.staffCommentOpen || this.queryPhone)) {
 					this.$vux.toast.text(
-					"现场消费才能评论"
+						"现场消费才能评论"
 					);
 					return
 				}
-				api.giveThumb(this.$route.params.phone ? this.$route.params.phone : this.phone).then(res => {
+				api.giveThumb(this.$route.params.phone ? this.$route.params.phone : this.queryPhone).then(res => {
 					if (res.errCode === 0) {
 						this.loadStaffCommentInfo();
 					} else {
@@ -214,13 +242,13 @@
 			},
 			//鄙视
 			unGiveThumb() {
-				if (!(this.l98Setting.staffCommentOpen || this.phone)) {
+				if (!(this.l98Setting.staffCommentOpen || this.queryPhone)) {
 					this.$vux.toast.text(
 						"现场消费才能评论"
 					);
 					return
 				}
-				api.giveUnThumb(this.$route.params.phone ? this.$route.params.phone : this.phone).then(res => {
+				api.giveUnThumb(this.$route.params.phone ? this.$route.params.phone : this.queryPhone).then(res => {
 					if (res.errCode === 0) {
 						this.loadStaffCommentInfo();
 					} else {
@@ -232,7 +260,7 @@
 			},
 			//发布留言
 			send() {
-				if (!(this.l98Setting.staffCommentOpen || this.phone)) {
+				if (!(this.l98Setting.staffCommentOpen || this.queryPhone)) {
 					this.$vux.toast.text(
 						"现场消费才能评论"
 					);
@@ -247,8 +275,8 @@
 								this.inputValue = this.inputValue.replace(
 									reg,
 									`<img src=${
-		                  this.emotionList[j].num
-		                } style="vertical-align: -6px;">`
+				                  this.emotionList[j].num
+				                } style="vertical-align: -6px;">`
 								);
 							}
 						}
@@ -256,7 +284,7 @@
 				}
 				let data = {
 					message: this.inputValue,
-					phone: this.$route.params.phone?this.$route.params.phone:this.phone,
+					phone: this.$route.params.phone ? this.$route.params.phone : this.queryPhone,
 					time: new Date().getTime(),
 					nickname: this.userInfo.nickname,
 					headImgUrl: this.userInfo.headimgurl
@@ -266,6 +294,7 @@
 					if (res.errCode === 0) {
 						this.loadStaffCommentInfo();
 						this.inputValue = "";
+						this.acquireWaitGetCoupons()
 					} else {
 						this.$vux.toast.show({
 							text: res.errMsg
@@ -274,12 +303,37 @@
 				});
 				//console.log(this.inputValue);
 			},
+			//自动领取优惠券
+			acquireWaitGetCoupons() {
+				let condition = 6; //评价有礼
+				api.acquireWaitGetCoupons(condition).then(res => {
+						console.log("核销有礼----", res)
+						if (!res.coupon) {
+							return;
+						}
+						let result = {
+							msgCode: 4,
+							content: {
+								extMsg: {},
+								fromInfo: {
+									openid: "",
+									headimgurl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
+								}
+							}
+						};
+						this.addFriendEvtObj(result);
+						this.judgeMessType("discount");
+					})
+					.catch(err => {
+						//console.log(err);
+					});
+			},
 			selectEmtion(item) {
 				this.inputValue += item;
 			},
 			loadStaffCommentInfo() {
-				api.loadStaffCommentInfo(this.$route.params.phone ? this.$route.params.phone : this.phone).then(res => {
-					//console.log("员工评价内容---", res);
+				api.loadStaffCommentInfo(this.$route.params.phone ? this.$route.params.phone : this.queryPhone).then(res => {
+					console.log("员工评价内容---", res);
 					if (res.errCode === 0) {
 						this.staffCommentInfo = res.staffCommentInfo;
 						this.staffCommentInfo.messageList.forEach(message => {
@@ -341,6 +395,14 @@
 				}
 			}
 			.comment-slider {
+				.comment-staffData {
+					height: 3rem;
+					line-height: 3rem;
+					width: 100%;
+					text-align: center;
+					color: #ccc;
+					font-size: 16px;
+				}
 				margin-top: 0.1333rem;
 				img {
 					height: 100%;

@@ -219,10 +219,7 @@
       },
       showActivityDetail(activityID) {
         this.$router.push({
-          name: "shareActivity",
-          params: {
-            id: activityID
-          }
+          path: "/shareActivity/"+activityID,
         });
       },
       //进入游戏

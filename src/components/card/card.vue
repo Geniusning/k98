@@ -10,9 +10,9 @@
       </tab>
     </div>
     <!-- 温馨提示 -->
-    <div class="warm_tips" v-show="!userInfo.phone">
-      <p class="tips">温馨提示：绑定手机，方便您到店核销</p>
-      <span class="bingTel" @click="bindTel">绑定手机</span>
+    <div class="warm_tips" v-show="!unusedList.length">
+      <p class="tips">温馨提示：无券买单请点按钮</p>
+      <span class="bingTel" @click="payNoCashier">无券买单</span>
     </div>
     <!-- 优惠券列表 -->
     <div class="discount_wrapper">
@@ -239,7 +239,7 @@
     },
     computed: {
       ...mapGetters(["isShow"]),
-      ...mapState(["userInfo","deskCode"])
+      ...mapState(["userInfo","deskCode","deskId"])
     },
     created() {
       this._loadUserAllCoupon(); //获取优惠券
@@ -254,7 +254,7 @@
       //获取优惠券
       _loadUserAllCoupon() {
         api.loadUserAllCoupon().then(res => {
-          //console.log("优惠券：", res);
+          console.log("优惠券：", res);
           this.unusedList = [];
           this.usedList = [];
           this.timeOutList = [];
@@ -321,12 +321,44 @@
         // this.isShow = true;
         this.changeValidate(true);
       },
+      async payNoCashier() {
+        let data = {
+          deskid: this.deskId || "fefd338f-b59c-49c0-b918-5ed3d28e4cd1",
+          deskcode: this.deskCode || 1,
+          payuserid: this.userInfo.openid,
+          payuserheadimgurl: this.userInfo.headimgurl,
+        };
+        let res2 = await api.launchSelfPay(data);
+        console.log("res2------", res2)
+        if (res2.errorCode === 0) {
+          this.cashierObj["openid"] = this.cashierObj.CashierID
+          this.setChatFriend(this.cashierObj);
+          setTimeout(() => {
+            this.$router.push({
+              name: "cashierChat",
+              params: {
+                from: this.userInfo.openid,
+                to: this.cashierObj.CashierID,
+                deskCode: this.deskCode,
+                isCashier: false,
+              }
+            });
+          }, 500);
+        }
+      },
+      //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
+      loadCashierList() {
+        api.loadCashierList().then(res => {
+          this.cashierObj = res
+        })
+      },
       onItemClick(index) {
         this.tagIndex = index;
         //console.log(this.tagIndex);
       },
       onClickBack() {},
       ...mapMutations({
+        setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         changeQrCodeText: "CHANGEQRCODETEXT",
         changeValidate: "CHANGE_VALIDATE",
         showQrcode: "SHOW_QRCODE" //展示二维码

@@ -145,12 +145,14 @@
       },
       //删除生活照
       close(photoImg, index) {
+        console.log("index---",index)
+        console.log("photoImg---",photoImg)
         let data = {
           url: photoImg
         }
         //console.log("photoImg----", photoImg)
         api.delLifePhoto(data).then(res => {
-          //console.log("删除生活照---", res)
+          console.log("删除生活照---", res)
         })
         if (this.fromPage === "divide") {
           this.lifePhotoList.splice(index, 1)
@@ -295,8 +297,10 @@
             position: absolute;
             width: 0.4rem;
             height: 0.4rem;
-            top: -0.1333rem;
-            right: -0.1333rem;
+            top: -0.3rem;
+            right: -0.3333rem;
+            padding: 0.1067rem;
+            z-index: 6;
           }
           .imgItem {
             width: 100%;

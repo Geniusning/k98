@@ -39,12 +39,13 @@
         isShow_bg: false,
         activityID: "",
         activityContent: "",
-        toHomeFlag:false,
+        toHomeFlag: false,
       };
     },
     created() {
       var _url = window.location.href;
       this.myShareUrl = _url.split('#')[0];
+      console.log("this.$route---",this.$route)
       this.activityID = this.$route.params.id;
       if (_url.indexOf('activityID') > 0) { //判断是系统本身进入当前页面的还是从分享链接进入本页面
         this.activityID = _url.split('activityID=')[1];
@@ -53,40 +54,46 @@
         let shareObj = {
           title: "活动通知",
           desc: "本店最新活动，会员特权。点击查看",
-          link: `${this.shareUrl}k98/shareActivity?activityID=${this.activityID}&visitType=5&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
+          link: `${this.shareUrl}k98/shareActivity/${this.activityID}?activityID=${this.activityID}&visitType=5&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
           imgUrl: `${this.shopSettingInfo.image}`
         };
-        util._getJssdkInfo(shareObj, this.myShareUrl, 20,"activity",this.shareGetJifen);
+        util._getJssdkInfo(shareObj, this.myShareUrl, 20, "activity", this.shareGetJifen);
       } else {
         let shareObj = {
           title: "活动通知",
           desc: "本店最新活动，会员特权。点击查看",
-          link: `${this.shareUrl}k98/shareActivity?activityID=${this.activityID}&visitType=5&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
+          link: `${this.shareUrl}k98/shareActivity/${this.activityID}?activityID=${this.activityID}&visitType=5&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
           imgUrl: `${this.shopSettingInfo.image}`
         };
-        util._getJssdkInfo(shareObj, this.myShareUrl, 20,"activity",this.shareGetJifen);
+        util._getJssdkInfo(shareObj, this.myShareUrl, 20, "activity", this.shareGetJifen);
       }
     },
-     beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to, from, next) {
       //console.log("路由判断to---------------",to)
       //console.log("路由判断from---------------",from)
-      if(from.name==="message" || from.name==="welfare"){
-        next(vm=>{
-        vm.toHomeFlag = true
+      if (from.name === "message" || from.name === "welfare" || from.name === "giftDetail") {
+        next(vm => {
+          vm.toHomeFlag = true
+          var _url = window.location.href;
+          vm.activityID = vm.$route.params.id;
+          if (_url.indexOf('activityID') > 0) { //判断是系统本身进入当前页面的还是从分享链接进入本页面
+            vm.activityID = _url.split('activityID=')[1];
+          }
+         
         })
       }
       next()
     },
-    mounted() {
+    mounted(){
       this._loadActivityDetail();
     },
     computed: {
-      ...mapState(["socket", "shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl","userInfo"])
+      ...mapState(["socket", "shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl", "userInfo"])
     },
     methods: {
       //分享获得积分
-      shareGetJifen(amount,shareType) {
-        api.shareToGetIntegral(amount,shareType).then(res => {
+      shareGetJifen(amount, shareType) {
+        api.shareToGetIntegral(amount, shareType).then(res => {
           if (res.errCode == 1030) {
             alert('分享已上限，每天最多分享2次获得积分');
           }
@@ -105,9 +112,9 @@
         });
       },
       back() {
-        if(this.toHomeFlag){
+        if (this.toHomeFlag) {
           this.$router.go(-1)
-        }else{
+        } else {
           this.$router.push({
             name: "home"
           });
@@ -165,7 +172,7 @@
       margin-top: 0.9867rem;
       font-size: 16px;
       color: #333;
-      .rule-title{
+      .rule-title {
         font-weight: 900;
         font-size: 18px;
       }

@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-20 17:12:58
+ * @Last Modified time: 2020-07-27 16:24:35
  */
 import axios from 'axios'
 import Url from './config'
@@ -26,6 +26,18 @@ api.delIdentity = function (targetID) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
       // //console.log(res)
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//通过手机号获得员工信息
+api.loadUserInfoByPhone = function (phone) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadUserInfoByPhone?tk=${Url.tk}&phone=${phone}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -865,7 +877,7 @@ api.getLoadOutsideCandidates = function (cursor) {
 //             })
 //     })
 // }
-//拉取未领取的优惠券（登录公众号弹出优惠券，目前只有AI发送才有）
+//拉取自动发券的活动的优惠券
 api.acquireWaitGetCoupons = function (condition) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/acquireWaitGetCoupons?tk=${Url.tk}&condition=${condition}`)

@@ -406,8 +406,10 @@
       //获取最新的对账单信息
       getLastCheckInfo() {
         var cashierContent;
-        for (var i = 0; i < this.resultMessList.length; i++) {
-          const element = this.resultMessList[i];
+        for (var i = this.componentChatList.length-1; i >=0 ; i--) {
+          console.log("this.componentChatList---",this.componentChatList)
+          const element = this.componentChatList[i];
+          console.log(element)
           if (element.type === 4 || element.type === 3) {
             cashierContent = element.selfpayinfo;
             break;
@@ -438,7 +440,33 @@
         //console.log("顾客付款结果---", res);
         this.input_value = `我的台/房号：${cashierContent.deskcode}，已付款，请查收`;
         this.send();
+        this.acquireWaitGetCoupons()
       },
+        //自动领取优惠券
+    acquireWaitGetCoupons() {
+      let condition = 7; //买单有礼
+      api.acquireWaitGetCoupons(condition).then(res => {
+        console.log("买单有礼----",res)
+          if (!res.coupon) {
+            return;
+          }
+          let result = {
+              msgCode: 4,
+              content: {
+                extMsg: {},
+                fromInfo: {
+                  openid: "",
+                  headimgurl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
+                }
+              }
+            };
+            this.addFriendEvtObj(result);
+            this.judgeMessType("discount");
+        })
+        .catch(err => {
+          //console.log(err);
+        });
+    },
       //显示收款码
       showCheckQrCode() {
         this.changeQrCodeText({
@@ -584,7 +612,8 @@
                       msg.selfpayinfo.consumeamount : "",
                     payTime: util.timestampToTimeNoYear(
                       msg.selfpayinfo ? msg.selfpayinfo.time : ""
-                    )
+                    ),
+                    selfpayinfo:msg.selfpayinfo?msg.selfpayinfo:""
                   });
                 }
               } else {
@@ -608,7 +637,8 @@
                       msg.selfpayinfo.consumeamount : "",
                     payTime: util.timestampToTimeNoYear(
                       msg.selfpayinfo ? msg.selfpayinfo.time : ""
-                    )
+                    ),
+                    selfpayinfo:msg.selfpayinfo?msg.selfpayinfo:""
                   });
                 }
               }
@@ -850,6 +880,8 @@
         changeCursor: "CHANGE_CURSOR",
         changeQrCodeText: "CHANGEQRCODETEXT",
         showQrcode: "SHOW_QRCODE", //展示二维码
+        addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
+        judgeMessType: "JUDGE_MESSTYPE", //判断消息
       })
     },
     watch: {
@@ -963,6 +995,7 @@
         width: 100%;
         height: 5rem;
         background-color: #fff;
+        z-index: 10;
         .preMoney,
         .actMoney {
           width: 4rem;

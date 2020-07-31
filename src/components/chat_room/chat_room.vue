@@ -13,6 +13,7 @@
             <img v-else-if="staticChatFriendObj.sex===2" src="../../assets/image/female.png" alt="">
             <img v-else src="../../assets/image/male.png" alt="">
           </div>
+          {{staticChatFriendObj.staffTag}}
           {{staticChatFriendObj.nickname}}
           <div class="online_status">
             <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
@@ -444,16 +445,10 @@
     },
     activated() {
       this.loadStaffCommentInfo(this.staticChatFriendObj.phone)
-      //console.log(
-      //   "this.staticChatFriendObj-----------",
-      //   this.staticChatFriendObj
-      // );
+      console.log("this.staticChatFriendObj-----------",this.staticChatFriendObj);
       if (!localStorage.getItem("friendInfo")) {
         //解决微信内置浏览器刷新获得好友信息
-        localStorage.setItem(
-          "friendInfo",
-          JSON.stringify(this.staticChatFriendObj)
-        );
+        localStorage.setItem("friendInfo",JSON.stringify(this.staticChatFriendObj));
       } else {
         let friendInfo = JSON.parse(localStorage.getItem("friendInfo"));
         this.setChatFriend(friendInfo);
@@ -580,7 +575,7 @@
       //去评价
       goToComment() {
         let lifePhotoURL = {
-          lifePhotoList: this.staticChatFriendObj.lifePhotoURL.lifePhotoURL
+          lifePhotoList: this.staticChatFriendObj.lifePhotoURL?this.staticChatFriendObj.lifePhotoURL.lifePhotoURL:[]
         }
         let storeInfo = {
           nickname: this.staticChatFriendObj.nickname,

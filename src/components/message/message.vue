@@ -8,7 +8,7 @@
       <div class="btn_box clearfix">
         <div :class="{active:isShowTab==0}" class="fri_btn fl" @click="selectList(0)">好友<i class="dot" v-show="msg_badgeCount"></i></div>
         <div :class="{active:isShowTab==1}" class="hello_btn fl" @click="selectList(1)">新朋友<i class="dot" v-show="mutualEventsList.length"></i></div>
-        <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount || cashier_badgeCount"></i>{{clientTitleFlag?"客服/收银":"留言/结账"}}</div>
+        <div :class="{active:isShowTab==2}" class="vux-1px-l hello_btn fl" @click="selectList(2)"><i class="dot" v-show="client_badgeCount || cashier_badgeCount"></i>{{!isClientListFlag?"客服/结账":"留言/结账"}}</div>
         <div :class="{active:isShowTab==3}" class="system_btn fl" @click="selectList(3)">通知<i class="dot" v-show="group_badgeCount"></i></div>
       </div>
     </div>
@@ -294,7 +294,6 @@
         isShowQrCode: true,
         isClientListFlag: true, //判断是否是客服
         isCashierListFlag: true, //判断是否是收银员
-        clientTitleFlag: false,
         clientObj: {}, //客服对象
         customerObj: {},
         cashierObj: {}, //收银对象
@@ -351,6 +350,10 @@
           vm.isShowTab = 0;
         });
       } else if (to.params.routeParamNum === 2) {
+        next(vm => {
+          vm.isShowTab = 2;
+        });
+      } else if (to.query.routeParamNum === 2) {
         next(vm => {
           vm.isShowTab = 2;
         });
@@ -428,7 +431,7 @@
       async payNoCashier() {
         let data = {
           deskid: this.deskId || "fefd338f-b59c-49c0-b918-5ed3d28e4cd1",
-          deskcode: this.deskCode || 1,
+          deskcode: Number(this.deskCode) || 1,
           payuserid: this.userInfo.openid,
           payuserheadimgurl: this.userInfo.headimgurl,
         };
@@ -448,6 +451,8 @@
               }
             });
           }, 500);
+        }else{
+           this.$vux.toast.text(`${res2.errorMsg}`);
         }
       },
       closePopUp(flag) {
@@ -580,7 +585,6 @@
           //console.log("客服----------------", res)
           if (res.CliSerID && !res.uerInfos) { //用户进入
             this.isClientListFlag = false
-            this.clientTitleFlag = true
             this.clientObj = res
             unReadCount = this.clientObj.unReadMsgCount
             if (this.clientObj.lastMsg) {
@@ -620,7 +624,7 @@
           this.cashierObj = res
           if (!res.uerInfos) { //普通用户进入
             this.isCashierListFlag = false
-            this.clientTitleFlag = true
+           
             unReadCount = this.cashierObj.unReadMsgCount
           } else { //收银员进入
             var tempArr = res.uerInfos

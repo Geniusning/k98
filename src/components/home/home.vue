@@ -1,6 +1,6 @@
 <template>
   <div id="home" class="home">
-    <div class="guideBg" v-if="isFirstLoad" @click="isFirstLoad=false"></div>
+    <!-- <div class="guideBg" v-if="isFirstLoad" @click="isFirstLoad=false"></div> -->
     <div class="homeTop_wrapper">
       <div class="barLogo_wrapper">
         <div class="logo_wrapper">
@@ -55,40 +55,40 @@
         </div>
         <!-- 望眼镜背景 -->
         <!-- <div class="telescope_wrapper">
-                  <div v-show="isFirstLoad" @click="isFirstLoad=false">
-                    <img onclick="return false" src="../../assets/image/finger.png" alt class="leftguideFinger" />
-                    <p class="leftguideText">点击找朋友</p>
-                  </div>
-                  <div v-show="isFirstLoad" @click="isFirstLoad=false">
-                    <img onclick="return false" src="../../assets/image/finger.png" alt class="rightguideFinger" />
-                    <p class="rightguideText">去玩大话骰</p>
-                  </div>
-                  <img onclick="return false" src="../../assets/image/telescope_bg.png" alt class="telescope_img" />
-                  <div class="left_radius_box" ref="leftRadiusBox" @click="gotoFriend">
-                    <div class="onlineStatusPeople">{{(outFriendNum+inFriendNum)>0?(outFriendNum+inFriendNum):1}}人在线···</div>
-                    <img onclick="return false" src="../../assets/image/findFriend (2).png" alt class="online_person" />
-                    <div class="leftCircle" v-if="hiddenTelescope">
-                      <div :class="{'leftCirclePart':!isIphoneX,'leftCirclePartIphoneX':isIphoneX}" ref="leftCirclePart"></div>
-                      <div :class="{'rightCirclePart':!isIphoneX,'rightCirclePartIphoneX':isIphoneX}"></div>
+                    <div v-show="isFirstLoad" @click="isFirstLoad=false">
+                      <img onclick="return false" src="../../assets/image/finger.png" alt class="leftguideFinger" />
+                      <p class="leftguideText">点击找朋友</p>
                     </div>
-                    <img onclick="return false" src="../../assets/image/findFriend.png" alt class="findFriend_text" v-if="hiddenTelescope" />
-                    <div class="more">
-                      <ul class="fri_list" v-show="friendIconList.length>3">
-                        <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList" :key="index">
-                          <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
-                        </li>
-                      </ul>
+                    <div v-show="isFirstLoad" @click="isFirstLoad=false">
+                      <img onclick="return false" src="../../assets/image/finger.png" alt class="rightguideFinger" />
+                      <p class="rightguideText">去玩大话骰</p>
                     </div>
-                  </div>
-                  <div class="right_radius_box" ref="rightRadiusBox" @click="gotoPlay">
-                    <img onclick="return false" src="../../assets/image/intoPlay.png" alt class="online_player" />
-                    <div class="rightCircle" v-if="hiddenTelescope">
-                      <div :class="{'leftCirclePart':!isIphoneX,'leftCirclePartIphoneX':isIphoneX}"></div>
-                      <div :class="{'rightCirclePart':!isIphoneX,'rightCirclePartIphoneX':isIphoneX}"></div>
+                    <img onclick="return false" src="../../assets/image/telescope_bg.png" alt class="telescope_img" />
+                    <div class="left_radius_box" ref="leftRadiusBox" @click="gotoFriend">
+                      <div class="onlineStatusPeople">{{(outFriendNum+inFriendNum)>0?(outFriendNum+inFriendNum):1}}人在线···</div>
+                      <img onclick="return false" src="../../assets/image/findFriend (2).png" alt class="online_person" />
+                      <div class="leftCircle" v-if="hiddenTelescope">
+                        <div :class="{'leftCirclePart':!isIphoneX,'leftCirclePartIphoneX':isIphoneX}" ref="leftCirclePart"></div>
+                        <div :class="{'rightCirclePart':!isIphoneX,'rightCirclePartIphoneX':isIphoneX}"></div>
+                      </div>
+                      <img onclick="return false" src="../../assets/image/findFriend.png" alt class="findFriend_text" v-if="hiddenTelescope" />
+                      <div class="more">
+                        <ul class="fri_list" v-show="friendIconList.length>3">
+                          <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList" :key="index">
+                            <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                    <img onclick="return false" src="../../assets/image/dahuashai.png" alt class="dahuashai_text" v-if="hiddenTelescope" />
-                  </div>
-                </div> -->
+                    <div class="right_radius_box" ref="rightRadiusBox" @click="gotoPlay">
+                      <img onclick="return false" src="../../assets/image/intoPlay.png" alt class="online_player" />
+                      <div class="rightCircle" v-if="hiddenTelescope">
+                        <div :class="{'leftCirclePart':!isIphoneX,'leftCirclePartIphoneX':isIphoneX}"></div>
+                        <div :class="{'rightCirclePart':!isIphoneX,'rightCirclePartIphoneX':isIphoneX}"></div>
+                      </div>
+                      <img onclick="return false" src="../../assets/image/dahuashai.png" alt class="dahuashai_text" v-if="hiddenTelescope" />
+                    </div>
+                  </div> -->
         <!-- 福利 -->
         <div class="welfare_wrapper" v-show="recommentList.length">
           <div class="title_content_wel">
@@ -102,9 +102,9 @@
             </div>
           </div>
           <!--<div class="advertise_wrapper" v-if="show_advertise">
-                            <img onclick="return false" src="../../assets/image/advertise.png" alt class="advertise" onclick="return false">
-                            <img onclick="return false" src="../../assets/image/close_ad.png" alt class="close" @click="close_adtise">
-                      </div>-->
+                              <img onclick="return false" src="../../assets/image/advertise.png" alt class="advertise" onclick="return false">
+                              <img onclick="return false" src="../../assets/image/close_ad.png" alt class="close" @click="close_adtise">
+                        </div>-->
           <div class="welfare_content" v-if="recommentList.length">
             <ul class="welfare_list" v-if="recommentList.length">
               <li class="item clearfix" v-for="(item,index) in recommentList" :key="index">
@@ -178,8 +178,8 @@
       </div>
     </div>
     <!-- <div class="kefu" @click="inToLetter">
-                                                <img onclick="return false" src="../../assets/image/home_letter.png" alt class="pic_kefu" />
-                                              </div>-->
+                                                  <img onclick="return false" src="../../assets/image/home_letter.png" alt class="pic_kefu" />
+                                                </div>-->
     <!-- 游戏框框 -->
     <div v-transfer-dom>
       <x-dialog v-model="gameShow" class="dialog-gameBegin">
@@ -238,7 +238,9 @@
   } from "vuex";
   import envelope from "base/envelope/envelope";
   import Bus from "common/bus.js";
-import { clearInterval } from 'timers';
+  import {
+    clearInterval
+  } from 'timers';
   // import mySwiper from '../../libs/swiper/swiper-4.3.3.min.js'
   // import {setInterval,clearInterval} from 'timers';
   export default {
@@ -290,7 +292,7 @@ import { clearInterval } from 'timers';
         outFriendNum: 0,
         isGiftPanel: false,
         // hiddenTelescope: true,
-        isFirstLoad: false,
+        // isFirstLoad: false,
         deskCode: "",
         defaultAvatarImg: require("../../assets/image/avatar1.jpeg"),
         friendLeagleList: [],
@@ -367,8 +369,8 @@ import { clearInterval } from 'timers';
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
             link: `${this.shareUrl}k98/home?visitType=3&phone=${
-                    this.userInfo.phone
-                  }&role=${this.userInfo.role}`,
+                      this.userInfo.phone
+                    }&role=${this.userInfo.role}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(
@@ -383,8 +385,8 @@ import { clearInterval } from 'timers';
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
             link: `${this.shareUrl}k98/home?visitType=3&phone=${
-                    this.userInfo.phone
-                  }&role=${this.userInfo.role}`,
+                      this.userInfo.phone
+                    }&role=${this.userInfo.role}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(
@@ -406,9 +408,9 @@ import { clearInterval } from 'timers';
         var allianceData = {
           storeName: decodeURI(this.storeName),
         };
-        //console.log("allianceData---", allianceData);
+        console.log("allianceData---", allianceData);
         api.getAllianceCoupon(allianceData).then(res => {
-          //console.log("通过友商获得的优惠券-------", res);
+          console.log("通过友商获得的优惠券-------", res);
           if (res.errCode === 0) {
             var topUpInfo = {
               content: {
@@ -446,18 +448,14 @@ import { clearInterval } from 'timers';
           if (res.errCode === 0) {
             //console.log("统计友商数据---------", res);
           }
-          window.location.href = `${shopInfo.url}/k98/home?resId=${
-                  shopInfo.res.id
-                }
-                  &storeName=${encodeURI(
-                    this.shopSettingInfo.name
-                  )}&friStoreName=${encodeURI(this.shopSettingInfo.name)}&visitType=10`;
+          window.location.href = 
+          `${shopInfo.url}/k98/home?resId=${shopInfo.res.couponID}&storeName=${encodeURI(this.shopSettingInfo.name)}&friStoreName=${encodeURI(this.shopSettingInfo.name)}&visitType=10`;
         });
       },
       //拉取友商物品
       loadAlliance() {
         api.loadAlliance().then(res => {
-          //console.log("拉取友商物品-------", res);
+          console.log("拉取友商物品-------", res);
           if (res.errCode === 0) {
             this.friendLeagleList = res.info.map(shop => {
               shop.distance = "<" + shop.distance.toFixed(1) + "km";
@@ -522,12 +520,10 @@ import { clearInterval } from 'timers';
       },
       //自动领取优惠券
       acquireWaitGetCoupons() {
-        let condition = 0; //channel为1是AI优惠券类型
+        let condition = 0; //访问首页有礼
         setTimeout(() => {
-          api
-            .acquireWaitGetCoupons(condition)
-            .then(res => {
-              //console.log("AI优惠券------------------------------", res);
+          api.acquireWaitGetCoupons(condition).then(res => {
+              console.log("访问首页有礼------------------------------", res);
               if (!res.coupon) {
                 return;
               }
@@ -601,8 +597,8 @@ import { clearInterval } from 'timers';
       // },
       intoFriendGame() {
         window.location.href = `${this.gameUrl}game/?gamePath=game3&deskCode=${
-                this.deskCode
-              }`;
+                  this.deskCode
+                }`;
         this.gameShow = false;
       },
       //进入游戏
@@ -708,10 +704,10 @@ import { clearInterval } from 'timers';
             var accuracy = res.accuracy; // 位置精度
             //window.location.href="http://apis.map.qq.com/uri/v1/marker?marker=coord:22.547986,113.988039;title:深圳魅力四射酒吧;addr:好吃好玩的地方&referer=myapp"
             window.location.href = `http://apis.map.qq.com/uri/v1/routeplan?type=bus&from=我的位置&fromcoord=${latitude},${longitude}&to=${
-                    _this.shopSettingInfo.address
-                  }&tocoord=${_this.shopSettingInfo.lat},${
-                    _this.shopSettingInfo.lng
-                  }&policy=1&referer=myapp`;
+                      _this.shopSettingInfo.address
+                    }&tocoord=${_this.shopSettingInfo.lat},${
+                      _this.shopSettingInfo.lng
+                    }&policy=1&referer=myapp`;
           }
         });
       },
@@ -775,7 +771,7 @@ import { clearInterval } from 'timers';
         getRecommentList: "GET_RECOMMENTLIST",
         addBandge: "ADD_BADGE", //动态变化未读消息数量
         getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量
-         getCashierUnreadCount: "GETCASHIERUNREADCOUNT", //收银未读消息数量
+        getCashierUnreadCount: "GETCASHIERUNREADCOUNT", //收银未读消息数量
         clearTopUpData: "CLEARTOPUPDATA",
         addMessageIntoQueue: "ADDMESSAGEQUEUE"
       }),
@@ -795,16 +791,16 @@ import { clearInterval } from 'timers';
         });
         this.demo01_list = swiperList;
       },
-      userInfo: function(newvalue) {
-        // //console.log('newvalue--------------------', newvalue);
-        if (newvalue.firstLoad) {
-          this.isFirstLoad = true;
-        } else {
-          this.isFirstLoad = false;
-        }
-      },
+      // userInfo: function(newvalue) {
+      //   // //console.log('newvalue--------------------', newvalue);
+      //   if (newvalue.firstLoad) {
+      //     this.isFirstLoad = true;
+      //   } else {
+      //     this.isFirstLoad = false;
+      //   }
+      // },
       friendList: function(newValue) {
-        //console.log("newValue-----------", newValue);
+        console.log("friendList-----------", newValue);
         if (newValue.length < 6) {
           this.friendIconList1 = [{
               headimgurl: require("../../assets/image/avatar1.jpeg")
@@ -815,14 +811,14 @@ import { clearInterval } from 'timers';
             {
               headimgurl: require("../../assets/image/avatar2.jpg")
             },
-            {
+          ];
+          this.friendIconList2 = [{
               headimgurl: require("../../assets/image/cat.png")
             },
             {
               headimgurl: require("../../assets/image/blueSky.png")
             }
-          ];
-          this.friendIconList2 = this.friendIconList1
+          ]
           //console.log("this.friendIconList1------", this.friendIconList1);
           return;
         }

@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-23 18:13:46
+ * @Last Modified time: 2020-07-28 11:02:38
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -290,28 +290,26 @@ const mutations = {
     },
     //更新好友事件消息框内容
     [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
-        //判断是否发送给当前分身，是才弹框
+        
         console.log("mutation friendEvtObj----------", friendEvtObj)
         let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : state.userInfo.openid
-        if (friendEvtObj.identiry && (friendEvtObj.identiry != cacheOpenId)) {
+        if (friendEvtObj.identiry && (friendEvtObj.identiry != cacheOpenId)) { //判断是否发送给当前分身，是才弹框
             return
         }
-        if (friendEvtObj.content.fromInfo.openid === cacheOpenId) { //切换分身时不给自己发上线通知
-            return
-        }
+      
         //如果和本人聊天信封弹框不在对话框弹出
-        if (!friendEvtObj.content.fromInfo) { //粗暴解决msgCode=4  无法推送的bug
-            friendEvtObj.content.extMsg = {
-                lastMsg: {},
-            };
-            friendEvtObj.content.fromInfo = {
-                openid: "",
-                headimgurl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
-            }
-            friendEvtObj.content.extMsg.lastMsg['msg'] = "店长给你发优惠券啦";
-            state.dynamicFriendEvt = friendEvtObj.content;
-            return;
-        }
+        // if (!friendEvtObj.content.fromInfo) { //粗暴解决msgCode=4  无法推送的bug
+        //     friendEvtObj.content.extMsg = {
+        //         lastMsg: {},
+        //     };
+        //     friendEvtObj.content.fromInfo = {
+        //         openid: "",
+        //         headimgurl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
+        //     }
+        //     friendEvtObj.content.extMsg.lastMsg['msg'] = "店长给你发优惠券啦";
+        //     state.dynamicFriendEvt = friendEvtObj.content;
+        //     return;
+        // }
         // debugger
         switch (friendEvtObj.msgCode) {
             case 1:
@@ -363,6 +361,7 @@ const mutations = {
                 };
                 friendEvtObj.content.extMsg.lastMsg['msg'] = "店长给你发优惠券啦";
                 friendEvtObj.content["notifyType"] = 4;
+                console.log("state.dynamicFriendEvt----", friendEvtObj.content)
                 state.dynamicFriendEvt = friendEvtObj.content;
                 break;
             case 6:
@@ -387,6 +386,9 @@ const mutations = {
                 //console.log('好友邀请你进游戏玩-----------', friendEvtObj)
                 break;
             case 8:
+                if (friendEvtObj.content.fromInfo.openid === cacheOpenId) { //切换分身时不给自己发上线通知
+                    return
+                }
                 if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
                     return false;
                 }
@@ -398,6 +400,7 @@ const mutations = {
                 state.dynamicFriendEvt = friendEvtObj.content;
                 break;
             case 9:
+                console.log("999----friendEvtObj", friendEvtObj)
                 let shopSendText = friendEvtObj.content.extMsg
                 friendEvtObj.content.extMsg = {
                     lastMsg: {},

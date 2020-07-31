@@ -111,16 +111,24 @@ export default {
     },
     //自动领取优惠券
     acquireWaitGetCoupons() {
-      let condition = 1; //channel为1是AI优惠券类型
-      api
-        .acquireWaitGetCoupons(condition)
-        .then(res => {
-          if (!res.coupons) {
+      let condition = 5; //核销有礼
+      api.acquireWaitGetCoupons(condition).then(res => {
+        console.log("核销有礼----",res)
+          if (!res.coupon) {
             return;
           }
-          if (res.coupons.length > 0) {
-            this._animationToast("店长再送您一张优惠券,谢谢光临");
-          }
+          let result = {
+              msgCode: 4,
+              content: {
+                extMsg: {},
+                fromInfo: {
+                  openid: "",
+                  headimgurl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
+                }
+              }
+            };
+            this.addFriendEvtObj(result);
+            this.judgeMessType("discount");
         })
         .catch(err => {
           //console.log(err);
@@ -156,18 +164,19 @@ export default {
       if (res1.errorCode === 0) {
         this.cashierObj["openid"] = this.cashierObj.CashierID
         this.setChatFriend(this.cashierObj);
-        this.$router.push({
-            name: "cashierChat",
-            params: {
-              from: this.userInfo.openid,
-              to: this.cashierID,
-              deskCode: this.deskCode,
-              isCashier: false
-            }
-          });
-        
         this.acquireWaitGetCoupons();
         this._animationToast("已发起核销，待收银同意确认");
+        setTimeout(() => {
+          this.$router.push({
+              name: "cashierChat",
+              params: {
+                from: this.userInfo.openid,
+                to: this.cashierID,
+                deskCode: this.deskCode,
+                isCashier: false
+              }
+            });
+        }, 1000);
       } else if (res1.errorCode === 1) {
         this._animationToast("已核销完毕");
       } else if (res1.errorCode === 1018) {

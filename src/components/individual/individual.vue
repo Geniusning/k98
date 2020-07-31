@@ -38,12 +38,12 @@
             <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrow_right">
           </li>
           <li class="item vux-1px-b">
-            <span class="item_name">标签</span>
+            <span class="item_name">个性标签</span>
             <input type="text" class="input_name" v-model="signatureList" disabled>
             <img onclick="return false" src="../../assets/image/add.png" alt="" class="add" @click="showTag">
           </li>
           <li class="item vux-1px-b" v-if="userInfo.role">
-            <span class="item_name">员工标签</span>
+            <span class="item_name">职务标签</span>
             <input type="text" class="input_name" disabled v-model="staffTag">
             <img onclick="return false" src="../../assets/image/add.png" alt="" class="add" @click="showStaffTag">
           </li>

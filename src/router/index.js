@@ -85,11 +85,10 @@ const router = new Router({
     }
   },
   {
-    path: '/comment',
+    path: '/comment/:phone',
     name: 'comment',
     component: () => import('../components/friend/comment.vue'),
     meta: {
-      keepAlive: false,
       title: "请您评价"
     }
   },
@@ -135,11 +134,13 @@ const router = new Router({
       title: "福利",
       keepAlive: true,
     },
-    // children: [{
+    children: [
+    //   {
     //   path: "award",
     //   name: "award",
     //   component: Award,
-    // },]
+    // },
+    ]
   },
   {
     path: '/gameRecord',
@@ -166,7 +167,7 @@ const router = new Router({
     }
   },
   {
-    path: '/shareActivity',
+    path: '/shareActivity/:id',
     name: 'shareActivity',
     component: () => import('../components/welfare/shareActivity/shareActivity.vue'),
     meta: {
