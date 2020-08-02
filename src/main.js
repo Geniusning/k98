@@ -249,7 +249,7 @@ new Vue({
         } else {
           this.addMessageIntoQueue(result)
         }
-      }else if (result.msgCode === 24) {//游戏队列约战
+      } else if (result.msgCode === 24) {//游戏队列约战
         this.loadMutualEvents();
         this.addBange();
         this.judgeMessType('playGame')
@@ -261,7 +261,7 @@ new Vue({
           this.addMessageIntoQueue(result)
         }
         // this.addFriendEvtObj(result)
-      }else if (result.msgCode === 8) {  //上线通知
+      } else if (result.msgCode === 8) {  //上线通知
         this.judgeMessType('onlineNotice');
         this.addFriendEvtObj(result)
       } else if (result.msgCode === 9) {  //分享获得积分通知
