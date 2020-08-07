@@ -24,6 +24,8 @@ import ShareActivity from 'components/welfare/shareActivity/shareActivity'
 import NewUserGetDiscount from 'components/welfare/newUserGetDiscount/newUserGetDiscount'
 import GameRecord from 'components/welfare/gameRecord'
 import GameRecordDetail from 'components/welfare/gameRecordDetail'
+import Nprogress from "nprogress"
+import "nprogress/nprogress.css"
 
 
 Vue.use(Router)
@@ -71,14 +73,6 @@ const router = new Router({
     path: '/friend',
     name: 'friend',
     component: () => import('../components/friend/friend.vue'),
-    // children: [{
-    //   path: ':id',
-    //   name: "personalInfo",
-    //   component: ()=>import('../components/friend/personalInfo/personalInfo.vue'),
-    //   meta: {
-    //     title: "生活照"
-    //   }
-    // }, ],
     meta: {
       keepAlive: true,
       title: "找朋友"
@@ -89,7 +83,7 @@ const router = new Router({
     name: 'comment',
     component: () => import('../components/friend/comment.vue'),
     meta: {
-      title: "请您评价"
+      title: "看Ta的评价"
     }
   },
   {
@@ -261,7 +255,11 @@ const router = new Router({
   ]
 })
 router.beforeEach((to, from, next) => { //动态设置页面标题
+  Nprogress.start()
   window.document.title = to.meta.title
   next()
+})
+router.afterEach(()=>{
+  Nprogress.done()
 })
 export default router

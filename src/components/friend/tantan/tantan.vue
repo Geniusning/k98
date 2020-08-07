@@ -320,15 +320,15 @@
           this.$router.push({
             path: "/comment/"+info.phone,
           });
-          let storeInfo = {
-            nickname: info.nickname,
-            headImgUrl: info.headimgurl
-          };
-          let lifePhotoURL = {
-            lifePhotoList: info.lifePhotoURL.lifePhotoURL
-          }
-          sessionStorage.setItem("info", JSON.stringify(storeInfo));
-          sessionStorage.setItem("lifePhotoList", JSON.stringify(lifePhotoURL));
+          // let storeInfo = {
+          //   nickname: info.nickname,
+          //   headImgUrl: info.headimgurl
+          // };
+          // let lifePhotoURL = {
+          //   lifePhotoList: info.lifePhotoURL.lifePhotoURL
+          // }
+          // sessionStorage.setItem("info", JSON.stringify(storeInfo));
+          // sessionStorage.setItem("lifePhotoList", JSON.stringify(lifePhotoURL));
           return;
         }
         //console.log("点击相册");

@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-27 18:15:26
+ * @Last Modified time: 2020-08-06 15:01:47
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,6 +24,30 @@ axios.interceptors.request.use(
   }
 )
 let api = {};
+//加载台/桌的绑定员工
+api.loadDeskHolder = function (deskID) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadDeskHolder?deskID=${deskID}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//和某人成为好友
+api.beFriend = function (target) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/beFriend?target=${target}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //删除生活照
 api.delLifePhoto = function (param) {
   return new Promise((resolve, reject) => {

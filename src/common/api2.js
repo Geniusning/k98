@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-27 16:24:35
+ * @Last Modified time: 2020-08-06 15:01:33
  */
 import axios from 'axios'
 import Url from './config'
@@ -26,6 +26,30 @@ api.delIdentity = function (targetID) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
       // //console.log(res)
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//加载台/桌的绑定员工
+api.loadDeskHolder = function (deskID) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadDeskHolder?tk=${Url.tk}&deskID=${deskID}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//和某人成为好友
+api.beFriend = function (target) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/beFriend?tk=${Url.tk}&target=${target}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -1529,7 +1553,7 @@ api.createQrcode = function () {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/createQrcode?tk=${Url.tk}`)
       .then(res => {
-        //console.log('创建二维码--------', res)
+        // console.log('创建二维码--------', res)
         if (res.status == 200) {
           resolve(res.data)
         }
@@ -1545,7 +1569,7 @@ api.loadAllQrcode = function () {
     axios.get(Url.commonUrl + `/api/loadAllQrcode?tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {
-          //console.log('拉取二维码--------', res)
+          // console.log('拉取二维码--------', res)
           resolve(res.data)
         }
       }).catch(err => {

@@ -147,14 +147,14 @@ export default {
       this.$router.go(-1);
     },
     selectVip() {
-      //console.log("this.radio_vip--------", this.radio_vip);
+      console.log("this.radio_vip--------", this.radio_vip);
     },
     selectPhone() {
-      //console.log("radio_phone----------", this.radio_phone);
+      console.log("radio_phone----------", this.radio_phone);
     },
     loadAllStaff() {
       api.loadAllStaff().then(res => {
-        //console.log("全部员工-------", res);
+        console.log("全部员工-------", res);
         if (res.errCode == 0) {
           this.staffList = res.staff.sort(util.sortByKeyS2L("number"));
         }

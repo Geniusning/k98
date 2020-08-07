@@ -11,11 +11,11 @@
             <img v-else src="../../assets/image/male.png" alt="">
           </div>
           <span>{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:"客服小哥"}}</span>
-          <div class="online_status">
+          <!-- <div class="online_status">
             <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
             <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
             <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
-          </div>
+          </div> -->
         </div>
         <div class="backHome_box">
           <img onclick="return false" src="../../assets/image/chat_home.png" alt class="home" @click="goHome">

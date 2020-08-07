@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-28 11:02:38
+ * @Last Modified time: 2020-08-07 13:10:54
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -532,7 +532,7 @@ const mutations = {
     //获取系统消息列表
     [types.GET_CAPTAINMESSAGELIST](state, { data }) {
         state.group_badgeCount = 0
-        //console.log("系统通知列表---",data)
+        console.log("系统通知列表---",data)
         data.forEach(item=>{
             item.time = util.timestampToTime(item.time).slice(5,10)
             if(item.unread){

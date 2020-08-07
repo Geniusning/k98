@@ -23,8 +23,8 @@
           <span class="dot left"></span>
           <span class="dot right"></span>
         </div>
-        <p class="soulText">{{modalSwitch?"自己找":"1键找玩伴"}}</p>
-        <p class="intro_soulText" v-show="isFirstLoad">1键找到你的幸运玩伴</p>
+        <p class="soulText">{{modalSwitch?"自己找":"天赐玩伴"}}</p>
+        <p class="intro_soulText" v-show="isFirstLoad">求上天，赐个投缘玩伴</p>
       </div>
       <!-- isFirstLoad -->
       <div v-if="isFirstLoad">
@@ -106,7 +106,7 @@
     <div class="guide_bg" v-show="isFirstLoad">
       <!-- <img onclick="return false" class="thumb" src="../../assets/image/thumb.png" alt> -->
       <p class="know" @click="isFirstLoad=false">知道了</p>
-      <p class="intro">设置个人资料</p>
+      <!-- <p class="intro">个人资料</p> -->
     </div>
     <!-- 分享引导 -->
     <div class="bg" v-if="isShow_bg" @click="share">
@@ -369,7 +369,7 @@
       share() {
         this.isShow_bg = false;
       },
-      //取消灵魂匹配
+      //退出灵魂匹配
       cancleSoulSearch() {
         this.modalSwitch = false;
         this.switchSoulModal(this.modalSwitch);
@@ -619,6 +619,9 @@
               item.phone
           }
         });
+        api.beFriend(this.staticChatFriendObj.openid).then(res=>{
+          console.log("成为好友结果---",res)
+        })
         // //console.log()
         // this.$router.push({
         //   path: `/message/${this.friendId}`,
@@ -1016,10 +1019,10 @@
         left: 3.8rem;
         .intro_soulText {
           position: absolute;
-          top: 0.4rem;
+          top: 0.7rem;
           left: 1.5rem;
           color: #fff;
-          font-size: 0.4rem;
+          font-size: 0.3467rem;
           font-weight: 700;
           z-index: 99;
           width: 3.6667rem;

@@ -87,9 +87,9 @@
                 <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm(allMutatualInfo_temp)">确定</div>
                 <div v-if="isShowGiftGuide" class="rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
-                                                      <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                                                      <span class="scene-text fl">加好友</span>
-                                            </div>-->
+                                                                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                                                                <span class="scene-text fl">加好友</span>
+                                                      </div>-->
               </div>
               <div class="bottom_partition" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class=" rejectBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
@@ -251,7 +251,7 @@
             <div class="topUpGiftInfo-top">
               <div class="img">
                 <!-- <img onclick="return false" class="giftAvatar" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
-                                          alt=""> -->
+                                                    alt=""> -->
               </div>
               <div class="name">
                 <p class="name">{{topUpGameInfo.content.fromInfo.nickName?topUpGameInfo.content.fromInfo.nickName:'朋友'}}店长送礼</p>
@@ -278,10 +278,10 @@
       </div>
       <div v-show="showClientServiceIconFlag" class="kefu" @click="inToLetter">
         <img onclick="return false" src="./assets/image/home_letter.png" alt="" class="pic_kefu">
-        <p class="kefu-text" >客服/收银</p>
+        <p class="kefu-text">客服/收银</p>
       </div>
       <!-- 分身切换弹框 -->
-      <div class="divide-topUp" v-show="isShowDivideList">
+      <div class="divide-topUp" v-if="isShowDivideList">
         <div class="bg"></div>
         <div class="divide-title">
           <img class="divide-icon" src="./assets/image/divide_avatar.png" alt="">
@@ -292,14 +292,14 @@
           <li class="divide-item" v-for="(divide,index) in divideList" :key="index">
             <img class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
             <i class="avatar-dot" v-show="divide.unreadMsgCount"></i>
-            <p style="width:40%;text-align: center" class="divide-name">{{divide.nickName}}</p>
-            <p style="width:20%" class="divide-time" @click="delDivide(divide.openid)">{{divide.latesMsgTime?divide.latesMsgTime.slice(8,10)==today?divide.latesMsgTime.slice(10,16):divide.latesMsgTime.slice(5,10):""}}</p>
+            <p style="width:40%;text-align: center" @click="delDivide(divide.openid)" class="divide-name">{{divide.nickName}}</p>
+            <p style="width:20%" class="divide-time">{{divide.latesMsgTime?divide.latesMsgTime.slice(8,10)==today?divide.latesMsgTime.slice(10,16):divide.latesMsgTime.slice(5,10):""}}</p>
             <img @click="switchToDivide(divide)" class="divide-arrow" src="./assets/image/divide_right.png" alt="">
           </li>
         </ul>
       </div>
       <!-- 分身信封入口 divide_badgeCount ||isShowDivideEnv -->
-      <div class="divide_wrapper" @click="showDivideList" v-if="(hasDivideIdentity || userInfo.role)">
+      <div class="divide_wrapper" @click="showDivideList" v-if="(hasDivideIdentity && hasUserRole)">
         <img src="./assets/image/divide_envelope.png" class="divide-env" alt="">
         <span v-show="divide_badgeCount" class="divide-dot">{{divide_badgeCount}}</span>
       </div>
@@ -331,12 +331,15 @@
   import util from "common/util";
   import api from "common/api";
   import Bus from "common/bus.js";
-import { userInfo } from 'os';
+  import {
+    userInfo
+  } from 'os';
   export default {
     name: "app",
     data() {
       return {
-        isShowEnvelopHandle:true,
+        divideList: [],
+        isShowEnvelopHandle: true,
         // isShowDivideEnv: true, //控制分身信封显示
         isShowDivideList: false, //控制分身列表显示
         isHandleMessageFromQueue: true,
@@ -366,7 +369,8 @@ import { userInfo } from 'os';
         appDeskCode: "",
         isDeskRoom: null,
         samedeskInfo: {},
-        hasDivideIdentity:false,
+        hasDivideIdentity: false,
+        hasUserRole: false,
       };
     },
     computed: {
@@ -392,7 +396,6 @@ import { userInfo } from 'os';
       ...mapGetters(["qrIsShow"])
     },
     created() {
-      
       if (
         this.$route.name === "home" ||
         this.$route.name === "friend" ||
@@ -426,6 +429,7 @@ import { userInfo } from 'os';
     //    this.loadLastRoomInfo() //加载回房信息
     // },
     mounted() {
+      console.log("app.vue", this.userInfo)
       let _GameUrl = window.location.href;
       let indexGame = _GameUrl.indexOf(".com");
       let shareurlGame = _GameUrl.slice(0, indexGame);
@@ -472,11 +476,17 @@ import { userInfo } from 'os';
           this.clearTopUpMessage();
         }
       }, 3000);
-      Bus.$on("hideEnvelop", (result) => {
-        //console.log("隐藏信封------", result)
-      })
+      // Bus.$on("hideEnvelop", (result) => {
+      //   //console.log("隐藏信封------", result)
+      // })
     },
     methods: {
+      // 临时方法 删除分身
+      delDivide(targetId) {
+        api.delIdentity(targetId).then(res => {
+          console.log("删除结果-----", res)
+        })
+      },
       showDivideList() {
         this.isShowDivideList = true
         this.loadIdentityList()
@@ -498,8 +508,11 @@ import { userInfo } from 'os';
       loadIdentityList() {
         var count = 0
         api.loadIdentityList().then(res => {
+          console.log("分身res---", res)
           if (res.errorCode === 0) {
-            this.divideList = res.info.filter(item => {
+            // this.$nextTick(()=>{
+            this.divideList = res.info
+            this.divideList = this.divideList.filter((item, index) => {
               if (item.openid != this.userInfo.openid) {
                 count += item.unreadMsgCount
                 this.addDivideUnreadCount(count)
@@ -507,7 +520,8 @@ import { userInfo } from 'os';
               item.latesMsgTime = item.latesMsgTime ? util.timestampToTime(item.latesMsgTime) : 0
               return item.openid != this.userInfo.openid
             })
-            //console.log("拉取分身-------", this.divideList)
+            // })
+            console.log("拉取分身-------", this.divideList)
           } else {
             this.$vux.toast.show({
               text: res.errorMsg
@@ -571,13 +585,13 @@ import { userInfo } from 'os';
           this.showQrcode(true);
         }
         let leftEnvelopInfo = {
-          fromInfo:{
-            nickname:userInfo.nickname,
-            headimgurl:userInfo.headimgurl
+          fromInfo: {
+            nickname: userInfo.nickname,
+            headimgurl: userInfo.headimgurl
           },
-          extMsg:{
-            lastMsg:{
-              msg:`${userInfo.nickname}送你一张优惠券，已存入卡券包`
+          extMsg: {
+            lastMsg: {
+              msg: `${userInfo.nickname}送你一张优惠券，已存入卡券包`
             }
           }
         }
@@ -680,7 +694,6 @@ import { userInfo } from 'os';
             break;
           case "message":
             this.setChatFriend(this.dynamicFriendEvt.fromInfo);
-          
             this.$router.push({
               // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
               name: "chat",
@@ -836,13 +849,12 @@ import { userInfo } from 'os';
           isSysSendGift: false
         };
         api.respondForGift(giftParam).then(res => {
-           //console.log("好友送礼回复结果---",res)
+          //console.log("好友送礼回复结果---",res)
           if (res.errCode == 0) {
             //重新拉取约战，送礼，点赞列表
             api.getUserInfo("/api/loadUserInfo").then(res => {
               this.getUserInfo(res);
             });
-           
             this._loadMutualEvents();
             this.isMakeFriendBool = true;
             this.isHandleMessageFromQueue = true;
@@ -938,7 +950,6 @@ import { userInfo } from 'os';
       },
       //未成为好友接受游戏
       no_Become_Friend_respondForGame(gameInfo) {
-      
         this.isHandleMessageFromQueue = true;
         this.clearTopUpMessage();
         let params = {
@@ -1054,18 +1065,20 @@ import { userInfo } from 'os';
       //拉取约战、点赞、送礼列表
       _loadMutualEvents() {
         api.loadMutualEvents().then(res => {
+          console.log("拉取约战、点赞、送礼列表---",res)
           if (res.errCode === 0) {
             let mutualEventsObj = res.mutualEvents;
             let mutualEventsList = [];
             mutualEventsList = mutualEventsList.concat(
-              mutualEventsObj.combatsEvents
+              mutualEventsObj.combatsEvents===null?[]:mutualEventsObj.combatsEvents
             );
             mutualEventsList = mutualEventsList.concat(
-              mutualEventsObj.giftEvents
+              mutualEventsObj.giftEvents===null?[]:mutualEventsObj.giftEvents
             );
             mutualEventsList = mutualEventsList.concat(
-              mutualEventsObj.friendEvents
+              mutualEventsObj.friendEvents===null?[]:mutualEventsObj.friendEvents
             );
+            console.log("mutualEventsList.length---",mutualEventsList.length)
             let count = mutualEventsList.length;
             this.CalcManualEventsCount(count);
           }
@@ -1100,13 +1113,17 @@ import { userInfo } from 'os';
         clearTopUpData: "CLEARTOPUPDATA",
         addDivideUnreadCount: "ADDDIVIDEUNREADMSG", //累计分身未读消息
         getFriend: "GET_FRIENDlIST", //获取候选人,
-        changeEnvelopContent:"CHANGEENVELOPECONTENT",//更改左侧弹框内容
+        changeEnvelopContent: "CHANGEENVELOPECONTENT", //更改左侧弹框内容
       }),
       ...mapActions({
         getAlreadyFriendList: "get_alreadyFriendList" //加载已经成为好友列表
       })
     },
     watch: {
+      userInfo: function(newValue) {
+        console.log("userInfo-watch-", newValue)
+        this.hasUserRole = (newValue.role != '' ||  newValue.openid.indexOf("@master")>-1)
+      },
       deep: true,
       dynamicFriendEvt: function(newValue) {
         this.isShowEnvelop = false;
@@ -1131,7 +1148,7 @@ import { userInfo } from 'os';
             let notifyUser = this.notifyUserIdList.filter(user => {
               return user.openid === onlineUser.openid;
             });
-            let isMore300s =new Date().getTime() - notifyUser[0].loginTime > 300000;
+            let isMore300s = new Date().getTime() - notifyUser[0].loginTime > 300000;
             if (isMore300s) {
               this.isThrottle = true;
               this.notifyUserIdList.forEach(user => {
@@ -1147,8 +1164,8 @@ import { userInfo } from 'os';
         } else {
           this.isThrottle = true;
         }
-        console.log("this.isThrottle----",this.isThrottle)
-        console.log("this.isShowEnvelop----",this.isShowEnvelop)
+        console.log("this.isThrottle----", this.isThrottle)
+        console.log("this.isShowEnvelop----", this.isShowEnvelop)
         if (this.isThrottle) {
           this.isShowEnvelop = true;
           setTimeout(() => {
@@ -1292,8 +1309,8 @@ import { userInfo } from 'os';
           newValue.name == "message" ||
           newValue.name === "chat" ||
           newValue.name === "clientChat" ||
-          newValue.name === "shareActivity"||
-          newValue.name ==="comment"
+          newValue.name === "shareActivity" ||
+          newValue.name === "comment"
         ) {
           //控制客服图标显示
           this.showClientServiceIconFlag = false;
@@ -1310,8 +1327,10 @@ import { userInfo } from 'os';
           newValue.name === "gameRank"
         ) {
           this.tabFlag = true;
+          this.hasDivideIdentity = true
         } else {
           this.tabFlag = false;
+          this.hasDivideIdentity = false
         }
         //判断通过非点击tabbar栏切换选中状态
         switch (newValue.name) {
@@ -1363,7 +1382,6 @@ import { userInfo } from 'os';
   }
   #app {
     overflow-x: hidden;
-    max-width: 10rem;
     height: 100%;
     box-sizing: border-box;
     display: flex;
@@ -1434,6 +1452,9 @@ import { userInfo } from 'os';
     z-index: 10000;
   }
   .top_wrapper {
+    display: inline-block;
+    margin: 0 auto;
+    width: 10rem;
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
@@ -1669,9 +1690,8 @@ import { userInfo } from 'os';
       .pic_kefu {
         width: 1rem;
         height: 1rem;
-        
       }
-      .kefu-text{
+      .kefu-text {
         color: #317AB1;
         width: 100%;
         text-align: center;
@@ -1812,8 +1832,10 @@ import { userInfo } from 'os';
     }
   }
   .bottom_wrapper {
+    display: inline-block;
+    margin: 0 auto;
     height: 1.18rem;
-    max-width: 10rem;
+    width: 10rem;
     position: relative; // .message_box {
     //   position: absolute;
     //   top: -1.85rem;

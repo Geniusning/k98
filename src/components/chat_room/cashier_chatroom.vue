@@ -19,11 +19,11 @@
             <img v-else src="../../assets/image/male.png" alt="">
           </div>
           <span>{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:"收银员"}}</span>
-          <div class="online_status">
+          <!-- <div class="online_status">
             <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
             <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
             <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
-          </div>
+          </div> -->
         </div>
         <div class="backHome_box">
           <img onclick="return false" src="../../assets/image/chat_home.png" alt="" class="home" @click="goHome">
@@ -358,7 +358,7 @@
       });
     },
     activated() {
-      console.log("this.$route.params--",this.$route.params)
+      // console.log("this.$route.params--",this.$route.params)
       this.deskCode = this.$route.params.deskCode
       if (!(JSON.stringify(this.$route.query) === "{}")) {
         this.setChatFriend(this.$route.query.info);
@@ -368,15 +368,11 @@
       if (this.isCashierFlag) {
         this.expressionList = [
           "客官，有啥吩咐？",
-          "过来玩么？要不帮您订个台？",
-          "请对本店的出品和服务提个意见，以便我们更好服务您",
-          "请关注本店，平时有空可上网店交朋友，玩大话骰"
+          "欢迎下次光临",
         ];
       } else {
         this.expressionList = [
-          "请推荐下你们家有啥好玩好吃的？",
-          "小二哥，现在还能订到台(房)么？",
-          "小二哥，今天现场有优惠活动么？",
+          "结账啦",
           "谢谢小二哥啦!"
         ];
       }
@@ -398,7 +394,9 @@
         "alreadyFriendListcursor",
         "giftList",
         "staffCouponInfo",
-        "qrCodeTextObj"
+        "qrCodeTextObj",
+        "deskId",
+        "l98Setting"
       ]),
       ...mapGetters(["qrIsShow"])
     },
@@ -438,9 +436,22 @@
         };
         let res = await api.paymentSelfPay(data);
         //console.log("顾客付款结果---", res);
-        this.input_value = `我的台/房号：${cashierContent.deskcode}，已付款，请查收`;
+        this.input_value = `<span style="color:red;font-size:18px">台/房号：${cashierContent.deskcode}，</span>已付款，请查收`;
         this.send();
         this.acquireWaitGetCoupons()
+        if(this.deskId && this.l98Setting.staffCommentOpen){
+          api.loadDeskHolder(this.deskId).then(res=>{
+            console.log("加载台/桌的绑定员工--",res)
+            if(res.info.holderID){
+              this.$router.push({
+                path:`/comment/${res.info.holderID}`,
+                query:{
+                  phone:res.info.holderID
+                }
+              })
+            }
+          })
+        }
       },
         //自动领取优惠券
     acquireWaitGetCoupons() {

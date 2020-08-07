@@ -16,9 +16,9 @@
           {{staticChatFriendObj.staffTag}}
           {{staticChatFriendObj.nickname}}
           <div class="online_status">
-            <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
-            <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
-            <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
+            <!-- <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot"> -->
+            <!-- <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span> -->
+            <!-- <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span> -->
           </div>
         </div>
         <!--  -->

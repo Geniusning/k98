@@ -537,6 +537,7 @@
           if (res.errorCode === 0) {
             api.getUserInfo("/api/loadUserInfo").then(res => {
                 this.getuserInfo(res);
+                console.log("res---",res)
                 this.$vux.toast.show({
                   text: "保存成功"
                 });
@@ -562,7 +563,14 @@
         //核对员工电话
         if(this.phone != '') {
           api.verifyPhoneNumber(this.phone, this.userInfo.headimgurl).then(res => {
-            //console.log('核对员工电话结果-------------------', res);
+            if(res.errCode!=0){
+              // setTimeout(() => {
+              //   this.$vux.toast.show({
+              //      text: `${res.errMsg}`
+              //    });
+              // }, 500);
+            }
+            console.log('核对员工电话结果-------------------', res);
           }).catch(err => {
             //console.log(err);
           })

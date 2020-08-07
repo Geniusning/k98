@@ -115,6 +115,7 @@
       .qrCode {
         width: 4rem;
         height: 4rem;
+        -webkit-touch-callout: none;
       }
       .desc {
         margin-top: 0.2667rem;

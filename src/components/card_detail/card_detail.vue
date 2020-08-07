@@ -152,7 +152,7 @@ export default {
     async lauchCheckOutCoupon() {
       let data = {
         deskid: this.deskId || "fefd338f-b59c-49c0-b918-5ed3d28e4cd1",
-        deskcode: this.deskCode || 1,
+        deskcode: Number(this.deskCode) || 1,
         payuserid: this.userInfo.openid,
         payuserheadimgurl: this.userInfo.headimgurl,
         usercouponid: this.checkoutCouponInfo.id,

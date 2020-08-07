@@ -5,14 +5,12 @@
     <div class="scrollBox vux-1px-t">
       <!-- 上传头像 -->
       <!-- <div class="avatar_wrapper clearfix">
-            <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-              alt="" class="pic_avatar fl" ref="avatar">
-            <div @click="updateAvatar" class="upload">
-              <p class="upload_title">更换头像、生活照</p>
-              <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
-            </div>
-            <div class="divideBTn">新增分身</div>
-          </div> -->
+              <img onclick="return false" src="../../assets/image/divide_add_avatar.png" alt="" class="pic_avatar fl" ref="avatar">
+              <div @click="updateAvatar" class="upload">
+                <p class="upload_title">更换头像、生活照</p>
+                <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
+              </div>
+            </div> -->
       <!-- 修改信息 -->
       <div class="userInfo_wrapper">
         <ul class="userInfo_list">
@@ -31,9 +29,14 @@
             <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrow_right">
           </li>
           <li class="item vux-1px-b">
-            <span class="item_name">标签</span>
+            <span class="item_name">个性标签</span>
             <input type="text" class="input_name" v-model="signatureList" disabled>
             <img onclick="return false" src="../../assets/image/add.png" alt="" class="add" @click="showTag">
+          </li>
+          <li class="item vux-1px-b">
+            <span class="item_name">职务标签</span>
+            <input type="text" class="input_name" disabled v-model="staffTag">
+            <img onclick="return false" src="../../assets/image/add.png" alt="" class="add" @click="showStaffTag">
           </li>
           <li class="item vux-1px-b">
             <span class="item_name">手机</span>
@@ -99,6 +102,36 @@
         </div>
       </x-dialog>
     </div>
+    <!-- 员工标签选择 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="StaffTagShow" class="dialog-demo" style="height:100%">
+        <div class="tag_wrapper">
+          <h2 class="signatureTitle">员工标签</h2>
+          <div class="close_tabBox" @click="closeStaffTag">
+            <img onclick="return false" src="../../assets/image/close.png" alt="" class="close">
+          </div>
+          <h3 class="title">最多选1个标签</h3>
+          <ul class="tag_list clearfix" ref="tagList">
+            <li class="tag fl" :class="{active:item.checked}" v-for="(item,index) in StaffTagList" :data-index="index" :key="index" @click="selectStaffTag($event,item,index)">
+              {{item.name}}
+            </li>
+          </ul>
+          <div class="DIY_tag clearfix">
+            <h3 class="title">自定义标签</h3>
+            <input type="text" class="diy_input fl" maxlength="4" v-model="diyStaffTag">
+            <img onclick="return false" src="../../assets/image/plus.png" alt="" class="plus fl" @click="plusStaffTag">
+          </div>
+          <div class="selected_wrapper">
+            <h3 class="title">已选择标签</h3>
+            <p class="selectedStaffTag" v-show="staffTag">{{staffTag}}</p>
+          </div>
+        </div>
+        <div class="btn_box">
+          <!-- <span class="vux-close"></span> -->
+          <span class="btn" @click="closeStaffTag">确定</span>
+        </div>
+      </x-dialog>
+    </div>
     <!-- 星座选择 -->
     <popup-picker :show="showPopupPickerC" :data="constellationList" v-model="constellationArr" @on-hide="onHide_C" @on-change="onChange_C"></popup-picker>
     <!-- 性别选择 -->
@@ -130,6 +163,9 @@
     },
     data() {
       return {
+        StaffTagShow: false,
+        diyStaffTag: '',
+        staffTag: '', //员工标签
         isStealth: null,
         isQuiet: null,
         isBattle: false,
@@ -172,6 +208,47 @@
             "水瓶座(1.20-2.18)",
             "双鱼座(2.19-3.20)"
           ]
+        ],
+        StaffTagList: [{
+            name: "店长",
+            id: 0,
+            checked: false
+          },
+          {
+            name: "经理",
+            id: 1,
+            checked: false
+          },
+          {
+            name: "客服",
+            id: 2,
+            checked: false
+          },
+          {
+            name: "营销",
+            id: 3,
+            checked: false
+          },
+          {
+            name: "小蜜蜂",
+            id: 4,
+            checked: false
+          },
+          {
+            name: "公主",
+            id: 5,
+            checked: false
+          },
+          {
+            name: "技师",
+            id: 6,
+            checked: false
+          },
+          {
+            name: "陪练",
+            id: 7,
+            checked: false
+          },
         ],
         tagList: [{
             name: "小逗比",
@@ -220,6 +297,22 @@
       });
     },
     methods: {
+      //增加自定义员工标签
+      plusStaffTag() {
+        this.staffTag = this.diyStaffTag
+        this.StaffTagList.forEach((item, i) => {
+          item.checked = false
+        })
+      },
+      // 显示员工标签弹框
+      showStaffTag() {
+        this.StaffTagShow = true
+      },
+      //关闭员工标签模态框
+      closeStaffTag() {
+        this.StaffTagShow = false;
+        this.diyStaffTag = '';
+      },
       //隐身状态 上线不通知好友
       stealth(e) {
         //console.log(e)
@@ -237,9 +330,11 @@
       },
       //进入修改头像页面
       updateAvatar() {
-        let id = 0;
         this.$router.push({
-          path: `/individual/${id}`
+          name: "updateAvatar",
+          params: {
+            type: "divide"
+          }
         });
       },
       //增加自定义标签
@@ -256,6 +351,28 @@
           this.commonList.push(this.diyTag);
           this.diyTag = "";
         }
+      },
+      //选择员工标签
+      selectStaffTag(e, item, index) {
+        //console.log(index);
+        if (this.diyStaffTag) {
+          this.$vux.toast.text('已选择自定义标签', 'middle')
+          return
+        }
+        if (e.target.className.indexOf("active") != -1) {
+          item.checked = false
+          this.staffTag = ''
+        } else {
+          this.StaffTagList.forEach((item, i) => {
+            if (i === index) {
+              item.checked = true
+              this.staffTag = item.name
+            } else {
+              item.checked = false
+            }
+          })
+        }
+        //console.log("this.staffTag-----",this.staffTag)
       },
       //选择标签
       selectTag(e, item, index) {
@@ -367,7 +484,9 @@
           tags: this.signatureList,
           phone: this.phone,
           signature: this.signature,
-          isBattle: this.isBattle
+          isBattle: this.isBattle,
+          staffTag: this.staffTag,
+          // role:"divide"
         };
         //console.log("userInfoParam---------", userInfoParam)
         // let strUserInfoParam = JSON.stringify(userInfoParam);
@@ -376,7 +495,7 @@
         //保存信息
         api.createIdentity(userInfoParam).then(res => {
           if (res.errorCode === 0) {
-            //console.log("保存分身成功---", res)
+            console.log("保存分身成功---", res)
             sessionStorage.setItem("identity", res.info.openid)
             this.$router.push({
               name: "updateAvatar",
@@ -724,8 +843,18 @@
       }
     }
     .selected_wrapper {
+      text-align: left;
       .title {
         margin-top: 0.3333rem;
+      }
+      .selectedStaffTag {
+        display: inline-block;
+        text-align: left;
+        font-size: 14px;
+        padding: 0.1333rem 0.2667rem;
+        background: @baseColor;
+        color: #333;
+        border-radius: 0.08rem;
       }
       .selected_list {
         .item {

@@ -3,8 +3,8 @@
 		<div class="content">
 			<header>
 				<div class="comment-header-left">
-					<img :src="staffInfo?staffInfo.headImgUrl:staffInfoByPhone.headimgurl" class="comment-avatarUrl" alt="">
-					<span class="comment-name">{{staffInfo?staffInfo.nickname:staffInfoByPhone.nickname}}</span>
+					<img :src="staffInfoByPhone.headimgurl" class="comment-avatarUrl" alt="">
+					<span class="comment-name">{{staffInfoByPhone.nickname}}</span>
 				</div>
 				<div class="comment-header-right" @click="goHome">
 					<img src="../../assets/image/chat_home.png" class="comment-home" alt="">
@@ -143,13 +143,14 @@
 					messageList: []
 				},
 				staffInfo: {},
-				storePhotoList: []
+				storePhotoList: [],
+				queryPhone: ""
 			};
 		},
 		created() {
 			this.queryPhone = util.GetQueryString("phone")
-			console.log("this.queryPhone----",this.queryPhone)
-			console.log("this.param----",this.$route.params.phone)
+			console.log("this.queryPhone----", this.queryPhone)
+			console.log("this.param----", this.$route.params.phone)
 			this.loadStaffCommentInfo();
 			this.loadUserInfoByPhone()
 			document.body.addEventListener("focusout", () => {
@@ -159,27 +160,16 @@
 		},
 		mounted() {
 			console.log("$route", this.$route)
-			if (!this.l98Setting.staffCommentOpen) {
-				this.$route.meta.title = "看Ta的评价"
+			if (this.queryPhone) {
+				document.title = "请您评价"
 			}
-			this.staffInfo = JSON.parse(sessionStorage.getItem("info"));
-			console.log("this.staffInfo---",this.staffInfo)
-			this.storePhotoList = JSON.parse(sessionStorage.getItem("lifePhotoList"));
-			console.log("this.storePhotoList",this.storePhotoList)
-			if (this.storePhotoList) {
-				this.storePhotoList.lifePhotoList.forEach(img => {
-					this.lifePhotolist.push({
-						url: "javascript:",
-						img: img,
-						title: "求点赞"
-					});
-				});
-			}
-			//console.log("lifeImgList---", this.lifePhotolist);
 		},
-		watch:{
-			$route(newRoute){
-				console.log("newRoute----",newRoute)
+		watch: {
+			$route(newRoute) {
+				console.log("newRoute----", newRoute)
+			},
+			queryPhone(newValue) {
+				console.log("queryPhone-newValue---", newValue)
 			}
 		},
 		computed: {
@@ -193,13 +183,13 @@
 			}),
 			//通过手机号获得员工信息
 			async loadUserInfoByPhone() {
-				let res = await api.loadUserInfoByPhone(this.queryPhone?this.queryPhone:this.$route.params.phone)
+				let res = await api.loadUserInfoByPhone(this.queryPhone ? this.queryPhone : this.$route.params.phone)
 				console.log("通过手机号码获得员工信息----", res)
 				console.log("this.storePhotoList----", this.storePhotoList)
 				if (res.errCode === 0) {
 					this.staffInfoByPhone = res.info
-					if (!this.storePhotoList) {
-						var temp = []
+					var temp = []
+					if (this.staffInfoByPhone.lifePhotoURL.lifePhotoURL) {
 						this.staffInfoByPhone.lifePhotoURL.lifePhotoURL.forEach(img => {
 							temp.push({
 								url: "javascript:",
@@ -208,8 +198,14 @@
 							});
 						})
 						this.lifePhotolist = temp
-						console.log("this.lifePhotolist----",this.lifePhotolist)
+					} else {
+						this.lifePhotolist.push( {
+							url: "javascript:",
+							img: this.staffInfoByPhone.headimgurl,
+							title: "求点赞"
+						})
 					}
+					console.log("this.lifePhotolist----", this.lifePhotolist)
 				}
 			},
 			goHome() {
@@ -224,9 +220,9 @@
 			//点赞
 			giveThumb() {
 				//console.log("!(this.l98Setting.staffCommentOpen || this.queryPhone)---",!(this.l98Setting.staffCommentOpen || this.queryPhone))
-				if (!(this.l98Setting.staffCommentOpen || this.queryPhone)) {
+				if (this.l98Setting.staffCommentOpen && !this.queryPhone) {
 					this.$vux.toast.text(
-						"现场消费才能评论"
+						"只有现场扫员工评价码才可以评价"
 					);
 					return
 				}
@@ -242,9 +238,9 @@
 			},
 			//鄙视
 			unGiveThumb() {
-				if (!(this.l98Setting.staffCommentOpen || this.queryPhone)) {
+				if (this.l98Setting.staffCommentOpen && !this.queryPhone) {
 					this.$vux.toast.text(
-						"现场消费才能评论"
+						"只有现场扫员工评价码才可以评价"
 					);
 					return
 				}
@@ -260,9 +256,9 @@
 			},
 			//发布留言
 			send() {
-				if (!(this.l98Setting.staffCommentOpen || this.queryPhone)) {
+				if (this.l98Setting.staffCommentOpen && !this.queryPhone) {
 					this.$vux.toast.text(
-						"现场消费才能评论"
+						"只有现场扫员工评价码才可以评价"
 					);
 					return
 				}
@@ -275,8 +271,8 @@
 								this.inputValue = this.inputValue.replace(
 									reg,
 									`<img src=${
-				                  this.emotionList[j].num
-				                } style="vertical-align: -6px;">`
+						                  this.emotionList[j].num
+						                } style="vertical-align: -6px;">`
 								);
 							}
 						}

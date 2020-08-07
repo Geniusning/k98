@@ -23,7 +23,7 @@
             <input type="file" accept="image/gif,image/jpeg,image/jpg,image/png" class="imageBtn" @change="uploadLifePic">
           </li>
         </ul>
-        <!-- <button class="btn" style="margin-top:10px" @click="uploadAllLifePicBtn">保存</button> -->
+        <button class="btn" style="margin-top:10px" @click="goBack">确定</button>
       </div>
       <div class="tailor_wrapper" v-if="showTailor">
         <vueCropper ref="cropper" :img="option.img" :canMove="false" :autoCrop="option.autoCrop" :autoCropWidth="option.width" :autoCropHeight="option.height" class="cropper"></vueCropper>
@@ -70,8 +70,9 @@
     },
     created() {
       this.fromPage = this.$route.params.type //判断从哪个页面跳转过来
+      console.log("判断从哪个页面跳转过来---", this.fromPage)
       if (this.fromPage === 'divide') {
-        //console.log("userInfo----", this.userInfo)
+        console.log("userInfo----", this.userInfo)
       } else {
         if (this.userInfo.lifePhotoURL.lifePhotoURL) {
           this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
@@ -91,6 +92,10 @@
       ...mapState(["userInfo"])
     },
     methods: {
+      goBack() {
+
+        this.$router.go(-2)
+      },
       //选择上传生活照
       uploadLifePic(e) {
         let _this = this;
@@ -121,14 +126,14 @@
           this.showTailor = false;
           //上传生活照
           api.updateLifePic(this.lifePicName, this.resultLife).then(res => {
-            //console.log(res)
+            console.log("updateLifePic----", res)
             if (res.errorCode === 0) {
               api.getUserInfo().then(res => {
-                //console.log(res);
-                this.getuserInfo(res);
-                if (this.userInfo.lifePhotoURL.lifePhotoURL) {
-                  this.lifePhotoList = this.userInfo.lifePhotoURL.lifePhotoURL;
-                  if (this.userInfo.lifePhotoURL.lifePhotoURL.length == 4) {
+                console.log("getUserInfo----", res);
+                  // this.getuserInfo(res); 
+                if (res.lifePhotoURL.lifePhotoURL) {
+                  this.lifePhotoList = res.lifePhotoURL.lifePhotoURL;
+                  if (res.lifePhotoURL.lifePhotoURL.length == 4) {
                     this.isShowAddImg = false;
                   }
                 }
@@ -145,8 +150,8 @@
       },
       //删除生活照
       close(photoImg, index) {
-        console.log("index---",index)
-        console.log("photoImg---",photoImg)
+        console.log("index---", index)
+        console.log("photoImg---", photoImg)
         let data = {
           url: photoImg
         }
@@ -203,6 +208,7 @@
               api.getUserInfo().then(res => {
                   //console.log(res);
                   if (this.fromPage === "individual") { //如果主身份则按正常流程走，更新个人信息
+                    console.log("如果主身份则按正常流程走，更新个人信息")
                     this.getuserInfo(res);
                   }
                   this.$vux.toast.show({

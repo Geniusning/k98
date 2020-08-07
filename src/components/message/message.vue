@@ -64,7 +64,7 @@
                   </div>
                   <img src="../../assets/image/dot_green.png" v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="online_dot">
                   <span v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="friendStatus">{{item.isInDoor?"店内":"店外"}}</span>
-                  <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}</span>
+                  <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}桌</span>
                 </div>
                 <p class="message" v-if="item.info.lastMsg?item.info.lastMsg.type===1:''" v-html='item.info.lastMsg?item.info.lastMsg.content:""'></p>
                 <p class="message" v-else-if="item.info.lastMsg?item.info.lastMsg.type===2:''">[图片]</p>
@@ -123,9 +123,9 @@
                 </div>
               </div>
               <!-- <div class="checkBox_scene clearfix" v-show="item.integral">
-                            <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                            <span class="scene-text fl">加好友</span>
-                          </div> -->
+                              <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                              <span class="scene-text fl">加好友</span>
+                            </div> -->
             </div>
           </li>
           <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
@@ -173,7 +173,7 @@
                   <p class="name">{{item.nickname?item.nickname:"游客"}}</p>
                   <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
                   <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
-                  <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}</span>
+                  <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}桌</span>
                 </div>
                 <p class="captainMessage">{{userInfo.role?"请查看用户留言消息":"欢迎光临! 有任何问题或建议，请留言"}}</p>
                 <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p>
@@ -192,7 +192,7 @@
                   <p class="name">{{item.nickname?item.nickname:"游客"}}</p>
                   <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
                   <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
-                  <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}</span>
+                  <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}桌</span>
                 </div>
                 <p class="captainMessage">请查看结账情况</p>
                 <!-- <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p> -->
@@ -320,7 +320,7 @@
     },
     //路由判断，判断是从导航栏进入消息页面还是从店长信箱进入消息页面
     beforeRouteEnter(to, from, next) {
-      //console.log("from", from)
+      console.log("to", to)
       if (to.params.routeParamNum === 1) {
         next(vm => {
           vm.isShowTab = 1;
@@ -357,8 +357,16 @@
         next(vm => {
           vm.isShowTab = 2;
         });
-      } else {
+      } else if (to.query.type === "friend") {
         next(vm => {
+          vm.isShowTab = 0;
+        });
+      } else if (to.query.type === "cashier") {
+        next(vm => {
+          vm.isShowTab = 2;
+        });
+      }else{
+         next(vm => {
           vm.isShowTab = 0;
         });
       }
@@ -451,8 +459,8 @@
               }
             });
           }, 500);
-        }else{
-           this.$vux.toast.text(`${res2.errorMsg}`);
+        } else {
+          this.$vux.toast.text(`${res2.errorMsg}`);
         }
       },
       closePopUp(flag) {
@@ -474,17 +482,17 @@
           this.cashierCursor = res.info.cursor
         }
       },
-      async pullingUp(){
-        if(this.cashierCursor != 0){
-           let res = await api.loadSelfPay(this.cashierCursor, 50)
-           console.log("更多买单流水----",res)
-           if(res.errCode === 0){
-             res.info.selfpayes.forEach(item=>{
-               item.time = util.timestampToTimeNoYear(item.time)
-               this.cashierFlowList.push(item)
-             })
+      async pullingUp() {
+        if (this.cashierCursor != 0) {
+          let res = await api.loadSelfPay(this.cashierCursor, 50)
+          console.log("更多买单流水----", res)
+          if (res.errCode === 0) {
+            res.info.selfpayes.forEach(item => {
+              item.time = util.timestampToTimeNoYear(item.time)
+              this.cashierFlowList.push(item)
+            })
             this.cashierCursor = res.info.cursor
-           }
+          }
         }
       },
       goToCard() {
@@ -624,7 +632,6 @@
           this.cashierObj = res
           if (!res.uerInfos) { //普通用户进入
             this.isCashierListFlag = false
-           
             unReadCount = this.cashierObj.unReadMsgCount
           } else { //收银员进入
             var tempArr = res.uerInfos
@@ -669,16 +676,16 @@
         this.isShowTab = index;
         //console.log(this.isShowTab)
         if (this.isShowTab === 2) {
-          Bus.$emit("hideEnvelop", true)
+          // Bus.$emit("hideEnvelop", true)
           setTimeout(() => {
             this.$nextTick(function() {
               this.$refs.clientScroll.scrollTo(0, 0)
             })
           }, 50);
         } else if (this.isShowTab === 3) {
-          Bus.$emit("hideEnvelop", false)
+          // Bus.$emit("hideEnvelop", false)
         } else {
-          Bus.$emit("hideEnvelop", true)
+          // Bus.$emit("hideEnvelop", true)
         }
       },
       //拉取约战、点赞、送礼列表
@@ -687,11 +694,11 @@
           if (res.errCode === 0) {
             let mutualEventsObj = res.mutualEvents;
             let tempEventList = [];
-            //console.log("mutualEventsObj------------", mutualEventsObj);
+            console.log("mutualEventsObj------------", mutualEventsObj);
             this.mutualEventsList = []; //先清空
-            tempEventList = tempEventList.concat(mutualEventsObj.combatsEvents)
-            tempEventList = tempEventList.concat(mutualEventsObj.giftEvents)
-            tempEventList = tempEventList.concat(mutualEventsObj.friendEvents)
+            tempEventList = tempEventList.concat(mutualEventsObj.combatsEvents===null?[]:mutualEventsObj.combatsEvents)
+            tempEventList = tempEventList.concat(mutualEventsObj.giftEvents===null?[]:mutualEventsObj.giftEvents)
+            tempEventList = tempEventList.concat(mutualEventsObj.friendEvents===null?[]:mutualEventsObj.friendEvents)
             this.mutualEventsList = tempEventList.sort((a, b) => {
               return b.time - a.time
             })
@@ -704,7 +711,7 @@
               }
             })
           }
-          // //console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
+          console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
         })
       },
       //接受或拒接送礼
@@ -777,7 +784,7 @@
         api.responseCombat(params).then(res => {
           //console.log(res)
           if (res.errCode == 0) {
-            //console.log('删除结果-----------', res);
+            console.log('删除结果-----------', res);
             window.location.href = url;
           }
         })
@@ -1378,11 +1385,12 @@
                 color: #333;
                 z-index: 2;
                 display: inline-block;
-                padding: 0rem 0.1067rem;
+                height: .3rem;
                 line-height: .3rem;
-                ;
-                border: 1px solid #333;
                 font-size: 11px;
+                width: 1rem;
+                margin-top: .1rem;
+                color: red;
               }
             }
             .message {

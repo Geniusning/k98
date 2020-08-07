@@ -55,40 +55,40 @@
         </div>
         <!-- 望眼镜背景 -->
         <!-- <div class="telescope_wrapper">
-                    <div v-show="isFirstLoad" @click="isFirstLoad=false">
-                      <img onclick="return false" src="../../assets/image/finger.png" alt class="leftguideFinger" />
-                      <p class="leftguideText">点击找朋友</p>
-                    </div>
-                    <div v-show="isFirstLoad" @click="isFirstLoad=false">
-                      <img onclick="return false" src="../../assets/image/finger.png" alt class="rightguideFinger" />
-                      <p class="rightguideText">去玩大话骰</p>
-                    </div>
-                    <img onclick="return false" src="../../assets/image/telescope_bg.png" alt class="telescope_img" />
-                    <div class="left_radius_box" ref="leftRadiusBox" @click="gotoFriend">
-                      <div class="onlineStatusPeople">{{(outFriendNum+inFriendNum)>0?(outFriendNum+inFriendNum):1}}人在线···</div>
-                      <img onclick="return false" src="../../assets/image/findFriend (2).png" alt class="online_person" />
-                      <div class="leftCircle" v-if="hiddenTelescope">
-                        <div :class="{'leftCirclePart':!isIphoneX,'leftCirclePartIphoneX':isIphoneX}" ref="leftCirclePart"></div>
-                        <div :class="{'rightCirclePart':!isIphoneX,'rightCirclePartIphoneX':isIphoneX}"></div>
-                      </div>
-                      <img onclick="return false" src="../../assets/image/findFriend.png" alt class="findFriend_text" v-if="hiddenTelescope" />
-                      <div class="more">
-                        <ul class="fri_list" v-show="friendIconList.length>3">
-                          <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList" :key="index">
-                            <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="right_radius_box" ref="rightRadiusBox" @click="gotoPlay">
-                      <img onclick="return false" src="../../assets/image/intoPlay.png" alt class="online_player" />
-                      <div class="rightCircle" v-if="hiddenTelescope">
-                        <div :class="{'leftCirclePart':!isIphoneX,'leftCirclePartIphoneX':isIphoneX}"></div>
-                        <div :class="{'rightCirclePart':!isIphoneX,'rightCirclePartIphoneX':isIphoneX}"></div>
-                      </div>
-                      <img onclick="return false" src="../../assets/image/dahuashai.png" alt class="dahuashai_text" v-if="hiddenTelescope" />
-                    </div>
-                  </div> -->
+                        <div v-show="isFirstLoad" @click="isFirstLoad=false">
+                          <img onclick="return false" src="../../assets/image/finger.png" alt class="leftguideFinger" />
+                          <p class="leftguideText">点击找朋友</p>
+                        </div>
+                        <div v-show="isFirstLoad" @click="isFirstLoad=false">
+                          <img onclick="return false" src="../../assets/image/finger.png" alt class="rightguideFinger" />
+                          <p class="rightguideText">去玩大话骰</p>
+                        </div>
+                        <img onclick="return false" src="../../assets/image/telescope_bg.png" alt class="telescope_img" />
+                        <div class="left_radius_box" ref="leftRadiusBox" @click="gotoFriend">
+                          <div class="onlineStatusPeople">{{(outFriendNum+inFriendNum)>0?(outFriendNum+inFriendNum):1}}人在线···</div>
+                          <img onclick="return false" src="../../assets/image/findFriend (2).png" alt class="online_person" />
+                          <div class="leftCircle" v-if="hiddenTelescope">
+                            <div :class="{'leftCirclePart':!isIphoneX,'leftCirclePartIphoneX':isIphoneX}" ref="leftCirclePart"></div>
+                            <div :class="{'rightCirclePart':!isIphoneX,'rightCirclePartIphoneX':isIphoneX}"></div>
+                          </div>
+                          <img onclick="return false" src="../../assets/image/findFriend.png" alt class="findFriend_text" v-if="hiddenTelescope" />
+                          <div class="more">
+                            <ul class="fri_list" v-show="friendIconList.length>3">
+                              <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList" :key="index">
+                                <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="right_radius_box" ref="rightRadiusBox" @click="gotoPlay">
+                          <img onclick="return false" src="../../assets/image/intoPlay.png" alt class="online_player" />
+                          <div class="rightCircle" v-if="hiddenTelescope">
+                            <div :class="{'leftCirclePart':!isIphoneX,'leftCirclePartIphoneX':isIphoneX}"></div>
+                            <div :class="{'rightCirclePart':!isIphoneX,'rightCirclePartIphoneX':isIphoneX}"></div>
+                          </div>
+                          <img onclick="return false" src="../../assets/image/dahuashai.png" alt class="dahuashai_text" v-if="hiddenTelescope" />
+                        </div>
+                      </div> -->
         <!-- 福利 -->
         <div class="welfare_wrapper" v-show="recommentList.length">
           <div class="title_content_wel">
@@ -102,9 +102,9 @@
             </div>
           </div>
           <!--<div class="advertise_wrapper" v-if="show_advertise">
-                              <img onclick="return false" src="../../assets/image/advertise.png" alt class="advertise" onclick="return false">
-                              <img onclick="return false" src="../../assets/image/close_ad.png" alt class="close" @click="close_adtise">
-                        </div>-->
+                                  <img onclick="return false" src="../../assets/image/advertise.png" alt class="advertise" onclick="return false">
+                                  <img onclick="return false" src="../../assets/image/close_ad.png" alt class="close" @click="close_adtise">
+                            </div>-->
           <div class="welfare_content" v-if="recommentList.length">
             <ul class="welfare_list" v-if="recommentList.length">
               <li class="item clearfix" v-for="(item,index) in recommentList" :key="index">
@@ -146,7 +146,7 @@
           <div class="welfare_content">
             <ul class="welfare_list" v-if="friendLeagleList.length">
               <li class="item clearfix" v-for="(item,index) in friendLeagleList" :key="index">
-                <div class="shop-logo-name">
+                <div class="shop-logo-name" @click="goToFriShop(item)">
                   <p class="shop-name"><img :src="item.storelogo" alt="" class="shop-logo"><span>{{item.storename}}</span></p>
                   <p class="distance">{{item.distance}}</p>
                 </div>
@@ -178,8 +178,8 @@
       </div>
     </div>
     <!-- <div class="kefu" @click="inToLetter">
-                                                  <img onclick="return false" src="../../assets/image/home_letter.png" alt class="pic_kefu" />
-                                                </div>-->
+                                                      <img onclick="return false" src="../../assets/image/home_letter.png" alt class="pic_kefu" />
+                                                    </div>-->
     <!-- 游戏框框 -->
     <div v-transfer-dom>
       <x-dialog v-model="gameShow" class="dialog-gameBegin">
@@ -343,6 +343,7 @@
       this.getAllCommunityFriend(params); //获取群友
       this._loadPublishArenas(); //拉取已经发布的比赛场
       this.loadAlliance(); //拉取友商物品
+      this.loadInviteCoupon() //判断是否有邀新活动
       //监听望眼镜动画leftCirclePart
       // this.$refs.leftCirclePart.addEventListener(
       //   "webkitAnimationEnd",
@@ -369,8 +370,8 @@
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
             link: `${this.shareUrl}k98/home?visitType=3&phone=${
-                      this.userInfo.phone
-                    }&role=${this.userInfo.role}`,
+                          this.userInfo.phone
+                        }&role=${this.userInfo.role}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(
@@ -385,8 +386,8 @@
             title: "找朋友",
             desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
             link: `${this.shareUrl}k98/home?visitType=3&phone=${
-                      this.userInfo.phone
-                    }&role=${this.userInfo.role}`,
+                          this.userInfo.phone
+                        }&role=${this.userInfo.role}`,
             imgUrl: `${this.shopSettingInfo.image}`
           };
           util._getJssdkInfo(
@@ -439,6 +440,7 @@
       },
       //跳转友商门店
       goToFriShop(shopInfo) {
+        console.log("shopInfo---",shopInfo)
         var data = {
           storename: shopInfo.storename,
           type: 1
@@ -448,8 +450,8 @@
           if (res.errCode === 0) {
             //console.log("统计友商数据---------", res);
           }
-          window.location.href = 
-          `${shopInfo.url}/k98/home?resId=${shopInfo.res.couponID}&storeName=${encodeURI(this.shopSettingInfo.name)}&friStoreName=${encodeURI(this.shopSettingInfo.name)}&visitType=10`;
+          window.location.href =
+            `${shopInfo.url}/k98/home?resId=${shopInfo.res.couponID}&storeName=${encodeURI(this.shopSettingInfo.name)}&friStoreName=${encodeURI(this.shopSettingInfo.name)}&visitType=10`;
         });
       },
       //拉取友商物品
@@ -595,10 +597,18 @@
       //     }
       //   })
       // },
+      loadInviteCoupon() {
+        api.loadInviteCoupon(false).then(res => {
+          //console.log("获取邀新优惠券---------", res)
+          if (res.errCode === 0) {
+            this.judgeInviteCoupon(res.coupons.isputAway);
+          }
+        })
+      },
       intoFriendGame() {
         window.location.href = `${this.gameUrl}game/?gamePath=game3&deskCode=${
-                  this.deskCode
-                }`;
+                      this.deskCode
+                    }`;
         this.gameShow = false;
       },
       //进入游戏
@@ -704,10 +714,10 @@
             var accuracy = res.accuracy; // 位置精度
             //window.location.href="http://apis.map.qq.com/uri/v1/marker?marker=coord:22.547986,113.988039;title:深圳魅力四射酒吧;addr:好吃好玩的地方&referer=myapp"
             window.location.href = `http://apis.map.qq.com/uri/v1/routeplan?type=bus&from=我的位置&fromcoord=${latitude},${longitude}&to=${
-                      _this.shopSettingInfo.address
-                    }&tocoord=${_this.shopSettingInfo.lat},${
-                      _this.shopSettingInfo.lng
-                    }&policy=1&referer=myapp`;
+                          _this.shopSettingInfo.address
+                        }&tocoord=${_this.shopSettingInfo.lat},${
+                          _this.shopSettingInfo.lng
+                        }&policy=1&referer=myapp`;
           }
         });
       },

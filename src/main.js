@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-30 15:26:28
+ * @Last Modified time: 2020-08-07 18:23:33
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -50,7 +50,7 @@ new Vue({
     this.getUserInfo(); //获取用户信息
   },
   mounted() {
-
+    
     this.loadAdvertisingPhoto(); //拉取首页轮播图
     this.createQrcode(); //创建二维码
     this.loadStoreSetting(); //获取门店信息
@@ -58,7 +58,6 @@ new Vue({
     this.loadRecommends(); //获取店长推荐
     this.loadMutualEvents() //统计约战送礼点赞
     this.loadL98otherSetting() //加载控制开关
-    this.loadInviteCoupon() //判断是否有邀新活动
     this.createWebsocket() //创建长链接
     this.getCaptainMessList()//店长群发通知
     this.loadStaffCouponAct()//员工送券活动通知
@@ -109,14 +108,7 @@ new Vue({
         this.limitTimes++
       }
     },
-    loadInviteCoupon() {
-      api.loadInviteCoupon().then(res => {
-        //console.log("获取邀新优惠券---------", res)
-        if (res.errCode === 0) {
-          this.judgeInviteCoupon(res.coupons.isputAway);
-        }
-      })
-    },
+
     //成为待被邀请队列成员
     addWaitingCombatList() {
       api.addWaitingCombatList().then(res => {
@@ -365,7 +357,7 @@ new Vue({
         this.saveQrCode(res.urls[0])
         if (!res.urls.length || !res.urls) {
           api.createQrcode().then(res => {
-            // //console.log('创建二维码接口--------', res);
+            //console.log('创建二维码接口--------', res);
           });
           // //console.log('进来创建二维码了')
         }
@@ -385,9 +377,9 @@ new Vue({
         if (res.errCode === 0) {
           let mutualEventsObj = res.mutualEvents;
           let mutualEventsList = [];
-          mutualEventsList = mutualEventsList.concat(mutualEventsObj.combatsEvents)
-          mutualEventsList = mutualEventsList.concat(mutualEventsObj.giftEvents)
-          mutualEventsList = mutualEventsList.concat(mutualEventsObj.friendEvents)
+          mutualEventsList = mutualEventsList.concat(mutualEventsObj.combatsEvents === null ? [] : mutualEventsObj.combatsEvents)
+          mutualEventsList = mutualEventsList.concat(mutualEventsObj.giftEvents === null ? [] : mutualEventsObj.giftEvents)
+          mutualEventsList = mutualEventsList.concat(mutualEventsObj.friendEvents === null ? [] : mutualEventsObj.friendEvents)
           let count = mutualEventsList.length;
           this.CalcManualEventsCount(count);
         }
