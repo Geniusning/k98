@@ -3,18 +3,20 @@
 		<div class="content">
 			<header>
 				<div class="comment-header-left">
-					<img :src="staffInfoByPhone.headimgurl" class="comment-avatarUrl" alt="">
-					<span class="comment-name">{{staffInfoByPhone.nickname}}</span>
+					<img :src="staffInfoByPhone.headimgurl?staffInfoByPhone.headimgurl:tempPic" class="comment-avatarUrl" alt="">
+					<span class="comment-name">{{staffInfoByPhone.nickname?staffInfoByPhone.nickname:"该员工未验证"}}</span>
 				</div>
 				<div class="comment-header-right" @click="goHome">
 					<img src="../../assets/image/chat_home.png" class="comment-home" alt="">
 				</div>
 			</header>
-			<div v-if="lifePhotolist.length>=0" class="comment-slider">
-				<swiper height="256px" :list="lifePhotolist" :interval="2000" :auto="true" :show-dots="false" v-model="swiperItemIndex" :min-moving-distance="10"></swiper>
-			</div>
-			<div v-else class="comment-slider">
-				<p class="comment-staffData">暂无员工信息</p>
+			<div>
+				<div v-if="lifePhotolist.length>0" class="comment-slider">
+					<swiper height="256px" :list="lifePhotolist" :interval="2000" :auto="true" :show-dots="false" v-model="swiperItemIndex" :min-moving-distance="10"></swiper>
+				</div>
+				<div v-else class="comment-slider">
+					<p class="comment-staffData">暂无员工信息</p>
+				</div>
 			</div>
 			<div class="comment-result">
 				<ul class="comment-header-list">
@@ -96,6 +98,7 @@
 	export default {
 		data() {
 			return {
+				tempPic: require('../../assets/image/divide_add_avatar.png'),
 				staffInfoByPhone: {},
 				phone: "",
 				emotionList: [{
@@ -229,10 +232,10 @@
 				api.giveThumb(this.$route.params.phone ? this.$route.params.phone : this.queryPhone).then(res => {
 					if (res.errCode === 0) {
 						this.loadStaffCommentInfo();
+					}else if(res.errCode === 1051){
+						this.$vux.toast.text(`一天只能点赞一次`);
 					} else {
-						this.$vux.toast.show({
-							text: res.errMsg
-						});
+						this.$vux.toast.text(res.errMsg);
 					}
 				});
 			},
@@ -247,10 +250,10 @@
 				api.giveUnThumb(this.$route.params.phone ? this.$route.params.phone : this.queryPhone).then(res => {
 					if (res.errCode === 0) {
 						this.loadStaffCommentInfo();
+					}else if(res.errCode === 1051){
+						this.$vux.toast.text(`一天只能鄙视一次`);
 					} else {
-						this.$vux.toast.show({
-							text: res.errMsg
-						});
+						this.$vux.toast.text(res.errMsg);
 					}
 				});
 			},

@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-08-07 18:23:33
+ * @Last Modified time: 2020-08-14 10:10:05
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -32,7 +32,8 @@ new Vue({
   router,
   store,
   computed: {
-    ...mapState(['socket', "staticChatFriendObj", "LastChatMsg", "userInfo"])
+    ...mapState(['socket', "staticChatFriendObj", "LastChatMsg", "userInfo", "soulCursor",
+      "soulResult",])
   },
   data() {
     return {
@@ -74,14 +75,14 @@ new Vue({
   methods: {
     //创建长连接
     createWebsocket() {
-      let windowUrL = window.location.href;
-      let index = windowUrL.indexOf('.com');
-      let shareurl = windowUrL.slice(0, index);
-      let websocketUrl = shareurl.slice(8);
-      this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-      this.websock = new WebSocket(this.connectUrl);
-      this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+      // let windowUrL = window.location.href;
+      // let index = windowUrL.indexOf('.com');
+      // let shareurl = windowUrL.slice(0, index);
+      // let websocketUrl = shareurl.slice(8);
+      // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+      // this.websock = new WebSocket(this.connectUrl);
+      // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
+      this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()
     },
@@ -298,24 +299,33 @@ new Vue({
         this.addFriendEvtObj(result)
         this.updateCashierMsg(result.content)
         this.addBange()
-      } else if (result.msgCode === 21) {
+      } else if (result.msgCode === 21) { //灵魂匹配待被查找
         this.addFriendEvtObj(result)
-      } else if (result.msgCode === 22) {
+      } else if (result.msgCode === 22) { //灵魂匹配待回复，然后被拉入聊天框
         this.addFriendEvtObj(result)
-        //console.log("-----------------------", this.$route)
-        if (this.$route.name === "chat") {
-          this.$router.go(-1)
-        }
-        setTimeout(() => {
-          this.setChatFriend(result.content.fromInfo)
-          this.$router.push({
-            name: "chat",
-            params: {
-              isSoul: true,
-              id: this.staticChatFriendObj.openid
+        if (result.content.extMsg.isAgree){
+          if (this.$route.name === "chat") {
+            this.$router.go(-1)
+          }
+          this.updateSoulParams(this.soulCursor, true)
+          setTimeout(() => {
+            this.setChatFriend(result.content.fromInfo)
+            this.$router.push({
+              name: "chat",
+              params: {
+                isSoul: true,
+                id: this.staticChatFriendObj.openid
+              }
+            });
+          }, 500);
+        }else{ //如果被拒绝 继续搜索
+          api.searchWaitBeMakeFriUser(this.soulCursor).then(res => {
+            console.log("搜索结果----------", res);
+            if (res.errCode === 0) {
+              this.updateSoulParams(res.info.cursor, false)
             }
           });
-        }, 500);
+        }
       } else if (result.msgCode === 25) {
         this.loadSameDeskInfo(result.content.extMsg)
       } else if (result.msgCode === 27) {
@@ -423,6 +433,7 @@ new Vue({
       loadSameDeskInfo: "GETSAMEDESKINFO", //加载同一个桌贴游戏信息
       addDivideNum: "ADDDIVIDENUM", //累加分身未读消息
       saveDeskCode: "SAVEDESKCODE",//保存桌贴号,桌号id
+      updateSoulParams: "UPDATESOULPARAMS" //更新灵魂匹配参数
     }),
     ...mapActions({
       //getFriendEvt: "get_FriendEvt"

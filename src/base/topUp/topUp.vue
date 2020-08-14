@@ -638,7 +638,7 @@
           position: absolute;
           width: 1rem;
           height: 1rem;
-          top: .35rem;
+          top: -.8rem;
           right: 2rem;
           z-index: 2;
         }

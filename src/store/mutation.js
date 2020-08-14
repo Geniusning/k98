@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-08-07 13:10:54
+ * @Last Modified time: 2020-08-10 17:37:47
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -14,6 +14,11 @@ const mutations = {
     //     state.lastClientMsg = msg
     //     state.client_badgeCount = msg.content.extMsg.count
     // },
+    //更新灵魂匹配参数
+    [types.UPDATESOULPARAMS](state, cursor=0,flag=false) {
+        state.soulCursor = cursor
+        state.soulResult = flag
+    },
     //更改左侧信封弹窗内容 CHANGEENVELOPECONTENT
     [types.CHANGEENVELOPECONTENT](state, info) {
         state.dynamicFriendEvt = info

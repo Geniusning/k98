@@ -87,9 +87,9 @@
                 <div v-if="isShowGiftGuide" class="acceptBtn" @click="confirm(allMutatualInfo_temp)">确定</div>
                 <div v-if="isShowGiftGuide" class="rejectBtn" @click="gotoDetail">详情</div>
                 <!-- <div class="checkBox_scene clearfix" v-if="!allMutatualInfo_temp.isAlreadyFriends">
-                                                                <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                                                                <span class="scene-text fl">加好友</span>
-                                                      </div>-->
+                                                                    <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                                                                    <span class="scene-text fl">加好友</span>
+                                                          </div>-->
               </div>
               <div class="bottom_partition" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class=" rejectBtn" @click="rejectForGame(allMutatualInfo_temp)">免战</div>
@@ -121,8 +121,8 @@
             </div>
             <div class="topUpGiftInfo-bottom soul-Bottom" style="margin-top:.3rem">
               <div class="bottom_partition">
-                <div class="rejectBtn" style="bottom:-0.8rem;" @click="rejectSoulFri()">拒绝</div>
-                <div class="acceptBtn" style="bottom:-.8rem;right:.15rem" @click="acceptSoulFri(soulFriInfo.content.fromInfo)">结识</div>
+                <div class="rejectBtn" style="bottom:-0.7rem;" @click="acceptSoulFri(soulFriInfo.content.fromInfo,false)">拒绝</div>
+                <div class="acceptBtn" style="bottom:-.8rem;right:.15rem" @click="acceptSoulFri(soulFriInfo.content.fromInfo,true)">结识</div>
               </div>
             </div>
           </div>
@@ -251,7 +251,7 @@
             <div class="topUpGiftInfo-top">
               <div class="img">
                 <!-- <img onclick="return false" class="giftAvatar" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
-                                                    alt=""> -->
+                                                        alt=""> -->
               </div>
               <div class="name">
                 <p class="name">{{topUpGameInfo.content.fromInfo.nickName?topUpGameInfo.content.fromInfo.nickName:'朋友'}}店长送礼</p>
@@ -276,9 +276,11 @@
           </div>
         </transition>
       </div>
-      <div v-show="showClientServiceIconFlag" class="kefu" @click="inToLetter">
+      <!-- <div class="movie_box" > -->
+      <div ref="move_div" :style="{top:top+'px'}" @touchstart="down($event)" @touchmove="move($event)" @touchend="end" v-show="showClientServiceIconFlag" class="kefu" @click="inToLetter">
         <img onclick="return false" src="./assets/image/home_letter.png" alt="" class="pic_kefu">
         <p class="kefu-text">客服/收银</p>
+        <!-- </div> -->
       </div>
       <!-- 分身切换弹框 -->
       <div class="divide-topUp" v-if="isShowDivideList">
@@ -371,6 +373,17 @@
         samedeskInfo: {},
         hasDivideIdentity: false,
         hasUserRole: false,
+        flags: false,
+        position: {
+          x: 0,
+          y: 0,
+          left: 0,
+          top: 0
+        },
+        top: 580,
+        left: 0,
+        width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+        height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
       };
     },
     computed: {
@@ -425,11 +438,10 @@
           break;
       }
     },
-    // created() {
-    //    this.loadLastRoomInfo() //加载回房信息
-    // },
+    update() {
+      console.log("页面刷新啦")
+    },
     mounted() {
-      console.log("app.vue", this.userInfo)
       let _GameUrl = window.location.href;
       let indexGame = _GameUrl.indexOf(".com");
       let shareurlGame = _GameUrl.slice(0, indexGame);
@@ -481,6 +493,58 @@
       // })
     },
     methods: {
+      down(event) { // 拖动开始的操作
+        this.$refs.move_div.classList.remove('kefu')
+        this.$refs.move_div.classList.add('move_kefu')
+        console.log(event)
+        this.flags = true
+        const refs = this.$refs.move_div.getBoundingClientRect()
+        let touch = event
+        if (event.touches) {
+          touch = event.touches[0]
+        }
+        this.position.x = touch.clientX
+        this.position.y = touch.clientY
+        this.position.left = refs.left
+        this.position.top = refs.top
+      },
+      move(event) { // 拖动中的操作
+        if (this.flags) {
+          let touch = event
+          if (event.touches) {
+            touch = event.touches[0]
+          }
+          const xPum = this.position.left + touch.clientX - this.position.x
+          const yPum = this.position.top + touch.clientY - this.position.y
+          console.log("yPum----", yPum)
+          this.left = xPum
+          this.top = yPum
+          this.banOut()
+          // 阻止页面的滑动默认事件
+          document.addEventListener('touchmove', function() {
+            event.preventDefault()
+          }, {
+            passive: false
+          })
+        }
+      },
+      end() { // 拖动结束的操作 move-kefu
+        this.flags = false
+        this.banOut()
+      },
+      banOut() { // 避免拖动出界的限制
+        const refs = this.$refs.move_div.getBoundingClientRect()
+        if (this.left < 0) {
+          this.left = 0
+        } else if (this.left > this.width - refs.width) {
+          this.left = this.width - refs.width
+        }
+        if (this.top < 0) {
+          this.top = 0
+        } else if (this.top > this.height - refs.height) {
+          this.top = this.height - refs.height
+        }
+      },
       // 临时方法 删除分身
       delDivide(targetId) {
         api.delIdentity(targetId).then(res => {
@@ -790,25 +854,27 @@
         this.getAlreadyFriendList(cursor);
       },
       //灵魂匹配拒绝
-      rejectSoulFri() {
-        this.isShowGiftPanel = false;
-        this.clearTopUpData();
-      },
+      // rejectSoulFri() {
+      //   this.isShowGiftPanel = false;
+      //   this.clearTopUpData();
+      // },
       //灵魂匹配接受
-      acceptSoulFri(userInfo) {
+      acceptSoulFri(userInfo, flag) {
         this.isShowGiftPanel = false;
-        api.acceptSoulFri(userInfo.openid).then(res => {
+        api.acceptSoulFri(userInfo.openid, flag).then(res => {
           // if (res.errCode === 0) {
           this.isHandleMessageFromQueue = true;
           this.clearTopUpMessage();
           this.setChatFriend(userInfo);
-          this.$router.push({
-            name: "chat",
-            params: {
-              isSoul: true,
-              id: this.staticChatFriendObj.openid
-            }
-          });
+          if (flag) {
+            this.$router.push({
+              name: "chat",
+              params: {
+                isSoul: true,
+                id: this.staticChatFriendObj.openid
+              }
+            });
+          }
           this.clearTopUpData();
           // }
         });
@@ -1065,20 +1131,20 @@
       //拉取约战、点赞、送礼列表
       _loadMutualEvents() {
         api.loadMutualEvents().then(res => {
-          console.log("拉取约战、点赞、送礼列表---",res)
+          console.log("拉取约战、点赞、送礼列表---", res)
           if (res.errCode === 0) {
             let mutualEventsObj = res.mutualEvents;
             let mutualEventsList = [];
             mutualEventsList = mutualEventsList.concat(
-              mutualEventsObj.combatsEvents===null?[]:mutualEventsObj.combatsEvents
+              mutualEventsObj.combatsEvents === null ? [] : mutualEventsObj.combatsEvents
             );
             mutualEventsList = mutualEventsList.concat(
-              mutualEventsObj.giftEvents===null?[]:mutualEventsObj.giftEvents
+              mutualEventsObj.giftEvents === null ? [] : mutualEventsObj.giftEvents
             );
             mutualEventsList = mutualEventsList.concat(
-              mutualEventsObj.friendEvents===null?[]:mutualEventsObj.friendEvents
+              mutualEventsObj.friendEvents === null ? [] : mutualEventsObj.friendEvents
             );
-            console.log("mutualEventsList.length---",mutualEventsList.length)
+            console.log("mutualEventsList.length---", mutualEventsList.length)
             let count = mutualEventsList.length;
             this.CalcManualEventsCount(count);
           }
@@ -1122,7 +1188,7 @@
     watch: {
       userInfo: function(newValue) {
         console.log("userInfo-watch-", newValue)
-        this.hasUserRole = (newValue.role != '' ||  newValue.openid.indexOf("@master")>-1)
+        this.hasUserRole = (newValue.role != '' || newValue.openid.indexOf("@master") > -1)
       },
       deep: true,
       dynamicFriendEvt: function(newValue) {
@@ -1273,6 +1339,7 @@
         this.judgeEveryBool(true, false, false, true);
       },
       soulFriInfo: function(newValue) {
+        console.log("soulFriInfo----", newValue)
         clearTimeout(this.timeTick);
         if (!newValue.msgCode) {
           return;
@@ -1298,26 +1365,19 @@
         this.isDeskRoom = true
         //console.log("this.samedeskInfo-----", this.samedeskInfo)
       },
-      $route: function(newValue, oldValue) {
-        // //console.log("$route---------", oldValue)
-        // if (newValue.name == "message") { //控制显示分身信封
-        //   this.isShowDivideEnv = true
-        // } else {
-        //   this.isShowDivideEnv = false
-        // }
-        if (
-          newValue.name == "message" ||
-          newValue.name === "chat" ||
-          newValue.name === "clientChat" ||
-          newValue.name === "shareActivity" ||
-          newValue.name === "comment"
-        ) {
-          //控制客服图标显示
-          this.showClientServiceIconFlag = false;
-        } else {
-          this.showClientServiceIconFlag = true;
+      //监听客服图标变动
+      showClientServiceIconFlag: function(newValue) {
+        console.log("newValue----",newValue)
+        if (newValue) {
+          this.$nextTick(()=>{
+            this.$refs.move_div.classList.remove('kefu')
+            this.$refs.move_div.classList.add('move_kefu')
+          })
         }
-        //隐藏导航
+      },
+      $route: function(newValue, oldValue) {
+        //隐藏导航.控制信封和客服图标显示
+        console.log("$route---", newValue)
         if (
           newValue.name == "home" ||
           newValue.name == "friend" ||
@@ -1328,9 +1388,11 @@
         ) {
           this.tabFlag = true;
           this.hasDivideIdentity = true
+          this.showClientServiceIconFlag = true;
         } else {
           this.tabFlag = false;
           this.hasDivideIdentity = false
+          this.showClientServiceIconFlag = false;
         }
         //判断通过非点击tabbar栏切换选中状态
         switch (newValue.name) {
@@ -1672,21 +1734,34 @@
     }
     .kefu {
       position: fixed;
-      bottom: 80px;
-      right: 0.1333rem;
+      right: 4px;
       animation: jump 1500ms linear 500ms infinite normal;
       text-align: center;
       @keyframes jump {
         10% {
-          bottom: 80px;
+          top: 580px;
         }
         50% {
-          bottom: 75px;
+          top: 575px;
         }
         100% {
-          bottom: 80px;
+          top: 580px;
         }
       }
+      .pic_kefu {
+        width: 1rem;
+        height: 1rem;
+      }
+      .kefu-text {
+        color: #317AB1;
+        width: 100%;
+        text-align: center;
+      }
+    }
+    .move_kefu {
+      position: fixed;
+      right: 4px; // animation: jump 1500ms linear 500ms infinite normal;
+      text-align: center;
       .pic_kefu {
         width: 1rem;
         height: 1rem;

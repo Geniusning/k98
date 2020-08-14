@@ -249,7 +249,9 @@
         "focusPlayTimes",
         "unfocusPlayTimes",
         "soulSwitch",
-        "shareUrl"
+        "shareUrl",
+        "soulCursor",
+        "soulResult",
       ]),
       ...mapGetters(["qrIsShow"])
     },
@@ -383,9 +385,13 @@
         this.modalSwitch = !this.modalSwitch;
         this.switchSoulModal(this.modalSwitch);
         if (this.modalSwitch) {
-          api.searchWaitBeMakeFriUser().then(res => {
-            //console.log("搜索结果----------", res);
-          });
+          console.log("this.soulCursor----",this.soulCursor)
+            api.searchWaitBeMakeFriUser(this.soulCursor).then(res => {
+              console.log("搜索结果----------", res);
+              if(res.errCode===0){
+                this.updateSoulParams(res.info.cursor,false)
+              }
+            });
         }
         if (!this.modalSwitch) {
           clearTimeout(this.soulTimer);
@@ -398,7 +404,8 @@
             "对不起<br>找不到和您匹配度>60%的灵魂玩伴<br>请完善个人资料,以便精准匹配";
           this.isEndResultSearchBtnBox = true;
           this.searching = true;
-        }, 6000);
+          // this.updateSoulParams(0,true)
+        }, 15000);
       },
       //拉取候选人
       getAllCommunityFriend(params) {
@@ -772,7 +779,8 @@
         updateFriendCursor: "UPDATE_INANDOUT_FRIEND_CURSOR", //更新场内场外游标
         changeUserLifeImgList: "GET_LIFEIMG", //更改用户生活照
         getGiftList: "GET_GIFTLIST", //获取礼物
-        switchSoulModal: "SWITCHSOULFLAG" //切换灵魂匹配模式
+        switchSoulModal: "SWITCHSOULFLAG", //切换灵魂匹配模式
+        updateSoulParams: "UPDATESOULPARAMS" //更新灵魂匹配参数
       })
     },
     watch: {

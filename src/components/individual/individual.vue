@@ -5,8 +5,7 @@
     <div class="scrollBox vux-1px-t">
       <!-- 上传头像 -->
       <div class="avatar_wrapper clearfix">
-        <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:tempPic"
-          alt="" class="pic_avatar fl" ref="avatar">
+        <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:tempPic" alt="" class="pic_avatar fl" ref="avatar">
         <div @click="updateAvatar" class="upload">
           <p class="upload_title">更换头像、生活照</p>
           <img onclick="return false" src="../../assets/image/arrow_right.png" alt="" class="arrowRight">
@@ -17,9 +16,9 @@
         </div>
       </div>
       <!-- <div class="tailor_wrapper" v-if="showTailor">
-        <vueCropper ref="cropper" :img="option.img" :canMove="false" :autoCrop="option.autoCrop" :autoCropWidth="option.width" :autoCropHeight="option.height" class="cropper"></vueCropper>
-        <p @click="stop" class="confirm">确定</p>
-      </div> -->
+          <vueCropper ref="cropper" :img="option.img" :canMove="false" :autoCrop="option.autoCrop" :autoCropWidth="option.width" :autoCropHeight="option.height" class="cropper"></vueCropper>
+          <p @click="stop" class="confirm">确定</p>
+        </div> -->
       <!-- 修改信息 -->
       <div class="userInfo_wrapper">
         <ul class="userInfo_list">
@@ -87,6 +86,12 @@
       </div>
     </div>
     <!-- </scroll> -->
+    <Popup @close="closePopUp" :show="showComfirmPwd" :top="25" :height="5">
+      <group title="请输入此手机号B端登录密码(纯数字)">
+         <input type="number" v-model="password" style="display:block;height:.7rem;line-height:.7rem;margin:30px auto;text-indent: 4px;">
+      </group>
+       <x-button @click.native="checkPass" style="width:300px;background-color:#FFD800;color:#fff;" type="default">提交</x-button>
+    </Popup>
     <!-- 个性标签选择 -->
     <div v-transfer-dom>
       <x-dialog v-model="tagShow" class="dialog-demo" style="height:100%">
@@ -137,7 +142,7 @@
           </ul>
           <div class="DIY_tag clearfix">
             <h3 class="title">自定义标签</h3>
-            <input type="text" class="diy_input fl"  maxlength="4" v-model="diyStaffTag">
+            <input type="text" class="diy_input fl" maxlength="4" v-model="diyStaffTag">
             <img onclick="return false" src="../../assets/image/plus.png" alt="" class="plus fl" @click="plusStaffTag">
           </div>
           <div class="selected_wrapper">
@@ -171,8 +176,10 @@
     XDialog,
     TransferDomDirective as TransferDom,
     Group,
-    XSwitch
+    XSwitch,
+    XInput
   } from "vux";
+  import Popup from 'base/popUp/popUp'
   import VueCropper from "vue-cropper";
   import axios from "axios";
   import api from "common/api";
@@ -187,19 +194,20 @@
     },
     data() {
       return {
-        tempPic:require('../../assets/image/divide_add_avatar.png'),
+        password:"",
+        tempPic: require('../../assets/image/divide_add_avatar.png'),
         isStealth: null,
         isQuiet: null,
         isBattle: false,
         signatureList: "",
         title: "最多选5个",
         diyTag: "",
-        diyStaffTag:'',
+        diyStaffTag: '',
         commonList: [], //个性标签
         staffTag: '', //员工标签
         checklist003: [],
         tagShow: false,
-        StaffTagShow:false,
+        StaffTagShow: false,
         name: "",
         showPopupPickerSex: false,
         showPopupPickerC: false,
@@ -214,6 +222,7 @@
         resText: "",
         length: "0",
         onceClick: true,
+        showComfirmPwd: false,
         userInfoTags: [],
         sexList: [
           ["男", "女"]
@@ -314,13 +323,12 @@
         height: ""
       };
     },
-    updated(){
-    },
     created() {
       this.height = document.body.clientHeight - 50;
       document.body.addEventListener('focusout', () => { //软键盘关闭事件
         window.scrollTo(0, 0); //解决ios键盘留白的bug
       });
+     
     },
     computed: {
       ...mapState(["userInfo"])
@@ -346,8 +354,27 @@
           }
         })
       })
+    
     },
     methods: {
+      checkPass(){
+        let data = {
+          password:String(this.password),
+          phone:String(this.phone)
+        }
+        api.verifyPassword(data).then(res=>{
+          console.log("验证密码结果---",res)
+          if(res.errCode===0){
+             this.showComfirmPwd = false;
+             this.$vux.toast.text("验证成功", "top");
+          }else if(res.errCode===1031){
+             this.$vux.toast.text("密码错误", "top");
+          }
+        })
+      },
+      closePopUp(flag) {
+        this.showCashierFlow = flag
+      },
       //隐身状态 上线不通知好友
       stealth(e) {
         //console.log(e)
@@ -364,8 +391,8 @@
         window.scrollTo(0, 0);
       },
       //进入分身页面
-      goToDivide(){
-         this.$router.push({
+      goToDivide() {
+        this.$router.push({
           name: `divide`
         });
       },
@@ -373,8 +400,8 @@
       updateAvatar() {
         this.$router.push({
           name: `updateAvatar`,
-          params:{
-            type:"individual"
+          params: {
+            type: "individual"
           }
         });
       },
@@ -396,9 +423,9 @@
       //增加自定义员工标签
       plusStaffTag() {
         this.staffTag = this.diyStaffTag
-        this.StaffTagList.forEach((item,i)=>{
-           item.checked = false
-          })
+        this.StaffTagList.forEach((item, i) => {
+          item.checked = false
+        })
       },
       //选择标签
       selectTag(e, item, index) {
@@ -424,19 +451,19 @@
       //选择员工标签
       selectStaffTag(e, item, index) {
         //console.log(index);
-        if(this.diyStaffTag){
-          this.$vux.toast.text('已选择自定义标签','middle')
+        if (this.diyStaffTag) {
+          this.$vux.toast.text('已选择自定义标签', 'middle')
           return
         }
-        if(e.target.className.indexOf("active") != -1){
+        if (e.target.className.indexOf("active") != -1) {
           item.checked = false
           this.staffTag = ''
-        }else{
-          this.StaffTagList.forEach((item,i)=>{
-            if(i===index){
+        } else {
+          this.StaffTagList.forEach((item, i) => {
+            if (i === index) {
               item.checked = true
               this.staffTag = item.name
-            }else{
+            } else {
               item.checked = false
             }
           })
@@ -527,7 +554,7 @@
           isStealth: this.isStealth,
           isQuiet: this.isQuiet,
           isBattle: this.isBattle,
-          staffTag:this.staffTag
+          staffTag: this.staffTag
         };
         let strUserInfoParam = JSON.stringify(userInfoParam);
         let decc = new TextEncoder("utf-8");
@@ -537,10 +564,8 @@
           if (res.errorCode === 0) {
             api.getUserInfo("/api/loadUserInfo").then(res => {
                 this.getuserInfo(res);
-                console.log("res---",res)
-                this.$vux.toast.show({
-                  text: "保存成功"
-                });
+                console.log("res---", res)
+                 this.$vux.toast.text("保存成功", "top");
                 setTimeout(() => {
                   if (!this.userInfo.isSubscribe) {
                     if (this.onceClick) {
@@ -561,16 +586,14 @@
           }
         });
         //核对员工电话
-        if(this.phone != '') {
+        if (this.phone != '') {
           api.verifyPhoneNumber(this.phone, this.userInfo.headimgurl).then(res => {
-            if(res.errCode!=0){
-              // setTimeout(() => {
-              //   this.$vux.toast.show({
-              //      text: `${res.errMsg}`
-              //    });
-              // }, 500);
-            }
             console.log('核对员工电话结果-------------------', res);
+            if (res.errCode === 0) {
+              if(this.phone != this.userInfo.phone){
+                this.showComfirmPwd = true
+              }
+            }
           }).catch(err => {
             //console.log(err);
           })
@@ -597,7 +620,8 @@
       Scroll,
       myHeader,
       Group,
-      XSwitch
+      XSwitch,
+      Popup
     }
   };
 </script>
@@ -680,7 +704,7 @@
             .arrow(-0.3rem);
           }
         }
-        .divideBTn{
+        .divideBTn {
           width: .9rem;
           height: .9rem;
           border-radius: 50%;
@@ -908,14 +932,14 @@
       .title {
         margin-top: 0.3333rem;
       }
-      .selectedStaffTag{
+      .selectedStaffTag {
         display: inline-block;
         text-align: left;
         font-size: 14px;
         padding: 0.1333rem 0.2667rem;
         background: @baseColor;
-          color: #333;
-          border-radius: 0.08rem;
+        color: #333;
+        border-radius: 0.08rem;
       }
       .selected_list {
         .item {

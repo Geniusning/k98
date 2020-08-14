@@ -243,6 +243,7 @@
     },
     created() {
       this._loadUserAllCoupon(); //获取优惠券
+      this.loadCashierList()
     },
     beforeRouteUpdate(to, from, next) {
       if (from.name === "cardDetail") {
@@ -282,11 +283,12 @@
             "-" +
             util.prefixZero(element.coupon.acquireNum, 7);
           element['canIuse'] = util.compareDate(element.coupon.startTime, util.timestampToTime(new Date().getTime()).slice(0, 10))
-          element.getTime = util.timestampToTime(element.getTime);
+          // element.getTime = util.timestampToTime(element.getTime);
           element.coupon.name = util.returnDiscountContent(element.coupon)
           element.coupon.type = util.returnDiscountType(element.coupon.type);
           discountList.push(element);
         });
+        discountList = discountList.sort(util.sortByKey("getTime"))
       },
       //返回上一页
       goBack() {
@@ -300,18 +302,10 @@
           this.$vux.toast.text('未到时间时间', 'middle')
           return
         }
-        // if(!this.deskCode){
-        //    this.$vux.toast.text('请到店使用', 'middle')
-        //   return
-        // }
-        // if (!this.userInfo.isSubscribe) {
-        //   this.changeQrCodeText({
-        //     title: "长按关注，以便管理、核销优惠券",
-        //     bottomText: "会员特权:领福利、交群友、参活动"
-        //   });
-        //   this.showQrcode(true);
-        //   return;
-        // }
+        if(!this.deskCode){
+          this.$vux.toast.text('请到店使用', 'middle')
+          return
+        }
         this.$router.push({
           path: `/card/${id}`
         });
@@ -323,7 +317,7 @@
       },
       async payNoCashier() {
         let data = {
-          deskid: this.deskId || "fefd338f-b59c-49c0-b918-5ed3d28e4cd1",
+          deskid: this.deskId || "",
           deskcode: this.deskCode || 1,
           payuserid: this.userInfo.openid,
           payuserheadimgurl: this.userInfo.headimgurl,
@@ -349,6 +343,7 @@
       //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
       loadCashierList() {
         api.loadCashierList().then(res => {
+          console.log("加载收银员列表---",res)
           this.cashierObj = res
         })
       },

@@ -1,4 +1,6 @@
 const state = {
+    soulCursor:0,
+    soulResult:false,
     checkQrCode:{},//买单核销码
     deskCode:null, //桌贴号
     deskId:null, //桌字id

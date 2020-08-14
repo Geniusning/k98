@@ -13,8 +13,7 @@
             <img v-else-if="staticChatFriendObj.sex===2" src="../../assets/image/female.png" alt="">
             <img v-else src="../../assets/image/male.png" alt="">
           </div>
-          {{staticChatFriendObj.staffTag}}
-          {{staticChatFriendObj.nickname}}
+          {{staticChatFriendObj.staffTag}} {{staticChatFriendObj.nickname}}
           <div class="online_status">
             <!-- <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot"> -->
             <!-- <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span> -->
@@ -22,7 +21,7 @@
           </div>
         </div>
         <!--  -->
-        <div v-show="staticChatFriendObj.role != '' && l98Setting.staffCommentOpen" class="comment-wrapper clearfix" @click="goToComment(staticChatFriendObj.phone)">
+        <div v-show="staticChatFriendObj.phone != '' && staticChatFriendObj.role != '' && l98Setting.staffCommentOpen" class="comment-wrapper clearfix" @click="goToComment(staticChatFriendObj.phone)">
           <img onclick="return false" src="../../assets/image/thumb1.png" alt="" class="avatar fl"><span class="count fl">{{thumbCount}}</span>
         </div>
         <div class="backHome_box">
@@ -174,8 +173,8 @@
           </ul>
         </scroll>
         <!-- div class="loading-container" v-show="isLoading">
-                         <loading></loading>
-                    </div>-->
+                           <loading></loading>
+                      </div>-->
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
@@ -445,10 +444,10 @@
     },
     activated() {
       this.loadStaffCommentInfo(this.staticChatFriendObj.phone)
-      console.log("this.staticChatFriendObj-----------",this.staticChatFriendObj);
+      console.log("this.staticChatFriendObj-----------", this.staticChatFriendObj);
       if (!localStorage.getItem("friendInfo")) {
         //解决微信内置浏览器刷新获得好友信息
-        localStorage.setItem("friendInfo",JSON.stringify(this.staticChatFriendObj));
+        localStorage.setItem("friendInfo", JSON.stringify(this.staticChatFriendObj));
       } else {
         let friendInfo = JSON.parse(localStorage.getItem("friendInfo"));
         this.setChatFriend(friendInfo);
@@ -573,20 +572,11 @@
         });
       },
       //去评价
-      goToComment() {
-        let lifePhotoURL = {
-          lifePhotoList: this.staticChatFriendObj.lifePhotoURL?this.staticChatFriendObj.lifePhotoURL.lifePhotoURL:[]
-        }
-        let storeInfo = {
-          nickname: this.staticChatFriendObj.nickname,
-          headImgUrl: this.staticChatFriendObj.headimgurl
-        };
-        sessionStorage.setItem("info", JSON.stringify(storeInfo));
-        sessionStorage.setItem("lifePhotoList", JSON.stringify(lifePhotoURL));
+      goToComment(phone) {
         this.$router.push({
-          name: "comment",
-          params: {
-            phone: this.staticChatFriendObj.phone
+          path: `/comment/${phone}`,
+          query: {
+            phone: phone
           }
         })
       },
@@ -1157,8 +1147,8 @@
                 this.input_value = this.input_value.replace(
                   reg,
                   `<img src=${
-                          this.emotionList[j].num
-                        } style="vertical-align: -6px;">`
+                            this.emotionList[j].num
+                          } style="vertical-align: -6px;">`
                 );
               }
             }
@@ -1204,12 +1194,12 @@
       // 发送图片
       uploadImage(e) {
         if (e.target.files[0].type === "video/mp4") {
-					this.$vux.toast.text(
-						"你所选的文件格式不符合，请重新选择",
-						"middle"
-					);
-					return
-				}
+          this.$vux.toast.text(
+            "你所选的文件格式不符合，请重新选择",
+            "middle"
+          );
+          return
+        }
         this.sendingTimes++;
         if (this.sendingTimes > 3) {
           this.$vux.toast.text("朋友一直未回复，稍后再发送吧", "middle");

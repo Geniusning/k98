@@ -20,7 +20,7 @@
             <!-- <p class="makeFriTips">绿灯闪烁表示好友在线哦，赶紧去找朋友吧...</p> -->
             <span class="time_desc">{{item.visitTime}}</span>
             <div class="comment-photo">
-              <div class="comment-wrapper clearfix" @touchstart="goToComment(item.info)" v-show="item.info.role != '' && l98Setting.staffCommentOpen">
+              <div class="comment-wrapper clearfix" @touchstart="goToComment(item.info)" v-show="item.info.phone != '' &&item.info.role != '' && l98Setting.staffCommentOpen">
                 <img onclick="return false" src="../../../assets/image/thumb1.png" alt="" class="avatar fl">
                 <span class="count fl">{{thumbCount}}</span>
               </div>
@@ -316,19 +316,10 @@
       },
       //点击相册
       showAlbum(info) {
-        if (info.role != "") {
+        if (info.role != "" && info.phone!="") {
           this.$router.push({
             path: "/comment/"+info.phone,
           });
-          // let storeInfo = {
-          //   nickname: info.nickname,
-          //   headImgUrl: info.headimgurl
-          // };
-          // let lifePhotoURL = {
-          //   lifePhotoList: info.lifePhotoURL.lifePhotoURL
-          // }
-          // sessionStorage.setItem("info", JSON.stringify(storeInfo));
-          // sessionStorage.setItem("lifePhotoList", JSON.stringify(lifePhotoURL));
           return;
         }
         //console.log("点击相册");

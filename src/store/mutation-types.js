@@ -1,4 +1,5 @@
-
+//更新灵魂匹配参数
+export const UPDATESOULPARAMS = "UPDATESOULPARAMS"
 //存储买单收款码
 export const SAVECHECKQRCODE = "SAVECHECKQRCODE"
 //存储桌贴号
