@@ -164,7 +164,7 @@ export default {
       if (res1.errorCode === 0) {
         this.cashierObj["openid"] = this.cashierObj.CashierID
         this.setChatFriend(this.cashierObj);
-        this.acquireWaitGetCoupons();
+        // this.acquireWaitGetCoupons();
         this._animationToast("已发起核销，待收银同意确认");
         setTimeout(() => {
           this.$router.push({

@@ -20,10 +20,10 @@
           </div>
           <span>{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:"收银员"}}</span>
           <!-- <div class="online_status">
-            <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
-            <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
-            <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
-          </div> -->
+                      <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
+                      <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
+                      <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
+                    </div> -->
         </div>
         <div class="backHome_box">
           <img onclick="return false" src="../../assets/image/chat_home.png" alt="" class="home" @click="goHome">
@@ -230,7 +230,7 @@
           </ul>
         </div>
       </div>
-      <qrCode v-show="qrIsShow" :isCheckQrCode="true"></qrCode>
+      <qrCode v-show="qrIsShow" :isCheckQrCode="isCheckQrCode"></qrCode>
     </div>
   </transition>
 </template>
@@ -276,6 +276,7 @@
     },
     data() {
       return {
+        isCheckQrCode:true,
         isShowAccount: false,
         preMoney: "",
         actMoney: "",
@@ -341,8 +342,22 @@
         cashierEndCursor: 0,
         isLoadMore: false,
         deskCode: 1,
+        isOpenAutoPay: false, // 是否开通自助买单
       };
     },
+    // beforeRouteLeave(to, from, next) {
+    //   // 导航离开该组件的对应路由时调用
+    //   // 可以访问组件实例 `this`
+    //   // this.isCheckQrCode = false
+    //   // if (!this.userInfo.isSubscribe) {
+    //   //   this.changeQrCodeText({
+    //   //     title: "长按关注，方便收到店家留言",
+    //   //     bottomText: "会员特权:领福利、交群友、参活动"
+    //   //   });
+    //   //   this.showQrcode(true);
+    //   // }
+    //   // next()
+    // },
     created() {
       this.listenScroll = true;
       this.today = new Date().getDate();
@@ -358,7 +373,6 @@
       });
     },
     activated() {
-      // console.log("this.$route.params--",this.$route.params)
       this.deskCode = this.$route.params.deskCode
       if (!(JSON.stringify(this.$route.query) === "{}")) {
         this.setChatFriend(this.$route.query.info);
@@ -379,7 +393,7 @@
     },
     deactivated() {
       this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
-      this.cashierEndCursor = null;
+      this.cashierEndCursor = 0;
       this.componentChatList = [];
       let cursor = 0;
       this.changeCursor(cursor);
@@ -404,8 +418,8 @@
       //获取最新的对账单信息
       getLastCheckInfo() {
         var cashierContent;
-        for (var i = this.componentChatList.length-1; i >=0 ; i--) {
-          console.log("this.componentChatList---",this.componentChatList)
+        for (var i = this.componentChatList.length - 1; i >= 0; i--) {
+          console.log("this.componentChatList---", this.componentChatList)
           const element = this.componentChatList[i];
           console.log(element)
           if (element.type === 4 || element.type === 3) {
@@ -425,6 +439,8 @@
         let res = await api.confirmSelfPay(data);
         //console.log("收银员确认收款结果---", res);
         this.input_value = "您的买单款已到帐，欢迎下次光临";
+        // this.acquireWaitGetCoupons()
+        // this.notifyGetCoupon()
         this.send();
       },
       //用户已付款
@@ -438,53 +454,44 @@
         //console.log("顾客付款结果---", res);
         this.input_value = `<span style="color:red;font-size:18px">台/房号：${cashierContent.deskcode}，</span>已付款，请查收`;
         this.send();
-        this.acquireWaitGetCoupons()
-        if(this.deskId && this.l98Setting.staffCommentOpen){
-          api.loadDeskHolder(this.deskId).then(res=>{
-            console.log("加载台/桌的绑定员工--",res)
-            if(res.info.holderID){
+        if (this.deskId && this.l98Setting.staffCommentOpen) {
+          api.loadDeskHolder(this.deskId).then(res => {
+            console.log("加载台/桌的绑定员工--", res)
+            if (res.info.holderID) {
               this.$router.push({
-                path:`/comment/${res.info.holderID}`,
-                query:{
-                  phone:res.info.holderID
+                path: `/comment/${res.info.holderID}`,
+                query: {
+                  phone: res.info.holderID
                 }
               })
             }
           })
         }
       },
-        //自动领取优惠券
-    acquireWaitGetCoupons() {
-      let condition = 7; //买单有礼
-      api.acquireWaitGetCoupons(condition).then(res => {
-        console.log("买单有礼----",res)
-          if (!res.coupon) {
-            return;
-          }
-          let result = {
-              msgCode: 4,
-              content: {
-                extMsg: {},
-                fromInfo: {
-                  openid: "",
-                  headimgurl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
-                }
-              }
-            };
-            this.addFriendEvtObj(result);
-            this.judgeMessType("discount");
-        })
-        .catch(err => {
-          //console.log(err);
-        });
-    },
+      //自动领取优惠券
+      acquireWaitGetCoupons(condition) {
+        api.acquireWaitGetCoupons(condition).then(res => {
+            console.log("有礼----", res)
+            if (!res.coupon) {
+              return;
+            }
+            this.notifyGetCoupon()
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      },
       //显示收款码
       showCheckQrCode() {
-        this.changeQrCodeText({
-          title: "长按二维码买单，记得输入实收金额",
-          bottomText: ""
-        });
-        this.showQrcode(true);
+        if(this.l98Setting.selfPayQRcodeOpen){
+          this.changeQrCodeText({
+            title: "长按二维码买单，记得输入实收金额",
+            bottomText: ""
+          });
+          this.showQrcode(true);
+        }else{
+          this.$vux.toast.text("暂未开通收款码", "top");
+        }
       },
       //确认对账单
       async sendAccountStateMent() {
@@ -548,7 +555,7 @@
           //console.log("核销结果----", res);
           if (res.errCode === 0) {
             if (flag) {
-              this.input_value = "同意核销。您可以买单啦！";
+              this.input_value = "同意核销，您可以买单啦！";
             } else {
               this.input_value = "对不起，不能用券，未达到使用条件";
             }
@@ -624,7 +631,7 @@
                     payTime: util.timestampToTimeNoYear(
                       msg.selfpayinfo ? msg.selfpayinfo.time : ""
                     ),
-                    selfpayinfo:msg.selfpayinfo?msg.selfpayinfo:""
+                    selfpayinfo: msg.selfpayinfo ? msg.selfpayinfo : ""
                   });
                 }
               } else {
@@ -649,7 +656,7 @@
                     payTime: util.timestampToTimeNoYear(
                       msg.selfpayinfo ? msg.selfpayinfo.time : ""
                     ),
-                    selfpayinfo:msg.selfpayinfo?msg.selfpayinfo:""
+                    selfpayinfo: msg.selfpayinfo ? msg.selfpayinfo : ""
                   });
                 }
               }
@@ -694,8 +701,8 @@
                 this.input_value = this.input_value.replace(
                   reg,
                   `<img src=${
-                                this.emotionList[j].num
-                              } style="vertical-align: -6px;">`
+                                          this.emotionList[j].num
+                                        } style="vertical-align: -6px;">`
                 );
               }
             }
@@ -885,6 +892,21 @@
         );
         return couponInfo
       },
+      notifyGetCoupon() {
+        var topUpCommonInfo = {
+          content: {
+            fromInfo: {
+              openid: "",
+              headimgurl: "",
+              nickName: "店员"
+            },
+            extMsg: {}
+          },
+          msgCode: 27
+        };
+        console.log("topUpCommonInfo----", topUpCommonInfo)
+        this.addMessageIntoQueue(topUpCommonInfo);
+      },
       ...mapMutations({
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         updateValue: "UPDATE_INPUTVALUE",
@@ -893,6 +915,7 @@
         showQrcode: "SHOW_QRCODE", //展示二维码
         addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
         judgeMessType: "JUDGE_MESSTYPE", //判断消息
+        addMessageIntoQueue: "ADDMESSAGEQUEUE", //消息插入队列
       })
     },
     watch: {
@@ -914,6 +937,25 @@
             messageInfo.userCoupon.coupon.type = util.returnDiscountType(
               messageInfo.userCoupon.coupon.type
             );
+          }
+          if (messageInfo.content.indexOf('同意核销') > -1 && !this.l98Setting.selfPayQRcodeOpen) { //未开通自助买单 收到收银员发来已买单信息，弹窗告知已收到优惠券
+            let condition = 5; //核销有礼
+            console.log("进来核销有礼啦")
+            this.acquireWaitGetCoupons(condition)
+            // api.acquireWaitGetCoupons(condition).then(res => {
+            //     console.log("核销有礼----", res)
+            //     if (!res.coupon) {
+            //       return;
+            //     }
+            //     this.notifyGetCoupon()
+            //   })
+            //   .catch(err => {
+            //     //console.log(err);
+            //   });
+          }
+          if (this.l98Setting.selfPayQRcodeOpen && messageInfo.content.indexOf('您的买单款已到帐') > -1) {
+            let condition = 7
+            this.acquireWaitGetCoupons(condition)
           }
           this.componentChatList.push({
             message: messageInfo.content ? messageInfo.content : "",

@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-08-14 10:10:05
+ * @Last Modified time: 2020-08-28 17:52:00
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -20,7 +20,6 @@ import { mapMutations, mapState, mapActions } from 'vuex'
 import api from 'common/api'
 import util from "common/util";
 import config from 'common/config'
-import VueBus from 'common/bus'
 Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)
 Vue.use(Viewer)
@@ -68,6 +67,14 @@ new Vue({
       localStorage.removeItem("rainAllowRecord") //清楚缓存
       sessionStorage.removeItem("identity")
     })
+    window.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        this.getUserInfo()
+      } else if (document.visibilityState === 'hidden') {
+        console.log('后台')
+        // this.closeWebPage()
+      }
+    })
     setTimeout(() => { //13秒过后如果用户没有离开系统则把用户放入待被邀请游戏队列
       this.addWaitingCombatList()
     }, 13000);
@@ -75,14 +82,14 @@ new Vue({
   methods: {
     //创建长连接
     createWebsocket() {
-      // let windowUrL = window.location.href;
-      // let index = windowUrL.indexOf('.com');
-      // let shareurl = windowUrL.slice(0, index);
-      // let websocketUrl = shareurl.slice(8);
-      // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-      // this.websock = new WebSocket(this.connectUrl);
-      // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-      this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+      let windowUrL = window.location.href;
+      let index = windowUrL.indexOf('.com');
+      let shareurl = windowUrL.slice(0, index);
+      let websocketUrl = shareurl.slice(8);
+      this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+      this.websock = new WebSocket(this.connectUrl);
+      this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
+      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()
     },
@@ -109,7 +116,14 @@ new Vue({
         this.limitTimes++
       }
     },
-
+    //关闭公众号
+    closeWebPage() {
+      WeixinJSBridge.invoke("closeWindow", {}, function (res) {
+        // alert(res.err_msg);
+        // window.location.href =
+        //   "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU3MTc1MzA1OA==#wechat_redirect";
+      });
+    },
     //成为待被邀请队列成员
     addWaitingCombatList() {
       api.addWaitingCombatList().then(res => {
@@ -257,6 +271,8 @@ new Vue({
       } else if (result.msgCode === 8) {  //上线通知
         this.judgeMessType('onlineNotice');
         this.addFriendEvtObj(result)
+      } else if (result.msgCode === 29) {  //贵宾上线通知
+        this.addFriendEvtObj(result)
       } else if (result.msgCode === 9) {  //分享获得积分通知
         console.log("分享获得积分")
         this.addFriendEvtObj(result)
@@ -376,7 +392,7 @@ new Vue({
     //获取店长推荐
     loadRecommends() {
       api.loadRecommends().then(res => {
-        //console.log('店长推荐数据---------------------', res)
+        console.log('店长推荐数据---------------------', res)
         this.recommendList = res;
         this.getRecommentList(this.recommendList);
       })
@@ -417,16 +433,15 @@ new Vue({
       appendLastMsg: "UPDATE_CHATLIST",
       updateValue: "UPDATE_INPUTVALUE",
       addBange: "ADD_BADGE",
-      judgeInviteCoupon: "JUDGE_INVITE_COUPON", //判断是否还有邀请有礼
       compareLastMsg: "COMPARE_LASTMESS",
       getAdvertisingImg: "GET_ADVERTISINGIMG", //获取首页轮播图
       addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框
+      judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
       addMessageIntoQueue: "ADDMESSAGEQUEUE", //add message into messagequeue
       updateShareUrl: "UPDATE_SHAREURL", //分享地址
       getuserInfo: "GET_USERINFO", //获取用户信息
       getShopSetting: "GET_SHOPINFO", //获取门店信息
       getUrl: "GET_URL", //获取公众号地址
-      judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
       getSendGiftList: "GET_SENDGIFTLIST", //获取积分换礼品列表
       CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数量
       LoadL98Setting: "L98OTHERSETTING", //加载功能控制开关

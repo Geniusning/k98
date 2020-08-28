@@ -315,6 +315,7 @@
       } else {
         this.sexType = 1;
       }
+      console.log("this.userInfo---",this.userInfo)
       if (this.userInfo.firstLoad) {
         this.isFirstLoad = true;
       } else {
@@ -780,7 +781,9 @@
         changeUserLifeImgList: "GET_LIFEIMG", //更改用户生活照
         getGiftList: "GET_GIFTLIST", //获取礼物
         switchSoulModal: "SWITCHSOULFLAG", //切换灵魂匹配模式
-        updateSoulParams: "UPDATESOULPARAMS" //更新灵魂匹配参数
+        updateSoulParams: "UPDATESOULPARAMS", //更新灵魂匹配参数
+        addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框
+        judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
       })
     },
     watch: {
@@ -866,6 +869,7 @@
           border-radius: 50%;
         }
         .name {
+          margin-left: 4px;
           color: #fff;
         }
       }

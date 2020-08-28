@@ -175,8 +175,8 @@
     PopupPicker,
     XDialog,
     TransferDomDirective as TransferDom,
-    Group,
     XSwitch,
+    Group,
     XInput
   } from "vux";
   import Popup from 'base/popUp/popUp'
@@ -367,13 +367,17 @@
           if(res.errCode===0){
              this.showComfirmPwd = false;
              this.$vux.toast.text("验证成功", "top");
+              api.getUserInfo("/api/loadUserInfo").then(res => {
+                this.getuserInfo(res);
+                console.log("res---", res)
+              })
           }else if(res.errCode===1031){
              this.$vux.toast.text("密码错误", "top");
           }
         })
       },
       closePopUp(flag) {
-        this.showCashierFlow = flag
+        this.showComfirmPwd = flag
       },
       //隐身状态 上线不通知好友
       stealth(e) {
@@ -566,19 +570,19 @@
                 this.getuserInfo(res);
                 console.log("res---", res)
                  this.$vux.toast.text("保存成功", "top");
-                setTimeout(() => {
-                  if (!this.userInfo.isSubscribe) {
-                    if (this.onceClick) {
-                      this.onceClick = false;
-                      this.changeQrCodeText({
-                        title: "长按关注，好友才能联系到你",
-                        bottomText: "会员特权:领福利、交群友、参活动"
-                      })
-                      this.showQrcode(true);
-                      return
-                    }
-                  }
-                }, 500);
+                // setTimeout(() => {
+                //   if (!this.userInfo.isSubscribe) {
+                //     if (this.onceClick) {
+                //       this.onceClick = false;
+                //       this.changeQrCodeText({
+                //         title: "长按关注，好友才能联系到你",
+                //         bottomText: "会员特权:领福利、交群友、参活动"
+                //       })
+                //       this.showQrcode(true);
+                //       return
+                //     }
+                //   }
+                // }, 500);
               })
               .catch(err => {
                 //console.log(err);
@@ -592,6 +596,7 @@
             if (res.errCode === 0) {
               if(this.phone != this.userInfo.phone){
                 this.showComfirmPwd = true
+
               }
             }
           }).catch(err => {

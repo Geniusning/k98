@@ -173,8 +173,8 @@
           </ul>
         </scroll>
         <!-- div class="loading-container" v-show="isLoading">
-                           <loading></loading>
-                      </div>-->
+                               <loading></loading>
+                          </div>-->
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
@@ -419,6 +419,18 @@
         // isLoading: false
       };
     },
+    // beforeRouteLeave(to, from, next) {
+    //   // 导航离开该组件的对应路由时调用
+    //   // 可以访问组件实例 `this`
+    //   if (!this.userInfo.isSubscribe) {
+    //     this.changeQrCodeText({
+    //       title: "长按关注，方便收到店家留言",
+    //       bottomText: "会员特权:领福利、交群友、参活动"
+    //     });
+    //     this.showQrcode(true);
+    //   }
+    //   next()
+    // },
     created() {
       this.listenScroll = true;
       this.today = new Date().getDate();
@@ -510,6 +522,13 @@
           }
         });
       });
+      this.isVip = this.$route.params.isVip; //贵宾通知标识
+      if (this.isVip) {
+        setTimeout(() => {
+          this.input_value = "亲，欢迎您！您是本店贵宾，有任何需要请@我";
+          this.send()
+        }, 300);
+      }
     },
     deactivated() {
       wx.stopVoice({
@@ -1147,8 +1166,8 @@
                 this.input_value = this.input_value.replace(
                   reg,
                   `<img src=${
-                            this.emotionList[j].num
-                          } style="vertical-align: -6px;">`
+                                this.emotionList[j].num
+                              } style="vertical-align: -6px;">`
                 );
               }
             }
@@ -1377,7 +1396,7 @@
       ...mapMutations({
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         // updateChatList: "UPDATE_CHATLIST",
-        showQrcode: "SHOW_QRCODE", //暂时二维码
+        showQrcode: "SHOW_QRCODE", //二维码
         changeQrCodeText: "CHANGEQRCODETEXT",
         updateValue: "UPDATE_INPUTVALUE",
         changeCursor: "CHANGE_CURSOR",

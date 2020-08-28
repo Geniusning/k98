@@ -14,7 +14,8 @@
           <p class="discout_type" v-if="sharedCoupon.coupon.type==0">现金券</p>
           <p class="discout_type" v-else-if="sharedCoupon.coupon.type==1">实物券</p>
           <p class="discout_type" v-else-if="sharedCoupon.coupon.type==2">折扣券</p>
-          <p class="discout_type" v-else>兑换券</p>
+          <p class="discout_type" v-else-if="sharedCoupon.coupon.type==4">兑换券</p>
+          <p class="discout_type" v-else>满减券</p>
         </div>
         <div class="myright">
           <div class="discount_theme">{{sharedCoupon.coupon.theme?sharedCoupon.coupon.theme:"新人礼包"}}</div>

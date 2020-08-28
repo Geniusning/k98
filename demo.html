@@ -207,23 +207,81 @@
       //    console.log("b")
       //   }
       //   foo()
-   var longestCommonPrefix = function (strs) {
-      if (strs.length === 1) {
-        return strs[0]
-      }
-      let firstStr = strs[0]
-      let resultStr = ''
+  //  var longestCommonPrefix = function (strs) {
+  //     if (strs.length === 1) {
+  //       return strs[0]  
+  //     }
+  //     let firstStr = strs[0]
+  //     let resultStr = ''
 
-      for (let i = 0; i < firstStr.length; i++) {
-        let flag = strs.every(item => item[i] === firstStr[i])
-        if (flag) {
-          resultStr = resultStr + firstStr[i]
-        } else {
-          return resultStr
-        }
-      }
-      return resultStr
-    };
+  //     for (let i = 0; i < firstStr.length; i++) {
+  //       let flag = strs.every(item => item[i] === firstStr[i])
+  //       if (flag) {
+  //         resultStr = resultStr + firstStr[i]
+  //       } else {
+  //         return resultStr
+  //       }
+  //     }
+  //     return resultStr
+  //   };
 
-      console.log(longestCommonPrefix(['d']))
+  //     console.log(longestCommonPrefix(['leetcode',"leetd","leetde",]))
+
+  //     var imgStr = `https://llwant1.qianz.com/download/file/ef9982655ca95d676daa25d8047f5a5e.png`
+  //     var res = imgStr.split("/")
+  //     console.log(res)
+  //     console.log(res[res.length-1])
+  // let map = new Map([["}","{"],["]","["],[")","("]])
+  // console.log(map.get("{")===map.get("{"))
+
+  // var str = "i love you"
+  // console.log(str[0])
+
+  //1
+ var isValid = function (s) {
+    
+    let stack = []
+    let map = new Map([["{","}"], [ "[", "]"], [ "(",")"]])
+    if (s.length % 2 != 0) {
+      return false
+    }
+  for(let i in s){
+    const v = s[i]
+    if(["(","{","["].indexOf(v)>-1){
+      stack.push(v)
+    }else{
+      const peak = stack.pop()
+      if(v!== map.get(peak)){
+        return false
+      }
+    }
+  }
+  if (stack.length > 0) return false;
+
+   return true;
+}
+
+//2
+  var isValid = function (s) {
+
+    let stack = [], result=true
+    let map = new Map([["}", "{"], ["]", "["], [")", "("]])
+    if (s.length % 2 != 0) {
+      return false
+    }
+    for(let i = 0;i<s.length;i++){
+      if(!map.has(s[i])){
+        stack.push(s[i]) // [{,{,{,]
+      }else if(map.get(s[i]) === stack.pop()){
+        result = true
+      }else{
+        return false
+      }
+    }
+
+    if(stack.length!=0) return false
+    return result
+  }
+// console.log(isValid(""))
+console.log(1|4)
 </script>

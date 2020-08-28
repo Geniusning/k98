@@ -72,6 +72,7 @@
     var vConsole = new VConsole();
 </script> -->
 <script>
+    // 处理有些人设置微信字体大小后导致网页尺寸跟着变化的问题
         (function () {
             if (typeof WeixinJSBridge == "object" && typeof WeixinJSBridge.invoke == "function") {
                 handleFontSize();

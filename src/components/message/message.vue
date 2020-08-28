@@ -37,13 +37,21 @@
           </ul>
         </scroll>
       </Popup>
-      <!-- 好友 -->
-      <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1 || isShowTab==2)) " class="qrCode_wrapper">
+      <!-- 关注二维码 -->
+      <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1)) " class="qrCode_wrapper">
         <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
         <p class="qrCode_text" style="font-size: 14px">{{isShowTab===2?"长按关注，以便客服应答及时送达给您":"长按关注，以便好友消息及时送达给您"}}</p>
-        <img :src="qrCode" alt="" class="qrcodeImg">
+        <img @touchstart="touchstart" @touchend="touchend" :src="qrCode" alt="" class="qrcodeImg">
         <p class="qrCode_text">会员特权:领福利、交群友、参活动</p>
       </div>
+      <!-- 下单码 -->
+      <div v-show="(l98Setting.placeOrderQRcodeOpen && isShowQrCode) && (isShowTab===2 && deskId != undefined) " class="qrCode_wrapper">
+        <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
+        <p class="qrCode_text" style="font-size: 14px">长按识别二维码，可以直接下单</p>
+        <img @touchstart="touchstart" @touchend="touchend" :src="OrderQrCode" alt="" class="qrcodeImg">
+        <!-- <p class="qrCode_text"></p> -->
+      </div>
+      <!-- 好友 -->
       <scroll :data='alreadyFriendList' v-if="isShowTab==0">
         <ul class="message_list" style="margin-top:0.4rem">
           <li class="item vux-1px-b" @click="chat(item)" v-for="(item,index) in alreadyFriendList" :key="index">
@@ -123,9 +131,9 @@
                 </div>
               </div>
               <!-- <div class="checkBox_scene clearfix" v-show="item.integral">
-                              <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
-                              <span class="scene-text fl">加好友</span>
-                            </div> -->
+                                      <input @change="onlineSendGift" type="checkbox" class="checkbox fl" :checked='isMakeFriendBool'>
+                                      <span class="scene-text fl">加好友</span>
+                                    </div> -->
             </div>
           </li>
           <p v-if="!mutualEventsList.length" class="noContent">暂无新朋友消息</p>
@@ -199,7 +207,7 @@
               </div>
             </div>
           </li>
-          <p v-show="(!clientServiceList.length && isClientListFlag)" class="noContent">未有留言者</p>
+          <!-- <p v-show="(!clientServiceList.length && isClientListFlag)" class="noContent">未有留言者</p> -->
         </ul>
       </scroll>
       <!-- 通知 -->
@@ -304,6 +312,7 @@
         isShowTab: 2, //最上面tab切换
         selected_num: 0,
         greeting_flag: 0,
+        OrderQrCode: "", //下单二维码
         text: "", //回赞和拒绝文案
         mutualEventsList: [],
         position: "default",
@@ -365,8 +374,8 @@
         next(vm => {
           vm.isShowTab = 2;
         });
-      }else{
-         next(vm => {
+      } else {
+        next(vm => {
           vm.isShowTab = 0;
         });
       }
@@ -398,7 +407,8 @@
         "group_badgeCount",
         "msg_badgeCount",
         "deskId",
-        "deskCode"
+        "deskCode",
+        "l98Setting"
       ]),
       messageTime() {
         return
@@ -426,10 +436,48 @@
       this.loadCashierList() //加载收银员列表  
       this.loadIdentityList() //加载分身 
       this.loadSelfPay() //买单流水
+      this.getPlaceOrderQRcodebyID() //拉取下单码
       // this.isShowTab = this.getQueryString("routeParamNum")
-      this.isShowQrCode = localStorage.getItem("isShowQrCode") === "false" ? false : true
+      // this.isShowQrCode = localStorage.getItem("isShowQrCode") === "false" ? false : true
     },
     methods: {
+      //拉取下单码
+      getPlaceOrderQRcodebyID() {
+        console.log('this.deskId---',this.deskId)
+        api.getPlaceOrderQRcodebyID(this.deskId).then(res => {
+          console.log("拉取下单码----", res)
+          if (res.errCode === 0) {
+            this.OrderQrCode = res.info
+          }
+        })
+      },
+      //用户长按识别二维码后，关闭原网页
+      touchstart() {
+        this.startTime = +new Date()
+        this.timer = setTimeout(() => {
+          window.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+              this.closeWebPage()
+            }
+          })
+        }, 700)
+      },
+      //用户长按识别二维码后，关闭原网页
+      touchend() {
+        this.endTime = +new Date()
+        if (this.endTime - this.startTime < 700) {
+          clearTimeout(this.timer)
+          window.removeEventListener('visibilitychange')
+        }
+      },
+      //关闭公众号
+      closeWebPage() {
+        WeixinJSBridge.invoke("closeWindow", {}, function(res) {
+          // alert(res.err_msg);
+          // window.location.href =
+          //   "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU3MTc1MzA1OA==#wechat_redirect";
+        });
+      },
       // 临时方法 删除分身
       delDivide(targetId) {
         api.delIdentity(targetId).then(res => {
@@ -577,7 +625,7 @@
       },
       closeQrCode() {
         this.isShowQrCode = false
-        localStorage.setItem("isShowQrCode", false)
+        // localStorage.setItem("isShowQrCode", false)
       },
       getQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
@@ -674,9 +722,10 @@
       // },
       selectList(index) {
         this.isShowTab = index;
-        //console.log(this.isShowTab)
         if (this.isShowTab === 2) {
-          // Bus.$emit("hideEnvelop", true)
+         
+          this.loadClientServiceList()
+          this.loadCashierList()
           setTimeout(() => {
             this.$nextTick(function() {
               this.$refs.clientScroll.scrollTo(0, 0)
@@ -685,7 +734,8 @@
         } else if (this.isShowTab === 3) {
           // Bus.$emit("hideEnvelop", false)
         } else {
-          // Bus.$emit("hideEnvelop", true)
+          this._loadFriends(); //拉取好友
+          this._loadMutualEvents(); //拉取送礼，约战，
         }
       },
       //拉取约战、点赞、送礼列表
@@ -696,9 +746,9 @@
             let tempEventList = [];
             console.log("mutualEventsObj------------", mutualEventsObj);
             this.mutualEventsList = []; //先清空
-            tempEventList = tempEventList.concat(mutualEventsObj.combatsEvents===null?[]:mutualEventsObj.combatsEvents)
-            tempEventList = tempEventList.concat(mutualEventsObj.giftEvents===null?[]:mutualEventsObj.giftEvents)
-            tempEventList = tempEventList.concat(mutualEventsObj.friendEvents===null?[]:mutualEventsObj.friendEvents)
+            tempEventList = tempEventList.concat(mutualEventsObj.combatsEvents === null ? [] : mutualEventsObj.combatsEvents)
+            tempEventList = tempEventList.concat(mutualEventsObj.giftEvents === null ? [] : mutualEventsObj.giftEvents)
+            tempEventList = tempEventList.concat(mutualEventsObj.friendEvents === null ? [] : mutualEventsObj.friendEvents)
             this.mutualEventsList = tempEventList.sort((a, b) => {
               return b.time - a.time
             })
@@ -723,7 +773,7 @@
           recordID: giftInfo.giftRecordID, //送礼记录ID
           fromID: giftInfo.from.openid, //赠送者
           respondType: giftType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
-          isMakeFriend: this.isMakeFriendBool,
+          // isMakeFriend: this.isMakeFriendBool,
         }
         api.respondForGift(giftParam).then(res => {
           // //console.log('送礼操作结果-------------------', res);

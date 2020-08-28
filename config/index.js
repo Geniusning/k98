@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "0Uf6FwjCtpvCmuHFv5fUeztkoR_KSnFYYI9IiGUJOKmXXwPqmZ0kIFqqOgdED9tqD9D97A==";
+const myToken = "OteLaqMv4pmQrhdgO9UOZLIlFRkH4JA1Hq-DPF58sXXU2HmpkEk1MNyB2C7oViomWpyaoQ==";
 // ------------------------------
 
 module.exports = {
@@ -17,7 +17,8 @@ module.exports = {
       "/api": {
         // target: "https://singledog.qianz.com", //中新
         // target: "172.18.4.8", //本地
-        target: "https://llwant1.qianz.com", //老友一起玩吧
+        // target: "https://llwant1.qianz.com", //老友一起玩吧
+        target: "https://llwant3.qianz.com", //k98
         changeOrigin: true,
         pathRewrite: function (path, req) {
           return path + "&tk=" + myToken

@@ -2,7 +2,7 @@
  * @Author: nicky
  * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
- * @Last Modified time: 2020-07-23 15:24:37
+ * @Last Modified time: 2020-08-24 10:59:44
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -310,9 +310,9 @@ util.returnDiscountContent = function (coupon) {
     return coupon.content
   } else if (parseInt(coupon.type) === 4) {
     return coupon.content
-  } else if (parseInt(coupon.type) === 6) {
+  } else if (parseInt(coupon.type) === 5) {
     return coupon.content
-  } else if (parseInt(coupon.type) === 7) {
+  } else if (parseInt(coupon.type) === 6) {
     return coupon.content
   }
 }

@@ -68,7 +68,6 @@
 		<div class="comment-send">
 			<div>
 				<input v-model="inputValue" type="text" class="input-comment" placeholder="请输入评价">
-				<!-- <img src="../../assets/image/chat_emotion.png" @click="showEmotion" class="face-icon" alt=""> -->
 				<div class="btn" @click="send">发送</div>
 			</div>
 			<div class="emotion_area">
@@ -183,6 +182,8 @@
 				setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
 				addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)
 				judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
+				changeQrCodeText: "CHANGEQRCODETEXT",
+				showQrcode: "SHOW_QRCODE",
 			}),
 			//通过手机号获得员工信息
 			async loadUserInfoByPhone() {
@@ -202,7 +203,7 @@
 						})
 						this.lifePhotolist = temp
 					} else {
-						this.lifePhotolist.push( {
+						this.lifePhotolist.push({
 							url: "javascript:",
 							img: this.staffInfoByPhone.headimgurl,
 							title: "求点赞"
@@ -232,7 +233,8 @@
 				api.giveThumb(this.$route.params.phone ? this.$route.params.phone : this.queryPhone).then(res => {
 					if (res.errCode === 0) {
 						this.loadStaffCommentInfo();
-					}else if(res.errCode === 1051){
+						this.acquireWaitGetCoupons();
+					} else if (res.errCode === 1051) {
 						this.$vux.toast.text(`一天只能点赞一次`);
 					} else {
 						this.$vux.toast.text(res.errMsg);
@@ -250,7 +252,7 @@
 				api.giveUnThumb(this.$route.params.phone ? this.$route.params.phone : this.queryPhone).then(res => {
 					if (res.errCode === 0) {
 						this.loadStaffCommentInfo();
-					}else if(res.errCode === 1051){
+					} else if (res.errCode === 1051) {
 						this.$vux.toast.text(`一天只能鄙视一次`);
 					} else {
 						this.$vux.toast.text(res.errMsg);
@@ -272,10 +274,7 @@
 						for (var j = 0; j < this.emotionList.length; j++) {
 							if (this.inputValue.indexOf(this.emotionList[j].name) !== -1) {
 								this.inputValue = this.inputValue.replace(
-									reg,
-									`<img src=${
-						                  this.emotionList[j].num
-						                } style="vertical-align: -6px;">`
+									reg, `<img src=${this.emotionList[j].num} style="vertical-align: -6px;">`
 								);
 							}
 						}
@@ -308,6 +307,13 @@
 				api.acquireWaitGetCoupons(condition).then(res => {
 						console.log("核销有礼----", res)
 						if (!res.coupon) {
+							if (!this.userInfo.isSubscribe) {
+								this.changeQrCodeText({
+									title: "长按关注，关注更多店家动态",
+									bottomText: "会员特权:领福利、交群友、参活动"
+								});
+								this.showQrcode(true);
+							}
 							return;
 						}
 						let result = {

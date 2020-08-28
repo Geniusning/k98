@@ -94,7 +94,7 @@
           <div v-show="userInfo.money<giftIntegral" class="tips_money">积分不足,请充值>></div>
           <!-- <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor && userInfo.money>giftIntegral "> -->
           <!-- <input @change="onlineSendGift" type="checkbox" class="checkbox fl">
-                <span class="scene-text fl">现场下单</span>-->
+                  <span class="scene-text fl">现场下单</span>-->
           <!-- </div> -->
           <!-- <p class="gotoTopUpText" v-if="userInfo.money<giftIntegral" @click="gotoTopUp">去充值&gt;</p> -->
         </div>
@@ -111,7 +111,7 @@
           <p class="successful_text">{{successfulText}}</p>
           <p class="successful_desc">{{successful_desc}}</p>
           <div @click="gotoTopUp" class="payBtn">充值</div>
-          <div @click="closeIntegralPanel" class="btn">知道</div>
+          <div @click="comfirm" class="btn">知道</div>
         </div>
       </div>
       <!-- 充值成功面板 -->
@@ -189,7 +189,7 @@
       };
     },
     computed: {
-      ...mapState(["giftList", "userInfo", "l98Setting", "staffCouponInfo","staticChatFriendObj"]),
+      ...mapState(["giftList", "userInfo", "l98Setting", "staffCouponInfo", "staticChatFriendObj"]),
       ...mapGetters(["recommentList", "sendGiftList"])
     },
     created() {
@@ -261,17 +261,19 @@
       //员工送券
       sendCouponToUser() {
         //console.log("this.staticChatFriendObj----",this.staticChatFriendObj)
-        let ToId = this.staticChatFriendObj.openid?this.staticChatFriendObj.openid:sessionStorage.getItem("staffCouponToId")
+        let ToId = this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : sessionStorage.getItem("staffCouponToId")
         //console.log("ToId-----",ToId)
         let data = {
-          to:ToId,
+          to: ToId,
           from: this.userInfo.openid,
           CouponId: this.staffCouponInfo.couponId
         }
         api.sendStaffCouponToUser(data).then(res => {
           //console.log("送券结果-------", res)
-          if(res.errCode===0){
-             this.$vux.toast.text("赠送成功", "middle");
+          if (res.errCode === 0) {
+            this.$vux.toast.text("赠送成功", "middle");
+          }else{
+             this.$vux.toast.text("暂未有员工送券活动", "middle");
           }
         })
       },
@@ -280,6 +282,19 @@
       //   //console.log(e.target.checked);
       //   //console.log("触发现场送");
       // },
+      comfirm() {
+        setTimeout(() => {
+          if (!this.userInfo.isSubscribe) {
+            this.changeQrCodeText({
+              title: "长按关注，即可兑换门店礼物/门店项目",
+              bottomText: "会员特权:领福利、交群友、参活动"
+            });
+            this.showQrcode(true);
+          }
+        }, 500);
+        this.$emit("closeIntegralPanel", false);
+        this.panelIndex = 1;
+      },
       closeIntegralPanel() {
         this.$emit("closeIntegralPanel", false);
         this.panelIndex = 1;
@@ -350,8 +365,8 @@
                 this.refreshUserInfo();
               }
               this.successful_desc = `一张${util.returnDiscountType(
-                    this.componentGiftInfo.coupInfo.type
-                  )}已存入'我的卡券'`;
+                      this.componentGiftInfo.coupInfo.type
+                    )}已存入'我的卡券'`;
             })
             .catch(err => {
               //console.log(err);
@@ -373,8 +388,8 @@
               this.successfulText = "兑换成功";
             }
             this.successful_desc = `一张${util.returnDiscountType(
-                  this.componentGiftInfo.coupInfo.type
-                )}已存入'我的卡券'`;
+                    this.componentGiftInfo.coupInfo.type
+                  )}已存入'我的卡券'`;
           });
         } else if (this.componentConvertType == 2) {
           //赠送店长推荐项目
@@ -392,8 +407,8 @@
             }
             Bus.$emit("giftInfoRecomend", this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(
-                  this.componentGiftInfo.coupInfo.type
-                )}已存入对方'我的卡券'`;
+                    this.componentGiftInfo.coupInfo.type
+                  )}已存入对方'我的卡券'`;
           });
         } else if (this.componentConvertType == 3) {
           //赠送积分换礼品项目
@@ -410,8 +425,8 @@
             }
             Bus.$emit("giftInfoJiFen", this.entityGoodInfo);
             this.successful_desc = `一张${util.returnDiscountType(
-                  this.componentGiftInfo.coupInfo.type
-                )}已存入对方'我的卡券'`;
+                    this.componentGiftInfo.coupInfo.type
+                  )}已存入对方'我的卡券'`;
             // //console.log('积分赠送结果---------', res)
           });
         } else if (this.componentConvertType == 4) {
@@ -443,15 +458,6 @@
             }
           });
         }
-        setTimeout(() => {
-          if (!this.userInfo.isSubscribe) {
-            this.changeQrCodeText({
-              title: "长按关注，即可兑换门店礼物/门店项目",
-              bottomText: "会员特权:领福利、交群友、参活动"
-            });
-            this.showQrcode(true);
-          }
-        }, 1000);
       },
       refreshUserInfo() {
         api.getUserInfo("/api/loadUserInfo").then(res => {

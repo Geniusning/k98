@@ -7,7 +7,7 @@
           <h3 class="title">{{qrCodeTextObj.title}}</h3>
           <img onclick="return false" src="../../assets/image/close.png" alt="" class="close" @click="cancel">
           <div class="validate_box">
-            <img :src="qrUrl" alt="" class="qrCode">
+            <img @touchstart="touchstart" @touchend="touchend" :src="qrUrl" alt="" class="qrCode">
             <p class="desc">{{qrCodeTextObj.bottomText}}</p>
           </div>
         </div>
@@ -55,6 +55,32 @@
       //手机验证取消事件
       cancel() {
         this.showQrcode(false);
+      },
+      touchstart() {
+        this.startTime = +new Date()
+        this.timer = setTimeout(() => {
+          window.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+              console.log('后台')
+              this.closeWebPage()
+            }
+          })
+        }, 700)
+      },
+      touchend() {
+        this.endTime = +new Date()
+        if (this.endTime - this.startTime < 700) {
+          clearTimeout(this.timer)
+          window.removeEventListener('visibilitychange')
+        }
+      },
+      //关闭公众号
+      closeWebPage() {
+        WeixinJSBridge.invoke("closeWindow", {}, function(res) {
+          // alert(res.err_msg);
+          // window.location.href =
+          //   "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU3MTc1MzA1OA==#wechat_redirect";
+        });
       },
       async _getQrCode() {
         if (this.isCheckQrCode) {

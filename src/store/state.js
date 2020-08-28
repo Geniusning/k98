@@ -57,7 +57,7 @@ const state = {
     messType: "", //判断消息类型
     recommentList: [], //店长推荐列表
     sendGiftList:[],//积分兑换礼品列表
-    topUpGiftInfo:{}, //送礼弹框
+    topUpCommonInfo:{}, //送礼弹框
     topUpThumbInfo:{}, //点赞弹框
     topUpGameInfo:{},  //游戏弹框
     allMutatualInfo:{}, //送礼、约战、点赞 结构体

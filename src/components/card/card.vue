@@ -77,13 +77,6 @@
       <ul class="usered_list" v-show="tagIndex==1">
         <h3 class="noCouponTips" v-if="!usedList.length">暂无优惠券</h3>
         <li v-else class="item" :class="{'vipmbg':item.coupon.type=='月卡券','viptbg':item.coupon.type=='次卡券' }" v-for="(item,index) in usedList" :key="index">
-          <!-- <div class="left1">
-                <p class="name">{{item.coupon.name}}</p>
-                <p class="time">{{item.coupon.endTime}}</p>
-              </div>
-              <div class="right1">
-                已使用
-              </div> -->
           <div class="myleft">
             <p class="discount_type_text">{{item.coupon.type}}</p>
           </div>
@@ -122,12 +115,12 @@
         <h3 class="noCouponTips" v-if="!timeOutList.length">暂无优惠券</h3>
         <li v-else class="item" v-for="(item,index) in timeOutList" :key="index">
           <!-- <div class="left1">
-              <p class="name">{{item.coupon.name}}</p>
-              <p class="time">{{item.coupon.endTime}}</p>
-            </div>
-            <div class="right1">
-              已过期
-            </div> -->
+                <p class="name">{{item.coupon.name}}</p>
+                <p class="time">{{item.coupon.endTime}}</p>
+              </div>
+              <div class="right1">
+                已过期
+              </div> -->
           <div class="myleft">
             <p class="discount_type_text">{{item.coupon.type}}</p>
           </div>
@@ -200,6 +193,12 @@
       </ul>
     </div>
     <validate v-show="isShow"></validate>
+    <Popup @close="closePopUp" :show="showPanel" :top="25" :height="5">
+      <group title="请输入消费桌桌号">
+         <input type="number" v-model="deskNum" style="display:block;height:.7rem;line-height:.7rem;margin:30px auto;text-indent: 4px;">
+      </group>
+       <x-button @click.native="saveDeskNum" style="width:300px;background-color:#FFD800;color:#fff;" type="default">确定</x-button>
+    </Popup>
     <router-view></router-view>
   </div>
 </template>
@@ -212,7 +211,9 @@
     Tab,
     TabItem,
     XHeader,
-    XButton
+    XButton,
+    Group,
+    XInput
   } from "vux";
   import Validate from "../../base/validatephone/validatephone";
   import {
@@ -221,9 +222,12 @@
     mapState
   } from "vuex";
   import myHeader from "../../base/myheader/myheader.vue";
+  import Popup from 'base/popUp/popUp'
   export default {
     data() {
       return {
+        showPanel: false,
+        deskNum:"",
         vipColor: "#FDDC69",
         flag: false,
         tagIndex: 0,
@@ -234,16 +238,25 @@
         usedList: [],
         timeOutList: [],
         songLiList: [],
-        showPositionValue:false
+        showPositionValue: false,
+        isScan:false,
       };
     },
     computed: {
       ...mapGetters(["isShow"]),
-      ...mapState(["userInfo","deskCode","deskId"])
+      ...mapState(["userInfo", "deskCode", "deskId"])
     },
     created() {
       this._loadUserAllCoupon(); //获取优惠券
-      this.loadCashierList()
+      this.loadCashierList();
+    },
+    mounted(){
+      console.log("card--mounted")
+      this.isScan = util.GetQueryString("isScan")
+      console.log(this.isScan)
+      if(this.isScan){
+        this.showPanel = true;
+      }
     },
     beforeRouteUpdate(to, from, next) {
       if (from.name === "cardDetail") {
@@ -251,7 +264,31 @@
       }
       next();
     },
+    beforeRouteLeave(to, from, next) {
+      // 导航离开该组件的对应路由时调用
+      // 可以访问组件实例 `this`
+      if (!this.userInfo.isSubscribe) {
+        this.changeQrCodeText({
+          title: "长按关注，方便核销优惠券",
+          bottomText: "会员特权:领福利、交群友、参活动"
+        });
+        this.showQrcode(true);
+      }
+      next()
+    },
     methods: {
+      saveDeskNum(){
+        if(!this.deskNum){
+          this.$vux.toast.text('请输入桌号', 'top')
+          return
+        }
+        console.log(Number(this.deskNum))
+        this.saveDeskCode(Number(this.deskNum),"")
+        this.showPanel = false;
+      },
+       closePopUp(flag) {
+        this.showPanel = flag
+      },
       //获取优惠券
       _loadUserAllCoupon() {
         api.loadUserAllCoupon().then(res => {
@@ -303,7 +340,7 @@
           return
         }
         if(!this.deskCode){
-          this.$vux.toast.text('请到店使用', 'middle')
+          this.$vux.toast.text('请到店扫消费桌二维码使用', 'middle')
           return
         }
         this.$router.push({
@@ -343,7 +380,7 @@
       //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
       loadCashierList() {
         api.loadCashierList().then(res => {
-          console.log("加载收银员列表---",res)
+          console.log("加载收银员列表---", res)
           this.cashierObj = res
         })
       },
@@ -356,7 +393,8 @@
         setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
         changeQrCodeText: "CHANGEQRCODETEXT",
         changeValidate: "CHANGE_VALIDATE",
-        showQrcode: "SHOW_QRCODE" //展示二维码
+        showQrcode: "SHOW_QRCODE", //展示二维码
+         saveDeskCode: "SAVEDESKCODE",//保存桌贴号,桌号id
       })
     },
     components: {
@@ -366,7 +404,10 @@
       XButton,
       Validate,
       myHeader,
-      scroll
+      scroll,
+      Popup,
+      Group,
+    XInput
     }
   };
 </script>

@@ -167,7 +167,6 @@
     },
     watch: {
       stopSearch(newValue) {
-        //console.log("newValue----------", newValue);
         if (newValue) {
           // this.$refs.souling.className = "souling_noRotate"
           this.$refs.dot.className = "resultSoulText";
@@ -246,7 +245,6 @@
         if (typeof thumbTimes === "string") {
           thumbTimes = JSON.parse(thumbTimes);
         }
-        //console.log("thumbTimes---------", thumbTimes);
         // 判断未关注用户今天点赞次数是否达到10次，达到10次弹框提醒关注
         if (!this.userInfo.isSubscribe) {
           //判断是否关注公众号

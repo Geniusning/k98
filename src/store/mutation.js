@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-08-10 17:37:47
+ * @Last Modified time: 2020-08-28 16:52:41
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -92,7 +92,7 @@ const mutations = {
             if (!recomment.coupInfo) {//如果优惠券被删除了，直接过滤此项目
                 continue
             }
-            if (recomment.coupInfo.startTimeOption === 1) { //即时生效的就不需要判断过期
+            if (recomment.coupInfo.startTimeOption === 1 || recomment.coupInfo.startTimeOption === 3) { //即时生效的就不需要判断过期
                 state.recommentList.push(recomment)
                 continue
             }
@@ -158,7 +158,7 @@ const mutations = {
     [types.GET_USERINFO](state, userinfo) {
         state.loadFriendSexType = userinfo.sex === 1 ? 0 : 1
         // state.loadFriendSexType = userinfo.sex oqWlD1h6Zurgr6YZVTYAqe5JL9oM
-        console.log("用户数据", state.loadFriendSexType)
+        // console.log("用户数据", state.loadFriendSexType)
         userinfo.sex = userinfo.sex === 1 ? "男" : "女"
         state.userInfo = userinfo;
         
@@ -290,8 +290,8 @@ const mutations = {
     //新增送礼弹框内容
     [types.ADD_GIFTINFO](state, giftInfo) {
         //console.log(giftInfo);
-        state.topUpGiftInfo.content.extMsg.goodInfo.extInfo.name = giftInfo.nameValue;
-        state.topUpGiftInfo.content.extMsg.goodInfo.extInfo.type = giftInfo.typeValue;
+        state.topUpCommonInfo.content.extMsg.goodInfo.extInfo.name = giftInfo.nameValue;
+        state.topUpCommonInfo.content.extMsg.goodInfo.extInfo.type = giftInfo.typeValue;
     },
     //更新好友事件消息框内容
     [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
@@ -358,7 +358,7 @@ const mutations = {
                 // friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
                 // state.dynamicFriendEvt = friendEvtObj.content;
                 //console.log('friendEvtObj.content------', friendEvtObj.content)
-                state.topUpGiftInfo = friendEvtObj;
+                state.topUpCommonInfo = friendEvtObj;
                 break;
             case 4:
                 friendEvtObj.content.extMsg = {
@@ -390,7 +390,7 @@ const mutations = {
                 state.topUpGameInfo = friendEvtObj
                 //console.log('好友邀请你进游戏玩-----------', friendEvtObj)
                 break;
-            case 8:
+            case 8: //上线通知
                 if (friendEvtObj.content.fromInfo.openid === cacheOpenId) { //切换分身时不给自己发上线通知
                     return
                 }
@@ -422,7 +422,7 @@ const mutations = {
                 // friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
                 // state.dynamicFriendEvt = friendEvtObj.content;
                 //console.log('friendEvtObj.content------', friendEvtObj.content)
-                state.topUpGiftInfo = friendEvtObj;
+                state.topUpCommonInfo = friendEvtObj;
                 break
             case 13:
                 friendEvtObj.content.extMsg = {
@@ -495,10 +495,13 @@ const mutations = {
                     lastMsg: {},
                     goodInfo: friendEvtObj.content.extMsg
                 };
-                // friendEvtObj.content.extMsg.lastMsg['msg'] = "有人给你送礼啦";
-                // state.dynamicFriendEvt = friendEvtObj.content;
-                //console.log('friendEvtObj.content------', friendEvtObj.content)
-                state.topUpGiftInfo = friendEvtObj;
+                state.topUpCommonInfo = friendEvtObj;
+                break
+            case 29: //贵宾上线通知
+                friendEvtObj.content.extMsg = {
+                    lastMsg: {},
+                };
+                state.topUpCommonInfo = friendEvtObj;
                 break
             case 30:
                 state.topUpGameInfo = friendEvtObj
@@ -511,7 +514,7 @@ const mutations = {
     //清楚所有弹窗data
     [types.CLEARTOPUPDATA](state) {
         state.topUpGameInfo = {}
-        state.topUpGiftInfo = {}
+        state.topUpCommonInfo = {}
         state.topUpThumbInfo = {}
         state.soulFriInfo = {}
         state.allMutatualInfo = {}

@@ -247,7 +247,6 @@
 <style scoped lang='less'>
   @import "../../libs/swiper/swiper-4.3.3.min.css";
   @import "../../assets/less/variable.less";
-  @import "../../assets/less/welfare_common.less";
   @import "../../assets/less/mixin.less";
   .weui-cells {
     margin-top: 0 !important;

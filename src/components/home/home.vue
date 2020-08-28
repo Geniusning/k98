@@ -325,10 +325,9 @@
           this.getAllianceCoupon();
         }, 1000);
       }
-      var mySex = this.userInfo.sex == "男" ? 1 : 0;
       let params = {
         cursor: 0,
-        sex: mySex,
+        sex: 2,
         range: 0,
         sortType: 0
       };
@@ -344,14 +343,6 @@
       this._loadPublishArenas(); //拉取已经发布的比赛场
       this.loadAlliance(); //拉取友商物品
       this.loadInviteCoupon() //判断是否有邀新活动
-      //监听望眼镜动画leftCirclePart
-      // this.$refs.leftCirclePart.addEventListener(
-      //   "webkitAnimationEnd",
-      //   () => {
-      //     this.hiddenTelescope = false; //隐藏望眼镜扇形动画
-      //   },
-      //   false
-      // );
     },
     activated() {
       window.scrollTo(0, 0);
@@ -589,17 +580,9 @@
           // //console.log('打电话记录------------------', res);
         });
       },
-      //判断是否已经分享过优惠券 (福利优惠券)
-      // _loadInviteWaitGetCoupon() {
-      //   api.loadInviteCoupon().then(res => {
-      //     //console.log('邀新有礼优惠券----------------------------------:', res)
-      //     if (res.errCode === 0 && res.coupons === null) {
-      //     }
-      //   })
-      // },
       loadInviteCoupon() {
         api.loadInviteCoupon(false).then(res => {
-          //console.log("获取邀新优惠券---------", res)
+          console.log("获取邀新优惠券---------", res)
           if (res.errCode === 0) {
             this.judgeInviteCoupon(res.coupons.isputAway);
           }
@@ -738,7 +721,7 @@
       //拉取候选人
       getAllCommunityFriend(params) {
         api.getFriendList(params).then(res => {
-          //console.log("拉取候选人：·····················", res);
+          console.log("拉取候选人：·····················", res);
           this.getFriend(res);
         });
       },
@@ -783,7 +766,8 @@
         getClientUnreadCount: "GETCLIENTUNREADCOUNT", //客服未读消息数量
         getCashierUnreadCount: "GETCASHIERUNREADCOUNT", //收银未读消息数量
         clearTopUpData: "CLEARTOPUPDATA",
-        addMessageIntoQueue: "ADDMESSAGEQUEUE"
+        addMessageIntoQueue: "ADDMESSAGEQUEUE",
+        judgeInviteCoupon: "JUDGE_INVITE_COUPON", //判断是否还有邀请有礼
       }),
       ...mapActions({
         getAlreadyFriend: "get_alreadyFriendList" //获取已经成为好友事件
