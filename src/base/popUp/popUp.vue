@@ -64,8 +64,8 @@
 		flex-direction: column;
 		.close {
 			position: absolute;
-			bottom: -1.5rem;
-			left: 50%;
+			top: 0rem;
+			right: .3rem;
 			margin-left: -0.5333rem;
 			width: 1.0667rem;
 			height: 1.0667rem;

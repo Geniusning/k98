@@ -93,10 +93,9 @@
               </div>
             </div>
           </div>
-         
           <!-- 灵魂匹配 -->
           <div class="topUpCommonInfo-wrapper" v-else-if="soulFriInfo.msgCode==21">
-            <div class="topUpCommonInfo-top" v-if="isShowGiftGuide">
+            <div class="topUpCommonInfo-top">
               <div class="img">
                 <img onclick="return false" class="giftAvatar" :src="soulFriInfo.content.fromInfo.headimgurl?soulFriInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
                   alt="">
@@ -110,7 +109,7 @@
             </div>
             <div class="topUpCommonInfo-middle">
               <div class="partition_zone">
-                <div class="topUpCommonInfo_right" style="padding-top: 30px">
+                <div class="topUpCommonInfo_right" style="margin-top:-.2rem">
                   <p class="desc title_desc soulText">Ta启动了寻觅灵魂玩伴</p>
                   <p class="soulText">茫茫人海中找到了你,匹配度:80%</p>
                 </div>
@@ -155,7 +154,8 @@
                   alt="">
               </div>
               <div class="name">
-                <p class="name">{{topUpCommonInfo.content.fromInfo.nickname?topUpCommonInfo.content.fromInfo.nickname:'朋友'}}</p>
+                <p class="name">{{topUpCommonInfo.content.fromInfo.nickname?topUpCommonInfo.content.fromInfo.nickname:'朋友'}}
+                  &nbsp;&nbsp;{{topUpCommonInfo.content.extMsg!='null'?topUpCommonInfo.content.extMsg+'桌':''}}</p>
               </div>
             </div>
             <div class="topUpCommonInfo-middle">
@@ -163,14 +163,14 @@
                 <div class="topUpCommonInfo_left">
                 </div>
                 <div class="topUpCommonInfo_right">
-                  <p class="desc title_desc" style="height:1.8rem;line-height:1.8rem;text-align:center;font-size:16px;">贵宾到店，赶紧前去打招呼吧</p>
+                  <p class="desc title_desc" style="height:1.8rem;line-height:1.8rem;text-align:center;font-size:16px;" v-html="vipText"></p>
                 </div>
               </div>
             </div>
             <div class="topUpCommonInfo-bottom">
               <div class="bottom_partition">
-                <div class=" rejectBtn" @click="isShowGiftPanel=false">略过</div>
-                <div class="acceptBtn" @click="sayHi">欢迎</div>
+                <div class=" rejectBtn" @click="sayHi(false,topUpCommonInfo.content.fromInfo.openid)">略过</div>
+                <div class="acceptBtn" @click="sayHi(true,topUpCommonInfo.content.fromInfo.openid)">欢迎</div>
               </div>
             </div>
           </div>
@@ -362,6 +362,7 @@
     name: "app",
     data() {
       return {
+        vipText:"贵宾到店，赶紧前去打招呼吧",
         tempPic: require('./assets/image/divide_add_avatar.png'),
         divideList: [],
         isShowEnvelopHandle: true,
@@ -503,6 +504,7 @@
         this.selectMessageFromQueue();
         if (this.topUpMessage && this.isHandleMessageFromQueue) {
           this.isHandleMessageFromQueue = false;
+          console.log("this.topUpMessage---",this.topUpMessage)
           this.addFriendEvtObj(this.topUpMessage);
           this.delMessageQueue();
           this.clearTopUpMessage();
@@ -767,21 +769,40 @@
       //加好友
       // onlineSendGift(e) {
       //   // //console.log(e.target.checked)
-      //   this.isMakeFriendBool = e.target.checked;
+      //   this.isMakeFriendBool = e.target.checked; 
       // },
       //贵宾打招呼
-      sayHi() {
-        this.setChatFriend(this.topUpCommonInfo.content.fromInfo);
-        this.$router.push({
-          // path: `/message/${this.topUpCommonInfo.content.fromInfo.openid}`
-          name: "chat",
-          params: {
-            isClient: false,
-            id: this.topUpCommonInfo.content.fromInfo.openid,
-            isVip: true
-          }
-        });
-        this.isShowGiftPanel = false;
+      sayHi(flag,openid) {
+         this.isHandleMessageFromQueue = true;
+         console.log("targetId------------",openid)
+        if(flag){
+          api.replyVipService(openid).then(res=>{
+            console.log("replyVipService---",res)
+            if(res.errorCode===0){
+              this.setChatFriend(this.topUpCommonInfo.content.fromInfo);
+              this.$router.push({
+                // path: `/message/${this.topUpCommonInfo.content.fromInfo.openid}`
+                name: "chat",
+                params: {
+                  isClient: false,
+                  id: this.topUpCommonInfo.content.fromInfo.openid,
+                  isVip: true
+                }
+              });
+              this.isShowGiftPanel = false;
+              this.clearTopUpData();
+              this.vipText = "贵宾到店，赶紧前去打招呼吧"
+            }else{
+              this.vipText = `该同事已由其他同事<img src=${res.info.headURI} style='width:.8rem;height:.8rem;border-radius:50%' />接待，请勿再打扰`
+            }
+          })
+        
+          console.log("go go go")
+        }else{
+          this.vipText = "贵宾到店，赶紧前去打招呼吧"
+          this.isShowGiftPanel = false;
+          this.clearTopUpData();
+        }
       },
       showDetail() {
         switch (this.messType) {
@@ -940,6 +961,7 @@
       //未成为好友的送礼回复
       no_Become_Friend_respondForGift(giftInfo, flag) {
         //console.log("未成为好友的送礼回复----------------", giftInfo);
+        this.setReadMsg(giftInfo.fromInfo.openid)
         let giftParam = {
           agree: flag, //是否接受
           recordID: giftInfo.extMsg.goodInfo.extInfo.recordID, //送礼记录ID
@@ -982,6 +1004,7 @@
       //已成为好友的送礼回复
       respondForGift(giftInfo, flag) {
         //console.log("成为好友的送礼回复----------------", giftInfo);
+        this.setReadMsg(giftInfo.openid)
         let giftParam = {
           agree: flag, //是否接受
           recordID: giftInfo.recordID, //送礼记录ID
@@ -1039,6 +1062,7 @@
             //console.log("队列邀请拒绝结果---", res);
           });
         }
+        this.setReadMsg(gameInfo.fromInfo.openid)
         api.responseCombat(params).then(res => {
           if (res.errCode == 0) {
             //console.log("删除结果-----------", res);
@@ -1057,6 +1081,7 @@
           combatID: gameInfo.extMsg.gameInfo.combatID,
           fromID: gameInfo.fromInfo.openid
         };
+        this.setReadMsg(gameInfo.fromInfo.openid)
         if (this.topUpGameInfo.msgCode == 24) { //队列邀请得
           let p = {
             agree: true,
@@ -1097,6 +1122,7 @@
             //console.log("队列邀请接受结果---", res);
           });
         }
+        
         if (this.topUpGameInfo.msgCode == 19) {
           gameUrl = game.extMsg.gameInfo.url;
           window.location.href = gameUrl;
@@ -1111,6 +1137,7 @@
           };
           gameUrl = game.url;
         }
+        this.setReadMsg(game.openid)
         //约战
         api.responseCombat(params).then(res => {
           //console.log(res);
@@ -1152,6 +1179,7 @@
             IsAgainPlay: false
           };
         }
+        this.setReadMsg(gameInfo.openid)
         api.responseCombat(params).then(res => {
           //console.log(res);
           if (res.errCode == 0) {
@@ -1161,6 +1189,14 @@
           }
         });
         this._loadMutualEvents();
+      },
+      //设置已读消息
+      setReadMsg(openId){
+          api.sendMsgReaded(openId).then(res => {
+            if (res.errorCode == 0) {
+              console.log('消息已读')
+            }
+        })
       },
       //拉取约战、点赞、送礼列表
       _loadMutualEvents() {
@@ -1388,6 +1424,7 @@
         this.showMatchingSoulTimes++;
       },
       topUpGameInfo: function(newValue) {
+        console.log("topUpGameInfo---",newValue)
         clearTimeout(this.timeTick);
         if (!newValue.msgCode) {
           return;

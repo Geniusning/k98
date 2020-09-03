@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-08-28 16:52:41
+ * @Last Modified time: 2020-09-02 17:34:09
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -15,7 +15,7 @@ const mutations = {
     //     state.client_badgeCount = msg.content.extMsg.count
     // },
     //更新灵魂匹配参数
-    [types.UPDATESOULPARAMS](state, cursor=0,flag=false) {
+    [types.UPDATESOULPARAMS](state, {cursor=0,flag=false}) {
         state.soulCursor = cursor
         state.soulResult = flag
     },
@@ -28,7 +28,7 @@ const mutations = {
         state.checkQrCode = checkQrCode
     },
     //存储桌贴号
-    [types.SAVEDESKCODE](state, deskCode,deskId) {
+    [types.SAVEDESKCODE](state, {deskCode,deskId}) {
         state.deskCode = deskCode
         state.deskId = deskId
     },
@@ -388,7 +388,7 @@ const mutations = {
                 // friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
                 // state.dynamicFriendEvt = friendEvtObj.content;
                 state.topUpGameInfo = friendEvtObj
-                //console.log('好友邀请你进游戏玩-----------', friendEvtObj)
+                console.log('好友邀请你进游戏玩-----------', friendEvtObj)
                 break;
             case 8: //上线通知
                 if (friendEvtObj.content.fromInfo.openid === cacheOpenId) { //切换分身时不给自己发上线通知
@@ -498,9 +498,6 @@ const mutations = {
                 state.topUpCommonInfo = friendEvtObj;
                 break
             case 29: //贵宾上线通知
-                friendEvtObj.content.extMsg = {
-                    lastMsg: {},
-                };
                 state.topUpCommonInfo = friendEvtObj;
                 break
             case 30:

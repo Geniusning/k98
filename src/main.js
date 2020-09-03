@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-08-28 17:52:00
+ * @Last Modified time: 2020-09-03 17:25:08
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -43,14 +43,14 @@ new Vue({
       deskCode: ""
     }
   },
-  created() {
+  mounted() {
     this.deskCode = util.GetQueryString("deskCode")
     this.deskId = util.GetQueryString("deskID")
-    this.saveDeskCode(this.deskCode, this.deskId)
+    this.saveDeskCode({
+        deskCode: this.deskCode,
+        deskId: this.deskId
+    })
     this.getUserInfo(); //获取用户信息
-  },
-  mounted() {
-    
     this.loadAdvertisingPhoto(); //拉取首页轮播图
     this.createQrcode(); //创建二维码
     this.loadStoreSetting(); //获取门店信息
@@ -82,14 +82,14 @@ new Vue({
   methods: {
     //创建长连接
     createWebsocket() {
-      let windowUrL = window.location.href;
-      let index = windowUrL.indexOf('.com');
-      let shareurl = windowUrL.slice(0, index);
-      let websocketUrl = shareurl.slice(8);
-      this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-      this.websock = new WebSocket(this.connectUrl);
-      this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+      // let windowUrL = window.location.href;
+      // let index = windowUrL.indexOf('.com');
+      // let shareurl = windowUrL.slice(0, index);
+      // let websocketUrl = shareurl.slice(8);
+      // this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+      // this.websock = new WebSocket(this.connectUrl);
+      // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
+      this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()
     },
@@ -133,7 +133,7 @@ new Vue({
     //加载L98控制开关信息
     loadL98otherSetting() {
       api.loadL98otherSetting().then(res => {
-        //console.log("控制开关--------", res)
+        console.log("控制开关--------", res)
         this.LoadL98Setting(res)
       })
     },
@@ -203,7 +203,7 @@ new Vue({
           //发送消息表示已读
           api.sendMsgReaded(fromId).then(res => {
             if (res.errorCode == 0) {
-              //console.log('消息已读')
+              console.log('消息已读')
             }
           })
         }
@@ -249,11 +249,26 @@ new Vue({
       else if (result.msgCode === 7) {
         this.loadMutualEvents();
         this.addBange();
+        var message = result.content.extMsg
+        let reg = new RegExp("/message/chat")
+        if (reg.test(this.$route.fullPath)) {
+          //console.log("是否进来标记已读")
+          //console.log("message----", message)
+          // let fromId = message.allInfo.lastMsg.from;
+          let fromId = message.inviterID;
+          //发送消息表示已读
+          api.sendMsgReaded(fromId).then(res => {
+            if (res.errorCode == 0) {
+              console.log('消息已读')
+            }
+          })
+        }
         this.judgeMessType('playGame')
         if (result.identiry != cacheOpenId) {
           this.addDivideNum(1)
           return
         } else {
+          console.log("this.addMessageIntoQueue(result)---")
           this.addMessageIntoQueue(result)
         }
       } else if (result.msgCode === 24) {//游戏队列约战
@@ -323,7 +338,7 @@ new Vue({
           if (this.$route.name === "chat") {
             this.$router.go(-1)
           }
-          this.updateSoulParams(this.soulCursor, true)
+          this.updateSoulParams({ cursor: this.soulCursor, flag:true})
           setTimeout(() => {
             this.setChatFriend(result.content.fromInfo)
             this.$router.push({
@@ -338,7 +353,7 @@ new Vue({
           api.searchWaitBeMakeFriUser(this.soulCursor).then(res => {
             console.log("搜索结果----------", res);
             if (res.errCode === 0) {
-              this.updateSoulParams(res.info.cursor, false)
+              this.updateSoulParams({ cursor: res.info.cursor, flag: true })
             }
           });
         }

@@ -173,8 +173,8 @@
           </ul>
         </scroll>
         <!-- div class="loading-container" v-show="isLoading">
-                               <loading></loading>
-                          </div>-->
+                                   <loading></loading>
+                              </div>-->
       </div>
       <div ref="input_wrapper" class="input_wrapper">
         <div class="input_area clearfix">
@@ -523,12 +523,6 @@
         });
       });
       this.isVip = this.$route.params.isVip; //贵宾通知标识
-      if (this.isVip) {
-        setTimeout(() => {
-          this.input_value = "亲，欢迎您！您是本店贵宾，有任何需要请@我";
-          this.send()
-        }, 300);
-      }
     },
     deactivated() {
       wx.stopVoice({
@@ -661,8 +655,10 @@
         clearTimeout(this.timer);
       },
       touchstart() {
-        //console.log("touchStart");
         var _this = this;
+        wx.stopVoice({
+          localId: this.voiceLocalId // 停止正在播放的语音
+        });
         wx.startRecord({
           success: function() {
             // _this.isVoicing = false;
@@ -672,9 +668,6 @@
             _this.isVoicing = false;
             wx.stopRecord({});
           }
-        });
-        wx.stopVoice({
-          localId: this.voiceLocalId // 停止正在播放的语音
         });
         let nodeList = this.$refs.chatList.childNodes;
         var element;
@@ -770,14 +763,6 @@
           // //console.log("friend--",friend)
           if (messageType == "9") {
             element = nodeList[i].children[0].children[1].children[1].children[0];
-            // //console.log(vocieUnread)
-            // if (friend == "1" && vocieUnread == "false") {
-            //   element =
-            //     nodeList[i].children[0].children[1].children[1].children[0];
-            // } else {
-            //   element =nodeList[i].children[0].children[1].children[1].children[0];
-            // }
-            // //console.log("element", element);
             this.addClass(element.children[1], "stopanimate");
             this.addClass(element.children[2], "stopanimate");
             this.addClass(element.children[3], "stopanimate");
@@ -1085,8 +1070,7 @@
       //获取好友聊天消息记录列表
       _getChatList() {
         let cursor = this.alreadyFriendListcursor;
-        api
-          .getFriendMessList(cursor, this.staticChatFriendObj.openid)
+        api.getFriendMessList(cursor, this.staticChatFriendObj.openid)
           .then(res => {
             return new Promise((resolve, reject) => {
               //console.log("好友聊天信息---------", res);
@@ -1098,6 +1082,12 @@
                 let item = resultMessList[i];
                 var chatObj = this._handleChatList(item, nowTime);
                 this.componentChatList.push(chatObj);
+              }
+              if (this.isVip) {
+                setTimeout(() => {
+                  this.input_value = "亲，欢迎您！您是本店贵宾，有任何需要请@我";
+                  this.send()
+                }, 300);
               }
               //console.log("聊天记录-------", this.componentChatList);
               this.componentChatList.forEach(item => {
@@ -1166,8 +1156,8 @@
                 this.input_value = this.input_value.replace(
                   reg,
                   `<img src=${
-                                this.emotionList[j].num
-                              } style="vertical-align: -6px;">`
+                                    this.emotionList[j].num
+                                  } style="vertical-align: -6px;">`
                 );
               }
             }
@@ -1288,9 +1278,7 @@
         }
         let cursor = this.alreadyFriendListcursor;
         // this.isLoading = true;
-        api
-          .getFriendMessList(cursor, this.staticChatFriendObj.openid)
-          .then(res => {
+        api.getFriendMessList(cursor, this.staticChatFriendObj.openid).then(res => {
             //console.log(res);
             if (!res.messages.length) {
               //如果有新消息才更改游标

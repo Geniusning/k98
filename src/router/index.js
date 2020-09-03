@@ -79,7 +79,7 @@ const router = new Router({
     }
   },
   {
-    path: '/comment/:phone',
+    path: '/comment',
     name: 'comment',
     component: () => import('../components/friend/comment.vue'),
     meta: {

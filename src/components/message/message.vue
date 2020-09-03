@@ -45,7 +45,7 @@
         <p class="qrCode_text">会员特权:领福利、交群友、参活动</p>
       </div>
       <!-- 下单码 -->
-      <div v-show="(l98Setting.placeOrderQRcodeOpen && isShowQrCode) && (isShowTab===2 && deskId != undefined) " class="qrCode_wrapper">
+      <div v-show="(l98Setting.placeOrderQRcodeOpen && isShowQrCode) && (isShowTab===2 && deskId != undefined ) " class="qrCode_wrapper">
         <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
         <p class="qrCode_text" style="font-size: 14px">长按识别二维码，可以直接下单</p>
         <img @touchstart="touchstart" @touchend="touchend" :src="OrderQrCode" alt="" class="qrcodeImg">
@@ -374,6 +374,10 @@
         next(vm => {
           vm.isShowTab = 2;
         });
+      } else if (to.query.routeParamNum == "2") {
+        next(vm => {
+          vm.isShowTab = 2;
+        });
       } else {
         next(vm => {
           vm.isShowTab = 0;
@@ -444,6 +448,7 @@
       //拉取下单码
       getPlaceOrderQRcodebyID() {
         console.log('this.deskId---',this.deskId)
+        console.log('deskCode---',this.deskCode)
         api.getPlaceOrderQRcodebyID(this.deskId).then(res => {
           console.log("拉取下单码----", res)
           if (res.errCode === 0) {

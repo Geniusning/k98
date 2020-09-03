@@ -390,7 +390,7 @@
             api.searchWaitBeMakeFriUser(this.soulCursor).then(res => {
               console.log("搜索结果----------", res);
               if(res.errCode===0){
-                this.updateSoulParams(res.info.cursor,false)
+                this.updateSoulParams({cursor:res.info.cursor,flag:false})
               }
             });
         }

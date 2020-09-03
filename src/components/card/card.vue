@@ -194,10 +194,13 @@
     </div>
     <validate v-show="isShow"></validate>
     <Popup @close="closePopUp" :show="showPanel" :top="25" :height="5">
-      <group title="请输入消费桌桌号">
-         <input type="number" v-model="deskNum" style="display:block;height:.7rem;line-height:.7rem;margin:30px auto;text-indent: 4px;">
+      <group :title="`请输入${shopSettingInfo.name}消费桌桌号`">
+         <input type="number" placeholder="请输入桌号" v-model="deskNum" style="display:block;height:.7rem;line-height:.7rem;margin:30px auto;text-indent: 4px;">
       </group>
-       <x-button @click.native="saveDeskNum" style="width:300px;background-color:#FFD800;color:#fff;" type="default">确定</x-button>
+      <div style="display:flex;justify-content: space-around;">
+       <button @click="showPanel=false" style="width:2rem;height:50px;border:none;background-color:#FFD800;color:#fff;border-radius:4px;">取消</button>
+       <button @click="saveDeskNum" style="width:2rem;height:50px;border:none;background-color:#FFD800;color:#fff;border-radius:4px;">确定</button>
+      </div>
     </Popup>
     <router-view></router-view>
   </div>
@@ -244,7 +247,7 @@
     },
     computed: {
       ...mapGetters(["isShow"]),
-      ...mapState(["userInfo", "deskCode", "deskId"])
+      ...mapState(["userInfo", "deskCode", "deskId","shopSettingInfo"])
     },
     created() {
       this._loadUserAllCoupon(); //获取优惠券
@@ -340,7 +343,7 @@
           return
         }
         if(!this.deskCode){
-          this.$vux.toast.text('请到店扫消费桌二维码使用', 'middle')
+          this.$vux.toast.text('未检测到桌号，请重扫二维码', 'middle')
           return
         }
         this.$router.push({

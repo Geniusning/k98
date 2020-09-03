@@ -246,7 +246,7 @@
         this.setChatFriend(this.$route.query.info);
       }
       //console.log("this.staticChatFriendObj", this.staticChatFriendObj);
-      // this.setMsgReadCliSer(); //标识已读
+      this.setMsgReadCliSer(); //标识已读
       this.loadChatMsgCliSer(); //获取客服聊天记录
       // this.friendId = this.$route.params.id;
       this.isClientFlag = this.$route.params.isClient;
