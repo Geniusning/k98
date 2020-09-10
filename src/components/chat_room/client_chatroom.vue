@@ -35,11 +35,7 @@
                 </div>
                 <div class="message_box">
                   <span v-show="item.type===1" class="arrow"></span>
-                  <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message">
-                    <!-- 你是我的眼
-                        <img :src="emotionList[0].num" alt="">
-                        <img :src="emotionList[2].num" alt=""> -->
-                  </p>
+                  <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message"></p>
                 </div>
               </div>
               <div v-if="item.type==2" class="message_wrapper">
@@ -77,7 +73,6 @@
               <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
               <input type="file" class="file" accept="image/gif,image/jpeg,image/jpg,image/png"  @change="uploadImage">
             </li>
-            <!--  -->
             <li class="item fl" style="padding:0" v-if="isClientFlag"  @click="sendStaffCouponToUser">
               <img style="width:100%;height:100%" onclick="return false" src="../../assets/image/quan-icon.jpg" alt>
             </li>
@@ -253,6 +248,7 @@
       //console.log("this.$route-------------", this.$route);
       if (this.isClientFlag) {
         this.expressionList = [
+          "收到您的消息，请稍候！",
           "客官，有啥吩咐？",
           "过来玩么？要不帮您订个台？",
           "请对本店的出品和服务提个意见，以便我们更好服务您",

@@ -125,14 +125,18 @@
           <!-- 员工送券 -->
           <div class="topUpCommonInfo-wrapper" v-else-if="topUpCommonInfo.msgCode==27">
             <div class="topUpCommonInfo-top">
+               <div class="img">
+                <img onclick="return false" class="giftAvatar" :src="topUpCommonInfo.content.fromInfo.headimgurl?topUpCommonInfo.content.fromInfo.headimgurl:tempPic"
+                  alt="">
+              </div>
               <div class="name">
-                <p class="name">店员给您送礼啦</p>
+                <p class="name">{{topUpCommonInfo.content.fromInfo.nickname?topUpCommonInfo.content.fromInfo.nickname:'店员'}}店员</p>
               </div>
             </div>
             <div class="topUpCommonInfo-middle">
               <div class="partition_zone">
                 <div class="topUpCommonInfo_left">
-                  <img onclick="return false" style="width:1.7rem;margin-left:1.2rem;border-radius:40%" class="giftImg" :src="topUpCommonInfo.content.fromInfo.headimgurl?topUpCommonInfo.content.fromInfo.headimgurl:tempPic" alt="">
+                  <img onclick="return false" style="width:1.7rem;margin-left:1.2rem;border-radius:40%" class="giftImg" src="./assets/image/6.png" alt="">
                 </div>
                 <div class="topUpCommonInfo_right">
                   <p class="desc title_desc">一份礼品已经存入您的卡券包</p>

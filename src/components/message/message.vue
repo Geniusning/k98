@@ -13,29 +13,32 @@
       </div>
     </div>
     <div class="message_wrapper">
-      <Popup @close="closePopUp" :show="showCashierFlow">
-        <ul class="cashier_stream_title">
-          <li class="title_name" style="width:25%">买单时间</li>
-          <li class="title_name" style="width:15%">台/房号</li>
-          <li class="title_name">金额</li>
-          <li class="title_name">收款码</li>
-          <li class="title_name">券名称</li>
-          <li class="title_name">买单人</li>
-        </ul>
-        <scroll :data="cashierFlowList" :pullDownRefresh="true" @pullingUp="pullingUp">
-          <ul class="cashier_stream_detail">
-            <li v-for="(cashier,index) in cashierFlowList" :key="index" class="stream_detail_item">
-              <span class="detail_name" style="width:25%">{{cashier.time}}</span>
-              <span class="detail_name" style="width:15%">{{cashier.deskcode}}</span>
-              <span class="detail_name">{{cashier.consumeamount}}</span>
-              <span class="detail_name">{{cashier.qrcodename?cashier.qrcodename:"无券买单"}}</span>
-              <span class="detail_name">{{cashier.usercouponname?cashier.usercouponname:"无券买单"}}</span>
-              <div class="detail_name">
-                <img :src="cashier.payuserheadimgurl" class="headUrl">
-              </div>
-            </li>
+      <Popup @close="closePopUp" :show="showCashierFlow" :showCloseBtn="false">
+        <div class="cashier_stream-wrapper">
+          <ul class="cashier_stream_title">
+            <li class="title_name" style="width:25%">买单时间</li>
+            <li class="title_name" style="width:15%">台/房号</li>
+            <li class="title_name">金额</li>
+            <li class="title_name">收款码</li>
+            <li class="title_name">券名称</li>
+            <li class="title_name">买单人</li>
           </ul>
-        </scroll>
+          <scroll :data="cashierFlowList" :pullDownRefresh="true" @pullingUp="pullingUp">
+            <ul class="cashier_stream_detail">
+              <li v-for="(cashier,index) in cashierFlowList" :key="index" class="stream_detail_item">
+                <span class="detail_name" style="width:25%">{{cashier.time}}</span>
+                <span class="detail_name" style="width:15%">{{cashier.deskcode}}</span>
+                <span class="detail_name">{{cashier.consumeamount}}</span>
+                <span class="detail_name">{{cashier.qrcodename?cashier.qrcodename:"无券买单"}}</span>
+                <span class="detail_name">{{cashier.usercouponname?cashier.usercouponname:"无券买单"}}</span>
+                <div class="detail_name">
+                  <img :src="cashier.payuserheadimgurl" class="headUrl">
+                </div>
+              </li>
+            </ul>
+          </scroll>
+          <img class="cashier_stream-close" @click="showCashierFlow=false" src="../../assets/image/close-round.png">
+        </div>
       </Popup>
       <!-- 关注二维码 -->
       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1)) " class="qrCode_wrapper">
@@ -1310,33 +1313,47 @@
   .message_wrapper {
     width: 100%;
     flex-grow: 1;
-    .cashier_stream_title {
-      height: 1rem;
-      line-height: 1rem;
-      display: flex;
-      .title_name {
-        width: 20%;
-        text-align: center;
-      }
-    }
-    .cashier_stream_detail {
-      // height: 8rem;
-      flex: 1;
-      .stream_detail_item {
+    .cashier_stream-wrapper{
+      height: 9rem;
+      position: relative;
+      z-index: 3;
+      .cashier_stream_title {
+        height: 1rem;
+        line-height: 1rem;
         display: flex;
-        margin-bottom: 0.1333rem;
-        .detail_name {
-          display: inline-block;
+        .title_name {
           width: 20%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
           text-align: center;
         }
-        .headUrl {
-          width: 0.5333rem;
-          height: 0.5333rem;
+      }
+      .cashier_stream_detail {
+        // height: 8rem;
+        flex: 1;
+        .stream_detail_item {
+          display: flex;
+          margin-bottom: 0.1333rem;
+          .detail_name {
+            display: inline-block;
+            width: 20%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+          }
+          .headUrl {
+            width: 0.5333rem;
+            height: 0.5333rem;
+          }
         }
+      }
+      .cashier_stream-close{
+        z-index: 9999;
+        position: absolute;
+        bottom: -2rem;
+        left: 50%;
+        width: 1rem;
+        height: 1rem;
+        transform: translateX(-50%);
       }
     }
     .message_list {

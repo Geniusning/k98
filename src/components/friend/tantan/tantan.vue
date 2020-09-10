@@ -316,7 +316,10 @@
       showAlbum(info) {
         if (info.role != "" && info.phone!="") {
           this.$router.push({
-            path: "/comment/"+info.phone,
+            name: "comment",
+            params: {
+            phone: info.phone
+          }
           });
           return;
         }
@@ -439,25 +442,18 @@
         this.lastPosHeight = this.posheight;
         this.lastRotate = this.rotate;
         this.lastZindex = 20;
-        // 循环currentPage
-        // //console.log('this.currentPage：', this.currentPage)
         if (
           this.currentPage == this.pages.length - 3 &&
           this.friendListCursor != 0
         ) {
-          // if (this.currentPage == this.pages.length - 3 && this.tampSexFlag) {
           this.$emit("getMoreFriend");
         }
         if (this.currentPage + 1 == this.pages.length) {
           this.currentLikeIndex = -1;
         }
         this.friendData = this.pages[this.currentPage];
-        //console.log("friendData-------------------", this.friendData);
-        this.currentPage =
-          this.currentPage === this.pages.length - 1 ? 0 : this.currentPage + 1;
+        this.currentPage =this.currentPage === this.pages.length - 1 ? 0 : this.currentPage + 1;
         this.backToParentData = this.pages[this.currentPage];
-        // //console.log("this.friendData----------",this.friendData)
-        // //console.log("this.backToParentData----------",this.backToParentData)
         this.$emit("firstData", this.backToParentData);
         if (this.backToParentData.info.phone != "") {
           //显示员工被点赞次数
@@ -467,26 +463,25 @@
           "努力吧,别把自己的青春铺张在爱情上",
           "兄弟虽然我们是在网络中相遇",
           "多年后你和她情深似海，会不会想到欠我一个未来",
-          "生活不止眼前的苟且，还有诗和远方的田野"
+          "生活不止眼前的苟且，还有诗和远方的田野",
+          '茫茫人海中遇见，是一种缘，希望锁定缘分请点赞',
+          '爽快点！右滑喜欢，左滑不喜欢',
+          '撩我玩游戏？先送礼哦',
+          '无聊进行时，想血拼几把大话骰的找我',
+          '谁想和我玩游戏的呀',
+          '来来来，广交朋友'
         ];
-        let index = Math.floor(Math.random() * 4);
+        let index = Math.floor(Math.random() * 10);
         this.sign = signList[index];
-        // //console.log("currentLikeIndex---------", this.currentLikeIndex)
         this.currentLikeIndex++;
-        // //console.log("this pages.length--------", this.pages.length)
         if (this.distant > 0) {
-          // //console.log("往右划朋友信息-------",this.friendData)
           if (!this.friendData.isAlreadyFriend) {
-            //不是朋友才右滑点赞
             this.giveThumb();
             this.like = true;
           } else {
-            // this.alreadySendThumbFlag = false
           }
         } else {
-          //console.log("往左滑");
           this.dislike = true;
-          // this.alreadySendThumbFlag = false
         }
         // //console.log(this.currentPage);
         // let index = this.currentPage;

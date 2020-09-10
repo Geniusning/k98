@@ -202,6 +202,9 @@
               <img onclick="return false" src="../../assets/image/chat_pic.png" alt="">
               <input type="file" class="file" accept="image/gif, image/jpeg, image/jpg, image/png" @change="uploadImage">
             </li>
+            <li class="item fl" style="padding:0" v-if="isCashierFlag"  @click="sendStaffCouponToUser">
+              <img style="width:100%;height:100%" onclick="return false" src="../../assets/image/quan-icon.jpg" alt>
+            </li>
             <li class="fl">
               <button v-if="isCashierFlag" class="cashier-l" @click="showAccountStateMent">对账单</button>
               <button v-else class="cashier-l" @click="showCheckQrCode">收款码</button>
@@ -381,6 +384,7 @@
       this.isCashierFlag = this.$route.params.isCashier;
       if (this.isCashierFlag) {
         this.expressionList = [
+          "收到您的消息，请稍候！",
           "客官，有啥吩咐？",
           "欢迎下次光临",
         ];
@@ -415,6 +419,23 @@
       ...mapGetters(["qrIsShow"])
     },
     methods: {
+        //员工送券
+      sendStaffCouponToUser() {
+        let ToId = this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : sessionStorage.getItem("staffCouponToId")
+        console.log("ToId-----", ToId)
+        let data = {
+          to: ToId,
+          from: this.userInfo.openid,
+          CouponId: this.staffCouponInfo.couponId
+        }
+        // return
+        api.sendStaffCouponToUser(data).then(res => {
+          //console.log("送券结果-------", res)
+          if(res.errCode===0){
+             this.$vux.toast.text("赠送成功", "middle");
+          }
+        })
+      },
       //获取最新的对账单信息
       getLastCheckInfo() {
         var cashierContent;
@@ -1404,7 +1425,7 @@
           .item {
             width: 0.9067rem;
             height: 0.9067rem;
-            margin-right: 0.46rem;
+            margin-right: 0.26rem;
             background: #fff;
             box-sizing: border-box;
             padding: 0.1867rem;
@@ -1424,18 +1445,20 @@
             }
           }
           .cashier-l,
-          .cashier-r {
+          .cashier-r
+           {
             background-color: #eb5d57;
             color: #fff;
             border-radius: 4px;
-            padding: 0.18rem 0.2667rem;
+            padding: 0.23rem 0.25rem;
             border: none;
-            margin-right: 0.46rem;
-            margin-top: 0.1rem;
+            margin-right: 0.26rem;
+            // margin-top: 0.1rem;
           }
           .cashier-r {
             background-color: #80d491;
           }
+         
         }
       } // 表情区域
       .emotion_area {

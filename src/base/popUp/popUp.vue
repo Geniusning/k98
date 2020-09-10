@@ -1,7 +1,9 @@
 <template>
-	<div class="popUp-wrapper" :style="{width:width+'%',height:height+'rem',top:top+'%'}" v-if="showPopUp">
-		<img @click="close" class="close" src="../../assets/image/close-round.png" alt="">
-		<slot></slot>
+	<div class="bg" v-show="show">
+		<div class="popUp-wrapper" :style="{width:width+'%',height:height+'rem',top:top+'%'}" v-if="showPopUp">
+			<img v-show="showCloseBtn" @click="close" class="close" src="../../assets/image/close-round.png" alt="">
+			<slot></slot>
+		</div>
 	</div>
 </template>
 
@@ -13,6 +15,10 @@
 			}
 		},
 		props: {
+			showCloseBtn:{
+				type:Boolean,
+				default:true
+			},
 			show: {
 				type: Boolean,
 				default: true
@@ -46,13 +52,21 @@
 </script>
 
 <style lang="less" scoped>
+.bg{
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, .2);
+	z-index: 3;
 	.popUp-wrapper {
 		width: 100%;
 		height: 10rem;
 		position: absolute;
 		top: 10%; // left: 50%;
 		// margin-left: -4.5rem;
-		z-index: 9999;
+		z-index: 92;
 		background-color: #fff;
 		color: #333;
 		border: 1px solid #ccc;
@@ -71,6 +85,7 @@
 			height: 1.0667rem;
 		}
 	}
+}
 </style>
 
 

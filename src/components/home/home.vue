@@ -117,7 +117,7 @@
                   <p class="limit">{{item.goods.limit}}</p>
                   <p class="price">
                     <span class="discount_p">原价￥{{item.goods.discountPrice}}</span>
-                    <span class="origin_p">积分换 ${{item.goods.integral}}</span>
+                    <span class="origin_p">积分换：{{item.goods.integral}}</span>
                   </p>
                 </div>
                 <div class="right">
@@ -1827,7 +1827,7 @@
               .discount_p {
                 color: #333;
                 font-size: 0.3467rem;
-                margin-right: 0.4267rem;
+                margin-right: 0.3rem;
               }
               .origin_p {
                 color: red;

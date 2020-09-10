@@ -1185,12 +1185,7 @@
             left: 0.9933rem;
           }
         }
-      } // .close {
-      //   position: absolute;
-      //   width: 0.8rem;
-      //   top: 0.2667rem;
-      //   right: 0.3933rem;
-      // }
+      }
       .know {
         position: absolute;
         display: inline-block;
@@ -1199,9 +1194,9 @@
         width: 2rem;
         text-align: center;
         margin-left: -1rem;
-        color: #fff;
+        color: red;
         font-size: 20px;
-        border: 2px solid #fff;
+        border: 2px solid red;
       }
       .intro {
         position: absolute;

@@ -13,11 +13,11 @@
             <img v-else-if="staticChatFriendObj.sex===2" src="../../assets/image/female.png" alt="">
             <img v-else src="../../assets/image/male.png" alt="">
           </div>
-          {{staticChatFriendObj.staffTag}} {{staticChatFriendObj.nickname}}
+           {{staticChatFriendObj.nickname}}  {{staticChatFriendObj.staffTag}}  
           <div class="online_status">
             <!-- <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot"> -->
             <!-- <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span> -->
-            <!-- <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span> -->
+            <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}桌</span>
           </div>
         </div>
         <!--  -->
@@ -450,7 +450,7 @@
       } else {
         this.myShareUrl = this.shareUrl + "k98/home";
       }
-      //console.log("this.myShareUrl-----", this.myShareUrl);
+      console.log("this.myShareUrl-----", this.myShareUrl);
       this._initJssdk(this.myShareUrl);
       // this._initJssdk(this.myShareUrl)
     },
@@ -613,7 +613,7 @@
           .then(res => {
             //console.log("获取微信jssdk---------", res);
             wx.config({
-              // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+              debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
               appId: res.appId,
               timestamp: res.timestamp,
               nonceStr: res.nonceStr,
@@ -1575,7 +1575,14 @@
             height: 0.4rem;
           }
           .friendStatus {}
-          .roomNum {}
+          .roomNum {
+            margin-left: 0.2333rem;
+            background: red;
+            color: #fff;
+            padding: 0 0.1067rem;
+            box-sizing: border-box;
+            border-radius: 3px;
+          }
         }
       }
       .backHome_box {

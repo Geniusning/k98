@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-02 17:34:09
+ * @Last Modified time: 2020-09-08 18:01:52
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -92,7 +92,7 @@ const mutations = {
             if (!recomment.coupInfo) {//如果优惠券被删除了，直接过滤此项目
                 continue
             }
-            if (recomment.coupInfo.startTimeOption === 1 || recomment.coupInfo.startTimeOption === 3) { //即时生效的就不需要判断过期
+            if (recomment.coupInfo.startTimeOption === 1 || recomment.coupInfo.startTimeOption === 3) { //即时生效和次日生效不用判断时间
                 state.recommentList.push(recomment)
                 continue
             }
@@ -111,7 +111,7 @@ const mutations = {
             if (!gift.coupInfo){  //如果优惠券被删除了，直接过滤此项目
                 continue
             }
-            if (gift.coupInfo.startTimeOption === 1) {  //即时生效的就不需要判断过期
+            if (gift.coupInfo.startTimeOption === 1 || gift.coupInfo.startTimeOption === 3) {  //即时生效和次日生效不用判断时间
                 state.sendGiftList.push(gift)
                 continue
             }

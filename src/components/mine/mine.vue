@@ -68,7 +68,7 @@
                 <!-- <p class="limit">{{item.goods.limit}}</p> -->
                 <p class="price">
                   <span class="discount_p">原价￥{{item.goods.discountPrice}}</span>
-                  <span class="origin_p">积分换 ${{item.goods.integral}}</span>
+                  <span class="origin_p">积分换：{{item.goods.integral}}</span>
                 </p>
               </div>
               <div class="right">
@@ -81,35 +81,6 @@
           </ul>
         </div>
       </div>
-      <!-- 我的标签 -->
-      <!-- <div class="tag_wrapper">
-          <h2 class="tag_title">我的标签
-            <span class="star">#</span>
-          </h2>
-          <ul class="tag_list" v-if="userInfo.tags.length">
-            <ul class="tag_list" v-if="showTag">
-            <li v-for="(item,index) in tagList" :key="index" class="item">{{item}}</li>
-          </ul>
-          <p v-if="userInfo.tags.length">{{userInfo.tags}}</p>
-          <p v-else class="no_tags">
-            <span class="star">#</span>请在个人编辑里面设置标签，让朋友更了解你哦
-            <span class="star">#</span>
-          </p>
-      </div>-->
-      <!-- 个性签名 -->
-      <!-- <div class="signature_wrapper">
-          <h2 class="signature_title">个性签名
-            <span class="star">#</span>
-          </h2>
-          <p class="signature" v-if="showTag">youare</p>
-          <p class="signature" v-if="userInfo.signature.length">{{userInfo.signature}}</p>
-          <p v-else class="no_signature">
-            <span class="star">#</span>请在个人编辑里面设置签名
-            <span class="star">#</span>
-          </p>
-      </div>-->
-      <!-- 分享赚积分 v-show="noCouponsFlag"
-v-show="noCouponsFlag" -->
       <div class="marketing_wrapper">
         <!--  <div class="marketing_wrapper" v-show="userInfo.role"> -->
         <h2 class="marketing_title">
@@ -532,7 +503,7 @@ export default {
                 .discount_p {
                   color: #333;
                   font-size: 0.3467rem;
-                  margin-right: 0.4267rem;
+                  margin-right: 0.3rem;
                 }
                 .origin_p {
                   color: red;
@@ -560,7 +531,6 @@ export default {
               }
               .show_detail {
                 margin-top: 1.4rem;
-                // width: 1.4667rem;
                 padding: 0.1067rem 0.1067rem;
                 text-align: center;
                 line-height: 0.5067rem; // background: @baseColor;
@@ -633,10 +603,17 @@ export default {
             padding-top: 0.1533rem;
           }
           .marketing-right {
-            font-size: 0.3733rem;
             padding: 0.1067rem 0.1333rem;
-            background-color: @baseColor;
-            color: #fff;
+            line-height: 0.5067rem; 
+             background: -webkit-linear-gradient(
+                  left,
+                  #fff800,
+                  #fef200,
+                  #fccc00,
+                  #fbbc00
+                );
+                color: #1d1d1d;
+                border-radius: 0.08rem;
           }
         }
       }

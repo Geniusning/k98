@@ -10,7 +10,8 @@
               <span v-if="showOweText">尚欠积分:{{Math.abs(userInfo.money-componentGiftInfo.goods.integral)}}</span>
             </p>
           </div>
-          <img onclick="return false" src="../../assets/image/close-round.png" alt="icon" class="close" @click="closeIntegralPanel">
+          <div class="close" @click="closeIntegralPanel">X</div>
+          <!-- <img onclick="return false" src="../../assets/image/close-round.png" alt="icon" class="close" @click="closeIntegralPanel"> -->
         </div>
         <div class="coinBox_bottom">
           <ul class="coinList">
@@ -26,7 +27,8 @@
       <div class="giftPanelBox" v-else-if="panelIndex===1" key="giftPanelBox">
         <div class="giftPanelBox_title vux-1px-b">
           <p class="desc">请选择赠送对方的礼物</p>
-          <img onclick="return false" src="../../assets/image/close-round.png" alt="" class="close" @click="closeIntegralPanel">
+          <div class="close" @click="closeIntegralPanel">X</div>
+          <!-- <img onclick="return false" src="../../assets/image/close-round.png" alt="" class="close" @click="closeIntegralPanel"> -->
           <img src="../../assets/image/quan-icon.jpg" class="staff-discount" @click="sendCouponToUser" v-if="userInfo.role" alt="">
         </div>
         <div class="giftListpart vux-1px-b">
@@ -69,7 +71,7 @@
           <img onclick="return false" v-if="componentConvertType == 0 || componentConvertType == 1" src="../../assets/image/integralIcon.png" class="giftBoxIfon">
           <img onclick="return false" v-else src="../../assets/image/giftBox.png" class="giftBoxIfon">
           <p class="header_text">消耗积分{{componentGiftInfo.goods.integral}} &nbsp;&nbsp;&nbsp;我的积分:{{userInfo.money}}</p>
-          <!-- <div class="close" @click="closeIntegralPanel">X</div> -->
+          <div class="close" @click="closeIntegralPanel">X</div>
         </div>
         <div class="content">
           <div class="pictureBox">
@@ -88,9 +90,9 @@
         </div>
         <div class="handle">
           <!-- :class="{greyBtn:userInfo.money<giftIntegral}" -->
-          <div class="cancle" @click="closeIntegralPanel">取消</div>
-          <div v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">确认</div>
-          <div v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)">确认</div>
+          <div class="cancle" @click="closeIntegralPanel(true)" v-text="userInfo.money<giftIntegral?'赚积分':'取消'"></div>
+          <div v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)" v-text="userInfo.money<giftIntegral?'充值':'确认'"></div>
+          <div v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)" v-text="userInfo.money<giftIntegral?'充值':'确认'"></div>
           <div v-show="userInfo.money<giftIntegral" class="tips_money">积分不足,请充值>></div>
           <!-- <div class="checkBox_scene clearfix" v-if="(componentConvertType == 2 || componentConvertType==3) && isInDoor && userInfo.money>giftIntegral "> -->
           <!-- <input @change="onlineSendGift" type="checkbox" class="checkbox fl">
@@ -101,9 +103,9 @@
         <!-- <div class="myMoney" v-if="userInfo.money-componentGiftInfo.goods.integral>0?false:true">尚欠积分:{{Math.abs(userInfo.money-componentGiftInfo.goods.integral)}}</div> -->
       </div>
       <!-- 成功送礼提示框 -->
-      <div class="successfullyBox" v-else-if="panelIndex===3" key="successfullyBox">
+      <div class="successfullyBox" v-else-if="panelIndex===3" >
         <div class="envelope">
-          <!-- <div class="close" @click="closeIntegralPanel">X</div> -->
+          <div class="close" @click="closeIntegralPanel">X</div>
           <div class="integralIcon_wrapper">
             <img onclick="return false" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
             <div class="integralIcon_text">消耗积分:{{componentGiftInfo.goods.integral}} &nbsp;&nbsp;&nbsp;我的积分:{{userInfo.money}}</div>
@@ -115,7 +117,7 @@
         </div>
       </div>
       <!-- 充值成功面板 -->
-      <div class="successfullyBox" v-else-if="panelIndex===4" key="successfullyBox">
+      <div class="successfullyBox" v-else-if="panelIndex===4" >
         <div class="envelope">
           <div class="close" @click="closeIntegralPanel">X</div>
           <div class="integralIcon_wrapper">
@@ -123,9 +125,19 @@
             <div class="integralIcon_text">我的积分:{{userInfo.money}}</div>
           </div>
           <p class="successful_text">充值成功,增加{{moneyPoint}}积分</p>
-          <!-- <p class="successful_desc">{{successful_desc}}</p> -->
           <div @click="closeIntegralPanel" class="btn">确认</div>
-          <!-- <div @click="changeGoods" class="changebtn">兑换</div> -->
+        </div>
+      </div>
+      <div class="successfullyBox" v-else-if="panelIndex===5" >
+        <div class="envelope">
+          <div class="close" @click="closeIntegralPanel">X</div>
+          <div class="integralIcon_wrapper">
+            <img onclick="return false" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
+            <div class="integralIcon_text"></div>
+          </div>
+
+          <p style="padding:0 .3rem" class="successful_text">未开通充值功能,您可通过分享朋友圈或好友群赚积分，每天限5次，重复分享无效</p>
+          <div @click="closeIntegralPanel" class="btn">确认</div>
         </div>
       </div>
     </transition>
@@ -295,9 +307,18 @@
         this.$emit("closeIntegralPanel", false);
         this.panelIndex = 1;
       },
-      closeIntegralPanel() {
-        this.$emit("closeIntegralPanel", false);
-        this.panelIndex = 1;
+      closeIntegralPanel(flag) {
+        console.log("flag--",flag)
+        if(flag && this.userInfo.money < this.giftIntegral){
+          this.$router.push({
+            name:"mine"
+          })
+          this.panelIndex = 1;
+          this.$emit("closeIntegralPanel", false);
+        }else{
+          this.$emit("closeIntegralPanel", false);
+          this.panelIndex = 1;
+        }
       },
       // 前往充值
       gotoTopUp() {
@@ -473,10 +494,9 @@
       //   充值
       payForCoin(id, index, point) {
         this.moneyPoint = point;
-        //console.log("this.moneyPoint---", this.moneyPoint);
-        // //console.log(id);
         if (!this.l98Setting.integralConvertOpen) {
-          this.$vux.toast.text("商家未开通本功能", "middle");
+          // this.$vux.toast.text("商家未开通本功能", "middle");
+          this.panelIndex = 5;
           return;
         }
         this.clickIndex = index;
@@ -576,10 +596,7 @@
           }
         }
         .close {
-          // padding-top: 0.1333rem;
-          padding: 0.1333rem;
-          width: 0.5333rem;
-          height: 0.5333rem;
+          .closeText()
         }
       }
       .coinBox_bottom {
@@ -654,9 +671,7 @@
           margin-left: 0.1333rem;
         }
         .close {
-          width: 0.48rem;
-          height: 0.48rem;
-          margin-right: 0.1333rem;
+          .closeText()
         }
       }
       .giftListpart {
@@ -748,16 +763,7 @@
         padding: 0.2667rem 0.4rem;
         position: relative;
         .close {
-          font-size: 0.3467rem;
-          position: absolute;
-          top: 0.3333rem;
-          right: 0.2667rem;
-          width: 0.5667rem;
-          height: 0.5667rem;
-          text-align: center;
-          font-size: 0.4rem;
-          font-weight: 800;
-          color: #e59305;
+          .closeText()
         }
         .giftBoxIfon {
           width: 0.6rem;
@@ -833,10 +839,10 @@
           text-align: center;
           font-size: 0.35rem;
           padding: 0rem;
-          border: 1px solid rgb(156, 13, 13);
-          background-color: #fff;
+          // border: 1px solid rgb(156, 13, 13);
+          // background-color: #fff;
           color: rgb(156, 13, 13);
-          width: 0.8rem;
+          min-width: 0.8rem;
           height: .45rem;
           line-height: .45rem;
           box-sizing: border-box;
@@ -900,59 +906,8 @@
           font-size: 0.2667rem;
         }
       }
-      .giftContent {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 0.5rem;
-        padding: 0 0.7rem;
-        .leftpart {
-          .pic {
-            width: 2.2rem;
-            height: 1.8rem;
-          }
-        }
-        .rightpart {
-          .title,
-          .integral {
-            color: #0f0f0f;
-            font-weight: 600;
-            overflow: hidden;
-            font-size: 0.3467rem;
-          }
-          .desc,
-          .limit {
-            color: #5b5b5b;
-            font-size: 0.3467rem;
-          }
-        }
-      }
-      .btn_wrapper {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 0.3667rem;
-        padding: 0 0.7rem;
-        #btn {
-          border-radius: 0.1rem;
-          box-sizing: border-box;
-          letter-spacing: 0.08rem;
-          font-weight: 800;
-          border: none;
-          color: #fff;
-          padding: 0.1333rem 0.4rem;
-          font-size: 0.35rem;
-          background: -webkit-linear-gradient(top, #fedc00, #e39300);
-        }
-      }
       .close {
-        width: 0.4667rem;
-        height: 0.4667rem;
-        text-align: center;
-        position: absolute;
-        top: 0.2333rem;
-        right: 0.2933rem;
-        font-size: 0.4rem;
-        font-weight: 800;
-        color: #e59305;
+        .closeText()
       }
       .integralIcon_wrapper {
         display: flex;
@@ -1005,7 +960,7 @@
         text-align: center;
         letter-spacing: 0.08rem;
         padding: 0.08rem 0.1067rem;
-        border: none; // background: -webkit-linear-gradient(top, #fcd502, #e59305);
+        border: none; 
         color: #fff;
         font-weight: 800;
         font-size: 0.35rem;
@@ -1024,7 +979,7 @@
         right: 0.28rem;
         color: #f7c600;
         text-decoration: underline;
-      } // }
+      }
       .myMoney {
         position: absolute;
         left: 0.2333rem;
