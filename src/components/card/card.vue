@@ -198,8 +198,8 @@
          <input type="number" placeholder="请输入桌号" v-model="deskNum" style="display:block;height:.7rem;line-height:.7rem;margin:30px auto;text-indent: 4px;">
       </group>
       <div style="display:flex;justify-content: space-around;">
-       <button @click="showPanel=false" style="width:2rem;height:50px;border:none;background-color:#FFD800;color:#fff;border-radius:4px;">取消</button>
-       <button @click="saveDeskNum" style="width:2rem;height:50px;border:none;background-color:#FFD800;color:#fff;border-radius:4px;">确定</button>
+       <button class="ScanBtn" @click="showPanel=false">取消</button>
+       <button class="ScanBtn" @click="saveDeskNum">确定</button>
       </div>
     </Popup>
     <router-view></router-view>
@@ -423,6 +423,15 @@
   .card {
     height: 100%;
     background: #eee;
+    .ScanBtn{
+      width:2rem;
+      height:50px;
+      border:none;
+      background-color:#FFD800;
+      color:#333;
+      border-radius:4px;
+      font-size:16px
+    }
     .tab_wrapper {
       .vux-tab .vux-tab-item {
         color: #333;

@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-10 09:55:08
+ * @Last Modified time: 2020-09-11 18:54:06
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -47,6 +47,27 @@ new Vue({
         }
     },
     mounted() {
+        window.onload = function() {
+            // let hasParams = window.location.href.split('?').length > 1
+            if (!util.isAndroid()) {
+                let wechatInfo = navigator.userAgent.match(/MicroMessenger\/([\d\.]+)/i);
+                let versionNumber = wechatInfo[1].split(".").join("")
+                if (versionNumber > 7014) {
+                    window.iosSignUrl = window.location.href.split('k98')[0]
+                } else {
+                    window.iosSignUrl = window.location.href.split('#')[0]
+                }
+                setTimeout(() => {
+                    console.log("window.iosSignUrl----", window.iosSignUrl)
+                }, 2000);
+            }
+            if (util.isAndroid()) {
+                let url = window.location.href.split("#")[0]
+                util._getJssdkConfig(url)
+            } else {
+                util._getJssdkConfig(window.iosSignUrl)
+            }
+        }
         this.deskCode = util.GetQueryString("deskCode")
         this.deskId = util.GetQueryString("deskID")
         this.saveDeskCode({
@@ -89,6 +110,7 @@ new Vue({
             let index = windowUrL.indexOf('.com');
             let shareurl = windowUrL.slice(0, index);
             let websocketUrl = shareurl.slice(8);
+            // console.log("入口url------", window.iosSignUrl)
             if (this.deskCode != null) {
                 this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
             } else {
@@ -140,7 +162,7 @@ new Vue({
         //加载L98控制开关信息
         loadL98otherSetting() {
             api.loadL98otherSetting().then(res => {
-                console.log("控制开关--------", res)
+                // console.log("控制开关--------", res)
                 this.LoadL98Setting(res)
             })
         },
@@ -181,7 +203,7 @@ new Vue({
             let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : this.userInfo.openid
             var decc = new TextDecoder("utf-8");
             let result = JSON.parse(decc.decode(e.data));
-            console.log('websocket接受消息-------------------------', result)
+            // console.log('websocket接受消息-------------------------', result)
             if (result.ops == 25) {
                 let msg = {
                     ops: 26,
@@ -379,7 +401,7 @@ new Vue({
         //拉取积分换礼品列表
         loadGoods() {
             api.loadGoods().then(res => {
-                console.log('积分换礼品列表------', res);
+                // console.log('积分换礼品列表------', res);
                 this.getSendGiftList(res.slice(0));
             })
         },
@@ -414,7 +436,7 @@ new Vue({
         //获取店长推荐
         loadRecommends() {
             api.loadRecommends().then(res => {
-                console.log('店长推荐数据---------------------', res)
+                // console.log('店长推荐数据---------------------', res)
                 this.recommendList = res;
                 this.getRecommentList(this.recommendList);
             })

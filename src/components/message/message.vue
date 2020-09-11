@@ -144,74 +144,76 @@
       </scroll>
       <!-- 客服通知 -->
       <scroll ref="clientScroll" :data="clientServiceList" v-else-if="isShowTab===2">
-        <ul class="message_list">
-          <li v-if="!isClientListFlag" class="item vux-1px-b" @click="ChatToClient">
-            <div class="info_message">
-              <div class="avatar">
-                <img :src="clientImg" alt="">
-                <i class="dot" v-cloak v-show="clientObj.unReadMsgCount && client_badgeCount"></i>
-              </div>
-              <div class="name_and_message">
-                <p class="name" style="font-weight:800;font-size:15px">客服小哥</p>
-                <p class="captainMessage">欢迎光临! 有任何问题或建议，请留言</p>
-                <p class="time"> {{clientObj.lastMsg?clientObj.lastMsg.stime.slice(8,10)==today?clientObj.lastMsg.stime.slice(10,16):clientObj.lastMsg.stime.slice(5,10):""}}</p>
-              </div>
-            </div>
-          </li>
-          <li v-if="!isCashierListFlag" class="item vux-1px-b" @click="userToCashierChat">
-            <div class="info_message">
-              <div class="avatar">
-                <img :src="cashierImg" alt="">
-                <i class="dot" v-cloak v-show="cashier_badgeCount"></i>
-              </div>
-              <div class="name_and_message">
-                <p class="name" style="font-weight:800;font-size:15px">收银员</p>
-                <button class="discount-pay" @click.stop="goToCard">有券买单</button>
-                <button class="noDiscount-pay" @click.stop="payNoCashier">无券买单</button>
-              </div>
-            </div>
-          </li>
-        </ul>
-        <ul class="message_list">
-          <li v-if="isClientListFlag" class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
-            <div class="info_message">
-              <div class="avatar">
-                <img :src="item.headimgurl?item.headimgurl:clientImg" alt="">
-                <i class="dot" v-cloak v-show="item.unReadMsgCount"></i>
-              </div>
-              <div class="name_and_message">
-                <div class="personStatus">
-                  <p class="name">{{item.nickname?item.nickname:"游客"}}</p>
-                  <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
-                  <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
-                  <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}桌</span>
+        <div>
+          <ul class="message_list">
+            <li v-if="!isClientListFlag" class="item vux-1px-b" @click="ChatToClient">
+              <div class="info_message">
+                <div class="avatar">
+                  <img :src="clientImg" alt="">
+                  <i class="dot" v-cloak v-show="clientObj.unReadMsgCount && client_badgeCount"></i>
                 </div>
-                <p class="captainMessage">{{userInfo.role?"请查看用户留言消息":"欢迎光临! 有任何问题或建议，请留言"}}</p>
-                <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p>
-              </div>
-            </div>
-          </li>
-          <!-- <li class="item vux-1px-b" style="width:100%;text-align:center;height:30px;line-height:22px;font-size:16px;font-weight:900">收银情况</li> -->
-          <li v-if="isCashierListFlag" class="item vux-1px-b" @click="cashierChat(item)" v-for="(item,index) in cashierServiceList" :key="index">
-            <div class="info_message">
-              <div class="avatar">
-                <img :src="item.headimgurl?item.headimgurl:cashierImg" alt="">
-                <i class="dot" v-cloak v-show="item.unReadMsgCount"></i>
-              </div>
-              <div class="name_and_message">
-                <div class="personStatus">
-                  <p class="name">{{item.nickname?item.nickname:"游客"}}</p>
-                  <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
-                  <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
-                  <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}桌</span>
+                <div class="name_and_message">
+                  <p class="name" style="font-weight:800;font-size:15px">客服小哥</p>
+                  <p class="captainMessage">欢迎光临! 有任何问题或建议，请留言</p>
+                  <p class="time"> {{clientObj.lastMsg?clientObj.lastMsg.stime.slice(8,10)==today?clientObj.lastMsg.stime.slice(10,16):clientObj.lastMsg.stime.slice(5,10):""}}</p>
                 </div>
-                <p class="captainMessage">请查看结账情况</p>
-                <!-- <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p> -->
               </div>
-            </div>
-          </li>
-          <!-- <p v-show="(!clientServiceList.length && isClientListFlag)" class="noContent">未有留言者</p> -->
-        </ul>
+            </li>
+            <li v-if="!isCashierListFlag" class="item vux-1px-b" @click="userToCashierChat">
+              <div class="info_message">
+                <div class="avatar">
+                  <img :src="cashierImg" alt="">
+                  <i class="dot" v-cloak v-show="cashier_badgeCount"></i>
+                </div>
+                <div class="name_and_message">
+                  <p class="name" style="font-weight:800;font-size:15px">收银员</p>
+                  <button class="discount-pay" @click.stop="goToCard">有券买单</button>
+                  <button class="noDiscount-pay" @click.stop="payNoCashier">无券买单</button>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <ul class="message_list">
+            <li v-if="isClientListFlag" class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
+              <div class="info_message">
+                <div class="avatar">
+                  <img :src="item.headimgurl?item.headimgurl:clientImg" alt="">
+                  <i class="dot" v-cloak v-show="item.unReadMsgCount"></i>
+                </div>
+                <div class="name_and_message">
+                  <div class="personStatus">
+                    <p class="name">{{item.nickname?item.nickname:"游客"}}</p>
+                    <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
+                    <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
+                    <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}桌</span>
+                  </div>
+                  <p class="captainMessage">{{userInfo.role?"请查看用户留言消息":"欢迎光临! 有任何问题或建议，请留言"}}</p>
+                  <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p>
+                </div>
+              </div>
+            </li>
+            <!-- <li class="item vux-1px-b" style="width:100%;text-align:center;height:30px;line-height:22px;font-size:16px;font-weight:900">收银情况</li> -->
+            <li v-if="isCashierListFlag" class="item vux-1px-b" @click="cashierChat(item)" v-for="(item,index) in cashierServiceList" :key="index">
+              <div class="info_message">
+                <div class="avatar">
+                  <img :src="item.headimgurl?item.headimgurl:cashierImg" alt="">
+                  <i class="dot" v-cloak v-show="item.unReadMsgCount"></i>
+                </div>
+                <div class="name_and_message">
+                  <div class="personStatus">
+                    <p class="name">{{item.nickname?item.nickname:"游客"}}</p>
+                    <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
+                    <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
+                    <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}桌</span>
+                  </div>
+                  <p class="captainMessage">请查看结账情况</p>
+                  <!-- <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p> -->
+                </div>
+              </div>
+            </li>
+            <!-- <p v-show="(!clientServiceList.length && isClientListFlag)" class="noContent">未有留言者</p> -->
+          </ul>
+        </div>
       </scroll>
       <!-- 通知 -->
       <scroll :data="captainMessageList" v-else-if="isShowTab==3">

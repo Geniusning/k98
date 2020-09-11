@@ -148,55 +148,19 @@ export default {
               element.name = element.content;
               break;
             default:
+              element.name = element.content;
               break;
           }
         });
-        //console.log("分享的优惠券-----------------------：", tempArr);
         this.couponList = tempArr;
-        let _url = window.location.href;
-        this.myShareUrl = _url.split("#")[0];
-        //console.log("this.myShareUrl----", this.myShareUrl);
         setTimeout(() => {
-          if (util.isAndroid()) {
             let shareObj = {
               title: "新人大礼包",
-              desc: `抢了${
-                this.shopSettingInfo.aliasName
-              }一份新人礼包，转送给你，有空去瞅瞅`,
-              link: `${this.shareUrl}k98/shareNew?visitType=4&phone=${
-                this.userInfo.phone
-              }&role=${this.userInfo.role}`,
+              desc: `抢了${this.shopSettingInfo.aliasName}一份新人礼包，转送给你，有空去瞅瞅`,
+              link: `${this.shareUrl}k98/shareNew?visitType=4&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
               imgUrl: `${this.shopSettingInfo.image}`
             };
-            // util._getJssdkInfo(shareObj, this.myShareUrl, 20,  ()=>{
-            //   this.receiveACouponByID(this.couponList[1].couponID,'b')
-            //  });
-            util._getJssdkInfo(
-              shareObj,
-              this.myShareUrl,
-              this.couponList[1].couponID,
-              "b",
-              this.receiveACouponByID
-            );
-          } else {
-            let shareObj = {
-              title: "新人大礼包",
-              desc: `抢了${
-                this.shopSettingInfo.aliasName
-              }一份新人礼包，转送给你，有空去瞅瞅`,
-              link: `${this.shareUrl}k98/shareNew?visitType=4&phone=${
-                this.userInfo.phone
-              }&role=${this.userInfo.role}`,
-              imgUrl: `${this.shopSettingInfo.image}`
-            };
-            util._getJssdkInfo(
-              shareObj,
-              this.myShareUrl,
-              this.couponList[1].couponID,
-              "b",
-              this.receiveACouponByID
-            );
-          }
+            util.setShareInfo(shareObj,this.couponList[1].couponID,"b",this.receiveACouponByID);
         }, 1000);
       });
     },

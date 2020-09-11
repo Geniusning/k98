@@ -508,7 +508,7 @@
         this.selectMessageFromQueue();
         if (this.topUpMessage && this.isHandleMessageFromQueue) {
           this.isHandleMessageFromQueue = false;
-          console.log("this.topUpMessage---",this.topUpMessage)
+          // console.log("this.topUpMessage---",this.topUpMessage)
           this.addFriendEvtObj(this.topUpMessage);
           this.delMessageQueue();
           this.clearTopUpMessage();
@@ -598,7 +598,7 @@
       loadIdentityList() {
         var count = 0
         api.loadIdentityList().then(res => {
-          console.log("分身res---", res)
+          // console.log("分身res---", res)
           if (res.errorCode === 0) {
             // this.$nextTick(()=>{
             this.divideList = res.info
@@ -1261,7 +1261,7 @@
     },
     watch: {
       userInfo: function(newValue) {
-        console.log("userInfo-watch-", newValue)
+        // console.log("userInfo-watch-", newValue)
         this.hasUserRole = (newValue.role != '' || newValue.openid.indexOf("@master") > -1)
       },
       dynamicFriendEvt: function(newValue) {
@@ -1415,7 +1415,7 @@
         this.judgeEveryBool(true, false, false, true);
       },
       soulFriInfo: function(newValue) {
-        console.log("soulFriInfo----", newValue)
+        // console.log("soulFriInfo----", newValue)
         clearTimeout(this.timeTick);
         if (!newValue.msgCode) {
           return;
@@ -1428,7 +1428,7 @@
         this.showMatchingSoulTimes++;
       },
       topUpGameInfo: function(newValue) {
-        console.log("topUpGameInfo---",newValue)
+        // console.log("topUpGameInfo---",newValue)
         clearTimeout(this.timeTick);
         if (!newValue.msgCode) {
           return;
@@ -1454,7 +1454,7 @@
       },
       $route: function(newValue, oldValue) {
         //隐藏导航.控制信封和客服图标显示
-        console.log("$route---", newValue)
+        // console.log("$route---", newValue)
         if (
           newValue.name == "home" ||
           newValue.name == "friend" ||

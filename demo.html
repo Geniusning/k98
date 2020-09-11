@@ -2,181 +2,180 @@
 <html>
 
 <head>
-  <meta charset=utf-8 />
-  <title>zimv-css 3d ball</title>
+    <meta charset=utf-8 />
+    <title>zimv-css 3d ball</title>
 </head>
 <style>
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-      Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  }
-
-  #chartdiv {
-    width: 100%;
-    height: 98vh;
-  }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+    
+    #chartdiv {
+        width: 100%;
+        height: 98vh;
+    }
 </style>
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
 
 <body οnunlοad="checkLeave()">
-  <div id="chartdiv"></div>
+    <div id="chartdiv"></div>
 </body>
 <script>
-  // let target = 40
-  // let testArr = [10,30,1,2,4,38,39,30,38]
-  // let result = {}
-  // let different 
-  // let index
-  // for ( index = 0; index < testArr.length; index++) {
-  //   const element = testArr[index];
-  //   let tempArr = []
-  //   different = target-element
-  //   let i = testArr.indexOf(different)
-  //   if(i>index){
-  //     result[index] = [index,i]
-  //   }
-  // }
-  // var arr = [1,2,3,4]
-  // function xxxx(params) {
-  //   var leftArr = []
-  //   var rightArr = []
-  //   var result = []
-  //   leftArr[0] = 1
-  //   rightArr[params.length-1] = 1
-  //   debugger
-  //   for (let i = 1; i < params.length; i++) {   //left[1] = 1*1 = 1  left[2] = 1*2= 2   left[3] = 2*3 = 6 
-  //    leftArr[i] = leftArr[i-1] * params[i-1]
-  //   }
-  //   for (let j = params.length-2; j > -1; j--) { //right[]
-  //    rightArr[j] = rightArr[j+1] * params[j+1]
-  //   }
-  //   for (let z = 0; z < params.length; z++) {
-  //    result[z] = leftArr[z]* rightArr[z]
-  //   }
-  //   return result
-  // }
-  // //console.log(xxxx(arr))
-  // // //console.log(result)
-  // let str = "oqWlD1h6Zurgr6YZVTYAqe5JL9oM@master_707fe"
-  // //console.log(str.indexOf("@master"))
+    // let target = 40
+    // let testArr = [10,30,1,2,4,38,39,30,38]
+    // let result = {}
+    // let different 
+    // let index
+    // for ( index = 0; index < testArr.length; index++) {
+    //   const element = testArr[index];
+    //   let tempArr = []
+    //   different = target-element
+    //   let i = testArr.indexOf(different)
+    //   if(i>index){
+    //     result[index] = [index,i]
+    //   }
+    // }
+    // var arr = [1,2,3,4]
+    // function xxxx(params) {
+    //   var leftArr = []
+    //   var rightArr = []
+    //   var result = []
+    //   leftArr[0] = 1
+    //   rightArr[params.length-1] = 1
+    //   debugger
+    //   for (let i = 1; i < params.length; i++) {   //left[1] = 1*1 = 1  left[2] = 1*2= 2   left[3] = 2*3 = 6 
+    //    leftArr[i] = leftArr[i-1] * params[i-1]
+    //   }
+    //   for (let j = params.length-2; j > -1; j--) { //right[]
+    //    rightArr[j] = rightArr[j+1] * params[j+1]
+    //   }
+    //   for (let z = 0; z < params.length; z++) {
+    //    result[z] = leftArr[z]* rightArr[z]
+    //   }
+    //   return result
+    // }
+    // //console.log(xxxx(arr))
+    // // //console.log(result)
+    // let str = "oqWlD1h6Zurgr6YZVTYAqe5JL9oM@master_707fe"
+    // //console.log(str.indexOf("@master"))
 
-  // var heightChecker = function (heights) {
-  //     let count = 0
-  //     let sortArr = [...heights].sort(function(a,b){return a-b})
-  //     sortArr.forEach((item,index)=>{
-  //       if(item != heights[index]){
-  //         count ++
-  //       }
-  //     })
-  //     return count
-  //   };
+    // var heightChecker = function (heights) {
+    //     let count = 0
+    //     let sortArr = [...heights].sort(function(a,b){return a-b})
+    //     sortArr.forEach((item,index)=>{
+    //       if(item != heights[index]){
+    //         count ++
+    //       }
+    //     })
+    //     return count
+    //   };
 
-  //   //console.log(heightChecker([5, 1, 2, 3, 4]))
+    //   //console.log(heightChecker([5, 1, 2, 3, 4]))
 
-  // var findLengthOfLCIS = function (nums) {
-  //   // 1.检测边界条件
-  //   if (nums.length < 2) return nums.length
+    // var findLengthOfLCIS = function (nums) {
+    //   // 1.检测边界条件
+    //   if (nums.length < 2) return nums.length
 
-  //   // 2.滑动窗口，找到最长连续字串
-  //   let left = 0, current = 0, right = 1, len = 1
-  //   while (right < nums.length) {
-  //     // 不是递增，移动 left 指向
-  //     debugger
-  //     if (nums[right] <= nums[current]) {
-  //       left = right
-  //     }
-  //     // 计算当前的最大字串长度
-  //     len = Math.max(len, right - left + 1)
-  //     current++
-  //     right++
-  //   }
-  //   return len
-  // };
-  //   findLengthOfLCIS([1,2,3,2,4,7])
+    //   // 2.滑动窗口，找到最长连续字串
+    //   let left = 0, current = 0, right = 1, len = 1
+    //   while (right < nums.length) {
+    //     // 不是递增，移动 left 指向
+    //     debugger
+    //     if (nums[right] <= nums[current]) {
+    //       left = right
+    //     }
+    //     // 计算当前的最大字串长度
+    //     len = Math.max(len, right - left + 1)
+    //     current++
+    //     right++
+    //   }
+    //   return len
+    // };
+    //   findLengthOfLCIS([1,2,3,2,4,7])
 
-  //原地去重1
-  // var removeDuplicates = function (nums) {
-  //   var count = 0
-  //   var len = nums.length
-  //   for (let i = 1; i < len; i++) {
-  //     if (nums[i] != nums[i - 1]) {
-  //       nums[i - count] = nums[i]
-  //     } else {
-  //       count++
-  //     }
-  //   }
-  //   return len - count
-  // };
-  // //console.log(removeDuplicates([1, 3, 4, 4, 4, 5, 5]))
+    //原地去重1
+    // var removeDuplicates = function (nums) {
+    //   var count = 0
+    //   var len = nums.length
+    //   for (let i = 1; i < len; i++) {
+    //     if (nums[i] != nums[i - 1]) {
+    //       nums[i - count] = nums[i]
+    //     } else {
+    //       count++
+    //     }
+    //   }
+    //   return len - count
+    // };
+    // //console.log(removeDuplicates([1, 3, 4, 4, 4, 5, 5]))
 
-  //原地去重2
-  // var removeDuplicates = function (nums) {
-  //   let j = 0, i;
-  //   for (i = 1; i < nums.length; i++) {
-  //     if (nums[i] != nums[j]) {
-  //       j++
-  //       nums[j] = nums[i]
-  //     }
-  //   }
-  //   return j + 1
-  // };
+    //原地去重2
+    // var removeDuplicates = function (nums) {
+    //   let j = 0, i;
+    //   for (i = 1; i < nums.length; i++) {
+    //     if (nums[i] != nums[j]) {
+    //       j++
+    //       nums[j] = nums[i]
+    //     }
+    //   }
+    //   return j + 1
+    // };
 
-  //反转字符串
-  // var reverseWords = function (s) {
-  //     let splitArr = s.split(" ")
-  //     splitArr.forEach(function (str,index,arr) {
-  //       arr[index] = arr[index].split("").reverse().join("")
-  //     })
-     
-  //     let resultStr = splitArr.join(" ")
-  //     return resultStr
-  //   };
+    //反转字符串
+    // var reverseWords = function (s) {
+    //     let splitArr = s.split(" ")
+    //     splitArr.forEach(function (str,index,arr) {
+    //       arr[index] = arr[index].split("").reverse().join("")
+    //     })
 
-  //   //console.log(reverseWords("Let's take LeetCode contest"))
+    //     let resultStr = splitArr.join(" ")
+    //     return resultStr
+    //   };
 
-  //   var reverseWords = function (s) {
-  //       let arr = s.split("").reverse().join("")
-  //       return arr.split(" ").reverse().join(" ")
-  //     };
-  // //console.log(0.1+0.3)
-  // var arr1 = [1,2,3]
-  // var arr2 = [{name:"liu",age:2},{name:"li",age:4}]
-  // arr1.forEach(item=>{
-  //   item = item *3
-  // })
-  // //console.log(arr1)
-  // // arr2.forEach(item=>{
-  // //   if(item.age===2){
-  // //     item = {
-  // //       name:"damao",
-  // //       age : 4
-  // //     }
-  // //   }
-  // // })
-  // // //console.log(arr2)
-  // arr2.forEach(item => {
-  //     if (item.age === 2) {
-  //       item.name = "zhoujielun"
-  //     }
-  //   })
-  //   //console.log(arr2)
+    //   //console.log(reverseWords("Let's take LeetCode contest"))
 
-  //分配饼干
-  // var findContentChildren = function (g, s) {
-  //     let resultArr = []
-  //     for (let i = 0; i < s.length; i++) {
-  //       for (let j = 0; j < g.length; j++) {
-  //         if (s[i] >= g[j]) {
-  //           if (g.indexOf(s[i]) > -1) {
-  //             resultArr.push(s[i])
-  //           }
+    //   var reverseWords = function (s) {
+    //       let arr = s.split("").reverse().join("")
+    //       return arr.split(" ").reverse().join(" ")
+    //     };
+    // //console.log(0.1+0.3)
+    // var arr1 = [1,2,3]
+    // var arr2 = [{name:"liu",age:2},{name:"li",age:4}]
+    // arr1.forEach(item=>{
+    //   item = item *3
+    // })
+    // //console.log(arr1)
+    // // arr2.forEach(item=>{
+    // //   if(item.age===2){
+    // //     item = {
+    // //       name:"damao",
+    // //       age : 4
+    // //     }
+    // //   }
+    // // })
+    // // //console.log(arr2)
+    // arr2.forEach(item => {
+    //     if (item.age === 2) {
+    //       item.name = "zhoujielun"
+    //     }
+    //   })
+    //   //console.log(arr2)
 
-  //         }
-  //       }
-  //     }
-  //     //console.log(resultArr)
-  //     return Math.max(...resultArr)
-  //   };
+    //分配饼干
+    // var findContentChildren = function (g, s) {
+    //     let resultArr = []
+    //     for (let i = 0; i < s.length; i++) {
+    //       for (let j = 0; j < g.length; j++) {
+    //         if (s[i] >= g[j]) {
+    //           if (g.indexOf(s[i]) > -1) {
+    //             resultArr.push(s[i])
+    //           }
+
+    //         }
+    //       }
+    //     }
+    //     //console.log(resultArr)
+    //     return Math.max(...resultArr)
+    //   };
     // //console.log(findContentChildren([1,2,3],[3]))
 
     //console.log(Boolean(12 && ""))
@@ -191,97 +190,108 @@
     //   }
     // }
     // o*2
-    
-      // function sleep() { 
-      //   return new Promise(function (resolve, reject) { 
-      //     setTimeout(function(){
-      //       console.log("c")
-      //       resolve("haha")
-      //     }, 2000); }) 
-      // }
-         
-      // async function foo() {
-      //    console.log("a") 
-      //    let str = await sleep() 
-      //   //  console.log(str)
-      //    console.log("b")
-      //   }
-      //   foo()
-  //  var longestCommonPrefix = function (strs) {
-  //     if (strs.length === 1) {
-  //       return strs[0]  
-  //     }
-  //     let firstStr = strs[0]
-  //     let resultStr = ''
 
-  //     for (let i = 0; i < firstStr.length; i++) {
-  //       let flag = strs.every(item => item[i] === firstStr[i])
-  //       if (flag) {
-  //         resultStr = resultStr + firstStr[i]
-  //       } else {
-  //         return resultStr
-  //       }
-  //     }
-  //     return resultStr
-  //   };
+    // function sleep() { 
+    //   return new Promise(function (resolve, reject) { 
+    //     setTimeout(function(){
+    //       console.log("c")
+    //       resolve("haha")
+    //     }, 2000); }) 
+    // }
 
-  //     console.log(longestCommonPrefix(['leetcode',"leetd","leetde",]))
+    // async function foo() {
+    //    console.log("a") 
+    //    let str = await sleep() 
+    //   //  console.log(str)
+    //    console.log("b")
+    //   }
+    //   foo()
+    //  var longestCommonPrefix = function (strs) {
+    //     if (strs.length === 1) {
+    //       return strs[0]  
+    //     }
+    //     let firstStr = strs[0]
+    //     let resultStr = ''
 
-  //     var imgStr = `https://llwant1.qianz.com/download/file/ef9982655ca95d676daa25d8047f5a5e.png`
-  //     var res = imgStr.split("/")
-  //     console.log(res)
-  //     console.log(res[res.length-1])
-  // let map = new Map([["}","{"],["]","["],[")","("]])
-  // console.log(map.get("{")===map.get("{"))
+    //     for (let i = 0; i < firstStr.length; i++) {
+    //       let flag = strs.every(item => item[i] === firstStr[i])
+    //       if (flag) {
+    //         resultStr = resultStr + firstStr[i]
+    //       } else {
+    //         return resultStr
+    //       }
+    //     }
+    //     return resultStr
+    //   };
 
-  // var str = "i love you"
-  // console.log(str[0])
+    //     console.log(longestCommonPrefix(['leetcode',"leetd","leetde",]))
 
-  //1
- var isValid = function (s) {
-    
-    let stack = []
-    let map = new Map([["{","}"], [ "[", "]"], [ "(",")"]])
-    if (s.length % 2 != 0) {
-      return false
-    }
-  for(let i in s){
-    const v = s[i]
-    if(["(","{","["].indexOf(v)>-1){
-      stack.push(v)
-    }else{
-      const peak = stack.pop()
-      if(v!== map.get(peak)){
-        return false
-      }
-    }
-  }
-  if (stack.length > 0) return false;
+    //     var imgStr = `https://llwant1.qianz.com/download/file/ef9982655ca95d676daa25d8047f5a5e.png`
+    //     var res = imgStr.split("/")
+    //     console.log(res)
+    //     console.log(res[res.length-1])
+    // let map = new Map([["}","{"],["]","["],[")","("]])
+    // console.log(map.get("{")===map.get("{"))
 
-   return true;
-}
+    // var str = "i love you"
+    // console.log(str[0])
 
-//2
-  var isValid = function (s) {
+    //1
+    var isValid = function(s) {
 
-    let stack = [], result=true
-    let map = new Map([["}", "{"], ["]", "["], [")", "("]])
-    if (s.length % 2 != 0) {
-      return false
-    }
-    for(let i = 0;i<s.length;i++){
-      if(!map.has(s[i])){
-        stack.push(s[i]) // [{,{,{,]
-      }else if(map.get(s[i]) === stack.pop()){
-        result = true
-      }else{
-        return false
-      }
+        let stack = []
+        let map = new Map([
+            ["{", "}"],
+            ["[", "]"],
+            ["(", ")"]
+        ])
+        if (s.length % 2 != 0) {
+            return false
+        }
+        for (let i in s) {
+            const v = s[i]
+            if (["(", "{", "["].indexOf(v) > -1) {
+                stack.push(v)
+            } else {
+                const peak = stack.pop()
+                if (v !== map.get(peak)) {
+                    return false
+                }
+            }
+        }
+        if (stack.length > 0) return false;
+
+        return true;
     }
 
-    if(stack.length!=0) return false
-    return result
-  }
-// console.log(isValid(""))
-console.log(Math.floor(Math.random() * 10))
+    //2
+    var isValid = function(s) {
+
+            let stack = [],
+                result = true
+            let map = new Map([
+                ["}", "{"],
+                ["]", "["],
+                [")", "("]
+            ])
+            if (s.length % 2 != 0) {
+                return false
+            }
+            for (let i = 0; i < s.length; i++) {
+                if (!map.has(s[i])) {
+                    stack.push(s[i]) // [{,{,{,]
+                } else if (map.get(s[i]) === stack.pop()) {
+                    result = true
+                } else {
+                    return false
+                }
+            }
+
+            if (stack.length != 0) return false
+            return result
+        }
+        // console.log(isValid(""))
+    console.log(Math.floor(Math.random() * 10))
+    var str = "aljglag/k98/home"
+    console.log(str.split('k98'))
 </script>

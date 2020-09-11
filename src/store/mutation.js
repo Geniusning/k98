@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-08 18:01:52
+ * @Last Modified time: 2020-09-10 12:01:28
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -15,7 +15,7 @@ const mutations = {
     //     state.client_badgeCount = msg.content.extMsg.count
     // },
     //更新灵魂匹配参数
-    [types.UPDATESOULPARAMS](state, {cursor=0,flag=false}) {
+    [types.UPDATESOULPARAMS](state, { cursor = 0, flag = false }) {
         state.soulCursor = cursor
         state.soulResult = flag
     },
@@ -28,7 +28,7 @@ const mutations = {
         state.checkQrCode = checkQrCode
     },
     //存储桌贴号
-    [types.SAVEDESKCODE](state, {deskCode,deskId}) {
+    [types.SAVEDESKCODE](state, { deskCode, deskId }) {
         state.deskCode = deskCode
         state.deskId = deskId
     },
@@ -89,7 +89,7 @@ const mutations = {
         for (let i = 0; i < recommentList.length; i++) {
             const recomment = recommentList[i];
             let endTime = new Date(recomment.coupInfo.endTime).getTime()
-            if (!recomment.coupInfo) {//如果优惠券被删除了，直接过滤此项目
+            if (!recomment.coupInfo) { //如果优惠券被删除了，直接过滤此项目
                 continue
             }
             if (recomment.coupInfo.startTimeOption === 1 || recomment.coupInfo.startTimeOption === 3) { //即时生效和次日生效不用判断时间
@@ -108,10 +108,10 @@ const mutations = {
         for (let index = 0; index < sendGiftList.length; index++) {
             const gift = sendGiftList[index];
             let endTime = new Date(gift.coupInfo.endTime).getTime()
-            if (!gift.coupInfo){  //如果优惠券被删除了，直接过滤此项目
+            if (!gift.coupInfo) { //如果优惠券被删除了，直接过滤此项目
                 continue
             }
-            if (gift.coupInfo.startTimeOption === 1 || gift.coupInfo.startTimeOption === 3) {  //即时生效和次日生效不用判断时间
+            if (gift.coupInfo.startTimeOption === 1 || gift.coupInfo.startTimeOption === 3) { //即时生效和次日生效不用判断时间
                 state.sendGiftList.push(gift)
                 continue
             }
@@ -157,11 +157,11 @@ const mutations = {
     //获取用户数据
     [types.GET_USERINFO](state, userinfo) {
         state.loadFriendSexType = userinfo.sex === 1 ? 0 : 1
-        // state.loadFriendSexType = userinfo.sex oqWlD1h6Zurgr6YZVTYAqe5JL9oM
-        // console.log("用户数据", state.loadFriendSexType)
+            // state.loadFriendSexType = userinfo.sex oqWlD1h6Zurgr6YZVTYAqe5JL9oM
+            // console.log("用户数据", state.loadFriendSexType)
         userinfo.sex = userinfo.sex === 1 ? "男" : "女"
         state.userInfo = userinfo;
-        
+
     },
     // 获取地理位置
     [types.GET_POSITION](state, position) {
@@ -248,7 +248,7 @@ const mutations = {
             }
             if (item.info.deskCode != 0) {
                 item.info.deskCode = util.prefixZero(item.info.deskCode, 3)
-                // //console.log(item.deskCode)
+                    // //console.log(item.deskCode)
             }
             totalCount += item.info.unReadMsgCount //累计未读消息
         })
@@ -268,7 +268,7 @@ const mutations = {
         state.alreadyFriendList.forEach(item => {
             if (lastMsgFrom.lastMsg.from === item.info.openid) {
                 let tempTime = util.timestampToTime(lastMsgFrom.lastMsg.stime)
-                //console.log('time--------------', tempTime)
+                    //console.log('time--------------', tempTime)
                 item.info.lastMsg = lastMsgFrom.lastMsg
                 item.info.lastMsg.stime = tempTime
                 item.info.unReadMsgCount = lastMsgFrom.count;
@@ -277,7 +277,7 @@ const mutations = {
         })
         state.msg_badgeCount = totalCount;
         state.badgeCount = state.msg_badgeCount + state.event_badgeCount
-        //console.log("COMPARE_LASTMESS-------------state.badgeCount", state.badgeCount)
+            //console.log("COMPARE_LASTMESS-------------state.badgeCount", state.badgeCount)
     },
     //增加推送点赞事件列表
     // [types.ADD_FRIENDEVTLIST](state, friendEvtList) {
@@ -295,13 +295,13 @@ const mutations = {
     },
     //更新好友事件消息框内容
     [types.UPDATE_DYNAMICMESSAGE](state, friendEvtObj) {
-        
+
         console.log("mutation friendEvtObj----------", friendEvtObj)
         let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : state.userInfo.openid
         if (friendEvtObj.identiry && (friendEvtObj.identiry != cacheOpenId)) { //判断是否发送给当前分身，是才弹框
             return
         }
-      
+
         //如果和本人聊天信封弹框不在对话框弹出
         // if (!friendEvtObj.content.fromInfo) { //粗暴解决msgCode=4  无法推送的bug
         //     friendEvtObj.content.extMsg = {
@@ -324,7 +324,7 @@ const mutations = {
                 };
                 if (friendEvtObj.content.extMsg.allInfo.lastMsg.chatExtMsg) {
                     state.allMutatualInfo = friendEvtObj
-                    //console.log('msgCode为1的消息----------------', state.allMutatualInfo)
+                        //console.log('msgCode为1的消息----------------', state.allMutatualInfo)
                 }
                 if (state.staticChatFriendObj.openid == friendEvtObj.content.fromInfo.openid) { //在聊天页面不弹聊天通知信封
                     return false;
@@ -366,7 +366,7 @@ const mutations = {
                 };
                 friendEvtObj.content.extMsg.lastMsg['msg'] = "店长给你发优惠券啦";
                 friendEvtObj.content["notifyType"] = 4;
-                console.log("state.dynamicFriendEvt----", friendEvtObj.content)
+                // console.log("state.dynamicFriendEvt----", friendEvtObj.content)
                 state.dynamicFriendEvt = friendEvtObj.content;
                 break;
             case 6:
@@ -388,7 +388,7 @@ const mutations = {
                 // friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
                 // state.dynamicFriendEvt = friendEvtObj.content;
                 state.topUpGameInfo = friendEvtObj
-                console.log('好友邀请你进游戏玩-----------', friendEvtObj)
+                    // console.log('好友邀请你进游戏玩-----------', friendEvtObj)
                 break;
             case 8: //上线通知
                 if (friendEvtObj.content.fromInfo.openid === cacheOpenId) { //切换分身时不给自己发上线通知
@@ -405,7 +405,7 @@ const mutations = {
                 state.dynamicFriendEvt = friendEvtObj.content;
                 break;
             case 9:
-                console.log("999----friendEvtObj", friendEvtObj)
+                // console.log("999----friendEvtObj", friendEvtObj)
                 let shopSendText = friendEvtObj.content.extMsg
                 friendEvtObj.content.extMsg = {
                     lastMsg: {},
@@ -475,7 +475,7 @@ const mutations = {
                 // friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
                 // state.dynamicFriendEvt = friendEvtObj.content;
                 state.topUpGameInfo = friendEvtObj
-                //console.log('好友邀请你进游戏玩-----------', friendEvtObj)
+                    //console.log('好友邀请你进游戏玩-----------', friendEvtObj)
                 break;
             case 21: //监听灵魂匹配推送
                 state.soulFriInfo = friendEvtObj
@@ -488,7 +488,7 @@ const mutations = {
                 // friendEvtObj.content.extMsg.lastMsg['msg'] = "好友邀请你进游戏玩啦";
                 // state.dynamicFriendEvt = friendEvtObj.content;
                 state.topUpGameInfo = friendEvtObj
-                //console.log('队列约战你进游戏玩-----------', friendEvtObj)
+                    //console.log('队列约战你进游戏玩-----------', friendEvtObj)
                 break;
             case 27: //店员送券活动
                 friendEvtObj.content.extMsg = {
@@ -502,7 +502,7 @@ const mutations = {
                 break
             case 30:
                 state.topUpGameInfo = friendEvtObj
-                //console.log('mutation 友商互推-----------', friendEvtObj)
+                    //console.log('mutation 友商互推-----------', friendEvtObj)
                 break;
             default:
                 break;
@@ -537,42 +537,42 @@ const mutations = {
     //获取系统消息列表
     [types.GET_CAPTAINMESSAGELIST](state, { data }) {
         state.group_badgeCount = 0
-        console.log("系统通知列表---",data)
-        data.forEach(item=>{
-            item.time = util.timestampToTime(item.time).slice(5,10)
-            if(item.unread){
+        console.log("系统通知列表---", data)
+        data.forEach(item => {
+            item.time = util.timestampToTime(item.time).slice(5, 10)
+            if (item.unread) {
                 state.group_badgeCount++
             }
             switch (item.type) {
                 case 1:
                     item['name'] = `门店公告新活动啦，去看看>`
                     item['img'] = `../../assets/image/${item.type}.png`
-                break;
+                    break;
                 case 2:
                     item['name'] = `大话骰比赛开始啦，不服来战>`
                     item['img'] = `../../assets/image/${item.type}.png`
-                break;
+                    break;
                 case 3:
                     item['name'] = `邀请新朋友，双重厚礼送您俩>`
                     item['img'] = `../../assets/image/${item.type}.png`
-                break;
+                    break;
                 case 4:
                     item['name'] = `1元团购，兄弟们一起抢劫老板啰>`
                     item['img'] = `../../assets/image/${item.type}.png`
-                break;
+                    break;
                 case 5:
                     item['name'] = `您参与得比赛结束啦！查看名次>`
                     item['img'] = `../../assets/image/${item.type}.png`
-                break;
+                    break;
                 case 6:
                     item['name'] = `一张优惠券已经存入卡券包>`
                     item['img'] = `../../assets/image/${item.type}.png`
-                break;
+                    break;
                 case 7:
                     item['name'] = `一张优惠券已经存入卡券包>`
                     item['img'] = `../../assets/image/${item.type}.png`
-                break;
-            
+                    break;
+
                 default:
                     break;
             }
@@ -610,8 +610,8 @@ const mutations = {
     },
     //所有类型的未读消息累加总的未读消息里面
     [types.ADD_BADGE](state) {
-        state.badgeCount = state.msg_badgeCount + state.event_badgeCount + 
-        state.manualEventsList_badgeCount + state.client_badgeCount + 
+        state.badgeCount = state.msg_badgeCount + state.event_badgeCount +
+            state.manualEventsList_badgeCount + state.client_badgeCount +
             state.group_badgeCount + state.cashier_badgeCount;
     },
     //设置候选人聊天的信息

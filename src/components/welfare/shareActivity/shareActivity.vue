@@ -44,33 +44,19 @@
     },
     created() {
       var _url = window.location.href;
-      this.myShareUrl = _url.split('#')[0];
-      console.log("this.$route---",this.$route)
       this.activityID = this.$route.params.id;
       if (_url.indexOf('activityID') > 0) { //判断是系统本身进入当前页面的还是从分享链接进入本页面
         this.activityID = _url.split('activityID=')[1];
       }
-      if (util.isAndroid()) {
-        let shareObj = {
+      let shareObj = {
           title: "活动通知",
           desc: "本店最新活动，会员特权。点击查看",
           link: `${this.shareUrl}k98/shareActivity/${this.activityID}?activityID=${this.activityID}&visitType=5&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
           imgUrl: `${this.shopSettingInfo.image}`
         };
-        util._getJssdkInfo(shareObj, this.myShareUrl, 20, "activity", this.shareGetJifen);
-      } else {
-        let shareObj = {
-          title: "活动通知",
-          desc: "本店最新活动，会员特权。点击查看",
-          link: `${this.shareUrl}k98/shareActivity/${this.activityID}?activityID=${this.activityID}&visitType=5&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
-          imgUrl: `${this.shopSettingInfo.image}`
-        };
-        util._getJssdkInfo(shareObj, this.myShareUrl, 20, "activity", this.shareGetJifen);
-      }
+        util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
     },
     beforeRouteEnter(to, from, next) {
-      //console.log("路由判断to---------------",to)
-      //console.log("路由判断from---------------",from)
       if (from.name === "message" || from.name === "welfare" || from.name === "giftDetail") {
         next(vm => {
           vm.toHomeFlag = true

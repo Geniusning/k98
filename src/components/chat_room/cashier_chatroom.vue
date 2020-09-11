@@ -79,7 +79,7 @@
                   <div class="message_box">
                     <span v-show="item.type===3" class="arrow" style="background:none"></span>
                     <p class="message" style="word-break: break-all;">
-                      <span style="color:red;font-size:18px">台/房号:{{item.selfpayinfo?item.selfpayinfo.deskcode:'88'}}</span>，申请用如下卡券买单
+                      <span style="color:red;font-size:18px">台/房号:{{item.selfpayinfo?item.selfpayinfo.deskcode:deskCode}}</span>，申请用如下卡券买单
                     </p>
                   </div>
                 </div>
@@ -344,7 +344,6 @@
         isscroll: true,
         cashierEndCursor: 0,
         isLoadMore: false,
-        deskCode: 1,
         isOpenAutoPay: false, // 是否开通自助买单
       };
     },
@@ -376,7 +375,6 @@
       });
     },
     activated() {
-      this.deskCode = this.$route.params.deskCode
       if (!(JSON.stringify(this.$route.query) === "{}")) {
         this.setChatFriend(this.$route.query.info);
       }
@@ -414,6 +412,7 @@
         "staffCouponInfo",
         "qrCodeTextObj",
         "deskId",
+        "deskCode",
         "l98Setting"
       ]),
       ...mapGetters(["qrIsShow"])
@@ -544,7 +543,6 @@
           });
           setTimeout(() => {
             let childNodes = this.$refs.chatList.childNodes;
-            // //console.log("LastChatMsg_childNodes-------------", childNodes);
             console.log("childNodes[childNodes.length-1].clientHeight--", childNodes[childNodes.length - 1].clientHeight)
             this.$refs.listView.scrollBy(0, -(childNodes[childNodes.length - 1].clientHeight - 50));
           }, 100);

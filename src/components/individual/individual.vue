@@ -76,8 +76,9 @@
                         <el-cascader
                             size="large"
                             :options="options"
-                            v-model="selectedOptions"
-                            @change="handleChange"
+                            :value="homeTown"
+                            v-model="selectedHomeTownOptions"
+                            @change="handleChangeHomeTown"
                         ></el-cascader>
                     </li>
                     <li class="item vux-1px-b">
@@ -331,7 +332,7 @@ export default {
     data() {
         return {
             options: provinceAndCityData,
-            selectedOptions: [],
+            selectedHomeTownOptions: [],
             city: "",
             password: "",
             tempPic: require("../../assets/image/divide_add_avatar.png"),
@@ -366,17 +367,28 @@ export default {
             onceClick: true,
             showComfirmPwd: false,
             userInfoTags: [],
+            positionCode:0,//行业代码
+            homeTown:"",//籍贯
             sexList: [["男", "女"]],
             positionList: [
                 [
                     "自由职业",
+                    "全职在家",
                     "贸易/商业",
+                    "生产/制造",
                     "房地产/建筑",
                     "银行/金融",
                     "IT/互联网",
                     "电子商务",
+                    "通信电子",
                     "政府机关",
+                    "文化/艺术",
+                    "医疗/健康",
                     "传媒影视",
+                    "设计/创意",
+                    "娱乐/休闲",
+                    "美容/保健",
+                    "零售/商场",
                     "健身/体育",
                     "学生",
                     "其他"
@@ -487,11 +499,16 @@ export default {
             //软键盘关闭事件
             window.scrollTo(0, 0); //解决ios键盘留白的bug
         });
+        setTimeout(() => {
+            this.homeTown = "beijing"
+        }, 500);
     },
     computed: {
         ...mapState(["userInfo"])
     },
     mounted() {
+        this.position = this.positionList[0][Number(this.userInfo.industry)]
+        this.selectedHomeTownOptions = [this.userInfo.hometownCode.slice(0,2)+"0000",this.userInfo.hometownCode]
         this.name = this.userInfo.nickname;
         this.gender = this.userInfo.sex;
         this.constellation = this.userInfo.constellation;
@@ -516,10 +533,10 @@ export default {
         });
     },
     methods: {
-        handleChange(value) {
-            var ctt = CodeToText[value[0]] + CodeToText[value[1]];
-            console.log(value[1])
-            console.log(ctt);
+        handleChangeHomeTown(value) {
+            this.homeTown = CodeToText[value[0]] + CodeToText[value[1]];
+            this.hometownCode = value[1]
+            console.log(this.selectedHomeTownOptions)
         },
         checkPass() {
             let data = {
@@ -709,7 +726,8 @@ export default {
         },
         onChange_P(val) {
             this.position = val[0];
-            console.log("职位选择---", this.position);
+            console.log("val---", this.positionList[0].indexOf(this.position));
+            this.positionCode = String(this.positionList[0].indexOf(this.position))
         },
         //back
         goBack() {
@@ -727,7 +745,10 @@ export default {
                 isStealth: this.isStealth,
                 isQuiet: this.isQuiet,
                 isBattle: this.isBattle,
-                staffTag: this.staffTag
+                staffTag: this.staffTag,
+                industry:this.positionCode,
+                hometownCode:this.hometownCode,
+                hometown:this.homeTown,
             };
             // if (this.phone.length != 11) {
             //   this.$vux.toast.text("请输入正确手机号", "top");
@@ -749,8 +770,9 @@ export default {
                             this.getuserInfo(res);
                             this.$vux.toast.text("保存成功", "top");
                             //核对员工电话
-                            if (this.oldPhone === this.phone) {
+                            if (this.oldPhone == this.phone) {
                                 //如果手机号未更改，则不需要验证
+                                console.log("进来手机号不需要验证")
                                 return;
                             }
                             if (this.phone != "") {
