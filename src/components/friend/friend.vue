@@ -33,8 +33,9 @@
                     <span class="dot left"></span>
                     <span class="dot right"></span>
                 </div>
-                <p class="soulText">{{modalSwitch?"自己找":"天赐玩伴"}}</p>
-                <p class="intro_soulText" v-show="isFirstLoad">求上天，赐个投缘玩伴</p>
+                <p class="soulText">{{modalSwitch?"自己找":"有缘人"}}</p>
+                <p class="intro_soulText" v-show="isFirstLoad">一键找到你的有缘人</p>
+                <p class="intro_picAndComment" v-show="isFirstLoad">照片及评价</p>
             </div>
             <!-- isFirstLoad -->
             <div v-if="isFirstLoad">
@@ -212,7 +213,7 @@
         <div class="guide_bg" v-show="isFirstLoad">
             <!-- <img onclick="return false" class="thumb" src="../../assets/image/thumb.png" alt> -->
             <p class="know" @click="isFirstLoad=false">知道了</p>
-            <!-- <p class="intro">个人资料</p> -->
+            <p class="intro">设置个人资料</p>
         </div>
         <!-- 分享引导 -->
         <div class="bg" v-if="isShow_bg" @click="share">
@@ -260,7 +261,7 @@ export default {
         return {
             isShow_bg: false,
             searching: false,
-            soulText: `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`,
+            soulText: `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的有缘人`,
             isAlreadyFriend: false,
             showAblumFlag: false, //展示生活照
             sortType: 0, //排序类型
@@ -1162,13 +1163,13 @@ export default {
         margin: 0rem auto 0; // padding:0 0.5rem;
         position: relative; // z-index: 1000;
         width: 8.9rem; // width: 100%;
-        height: 9.8rem;
+        height: 9.9rem;
         list-style: none;
         .switchBtn_wrapper {
             position: absolute;
             top: -1.3rem;
             left: 3.8rem;
-            .intro_soulText {
+            .intro_soulText,.intro_picAndComment {
                 position: absolute;
                 top: 0.7rem;
                 left: 1.5rem;
@@ -1177,6 +1178,10 @@ export default {
                 font-weight: 700;
                 z-index: 99;
                 width: 3.6667rem;
+            }
+            .intro_picAndComment{
+                top: 2.5rem;
+                left: 2.5rem;
             }
             .imgBox {
                 .soulIcon {
@@ -1338,9 +1343,10 @@ export default {
             border: 2px solid red;
         }
         .intro {
+            width: 2.5rem;
             position: absolute;
-            top: 0.4667rem;
-            left: 1.2rem;
+            bottom: 1.4667rem;
+            right: .1rem;
             color: #fff;
             font-size: 0.4rem;
             font-weight: 700;

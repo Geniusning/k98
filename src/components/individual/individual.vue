@@ -76,7 +76,6 @@
                         <el-cascader
                             size="large"
                             :options="options"
-                            :value="homeTown"
                             v-model="selectedHomeTownOptions"
                             @change="handleChangeHomeTown"
                         ></el-cascader>
@@ -317,7 +316,11 @@ import {
     Group,
     XInput
 } from "vux";
-import { provinceAndCityData, CodeToText, TextToCode } from 'element-china-area-data'
+import {
+    provinceAndCityData,
+    CodeToText,
+    TextToCode
+} from "element-china-area-data";
 import Popup from "base/popUp/popUp";
 import VueCropper from "vue-cropper";
 import axios from "axios";
@@ -367,8 +370,9 @@ export default {
             onceClick: true,
             showComfirmPwd: false,
             userInfoTags: [],
-            positionCode:0,//行业代码
-            homeTown:"",//籍贯
+            positionCode: 0, //行业代码
+            homeTown: "", //籍贯
+            hometownCode: "",
             sexList: [["男", "女"]],
             positionList: [
                 [
@@ -454,40 +458,50 @@ export default {
             ],
             tagList: [
                 {
-                    name: "小逗比",
+                    name: "开放",
                     id: 0,
                     checked: false
                 },
                 {
-                    name: "萌萌哒",
+                    name: "内向",
                     id: 1,
                     checked: false
                 },
                 {
-                    name: "幽默",
+                    name: "爽",
                     id: 2,
                     checked: false
                 },
                 {
-                    name: "二货",
+                    name: "二师兄",
                     id: 3,
                     checked: false
                 },
                 {
-                    name: "逗比",
+                    name: "旅游",
                     id: 4,
                     checked: false
                 },
                 {
-                    name: "小萌萌",
+                    name: "游戏",
                     id: 5,
                     checked: false
                 },
                 {
-                    name: "帅呆了",
+                    name: "泡吧",
                     id: 6,
                     checked: false
-                }
+                },
+                {
+                    name: "求撩",
+                    id: 7,
+                    checked: false
+                },
+                {
+                    name: "别烦我",
+                    id: 8,
+                    checked: false
+                },
             ],
             height: "",
             oldPhone: ""
@@ -500,15 +514,20 @@ export default {
             window.scrollTo(0, 0); //解决ios键盘留白的bug
         });
         setTimeout(() => {
-            this.homeTown = "beijing"
+            this.homeTown = "beijing";
         }, 500);
     },
     computed: {
         ...mapState(["userInfo"])
     },
     mounted() {
-        this.position = this.positionList[0][Number(this.userInfo.industry)]
-        this.selectedHomeTownOptions = [this.userInfo.hometownCode.slice(0,2)+"0000",this.userInfo.hometownCode]
+        this.position = this.positionList[0][Number(this.userInfo.industry)];
+        this.positionCode = String(this.positionList[0].indexOf(this.position));
+        this.selectedHomeTownOptions = [
+            this.userInfo.hometownCode.slice(0, 2) + "0000",
+            this.userInfo.hometownCode
+        ];
+        this.hometownCode = this.userInfo.hometownCode;
         this.name = this.userInfo.nickname;
         this.gender = this.userInfo.sex;
         this.constellation = this.userInfo.constellation;
@@ -535,8 +554,8 @@ export default {
     methods: {
         handleChangeHomeTown(value) {
             this.homeTown = CodeToText[value[0]] + CodeToText[value[1]];
-            this.hometownCode = value[1]
-            console.log(this.selectedHomeTownOptions)
+            this.hometownCode = value[1];
+            console.log(this.selectedHomeTownOptions);
         },
         checkPass() {
             let data = {
@@ -617,10 +636,10 @@ export default {
         selectTag(e, item, index) {
             //console.log(index);
             if (e.target.className.indexOf("active") == -1) {
-                if (this.commonList.length > 4) {
+                if (this.commonList.length > 2) {
                     this.$vux.toast.show({
                         type: "text",
-                        text: "最多设置5个标签",
+                        text: "最多设置3个标签",
                         width: "12em"
                     });
                     return;
@@ -727,7 +746,9 @@ export default {
         onChange_P(val) {
             this.position = val[0];
             console.log("val---", this.positionList[0].indexOf(this.position));
-            this.positionCode = String(this.positionList[0].indexOf(this.position))
+            this.positionCode = String(
+                this.positionList[0].indexOf(this.position)
+            );
         },
         //back
         goBack() {
@@ -746,9 +767,9 @@ export default {
                 isQuiet: this.isQuiet,
                 isBattle: this.isBattle,
                 staffTag: this.staffTag,
-                industry:this.positionCode,
-                hometownCode:this.hometownCode,
-                hometown:this.homeTown,
+                industry: String(this.positionCode),
+                hometownCode: this.hometownCode,
+                hometown: this.homeTown
             };
             // if (this.phone.length != 11) {
             //   this.$vux.toast.text("请输入正确手机号", "top");
@@ -764,36 +785,29 @@ export default {
             }
             api.savePersonalInfo(param).then(res => {
                 console.log("res---", res);
-                if (res.errorCode === 0) {
-                    api.getUserInfo("/api/loadUserInfo")
-                        .then(res => {
-                            this.getuserInfo(res);
+                if (res.errCode === 0) {
+                    api.getUserInfo("/api/loadUserInfo").then(userInfo => {
                             this.$vux.toast.text("保存成功", "top");
                             //核对员工电话
-                            if (this.oldPhone == this.phone) {
-                                //如果手机号未更改，则不需要验证
-                                console.log("进来手机号不需要验证")
-                                return;
-                            }
-                            if (this.phone != "") {
-                                api.verifyPhoneNumber(
-                                    this.phone,
-                                    this.userInfo.headimgurl,
-                                    this.userInfo.phone
-                                )
-                                    .then(res => {
-                                        console.log(
-                                            "核对员工电话结果-------------------",
-                                            res
-                                        );
-                                        if (res.errCode === 0) {
-                                            this.showComfirmPwd = true;
-                                        }
-                                    })
-                                    .catch(err => {
-                                        console.log(err);
-                                    });
-                            }
+                            if ((this.oldPhone != this.phone) && this.phone != "") {
+                                    api.verifyPhoneNumber(
+                                        this.phone,
+                                        this.userInfo.headimgurl,
+                                        this.userInfo.phone
+                                    ).then(res => {
+                                            console.log("核对员工电话结果---------",res);
+                                            if (res.errCode === 0) {
+                                                this.showComfirmPwd = true;
+                                            }
+                                        })
+                                        .catch(err => {
+                                            console.log(err);
+                                        });
+                                
+                                this.getuserInfo(userInfo);
+                            }else{
+                                this.getuserInfo(userInfo);
+														}
                         })
                         .catch(err => {
                             console.log(err);
@@ -834,8 +848,8 @@ export default {
 @import "~vux/src/styles/close";
 @import "../../assets/less/variable.less";
 @import "../../assets/less/mine.less";
-input .el-input__inner{
-  border: none !important
+input .el-input__inner {
+    border: none !important;
 }
 .individual {
     // height: 100%;

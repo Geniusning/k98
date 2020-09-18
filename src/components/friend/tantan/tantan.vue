@@ -59,9 +59,9 @@
               </div>
             </div>
             <div class="tag_wrapper">
+              <span v-if="item.info.hometown">{{item.info.hometown}}</span>
+              <span>{{positionList[0][Number(item.info.industry)]}}</span>
               <span v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')" :key="index">{{item}}</span>
-              <!-- <span>招人爱</span>
-                <span>大胃王</span>-->
             </div>
             <div class="signature_wrapper">
               <!-- <p class="word">生活不止眼前的苟且，还有诗和远方的田野</p> -->
@@ -129,6 +129,31 @@
     },
     data() {
       return {
+        industry:"",
+        positionList: [
+            [
+                "自由职业",
+                "全职在家",
+                "贸易/商业",
+                "生产/制造",
+                "房地产/建筑",
+                "银行/金融",
+                "IT/互联网",
+                "电子商务",
+                "通信电子",
+                "政府机关",
+                "文化/艺术",
+                "医疗/健康",
+                "传媒影视",
+                "设计/创意",
+                "娱乐/休闲",
+                "美容/保健",
+                "零售/商场",
+                "健身/体育",
+                "学生",
+                "其他"
+            ]
+        ],
         limitFlag: true,
         like: false,
         dislike: false,
