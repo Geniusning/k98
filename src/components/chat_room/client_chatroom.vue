@@ -71,7 +71,7 @@
             </li>
             <li class="item fl">
               <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
-              <input type="file" class="file" accept="image/gif,image/jpeg,image/jpg,image/png"  @change="uploadImage">
+              <input type="file" class="file" accept="image/*"  @change="uploadImage">
             </li>
             <li class="item fl" style="padding:0" v-if="isClientFlag"  @click="sendStaffCouponToUser">
               <img style="width:100%;height:100%" onclick="return false" src="../../assets/image/quan-icon.jpg" alt>

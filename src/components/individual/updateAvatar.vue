@@ -8,11 +8,11 @@
         </div>
         <div class="file-box">
           <p class="text">更换头像</p>
-          <input type="file" accept="image/gif,image/jpeg,image/jpg,image/png" class="file" @change="uploadAvatar">
+          <input type="file" accept="image/*" class="file" @change="uploadAvatar">
         </div>
       </div>
       <div class="dailyLifePhoto-wrapper">
-        <h3 class="title">上传生活照<span class="desc">(最多上传4张)</span></h3>
+        <h3 class="title">上传生活照/名片/企业产品图片等，让更多朋友了解你<span class="desc">(限4张)</span></h3>
         <ul class="uploadLifePhotoList">
           <li v-for="(item,index) in lifePhotoList" class="photo" :key="index">
             <img :src="item" alt="" class="imgItem">
@@ -20,7 +20,7 @@
           </li>
           <li class="photo" v-show="isShowAddImg">
             <img src="../../assets/image/add_pic.png" alt="" class="imgItem">
-            <input type="file" accept="image/gif,image/jpeg,image/jpg,image/png" class="imageBtn" @change="uploadLifePic">
+            <input type="file" accept="image/*" class="imageBtn" @change="uploadLifePic">
           </li>
         </ul>
         <button class="btn" style="margin-top:10px" @click="goBack">确定</button>
@@ -93,8 +93,11 @@
     },
     methods: {
       goBack() {
-
-        this.$router.go(-2)
+         this.$vux.toast.text(
+            "保存成功",
+            "middle"
+          );
+        // this.$router.go(-2)
       },
       //选择上传生活照
       uploadLifePic(e) {
@@ -127,10 +130,10 @@
           //上传生活照
           api.updateLifePic(this.lifePicName, this.resultLife).then(res => {
             console.log("updateLifePic----", res)
-            if (res.errorCode === 0) {
+            if (res.errCode === 0) {
               api.getUserInfo().then(res => {
                 console.log("getUserInfo----", res);
-                  // this.getuserInfo(res); 
+                  this.getuserInfo(res); 
                 if (res.lifePhotoURL.lifePhotoURL) {
                   this.lifePhotoList = res.lifePhotoURL.lifePhotoURL;
                   if (res.lifePhotoURL.lifePhotoURL.length == 4) {

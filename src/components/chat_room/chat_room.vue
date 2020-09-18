@@ -488,7 +488,7 @@
                             <input
                                 type="file"
                                 class="file"
-                                accept="image/gif, image/jpeg, image/jpg, image/png"
+                                accept="image/*"
                                 @change="uploadImage"
                             />
                         </li>
@@ -1246,7 +1246,7 @@ export default {
             this.isShowEnvelope = true;
             this.envelopeText = "您已发出邀请  等待对方的回应";
             api.sentPlayGameMsg(this.friendId).then(res => {
-                //console.log("约战返回--------", res);
+                console.log("约战返回--------", res);
                 if (res.errCode == 0) {
                     // this.text = "您已发出邀请  等待对方的回应";
                     this.componentChatList.push({
