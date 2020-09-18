@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-11 18:54:06
+ * @Last Modified time: 2020-09-18 18:47:42
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -43,31 +43,26 @@ new Vue({
             timer: "",
             limitTimes: 0,
             lockReconnect: null,
-            deskCode: ""
         }
     },
     mounted() {
-        window.onload = function() {
-            // let hasParams = window.location.href.split('?').length > 1
-            if (!util.isAndroid()) {
-                let wechatInfo = navigator.userAgent.match(/MicroMessenger\/([\d\.]+)/i);
-                let versionNumber = wechatInfo[1].split(".").join("")
-                if (versionNumber > 7014) {
-                    window.iosSignUrl = window.location.href.split('k98')[0]
-                } else {
-                    window.iosSignUrl = window.location.href.split('#')[0]
-                }
-                setTimeout(() => {
-                    console.log("window.iosSignUrl----", window.iosSignUrl)
-                }, 2000);
-            }
-            if (util.isAndroid()) {
-                let url = window.location.href.split("#")[0]
-                util._getJssdkConfig(url)
-            } else {
+        if (!util.isAndroid()) {
+            let wechatInfo = navigator.userAgent.match(/MicroMessenger\/([\d\.]+)/i);
+            let versionNumber = wechatInfo[1].split(".").join("")
+            if (versionNumber > 7014) {
+                window.iosSignUrl = window.location.href.split('#')[0]
                 util._getJssdkConfig(window.iosSignUrl)
+            } else {
+                window.onload = function() {
+                    window.iosSignUrl = window.location.href.split('#')[0]
+                    util._getJssdkConfig(window.iosSignUrl)
+                }
             }
+            setTimeout(() => {
+                console.log("window.iosSignUrl----", window.iosSignUrl)
+            }, 2000);
         }
+
         this.deskCode = util.GetQueryString("deskCode")
         this.deskId = util.GetQueryString("deskID")
         this.saveDeskCode({
@@ -96,7 +91,6 @@ new Vue({
                 this.getUserInfo()
             } else if (document.visibilityState === 'hidden') {
                 console.log('后台')
-                    // this.closeWebPage()
             }
         })
         setTimeout(() => { //13秒过后如果用户没有离开系统则把用户放入待被邀请游戏队列
@@ -231,7 +225,7 @@ new Vue({
                     let fromId = message.lastMsg.from;
                     //发送消息表示已读
                     api.sendMsgReaded(fromId).then(res => {
-                        if (res.errorCode == 0) {
+                        if (res.errCode == 0) {
                             console.log('消息已读')
                         }
                     })
@@ -287,7 +281,7 @@ new Vue({
                     let fromId = message.inviterID;
                     //发送消息表示已读
                     api.sendMsgReaded(fromId).then(res => {
-                        if (res.errorCode == 0) {
+                        if (res.errCode == 0) {
                             console.log('消息已读')
                         }
                     })
@@ -355,8 +349,8 @@ new Vue({
                 this.addFriendEvtObj(result)
                 this.updateClientMsg(result.content)
                 this.addBange()
-            } else if (result.msgCode === 28) {
-                this.addFriendEvtObj(result)
+            } else if (result.msgCode === 28) { //收银员对话推送
+                // this.addFriendEvtObj(result)
                 this.updateCashierMsg(result.content)
                 this.addBange()
             } else if (result.msgCode === 21) { //灵魂匹配待被查找
@@ -394,8 +388,7 @@ new Vue({
             }
         },
         websocketclose(e) {
-            //关闭
-            //console.log("websocket关闭-----------", e)
+            console.log("websocket关闭-----------", e)
             this.reconnectWebsocket() //重连
         },
         //拉取积分换礼品列表

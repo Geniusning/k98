@@ -1721,7 +1721,7 @@ export default {
     watch: {
         LastChatMsg: function(newValue) {
             this.isShowSoulPanel = false; //当有消息隐藏灵魂匹配面板
-            // //console.log("在聊天页面收到对方发来的消息-------------------------------：",newValue);
+            console.log("在聊天页面收到对方发来的消息-------------------------------：",newValue);
             this.sendingTimes = 0; //清空限制连续发送消息次数
             let messageInfo = newValue.lastMsg;
             if (messageInfo.type == 3 || messageInfo.type == 4) {

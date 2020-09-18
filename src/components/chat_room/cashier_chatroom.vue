@@ -150,20 +150,20 @@
                 <div class="account_wrapper">
                   <div class="account_line">
                     <article class="line-title">台/房号：</article>
-                    <span class="deskCode">{{item.deskcode}}</span>
+                    <span class="deskCode">{{item.selfpayinfo.deskcode}}</span>
                     <span class="date">{{item.payTime}}</span>
                   </div>
                   <div class="account_line">
                     <article class="line-title">消费金额：</article>
-                    <span class="money">{{item.consumeamount}}元</span>
+                    <span class="money">{{item.selfpayinfo.consumeamount}}元</span>
                   </div>
                   <div class="account_line">
                     <article class="line-title">卡券名称：</article>
-                    <span class="cardname">{{item.usercouponname?item.usercouponname:"无"}}</span>
+                    <span class="cardname">{{item.selfpayinfo.usercouponname?item.selfpayinfo.usercouponname:"无"}}</span>
                   </div>
                   <div class="account_line">
                     <article class="line-title">实收金额：</article>
-                    <span class="realMoney">{{item.payamount}}元</span>
+                    <span class="realMoney">{{item.selfpayinfo.payamount}}元</span>
                   </div>
                   <div class="account_remar">
                     <article class="line-title">自助买单须知：</article>
@@ -452,7 +452,7 @@
         todayDate = new Date().getDate()
         srcTimeStampStr = todayYear+"-"+todayMon+"-"+todayDate+" "+ this.fontTime
         console.log("前移账单时间---",srcTimeStampStr)
-        this.lastestSelfPayInfo['time'] = new Date(srcTimeStampStr).getTime()
+        this.lastestSelfPayInfo['time'] = new Date(srcTimeStampStr).getTime()/1000
         console.log("this.lastestSelfPayInfo",this.lastestSelfPayInfo)
         console.log("this.lastestSelfPayInfo.time",this.lastestSelfPayInfo.time)
         let res = await api.confirmSelfPay(this.lastestSelfPayInfo)
@@ -487,6 +487,7 @@
       },
       //收银员已收款确认
       async sendAlreadyGetMoney() {
+        this.lastestSelfPayInfo.payusername = this.staticChatFriendObj.nickname
         if(!sessionStorage.getItem(this.staticChatFriendObj.openid+this.lastestSelfPayInfo.id)){
           sessionStorage.setItem(this.staticChatFriendObj.openid+this.lastestSelfPayInfo.id,this.lastestSelfPayInfo.id)
         }else{
@@ -507,9 +508,8 @@
                return
             }
           }
-        }else{
-          this.lastestSelfPayInfo.time = new Date().getTime()
         }
+        this.lastestSelfPayInfo.time = parseInt(new Date().getTime()/1000)
         console.log("收银员已收款确认---", this.lastestSelfPayInfo)
         let res = await api.confirmSelfPay(this.lastestSelfPayInfo);
         this.input_value = "您的买单款已到帐，欢迎下次光临";
@@ -612,6 +612,7 @@
       async sendAccountStateMent() {
         this.lastestSelfPayInfo.payamount = parseFloat(this.actMoney)
         this.lastestSelfPayInfo.payeephone = this.userInfo.phone
+        this.lastestSelfPayInfo.consumeamount = parseFloat(this.preMoney)
         // var cashierContent = this.getLastCheckInfo();
         console.log("cashierContent---", this.lastestSelfPayInfo);
         if (!this.preMoney && !this.actMoney) {
@@ -625,17 +626,19 @@
           payamount: parseFloat(this.actMoney)
         };
         let res = await api.matchSelfPay(data);
-        //console.log("res====>", res);
+        console.log("res====>", res);
         if (res.errCode === 0) {
           this.isShowAccount = false;
           this.componentChatList.push({
             friend: 0, //1为朋友，0为自己,
             type: 5,
-            isHandle: false,
-            deskcode: this.lastestSelfPayInfo.deskcode,
-            usercouponname: this.lastestSelfPayInfo.usercouponname,
-            payamount: this.actMoney,
-            consumeamount: this.preMoney,
+            selfpayinfo:{
+              isHandle: false,
+              deskcode: this.lastestSelfPayInfo.deskcode,
+              usercouponname: this.lastestSelfPayInfo.usercouponname,
+              payamount: this.actMoney,
+              consumeamount: this.preMoney,
+            },
             payTime: util.timestampToTimeNoYear(new Date().getTime())
           });
           setTimeout(() => {
@@ -739,12 +742,12 @@
                     chatMsgID: msg.id,
                     isHandle: msg.isHandle,
                     userCouponInfo: msg.userCoupon ? this.handleCouponInfo(msg.userCoupon) : "",
-                    deskcode: msg.selfpayinfo ? msg.selfpayinfo.deskcode : "",
-                    usercouponname: msg.selfpayinfo ?
-                      msg.selfpayinfo.usercouponname : "",
-                    payamount: msg.selfpayinfo ? msg.selfpayinfo.payamount : "",
-                    consumeamount: msg.selfpayinfo ?
-                      msg.selfpayinfo.consumeamount : "",
+                    // deskcode: msg.selfpayinfo ? msg.selfpayinfo.deskcode : "",
+                    // usercouponname: msg.selfpayinfo ?
+                    //   msg.selfpayinfo.usercouponname : "",
+                    // payamount: msg.selfpayinfo ? msg.selfpayinfo.payamount : "",
+                    // consumeamount: msg.selfpayinfo ?
+                    //   msg.selfpayinfo.consumeamount : "",
                     payTime: util.timestampToTimeNoYear(
                       msg.selfpayinfo ? msg.selfpayinfo.time : ""
                     ),
@@ -764,12 +767,12 @@
                     chatMsgID: msg.id,
                     isHandle: msg.isHandle,
                     userCouponInfo: msg.userCoupon ? this.handleCouponInfo(msg.userCoupon) : "",
-                    deskcode: msg.selfpayinfo ? msg.selfpayinfo.deskcode : "",
-                    usercouponname: msg.selfpayinfo ?
-                      msg.selfpayinfo.usercouponname : "",
-                    payamount: msg.selfpayinfo ? msg.selfpayinfo.payamount : "",
-                    consumeamount: msg.selfpayinfo ?
-                      msg.selfpayinfo.consumeamount : "",
+                    // deskcode: msg.selfpayinfo ? msg.selfpayinfo.deskcode : "",
+                    // usercouponname: msg.selfpayinfo ?
+                    //   msg.selfpayinfo.usercouponname : "",
+                    // payamount: msg.selfpayinfo ? msg.selfpayinfo.payamount : "",
+                    // consumeamount: msg.selfpayinfo ?
+                    //   msg.selfpayinfo.consumeamount : "",
                     payTime: util.timestampToTimeNoYear(
                       msg.selfpayinfo ? msg.selfpayinfo.time : ""
                     ),
@@ -1080,18 +1083,19 @@
             time: util.timestampToTime(messageInfo.stime),
             chatMsgID: messageInfo.id,
             userCouponInfo: messageInfo.userCoupon,
-            deskcode: messageInfo.selfpayinfo ?
-              messageInfo.selfpayinfo.deskcode : "",
-            usercouponname: messageInfo.selfpayinfo ?
-              messageInfo.selfpayinfo.usercouponname : "",
-            payamount: messageInfo.selfpayinfo ?
-              messageInfo.selfpayinfo.payamount : "",
-            consumeamount: messageInfo.selfpayinfo ?
-              messageInfo.selfpayinfo.consumeamount : "",
-            payTime: util.timestampToTimeNoYear(
-              messageInfo.selfpayinfo ? messageInfo.selfpayinfo.time : ""
-            )
+            selfpayinfo:messageInfo.selfpayinfo,
+            // deskcode: messageInfo.selfpayinfo ?
+            //   messageInfo.selfpayinfo.deskcode : "",
+            // usercouponname: messageInfo.selfpayinfo ?
+            //   messageInfo.selfpayinfo.usercouponname : "",
+            // payamount: messageInfo.selfpayinfo ?
+            //   messageInfo.selfpayinfo.payamount : "",
+            // consumeamount: messageInfo.selfpayinfo ?
+            //   messageInfo.selfpayinfo.consumeamount : "",
+            payTime: util.timestampToTimeNoYear(messageInfo.selfpayinfo ? messageInfo.selfpayinfo.time : "")
+
           });
+          console.log("componentChatList----",this.componentChatList)
           setTimeout(() => {
             let childNodes = this.$refs.chatList.childNodes;
             // //console.log("LastChatMsg_childNodes-------------", childNodes);

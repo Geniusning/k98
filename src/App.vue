@@ -109,9 +109,9 @@
             </div>
             <div class="topUpCommonInfo-middle">
               <div class="partition_zone">
-                <div class="topUpCommonInfo_right" style="margin-top:-.2rem">
-                  <p class="desc title_desc soulText">Ta启动了寻觅灵魂玩伴</p>
+                <div class="topUpCommonInfo_right" style="margin-top:-.1rem">
                   <p class="soulText">茫茫人海中找到了你,匹配度:80%</p>
+                  <p class="desc title_desc soulText">Ta启动了寻觅有缘人</p>
                 </div>
               </div>
             </div>
@@ -599,7 +599,7 @@
         var count = 0
         api.loadIdentityList().then(res => {
           // console.log("分身res---", res)
-          if (res.errorCode === 0) {
+          if (res.errCode === 0) {
             // this.$nextTick(()=>{
             this.divideList = res.info
             this.divideList = this.divideList.filter((item, index) => {
@@ -782,7 +782,7 @@
         if(flag){
           api.replyVipService(openid).then(res=>{
             console.log("replyVipService---",res)
-            if(res.errorCode===0){
+            if(res.errCode===0){
               this.setChatFriend(this.topUpCommonInfo.content.fromInfo);
               this.$router.push({
                 // path: `/message/${this.topUpCommonInfo.content.fromInfo.openid}`
@@ -1197,7 +1197,7 @@
       //设置已读消息
       setReadMsg(openId){
           api.sendMsgReaded(openId).then(res => {
-            if (res.errorCode == 0) {
+            if (res.errCode == 0) {
               console.log('消息已读')
             }
         })

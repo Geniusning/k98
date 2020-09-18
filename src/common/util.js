@@ -2,7 +2,7 @@
  * @Author: nicky
  * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-11 10:07:06
+ * @Last Modified time: 2020-09-17 21:51:41
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -130,7 +130,7 @@ util.timestampToTimeNoLine = function(timestamp) {
 
         }
     }
-    //时间格式 07/12 10:00
+    //时间格式 07-12 10:00
 util.timestampToTimeNoYear = function(timestamp) {
         if (typeof timestamp != "number") { //如果传入的不是整型就提示
             // console.error('传入的数据不是Number类型')
@@ -139,19 +139,18 @@ util.timestampToTimeNoYear = function(timestamp) {
         timestamp = Number(timestamp);
         if (timestamp.toString().length > 11) {
             var date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-            var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + "/";
+            var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + "-";
             var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
             var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
             var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() + "" : date.getMinutes();
             return M + D + h + m;
         } else {
             var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-            var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + "/";
+            var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + "-";
             var D = (date.getDate() < 10) ? '0' + date.getDate() + " " : date.getDate() + ' ';
             var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
             var m = (date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes();
             return M + D + h + m;
-
         }
     }
     //计算上线时间

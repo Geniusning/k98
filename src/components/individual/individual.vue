@@ -555,7 +555,6 @@ export default {
         handleChangeHomeTown(value) {
             this.homeTown = CodeToText[value[0]] + CodeToText[value[1]];
             this.hometownCode = value[1];
-            console.log(this.selectedHomeTownOptions);
         },
         checkPass() {
             let data = {
