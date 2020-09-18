@@ -364,7 +364,7 @@
         };
         let res2 = await api.launchSelfPay(data);
         console.log("res2------", res2)
-        if (res2.errorCode === 0) {
+        if (res2.errCode === 0) {
           this.cashierObj["openid"] = this.cashierObj.CashierID
           this.setChatFriend(this.cashierObj);
           setTimeout(() => {

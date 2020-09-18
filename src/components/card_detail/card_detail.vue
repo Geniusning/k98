@@ -161,7 +161,7 @@ export default {
       };
       let res1 = await api.launchSetOffUserCoupon(data);
       console.log("res1----",res1)
-      if (res1.errorCode === 0) {
+      if (res1.errCode === 0) {
         this.cashierObj["openid"] = this.cashierObj.CashierID
         this.setChatFriend(this.cashierObj);
         // this.acquireWaitGetCoupons();
@@ -177,9 +177,9 @@ export default {
               }
             });
         }, 1000);
-      } else if (res1.errorCode === 1) {
+      } else if (res1.errCode === 1) {
         this._animationToast("已核销完毕");
-      } else if (res1.errorCode === 1018) {
+      } else if (res1.errCode === 1018) {
         this._animationToast("您已发起核销，请稍等");
       }
       // let res2 = await api.launchSelfPay(data);

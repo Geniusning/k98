@@ -494,7 +494,7 @@
         // let param = decc.encode(strUserInfoParam);
         //保存信息
         api.createIdentity(userInfoParam).then(res => {
-          if (res.errorCode === 0) {
+          if (res.errCode === 0) {
             console.log("保存分身成功---", res)
             sessionStorage.setItem("identity", res.info.openid)
             this.$router.push({
@@ -503,7 +503,7 @@
                 type: "divide"
               }
             });
-          } else if (res.errorCode === 1049) {
+          } else if (res.errCode === 1049) {
             this.$vux.toast.show({
               type: "text",
               text: `创建分身已满`,

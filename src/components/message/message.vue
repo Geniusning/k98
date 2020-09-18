@@ -503,7 +503,7 @@
         };
         let res2 = await api.launchSelfPay(data);
         console.log("res2------", res2)
-        if (res2.errorCode === 0) {
+        if (res2.errCode === 0) {
           this.cashierObj["openid"] = this.cashierObj.CashierID
           this.setChatFriend(this.cashierObj);
           setTimeout(() => {
@@ -618,7 +618,7 @@
       loadIdentityList() {
         var count = 0
         api.loadIdentityList().then(res => {
-          if (res.errorCode === 0) {
+          if (res.errCode === 0) {
             this.divideList = res.info.filter(item => {
               if (item.openid != this.userInfo.openid) {
                 count += item.unreadMsgCount
