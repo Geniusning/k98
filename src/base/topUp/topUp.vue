@@ -128,6 +128,7 @@
           <div @click="closeIntegralPanel" class="btn">确认</div>
         </div>
       </div>
+      <!-- 未开通充值面板提醒 -->
       <div class="successfullyBox" v-else-if="panelIndex===5" >
         <div class="envelope">
           <div class="close" @click="closeIntegralPanel">X</div>
@@ -138,6 +139,19 @@
 
           <p style="padding:0 .3rem" class="successful_text">未开通充值功能,您可通过分享朋友圈或好友群赚积分，每天限5次，重复分享无效</p>
           <div @click="closeIntegralPanel" class="btn">确认</div>
+        </div>
+      </div>
+      <!-- 修改流水时间 -->
+      <div class="successfullyBox" v-else-if="panelIndex===6" >
+        <div class="envelope">
+          <div class="close" @click="closeSchedule">X</div>
+          <div class="integralIcon_wrapper">
+            <!-- <img onclick="return false" src="../../assets/image/integralIcon.png" alt="" class="integralIcon"> -->
+            <div class="integralIcon_text">交班调整提醒</div>
+          </div>
+          <p style="padding:0 .3rem" class="successful_text">请对照对帐单的时间，选择是否需要把核销券时间前移计入上一班？</p>
+          <div @click="noMove" class="payBtn">不用</div>
+          <div @click="changeCasierTime" class="btn">前移</div>
         </div>
       </div>
     </transition>
@@ -253,7 +267,7 @@
       },
       friendId: {
         type: String,
-        default: null
+        default: ""
       },
       fatherPanelIndex: {
         type: Number,
@@ -306,6 +320,16 @@
         }, 500);
         this.$emit("closeIntegralPanel", false);
         this.panelIndex = 1;
+      },
+      closeSchedule(){
+        this.$emit("closeIntegralPanel", false);
+      },
+      noMove(){
+        this.$emit("noMove", false);
+      },
+      //前移对账单时间
+      changeCasierTime(){
+        this.$emit("changeCashierTime",true)
       },
       closeIntegralPanel(flag) {
         console.log("flag--",flag)
@@ -676,6 +700,7 @@
       }
       .giftListpart {
         position: relative;
+        margin-top: 0.1333rem;
         .close {
           position: absolute;
           top: -0.3rem;

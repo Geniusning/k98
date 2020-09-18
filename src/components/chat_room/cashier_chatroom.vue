@@ -200,7 +200,7 @@
             </li>
             <li class="item fl">
               <img onclick="return false" src="../../assets/image/chat_pic.png" alt="">
-              <input type="file" class="file" accept="image/gif, image/jpeg, image/jpg, image/png" @change="uploadImage">
+              <input type="file" class="file" accept="image/*" @change="uploadImage">
             </li>
             <li class="item fl" style="padding:0" v-if="isCashierFlag"  @click="sendStaffCouponToUser">
               <img style="width:100%;height:100%" onclick="return false" src="../../assets/image/quan-icon.jpg" alt>
@@ -234,6 +234,15 @@
         </div>
       </div>
       <qrCode v-show="qrIsShow" :isCheckQrCode="isCheckQrCode"></qrCode>
+      <!-- <keep-alive> -->
+        <topUp
+            v-show="isShowChangeTimePanel"
+            @closeIntegralPanel="closeSchedule"
+            @noMove="noMove"
+            @changeCashierTime = "changeCashierTime"
+            :fatherPanelIndex="fatherPanelIndex"
+        ></topUp>
+      <!-- </keep-alive> -->
     </div>
   </transition>
 </template>
@@ -242,7 +251,7 @@
   // import envelope from 'base/envelope/envelope';
   import loading from "../../base/loading/loading";
   import qrCode from 'base/qrCode/qrCode';
-  // import topUp from 'base/topUp/topUp';
+  import topUp from 'base/topUp/topUp';
   import {
     Tab,
     TabItem,
@@ -279,6 +288,7 @@
     },
     data() {
       return {
+        isShowChangeTimePanel:false,//显示是否修改交班时间
         isCheckQrCode:true,
         isShowAccount: false,
         preMoney: "",
@@ -345,6 +355,8 @@
         cashierEndCursor: 0,
         isLoadMore: false,
         isOpenAutoPay: false, // 是否开通自助买单
+        fatherPanelIndex:6,//
+        lastestSelfPayInfo:{}
       };
     },
     // beforeRouteLeave(to, from, next) {
@@ -381,6 +393,7 @@
       this.loadCashierChatList(); //获取客服聊天记录
       this.isCashierFlag = this.$route.params.isCashier;
       if (this.isCashierFlag) {
+        this.getNewestSelfPay()
         this.expressionList = [
           "收到您的消息，请稍候！",
           "客官，有啥吩咐？",
@@ -418,7 +431,46 @@
       ...mapGetters(["qrIsShow"])
     },
     methods: {
-        //员工送券
+      //监听修改时间面板状态
+        closeIntegralPanel(flag) {
+          this.isShowChangeTimePanel = flag;
+      },
+      async noMove(flag){
+         this.isShowChangeTimePanel = flag;
+          let res = await api.confirmSelfPay(this.lastestSelfPayInfo);
+          this.input_value = "您的买单款已到帐，欢迎下次光临";
+          this.send();
+      },
+      //前移账单时间
+      async changeCashierTime(flag){
+        var todayYear
+        var todayMon
+        var todayDate
+        var srcTimeStampStr
+        todayYear = new Date().getFullYear()
+        todayMon = new Date().getMonth()+1
+        todayDate = new Date().getDate()
+        srcTimeStampStr = todayYear+"-"+todayMon+"-"+todayDate+" "+ this.fontTime
+        console.log("前移账单时间---",srcTimeStampStr)
+        this.lastestSelfPayInfo['time'] = new Date(srcTimeStampStr).getTime()
+        console.log("this.lastestSelfPayInfo",this.lastestSelfPayInfo)
+        console.log("this.lastestSelfPayInfo.time",this.lastestSelfPayInfo.time)
+        let res = await api.confirmSelfPay(this.lastestSelfPayInfo)
+        this.input_value = "您的买单款已到帐，欢迎下次光临";
+        this.send();
+        this.isShowChangeTimePanel = false
+      },
+      getNewestSelfPay(){
+        api.getNewestSelfPay(this.staticChatFriendObj.openid).then(res=>{
+          console.log("最新的自助买单信息",res)
+          if(res.errCode===0){
+            this.lastestSelfPayInfo = res.info.selfPayInfo
+            this.lastestSelfPayInfo.payeephone = this.userInfo.phone
+            this.scheduleShifts = res.info.shift?res.info.shift:null
+          }
+        })
+      },
+      //员工送券
       sendStaffCouponToUser() {
         let ToId = this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : sessionStorage.getItem("staffCouponToId")
         console.log("ToId-----", ToId)
@@ -427,48 +479,91 @@
           from: this.userInfo.openid,
           CouponId: this.staffCouponInfo.couponId
         }
-        // return
         api.sendStaffCouponToUser(data).then(res => {
-          //console.log("送券结果-------", res)
           if(res.errCode===0){
              this.$vux.toast.text("赠送成功", "middle");
           }
         })
       },
-      //获取最新的对账单信息
-      getLastCheckInfo() {
-        var cashierContent;
-        for (var i = this.componentChatList.length - 1; i >= 0; i--) {
-          console.log("this.componentChatList---", this.componentChatList)
-          const element = this.componentChatList[i];
-          console.log(element)
-          if (element.type === 4 || element.type === 3) {
-            cashierContent = element.selfpayinfo;
-            break;
-          }
-        }
-        return cashierContent;
-      },
       //收银员已收款确认
       async sendAlreadyGetMoney() {
-        var cashierContent = this.getLastCheckInfo();
-        console.log("收银员已收款确认---", cashierContent)
-        let data = {
-          id: cashierContent.id
-        };
-        let res = await api.confirmSelfPay(data);
-        //console.log("收银员确认收款结果---", res);
+        if(!sessionStorage.getItem(this.staticChatFriendObj.openid+this.lastestSelfPayInfo.id)){
+          sessionStorage.setItem(this.staticChatFriendObj.openid+this.lastestSelfPayInfo.id,this.lastestSelfPayInfo.id)
+        }else{
+          this.$vux.toast.text("请勿重复确认", "middle");
+          return
+        }
+        if(this.scheduleShifts){
+        console.log("this.scheduleShifts---",this.scheduleShifts)
+          for (let i = 0; i < this.scheduleShifts.shiftes.length; i++) {
+            let shifte = this.scheduleShifts.shiftes[i];
+            //1判断当前时间是否在交班期间，延后5分钟交班，如果在交班期间，则弹窗修改时间
+             this.delayTime = this.addMin(shifte.endTime)
+             console.log("this.delayTime--",this.delayTime)
+            if(this.isDuringTime(shifte.endTime,this.delayTime,0)){ 
+               this.fontTime = shifte.endTime
+               this.isShowChangeTimePanel = true
+               this.fatherPanelIndex = 5
+               return
+            }
+          }
+        }else{
+          this.lastestSelfPayInfo.time = new Date().getTime()
+        }
+        console.log("收银员已收款确认---", this.lastestSelfPayInfo)
+        let res = await api.confirmSelfPay(this.lastestSelfPayInfo);
         this.input_value = "您的买单款已到帐，欢迎下次光临";
-        // this.acquireWaitGetCoupons()
-        // this.notifyGetCoupon()
         this.send();
+      },
+      //时间增加5分钟
+      addMin(srcTime,sec=300){
+        var todayYear
+        var todayMon
+        var todayDate
+        var srcTimeStamp
+        todayYear = new Date().getFullYear()
+        todayMon = new Date().getMonth()+1
+        todayDate = new Date().getDate()
+        srcTime = todayYear+"-"+todayMon+"-"+todayDate+" "+ srcTime
+        srcTimeStamp = new Date(srcTime).getTime()+sec*1000
+        return new Date(srcTimeStamp).getHours() + ":" + (new Date(srcTimeStamp).getMinutes() > 10 ? new Date(srcTimeStamp).getMinutes() : "0" + new Date(srcTimeStamp).getMinutes()) +
+            ":" + (new Date(srcTimeStamp).getSeconds() > 10 ? new Date(srcTimeStamp).getSeconds() : "0" + new Date(srcTimeStamp).getSeconds())
+      },
+      //判断当前时间是否在某一时间段
+      isDuringTime(beginTime,endTime,isNextDay){
+        var dealBeginTime  //处理后的开始时间
+        var dealEndTime    //处理后的结束时间
+        var todayTimeStamp
+        var todayTime
+        var todayYear
+        var todayMon
+        var todayDate
+        var tomorrowTimeStamp
+        todayYear = new Date().getFullYear()
+        todayMon = new Date().getMonth()+1
+        todayDate = new Date().getDate()
+        if(isNextDay===1){
+          let today0Time = new Date().setHours(0,0,0) //设置当天凌晨零时零分
+          tomorrowTimeStamp = today0Time + 86400000   //设置第二天零点零分
+          tomorrowYear = new Date(tomorrowTimeStamp).getFullYear()
+          tomorrowMonth = new Date(tomorrowTimeStamp).getMonth()+1
+          tomorrowDate = new Date(tomorrowTimeStamp).getDate()
+          dealEndTime = tomorrowYear+"-"+tomorrowMonth+"-"+tomorrowDate+" "+ endTime
+        }else{
+          dealEndTime = todayYear+"-"+todayMon+"-"+todayDate+" "+ endTime
+        }
+        dealBeginTime = todayYear+"-"+todayMon+"-"+todayDate+" "+ beginTime
+        if (new Date().getTime() >= new Date(dealBeginTime) && new Date().getTime() <= new Date(dealEndTime)) {
+            return true
+        } else {
+            return false
+        }
       },
       //用户已付款
       async sendAlreayPayMoney() {
-        var cashierContent = this.getLastCheckInfo();
-        console.log("用户已付款----账单id", cashierContent)
+        console.log("用户已付款----账单id", this.lastestSelfPayInfo)
         let data = {
-          id: cashierContent.id
+          id: this.lastestSelfPayInfo.id
         };
         let res = await api.paymentSelfPay(data);
         //console.log("顾客付款结果---", res);
@@ -515,28 +610,30 @@
       },
       //确认对账单
       async sendAccountStateMent() {
-        var cashierContent = this.getLastCheckInfo();
-        console.log("cashierContent---", cashierContent);
+        this.lastestSelfPayInfo.payamount = parseFloat(this.actMoney)
+        this.lastestSelfPayInfo.payeephone = this.userInfo.phone
+        // var cashierContent = this.getLastCheckInfo();
+        console.log("cashierContent---", this.lastestSelfPayInfo);
         if (!this.preMoney && !this.actMoney) {
           this.$vux.toast.text("请填写金额", "top");
           return;
         }
         let data = {
           payuserid: this.staticChatFriendObj.openid,
-          id: cashierContent.id,
+          id: this.lastestSelfPayInfo.id,
           consumeamount: parseFloat(this.preMoney),
           payamount: parseFloat(this.actMoney)
         };
         let res = await api.matchSelfPay(data);
         //console.log("res====>", res);
-        if (res.errorCode === 0) {
+        if (res.errCode === 0) {
           this.isShowAccount = false;
           this.componentChatList.push({
             friend: 0, //1为朋友，0为自己,
             type: 5,
             isHandle: false,
-            deskcode: cashierContent.deskcode,
-            usercouponname: cashierContent.usercouponname,
+            deskcode: this.lastestSelfPayInfo.deskcode,
+            usercouponname: this.lastestSelfPayInfo.usercouponname,
             payamount: this.actMoney,
             consumeamount: this.preMoney,
             payTime: util.timestampToTimeNoYear(new Date().getTime())
@@ -559,8 +656,9 @@
         this.isShowAccount = true;
       },
       check(item, flag) {
-        //console.log("item--------", item);
-        //console.log("this.$route.params--------", this.$route.params);
+        this.lastestSelfPayInfo = item.selfpayinfo
+        console.log("checke-this.lastestSelfPayInfo-",this.lastestSelfPayInfo)
+        this.lastestSelfPayInfo.payeephone = this.userInfo.phone
         item.isHandle = true;
         let data = {
           cashierID: this.$route.params.from,
@@ -719,9 +817,7 @@
               if (this.input_value.indexOf(this.emotionList[j].name) !== -1) {
                 this.input_value = this.input_value.replace(
                   reg,
-                  `<img src=${
-                                          this.emotionList[j].num
-                                        } style="vertical-align: -6px;">`
+                  `<img src=${this.emotionList[j].num} style="vertical-align: -6px;">`
                 );
               }
             }
@@ -1023,7 +1119,8 @@
       GridItem,
       Scroll,
       Popup,
-      qrCode
+      qrCode,
+      topUp
     }
   };
 </script>
