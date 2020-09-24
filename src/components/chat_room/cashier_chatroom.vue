@@ -664,6 +664,7 @@
         this.lastestSelfPayInfo.payeephone = this.userInfo.phone
         item.isHandle = true;
         let data = {
+          cashierName:this.userInfo.nickname,
           cashierID: this.$route.params.from,
           couponUserID: this.$route.params.to,
           userCouponID: item.userCouponInfo.id,
