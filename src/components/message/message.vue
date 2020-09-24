@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="message_wrapper">
-      <Popup @close="closePopUp" :show="showCashierFlow" :showCloseBtn="false">
+      <!-- <Popup @close="closePopUp" :show="showCashierFlow" :showCloseBtn="false">
         <div class="cashier_stream-wrapper">
           <ul class="cashier_stream_title">
             <li class="title_name" style="width:25%">买单时间</li>
@@ -39,7 +39,7 @@
           </scroll>
           <img class="cashier_stream-close" @click="showCashierFlow=false" src="../../assets/image/close-round.png">
         </div>
-      </Popup>
+      </Popup> -->
       <!-- 关注二维码 -->
       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1)) " class="qrCode_wrapper">
         <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
@@ -143,8 +143,8 @@
         </ul>
       </scroll>
       <!-- 客服通知 -->
-      <scroll ref="clientScroll" :data="clientServiceList" v-else-if="isShowTab===2">
-        <div>
+      <scroll :data="cashierServiceList.concat(clientServiceList)" v-else-if="isShowTab===2">
+        <!-- <div style="message_list"> -->
           <ul class="message_list">
             <li v-if="!isClientListFlag" class="item vux-1px-b" @click="ChatToClient">
               <div class="info_message">
@@ -172,9 +172,7 @@
                 </div>
               </div>
             </li>
-          </ul>
-          <ul class="message_list">
-            <li v-if="isClientListFlag" class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
+             <li v-if="isClientListFlag" class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
               <div class="info_message">
                 <div class="avatar">
                   <img :src="item.headimgurl?item.headimgurl:clientImg" alt="">
@@ -211,9 +209,46 @@
                 </div>
               </div>
             </li>
-            <!-- <p v-show="(!clientServiceList.length && isClientListFlag)" class="noContent">未有留言者</p> -->
           </ul>
-        </div>
+          <!-- <ul class="message_list"> -->
+            <!-- <li v-if="isClientListFlag" class="item vux-1px-b" @click="clientChat(item)" v-for="(item,index) in clientServiceList" :key="index">
+              <div class="info_message">
+                <div class="avatar">
+                  <img :src="item.headimgurl?item.headimgurl:clientImg" alt="">
+                  <i class="dot" v-cloak v-show="item.unReadMsgCount"></i>
+                </div>
+                <div class="name_and_message">
+                  <div class="personStatus">
+                    <p class="name">{{item.nickname?item.nickname:"游客"}}</p>
+                    <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
+                    <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
+                    <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}桌</span>
+                  </div>
+                  <p class="captainMessage">{{userInfo.role?"请查看用户留言消息":"欢迎光临! 有任何问题或建议，请留言"}}</p>
+                  <p class="time"> {{item.lastMsg?item.lastMsg.stime.slice(8,10)==today?item.lastMsg.stime.slice(10,16):item.lastMsg.stime.slice(5,10):""}}</p>
+                </div>
+              </div>
+            </li> -->
+            <!-- <li v-if="isCashierListFlag" class="item vux-1px-b" @click="cashierChat(item)" v-for="(item,index) in cashierServiceList" :key="index">
+              <div class="info_message">
+                <div class="avatar">
+                  <img :src="item.headimgurl?item.headimgurl:cashierImg" alt="">
+                  <i class="dot" v-cloak v-show="item.unReadMsgCount"></i>
+                </div>
+                <div class="name_and_message">
+                  <div class="personStatus">
+                    <p class="name">{{item.nickname?item.nickname:"游客"}}</p>
+                    <img src="../../assets/image/dot_green.png" v-if="item.onlineDiceServer || item.onlineL98Server" class="online_dot">
+                    <span v-if="item.onlineDiceServer || item.onlineL98Server" class="friendStatus">{{item.isIndoor?"店内":"店外"}}</span>
+                    <span v-if="item.deskCode && (item.onlineDiceServer || item.onlineL98Server)" class="roomNum">{{`${item.deskCode}`}}桌</span>
+                  </div>
+                  <p class="captainMessage">请查看结账情况</p>
+                </div>
+              </div>
+            </li> -->
+            <!-- <p v-show="(!clientServiceList.length && isClientListFlag)" class="noContent">未有留言者</p> -->
+          <!-- </ul> -->
+        <!-- </div> -->
       </scroll>
       <!-- 通知 -->
       <scroll :data="captainMessageList" v-else-if="isShowTab==3">
@@ -303,7 +338,7 @@
     data() {
       return {
         showCashierFlow: false,
-        cashierFlowList: [], //收银账单
+        // cashierFlowList: [], //收银账单
         isShowQrCode: true,
         isClientListFlag: true, //判断是否是客服
         isCashierListFlag: true, //判断是否是收银员
@@ -444,7 +479,7 @@
       this.loadClientServiceList() //加载客服列表  
       this.loadCashierList() //加载收银员列表  
       this.loadIdentityList() //加载分身 
-      this.loadSelfPay() //买单流水
+      // this.loadSelfPay() //买单流水
       this.getPlaceOrderQRcodebyID() //拉取下单码
       // this.isShowTab = this.getQueryString("routeParamNum")
       // this.isShowQrCode = localStorage.getItem("isShowQrCode") === "false" ? false : true
@@ -529,17 +564,17 @@
         this.showCashierFlow = true;
       },
       //买单流水
-      async loadSelfPay() {
-        let res = await api.loadSelfPay(this.cashierCursor, 50)
-        console.log("买单流水-------", res)
-        if (res.errCode === 0) {
-          this.cashierFlowList = res.info.selfpayes
-          this.cashierFlowList.forEach(item => {
-            item.time = util.timestampToTimeNoYear(item.time)
-          })
-          this.cashierCursor = res.info.cursor
-        }
-      },
+      // async loadSelfPay() {
+      //   let res = await api.loadSelfPay(this.cashierCursor, 50)
+      //   console.log("买单流水-------", res)
+      //   if (res.errCode === 0) {
+      //     this.cashierFlowList = res.info.selfpayes
+      //     this.cashierFlowList.forEach(item => {
+      //       item.time = util.timestampToTimeNoYear(item.time)
+      //     })
+      //     this.cashierCursor = res.info.cursor
+      //   }
+      // },
       async pullingUp() {
         if (this.cashierCursor != 0) {
           let res = await api.loadSelfPay(this.cashierCursor, 50)
@@ -685,7 +720,7 @@
       //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
       loadCashierList() {
         api.loadCashierList().then(res => {
-          //console.log("收银员列表---", res)
+          console.log("收银员---", res)
           let unReadCount = 0
           this.cashierObj = res
           if (!res.uerInfos) { //普通用户进入
@@ -705,7 +740,7 @@
                 }
               })
               this.cashierServiceList = tempArr.sort(util.sortByKey("stime"))
-              //console.log("客服列表-------------", this.cashierServiceList)
+              console.log("收银员列表-------------", this.cashierServiceList)
             }
           }
           this.getCashierUnreadCount(unReadCount)
@@ -736,15 +771,15 @@
          
           this.loadClientServiceList()
           this.loadCashierList()
-          setTimeout(() => {
-            this.$nextTick(function() {
-              this.$refs.clientScroll.scrollTo(0, 0)
-            })
-          }, 50);
+          // setTimeout(() => {
+          //   this.$nextTick(function() {
+          //     this.$refs.clientScroll.scrollTo(0, 0)
+          //   })
+          // }, 50);
         } else if (this.isShowTab === 3) {
           // Bus.$emit("hideEnvelop", false)
         } else {
-          this._loadFriends(); //拉取好友
+          // this._loadFriends(); //拉取好友
           this._loadMutualEvents(); //拉取送礼，约战，
         }
       },
@@ -1028,6 +1063,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
     .showCheckFlow {
       right: 0.1333rem;
       bottom: 20%;
