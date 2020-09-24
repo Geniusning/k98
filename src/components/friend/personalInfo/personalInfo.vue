@@ -3,7 +3,7 @@
         <img onclick="return false" src="../../../assets/image/close.png" alt="" class="close" @click="closeAlbum">
         <swiper height="300px" class="swiper" :show-dots='false' v-if="lifeImgList.length">
             <swiper-item class="swiper-demo-img" v-for="(item, index) in lifeImgList" :key="index" style="text-align:center">
-                <img onclick="return false" style="margin:0 auto;width:90%;height:100%" :src="item">
+                <img onclick="return false" style="margin:0 auto;width:90%;height:100%" :src="item.photoURL">
             </swiper-item>
         </swiper>
         <img src="../../../assets/image/arrow left.png" alt class="arrow_left">

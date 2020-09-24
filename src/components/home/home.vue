@@ -447,7 +447,9 @@ export default {
             cursor: 0,
             sex: 2,
             range: 0,
-            sortType: 0
+            hometowncode:"",
+            industry:"",
+            keyword:""
         };
         this.acquireWaitGetCoupons(); //获取自动优惠券
         this.setAdvertisePhoto(); //设置轮播图
@@ -797,8 +799,8 @@ export default {
         //拉取候选人
         getAllCommunityFriend(params) {
             api.getFriendList(params).then(res => {
-                // console.log("拉取候选人：·····················", res);
-                this.getFriend(res);
+                console.log("拉取候选人：·····················", res);
+                this.getFriend(res.info);
             });
         },
         //进入场内交友界面

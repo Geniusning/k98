@@ -24,9 +24,9 @@
                 <img onclick="return false" src="../../../assets/image/thumb1.png" alt="" class="avatar fl">
                 <span class="count fl">{{thumbCount}}</span>
               </div>
-              <div class="avatarList-wrapper clearfix" @touchstart="showAlbum(item.info)" v-if="item.info.lifePhotoURL.lifePhotoURL &&item.info.lifePhotoURL.lifePhotoURL.length>0">
+              <div class="avatarList-wrapper clearfix" @touchstart="showAlbum(item.info)" v-if="item.info.lifePhoto.lifePhotos &&item.info.lifePhoto.lifePhotos.length>0">
                 <img onclick="return false" src="../../../assets/image/picture.png" alt="" class="avatar fl">
-                <span class="count fl">{{item.info.lifePhotoURL.lifePhotoURL.length}}</span>
+                <span class="count fl">{{item.info.lifePhoto.lifePhotos.length}}</span>
               </div>
             </div>
             <img onclick="return false" v-show="like && currentLikeIndex==index" class="like" src="../../../assets/image/tantan_thumb.png">
@@ -125,35 +125,15 @@
       pages: {
         type: Array,
         default: []
+      },
+      positionList:{
+        type:Array,
+        default:[]
       }
     },
     data() {
       return {
         industry:"",
-        positionList: [
-            [
-                "自由职业",
-                "全职在家",
-                "贸易/商业",
-                "生产/制造",
-                "房地产/建筑",
-                "银行/金融",
-                "IT/互联网",
-                "电子商务",
-                "通信电子",
-                "政府机关",
-                "文化/艺术",
-                "医疗/健康",
-                "传媒影视",
-                "设计/创意",
-                "娱乐/休闲",
-                "美容/保健",
-                "零售/商场",
-                "健身/体育",
-                "学生",
-                "其他"
-            ]
-        ],
         limitFlag: true,
         like: false,
         dislike: false,
@@ -359,11 +339,11 @@
           nickname: info.nickname,
           headImgUrl: info.headimgurl
         };
-        let lifePhotoURL = {
-          lifePhotoList: info.lifePhotoURL.lifePhotoURL
-        }
-        sessionStorage.setItem("info", JSON.stringify(storeInfo));
-        sessionStorage.setItem("lifePhotoList", JSON.stringify(lifePhotoURL));
+        // let lifePhotoURL = {
+        //   lifePhotoList: info.lifePhoto.lifePhotos
+        // }
+        // sessionStorage.setItem("info", JSON.stringify(storeInfo));
+        // sessionStorage.setItem("lifePhotoList", JSON.stringify(lifePhotoURL));
         this.$router.push({
           name: "comment",
           params: {
@@ -389,8 +369,7 @@
             this.basicdata.end.x = e.targetTouches[0].clientX;
             this.basicdata.end.y = e.targetTouches[0].clientY;
             // offsetY在touch事件中没有，只能自己计算
-            this.offsetY =
-              e.targetTouches[0].pageY - this.$el.offsetParent.offsetTop;
+            this.offsetY =e.targetTouches[0].pageY - this.$el.offsetParent.offsetTop;
           }
           // pc操作
         } else {

@@ -3,7 +3,7 @@
     <!-- logo -->
     <div class="logo-container">
       <div class="logo-wrapper">
-        <img onclick="return false" v-if="AdvertisingPhoto.length>0" :src="AdvertisingPhoto[1]" alt style=" width: 9.2rem;height: 2.8rem;">
+        <img onclick="return false" v-if="AdvertisingPhoto.length>0" :src="AdvertisingPhoto[1]" alt style=" width: 9.2rem;">
         <p class="reserve">
           优惠进行中 预定热线
           <span class="tel">{{shopSettingInfo.phone?shopSettingInfo.phone:'暂无上传号码'}}</span>
@@ -335,8 +335,8 @@
     .logo-wrapper {
       position: relative;
       width: 9.2rem;
-      height: 2.8rem;
-      background-color: #fff; // .bg("../../assets/image/banner.png");
+      // height: 2.8rem;
+      // background-color: #fff;
       margin: 0 auto;
       .reserve {
         position: absolute;

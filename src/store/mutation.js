@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-10 12:01:28
+ * @Last Modified time: 2020-09-22 15:13:50
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -135,11 +135,11 @@ const mutations = {
     },
     //新增用户生活照
     [types.CHANGE_LIFEIMG](state, life) {
-        if (state.userInfo.lifePhotoURL.lifePhotoURL == null) {
-            state.userInfo.lifePhotoURL.lifePhotoURL = [];
-            state.userInfo.lifePhotoURL.lifePhotoURL.push(life);
+        if (state.userInfo.lifePhoto.lifePhotos == null) {
+            state.userInfo.lifePhoto.lifePhotos = [];
+            state.userInfo.lifePhoto.lifePhotos.push(life);
         } else {
-            state.userInfo.lifePhotoURL.lifePhotoURL.push(life);
+            state.userInfo.lifePhoto.lifePhotos.push(life);
         }
     },
     //获得用户生活照
@@ -148,7 +148,7 @@ const mutations = {
     },
     //删除生活照
     [types.DELETE_LIFEIMG](state, index) {
-        state.userInfo.lifePhotoURL.lifePhotoURL.splice(index, 1)
+        state.userInfo.lifePhoto.lifePhotos.splice(index, 1)
     },
     //控制二维码关注弹框
     [types.SHOW_QRCODE](state, flag) {
@@ -156,7 +156,7 @@ const mutations = {
     },
     //获取用户数据
     [types.GET_USERINFO](state, userinfo) {
-        state.loadFriendSexType = userinfo.sex === 1 ? 0 : 1
+        state.loadFriendSexType = userinfo.sex === 1 ? 2 : 1 //优先搜索异性好友
             // state.loadFriendSexType = userinfo.sex oqWlD1h6Zurgr6YZVTYAqe5JL9oM
             // console.log("用户数据", state.loadFriendSexType)
         userinfo.sex = userinfo.sex === 1 ? "男" : "女"
@@ -195,7 +195,7 @@ const mutations = {
     },
     //获取更多候选人数据
     [types.GET_MOREFRIENDlIST](state, data) {
-        //console.log('更多候选人数据：', data);
+        console.log('更多候选人数据：', data);
         data.forEach(item => {
             if (item.info.sex == 1) {
                 item.info.sex = 1;
@@ -210,7 +210,7 @@ const mutations = {
     },
     //获取不足10个候选人数据
     [types.GET_LESSTHAN10FRIENDLIST](state, data) {
-        //console.log('获取不足10个候选人数据：', data);
+        console.log('获取不足10个候选人数据：', data);
         data.forEach(item => {
             if (item.info.sex == 1) {
                 item.info.sex = 1;

@@ -314,7 +314,6 @@ import {
     TransferDomDirective as TransferDom,
     XSwitch,
     Group,
-    XInput
 } from "vux";
 import {
     provinceAndCityData,

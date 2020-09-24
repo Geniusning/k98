@@ -193,12 +193,12 @@
 				if (res.errCode === 0) {
 					this.staffInfoByPhone = res.info
 					var temp = []
-					if (this.staffInfoByPhone.lifePhotoURL.lifePhotoURL) {
-						this.staffInfoByPhone.lifePhotoURL.lifePhotoURL.forEach(img => {
+					if (this.staffInfoByPhone.lifePhoto.lifePhotos) {
+						this.staffInfoByPhone.lifePhoto.lifePhotos.forEach(img => {
 							temp.push({
 								url: "javascript:",
-								img: img,
-								title: "求点赞"
+								img: img.photoURL,
+								title: item.caption?item.caption:"求点赞"
 							});
 						})
 						this.lifePhotolist = temp

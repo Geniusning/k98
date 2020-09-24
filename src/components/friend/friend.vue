@@ -52,6 +52,7 @@
                 :resultSoulText="soulText"
                 :searchResult="isEndResultSearchBtnBox"
                 :stopSearch="searching"
+                :positionList="positionList"
                 @getMoreFriend="sonGetMoreFriend"
                 @heartBeat="thumbHeartBeat"
                 @showAblum="showAblum"
@@ -165,7 +166,8 @@
                     <div class="dis_wrapper">
                         <h3>范围:</h3>
                         <ul class="dis_list">
-                            <li
+                            <li 
+                                style="margin-left:.09rem"
                                 @click="chooseRange(item.id)"
                                 :class="{active:rangeType == index}"
                                 v-for="(item,index) in rangeArr"
@@ -173,7 +175,7 @@
                             >{{item.name}}</li>
                         </ul>
                     </div>
-                    <div class="dis_wrapper">
+                    <!-- <div class="dis_wrapper">
                         <h3>等级:</h3>
                         <ul class="dis_list">
                             <li
@@ -183,32 +185,50 @@
                                 :key="index"
                             >{{item.name}}</li>
                         </ul>
-                    </div>
+                    </div>-->
                     <div class="dis_wrapper">
-                        <h3>其他:</h3>
+                        <h3>籍贯</h3>
                         <ul class="dis_list">
                             <li
-                                @click="chooseOther(item.id,index)"
-                                :class="{active:otherType == index+1}"
-                                v-for="(item,index) in otherList"
+                                @click="chooseHomeTownType(index)"
+                                :class="{active:homeTownType == index}"
+                                v-for="(item,index) in homeTownList"
+                                :key="index"
+                                v-if="homeTownType!=2"
+                            >{{item.name}}</li>
+                            <li style="width:300px;background:#fff;" v-if="homeTownType===2">
+                                <el-cascader
+                                    v-if="homeTownType===2"
+                                    size="small"
+                                    :options="options"
+                                    v-model="selectedHomeTownOptions"
+                                    @change="handleChangeHomeTown"
+                                    
+                                ></el-cascader>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="dis_wrapper">
+                        <h3>行业</h3>
+                        <ul class="dis_list">
+                            <li
+                                @click="chooseIndustry(index)"
+                                :class="{active:industryType == index}"
+                                v-for="(item,index) in industryList"
                                 :key="index"
                             >{{item.name}}</li>
+                        </ul>
+                    </div>
+                    <div class="dis_wrapper">
+                        <h3>关键字</h3>
+                        <ul class="dis_list">
+                            <li><input type="text" class="keywords" placeholder="请输入昵称或个性标签" v-model="keyword"></li>
                         </ul>
                     </div>
                     <p class="confirm" @click="getSortedFriend">确定</p>
                 </div>
             </x-dialog>
         </div>
-        <!-- 点赞 -->
-        <toast
-            v-model="showPositionValue"
-            type="text"
-            :time="2000"
-            is-show-mask
-            width="10em"
-            :text="text"
-            :position="position"
-        ></toast>
         <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad"   isFirstLoad-->
         <div class="guide_bg" v-show="isFirstLoad">
             <!-- <img onclick="return false" class="thumb" src="../../assets/image/thumb.png" alt> -->
@@ -236,11 +256,20 @@
         <keep-alive>
             <lifePhote v-show="showAblumFlag" @closeAlbum="closeAlbum"></lifePhote>
         </keep-alive>
+         <popup-picker
+            v-if="showPopupPickerPos"
+            :show="showPopupPickerPos"
+            :data="positionList"
+            v-model="positionArr"
+            @on-hide="onHide_P"
+            @on-change="onChange_P"
+        ></popup-picker>
         <router-view></router-view>
     </div>
 </template>
 
 <script>
+import { provinceAndCityData,CodeToText,TextToCode} from "element-china-area-data";
 import stack from "./tantan/tantan.vue";
 import loading from "../../base/loading/loading";
 import envelope from "base/envelope/envelope";
@@ -251,100 +280,143 @@ import api from "common/api";
 import Bus from "common/bus.js";
 import lifePhote from "./personalInfo/personalInfo";
 import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
-import { Toast, TransferDom, Popup, XDialog, XButton, Scroller } from "vux";
+import { Toast, TransferDom, Popup, XDialog, XButton, Scroller,PopupPicker } from "vux";
 export default {
     // el: "#stack",
     directives: {
-        TransferDom
+        TransferDom,
     },
     data() {
         return {
+            keyword:"",
+            showPopupPickerPos: false, // 职位picker
+            options: provinceAndCityData,
+            selectedHomeTownOptions: [],
             isShow_bg: false,
             searching: false,
             soulText: `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的有缘人`,
-            isAlreadyFriend: false,
             showAblumFlag: false, //展示生活照
-            sortType: 0, //排序类型
-            currentSortIndex: null,
             sexType: 0, //性别类型
             rangeType: 0, //店内外类型
-            otherType: 0, //同乡，同行查看
+            homeTownType: 0, //同乡，
+            industryType: 0, //同行查看
             fatherPanelIndex: 1,
             showToast_gift: false,
-            text: "",
             envelopeText: "",
             isFriend: null,
-            position: "default",
-            showPositionValue: false,
             isShowEnvelope: false,
-            personShow: false,
-            showFriendList: false,
             showToast: false,
-            show_mask: true,
             isFirstLoad: false,
-            friendOnlineStatus: false,
-            isIntegralPanel: false, //面板显示状态
             isGiftPanel: false, //礼物面板状态
             isInDoor: false, //好友是否在线
-            sexArr: [
+            homeTownList: [
                 {
                     id: 0,
-                    name: "全部"
+                    name: "全部",
                 },
                 {
                     id: 1,
-                    name: "男"
+                    name: "同乡",
                 },
                 {
                     id: 2,
-                    name: "女"
-                }
+                    name: "其他地区",
+                },
+            ],
+            industryList: [
+                {
+                    id: 0,
+                    name: "全部",
+                },
+                {
+                    id: 1,
+                    name: "同行",
+                },
+                {
+                    id: 2,
+                    name: "其他行业",
+                },
+            ],
+            sexArr: [
+                {
+                    id: 0,
+                    name: "全部",
+                },
+                {
+                    id: 1,
+                    name: "男",
+                },
+                {
+                    id: 2,
+                    name: "女",
+                },
             ],
             rangeArr: [
                 {
                     id: 0,
-                    name: "全部"
+                    name: "全部",
                 },
                 {
                     id: 1,
-                    name: "店内"
+                    name: "店内",
                 },
                 {
                     id: 2,
-                    name: "店外"
-                }
-            ],
-            otherList: [
-                {
-                    id: 1,
-                    name: "找老乡"
-                },
-                {
-                    id: 2,
-                    name: "找同行"
-                }
-            ],
-            rankList: [
-                {
-                    id: 1,
-                    name: "财富榜"
-                },
-                {
-                    id: 2,
-                    name: "战神榜"
+                    name: "店外",
                 },
                 {
                     id: 3,
-                    name: "好友数"
-                }
+                    name: "店员",
+                },
             ],
+            positionList: [
+            [
+                "自由职业",
+                "全职在家",
+                "贸易/商业",
+                "生产/制造",
+                "房地产/建筑",
+                "银行/金融",
+                "IT/互联网",
+                "电子商务",
+                "通信电子",
+                "政府机关",
+                "文化/艺术",
+                "医疗/健康",
+                "传媒影视",
+                "设计/创意",
+                "娱乐/休闲",
+                "美容/保健",
+                "零售/商场",
+                "健身/体育",
+                "学生",
+                "其他"
+            ]
+        ],
+            // rankList: [
+            //     {
+            //         id: 1,
+            //         name: "财富榜"
+            //     },
+            //     {
+            //         id: 2,
+            //         name: "战神榜"
+            //     },
+            //     {
+            //         id: 3,
+            //         name: "好友数"
+            //     }
+            // ],
             someList: [],
             friendId: "",
             visible: 3,
             currentPage: 0,
             modalSwitch: false,
             isEndResultSearchBtnBox: false,
-            soulTimer: null
+            soulTimer: null,
+            hometownCode: "",
+            industryCode: "",
+            positionArr: ["自由职业"],
         };
     },
     computed: {
@@ -366,9 +438,9 @@ export default {
             "soulSwitch",
             "shareUrl",
             "soulCursor",
-            "soulResult"
+            "soulResult",
         ]),
-        ...mapGetters(["qrIsShow"])
+        ...mapGetters(["qrIsShow"]),
     },
     created() {
         let isFriActCoupon = util.GetQueryString("friendCoupon");
@@ -380,18 +452,20 @@ export default {
                 title: "找朋友",
                 desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
                 link: `${this.shareUrl}k98/friend?visitType=3&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
-                imgUrl: `${this.shopSettingInfo.image}`
+                imgUrl: `${this.shopSettingInfo.image}`,
             };
             util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
         }, 1000);
     },
     mounted() {
+        console.log("this.loadFriendSexType----",this.loadFriendSexType)
         let param = {
-            // mySex: Number(this.loadFriendSexType),
             cursor: 0,
             sex: this.loadFriendSexType,
             range: this.rangeType,
-            sortType: this.sortType
+            hometowncode:"",
+            industry:"",
+            keyword:""
         };
         //console.log("---------------------------------", param);
         this.getAllCommunityFriend(param);
@@ -414,7 +488,7 @@ export default {
             this.isShow_bg = true;
         }
         (this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`),
-            Bus.$on("changeFriendConnetion", openid => {
+            Bus.$on("changeFriendConnetion", (openid) => {
                 //console.log("bus-openid---------", openid);
                 this.isFriend = true;
                 this.changeFriIcon(openid);
@@ -429,10 +503,78 @@ export default {
         clearTimeout(this.soulTimer);
     },
     methods: {
+          //职位选择
+        onHide_P() {
+            this.showPopupPickerPos = false;
+        },
+        onChange_P(val) {
+            console.log("val---", this.positionList[0].indexOf(val[0]));
+            this.industryCode = String(
+                this.positionList[0].indexOf(val[0])
+            );
+        },
+         handleChangeHomeTown(value) {
+            // this.homeTown = CodeToText[value[0]] + CodeToText[value[1]];
+            this.hometownCode = value[1];
+            console.log("this.hometownCode---",this.hometownCode)
+        },
+           // 性别选择
+        chooseSex(id) {
+            this.sexType = id;
+        },
+        chooseRange(index) {
+            this.rangeType = index;
+        },
+        // chooseDegree(id, index) {
+        //     this.currentSortIndex = index;
+        // },
+        chooseHomeTownType(index) {
+            if(index===1){
+                this.hometownCode = this.userInfo.hometownCode
+            }else if(index===0){
+                this.hometownCode = ""
+            }
+            this.homeTownType = index;
+        },
+        chooseIndustry(index) {
+            if (index===2){
+                this.showPopupPickerPos = true
+            }else if (index===1){
+                this.industryCode = this.userInfo.industry
+            }else{
+                this.industryCode = ""
+            }
+            this.industryType = index;
+        },
+        getSortedFriend() {
+            this.changeFriendCursor(0);
+            this.currentPage++;
+            this.visible = 3;
+            let params = {
+                cursor: 0,
+                sex: this.sexType,
+                range: this.rangeType,
+                hometowncode:this.hometownCode,
+                industry:this.industryCode,
+                keyword:this.keyword
+            };
+            api.getFriendList(params).then((res) => {
+                if (res.info.candidates.length === 0) {
+                    this.$vux.toast.text("对不起，找不到同时符合所有条件的朋友。您可减少条件限制", "middle");
+                    this.homeTownType = 0;
+                    this.keyword = "";
+                    this.industryCode = "";
+                    return;
+                }
+                this.changeFriendCursor(res.info.cursor);
+                this.getFriend(res.info);
+                this.showToast = false;
+            });
+        },
         acquireWaitGetCoupons() {
             let condition = 1; //访问朋友页有礼
             api.acquireWaitGetCoupons(condition)
-                .then(res => {
+                .then((res) => {
                     console.log(
                         "访问朋友页------------------------------",
                         res
@@ -447,14 +589,14 @@ export default {
                             fromInfo: {
                                 openid: "",
                                 headimgurl:
-                                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg"
-                            }
-                        }
+                                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg",
+                            },
+                        },
                     };
                     this.addFriendEvtObj(result);
                     this.judgeMessType("discount");
                 })
-                .catch(err => {
+                .catch((err) => {
                     //console.log(err);
                 });
         },
@@ -477,12 +619,12 @@ export default {
             this.switchSoulModal(this.modalSwitch);
             if (this.modalSwitch) {
                 console.log("this.soulCursor----", this.soulCursor);
-                api.searchWaitBeMakeFriUser(this.soulCursor).then(res => {
+                api.searchWaitBeMakeFriUser(this.soulCursor).then((res) => {
                     console.log("搜索结果----------", res);
                     if (res.errCode === 0) {
                         this.updateSoulParams({
-                            cursor: res.info.cursor,
-                            flag: false
+                            cursor: res.cursor,
+                            flag: false,
                         });
                     }
                 });
@@ -503,10 +645,10 @@ export default {
         },
         //拉取候选人
         getAllCommunityFriend(params) {
-            api.getFriendList(params).then(res => {
+            api.getFriendList(params).then((res) => {
                 //console.log("拉取候选人：·····················", res);
-                this.changeFriendCursor(res.cursor);
-                this.getFriend(res);
+                this.changeFriendCursor(res.info.cursor);
+                this.getFriend(res.info);
             });
         },
         //监听礼物面板状态
@@ -522,29 +664,29 @@ export default {
             if (!this.userInfo.firstLoad) {
                 return;
             }
-            api.clearFirstLoadTag().then(res => {
+            api.clearFirstLoadTag().then((res) => {
                 this._getUserInfo();
             });
         },
         // 获取用户信息
         _getUserInfo() {
             api.getUserInfo()
-                .then(res => {
+                .then((res) => {
                     this.getuserInfo(res);
                 })
-                .catch(err => {
+                .catch((err) => {
                     //console.log(err);
                 });
         },
         //进入个人信息设置页面
         intoSetting() {
             this.$router.push({
-                name: "individual"
+                name: "individual",
             });
         },
         //拉取礼物
         _loadAllGift() {
-            api.loadAllGift().then(res => {
+            api.loadAllGift().then((res) => {
                 if (res.errCode === 0) {
                     this.getGiftList(res.gifts);
                 }
@@ -559,14 +701,14 @@ export default {
         showAblum(data) {
             // //console.log('监听点击相册------------------------------：', data);
             this.showAblumFlag = true;
-            this.changeUserLifeImgList(data.info.lifePhotoURL.lifePhotoURL);
-            // this.$router.push({
-            //   path: `/friend/${data.info.openid}`,
-            // })
+            this.changeUserLifeImgList(data.info.lifePhoto.lifePhotos);
+            this.$router.push({
+                path: `/friend/${data.info.openid}`,
+            });
         },
         listenFirstdata(data) {
             // 下面是传回父级的数据;
-            this.friendOnlineStatus = data.info.onlineL98Server; //好友在线状态
+            // this.friendOnlineStatus = data.info.onlineL98Server; //好友在线状态
             //console.log("滑动页面传回给父级数据：", data);
             let openId = data.info.openid;
             this.friendId = openId;
@@ -604,19 +746,20 @@ export default {
         },
         getMoreFriendList(cursor, sex) {
             let params = {
-                mySex: Number(this.loadFriendSexType),
                 cursor: this.friendListCursor,
                 sex: this.sexType,
                 range: this.rangeType,
-                sortType: this.sortType
+                hometowncode:this.homeTownCode,
+                industry:this.industryCode,
+                keyword:this.keyword
             };
-            api.getFriendList(params).then(res => {
-                if (res.cursor == 0) {
-                    this.changeFriendCursor(res.cursor);
+            api.getFriendList(params).then((res) => {
+                if (res.info.cursor == 0) {
+                    this.changeFriendCursor(res.info.cursor);
                     return false;
                 }
-                this.changeFriendCursor(res.cursor);
-                this.MutationGetMoreFriendList(res.candidates);
+                this.changeFriendCursor(res.info.cursor);
+                this.MutationGetMoreFriendList(res.info.candidates);
             });
         },
         //点赞
@@ -628,7 +771,7 @@ export default {
                 : {
                       unfocusThumbTimes: this.unfocusThumbTimes,
                       focusThumbTimes: this.focusThumbTimes,
-                      date: new Date().getDate()
+                      date: new Date().getDate(),
                   };
             let todayDate = new Date().getDate();
             if (typeof thumbTimes === "string") {
@@ -654,7 +797,7 @@ export default {
                     );
                     this.changeQrCodeText({
                         title: "游客仅限10次交友机会，长按关注获取更多特权",
-                        bottomText: "会员特权:领福利、交群友、参活动"
+                        bottomText: "会员特权:领福利、交群友、参活动",
                     });
                     this.showQrcode(true);
                     return;
@@ -697,7 +840,7 @@ export default {
                     );
                 }
             }
-            api.makeFriend(this.xid).then(res => {
+            api.makeFriend(this.xid).then((res) => {
                 //console.log("giveThumb----", res);
                 if (res.errCode === 0) {
                     this.isShowEnvelope = true;
@@ -731,10 +874,10 @@ export default {
                     isClient: false,
                     id: this.staticChatFriendObj.openid
                         ? this.staticChatFriendObj.openid
-                        : item.phone
-                }
+                        : item.phone,
+                },
             });
-            api.beFriend(this.staticChatFriendObj.openid).then(res => {
+            api.beFriend(this.staticChatFriendObj.openid).then((res) => {
                 console.log("成为好友结果---", res);
             });
             // //console.log()
@@ -755,7 +898,7 @@ export default {
                 : {
                       unfocusPlayTimes: this.unfocusPlayTimes,
                       focusPlayTimes: this.focusPlayTimes,
-                      date: new Date().getDate()
+                      date: new Date().getDate(),
                   };
             let todayDate = new Date().getDate();
             if (typeof playTimes === "string") {
@@ -781,7 +924,7 @@ export default {
                     );
                     this.changeQrCodeText({
                         title: "游客仅限10次挑战群友机会，长按关注获取更多特权",
-                        bottomText: "会员特权:领福利、交群友、参活动"
+                        bottomText: "会员特权:领福利、交群友、参活动",
                     });
                     this.showQrcode(true);
                     return;
@@ -824,7 +967,7 @@ export default {
                     );
                 }
             }
-            api.sentPlayGameMsg(this.friendId).then(res => {
+            api.sentPlayGameMsg(this.friendId).then((res) => {
                 //console.log("约战返回--------", res);
                 if (res.errCode == 0) {
                     // this.text = "您已发出邀请  等待对方的回应";
@@ -846,50 +989,10 @@ export default {
                 }
             });
         },
-        // 性别选择
-        chooseSex(id) {
-            this.sexType = id;
-        },
-        chooseRange(index) {
-            this.rangeType = index;
-        },
-        chooseDegree(id, index) {
-            this.sortType = id;
-            this.currentSortIndex = index;
-        },
-        chooseOther(id, index) {
-            // this.sortType = id;
-            this.otherType = index+1;
-        },
-        getSortedFriend() {
-            this.changeFriendCursor(0);
-            this.currentPage++;
-            this.visible = 3;
-            let params = {
-                //mySex: Number(this.loadFriendSexType),
-                cursor: this.friendListCursor,
-                sex: this.sexType,
-                range: this.rangeType,
-                sortType: this.sortType,
-                otherCondition:this.otherType
-            };
-            api.getFriendList(params).then(res => {
-                // //console.log('拉取排序后的候选人：·····················', res);
-                if(res.candidates.length===0){
-                    this.$vux.toast.text(
-                        "暂无数据",
-                        "middle"
-                    );
-                    this.otherType = 0
-                    return
-                }
-                this.changeFriendCursor(res.cursor);
-                this.getFriend(res);
-                this.showToast = false;
-                
-            });
-        },
         cancel() {
+            this.homeTownType = 0
+            this.showPopupPickerPos = false
+            this.selectedHomeTownOptions = []
             this.showToast = false;
         },
         ...mapActions({
@@ -917,13 +1020,13 @@ export default {
             switchSoulModal: "SWITCHSOULFLAG", //切换灵魂匹配模式
             updateSoulParams: "UPDATESOULPARAMS", //更新灵魂匹配参数
             addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框
-            judgeMessType: "JUDGE_MESSTYPE" //判断消息类型
-        })
+            judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
+        }),
     },
     watch: {
         friendList(newValue) {
             this.someList = newValue;
-        }
+        },
     },
     components: {
         stack,
@@ -936,8 +1039,9 @@ export default {
         envelope,
         qrCode,
         topUp,
-        lifePhote
-    }
+        lifePhote,
+        PopupPicker
+    },
 };
 </script>
 
@@ -976,6 +1080,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    box-sizing: border-box;
     .nav {
         display: flex;
         justify-content: space-between;
@@ -1163,13 +1268,14 @@ export default {
         margin: 0rem auto 0; // padding:0 0.5rem;
         position: relative; // z-index: 1000;
         width: 8.9rem; // width: 100%;
-        height: 9.9rem;
+        height: 9.8rem;
         list-style: none;
         .switchBtn_wrapper {
             position: absolute;
             top: -1.3rem;
             left: 3.8rem;
-            .intro_soulText,.intro_picAndComment {
+            .intro_soulText,
+            .intro_picAndComment {
                 position: absolute;
                 top: 0.7rem;
                 left: 1.5rem;
@@ -1179,7 +1285,7 @@ export default {
                 z-index: 99;
                 width: 3.6667rem;
             }
-            .intro_picAndComment{
+            .intro_picAndComment {
                 top: 2.5rem;
                 left: 2.5rem;
             }
@@ -1301,7 +1407,7 @@ export default {
         .loading-container {
             position: absolute;
             width: 100%;
-            top: 50%; // transform: translateY(-50%);
+            top: 50%; 
         }
     }
     .guide_bg {
@@ -1346,28 +1452,13 @@ export default {
             width: 2.5rem;
             position: absolute;
             bottom: 1.4667rem;
-            right: .1rem;
+            right: 0.1rem;
             color: #fff;
             font-size: 0.4rem;
             font-weight: 700;
         }
     }
-} // 弹框礼物
-// .friend_gift_wrapper {
-//   .gift_list {
-//     display: flex;
-//     justify-content: space-between;
-//     padding: 0 0.4rem;
-//     .item {
-//       img {
-//         width: 1.5rem;
-//         height: 1.5rem;
-//       }
-//       p {
-//       }
-//     }
-//   }
-// }
+} 
 //弹框选择
 .select_wrapper {
     width: 8rem; // height: 8.1rem;
@@ -1388,7 +1479,7 @@ export default {
         padding-top: 0.5067rem;
     }
     .sex_wrapper {
-        margin-top: 1rem;
+        margin-top: 1.3rem;
         h3 {
             text-align: left;
             font-size: 14px;
@@ -1399,10 +1490,9 @@ export default {
         }
         .sex_list {
             display: flex;
-            justify-content: flex-start;
-            padding: 0.2133rem 0.625rem 0.3rem; // margin-left: 1.875rem;
+            justify-content: space-between;
+            padding: 0.2133rem 0.625rem 0.1rem; 
             li {
-                margin-right: 0.625rem;
                 width: 1.7067rem;
                 height: 0.6667rem;
                 line-height: 0.6667rem;
@@ -1427,10 +1517,15 @@ export default {
         }
         .dis_list {
             display: flex;
-            justify-content: flex-start;
-            padding: 0.2133rem 0.625rem 0.3rem; // margin-left: 1.875rem;
+            justify-content: space-between;
+            padding: 0.1133rem 0.625rem 0.1rem; 
+            .keywords{
+                height: 0.8rem;
+                line-height: .8rem;
+                padding-left: .1rem;
+            }
             li {
-                margin-right: 0.625rem;
+                // margin-right: 0.625rem;
                 width: 1.7067rem;
                 height: 0.6667rem;
                 line-height: 0.6667rem;
