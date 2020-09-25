@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-16 15:51:57
+ * @Last Modified time: 2020-09-25 14:49:30
  */
 import axios from 'axios'
 import Url from './config'
@@ -26,6 +26,18 @@ api.delIdentity = function(targetID) {
         return new Promise((resolve, reject) => {
             axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
                 // //console.log(res)
+                if (res.status == 200) {
+                    resolve(res.data)
+                }
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
+    //收集访问页面轨迹次数
+api.addVisitRecord = function(pageType) {
+        return new Promise((resolve, reject) => {
+            axios.get(Url.commonUrl + `/api/addVisitRecord?tk=${Url.tk}&pageType=${pageType}`).then((res) => {
                 if (res.status == 200) {
                     resolve(res.data)
                 }
@@ -838,9 +850,9 @@ api.updateAvatar = function(fileName, param) {
         })
     }
     //上传生活照
-api.updateLifePic = function(fileName, param) {
+api.updateLifePic = function(param) {
         return new Promise((resolve, reject) => {
-            axios.post(Url.commonUrl + `/api/uploadLifePhoto?tk=${Url.tk}&fileName=${fileName}`, param)
+            axios.post(Url.commonUrl + `/api/uploadLifePhoto?tk=${Url.tk}`, param)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)

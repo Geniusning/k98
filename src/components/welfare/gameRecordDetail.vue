@@ -45,6 +45,7 @@
       let arenaID = this.$route.params.id;
       //console.log(arenaID)
       this._loadArenaTopRank(arenaID);
+      util.addVisitRecord(this.$route.name)
     },
     methods: {
       _loadArenaTopRank(arenaID) {

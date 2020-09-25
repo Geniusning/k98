@@ -150,6 +150,7 @@
 			};
 		},
 		created() {
+			util.addVisitRecord(this.$route.name)
 			this.queryPhone = util.GetQueryString("phone")
 			console.log("this.queryPhone----", this.queryPhone)
 			console.log("this.param----", this.$route.params.phone)

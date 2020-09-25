@@ -324,6 +324,7 @@ import Popup from "base/popUp/popUp";
 import VueCropper from "vue-cropper";
 import axios from "axios";
 import api from "common/api";
+import util from "common/util"
 import Scroll from "../../base/scroll/scroll";
 import myHeader from "../../base/myheader/myheader";
 import { userInfo } from "os";
@@ -520,6 +521,7 @@ export default {
         ...mapState(["userInfo"])
     },
     mounted() {
+        util.addVisitRecord(this.$route.name)
         this.position = this.positionList[0][Number(this.userInfo.industry)];
         this.positionCode = String(this.positionList[0].indexOf(this.position));
         this.selectedHomeTownOptions = [

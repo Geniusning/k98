@@ -104,6 +104,7 @@ export default {
   mounted() {
     this.loadVipCardList();
     this.loadAllStaff();
+    util.addVisitRecord(this.$route.name)
   },
   computed: {
     ...mapState(["shopSettingInfo", "userInfo"])

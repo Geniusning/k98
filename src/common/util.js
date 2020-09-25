@@ -2,7 +2,7 @@
  * @Author: nicky
  * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-17 21:51:41
+ * @Last Modified time: 2020-09-25 17:39:01
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -183,7 +183,14 @@ util.returnDiscountType = (discountTypeNumber) => {
             return "次卡券"
         }
     }
-    // jssdk签名
+    //添加页面访问轨迹
+util.addVisitRecord = function(pageName) {
+    api.addVisitRecord(pageName).then(res => {
+        console.log("访问轨迹收集结果---", res)
+    })
+}
+
+// jssdk签名
 util._getJssdkConfig = function(url) {
         api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
             .then(res => {

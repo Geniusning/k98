@@ -212,7 +212,7 @@
               <div class="img">
               </div>
               <div class="name">
-                <p class="name">{{topUpGameInfo.content.fromInfo.nickName?topUpGameInfo.content.fromInfo.nickName:'朋友'}}店长送礼</p>
+                <p class="name">{{topUpGameInfo.content.fromInfo.nickName?topUpGameInfo.content.fromInfo.nickName:'朋友'}}送礼</p>
               </div>
             </div>
             <div class="topUpCommonInfo-middle">
@@ -408,7 +408,7 @@
           left: 0,
           top: 0
         },
-        top: 580,
+        top: 480,
         left: 0,
         width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
         height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
@@ -476,6 +476,7 @@
       this.identity = sessionStorage.getItem("identity")
       this.identity = this.identity ? this.identity : ""
       this.timeTick = setTimeout(() => {
+        let gameUrl = this.identity?`${this.responseForGameUrl}game/?gamePath=game1&identity=${this.identity}`:`${this.responseForGameUrl}game/?gamePath=game1`
         this.clearTopUpData();
         this.allMutatualInfo_temp = {};
         this.isAlreadyFriend = false;
@@ -492,7 +493,7 @@
               headImgURL: "",
               inviterID: "",
               nickName: "",
-              url: `${this.responseForGameUrl}game/?gamePath=game1?identity=${this.identity}`
+              url: gameUrl
             }
           },
           msgCode: 7
@@ -1454,7 +1455,6 @@
       },
       $route: function(newValue, oldValue) {
         //隐藏导航.控制信封和客服图标显示
-        // console.log("$route---", newValue)
         if (
           newValue.name == "home" ||
           newValue.name == "friend" ||
@@ -1816,13 +1816,13 @@
       text-align: center;
       @keyframes jump {
         10% {
-          top: 580px;
+          top: 480px;
         }
         50% {
-          top: 575px;
+          top: 475px;
         }
         100% {
-          top: 580px;
+          top: 480px;
         }
       }
       .pic_kefu {

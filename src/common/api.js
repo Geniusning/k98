@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-16 15:52:24
+ * @Last Modified time: 2020-09-25 14:49:46
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,7 +24,19 @@ axios.interceptors.request.use(
     }
 )
 let api = {};
-//获得最新的自助买单信息
+//收集访问页面轨迹次数
+api.addVisitRecord = function(pageType) {
+        return new Promise((resolve, reject) => {
+            axios.get(Url.commonUrl + `/api/addVisitRecord?pageType=${pageType}`).then((res) => {
+                if (res.status == 200) {
+                    resolve(res.data)
+                }
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
+    //获得最新的自助买单信息
 api.getNewestSelfPay = function(clientID) {
         return new Promise((resolve, reject) => {
             axios.get(Url.commonUrl + `/api/getNewestSelfPay?clientID=${clientID}`).then((res) => {
@@ -837,9 +849,9 @@ api.updateAvatar = function(fileName, param) {
         })
     }
     //上传生活照
-api.updateLifePic = function(fileName, param) {
+api.updateLifePic = function(param) {
         return new Promise((resolve, reject) => {
-            axios.post(shareurl + `/api/uploadLifePhoto?fileName=${fileName}`, param)
+            axios.post(shareurl + `/api/uploadLifePhoto`, param)
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)

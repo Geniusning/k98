@@ -458,6 +458,7 @@ export default {
         }, 1000);
     },
     mounted() {
+        util.addVisitRecord(this.$route.name)
         console.log("this.loadFriendSexType----",this.loadFriendSexType)
         let param = {
             cursor: 0,

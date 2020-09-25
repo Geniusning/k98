@@ -81,6 +81,7 @@
 import Scroll from "base/scroll/scroll";
 import Loading from "base/loading/loading";
 import api from 'common/api'
+import util from "common/util"
 // import { setInterval, clearTimeout } from 'timers';
 export default {
   data() {
@@ -96,6 +97,7 @@ export default {
     };
   },
   mounted() {
+    util.addVisitRecord(this.$route.name)
     this._loadArenaRank();//拉取比赛场排名
     //this._loadAllQrcode();//拉取二维码
     //console.log('arenaID------------------------------', this.$route.params.arenaID);

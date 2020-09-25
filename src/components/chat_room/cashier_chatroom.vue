@@ -373,6 +373,7 @@
     //   // next()
     // },
     created() {
+      util.addVisitRecord(this.$route.name)
       this.listenScroll = true;
       this.today = new Date().getDate();
       this.today = new Date().getDate();

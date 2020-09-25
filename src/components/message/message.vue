@@ -473,6 +473,7 @@
       })
     },
     mounted() {
+      util.addVisitRecord(this.$route.name)
       this._loadFriends(); //拉取好友
       this._loadMutualEvents(); //拉取送礼，约战，
       this.getCaptainMessList(); //加载群发通知

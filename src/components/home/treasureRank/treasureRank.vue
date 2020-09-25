@@ -129,6 +129,7 @@ import {
 import myHeader from 'base/myheader/myheader';
 import Scroll from 'base/scroll/scroll'
 import api from 'common/api'
+import util from 'common/util'
 export default {
   data() {
     return {
@@ -142,6 +143,7 @@ export default {
   mounted() {
     this._loadWealthRanking();
     this._loadWealthAllPeopleRanking();
+    util.addVisitRecord(this.$route.name)
   },
   computed: {
     ...mapState(['userInfo'])

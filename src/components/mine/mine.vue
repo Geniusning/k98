@@ -154,6 +154,7 @@ export default {
     ...mapGetters(["userInfo", "test", "isShow"])
   },
   created() {
+    util.addVisitRecord(this.$route.name)
     //判断是否自定义了标签
     if (this.userInfo.tags) {
       this.tagList = this.userInfo.tags.split('、');

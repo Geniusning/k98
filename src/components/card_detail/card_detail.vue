@@ -60,6 +60,7 @@ export default {
     ...mapState(["userInfo", "deskCode", "checkQrCode", "deskId"])
   },
   mounted() {
+    util.addVisitRecord(this.$route.name)
     let startTime = new Date();
     let year = startTime.getFullYear();
     let month = startTime.getMonth() + 1;

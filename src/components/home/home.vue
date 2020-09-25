@@ -428,6 +428,7 @@ export default {
         console.log("home url---", window.iosSignUrl);
         this.deskCode = util.GetQueryString("deskCode");
         this.storeName = util.GetQueryString("storeName");
+        util.addVisitRecord(this.$route.name)
         //console.log("this.storeName---", this.storeName);
         this.resId = util.GetQueryString("resId");
         setTimeout(() => {

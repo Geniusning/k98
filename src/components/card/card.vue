@@ -254,6 +254,7 @@
       this.loadCashierList();
     },
     mounted(){
+      util.addVisitRecord(this.$route.name)
       console.log("card--mounted")
       this.isScan = util.GetQueryString("isScan")
       console.log(this.isScan)

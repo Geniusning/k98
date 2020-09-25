@@ -74,6 +74,7 @@ import {mapState} from 'vuex';
   import myHeader from 'base/myheader/myheader';
   import Scroll from 'base/scroll/scroll'
   import api from 'common/api'
+  import util from 'common/util'
   export default {
     data() {
       return {
@@ -87,6 +88,7 @@ import {mapState} from 'vuex';
     mounted() {
       this._loadGameScoreRanking()
       this._loadGameAllPeopleRanking()
+      util.addVisitRecord(this.$route.name)
     },
     computed: {
       ...mapState(['userInfo'])

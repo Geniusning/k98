@@ -27,6 +27,7 @@ export default {
         }
     },
     mounted() {
+        util.addVisitRecord(this.$route.name)
         this._loadAllArenaInfo();
     },
     methods: {

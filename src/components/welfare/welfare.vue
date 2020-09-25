@@ -140,12 +140,14 @@
       };
     },
     created() {
+      
       this._loadActivityInfo(); //获取活动通知
     },
     computed: {
       ...mapState(["baseUrl", "shareUrl", "activityNoticeList", "noCouponsFlag", "AdvertisingPhoto", "shopSettingInfo"])
     },
     mounted() {
+      util.addVisitRecord(this.$route.name)
       this._loadPublishArenas(); //拉取是否有比赛场
       //console.log("this.AdvertisingPhoto",this.AdvertisingPhoto)
     },

@@ -864,8 +864,8 @@
           text-align: center;
           font-size: 0.35rem;
           padding: 0rem;
-          // border: 1px solid rgb(156, 13, 13);
-          // background-color: #fff;
+          border: 1px solid rgb(156, 13, 13);
+          background-color: #fff;
           color: rgb(156, 13, 13);
           min-width: 0.8rem;
           height: .45rem;
