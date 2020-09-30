@@ -104,9 +104,6 @@
                 <p class="name">{{soulFriInfo.content.fromInfo.nickname?soulFriInfo.content.fromInfo.nickname:'朋友'}}</p>
               </div>
             </div>
-            <div class="topUpCommonInfo-top" v-if="isShowGiftGuide">
-              <p class="giftText">{{isvirtualGift?"收到如下虚拟礼物，积分存入→我的→积分明细":"收到礼物兑换券一份，存入→我的→卡券，可到店使用"}}</p>
-            </div>
             <div class="topUpCommonInfo-middle">
               <div class="partition_zone">
                 <div class="topUpCommonInfo_right" style="margin-top:-.1rem">
@@ -115,7 +112,7 @@
                 </div>
               </div>
             </div>
-            <div class="topUpCommonInfo-bottom soul-Bottom" style="margin-top:.3rem">
+            <div class="topUpCommonInfo-bottom soul-Bottom" style="margin-top:.17rem">
               <div class="bottom_partition">
                 <div class="rejectBtn" style="bottom:-0.7rem;" @click="acceptSoulFri(soulFriInfo.content.fromInfo,false)">拒绝</div>
                 <div class="acceptBtn" style="bottom:-.8rem;right:.15rem" @click="acceptSoulFri(soulFriInfo.content.fromInfo,true)">结识</div>
@@ -642,7 +639,7 @@
         }
         this.loadIdentityList()
         sessionStorage.setItem("identity", item.openid)
-        api.getUserInfo("/api/loadUserInfo").then(res => {
+        api.getUserInfo().then(res => {
           this.getUserInfo(res);
           this._loadFriends(); //拉取好友
           this._loadMutualEvents(); //拉取送礼，约战，
@@ -979,7 +976,7 @@
           //console.log("好友送礼回复结果---",res)
           if (res.errCode == 0) {
             //重新拉取约战，送礼，点赞列表
-            api.getUserInfo("/api/loadUserInfo").then(res => {
+            api.getUserInfo().then(res => {
               this.getUserInfo(res);
             });
             this._loadMutualEvents();
@@ -1024,7 +1021,7 @@
           if (res.errCode == 0) {
             //重新拉取约战，送礼，点赞列表
             // this._loadMutualEvents();
-            api.getUserInfo("/api/loadUserInfo").then(res => {
+            api.getUserInfo().then(res => {
               this.getUserInfo(res);
             });
             this.isMakeFriendBool = true;
@@ -1219,11 +1216,14 @@
             mutualEventsList = mutualEventsList.concat(
               mutualEventsObj.friendEvents === null ? [] : mutualEventsObj.friendEvents
             );
+            mutualEventsList = mutualEventsList.concat(
+              mutualEventsObj.commentEvents === null ? [] : mutualEventsObj.commentEvents
+            );
             console.log("mutualEventsList.length---", mutualEventsList.length)
             let count = mutualEventsList.length;
             this.CalcManualEventsCount(count);
+            this.addBange();
           }
-          this.addBange();
         });
       },
       close() {

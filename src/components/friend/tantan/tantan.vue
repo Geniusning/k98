@@ -20,14 +20,15 @@
             <!-- <p class="makeFriTips">绿灯闪烁表示好友在线哦，赶紧去找朋友吧...</p> -->
             <span class="time_desc">{{item.visitTime}}</span>
             <div class="comment-photo">
-              <div class="comment-wrapper clearfix" @touchstart="goToComment(item.info)" v-show="item.info.phone != '' &&item.info.role != '' && l98Setting.staffCommentOpen">
-                <img onclick="return false" src="../../../assets/image/thumb1.png" alt="" class="avatar fl">
-                <span class="count fl">{{thumbCount}}</span>
+              <!-- v-show="item.info.phone != '' &&item.info.role != '' && l98Setting.staffCommentOpen" -->
+              <div class="comment-wrapper clearfix" @touchstart="goToComment(item.info)" >
+                <!-- <img onclick="return false" src="../../../assets/image/thumb1.png" alt="" class="avatar fl"> -->
+                <span class="count fl">了解他...</span>
               </div>
-              <div class="avatarList-wrapper clearfix" @touchstart="showAlbum(item.info)" v-if="item.info.lifePhoto.lifePhotos &&item.info.lifePhoto.lifePhotos.length>0">
+              <!-- <div class="avatarList-wrapper clearfix" @touchstart="showAlbum(item.info)" v-if="item.info.lifePhoto.lifePhotos &&item.info.lifePhoto.lifePhotos.length>0">
                 <img onclick="return false" src="../../../assets/image/picture.png" alt="" class="avatar fl">
                 <span class="count fl">{{item.info.lifePhoto.lifePhotos.length}}</span>
-              </div>
+              </div> -->
             </div>
             <img onclick="return false" v-show="like && currentLikeIndex==index" class="like" src="../../../assets/image/tantan_thumb.png">
             <img onclick="return false" v-show="dislike && currentLikeIndex==index" class="dislike" src="../../../assets/image/tantan_close.png">
@@ -50,7 +51,7 @@
               <img onclick="return false" src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
               <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
               <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>
-              <span class="gift">富豪榜 {{item.info.wealthRanking}}</span>
+              <span class="gift">助推{{item.info.flowerCounts}} <img src="../../../assets/image/flowerCounts.png" class="flower" alt=""></span>
               <div class="thumb">
                 战神榜 {{item.info.gameScoreRanking}}
                 <img onclick="return false" class="battle" v-if="item.info.isBattle || !item.info.isSubscribe" src="../../../assets/image/noBattle.png" alt="">
@@ -182,11 +183,12 @@
         this.currentLikeIndex = 0; //条件筛选群友后重置喜欢图标显示index
       },
       pages(newValue) {
-        //console.log("子组件候选人数据----------------------------------------", newValue)
+        console.log("子组件候选人数据----------------------------------------", newValue)
         let data = newValue[0];
+        console.log("tantan---data",data)
         this.loadStaffCommentInfo(data.info.phone);
         this.backToParentData = data;
-        if (newValue.length <= 10) {
+        if (newValue.length <= 12) {
           //粗暴解决多次触发监听导致给父组件传递数据
           this.$emit("firstData", data);
         }
@@ -318,38 +320,38 @@
         });
       },
       //点击相册
-      showAlbum(info) {
-        if (info.role != "" && info.phone!="") {
-          this.$router.push({
-            name: "comment",
-            params: {
-            phone: info.phone
-          }
-          });
-          return;
-        }
-        //console.log("点击相册");
-        this.$emit(
-          "showAblum",
-          this.backToParentData ? this.backToParentData : this.pages[0]
-        );
-      },
+      // showAlbum(info) {
+      //   if (info.role != "" && info.phone!="") {
+      //     this.$router.push({
+      //       name: "commentUser",
+      //       params: {
+      //       openId: info.openid
+      //     }
+      //     });
+      //     return;
+      //   }
+      //   //console.log("点击相册");
+      //   this.$emit(
+      //     "showAblum",
+      //     this.backToParentData ? this.backToParentData : this.pages[0]
+      //   );
+      // },
       goToComment(info) {
-        let storeInfo = {
-          nickname: info.nickname,
-          headImgUrl: info.headimgurl
-        };
-        // let lifePhotoURL = {
-        //   lifePhotoList: info.lifePhoto.lifePhotos
-        // }
-        // sessionStorage.setItem("info", JSON.stringify(storeInfo));
-        // sessionStorage.setItem("lifePhotoList", JSON.stringify(lifePhotoURL));
-        this.$router.push({
-          name: "comment",
-          params: {
-            phone: info.phone
-          }
+        if (this.l98Setting.staffCommentOpen && info.role != '' && info.phone != ''){
+            this.$router.push({
+              name: "comment",
+              params: {
+                phone: info.phone
+              }
         });
+        }else{
+          this.$router.push({
+            name: "commentUser",
+            params: {
+              openId: info.openid
+            }
+          });
+        }
       },
       touchstart(e) {
         if (this.tracking) {
@@ -1053,8 +1055,16 @@
           }
         }
         .gift {
+          position: relative;
           box-sizing: border-box;
           padding-top: 0.04rem;
+          .flower{
+            top: -.4rem;
+            right: -0.2rem;
+            position: absolute;
+            width: 0.5333rem;
+            height: 0.5333rem;
+          }
           .userInfo(#ee8232);
           .gift_small {
             width: 0.2833rem;

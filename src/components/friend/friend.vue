@@ -443,6 +443,18 @@ export default {
         ...mapGetters(["qrIsShow"]),
     },
     created() {
+       this._getUserInfo().then((res)=>{
+           console.log("res---",res)
+            let param = {
+            cursor: 0,
+            sex: res.sex==="男"?2:1,
+            range: this.rangeType,
+            hometowncode:"",
+            industry:"",
+            keyword:""
+        };
+           this.getAllCommunityFriend(param);
+       })
         let isFriActCoupon = util.GetQueryString("friendCoupon");
         if (isFriActCoupon) {
             this.acquireWaitGetCoupons();
@@ -455,21 +467,12 @@ export default {
                 imgUrl: `${this.shopSettingInfo.image}`,
             };
             util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-        }, 1000);
+        }, 1500);
     },
     mounted() {
         util.addVisitRecord(this.$route.name)
         console.log("this.loadFriendSexType----",this.loadFriendSexType)
-        let param = {
-            cursor: 0,
-            sex: this.loadFriendSexType,
-            range: this.rangeType,
-            hometowncode:"",
-            industry:"",
-            keyword:""
-        };
-        //console.log("---------------------------------", param);
-        this.getAllCommunityFriend(param);
+        
         if (this.userInfo.sex === "男") {
             this.sexType = 0;
         } else {
@@ -488,7 +491,7 @@ export default {
         if (this.$route.params.data == "sharefriPage") {
             this.isShow_bg = true;
         }
-        (this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`),
+        (this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的有缘人`),
             Bus.$on("changeFriendConnetion", (openid) => {
                 //console.log("bus-openid---------", openid);
                 this.isFriend = true;
@@ -504,6 +507,14 @@ export default {
         clearTimeout(this.soulTimer);
     },
     methods: {
+          //分享获得积分
+        shareGetJifen(amount, shareType) {
+            api.shareToGetIntegral(amount, shareType).then(res => {
+                if (res.errCode == 1030) {
+                    alert("分享已上限，每天最多分享5次获得积分");
+                }
+            });
+        },
           //职位选择
         onHide_P() {
             this.showPopupPickerPos = false;
@@ -612,7 +623,7 @@ export default {
             this.isEndResultSearchBtnBox = false;
             this.searching = false;
             // this.soulText = `正在地球的每一个角落<br>寻找你的灵魂玩伴`
-            this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`;
+            this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的有缘人`;
         },
         //切换交友模式
         switchMakeFriModal() {
@@ -633,12 +644,12 @@ export default {
             if (!this.modalSwitch) {
                 clearTimeout(this.soulTimer);
                 this.isEndResultSearchBtnBox = false;
-                this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的灵魂玩伴`;
+                this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的有缘人`;
                 return;
             }
             this.soulTimer = setTimeout(() => {
                 this.soulText =
-                    "对不起<br>找不到和您匹配度>60%的灵魂玩伴<br>请完善个人资料,以便精准匹配";
+                    "对不起<br>找不到和您匹配度>60%的有缘人<br>请完善个人资料,以便精准匹配";
                 this.isEndResultSearchBtnBox = true;
                 this.searching = true;
                 // this.updateSoulParams(0,true)
@@ -647,7 +658,7 @@ export default {
         //拉取候选人
         getAllCommunityFriend(params) {
             api.getFriendList(params).then((res) => {
-                //console.log("拉取候选人：·····················", res);
+                console.log("拉取候选人：·····················", res);
                 this.changeFriendCursor(res.info.cursor);
                 this.getFriend(res.info);
             });
@@ -671,13 +682,17 @@ export default {
         },
         // 获取用户信息
         _getUserInfo() {
-            api.getUserInfo()
-                .then((res) => {
-                    this.getuserInfo(res);
-                })
-                .catch((err) => {
-                    //console.log(err);
-                });
+            return new Promise((resolve,reject)=>{
+                api.getUserInfo().then((res) => {
+                        this.getuserInfo(res);
+                        resolve(res)
+                    })
+                    .catch((err) => {
+                        //console.log(err);
+                    });
+
+            })
+           
         },
         //进入个人信息设置页面
         intoSetting() {
@@ -710,7 +725,7 @@ export default {
         listenFirstdata(data) {
             // 下面是传回父级的数据;
             // this.friendOnlineStatus = data.info.onlineL98Server; //好友在线状态
-            //console.log("滑动页面传回给父级数据：", data);
+            console.log("滑动页面传回给父级数据：", data);
             let openId = data.info.openid;
             this.friendId = openId;
             sessionStorage.setItem("staffCouponToId", openId);

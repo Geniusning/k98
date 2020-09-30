@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-25 17:15:50
+ * @Last Modified time: 2020-09-30 17:38:11
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -62,7 +62,6 @@ new Vue({
                 console.log("window.iosSignUrl----", window.iosSignUrl)
             }, 2000);
         }
-
         this.deskCode = util.GetQueryString("deskCode")
         this.deskId = util.GetQueryString("deskID")
         this.saveDeskCode({
@@ -197,7 +196,7 @@ new Vue({
             let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : this.userInfo.openid
             var decc = new TextDecoder("utf-8");
             let result = JSON.parse(decc.decode(e.data));
-            // console.log('websocket接受消息-------------------------', result)
+            console.log('websocket接受消息-------------------------', result)
             if (result.ops == 25) {
                 let msg = {
                     ops: 26,
@@ -443,10 +442,13 @@ new Vue({
                     mutualEventsList = mutualEventsList.concat(mutualEventsObj.combatsEvents === null ? [] : mutualEventsObj.combatsEvents)
                     mutualEventsList = mutualEventsList.concat(mutualEventsObj.giftEvents === null ? [] : mutualEventsObj.giftEvents)
                     mutualEventsList = mutualEventsList.concat(mutualEventsObj.friendEvents === null ? [] : mutualEventsObj.friendEvents)
+                    mutualEventsList = mutualEventsList.concat(
+                        mutualEventsObj.commentEvents === null ? [] : mutualEventsObj.commentEvents
+                    );
                     let count = mutualEventsList.length;
                     this.CalcManualEventsCount(count);
+                    this.addBange();
                 }
-                this.addBange();
                 // //console.log('拉取约战、点赞、送礼列表------------------------------', this.mutualEventsList)
             })
         },

@@ -23,7 +23,7 @@
                 </h3>
                 <ul class="uploadLifePhotoList">
                     <li v-for="(item,index) in lifePhotoList" class="photo" :key="index">
-                        <input type="text" class="lifePhoto-desc" placeholder="请输入照片备注" disabled :value="item.caption" />
+                         <input type="text" class="lifePhoto-desc" placeholder="请输入照片备注" disabled :value="item.caption" />
                         <div class="addpic-box">
                             <img :src="item.photoURL" alt class="imgItem" />
                             <img
@@ -35,11 +35,11 @@
                         </div>
                     </li>
                     <li class="photo" v-show="isShowAddImg">
-                        <input
+                         <input
                             type="text"
                             maxlength="18"
                             class="lifePhoto-desc"
-                            placeholder="请输入图片注解"
+                            placeholder="请先写主题，再点'+'上传图片"
                             v-model="lifePhotoDesc"
                         />
                         <div class="addpic-box">
@@ -51,6 +51,7 @@
                                 @change="uploadLifePic"
                             />
                         </div>
+                       
                     </li>
                 </ul>
                 <!-- <button class="btn" style="margin-top:10px" @click="goBack">确定</button> -->
@@ -133,8 +134,7 @@ export default {
         //选择上传生活照
         uploadLifePic(e) {
             if (this.lifePhotoDesc === "") {
-                this.$vux.toast.text("请先输入照片备注", "middle");
-                return;
+                this.lifePhotoDesc = "求点赞"
             }
             let _this = this;
             let file = e.target.files[0];
@@ -168,12 +168,20 @@ export default {
         },
         //确定生活照
         LifePicupComfirmBtn() {
+            if(this.isUpLoading){
+                 this.$vux.toast.text(
+                    "正在裁剪图片上传,请稍等",
+                    "middle"
+                );
+                return
+            }
+            this.isUpLoading = true
             this.$refs.cropper.getCropData((data) => {
                 console.log("this.$refs.cropper.getCropBlob----------", data);
                 this.resultLife = data.split(",")[1];
                 //上传生活照
                 let photodata = {
-                    caption: this.lifePhotoDesc,
+                    caption: this.lifePhotoDesc?this.lifePhotoDesc:"",
                     filename: this.lifePicName,
                     photodata: this.resultLife,
                 };
@@ -182,7 +190,6 @@ export default {
                     this.showTailor = false
                     if (res.errCode === 0) {
                         api.getUserInfo().then((res) => {
-                            
                             console.log("getUserInfo----", res);
                             this.getuserInfo(res);
                             this.lifePhotoDesc = "";
@@ -192,6 +199,7 @@ export default {
                                     this.isShowAddImg = false;
                                 }
                             }
+                            this.isUpLoading = false
                             this.$vux.toast.show({
                                 text: "保存成功",
                             });

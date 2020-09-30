@@ -10,15 +10,41 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     }
     
-    #chartdiv {
+    .stack {
         width: 100%;
-        height: 98vh;
+        height: 100%;
+        position: relative;
+        perspective: 1000px;
+        perspective-origin: 50% 150%;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .stack-item {
+        background: #fff;
+        height: 100%;
+        width: 100%;
+        border-radius: 4px;
+        text-align: center;
+        overflow: hidden;
+    }
+    
+    .stack-item img {
+        width: 100%;
+        display: block;
+        pointer-events: none;
     }
 </style>
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
 
-<body οnunlοad="checkLeave()">
-    <div id="chartdiv"></div>
+<body>
+    <ul class="stack">
+        <li class="stack-item" style="transform: translate3d(0px, 0px, 0px);opacity: 1;z-index: 10;"><img style="background-color: red;height: 400px;" src="1.png" alt="01"></li>
+        <li class="stack-item" style="transform: translate3d(0px, 0px, -60px);opacity: 1;z-index: 1"><img style="background-color: thistle;height: 400px;" src="2.png" alt="02"></li>
+        <li class="stack-item" style="transform: translate3d(0px, 0px, -120px);opacity: 1;z-index: 1"><img style="background-color: green;height: 400px;" src="3.png" alt="03"></li>
+        <li class="stack-item" style="transform: translate3d(0px, 0px, -180px);opacity: 0;z-index: -1"><img style="background-color: yellow;height: 400px;" src="4.png" alt="04"></li>
+        <li class="stack-item" style="transform: translate3d(0px, 0px, -180px);opacity: 0;z-index: -1"><img style="background-color: darkblue;height: 400px;" src="5.png" alt="05"></li>
+    </ul>
 </body>
 <script>
     // let target = 40
@@ -290,8 +316,69 @@
             if (stack.length != 0) return false
             return result
         }
-        // console.log(isValid(""))
-    console.log(Math.floor(Math.random() * 10))
-    var str = "aljglag/k98/home"
-    console.log(str.split('k98'))
+        // console.log(isValid("")) 1600272000902
+    isDuringTime = function(beginTime, endTime, isNextDay) {
+        var dealBeginTime //处理后的开始时间
+        var dealEndTime //处理后的结束时间
+        var todayTimeStamp
+        var todayTime
+        var todayYear
+        var todayMon
+        var todayDate
+        var tomorrowTimeStamp
+        todayYear = new Date().getFullYear()
+        todayMon = new Date().getMonth() + 1
+        todayDate = new Date().getDate()
+        if (isNextDay === 1) {
+            let today0Time = new Date().setHours(0, 0, 0) //设置当天凌晨零时零分
+            tomorrowTimeStamp = today0Time + 86400000 //设置第二天零点零分
+            tomorrowYear = new Date(tomorrowTimeStamp).getFullYear()
+            tomorrowMonth = new Date(tomorrowTimeStamp).getMonth() + 1
+            tomorrowDate = new Date(tomorrowTimeStamp).getDate()
+            dealEndTime = tomorrowYear + "-" + tomorrowMonth + "-" + tomorrowDate + " " + endTime
+        } else {
+            dealEndTime = todayYear + "-" + todayMon + "-" + todayDate + " " + endTime
+        }
+        dealBeginTime = todayYear + "-" + todayMon + "-" + todayDate + " " + beginTime
+
+        if (new Date().getTime() >= new Date(dealBeginTime) && new Date().getTime() <= new Date(dealEndTime)) {
+            return true
+        } else {
+            return false
+        }
+    }
+    console.log("是否在时间内---", isDuringTime("16:8", "02:49", 1))
+
+    addMin = function(srcTime, sec = 600) {
+            var todayYear
+            var todayMon
+            var todayDate
+            var srcTimeStamp
+            todayYear = new Date().getFullYear()
+            todayMon = new Date().getMonth() + 1
+            todayDate = new Date().getDate()
+            srcTime = todayYear + "-" + todayMon + "-" + todayDate + " " + srcTime
+            srcTimeStamp = new Date(srcTime).getTime() + sec * 1000
+            return new Date(srcTimeStamp).getHours() + ":" + (new Date(srcTimeStamp).getMinutes() > 10 ? new Date(srcTimeStamp).getMinutes() : "0" + new Date(srcTimeStamp).getMinutes()) +
+                ":" + (new Date(srcTimeStamp).getSeconds() > 10 ? new Date(srcTimeStamp).getSeconds() : "0" + new Date(srcTimeStamp).getSeconds())
+        }
+        // console.log(addMin("23:58"))
+
+    var str = "00:00"
+
+    function handleMin(str) {
+        let arr = str.split(":")
+        if (arr[0] === "00" && arr[1] === "00") {
+            return "23:59:59"
+        }
+        if (arr[1] === "00") {
+            return Number(arr[0]) - 1 + ":" + "59" + ":59"
+        }
+        var tempNum = Number(arr[1]) - 1
+        return arr[0] + ":" + tempNum + ":59"
+    }
+    // console.log(handleMin(str))
+
+    console.log(new Date("2020-9-17 16:3:59").getTime())
+    console.log(!!1)
 </script>

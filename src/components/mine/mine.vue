@@ -13,6 +13,10 @@
         <img onclick="return false"  src="../../assets/image/setting.png" alt class="editIcon">
         <div class="editText">设置</div>
       </div>
+      <div class="commentEntry" @click="goToMyComment">
+        <img onclick="return false"  src="../../assets/image/picture.png" alt class="editIcon">
+        <div class="editText">评价</div>
+      </div>
     </div>
     <div class="content">
       <!-- 我的信息 -->
@@ -162,6 +166,16 @@ export default {
     // this._loadGoods();
   },
   methods: {
+    //查看自己的评价
+    goToMyComment(){
+       this.$router.push({
+          name: "commentUser",
+          params: {
+            openId: this.userInfo.openid,
+            isSelf:true
+          }
+        });
+    },
     //监听充值面板状态
     closeIntegralPanel(flag) {
       //console.log('面板状态-----------', flag);
@@ -325,6 +339,22 @@ export default {
       position: absolute;
       top: 0.4rem;
       right: 0.4133rem;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      .editIcon{
+        width: 0.6rem;
+        height: 0.56rem;
+      }
+      .editText{
+        font-weight: 900;
+        color: #fff;
+      }
+    }
+    .commentEntry {
+      position: absolute;
+      top: 0.4rem;
+      left: 0.4133rem;
       display: flex;
       flex-direction: column;
       text-align: center;

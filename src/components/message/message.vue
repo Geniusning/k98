@@ -107,12 +107,12 @@
                 <div class="name_and_message">
                   <p class="name">{{item.from.nickname}}</p>
                   <p class="message" style="color:green;font-weight:800" v-if="item.combatID">{{item.from.nickname}}邀请玩把大话骰</p>
-                  <p class="message" style="color:#333" v-else-if="item.id==1">{{item.from.nickname}}送你一个啤酒</p>
-                  <p class="message" style="color:#333" v-else-if="item.id==2">{{item.from.nickname}}送你一个鲜花</p>
-                  <p class="message" style="color:#333" v-else-if="item.id==3">{{item.from.nickname}}送你一个别墅</p>
-                  <p class="message" style="color:#333" v-else-if="item.id==4">{{item.from.nickname}}送你一个跑车</p>
-                  <p class="message" style="color:#333" v-else-if="item.integral">{{item.from.nickname}}送你{{item.name}}</p>
-                  <p class="message" v-else>{{item.from.nickname}}给你点赞,请求加好友</p>
+                  <p class="message" style="color:#333" v-else-if="item.id==1">送你一个啤酒</p>
+                  <p class="message" style="color:#333" v-else-if="item.id==2">送你一个鲜花</p>
+                  <p class="message" style="color:#333" v-else-if="item.id==3">送你一个别墅</p>
+                  <p class="message" style="color:#333" v-else-if="item.id==4">送你一个跑车</p>
+                  <p class="message" style="color:#333" v-else-if="item.integral">送你{{item.name}}</p>
+                  <p class="message" v-else-if="item.commentId" v-html="item.message"></p>
                 </div>
               </div>
               <div class="thumb_wrapper">
@@ -124,13 +124,17 @@
                   <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
                   <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
                 </div>
+                <div class="clearfix backThumbBox" v-else-if="item.commentId">
+                  <p class=" back_thumb vux-1px fl reject" @click="respondForComment(index,item,'no')">删除</p>
+                  <p class=" back_thumb vux-1px fl" @click="respondForComment(index,item,'yes')">回复</p>
+                </div>
                 <div class="clearfix " v-else>
                   <p class=" back_thumb vux-1px fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
                   <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
                   <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
                 </div>
                 <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
-                  <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.time}}</p>
+                  <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.handleTime}}</p>
                 </div>
               </div>
               <!-- <div class="checkBox_scene clearfix" v-show="item.integral">
@@ -795,13 +799,14 @@
             tempEventList = tempEventList.concat(mutualEventsObj.combatsEvents === null ? [] : mutualEventsObj.combatsEvents)
             tempEventList = tempEventList.concat(mutualEventsObj.giftEvents === null ? [] : mutualEventsObj.giftEvents)
             tempEventList = tempEventList.concat(mutualEventsObj.friendEvents === null ? [] : mutualEventsObj.friendEvents)
+            tempEventList = tempEventList.concat(mutualEventsObj.commentEvents === null ? [] : mutualEventsObj.commentEvents)
             this.mutualEventsList = tempEventList.sort((a, b) => {
               return b.time - a.time
             })
             this.CalcManualEventsCount(this.mutualEventsList.length);
             this.addBandge();
             this.mutualEventsList.forEach(item => {
-              item.time = util.timestampToTimeNoLine(Number(item.time))
+              item.handleTime = util.timestampToTimeNoLine(Number(item.time))
               if (item.gift) {
                 item = Object.assign(item, item.gift)
               }
@@ -827,7 +832,7 @@
             this.removeEventList()
             if (flag) {
               this.text = "已感谢";
-              api.getUserInfo("/api/loadUserInfo").then(res => {
+              api.getUserInfo().then(res => {
                 this.getUserInfo(res);
               })
               setTimeout(() => {
@@ -843,6 +848,39 @@
               this.text = "已拒接";
             }
             this.showPositionValue = true;
+          }
+        })
+      },
+      respondForComment(index,item,flag){
+        let data = {
+          commentId:item.commentId,
+          message:item.message,
+          time:item.time,
+          from:{
+            openid:item.from.openid,
+            nickname:item.from.nickname,
+            headimgurl:item.from.headimgurl
+          }
+        }
+        console.log("data----------------",data)
+        api.delCommentInfo(flag,data).then(res=>{
+          console.log("删除评论结果")
+          if(res.errCode===0){
+            this._loadMutualEvents()
+            if(flag==="yes"){
+              this.setChatFriend({
+                 openid:item.from.openid,
+                 nickname:item.from.nickname,
+                 headimgurl:item.from.headimgurl
+              });
+              this.$router.push({
+                 name: "chat",
+                 params: {
+                   isClient: false,
+                   id: this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : item.phone
+                 }
+              })
+            }
           }
         })
       },
@@ -1607,7 +1645,7 @@
               border-radius: 10%;
             }
             .dot {
-              .dot(0, 0);
+              .dot(-.1rem, -.08rem);
             }
           }
           .name_and_message {
@@ -1630,8 +1668,9 @@
               color: #666; // height: 0.6667rem;
               font-size: 0.3467rem;
               margin-top: 0.2rem;
-              overflow: hidden; // text-overflow: ellipsis;
-              // white-space: nowrap;
+              overflow: hidden; 
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
           }
         }

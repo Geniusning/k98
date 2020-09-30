@@ -2,7 +2,7 @@
  * @Author: nicky
  * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-25 17:39:01
+ * @Last Modified time: 2020-09-30 18:06:12
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -251,12 +251,14 @@ util.setShareInfo = function(shareObj, amount, shareType, fn) {
                         });
                         wx.onMenuShareTimeline({ //朋友圈
                             title: shareObj.title, // 分享标题
+                            desc: shareObj.desc,
                             link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                             imgUrl: shareObj.imgUrl, // 分享图标
                             success: () => {
                                 // 用户点击了分享后执行的回调函数
                                 //分享朋友圈记录
                                 //console.log("分享朋友圈")
+                                fn(amount, shareType)
                                 api.createShareDaylog("timeLine")
                             }
                         })
@@ -267,6 +269,7 @@ util.setShareInfo = function(shareObj, amount, shareType, fn) {
                     });
                 })
         } else {
+            console.log("apple 进来了")
             wx.onMenuShareAppMessage({ //分享好友
                 title: shareObj.title,
                 desc: shareObj.desc,
@@ -278,7 +281,7 @@ util.setShareInfo = function(shareObj, amount, shareType, fn) {
                     api.createShareDaylog("friend")
                         //分享获得积分
                     fn(amount, shareType)
-
+                    console.log("apple 进来了 success friend")
                 }
             });
             wx.onMenuShareTimeline({ //朋友圈
@@ -289,7 +292,29 @@ util.setShareInfo = function(shareObj, amount, shareType, fn) {
                     // 用户点击了分享后执行的回调函数
                     //分享朋友圈记录
                     //console.log("分享朋友圈")
+                    fn(amount, shareType)
                     api.createShareDaylog("timeLine")
+                    console.log("apple 进来了 success timeLine")
+                }
+            })
+
+            //---------------------------------  新分享
+            wx.updateAppMessageShareData({
+                title: shareObj.title, // 分享标题
+                desc: shareObj.desc, // 分享描述
+                link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: shareObj.imgUrl, // 分享图标
+                success: function() {
+                    // 设置成功
+                }
+            })
+
+            wx.updateTimelineShareData({
+                title: shareObj.title, // 分享标题
+                link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: shareObj.imgUrl, // 分享图标
+                success: function() {
+                    // 设置成功
                 }
             })
         }

@@ -43,13 +43,13 @@
                     class="comment-wrapper clearfix"
                     @click="goToComment(staticChatFriendObj.phone)"
                 >
-                    <img
+                    <!-- <img
                         onclick="return false"
                         src="../../assets/image/thumb1.png"
                         alt
                         class="avatar fl"
-                    />
-                    <span class="count fl">{{thumbCount}}</span>
+                    /> -->
+                    <span class="count fl">了解他..</span>
                 </div>
                 <div class="backHome_box">
                     <img
@@ -761,7 +761,6 @@ export default {
         }
         console.log("this.myShareUrl-----", this.myShareUrl);
         this._initJssdk(this.myShareUrl);
-        this.loadStaffCommentInfo(this.staticChatFriendObj.phone);
         console.log(
             "this.staticChatFriendObj-----------",
             this.staticChatFriendObj
@@ -887,26 +886,12 @@ export default {
                 element.className = element.className.replace(reg, " ");
             }
         },
-        // 拉取员工评价内容
-        loadStaffCommentInfo(phone) {
-            api.loadStaffCommentInfo(phone).then(res => {
-                //console.log("员工评价内容---", res);
-                if (res.errCode === 0) {
-                    this.thumbCount = res.staffCommentInfo.thumbCount;
-                } else {
-                    this.$vux.toast.show({
-                        text: res.errMsg
-                    });
-                }
-                //console.log("this.staffCommentInfo------", this.thumbCount);
-            });
-        },
         //去评价
-        goToComment(phone) {
+        goToComment() {
             this.$router.push({
-                name: `comment`,
+                name: `commentUser`,
                 params: {
-                    phone: phone
+                    openId: this.staticChatFriendObj.openid
                 }
             });
         },

@@ -505,7 +505,7 @@
         }
       },
       refreshUserInfo() {
-        api.getUserInfo("/api/loadUserInfo").then(res => {
+        api.getUserInfo().then(res => {
           //console.log("个人信息-------", res);
           this.getUserInfo(res);
           this.panelIndex = 3;
@@ -546,8 +546,7 @@
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
                   // 使用以上方式判断前端返回,微信团队郑重提示：
                   alert("微信支付成功");
-                  api
-                    .getUserInfo("/api/loadUserInfo")
+                  api.getUserInfo()
                     .then(res => {
                       this.getUserInfo(res);
                       this.panelIndex = 4;
@@ -717,8 +716,8 @@
             text-align: center;
             border-radius: 0.1067rem;
             .giftIcon {
-              width: 1rem;
-              height: 1rem;
+              width: .9rem;
+              height: .9rem;
             }
             .price {
               width: 1.4rem;

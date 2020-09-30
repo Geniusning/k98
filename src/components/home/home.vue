@@ -440,7 +440,7 @@ export default {
                 imgUrl: `${this.shopSettingInfo.image}`
             };
             util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-        }, 1000);
+        }, 1500);
         if (this.resId) {
             this.getAllianceCoupon();
         }
@@ -623,7 +623,7 @@ export default {
                     });
             }, 6000);
         },
-        //分享获得优惠券
+        //分享获得积分
         shareGetJifen(amount, shareType) {
             api.shareToGetIntegral(amount, shareType).then(res => {
                 if (res.errCode == 1030) {

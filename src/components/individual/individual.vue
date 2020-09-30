@@ -152,6 +152,16 @@
                                         ></x-switch>
                                     </group>
                                 </li>
+                                <li style="font-size: 0.3733rem;" class="authorItem">
+                                    <group>
+                                        <x-switch
+                                            title="是否不接受评价或留言"
+                                            :value-map="[false, true]"
+                                            @on-change="changeComment"
+                                            v-model="isComment"
+                                        ></x-switch>
+                                    </group>
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -191,7 +201,7 @@
                             class="close"
                         />
                     </div>
-                    <h3 class="title">最多选五个标签</h3>
+                    <h3 class="title">最多选3个标签</h3>
                     <ul class="tag_list clearfix" ref="tagList">
                         <li
                             class="tag fl"
@@ -339,8 +349,9 @@ export default {
             city: "",
             password: "",
             tempPic: require("../../assets/image/divide_add_avatar.png"),
-            isStealth: null,
-            isQuiet: null,
+            isStealth: false,
+            isQuiet: false,
+            isComment:false,//是否打开评价
             isBattle: false,
             signatureList: "",
             title: "最多选5个",
@@ -528,6 +539,7 @@ export default {
             this.userInfo.hometownCode.slice(0, 2) + "0000",
             this.userInfo.hometownCode
         ];
+
         this.hometownCode = this.userInfo.hometownCode;
         this.name = this.userInfo.nickname;
         this.gender = this.userInfo.sex;
@@ -538,6 +550,7 @@ export default {
         this.oldPhone = this.userInfo.phone;
         this.isStealth = this.userInfo.isStealth;
         this.isQuiet = this.userInfo.isQuiet;
+        this.isComment = this.userInfo.isComment
         this.isBattle = this.userInfo.isBattle;
         this.signature = this.userInfo.signature
             ? this.userInfo.signature
@@ -568,7 +581,7 @@ export default {
                     this.showComfirmPwd = false;
                     this.password = "";
                     this.$vux.toast.text("验证成功", "top");
-                    api.getUserInfo("/api/loadUserInfo").then(res => {
+                    api.getUserInfo().then(res => {
                         this.getuserInfo(res);
                         console.log("res---", res);
                     });
@@ -591,6 +604,10 @@ export default {
         },
         changeBattle(e) {
             this.isBattle = e;
+        },
+        changeComment(e){
+            this.isComment = e;
+            console.log("this.isComment---",this.isComment)
         },
         blurAdjust() {
             window.scrollTo(0, 0);
@@ -769,7 +786,8 @@ export default {
                 staffTag: this.staffTag,
                 industry: String(this.positionCode),
                 hometownCode: this.hometownCode,
-                hometown: this.homeTown
+                hometown: this.homeTown,
+                isComment:this.isComment
             };
             // if (this.phone.length != 11) {
             //   this.$vux.toast.text("请输入正确手机号", "top");
@@ -786,7 +804,7 @@ export default {
             api.savePersonalInfo(param).then(res => {
                 console.log("res---", res);
                 if (res.errCode === 0) {
-                    api.getUserInfo("/api/loadUserInfo").then(userInfo => {
+                    api.getUserInfo().then(userInfo => {
                             this.$vux.toast.text("保存成功", "top");
                             //核对员工电话
                             if ((this.oldPhone != this.phone) && this.phone != "") {

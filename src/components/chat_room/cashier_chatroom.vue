@@ -563,12 +563,12 @@
       //用户已付款
       async sendAlreayPayMoney() {
         console.log("用户已付款----账单id", this.lastestSelfPayInfo)
-        let data = {
-          id: this.lastestSelfPayInfo.id
-        };
-        let res = await api.paymentSelfPay(data);
+        // let data = {
+        //   id: this.lastestSelfPayInfo.id
+        // };
+        // let res = await api.paymentSelfPay(data);
         //console.log("顾客付款结果---", res);
-        this.input_value = `<span style="color:red;font-size:18px">台/房号：${cashierContent.deskcode}，</span>已付款，请查收`;
+        this.input_value = `<span style="color:red;font-size:18px">台/房号：${this.lastestSelfPayInfo.deskcode}，</span>已付款，请查收`;
         this.send();
         if (this.deskId && this.l98Setting.staffCommentOpen) {
           api.loadDeskHolder(this.deskId).then(res => {

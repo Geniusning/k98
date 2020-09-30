@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-22 15:13:50
+ * @Last Modified time: 2020-09-30 12:27:10
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -610,6 +610,7 @@ const mutations = {
     },
     //所有类型的未读消息累加总的未读消息里面
     [types.ADD_BADGE](state) {
+        // console.log("计算总未读数manualEventsList_badgeCount", state.manualEventsList_badgeCount)
         state.badgeCount = state.msg_badgeCount + state.event_badgeCount +
             state.manualEventsList_badgeCount + state.client_badgeCount +
             state.group_badgeCount + state.cashier_badgeCount;

@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-25 14:49:30
+ * @Last Modified time: 2020-09-30 12:26:57
  */
 import axios from 'axios'
 import Url from './config'
@@ -26,6 +26,18 @@ api.delIdentity = function(targetID) {
         return new Promise((resolve, reject) => {
             axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
                 // //console.log(res)
+                if (res.status == 200) {
+                    resolve(res.data)
+                }
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
+    //处理在新朋友事件中有关留言的表数据
+api.delCommentInfo = function(flag, data) {
+        return new Promise((resolve, reject) => {
+            axios.post(Url.commonUrl + `/api/delCommentInfo?tk=${Url.tk}&flag=${flag}`, data).then((res) => {
                 if (res.status == 200) {
                     resolve(res.data)
                 }
@@ -277,9 +289,9 @@ api.loadCashierList = function() {
 }
 
 //拉取员工评价内容
-api.loadStaffCommentInfo = function(phone) {
+api.loadStaffCommentInfo = function(openId) {
         return new Promise((resolve, reject) => {
-            axios.get(Url.commonUrl + `/api/loadStaffCommentInfo?tk=${Url.tk}&phone=${phone}`).then((res) => {
+            axios.get(Url.commonUrl + `/api/loadStaffCommentInfo?tk=${Url.tk}&openId=${openId}`).then((res) => {
                 if (res.status == 200) {
                     resolve(res.data)
                 }
@@ -288,7 +300,7 @@ api.loadStaffCommentInfo = function(phone) {
             })
         })
     }
-    //员工发布评价
+    //员工、用户发布评价
 api.sendCommentMessage = function(data) {
         return new Promise((resolve, reject) => {
             axios.post(Url.commonUrl + `/api/sendCommentMessage?tk=${Url.tk}`, data).then((res) => {
@@ -301,9 +313,9 @@ api.sendCommentMessage = function(data) {
         })
     }
     //员工评价鄙视
-api.giveUnThumb = function(phone) {
+api.giveUnThumb = function(openId) {
         return new Promise((resolve, reject) => {
-            axios.get(Url.commonUrl + `/api/giveUnThumb?tk=${Url.tk}&phone=${phone}`).then((res) => {
+            axios.get(Url.commonUrl + `/api/giveUnThumb?tk=${Url.tk}&openId=${openId}`).then((res) => {
                 if (res.status == 200) {
                     resolve(res.data)
                 }
@@ -313,9 +325,9 @@ api.giveUnThumb = function(phone) {
         })
     }
     //员工评价点赞
-api.giveThumb = function(phone) {
+api.giveThumb = function(openId) {
         return new Promise((resolve, reject) => {
-            axios.get(Url.commonUrl + `/api/giveThumb?tk=${Url.tk}&phone=${phone}`).then((res) => {
+            axios.get(Url.commonUrl + `/api/giveThumb?tk=${Url.tk}&openId=${openId}`).then((res) => {
                 if (res.status == 200) {
                     resolve(res.data)
                 }
@@ -643,9 +655,9 @@ api.quitFriend = function(openId) {
         })
     }
     //获取用户信息
-api.getUserInfo = function() {
+api.getUserInfo = function(openId = "") {
     return new Promise((resolve, reject) => {
-        axios.get(Url.commonUrl + `/api/loadUserInfo?tk=${Url.tk}`).then(res => {
+        axios.get(Url.commonUrl + `/api/loadUserInfo?tk=${Url.tk}&openId=${openId}`).then(res => {
             if (res.status == 200) {
                 resolve(res.data)
             }
