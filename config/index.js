@@ -4,90 +4,90 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "qoc6A9nIdVW9CckBo1iiHVWxkMXR9it7cqePeo45CVTAseuGvAgr7hdTsLizDjFapPV0_Q==";
+const myToken = "hJG9YjP-KNPID1xyTGd8Sz0klW9N_DbFwSviYjlnisN9Z8KOIBxb2SPc_XO_PMkWSysftg==";
 // ------------------------------
 
 module.exports = {
-    dev: {
+  dev: {
 
-        // Paths
-        assetsSubDirectory: 'static',
-        assetsPublicPath: '/',
-        proxyTable: {
-            "/api": {
-                target: "https://singledog.qianz.com", //中新
-                // target: "172.18.4.8", //本地
-                // target: "https://llwant1.qianz.com", //老友一起玩吧
-                // target: "https://llwant3.qianz.com", //k98
-                // target: "https://llwant4.qianz.com", //喜炖
-                changeOrigin: true,
-                pathRewrite: function(path, req) {
-                    return path + "&tk=" + myToken
-                }
-            },
-        },
-
-        // Various Dev Server settings
-        host: '172.18.6.191',
-
-        // host: '192.168.101.6',
-
-        // host: 'localhost', // can be overwritten by process.env.HOST
-        port: 8088, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
-        autoOpenBrowser: false,
-        errorOverlay: true,
-        notifyOnErrors: true,
-        poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
-
-        // Use Eslint Loader?
-        // If true, your code will be linted during bundling and
-        // linting errors and warnings will be shown in the console.
-        useEslint: true,
-        // If true, eslint errors and warnings will also be shown in the error overlay
-        // in the browser.
-        showEslintErrorsInOverlay: false,
-
-        /**
-         * Source Maps
-         */
-
-        // https://webpack.js.org/configuration/devtool/#development
-        devtool: 'eval-source-map',
-
-        // If you have problems debugging vue-files in devtools,
-        // set this to false - it *may* help
-        // https://vue-loader.vuejs.org/en/options.html#cachebusting
-        cacheBusting: true,
-
-        // CSS Sourcemaps off by default because relative paths are "buggy"
-        // with this option, according to the CSS-Loader README
-        // (https://github.com/webpack/css-loader#sourcemaps)
-        // In our experience, they generally work as expected,
-        // just be aware of this issue when enabling this option.
-        cssSourceMap: false,
+    // Paths
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/',
+    proxyTable: {
+      "/api": {
+        target: "https://singledog.qianz.com", //中新
+        // target: "172.18.4.8", //本地
+        // target: "https://llwant1.qianz.com", //老友一起玩吧
+        // target: "https://llwant3.qianz.com", //k98
+        // target: "https://llwant4.qianz.com", //喜炖
+        changeOrigin: true,
+        pathRewrite: function (path, req) {
+          return path + "&tk=" + myToken
+        }
+      },
     },
 
-    build: {
-        // Template for index.html
-        index: path.resolve(__dirname, '../dist/index.html'),
+    // Various Dev Server settings
+    // host: '172.18.6.191',
 
-        // Paths
-        assetsRoot: path.resolve(__dirname, '../dist'),
-        assetsSubDirectory: 'static',
-        assetsPublicPath: '/',
+    host: '192.168.101.9',
 
-        /**
-         * Source Maps
-         */
+    // host: 'localhost', // can be overwritten by process.env.HOST
+    port: 8088, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    autoOpenBrowser: false,
+    errorOverlay: true,
+    notifyOnErrors: true,
+    poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-        productionSourceMap: false,
-        // https://webpack.js.org/configuration/devtool/#production
-        devtool: '#source-map',
+    // Use Eslint Loader?
+    // If true, your code will be linted during bundling and
+    // linting errors and warnings will be shown in the console.
+    useEslint: true,
+    // If true, eslint errors and warnings will also be shown in the error overlay
+    // in the browser.
+    showEslintErrorsInOverlay: false,
 
-        // Run the build command with an extra argument to
-        // View the bundle analyzer report after build finishes:
-        // `npm run build --report`
-        // Set to `true` or `false` to always turn it on or off
-        bundleAnalyzerReport: process.env.npm_config_report
-    }
+    /**
+     * Source Maps
+     */
+
+    // https://webpack.js.org/configuration/devtool/#development
+    devtool: 'eval-source-map',
+
+    // If you have problems debugging vue-files in devtools,
+    // set this to false - it *may* help
+    // https://vue-loader.vuejs.org/en/options.html#cachebusting
+    cacheBusting: true,
+
+    // CSS Sourcemaps off by default because relative paths are "buggy"
+    // with this option, according to the CSS-Loader README
+    // (https://github.com/webpack/css-loader#sourcemaps)
+    // In our experience, they generally work as expected,
+    // just be aware of this issue when enabling this option.
+    cssSourceMap: false,
+  },
+
+  build: {
+    // Template for index.html
+    index: path.resolve(__dirname, '../dist/index.html'),
+
+    // Paths
+    assetsRoot: path.resolve(__dirname, '../dist'),
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/',
+
+    /**
+     * Source Maps
+     */
+
+    productionSourceMap: false,
+    // https://webpack.js.org/configuration/devtool/#production
+    devtool: '#source-map',
+
+    // Run the build command with an extra argument to
+    // View the bundle analyzer report after build finishes:
+    // `npm run build --report`
+    // Set to `true` or `false` to always turn it on or off
+    bundleAnalyzerReport: process.env.npm_config_report
+  }
 }
