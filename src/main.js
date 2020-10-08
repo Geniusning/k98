@@ -52,6 +52,7 @@ new Vue({
       timer: "",
       limitTimes: 0,
       lockReconnect: null,
+      openId: ''
     }
   },
   mounted() {
@@ -73,11 +74,12 @@ new Vue({
     }
     this.deskCode = util.GetQueryString("deskCode")
     this.deskId = util.GetQueryString("deskID")
+    this.openId = util.GetQueryString("openId")
     this.saveDeskCode({
       deskCode: this.deskCode,
       deskId: this.deskId
     })
-    this.getUserInfo(); //获取用户信息
+    this.getUserInfo(this.openId); //获取用户信息
     this.loadAdvertisingPhoto(); //拉取首页轮播图
     this.createQrcode(); //创建二维码
     this.loadStoreSetting(); //获取门店信息
@@ -413,8 +415,8 @@ new Vue({
       })
     },
     // 获取用户信息
-    getUserInfo() {
-      api.getUserInfo().then(res => {
+    getUserInfo(openId = "") {
+      api.getUserInfo(openId).then(res => {
         console.log('个人信息-------------------------：', res);
         this.getuserInfo(res);
       }).catch(err => {
