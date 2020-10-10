@@ -14,5 +14,5 @@ export default {
     // appId: "wx2bbe97c9b7e6d747",
     // websocketUrl: "wss://llwant1.qianz.com/api/ws z-IrXotq2fNbT_2mJVpwTBUpUcVniPOWGOXFsv1W24wprdDqMiksWzMFTWq5dWwpyvcilw==  shouyin",
     // shareUrl: "https://llwant1.qianz.com/ e-wVemxJ2hdeoKxBlSEzH5LMcOk727i9STPe4TqcuMisep1QyRsL0CXDuofcrqSK_omYLw==",
-    tk: "t_OVC6SZ76oa1HNKC2_MIPvzR1uLL1PFN6W7CT8FYmmglDN3BAVAQglu90nx8teeD3bdVw=="
+    tk: "42OLkBG5QQFAEAAdqXrWi5rKr1_YoXy82MVmF5cvmSxcIQASx5Wu-06z_kDugBexxz4sFA=="
 }

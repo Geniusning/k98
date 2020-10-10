@@ -145,7 +145,7 @@
           <!-- 个人信息 -->
           <div
             class="userInfo_wrapper"
-            @click.stop="showIntroduce"
+            @touchstart="showIntroduce"
           >
             <div class="userBox clearfix">
               <img
@@ -1247,7 +1247,7 @@ export default {
     .tag_wrapper {
       text-align: left;
       color: #666;
-      margin-top: 0.24rem;
+      margin-top: 0.35rem;
       overflow: hidden;
       white-space: nowrap;
       width: 100%;
@@ -1262,7 +1262,7 @@ export default {
       }
     }
     .signature_wrapper {
-      margin-top: 0.16rem;
+      margin-top: 0.3rem;
       .word {
         color: #808080;
         text-align: left;
