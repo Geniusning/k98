@@ -8,8 +8,7 @@
       <div class="logo-wrapper">
         <img
           onclick="return false"
-          v-if="activityNoticeList.length>0"
-          :src="activityNoticeList[0].image"
+          :src="activityNoticeList[0].image?activityNoticeList[0].image:tempPic"
           alt
           style=" width: 9.2rem;height:100%"
         >
@@ -186,6 +185,7 @@ import Scroll from "../../base/scroll/scroll.vue";
 export default {
   data() {
     return {
+      tempPic:require("../../assets/image/attention.png"),
       title: "游戏期数",
       gameShow: false,
       isShowGameEntry: false,

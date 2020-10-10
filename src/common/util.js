@@ -2,7 +2,7 @@
  * @Author: nicky
  * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-30 18:06:12
+ * @Last Modified time: 2020-10-09 14:22:39
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -339,7 +339,7 @@ util.GetQueryString = function(name) {
     if (r != null) {
         return decodeURI(r[2]);
     }
-    return null;
+    return "";
 };
 //判断安卓或者苹果
 util.isAndroid = function() {

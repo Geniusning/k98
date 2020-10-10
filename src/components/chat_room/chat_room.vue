@@ -2130,7 +2130,7 @@ export default {
           }
           .outDate {
             position: absolute;
-            top: 1rem;
+            top: .7rem;
             right: -0.8rem;
             width: 0.6667rem;
             height: 0.6667rem;

@@ -8,13 +8,13 @@
       v-for="(item, index) in pages"
       :key="index"
       :style="[transformIndex(index),transform(index)]"
-      @touchmove.prevent="touchmove"
-      @touchstart.prevent="touchstart"
-      @touchend.prevent="touchend"
-      @mousedown.prevent="touchstart"
-      @mouseup.prevent="touchend"
-      @mousemove.prevent="touchmove"
-      @mouseout.prevent="touchend"
+      @touchmove="touchmove"
+      @touchstart="touchstart"
+      @touchend="touchend"
+      @mousedown="touchstart"
+      @mouseup="touchend"
+      @mousemove="touchmove"
+      @mouseout="touchend"
       @webkit-transition-end="onTransitionEnd(index)"
       @transitionend="onTransitionEnd(index)"
     >
@@ -145,7 +145,7 @@
           <!-- 个人信息 -->
           <div
             class="userInfo_wrapper"
-            @click="showIntroduce"
+            @click.stop="showIntroduce"
           >
             <div class="userBox clearfix">
               <img
