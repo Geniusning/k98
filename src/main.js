@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-10-09 17:31:52
+ * @Last Modified time: 2020-10-13 14:19:38
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -74,12 +74,12 @@ new Vue({
         }
         this.deskCode = util.GetQueryString("deskCode")
         this.deskId = util.GetQueryString("deskID")
-        this.openId = util.GetQueryString("openId")
+            // this.openId = util.GetQueryString("openId")
         this.saveDeskCode({
             deskCode: this.deskCode,
             deskId: this.deskId
         })
-        this.getUserInfo(this.openId); //获取用户信息
+        this.getUserInfo(); //获取用户信息 this.openId
         this.loadAdvertisingPhoto(); //拉取首页轮播图
         this.createQrcode(); //创建二维码
         this.loadStoreSetting(); //获取门店信息

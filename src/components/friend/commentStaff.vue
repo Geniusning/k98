@@ -296,18 +296,17 @@ export default {
                 }
             });
         },
-
         //通过openId、手机号获得用户信息
         async loadUserInfoByCondition() {
-            let res = await api.loadUserInfoByPhone(this.queryPhone);
-            console.log("员工信息----", res);
-            this.scopeOpenId = res.info.openid;
-            this.loadCommentInfo();
+            let res = await api.loadUserInfoByPhone(this.queryPhone); //通过因为B端扫码没有openid，只能通过手机号先获得用户的openid
             if (res.errCode == 0) {
-                this.scopeUserInfo = res.info;
+                this.scopeOpenId = res.info.openid;
+                let staffUserInfo = await api.getUserInfo(this.scopeOpenId);//通过openid获得用户的信息
+                this.loadCommentInfo(); //加载员工评价信息
+                this.scopeUserInfo = staffUserInfo;
                 var tempArr = [];
-                if (res.info.lifePhoto.lifePhotos) {
-                    res.info.lifePhoto.lifePhotos.forEach((lifePhoto) => {
+                if (staffUserInfo.lifePhoto.lifePhotos) {
+                    staffUserInfo.lifePhoto.lifePhotos.forEach((lifePhoto) => {
                         tempArr.push({
                             url: "javascript:",
                             img: lifePhoto.photoURL,
@@ -319,7 +318,7 @@ export default {
                 } else {
                     tempArr.push({
                         url: "javascript:",
-                        img: res.headimgurl,
+                        img: staffUserInfo.headimgurl,
                         title: "求点赞",
                     });
                 }

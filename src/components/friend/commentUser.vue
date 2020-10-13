@@ -272,7 +272,7 @@ export default {
             let shareObj = {
                 title: "找朋友",
                 desc: "我看行……大伙帮Ta捧个场吧",
-                link: `${this.shareUrl}k98/commentUser?openId=${this.userInfo.openid}`,
+                link: `${this.shareUrl}k98/commentUser?openId=${this.isSelf?this.userInfo.openid:this.scopeOpenId}`,
                 imgUrl: `${this.scopeUserInfo.headimgurl}`,
             };
             util.setShareInfo(shareObj, 20, "comment", this.shareGetJifen);
