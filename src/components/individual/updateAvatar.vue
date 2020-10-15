@@ -17,8 +17,13 @@
                 </div>
             </div>
             <div class="dailyLifePhoto-wrapper">
+                <div class="company-setting">
+                    <h3 class="title">1、企业/产品链接设置</h3>
+                    <input type="text" placeholder="请复制-粘贴您的企业/微店的网址" v-model="link" class="ip-link"> <span @click="saveCompanyLink" class="save">保存</span>
+                    <p class="desc">备注：您必须分享，引荐2个以上好友访问本群，才能使用本项特权</p>
+                </div>
                 <h3 class="title">
-                    上传生活照/名片/企业产品图片等，让更多朋友了解你
+                    2、上传生活照/名片/企业产品图片等，让更多朋友了解你
                     <span class="desc">(限4张)</span>
                 </h3>
                 <ul class="uploadLifePhotoList">
@@ -87,6 +92,7 @@ import lrz from "lrz";
 export default {
     data() {
         return {
+            link:"",
             lifePhotoDesc: "",
             addPic: require("../../assets/image/divide_add_avatar.png"),
             uploadAvatarShow: true,
@@ -104,6 +110,7 @@ export default {
         };
     },
     created() {
+        this.link = this.userInfo.companyLink
         this.fromPage = this.$route.params.type; //判断从哪个页面跳转过来
         console.log("判断从哪个页面跳转过来---", this.fromPage);
         if (this.fromPage === "divide") {
@@ -127,6 +134,24 @@ export default {
         ...mapState(["userInfo"]),
     },
     methods: {
+        saveCompanyLink(){
+            if(!this.link){
+                this.$vux.toast.text("请填入链接", "middle");
+                return 
+            }
+            let data = {
+                link:this.link
+            }
+            api.uploadCompanyLink(data).then(res=>{
+                if(res.errCode===0){
+                     api.getUserInfo().then((res) => {
+                        console.log("getUserInfo----", res);
+                        this.getuserInfo(res);
+                        });
+                    this.$vux.toast.text("保存成功", "middle");
+                }
+            })
+        },
         goBack() {
             this.$vux.toast.text("保存成功", "middle");
             // this.$router.go(-2)
@@ -306,6 +331,7 @@ export default {
 </script>
 
 <style scoped lang='less'>
+@import "../../assets/less/variable.less";
 .avatar-container {
     height: 100%;
     position: fixed;
@@ -343,6 +369,25 @@ export default {
     }
     .dailyLifePhoto-wrapper {
         padding: 0.2667rem 0.2rem;
+        .company-setting{
+            margin-bottom: .5rem;
+            .ip-link{
+                margin: 8px 0;
+                height: .8rem;
+                width: 6rem;
+                padding-left: .2rem;
+            }
+            .save{
+                padding: .25rem .3rem;
+                border-radius: 4px;
+                color: #fff;
+                background: @baseColor;
+            }
+            .desc{
+                font-size: 13px;
+                color: #999;
+            }
+        }
         .title {
             font-size: 0.3533rem;
             font-weight: 600;

@@ -18,9 +18,11 @@
                 </div>
                 <div
                     class="comment-header-right"
-                    @click="goHome"
+                    
                 >
+                    <div v-if="scopeUserInfo.companyLink" @click="goToCompanyLink(scopeUserInfo.companyLink)" class="company-link">Ta的企业/产品</div>
                     <img
+                        @click="goHome"
                         src="../../assets/image/chat_home.png"
                         class="comment-home"
                         alt=""
@@ -288,6 +290,9 @@ export default {
         ...mapState(["l98Setting", "lifeImgList", "userInfo", "shareUrl"]),
     },
     methods: {
+        goToCompanyLink(link){
+            window.location.href = link
+        },
         //分享获得积分
         shareGetJifen(amount, shareType) {
             api.shareToGetIntegral(amount, shareType).then((res) => {

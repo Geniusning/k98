@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-10-09 14:19:04
+ * @Last Modified time: 2020-10-14 16:24:04
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,6 +24,18 @@ axios.interceptors.request.use(
     }
 )
 let api = {};
+//上传公司链接
+api.uploadCompanyLink = function (data) {
+    return new Promise((resolve, reject) => {
+        axios.post(Url.commonUrl + `/api/uploadCompanyLink`, data).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
 //处理在新朋友事件中有关留言的表数据
 api.delCommentInfo = function(flag, data) {
         return new Promise((resolve, reject) => {

@@ -95,7 +95,7 @@
                                     style="margin-top:.08rem"
                                     v-show="thumbCount"
                                 >
-                                <span v-show="thumbCount" class="count fl" style="margin-right:.2rem;margin-top:.08rem">{{thumbCount}}</span>
+                                <span v-show="thumbCount" class="count fl" style="margin-right:.2rem;margin-top:.05rem">{{thumbCount}}</span>
                                 <span
                                     class="count fl"
                                     v-if="item.info.sex==1"
@@ -105,10 +105,7 @@
                                     v-else
                                 >了解她...</span>
                             </div>
-                            <!-- <div class="avatarList-wrapper clearfix" @touchstart="showAlbum(item.info)" v-if="item.info.lifePhoto.lifePhotos &&item.info.lifePhoto.lifePhotos.length>0">
-                  <img onclick="return false" src="../../../assets/image/picture.png" alt="" class="avatar fl">
-                  <span class="count fl">{{item.info.lifePhoto.lifePhotos.length}}</span>
-                </div> -->
+                       
                         </div>
                         <img
                             onclick="return false"
@@ -1044,22 +1041,6 @@ export default {
             top: 0.5rem;
             right: 0.5rem;
             display: flex;
-            .avatarList-wrapper {
-                margin-left: 4px;
-                background-color: #dfdfdf;
-                padding: 0.066rem 0.1667rem;
-                color: #fff;
-                box-sizing: border-box;
-                .avatar {
-                    width: 0.4rem;
-                    height: 0.3967rem;
-                    margin-right: 0.1333rem;
-                }
-                .count {
-                    margin-top: -0.0267rem;
-                    font-size: 14px;
-                }
-            }
             .comment-wrapper {
                 background-color: #ccc;
                 padding: 0.066rem 0.1667rem;
@@ -1071,7 +1052,7 @@ export default {
                     margin-right: 0.1333rem;
                 }
                 .count {
-                    margin-top: -0.0267rem;
+                    margin-top: 0.0567rem;
                     font-size: 14px;
                 }
             }

@@ -890,32 +890,11 @@ export default {
         this.getFriend(res.info);
       });
     },
-    //进入场内交友界面
-    // intoFriend() {
-    //   if (this.inFriendNum === 0) {
-    //     this.$vux.toast.show({
-    //       type: "text",
-    //       text: "场内暂时没有朋友",
-    //       width: "12em"
-    //     });
-    //     return;
-    //   }
-    //   util.routerTo("friend", this, {
-    //     routeParamNum: 1 //路由参数1为进入了场内
-    //   });
-    // },
-    //进入场外交友界面
     outFriend() {
       util.routerTo("friend", this, {
         routeParamNum: 2 //路由参数2为进入了场外
       });
     },
-    //进入店长信箱
-    // inToLetter() {
-    //   util.routerTo("message", this, {
-    //     routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
-    //   });
-    // },
     // 更多福利
     showMoreWelfare() {
       util.routerTo("welfare", this);

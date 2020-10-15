@@ -922,8 +922,7 @@ export default {
               this.$vux.toast.text("保存成功", "top");
               //核对员工电话
               if (this.oldPhone != this.phone && this.phone != "") {
-                api
-                  .verifyPhoneNumber(
+                api.verifyPhoneNumber(
                     this.phone,
                     this.userInfo.headimgurl,
                     this.userInfo.phone

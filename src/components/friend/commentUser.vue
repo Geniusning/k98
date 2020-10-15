@@ -3,15 +3,16 @@
         <!-- 分享引导 -->
         <div class="bg" v-if="isShow_bg" @click="isShow_bg = false">
             <img
+               class="share-arrow"
                 onclick="return false"
                 src="../../assets/image/share.png"
                 alt
             />
             <p class="shareText">
-                支持我捧个场，分享吧！每引荐一位好友送1朵小红花和20积分
+                支持Ta，分享吧！每引荐一位好友送1朵<img class="flower" src="../../assets/image/flowerCounts.png" />和20积分
             </p>
             <p class="shareText" style="top:4.8rem">
-                红花大于2个，您也可以展示您的企业/产品，交更多群友
+                <img class="flower" src="../../assets/image/flowerCounts.png" />大于2个，您也可以展示您的企业/产品，红花越多排名越前
             </p>
         </div>
         <div class="content">
@@ -30,8 +31,10 @@
                         scopeUserInfo.nickname
                     }}</span>
                 </div>
-                <div class="comment-header-right" @click="goHome">
+                <div class="comment-header-right" > 
+                    <div v-if="scopeUserInfo.companyLink" @click="goToCompanyLink(scopeUserInfo.companyLink)" class="company-link">Ta的企业/产品</div>
                     <img
+                        @click="goHome"
                         src="../../assets/image/chat_home.png"
                         class="comment-home"
                         alt=""
@@ -290,6 +293,9 @@ export default {
         ...mapState(["l98Setting", "lifeImgList", "userInfo", "shareUrl"]),
     },
     methods: {
+        goToCompanyLink(link){
+            window.location.href = link
+        },
         //分享获得积分
         shareGetJifen(amount, shareType) {
             api.shareToGetIntegral(amount, shareType).then((res) => {
@@ -463,7 +469,7 @@ export default {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 999;
-    img {
+    .share-arrow {
         width: 100px;
         height: 100px;
         position: fixed;
@@ -475,6 +481,10 @@ export default {
         position: fixed;
         top: 2.8rem;
         right: 0.5rem;
+        .flower{
+            width: .6rem;
+            vertical-align: middle;
+        }
     }
 }
 @import "./comment.less";

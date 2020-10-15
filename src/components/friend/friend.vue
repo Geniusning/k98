@@ -320,26 +320,26 @@
             >知道了</p>
             <p class="intro">设置个人资料</p>
         </div>
-        <!-- 分享引导 -->
+        <!-- 分享引导 isShow_bg -->
         <div
             class="bg"
             v-if="isShow_bg"
             @click="share"
         >
             <img
+                class="share-arrow"
                 onclick="return false"
                 src="../../assets/image/share.png"
                 alt
             />
-            <p class="shareText">引荐小红花说明</p>
             <p
                 class="shareText"
-                style="top: 3.8rem;"
+                style="top: 3rem;"
             >分享好友，引荐1位朋友加入社群</p>
             <p
                 class="shareText"
-                style="top: 4.8rem;"
-            >获得一朵小红花，红花越多排名越靠前</p>
+                style="top: 4rem;"
+            >获得一朵<img class="flower" src="../../assets/image/flowerCounts.png" />，红花越多排名越靠前</p>
         </div>
         <keep-alive>
             <topUp
@@ -1198,7 +1198,7 @@ export default {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 999;
-    img {
+    .share-arrow {
         width: 100px;
         height: 100px;
         position: fixed;
@@ -1210,6 +1210,10 @@ export default {
         position: fixed;
         top: 2.8rem;
         right: 0.5rem;
+        .flower{
+            width: .6rem;
+            vertical-align: middle;
+        }
     }
 }
 .friend {
