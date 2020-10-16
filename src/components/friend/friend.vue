@@ -360,12 +360,6 @@
                 :text="envelopeText"
             ></envelope>
         </transition>
-        <keep-alive>
-            <lifePhote
-                v-show="showAblumFlag"
-                @closeAlbum="closeAlbum"
-            ></lifePhote>
-        </keep-alive>
         <popup-picker
             v-if="showPopupPickerPos"
             :show="showPopupPickerPos"
@@ -392,7 +386,6 @@ import qrCode from "base/qrCode/qrCode";
 import util from "common/util";
 import api from "common/api";
 import Bus from "common/bus.js";
-import lifePhote from "./personalInfo/personalInfo";
 import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
 import {
     Toast,
@@ -1180,7 +1173,6 @@ export default {
         envelope,
         qrCode,
         topUp,
-        lifePhote,
         PopupPicker,
     },
 };
