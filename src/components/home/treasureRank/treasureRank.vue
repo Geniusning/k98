@@ -143,7 +143,7 @@ export default {
   mounted() {
     this._loadWealthRanking();
     this._loadWealthAllPeopleRanking();
-    util.addVisitRecord(this.$route.name)
+    //util.addVisitRecord(this.$route.name)
   },
   computed: {
     ...mapState(['userInfo'])

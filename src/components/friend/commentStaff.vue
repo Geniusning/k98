@@ -253,7 +253,7 @@ export default {
         };
     },
     created() {
-        util.addVisitRecord(this.$route.name);
+        //util.addVisitRecord(this.$route.name);
         let phone = util.GetQueryString("phone");
         this.isScan = util.GetQueryString("isScan");
         this.queryPhone = phone ? phone : this.$route.params.phone;

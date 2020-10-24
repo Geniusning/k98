@@ -32,7 +32,7 @@
                     }}</span>
                 </div>
                 <div class="comment-header-right" > 
-                    <div v-if="scopeUserInfo.companyLink" @click="goToCompanyLink(scopeUserInfo.companyLink)" class="company-link">Ta的企业/产品</div>
+                    <div v-if="scopeUserInfo.companyLink" @click="goToCompanyLink(scopeUserInfo.companyLink)" class="company-link">企业/产品</div>
                     <img
                         @click="goHome"
                         src="../../assets/image/chat_home.png"
@@ -257,7 +257,7 @@ export default {
                 this.isShow_bg = false;
             }, 5000);
         }, 8000);
-        util.addVisitRecord(this.$route.name);
+        //util.addVisitRecord(this.$route.name);
         let urlOpenId = util.GetQueryString("openId");
         this.isSelf = this.$route.params.isSelf;
         this.scopeOpenId = this.$route.params.openId;

@@ -88,7 +88,7 @@ import {mapState} from 'vuex';
     mounted() {
       this._loadGameScoreRanking()
       this._loadGameAllPeopleRanking()
-      util.addVisitRecord(this.$route.name)
+      //util.addVisitRecord(this.$route.name)
     },
     computed: {
       ...mapState(['userInfo'])
