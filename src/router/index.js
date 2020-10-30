@@ -182,6 +182,15 @@ const router = new Router({
             }
         },
         {
+            path: '/oneYuan',
+            name: 'oneYuan',
+            component: () =>
+                import('../components/welfare/oneYuanGroupShopping/oneYuanGroupShopping.vue'),
+            meta: {
+                title: "一元团购"
+            }
+        },
+        {
             path: '/mine',
             name: 'mine',
             component: () =>

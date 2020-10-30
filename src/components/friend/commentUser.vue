@@ -53,11 +53,6 @@
                         :min-moving-distance="10"
                     ></swiper>
                 </div>
-                <div v-else class="comment-slider">
-                    <p class="comment-staffData">
-                        用户未上传图片，暂无图片信息
-                    </p>
-                </div>
             </div>
             <div class="comment-result">
                 <ul class="comment-header-list">
@@ -89,6 +84,16 @@
                         />
                         <span class="comment-count">{{
                             staffCommentInfo.messageCount
+                        }}</span>
+                    </li>
+                    <li class="comment-divide"  @click="subscribeUser">
+                        <img
+                            src="../../assets/image/eyes.png"
+                            class="comment-icon"
+                            alt=""
+                        />
+                        <span class="comment-count">{{
+                            staffCommentInfo.subscribeCount
                         }}</span>
                     </li>
                 </ul>
@@ -257,12 +262,13 @@ export default {
                 this.isShow_bg = false;
             }, 5000);
         }, 8000);
-        //util.addVisitRecord(this.$route.name);
+        util.addVisitRecord(this.$route.name);
         let urlOpenId = util.GetQueryString("openId");
         this.isSelf = this.$route.params.isSelf;
         this.scopeOpenId = this.$route.params.openId;
-        console.log("this.$route.params.openId---",this.$route.params.openId)
-        this.scopeOpenId = urlOpenId ? urlOpenId : this.scopeOpenId;
+        let cacheOpenId = localStorage.getItem("comment_openId")
+        this.scopeOpenId = urlOpenId ? urlOpenId : this.scopeOpenId?this.scopeOpenId:cacheOpenId;
+        localStorage.setItem("comment_openId",this.scopeOpenId)
         this.loadUserInfoByOpenId();
         this.loadCommentInfo();
         document.body.addEventListener("focusout", () => {
@@ -293,6 +299,17 @@ export default {
         ...mapState(["l98Setting", "lifeImgList", "userInfo", "shareUrl"]),
     },
     methods: {
+        //关注
+        subscribeUser(){
+            api.subscribeUser(this.scopeOpenId).then(res=>{
+                if (res.errCode === 1098){
+                    this.$vux.toast.text("关注成功,Ta的照片更新将通知您", "middle");
+                }else if(res.errCode===1099){
+                     this.$vux.toast.text("取消成功", "middle");
+                }
+                this.loadCommentInfo()
+            })
+        },
         goToCompanyLink(link){
             window.location.href = link
         },
@@ -378,10 +395,10 @@ export default {
         },
         //发布留言
         send() {
-            if (this.isSelf) {
-                this.$vux.toast.text(`不能自己点赞或留言`);
-                return;
-            }
+            // if (this.isSelf) {
+            //     this.$vux.toast.text(`不能自己点赞或留言`);
+            //     return;
+            // }
             if (this.scopeUserInfo.isComment) {
                 this.$vux.toast.text(`榜主已关闭评价/留言功能`);
                 return;
@@ -405,7 +422,7 @@ export default {
                 }
             }
             let data = {
-                openId: this.scopeUserInfo.openid,
+                toOpenId: this.scopeUserInfo.openid,
                 message: this.inputValue,
                 time: new Date().getTime(),
                 nickname: this.userInfo.nickname,

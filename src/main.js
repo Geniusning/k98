@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-10-15 17:41:36
+ * @Last Modified time: 2020-10-30 15:49:03
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -426,7 +426,7 @@ new Vue({
         //获取门店信息
         loadStoreSetting() {
             api.loadStoreSetting().then(res => {
-                //console.log('门店信息---------------------------------：', res)
+                console.log('门店信息---------------------------------：', res)
                 this.getShopSetting(res)
             })
         },
@@ -461,6 +461,9 @@ new Vue({
                     mutualEventsList = mutualEventsList.concat(mutualEventsObj.friendEvents === null ? [] : mutualEventsObj.friendEvents)
                     mutualEventsList = mutualEventsList.concat(
                         mutualEventsObj.commentEvents === null ? [] : mutualEventsObj.commentEvents
+                    );
+                    mutualEventsList = mutualEventsList.concat(
+                        mutualEventsObj.subscribeEvents === null ? [] : mutualEventsObj.subscribeEvents
                     );
                     let count = mutualEventsList.length;
                     this.CalcManualEventsCount(count);

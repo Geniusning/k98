@@ -5,6 +5,7 @@
     >
         <div class="nav">
             <img
+                class="slelct"
                 onclick="return false"
                 src="../../assets/image/select.png"
                 alt
@@ -104,20 +105,9 @@
                     @click="intoSetting"
                 >去完善</button>
             </div>
-            <div
-                class="btns_wrapper"
-                v-show="!soulSwitch"
-            >
-                <div
-                    class="gifts"
-                    @click="isFirstLoad=false"
-                >
-                    <img
-                        onclick="return false"
-                        src="../../assets/image/gift.png"
-                        @click="isGiftPanel=true"
-                        alt
-                    />
+            <div class="btns_wrapper" v-show="!soulSwitch" >
+                <div class="gifts" @click="isFirstLoad=false">
+                    <img onclick="return false" src="../../assets/image/gift.png" @click="isGiftPanel=true" alt />
                     <img
                         onclick="return false"
                         src="../../assets/image/gift.png"
@@ -341,7 +331,7 @@
                 style="top: 4rem;"
             >获得一朵<img class="flower" src="../../assets/image/flowerCounts.png" />，红花越多排名越靠前</p>
         </div>
-        <keep-alive>
+        <!-- <keep-alive> -->
             <topUp
                 v-show="isGiftPanel"
                 @closeIntegralPanel="closeIntegralPanel"
@@ -349,7 +339,7 @@
                 :friendId="friendId"
                 :fatherPanelIndex="fatherPanelIndex"
             ></topUp>
-        </keep-alive>
+        <!-- </keep-alive> -->
         <qrCode
             v-show="qrIsShow"
             title="您还不是会员,关注享有会员特权"
@@ -844,6 +834,7 @@ export default {
             // 下面是传回父级的数据;
             // this.friendOnlineStatus = data.info.onlineL98Server; //好友在线状态
             console.log("滑动页面传回给父级数据：", data);
+            console.log("this.l98Setting", this.l98Setting);
             let openId = data.info.openid;
             this.friendId = openId;
             sessionStorage.setItem("staffCouponToId", openId);
@@ -861,6 +852,7 @@ export default {
             }
             this.xid = openId;
             this.isInDoor = data.isInDoor;
+            console.log("是否是朋友---",this.isFriend)
         },
         //监听右滑心跳
         thumbHeartBeat(data) {
@@ -1219,27 +1211,19 @@ export default {
     justify-content: space-around;
     box-sizing: border-box;
     .nav {
-        display: flex;
-        justify-content: space-between;
-        flex-direction: row-reverse;
-        align-items: center;
-        padding: 0 0.3rem;
+        height: 1rem;
         box-sizing: border-box;
         position: relative;
-        margin-top: -0.5rem;
-        .select {
-            font-size: 13px;
-            color: #ff7900;
-            font-weight: 700;
-        }
         .shopInfo {
             display: flex;
             height: 0.5rem;
             background-color: rgba(0, 0, 0, 0.2);
             line-height: 0.5rem;
-            margin-top: 0.3rem;
             border-radius: 10px;
             padding: 0 0.1rem;
+            position: absolute;
+            top: 0.1rem;
+            left: .4rem;
             .logo {
                 width: 0.5rem;
                 height: 0.5rem;
@@ -1250,9 +1234,12 @@ export default {
                 color: #fff;
             }
         }
-        img {
+        .slelct {
             width: 0.6667rem;
             height: 0.6667rem;
+             position: absolute;
+            top: 0rem;
+            right: .4rem;
         }
     }
     .control_wrapper {
@@ -1404,17 +1391,16 @@ export default {
     }
     .stack-wrapper {
         margin: 0rem auto 0;
-        // padding:0 0.5rem;
         position: relative;
-        // z-index: 1000;
         width: 8.9rem;
-        // width: 100%;
-        height: 10.1rem;
+        height: 9.7rem;
         list-style: none;
+        box-sizing: border-box;
         .switchBtn_wrapper {
             position: absolute;
-            top: -1.3rem;
+            top: -1.25rem;
             left: 3.8rem;
+            z-index: 2;
             .intro_soulText,
             .intro_picAndComment {
                 position: absolute;
@@ -1577,15 +1563,15 @@ export default {
         .flower {
             width: 2.5rem;
             position: absolute;
-            bottom: 1.4667rem;
-            right: 0.1rem;
+            bottom: 1.1667rem;
+            right: 0rem;
             color: #fff;
             font-size: 0.4rem;
             font-weight: 700;
         }
         .flower {
             width: 4rem;
-            bottom: 8.5rem;
+            bottom: 8rem;
             font-size: 0.3rem;
         }
     }

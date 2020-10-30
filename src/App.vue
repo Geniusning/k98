@@ -1219,6 +1219,9 @@
             mutualEventsList = mutualEventsList.concat(
               mutualEventsObj.commentEvents === null ? [] : mutualEventsObj.commentEvents
             );
+            mutualEventsList = mutualEventsList.concat(
+              mutualEventsObj.subscribeEvents === null ? [] : mutualEventsObj.subscribeEvents
+            );
             console.log("mutualEventsList.length---", mutualEventsList.length)
             let count = mutualEventsList.length;
             this.CalcManualEventsCount(count);

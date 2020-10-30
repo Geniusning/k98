@@ -363,6 +363,10 @@
           payuserid: this.userInfo.openid,
           payuserheadimgurl: this.userInfo.headimgurl,
         };
+        if(!data.deskid){
+          this.$vux.toast.text('未检测到桌号，请重扫二维码', 'middle')
+          return
+        }
         let res2 = await api.launchSelfPay(data);
         console.log("res2------", res2)
         if (res2.errCode === 0) {

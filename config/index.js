@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "21A8AUBrdsWE9Z-I6t3WP4Lz5bQ1WSnCA6G_NmZ3WdL3J_4higELUfrQujmXnL0sWB1tcA==";
+const myToken = "tNI0C7XvMVUQIqjHmXyPgj2puZj1UgyL6tT_aqQcgsqU5zxWv1L9wMzEBzm3FrXWd_RhvQ==";
 // ------------------------------
 
 module.exports = {
@@ -17,8 +17,8 @@ module.exports = {
             "/api": {
                 // target: "https://singledog.qianz.com", //中新
                 // target: "172.18.4.8", //本地
-                // target: "https://llwant1.qianz.com", //老友一起玩吧
-                target: "https://llwant3.qianz.com", //k98
+                target: "https://llwant1.qianz.com", //老友一起玩吧
+                // target: "https://llwant3.qianz.com", //k98
                 // target: "https://llwant4.qianz.com", //喜炖
                 changeOrigin: true,
                 pathRewrite: function(path, req) {
@@ -52,7 +52,7 @@ module.exports = {
          */
 
         // https://webpack.js.org/configuration/devtool/#development
-        devtool: 'eval-source-map',
+        devtool: 'source-map',
 
         // If you have problems debugging vue-files in devtools,
         // set this to false - it *may* help
@@ -82,7 +82,7 @@ module.exports = {
 
         productionSourceMap: false,
         // https://webpack.js.org/configuration/devtool/#production
-        devtool: '#source-map',
+        devtool: 'source-map',
 
         // Run the build command with an extra argument to
         // View the bundle analyzer report after build finishes:

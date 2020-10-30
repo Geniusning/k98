@@ -95,7 +95,7 @@
                                     style="margin-top:.08rem"
                                     v-show="thumbCount"
                                 >
-                                <span v-show="thumbCount" class="count fl" style="margin-right:.2rem;margin-top:.05rem">{{thumbCount}}</span>
+                                <span v-show="thumbCount" class="count fl" style="margin-right:.1rem;margin-top:.08rem">{{thumbCount}}</span>
                                 <span
                                     class="count fl"
                                     v-if="item.info.sex==1"
@@ -145,15 +145,8 @@
                             </div>
                             <!-- <img onclick="return false" src="../../../assets/image/like1.png" alt="" class="friend_icon" v-show="alreadySendThumbFlag"> -->
                         </div>
-                        <p class="name">{{item.info.nickname}}</p>
-                    </div>
-                    <!-- 个人信息 -->
-                    <div
-                        class="userInfo_wrapper"
-                        @touchstart="showIntroduce"
-                    >
-                        <div class="userBox clearfix">
-                            <img
+                        <p class="name">
+                             <img
                                 onclick="return false"
                                 src="../../../assets/image/male.png"
                                 alt=""
@@ -167,7 +160,17 @@
                                 class="sex sex_female"
                                 v-else
                             >
+                            <span>{{item.info.nickname}}</span>
+                        </p>
+                    </div>
+                    <!-- 个人信息 -->
+                    <div
+                        class="userInfo_wrapper"
+                        @touchstart="showIntroduce"
+                    >
+                        <div class="userBox clearfix">
                             <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
+                            <span class="subscribe">关注{{item.info.subscribeCount}}</span>
                             <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>
                             <span class="gift">助推{{item.info.flowerCounts}} <img
                                     src="../../../assets/image/flowerCounts.png"
@@ -1043,7 +1046,7 @@ export default {
             display: flex;
             .comment-wrapper {
                 background-color: #ccc;
-                padding: 0.066rem 0.1667rem;
+                // padding: 0.066rem 0rem;
                 color: #fff;
                 box-sizing: border-box;
                 .avatar {
@@ -1052,7 +1055,7 @@ export default {
                     margin-right: 0.1333rem;
                 }
                 .count {
-                    margin-top: 0.0567rem;
+                    margin-top: 0.0267rem;
                     font-size: 14px;
                 }
             }
@@ -1099,11 +1102,26 @@ export default {
             width: 100%;
             text-align: center;
             height: 0.6133rem;
-            top: 6.5rem; // left: 3.4167rem;
+            top: 6.3rem; // left: 3.4167rem;
             z-index: 10000;
             font-size: 0.4533rem;
             font-weight: 700;
             color: #232323;
+            .sex {
+                display: inline-block;
+                text-align: center;
+                border-radius: 2px;
+                color: #fff;
+                vertical-align: middle;
+            }
+            .sex_male {
+                width: 0.3233rem;
+                height: 0.3033rem;
+            }
+            .sex_female {
+                width: 0.3333rem;
+                height: 0.4333rem;
+            }
         }
         .blur_avatar {
             width: 100%;
@@ -1166,39 +1184,15 @@ export default {
         }
     }
     .userInfo_wrapper {
-        margin-top: 0.6rem;
+        margin-top: 0.4rem;
         padding: 0 0.4533rem;
         .userBox {
             position: relative;
-            .username {
-                text-align: left;
-                text-indent: 0.375rem;
-                font-size: 0.4rem;
-                float: left;
-                font-weight: 700;
-                color: #ff7900;
-                margin-right: 0.2rem;
-            }
-            .sex {
-                float: left;
-                display: inline-block;
-                text-align: center;
-                border-radius: 2px;
-                color: #fff;
-                margin-top: 0.04rem;
-                margin-right: 0.2333rem;
-            }
-            .sex_male {
-                width: 0.5233rem;
-                height: 0.5033rem;
-                margin-top: 0.12rem;
-            }
-            .sex_female {
-                width: 0.5333rem;
-                height: 0.5333rem;
-            }
             .constellation {
                 .userInfo(#c579ff);
+            }
+            .subscribe{
+                .userInfo(#76BDFF);
             }
             .thumb {
                 box-sizing: border-box;
