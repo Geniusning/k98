@@ -2,7 +2,7 @@
  * @Author: nicky
  * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
- * @Last Modified time: 2020-10-09 14:22:39
+ * @Last Modified time: 2020-10-28 16:38:47
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -181,6 +181,8 @@ util.returnDiscountType = (discountTypeNumber) => {
             return "月卡券"
         } else if (parseInt(discountTypeNumber) === 6) {
             return "次卡券"
+        } else if (parseInt(discountTypeNumber) === 7) {
+            return "团购券"
         }
     }
     //添加页面访问轨迹
@@ -189,7 +191,48 @@ util.addVisitRecord = function(pageName) {
         console.log("访问轨迹收集结果---", res)
     })
 }
-
+//判断当前时间是否在某一时间段
+util.isDuringTime=function(beginTime, endTime, isNextDay){
+    var dealBeginTime  //处理后的开始时间
+    var dealEndTime    //处理后的结束时间
+    var todayYear
+    var todayMon
+    var todayDate
+    var tomorrowTimeStamp
+    todayYear = new Date().getFullYear()
+    todayMon = new Date().getMonth() + 1
+    todayDate = new Date().getDate()
+    if (isNextDay === 1) {
+        let today0Time = new Date().setHours(0, 0, 0) //设置当天凌晨零时零分
+        tomorrowTimeStamp = today0Time + 86400000   //设置第二天零点零分
+        tomorrowYear = new Date(tomorrowTimeStamp).getFullYear()
+        tomorrowMonth = new Date(tomorrowTimeStamp).getMonth() + 1
+        tomorrowDate = new Date(tomorrowTimeStamp).getDate()
+        dealEndTime = tomorrowYear + "-" + tomorrowMonth + "-" + tomorrowDate + " " + endTime
+    } else {
+        dealEndTime = todayYear + "-" + todayMon + "-" + todayDate + " " + endTime
+    }
+    dealBeginTime = todayYear + "-" + todayMon + "-" + todayDate + " " + beginTime
+    if (new Date().getTime() >= new Date(dealBeginTime) && new Date().getTime() <= new Date(dealEndTime)) {
+        return true
+    } else {
+        return false
+    }
+},
+    //时间增加5分钟
+util.addMin=function(srcTime, sec = 300){
+    var todayYear
+    var todayMon
+    var todayDate
+    var srcTimeStamp
+    todayYear = new Date().getFullYear()
+    todayMon = new Date().getMonth() + 1
+    todayDate = new Date().getDate()
+    srcTime = todayYear + "-" + todayMon + "-" + todayDate + " " + srcTime
+    srcTimeStamp = new Date(srcTime).getTime() + sec * 1000
+    return new Date(srcTimeStamp).getHours() + ":" + (new Date(srcTimeStamp).getMinutes() > 10 ? new Date(srcTimeStamp).getMinutes() : "0" + new Date(srcTimeStamp).getMinutes()) +
+        ":" + (new Date(srcTimeStamp).getSeconds() > 10 ? new Date(srcTimeStamp).getSeconds() : "0" + new Date(srcTimeStamp).getSeconds())
+},
 // jssdk签名
 util._getJssdkConfig = function(url) {
         api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
@@ -278,10 +321,12 @@ util.setShareInfo = function(shareObj, amount, shareType, fn) {
                 success: () => {
                     //分享朋友记录
                     //console.log("分享好友")
-                    api.createShareDaylog("friend")
-                        //分享获得积分
-                    fn(amount, shareType)
-                    console.log("apple 进来了 success friend")
+                    if (shareType!=="groupShop"){
+                        api.createShareDaylog("friend")
+                            //分享获得积分
+                        fn(amount, shareType)
+                        console.log("apple 进来了 success friend")
+                    }
                 }
             });
             wx.onMenuShareTimeline({ //朋友圈
@@ -292,9 +337,11 @@ util.setShareInfo = function(shareObj, amount, shareType, fn) {
                     // 用户点击了分享后执行的回调函数
                     //分享朋友圈记录
                     //console.log("分享朋友圈")
-                    fn(amount, shareType)
-                    api.createShareDaylog("timeLine")
-                    console.log("apple 进来了 success timeLine")
+                    if (shareType !== "groupShop") {
+                        fn(amount, shareType)
+                        api.createShareDaylog("timeLine")
+                        console.log("apple 进来了 success timeLine")
+                    }
                 }
             })
 
@@ -395,6 +442,8 @@ util.returnDiscountContent = function(coupon) {
     } else if (parseInt(coupon.type) === 5) {
         return coupon.content
     } else if (parseInt(coupon.type) === 6) {
+        return coupon.content
+    } else if (parseInt(coupon.type) === 7) {
         return coupon.content
     }
 }

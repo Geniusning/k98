@@ -55,7 +55,7 @@
                 </div>
                 <div class="message_box">
                   <span class="arrow"></span>
-                  <p class="message" style="word-break: break-all;"><span style="color:red;font-size:18px;">我的台/房号:{{item.deskcode}},</span>申请买单</p>
+                  <p class="message" style="word-break: break-all;"><span style="color:red;font-size:18px;">我的台/房号:{{item.selfpayinfo.deskcode}},</span>申请无券买单</p>
                 </div>
               </div>
               <div v-else-if="item.type===2" class="message_wrapper">
@@ -359,19 +359,6 @@
         lastestSelfPayInfo:{}
       };
     },
-    // beforeRouteLeave(to, from, next) {
-    //   // 导航离开该组件的对应路由时调用
-    //   // 可以访问组件实例 `this`
-    //   // this.isCheckQrCode = false
-    //   // if (!this.userInfo.isSubscribe) {
-    //   //   this.changeQrCodeText({
-    //   //     title: "长按关注，方便收到店家留言",
-    //   //     bottomText: "会员特权:领福利、交群友、参活动"
-    //   //   });
-    //   //   this.showQrcode(true);
-    //   // }
-    //   // next()
-    // },
     created() {
       util.addVisitRecord(this.$route.name)
       this.listenScroll = true;
@@ -454,8 +441,6 @@
         srcTimeStampStr = todayYear+"-"+todayMon+"-"+todayDate+" "+ this.fontTime
         console.log("前移账单时间---",srcTimeStampStr)
         this.lastestSelfPayInfo['time'] = new Date(srcTimeStampStr).getTime()/1000
-        console.log("this.lastestSelfPayInfo",this.lastestSelfPayInfo)
-        console.log("this.lastestSelfPayInfo.time",this.lastestSelfPayInfo.time)
         let res = await api.confirmSelfPay(this.lastestSelfPayInfo)
         this.input_value = "您的买单款已到帐，欢迎下次光临";
         this.send();
@@ -500,9 +485,8 @@
           for (let i = 0; i < this.scheduleShifts.shiftes.length; i++) {
             let shifte = this.scheduleShifts.shiftes[i];
             //1判断当前时间是否在交班期间，延后5分钟交班，如果在交班期间，则弹窗修改时间
-             this.delayTime = this.addMin(shifte.endTime)
-             console.log("this.delayTime--",this.delayTime)
-            if(this.isDuringTime(shifte.endTime,this.delayTime,0)){ 
+             this.delayTime = util.addMin(shifte.endTime)
+            if(util.isDuringTime(shifte.endTime,this.delayTime,0)){ //
                this.fontTime = shifte.endTime
                this.isShowChangeTimePanel = true
                this.fatherPanelIndex = 5
@@ -516,58 +500,9 @@
         this.input_value = "您的买单款已到帐，欢迎下次光临";
         this.send();
       },
-      //时间增加5分钟
-      addMin(srcTime,sec=300){
-        var todayYear
-        var todayMon
-        var todayDate
-        var srcTimeStamp
-        todayYear = new Date().getFullYear()
-        todayMon = new Date().getMonth()+1
-        todayDate = new Date().getDate()
-        srcTime = todayYear+"-"+todayMon+"-"+todayDate+" "+ srcTime
-        srcTimeStamp = new Date(srcTime).getTime()+sec*1000
-        return new Date(srcTimeStamp).getHours() + ":" + (new Date(srcTimeStamp).getMinutes() > 10 ? new Date(srcTimeStamp).getMinutes() : "0" + new Date(srcTimeStamp).getMinutes()) +
-            ":" + (new Date(srcTimeStamp).getSeconds() > 10 ? new Date(srcTimeStamp).getSeconds() : "0" + new Date(srcTimeStamp).getSeconds())
-      },
-      //判断当前时间是否在某一时间段
-      isDuringTime(beginTime,endTime,isNextDay){
-        var dealBeginTime  //处理后的开始时间
-        var dealEndTime    //处理后的结束时间
-        var todayTimeStamp
-        var todayTime
-        var todayYear
-        var todayMon
-        var todayDate
-        var tomorrowTimeStamp
-        todayYear = new Date().getFullYear()
-        todayMon = new Date().getMonth()+1
-        todayDate = new Date().getDate()
-        if(isNextDay===1){
-          let today0Time = new Date().setHours(0,0,0) //设置当天凌晨零时零分
-          tomorrowTimeStamp = today0Time + 86400000   //设置第二天零点零分
-          tomorrowYear = new Date(tomorrowTimeStamp).getFullYear()
-          tomorrowMonth = new Date(tomorrowTimeStamp).getMonth()+1
-          tomorrowDate = new Date(tomorrowTimeStamp).getDate()
-          dealEndTime = tomorrowYear+"-"+tomorrowMonth+"-"+tomorrowDate+" "+ endTime
-        }else{
-          dealEndTime = todayYear+"-"+todayMon+"-"+todayDate+" "+ endTime
-        }
-        dealBeginTime = todayYear+"-"+todayMon+"-"+todayDate+" "+ beginTime
-        if (new Date().getTime() >= new Date(dealBeginTime) && new Date().getTime() <= new Date(dealEndTime)) {
-            return true
-        } else {
-            return false
-        }
-      },
       //用户已付款
       async sendAlreayPayMoney() {
         console.log("用户已付款----账单id", this.lastestSelfPayInfo)
-        // let data = {
-        //   id: this.lastestSelfPayInfo.id
-        // };
-        // let res = await api.paymentSelfPay(data);
-        //console.log("顾客付款结果---", res);
         this.input_value = `<span style="color:red;font-size:18px">台/房号：${this.lastestSelfPayInfo.deskcode}，</span>已付款，请查收`;
         this.send();
         if (this.deskId && this.l98Setting.staffCommentOpen) {

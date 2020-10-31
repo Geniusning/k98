@@ -646,7 +646,7 @@ export default {
     ...mapState(["userInfo"])
   },
   mounted() {
-    util.addVisitRecord(this.$route.name);
+    //util.addVisitRecord(this.$route.name);
     this.position = this.positionList[0][Number(this.userInfo.industry)];
     this.positionCode = String(this.positionList[0].indexOf(this.position));
     this.selectedHomeTownOptions = [
@@ -922,8 +922,7 @@ export default {
               this.$vux.toast.text("保存成功", "top");
               //核对员工电话
               if (this.oldPhone != this.phone && this.phone != "") {
-                api
-                  .verifyPhoneNumber(
+                api.verifyPhoneNumber(
                     this.phone,
                     this.userInfo.headimgurl,
                     this.userInfo.phone

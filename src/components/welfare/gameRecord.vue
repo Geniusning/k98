@@ -39,7 +39,7 @@ export default {
                 res.arenaInfos.forEach(item => {
                     tempGameList.push({
                         key: item.arenaID,
-                        value: util.timestampToTime(item.endTime)
+                        value: util.timestampToTime(item.publishTime)
                     })
                 })
                 //console.log('tempGameList---------------------', tempGameList)

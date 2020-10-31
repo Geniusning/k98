@@ -12,6 +12,7 @@
           alt
           class="avatar"
           @click="edit_individual"
+          onerror="this.src='/src/assets/image/avatar1.jpeg'"
         >
         <p class="name">{{userInfo.nickname||'游客'}}</p>
         <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->

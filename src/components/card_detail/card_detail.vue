@@ -60,7 +60,7 @@ export default {
     ...mapState(["userInfo", "deskCode", "checkQrCode", "deskId"])
   },
   mounted() {
-    util.addVisitRecord(this.$route.name)
+    //util.addVisitRecord(this.$route.name)
     let startTime = new Date();
     let year = startTime.getFullYear();
     let month = startTime.getMonth() + 1;
@@ -183,21 +183,6 @@ export default {
       } else if (res1.errCode === 1018) {
         this._animationToast("您已发起核销，请稍等");
       }
-      // let res2 = await api.launchSelfPay(data);
-      // //console.log("res2-------------", res2);
-      // if (res2.errCode === 0) {
-      //   setTimeout(() => {
-      //     this.$router.push({
-      //       name: "cashierChat",
-      //       params: {
-      //         from: this.userInfo.openid,
-      //         to: this.cashierID,
-      //         deskCode: this.deskCode,
-      //         isCashier: false
-      //       }
-      //     });
-      //   }, 500);
-      // }
     },
     ...mapMutations({
       addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框(左侧信封弹出触发)

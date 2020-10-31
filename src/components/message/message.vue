@@ -1,6 +1,6 @@
 <template>
   <div id="message" class="message_wrapper">
-    <div @click="showCashierList" class="showCheckFlow" v-if="(isShowTab===2) && (isCashierListFlag)">查流水</div>
+    <!-- <div @click="showCashierList" class="showCheckFlow" v-if="(isShowTab===2) && (isCashierListFlag)">查流水</div> -->
     <div class="mask" v-if="showFriendInfoFlag">
       <img @click="close" src="../../assets/image/close.png" class="close" alt="">
     </div>
@@ -13,33 +13,6 @@
       </div>
     </div>
     <div class="message_wrapper">
-      <!-- <Popup @close="closePopUp" :show="showCashierFlow" :showCloseBtn="false">
-        <div class="cashier_stream-wrapper">
-          <ul class="cashier_stream_title">
-            <li class="title_name" style="width:25%">买单时间</li>
-            <li class="title_name" style="width:15%">台/房号</li>
-            <li class="title_name">金额</li>
-            <li class="title_name">收款码</li>
-            <li class="title_name">券名称</li>
-            <li class="title_name">买单人</li>
-          </ul>
-          <scroll :data="cashierFlowList" :pullDownRefresh="true" @pullingUp="pullingUp">
-            <ul class="cashier_stream_detail">
-              <li v-for="(cashier,index) in cashierFlowList" :key="index" class="stream_detail_item">
-                <span class="detail_name" style="width:25%">{{cashier.time}}</span>
-                <span class="detail_name" style="width:15%">{{cashier.deskcode}}</span>
-                <span class="detail_name">{{cashier.consumeamount}}</span>
-                <span class="detail_name">{{cashier.qrcodename?cashier.qrcodename:"无券买单"}}</span>
-                <span class="detail_name">{{cashier.usercouponname?cashier.usercouponname:"无券买单"}}</span>
-                <div class="detail_name">
-                  <img :src="cashier.payuserheadimgurl" class="headUrl">
-                </div>
-              </li>
-            </ul>
-          </scroll>
-          <img class="cashier_stream-close" @click="showCashierFlow=false" src="../../assets/image/close-round.png">
-        </div>
-      </Popup> -->
       <!-- 关注二维码 -->
       <div v-show="(!userInfo.isSubscribe && isShowQrCode) && ((isShowTab==0 || isShowTab==1)) " class="qrCode_wrapper">
         <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
@@ -48,7 +21,7 @@
         <p class="qrCode_text">会员特权:领福利、交群友、参活动</p>
       </div>
       <!-- 下单码 -->
-      <div v-show="(l98Setting.placeOrderQRcodeOpen && isShowQrCode) && (isShowTab===2 && deskId != undefined ) " class="qrCode_wrapper">
+      <div v-show="(l98Setting.placeOrderQRcodeOpen && isShowQrCode && OrderQrCode) && (isShowTab===2 && deskId != undefined ) " class="qrCode_wrapper">
         <img onclick="return false" @click="closeQrCode" class="close" src="../../assets/image/close.png" alt="">
         <p class="qrCode_text" style="font-size: 14px">长按识别二维码，可以直接下单</p>
         <img @touchstart="touchstart" @touchend="touchend" :src="OrderQrCode" alt="" class="qrcodeImg">
@@ -67,12 +40,12 @@
               </div>
               <div class="name_and_message">
                 <div class="personStatus">
-                  <p class="name">{{item.info.nickname}}</p>
                   <div class="sex-box">
                     <img src="../../assets/image/female.png" v-if="item.info.sex===0" class="sex-icon">
                     <img src="../../assets/image/female.png" v-else-if="item.info.sex===2" class="sex-icon">
                     <img src="../../assets/image/male.png" v-else class="sex-icon">
                   </div>
+                   <p class="name">{{item.info.nickname}}</p>
                   <img src="../../assets/image/dot_green.png" v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="online_dot">
                   <span v-if="item.info.onlineDiceServer || item.info.onlineL98Server" class="friendStatus">{{item.isInDoor?"店内":"店外"}}</span>
                   <span v-if="item.info.deskCode && (item.info.onlineDiceServer || item.info.onlineL98Server)" class="roomNum">{{`${item.info.deskCode}`}}桌</span>
@@ -112,7 +85,8 @@
                   <p class="message" style="color:#333" v-else-if="item.id==3">送你一个别墅</p>
                   <p class="message" style="color:#333" v-else-if="item.id==4">送你一个跑车</p>
                   <p class="message" style="color:#333" v-else-if="item.integral">送你{{item.name}}</p>
-                  <p class="message" v-else-if="item.commentId" v-html="item.message"></p>
+                  <p class="message" v-else-if=" item.msgType==='comment'||item.msgType==='subscribe'" v-html="item.message"></p>
+                  <!-- <p class="message" v-else-if="item.msgType==='comment'" v-html="item.message"></p> -->
                 </div>
               </div>
               <div class="thumb_wrapper">
@@ -124,9 +98,13 @@
                   <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
                   <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
                 </div>
-                <div class="clearfix backThumbBox" v-else-if="item.commentId">
+                <div class="clearfix backThumbBox" v-else-if="item.msgType==='comment'">
                   <p class=" back_thumb vux-1px fl reject" @click="respondForComment(index,item,'no')">删除</p>
                   <p class=" back_thumb vux-1px fl" @click="respondForComment(index,item,'yes')">回复</p>
+                </div>
+                <div class="clearfix backThumbBox" v-else-if="item.msgType==='subscribe'">
+                  <p class=" back_thumb vux-1px fl reject" @click="replaySubscribe(item.from.openid,'no')">删除</p>
+                  <p class=" back_thumb vux-1px fl" @click="replaySubscribe(item.from.openid,'yes')">看Ta</p>
                 </div>
                 <div class="clearfix " v-else>
                   <p class=" back_thumb vux-1px fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
@@ -266,13 +244,16 @@
                 <img v-else-if="item.type===4" src='../../assets/image/4.png' style="border-radius:0" alt="">
                 <img v-else-if="item.type===5" src='../../assets/image/5.png' style="border-radius:0" alt="">
                 <img v-else-if="item.type===6" src='../../assets/image/6.png' style="border-radius:0" alt="">
+                <img v-else-if="item.type===7" src='../../assets/image/7.png' style="border-radius:0" alt="">
+                <img v-else-if="item.type===8" src='../../assets/image/8.png' style="border-radius:0" alt="">
                 <i v-show="item.unread" class="dot" style="top:-.2rem;right:-.1rem"></i>
               </div>
               <div class="name_and_message">
-                <p class="captainMessage">{{item.name}} <span class="time">{{item.time}}</span></p>
+                <p class="captainMessage" v-if="item.type != 8">{{item.name}} <span class="time">{{item.time}}</span></p>
+                <p class="captainMessage" v-else>您关注的{{item.nickname}}有相片更新<span class="time">{{item.time}}</span></p>
                 <p class="handle-wrapper">
                   <span class="del" @click="delNotice(item.id)">删除</span>
-                  <span class="lookUp" @click="setUnreadNotice(item.id,item.type)">查看</span>
+                  <span class="lookUp" @click="setUnreadNotice(item.id,item.type,item.openId)">查看</span>
                 </p>
               </div>
             </div>
@@ -536,11 +517,15 @@
       },
       async payNoCashier() {
         let data = {
-          deskid: this.deskId || "fefd338f-b59c-49c0-b918-5ed3d28e4cd1",
+          deskid: this.deskId || "",
           deskcode: Number(this.deskCode) || 1,
           payuserid: this.userInfo.openid,
           payuserheadimgurl: this.userInfo.headimgurl,
         };
+        if(!data.deskid){
+          this.$vux.toast.text('未检测到桌号，请重扫二维码', 'middle')
+          return
+        }
         let res2 = await api.launchSelfPay(data);
         console.log("res2------", res2)
         if (res2.errCode === 0) {
@@ -614,7 +599,7 @@
         })
       },
       //设置群发通知已读
-      setUnreadNotice(noticeId, type) {
+      setUnreadNotice(noticeId, type,openId) {
         api.setUnreadNotice(noticeId).then(res => {
           //console.log('群发消息已读---', res)
           if (res.errCode === 0) {
@@ -645,6 +630,18 @@
                 this.$router.push({
                   name: 'card'
                 })
+              case 7:
+                this.$router.push({
+                  name: 'card'
+                })
+                break;
+              case 8:
+                 this.$router.push({
+                    name: "commentUser",
+                    params: {
+                        openId: openId,
+                    },
+                });
                 break;
               default:
                 break;
@@ -800,6 +797,7 @@
             tempEventList = tempEventList.concat(mutualEventsObj.giftEvents === null ? [] : mutualEventsObj.giftEvents)
             tempEventList = tempEventList.concat(mutualEventsObj.friendEvents === null ? [] : mutualEventsObj.friendEvents)
             tempEventList = tempEventList.concat(mutualEventsObj.commentEvents === null ? [] : mutualEventsObj.commentEvents)
+            tempEventList = tempEventList.concat(mutualEventsObj.subscribeEvents === null ? [] : mutualEventsObj.subscribeEvents)
             this.mutualEventsList = tempEventList.sort((a, b) => {
               return b.time - a.time
             })
@@ -851,6 +849,24 @@
           }
         })
       },
+      //回复关注
+      replaySubscribe(openId,flag){
+        api.delSubscribeInfo(openId).then(res=>{
+          if(res.errCode===0){
+            if(flag){
+                this.$router.push({
+                  name: "commentUser",
+                  params: {
+                    openId: openId,
+                  },
+                });
+            }else{
+              this._loadMutualEvents()
+            }
+          }
+        })
+      },
+      //回复评论
       respondForComment(index,item,flag){
         let data = {
           commentId:item.commentId,
@@ -1390,49 +1406,6 @@
   .message_wrapper {
     width: 100%;
     flex-grow: 1;
-    .cashier_stream-wrapper{
-      height: 9rem;
-      position: relative;
-      z-index: 3;
-      .cashier_stream_title {
-        height: 1rem;
-        line-height: 1rem;
-        display: flex;
-        .title_name {
-          width: 20%;
-          text-align: center;
-        }
-      }
-      .cashier_stream_detail {
-        // height: 8rem;
-        flex: 1;
-        .stream_detail_item {
-          display: flex;
-          margin-bottom: 0.1333rem;
-          .detail_name {
-            display: inline-block;
-            width: 20%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            text-align: center;
-          }
-          .headUrl {
-            width: 0.5333rem;
-            height: 0.5333rem;
-          }
-        }
-      }
-      .cashier_stream-close{
-        z-index: 9999;
-        position: absolute;
-        bottom: -2rem;
-        left: 50%;
-        width: 1rem;
-        height: 1rem;
-        transform: translateX(-50%);
-      }
-    }
     .message_list {
       // height: 100%;
       padding: 0 0.2667rem;

@@ -2,30 +2,119 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-10-09 14:18:55
+ * @Last Modified time: 2020-10-30 15:27:20
  */
-import axios from 'axios'
+import axios from './axios'
 import Url from './config'
-axios.interceptors.request.use(
-    config => {
-        let identity = sessionStorage.getItem('identity')
-        if (identity) {
-            config.headers = {
-                'identity': identity,
-            }
-        }
-        return config
-    },
-    error => {
-        return Promise.reject(error)
-    }
-)
+// // 定义一个缓存池用来缓存数据
+// let cache = {}
+// const EXPIRE_TIME = 60000
+// // 利用axios的cancelToken来取消请求
+// const CancelToken = axios.CancelToken
+// axios.interceptors.request.use(
+//     config => {
+//         let identity = sessionStorage.getItem('identity')
+//         if (identity) {
+//             config.headers = {
+//                 'identity': identity,
+//             }
+//         }
+//         return config
+//     },
+//     error => {
+//         return Promise.reject(error)
+//     }
+// )
+
 let api = {};
 //临时接口  删除分身
 api.delIdentity = function(targetID) {
         return new Promise((resolve, reject) => {
             axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
-                // //console.log(res)
+                if (res.status == 200) {
+                    resolve(res.data)
+                }
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
+//删除关注者提醒信息
+api.delSubscribeInfo = function (toOpenId) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/delSubscribeInfo?tk=${Url.tk}&openId=${toOpenId}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//关注某用户
+api.subscribeUser = function (toOpenId) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/subscribeUser?tk=${Url.tk}&toOpenId=${toOpenId}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//参团
+api.joinGroupShopping = function (openGroupId, groupShopInfoId) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/joinGroupShopping?tk=${Url.tk}&openGroupId=${openGroupId}&groupShopInfoId=${groupShopInfoId}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//开团
+api.openGroupShopping = function (activityId) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/openGroupShopping?tk=${Url.tk}&activityId=${activityId}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//拉取用户开团信息
+api.loadGroupShopForUser = function (groupShopInfoId, openGroupId="") {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/loadGroupShopForUser?tk=${Url.tk}&groupShopInfoId=${groupShopInfoId}&openGroupId=${openGroupId}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//判断是否有团购活动
+api.judgeHasGroupShop = function () {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/judgeHasGroupShop?tk=${Url.tk}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+    //上传公司链接
+api.uploadCompanyLink = function(data) {
+        return new Promise((resolve, reject) => {
+            axios.post(Url.commonUrl + `/api/uploadCompanyLink?tk=${Url.tk}`, data).then((res) => {
                 if (res.status == 200) {
                     resolve(res.data)
                 }
@@ -1175,7 +1264,7 @@ api.loadRecommends = function() {
     //拉取活动通知
 api.loadActivityInfo = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadActivityInfo?tk=${Url.tk}`)
+            axios.get(`/api/loadActivityInfo?tk=${Url.tk}`, { cache: true })
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -1188,7 +1277,7 @@ api.loadActivityInfo = function() {
     //拉取门店信息
 api.loadStoreSetting = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadStoreSetting?tk=${Url.tk}`)
+            axios.get(`/api/loadStoreSetting?tk=${Url.tk}`, { cache:true})
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -1201,7 +1290,7 @@ api.loadStoreSetting = function() {
     //拉取首页轮播图
 api.loadAdvertisingPhoto = function() {
         return new Promise((resolve, reject) => {
-            axios.get(`/api/loadAdvertisingPhoto?tk=${Url.tk}`)
+            axios.get(`/api/loadAdvertisingPhoto?tk=${Url.tk}`, { cache: true })
                 .then(res => {
                     if (res.status == 200) {
                         resolve(res.data)
@@ -1625,7 +1714,7 @@ api.createQrcode = function() {
     return new Promise((resolve, reject) => {
         axios.get(Url.commonUrl + `/api/createQrcode?tk=${Url.tk}`)
             .then(res => {
-                // console.log('创建二维码--------', res)
+                //console.log('创建二维码--------', res)
                 if (res.status == 200) {
                     resolve(res.data)
                 }
@@ -1641,7 +1730,7 @@ api.loadAllQrcode = function() {
             axios.get(Url.commonUrl + `/api/loadAllQrcode?tk=${Url.tk}`)
                 .then(res => {
                     if (res.status == 200) {
-                        // console.log('拉取二维码--------', res)
+                        //console.log('拉取二维码--------', res)
                         resolve(res.data)
                     }
                 }).catch(err => {

@@ -16,11 +16,14 @@
             scopeUserInfo.nickname
             }}</span>
                 </div>
-                <div
-                    class="comment-header-right"
-                    @click="goHome"
-                >
+                <div class="comment-header-right">
+                    <div
+                        v-if="scopeUserInfo.companyLink"
+                        @click="goToCompanyLink(scopeUserInfo.companyLink)"
+                        class="company-link"
+                    >Ta的企业/产品</div>
                     <img
+                        @click="goHome"
                         src="../../assets/image/chat_home.png"
                         class="comment-home"
                         alt=""
@@ -62,9 +65,7 @@
                             class="comment-icon"
                             alt=""
                         />
-                        <span class="comment-count">{{
-              staffCommentInfo.thumbCount
-              }}</span>
+                        <span class="comment-count">{{staffCommentInfo.thumbCount}}</span>
                     </li>
                     <li
                         class="comment-divide"
@@ -75,9 +76,7 @@
                             class="comment-icon"
                             alt=""
                         />
-                        <span class="comment-count">{{
-              staffCommentInfo.unThumbCount
-              }}</span>
+                        <span class="comment-count">{{staffCommentInfo.unThumbCount}}</span>
                     </li>
                     <li class="comment-divide">
                         <img
@@ -85,9 +84,15 @@
                             class="comment-icon"
                             alt=""
                         />
-                        <span class="comment-count">{{
-              staffCommentInfo.messageCount
-              }}</span>
+                        <span class="comment-count">{{staffCommentInfo.messageCount}}</span>
+                    </li>
+                     <li class="comment-divide">
+                        <img
+                            src="../../assets/image/eyes.png"
+                            class="comment-icon"
+                            alt=""
+                        />
+                        <span class="comment-count">{{staffCommentInfo.messageCount}}</span>
                     </li>
                 </ul>
                 <scroll
@@ -251,7 +256,7 @@ export default {
         };
     },
     created() {
-        util.addVisitRecord(this.$route.name);
+        //util.addVisitRecord(this.$route.name);
         let phone = util.GetQueryString("phone");
         this.isScan = util.GetQueryString("isScan");
         this.queryPhone = phone ? phone : this.$route.params.phone;
@@ -288,6 +293,9 @@ export default {
         ...mapState(["l98Setting", "lifeImgList", "userInfo", "shareUrl"]),
     },
     methods: {
+        goToCompanyLink(link) {
+            window.location.href = link;
+        },
         //分享获得积分
         shareGetJifen(amount, shareType) {
             api.shareToGetIntegral(amount, shareType).then((res) => {
@@ -296,18 +304,17 @@ export default {
                 }
             });
         },
-
         //通过openId、手机号获得用户信息
         async loadUserInfoByCondition() {
-            let res = await api.loadUserInfoByPhone(this.queryPhone);
-            console.log("员工信息----", res);
-            this.scopeOpenId = res.info.openid;
-            this.loadCommentInfo();
+            let res = await api.loadUserInfoByPhone(this.queryPhone); //通过因为B端扫码没有openid，只能通过手机号先获得用户的openid
             if (res.errCode == 0) {
-                this.scopeUserInfo = res.info;
+                this.scopeOpenId = res.info.openid;
+                let staffUserInfo = await api.getUserInfo(this.scopeOpenId); //通过openid获得用户的信息
+                this.loadCommentInfo(); //加载员工评价信息
+                this.scopeUserInfo = staffUserInfo;
                 var tempArr = [];
-                if (res.info.lifePhoto.lifePhotos) {
-                    res.info.lifePhoto.lifePhotos.forEach((lifePhoto) => {
+                if (staffUserInfo.lifePhoto.lifePhotos) {
+                    staffUserInfo.lifePhoto.lifePhotos.forEach((lifePhoto) => {
                         tempArr.push({
                             url: "javascript:",
                             img: lifePhoto.photoURL,
@@ -319,7 +326,7 @@ export default {
                 } else {
                     tempArr.push({
                         url: "javascript:",
-                        img: res.headimgurl,
+                        img: staffUserInfo.headimgurl,
                         title: "求点赞",
                     });
                 }

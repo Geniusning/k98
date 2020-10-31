@@ -119,7 +119,7 @@ export default {
     gotoUse(id) {
       this.isshowVipInfo = false;
       this.$router.push({
-        path: `/card/${id}`
+        name: "card"
       });
     },
     book() {

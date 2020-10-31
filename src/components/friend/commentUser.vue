@@ -3,15 +3,16 @@
         <!-- 分享引导 -->
         <div class="bg" v-if="isShow_bg" @click="isShow_bg = false">
             <img
+               class="share-arrow"
                 onclick="return false"
                 src="../../assets/image/share.png"
                 alt
             />
             <p class="shareText">
-                支持我捧个场，分享吧！每引荐一位好友送1朵小红花和20积分
+                支持Ta，分享吧！每引荐一位好友送1朵<img class="flower" src="../../assets/image/flowerCounts.png" />和20积分
             </p>
             <p class="shareText" style="top:4.8rem">
-                红花大于2个，您也可以展示您的企业/产品，交更多群友
+                <img class="flower" src="../../assets/image/flowerCounts.png" />大于2个，您也可以展示您的企业/产品，红花越多排名越前
             </p>
         </div>
         <div class="content">
@@ -30,8 +31,10 @@
                         scopeUserInfo.nickname
                     }}</span>
                 </div>
-                <div class="comment-header-right" @click="goHome">
+                <div class="comment-header-right" > 
+                    <div v-if="scopeUserInfo.companyLink" @click="goToCompanyLink(scopeUserInfo.companyLink)" class="company-link">企业/产品</div>
                     <img
+                        @click="goHome"
                         src="../../assets/image/chat_home.png"
                         class="comment-home"
                         alt=""
@@ -49,11 +52,6 @@
                         v-model="swiperItemIndex"
                         :min-moving-distance="10"
                     ></swiper>
-                </div>
-                <div v-else class="comment-slider">
-                    <p class="comment-staffData">
-                        用户未上传图片，暂无图片信息
-                    </p>
                 </div>
             </div>
             <div class="comment-result">
@@ -86,6 +84,16 @@
                         />
                         <span class="comment-count">{{
                             staffCommentInfo.messageCount
+                        }}</span>
+                    </li>
+                    <li class="comment-divide"  @click="subscribeUser">
+                        <img
+                            src="../../assets/image/eyes.png"
+                            class="comment-icon"
+                            alt=""
+                        />
+                        <span class="comment-count">{{
+                            staffCommentInfo.subscribeCount
                         }}</span>
                     </li>
                 </ul>
@@ -258,8 +266,9 @@ export default {
         let urlOpenId = util.GetQueryString("openId");
         this.isSelf = this.$route.params.isSelf;
         this.scopeOpenId = this.$route.params.openId;
-        console.log("this.$route.params.openId---",this.$route.params.openId)
-        this.scopeOpenId = urlOpenId ? urlOpenId : this.scopeOpenId;
+        let cacheOpenId = localStorage.getItem("comment_openId")
+        this.scopeOpenId = urlOpenId ? urlOpenId : this.scopeOpenId?this.scopeOpenId:cacheOpenId;
+        localStorage.setItem("comment_openId",this.scopeOpenId)
         this.loadUserInfoByOpenId();
         this.loadCommentInfo();
         document.body.addEventListener("focusout", () => {
@@ -272,7 +281,7 @@ export default {
             let shareObj = {
                 title: "找朋友",
                 desc: "我看行……大伙帮Ta捧个场吧",
-                link: `${this.shareUrl}k98/commentUser?openId=${this.userInfo.openid}`,
+                link: `${this.shareUrl}k98/commentUser?openId=${this.isSelf?this.userInfo.openid:this.scopeOpenId}`,
                 imgUrl: `${this.scopeUserInfo.headimgurl}`,
             };
             util.setShareInfo(shareObj, 20, "comment", this.shareGetJifen);
@@ -290,6 +299,20 @@ export default {
         ...mapState(["l98Setting", "lifeImgList", "userInfo", "shareUrl"]),
     },
     methods: {
+        //关注
+        subscribeUser(){
+            api.subscribeUser(this.scopeOpenId).then(res=>{
+                if (res.errCode === 1098){
+                    this.$vux.toast.text("关注成功,Ta的照片更新将通知您", "middle");
+                }else if(res.errCode===1099){
+                     this.$vux.toast.text("取消成功", "middle");
+                }
+                this.loadCommentInfo()
+            })
+        },
+        goToCompanyLink(link){
+            window.location.href = link
+        },
         //分享获得积分
         shareGetJifen(amount, shareType) {
             api.shareToGetIntegral(amount, shareType).then((res) => {
@@ -372,10 +395,10 @@ export default {
         },
         //发布留言
         send() {
-            if (this.isSelf) {
-                this.$vux.toast.text(`不能自己点赞或留言`);
-                return;
-            }
+            // if (this.isSelf) {
+            //     this.$vux.toast.text(`不能自己点赞或留言`);
+            //     return;
+            // }
             if (this.scopeUserInfo.isComment) {
                 this.$vux.toast.text(`榜主已关闭评价/留言功能`);
                 return;
@@ -399,7 +422,7 @@ export default {
                 }
             }
             let data = {
-                openId: this.scopeUserInfo.openid,
+                toOpenId: this.scopeUserInfo.openid,
                 message: this.inputValue,
                 time: new Date().getTime(),
                 nickname: this.userInfo.nickname,
@@ -463,7 +486,7 @@ export default {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 999;
-    img {
+    .share-arrow {
         width: 100px;
         height: 100px;
         position: fixed;
@@ -475,6 +498,10 @@ export default {
         position: fixed;
         top: 2.8rem;
         right: 0.5rem;
+        .flower{
+            width: .6rem;
+            vertical-align: middle;
+        }
     }
 }
 @import "./comment.less";

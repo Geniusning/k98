@@ -43,9 +43,8 @@
     },
     mounted() {
       let arenaID = this.$route.params.id;
-      //console.log(arenaID)
       this._loadArenaTopRank(arenaID);
-      util.addVisitRecord(this.$route.name)
+      //util.addVisitRecord(this.$route.name)
     },
     methods: {
       _loadArenaTopRank(arenaID) {
@@ -63,17 +62,10 @@
       _nomalizeGameList(list){
         let gameList = []
         list.forEach(item=>{
-          // if(item.headURI.indexOf("http") === -1){
-          //   let imgUrl = item.headURI.slice(18)
-          //   item.headURI = require(`../../assets/image/${imgUrl}.png`)
-          // }
-            // //console.log(item.userID.indexOf("Robot"))
           if(item.userID.indexOf("Robot")===-1){
             gameList.push(item)
           }
         })
-        // if(item.userID.indexOf("Robot")>)
-        //console.log("gameList------------",gameList)
         return gameList
       }
     },

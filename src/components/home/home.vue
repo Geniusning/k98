@@ -1,23 +1,12 @@
 <template>
-  <div
-    id="home"
-    class="home"
-  >
+  <div id="home" class="home">
     <!-- <div class="guideBg" v-if="isFirstLoad" @click="isFirstLoad=false"></div> -->
     <div class="homeTop_wrapper">
       <div class="barLogo_wrapper">
         <div class="logo_wrapper">
-          <img
-            onclick="return false"
-            class="logo"
-            :src="shopSettingInfo.image"
-            alt
-          />
+          <img onclick="return false" class="logo" :src="shopSettingInfo.image" alt />
           <p class="bar_name">
-            <a
-              style="color:#fff;"
-              href="#homeShare"
-            >{{shopSettingInfo.name}}</a>
+            <a style="color:#fff;" href="#homeShare">{{shopSettingInfo.name}}</a>
           </p>
         </div>
       </div>
@@ -510,8 +499,8 @@ export default {
     util.addVisitRecord(this.$route.name);
     //console.log("this.storeName---", this.storeName);
     this.resId = util.GetQueryString("resId");
+    this.gameUrl = window.location.href.split("k98")[0];
     setTimeout(() => {
-      this.gameUrl = window.location.href.split("k98")[0];
       let shareObj = {
         title: "找朋友",
         desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
@@ -521,7 +510,7 @@ export default {
         imgUrl: `${this.shopSettingInfo.image}`
       };
       util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-    }, 1500);
+    }, 500);
     if (this.resId) {
       this.getAllianceCoupon();
     }
@@ -890,32 +879,11 @@ export default {
         this.getFriend(res.info);
       });
     },
-    //进入场内交友界面
-    // intoFriend() {
-    //   if (this.inFriendNum === 0) {
-    //     this.$vux.toast.show({
-    //       type: "text",
-    //       text: "场内暂时没有朋友",
-    //       width: "12em"
-    //     });
-    //     return;
-    //   }
-    //   util.routerTo("friend", this, {
-    //     routeParamNum: 1 //路由参数1为进入了场内
-    //   });
-    // },
-    //进入场外交友界面
     outFriend() {
       util.routerTo("friend", this, {
         routeParamNum: 2 //路由参数2为进入了场外
       });
     },
-    //进入店长信箱
-    // inToLetter() {
-    //   util.routerTo("message", this, {
-    //     routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
-    //   });
-    // },
     // 更多福利
     showMoreWelfare() {
       util.routerTo("welfare", this);

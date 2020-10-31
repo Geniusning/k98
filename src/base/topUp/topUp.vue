@@ -137,7 +137,8 @@
             <div class="integralIcon_text"></div>
           </div>
 
-          <p style="padding:0 .3rem" class="successful_text">未开通充值功能,您可通过分享朋友圈或好友群赚积分，每天限5次，重复分享无效</p>
+          <p style="padding:0 .3rem" class="successful_text">未开通充值功能,您可通过分享朋友圈或好友群赚积分，重复分享无效</p>
+          <div @click="gotoPage('mine')" class="payBtn">赚积分</div>
           <div @click="closeIntegralPanel" class="btn">确认</div>
         </div>
       </div>
@@ -152,6 +153,31 @@
           <p style="padding:0 .3rem" class="successful_text">请对照对帐单的时间，选择是否需要把核销券时间前移计入上一班？</p>
           <div @click="noMove" class="payBtn">不用</div>
           <div @click="changeCasierTime" class="btn">前移</div>
+        </div>
+      </div>
+       <div class="successfullyBox" v-else-if="panelIndex===7" >
+        <div class="envelope">
+          <div class="close" @click="closeIntegralPanel">X</div>
+          <div class="integralIcon_wrapper">
+            <img onclick="return false" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
+            <div class="integralIcon_text">积分不足</div>
+          </div>
+          <p style="padding:0 .3rem" class="successful_text">积分不足,您可通过分享朋友圈好友群赚积分，也可以充值换积分</p>
+          <div @click="gotoPage('mine')" class="payBtn">赚积分</div>
+          <div @click="closeIntegralPanel" class="btn">确认</div>
+        </div>
+      </div>
+      <!-- 拼团成功提醒 -->
+      <div class="successfullyBox" v-else-if="panelIndex===8" >
+        <div class="envelope">
+          <div class="close" @click="closeSchedule">X</div>
+          <div class="integralIcon_wrapper">
+            <!-- <img onclick="return false" src="../../assets/image/integralIcon.png" alt="" class="integralIcon"> -->
+            <div class="integralIcon_text">拼团成功</div>
+          </div>
+          <p style="padding:0 .3rem" class="successful_text">恭喜拼团成功！一张团购券已存入你的卡券包</p>
+          <div @click="gotoPage('card')" class="payBtn">详情</div>
+          <div @click="closeIntegralPanel" class="btn">知道</div>
         </div>
       </div>
     </transition>
@@ -284,6 +310,11 @@
     },
     activated() {},
     methods: {
+      gotoPage(pageType){
+        this.$router.push({
+          name:pageType
+        })
+      },
       //员工送券
       sendCouponToUser() {
         //console.log("this.staticChatFriendObj----",this.staticChatFriendObj)
@@ -337,11 +368,11 @@
           this.$router.push({
             name:"mine"
           })
-          this.panelIndex = 1;
+          // this.panelIndex = 1;
           this.$emit("closeIntegralPanel", false);
         }else{
           this.$emit("closeIntegralPanel", false);
-          this.panelIndex = 1;
+          // this.panelIndex = 1;
         }
       },
       // 前往充值
@@ -944,7 +975,7 @@
         .integralIcon_text {
           box-sizing: border-box;
           padding-top: 0.6333rem;
-          margin-left: 0.1333rem;
+          margin-left: 0.3333rem;
           font-size: 0.35rem;
           color: #333;
         }
@@ -966,7 +997,7 @@
         bottom: 0.55rem;
         left: 0.38rem;
         font-weight: 800;
-        font-size: 0.35rem;
+        font-size:0.23rem;
         border: 1px solid rgb(156, 13, 13);
         background-color: #fff;
         color: rgb(156, 13, 13);

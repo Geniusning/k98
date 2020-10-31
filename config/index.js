@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "42OLkBG5QQFAEAAdqXrWi5rKr1_YoXy82MVmF5cvmSxcIQASx5Wu-06z_kDugBexxz4sFA==";
+const myToken = "tNI0C7XvMVUQIqjHmXyPgj2puZj1UgyL6tT_aqQcgsqU5zxWv1L9wMzEBzm3FrXWd_RhvQ==";
 // ------------------------------
 
 module.exports = {
@@ -15,9 +15,9 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             "/api": {
-                target: "https://singledog.qianz.com", //中新
+                // target: "https://singledog.qianz.com", //中新
                 // target: "172.18.4.8", //本地
-                // target: "https://llwant1.qianz.com", //老友一起玩吧
+                target: "https://llwant1.qianz.com", //老友一起玩吧
                 // target: "https://llwant3.qianz.com", //k98
                 // target: "https://llwant4.qianz.com", //喜炖
                 changeOrigin: true,
@@ -28,9 +28,9 @@ module.exports = {
         },
 
         // Various Dev Server settings
-        // host: '172.18.6.191',
+        host: '172.18.6.191',
 
-        host: '192.168.101.9',
+        // host: '192.168.101.9',
 
         // host: 'localhost', // can be overwritten by process.env.HOST
         port: 8088, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
@@ -52,7 +52,7 @@ module.exports = {
          */
 
         // https://webpack.js.org/configuration/devtool/#development
-        devtool: 'eval-source-map',
+        devtool: 'source-map',
 
         // If you have problems debugging vue-files in devtools,
         // set this to false - it *may* help
@@ -82,7 +82,7 @@ module.exports = {
 
         productionSourceMap: false,
         // https://webpack.js.org/configuration/devtool/#production
-        devtool: '#source-map',
+        devtool: 'source-map',
 
         // Run the build command with an extra argument to
         // View the bundle analyzer report after build finishes:

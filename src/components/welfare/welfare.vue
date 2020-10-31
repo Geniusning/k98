@@ -8,7 +8,7 @@
       <div class="logo-wrapper">
         <img
           onclick="return false"
-          :src="activityNoticeList[0].image?activityNoticeList[0].image:tempPic"
+          :src="activityNoticeList.length>0?activityNoticeList[0].image:tempPic"
           alt
           style=" width: 9.2rem;height:100%"
         >
@@ -32,7 +32,7 @@
       >
     </div>
     <!-- 活动通知 -->
-    <div style="background:#fff;padding:.2667rem">
+    <div v-show="activityNoticeList.length>0" style="background:#fff;padding:.2667rem">
       <div class="activity-wrapper">
         <div class="title"><span class="title_text">告示板</span></div>
         <ul
@@ -64,6 +64,20 @@
         </ul>
       </div>
     </div>
+    <!-- 团购 -->
+    <div
+      class="share-wrapper"
+      v-if="groupShopInfo?groupShopInfo.isPutAway:false"
+    >
+      <img class="product-img" :src="groupShopInfo.image" alt="">
+      <img
+        onclick="return false"
+        @click="goToGroupShop(groupShopInfo.activityID)"
+        src="../../assets/image/groupShop.png"
+        class="shareEnter"
+        alt
+      >
+    </div>
     <!-- 大话骰动态 -->
     <div class="game-wrapper">
       <div
@@ -72,7 +86,7 @@
         @click="playGame"
       >立即参与></div>
       <div class="game-content">
-        <div class="title"><span class="title_text">大话骰排名赛动态</span></div>
+        <div class="title"><span class="title_text">大话排名赛</span></div>
         <div class="gamerule">
           <h3 class="intro_title">说明</h3>
           <p>1)被朋友邀请助战的，本期获奖奖品归朋友所有，下期开始归自己所有。</p>
@@ -192,11 +206,10 @@ export default {
       // gameValue: ['第一期'],
       rankList: [],
       arenaInfo: {},
-      arenaID: ""
+      arenaID: "",
+      groupShopInfo:null,
+      openGroupId:"",
     };
-  },
-  created() {
-    this._loadActivityInfo(); //获取活动通知
   },
   computed: {
     ...mapState([
@@ -210,12 +223,14 @@ export default {
   },
   mounted() {
     util.addVisitRecord(this.$route.name);
-    this._loadPublishArenas(); //拉取是否有比赛场
+    this.loadActivityInfo(); //获取活动通知
+    this.judgeHasGroupShop(); //判断是否有团购信息
+    this.loadPublishArenas(); //拉取是否有比赛场
     //console.log("this.AdvertisingPhoto",this.AdvertisingPhoto)
   },
   methods: {
     //拉取已经发布的比赛场
-    _loadPublishArenas() {
+    loadPublishArenas() {
       api.loadPublishArenas().then(res => {
         //console.log("---------------------",res)
         var reverseArr = res.arenaInfos.reverse();
@@ -273,11 +288,33 @@ export default {
       });
     },
     //拉取活动通知
-    _loadActivityInfo() {
+    loadActivityInfo() {
       api.loadActivityInfo().then(res => {
         //console.log("活动通知列表-------------",res)
         this.getActivityNoticeList(res.slice(0, 2));
       });
+    },
+    //判断是否有团购活动
+    judgeHasGroupShop(){
+      api.judgeHasGroupShop().then(res=>{
+        if (res.errCode===0){
+          console.log("res团购",res)
+          if (res.info.myJoinGroupShopList.length>0){
+            this.openGroupId = res.info.myJoinGroupShopList[0].id
+          }
+          this.groupShopInfo = res.info
+        }
+      })
+    },
+    //进入团购
+    goToGroupShop(id){
+      this.$router.push({
+        path:`/oneYuan`,
+        query:{
+          groupShopInfoId:id,
+          openGroupId:this.openGroupId
+        }
+      })
     },
     //进入分享有礼
     shareNewFriend() {
@@ -422,6 +459,14 @@ export default {
     width: 100%;
     background-color: #fff;
     margin-top: 0.3rem;
+    position: relative;
+    .product-img{
+      position: absolute;
+      width: 2rem;
+      height: 1.2rem;
+      top: 1rem;
+      left: 2rem;
+    }
     .shareEnter {
       width: 100%;
     }
@@ -441,8 +486,8 @@ export default {
       text-align: center;
       padding: 0.1333rem 0.2667rem;
       border-radius: 0.2333rem;
-      background: #ffd800;
-      color: #fff;
+      background: -webkit-linear-gradient(left, #fff800, #fef200, #fccc00, #fbbc00);
+      color: #333;
     }
     .game-content {
       width: 9.4667rem;
@@ -528,8 +573,8 @@ export default {
         text-align: center;
         padding: 0.1333rem 0.2667rem;
         border-radius: 0.2333rem;
-        background: #ffd800;
-        color: #fff;
+        background: -webkit-linear-gradient(left, #fff800, #fef200, #fccc00, #fbbc00);
+        color: #333;
         border: none;
         outline: none;
       }
@@ -604,8 +649,8 @@ export default {
               padding: 0.08rem 0.1333rem;
               text-align: center;
               line-height: 0.5067rem;
-              background: #ffd800;
-              color: #fff;
+              background: -webkit-linear-gradient(left, #fff800, #fef200, #fccc00, #fbbc00);
+              color: #333;
               border-radius: 0.08rem;
             }
           }

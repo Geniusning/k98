@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-10-09 14:19:04
+ * @Last Modified time: 2020-10-30 15:27:30
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,6 +24,90 @@ axios.interceptors.request.use(
     }
 )
 let api = {};
+//删除关注者提醒信息
+api.delSubscribeInfo = function (toOpenId) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/delSubscribeInfo?openId=${toOpenId}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//关注某用户
+api.subscribeUser = function (toOpenId) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/subscribeUser?toOpenId=${toOpenId}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//参团
+api.joinGroupShopping = function (openGroupId, groupShopInfoId) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/joinGroupShopping?openGroupId=${openGroupId}&groupShopInfoId=${groupShopInfoId}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//开团
+api.openGroupShopping = function (activityId) {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/openGroupShopping?activityId=${activityId}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//拉取用户开团信息
+api.loadGroupShopForUser = function (groupShopInfoId, openGroupId="") {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/loadGroupShopForUser?groupShopInfoId=${groupShopInfoId}&openGroupId=${openGroupId}`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//判断是否有团购活动
+api.judgeHasGroupShop = function () {
+    return new Promise((resolve, reject) => {
+        axios.get(Url.commonUrl + `/api/judgeHasGroupShop`).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+//上传公司链接
+api.uploadCompanyLink = function (data) {
+    return new Promise((resolve, reject) => {
+        axios.post(Url.commonUrl + `/api/uploadCompanyLink`, data).then((res) => {
+            if (res.status == 200) {
+                resolve(res.data)
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
 //处理在新朋友事件中有关留言的表数据
 api.delCommentInfo = function(flag, data) {
         return new Promise((resolve, reject) => {

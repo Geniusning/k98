@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-09-30 12:27:10
+ * @Last Modified time: 2020-10-30 17:47:06
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -569,10 +569,9 @@ const mutations = {
                     item['img'] = `../../assets/image/${item.type}.png`
                     break;
                 case 7:
-                    item['name'] = `一张优惠券已经存入卡券包>`
+                    item['name'] = `拼团成功,团购券已存入卡券包>`
                     item['img'] = `../../assets/image/${item.type}.png`
                     break;
-
                 default:
                     break;
             }
