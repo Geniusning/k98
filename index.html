@@ -6,21 +6,6 @@
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecur-requests">
   <meta name="viewport"
     content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <link rel="icon" href="data:image/ico;base64,aWNv">
-  <!-- <script src="https://cdn.bootcss.com/vue/2.5.20/vue.min.js"></script> -->
-  <!-- <script>
-    window.Vue || document.write('<script src="static/js/vue.js"><\/script>')
-  </script> -->
-  <!-- <script src="https://cdn.bootcss.com/vue-router/3.0.1/vue-router.min.js"></script>
-  <script src="https://cdn.bootcss.com/vuex/2.1.1/vuex.min.js"></script>
-  <script>
-    window.Vuex && window.Vue || document.write('<script src="static/js/vuex.js"><\/script>')
-
-  </script>
-  <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
-  <script>
-    window.axios && window.Vue || document.write('<script src="static/js/axios.js"><\/script>')
-  </script> -->
   <title>首页</title>
   <style>
     html,
@@ -32,6 +17,7 @@
       text-size-adjust: 100% !important;
       -moz-text-size-adjust: 100% !important;
     }
+
     * {
       -webkit-touch-callout: none;
       -webkit-user-select: none;
@@ -40,6 +26,7 @@
       -ms-user-select: none;
       user-select: none;
     }
+
     input,
     textarea {
       -webkit-user-select: auto;
@@ -53,17 +40,18 @@
 <body>
   <div id="app-box"></div>
   <!-- built files will be auto injected -->
-  <script src="/static/flexible.js"></script>
-  <script src="/static/flexible_css.js"></script>
-  <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
-  <!-- 生产环境 -->
-  <!-- <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script> -->
+
+  <!-- <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script> -->
+  <!-- <script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script> -->
 </body>
-<script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
+<script src="/static/flexible.js"></script>
+<script src="/static/flexible_css.js"></script>
+<script src="/static/jsweixin-1.6.0.js"></script>
+<!-- <script src="/static/vconsole.js"></script>
 <script>
-    // 初始化
-    var vConsole = new VConsole();
-</script>
+  // 初始化
+  var vConsole = new VConsole();
+</script> -->
 <script>
   // 处理有些人设置微信字体大小后导致网页尺寸跟着变化的问题
   (function () {

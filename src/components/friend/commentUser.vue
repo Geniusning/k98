@@ -279,8 +279,8 @@ export default {
     mounted() {
         setTimeout(() => {
             let shareObj = {
-                title: "找朋友",
-                desc: "我看行……大伙帮Ta捧个场吧",
+                title: "帮朋友",
+                desc: "大伙帮忙捧个场，求点赞、关注",
                 link: `${this.shareUrl}k98/commentUser?openId=${this.isSelf?this.userInfo.openid:this.scopeOpenId}`,
                 imgUrl: `${this.scopeUserInfo.headimgurl}`,
             };
@@ -301,6 +301,13 @@ export default {
     methods: {
         //关注
         subscribeUser(){
+            if (!this.userInfo.isSubscribe) {
+                this.changeQrCodeText({
+                title: "长按关注，以便好友消息及时送达您",
+                bottomText: "会员特权:领福利、交群友、参活动"
+                });
+                this.showQrcode(true);
+            }
             api.subscribeUser(this.scopeOpenId).then(res=>{
                 if (res.errCode === 1098){
                     this.$vux.toast.text("关注成功,Ta的照片更新将通知您", "middle");
@@ -355,13 +362,8 @@ export default {
         },
         //点赞
         giveThumb() {
-            if (this.isSelf) {
-                this.$vux.toast.text(`不能自己点赞或留言`);
-                return;
-            }
-            if (this.scopeUserInfo.isComment) {
-                this.$vux.toast.text(`榜主已关闭评价/留言功能`);
-                return;
+            if (this.isLimit()){
+                return
             }
             api.giveThumb(this.scopeUserInfo.openid).then((res) => {
                 if (res.errCode === 0) {
@@ -375,13 +377,8 @@ export default {
         },
         //鄙视
         unGiveThumb() {
-            if (this.isSelf) {
-                this.$vux.toast.text(`不能自己点赞或留言`);
-                return;
-            }
-            if (this.scopeUserInfo.isComment) {
-                this.$vux.toast.text(`榜主已关闭评价/留言功能`);
-                return;
+            if (this.isLimit()){
+                return
             }
             api.giveUnThumb(this.scopeUserInfo.openid).then((res) => {
                 if (res.errCode === 0) {
@@ -393,12 +390,19 @@ export default {
                 }
             });
         },
+        isLimit(){
+            if (this.isSelf) {
+                this.$vux.toast.text(`不能自己点赞或留言`);
+                return true;
+            }
+            if (this.scopeUserInfo.isComment) {
+                this.$vux.toast.text(`榜主已关闭评价/留言功能`);
+                return true;
+            }
+            return false
+        },
         //发布留言
         send() {
-            // if (this.isSelf) {
-            //     this.$vux.toast.text(`不能自己点赞或留言`);
-            //     return;
-            // }
             if (this.scopeUserInfo.isComment) {
                 this.$vux.toast.text(`榜主已关闭评价/留言功能`);
                 return;

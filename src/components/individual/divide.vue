@@ -21,65 +21,30 @@
                     <li class="item vux-1px-b" @click="showPopupPickerSex=true">
                         <span class="item_name">性别</span>
                         <input type="text" class="input_name" v-model="gender" disabled />
-                        <img
-                            onclick="return false"
-                            src="../../assets/image/arrow_right.png"
-                            alt
-                            class="arrow_right"
-                        />
+                        <img onclick="return false" src="../../assets/image/arrow_right.png" alt class="arrow_right" />
                     </li>
                     <li class="item vux-1px-b" @click="showPopupPickerC=true">
                         <span class="item_name">星座</span>
                         <input type="text" class="input_name" v-model="constellation" disabled />
-                        <img
-                            onclick="return false"
-                            src="../../assets/image/arrow_right.png"
-                            alt
-                            class="arrow_right"
-                        />
+                        <img onclick="return false" src="../../assets/image/arrow_right.png" alt class="arrow_right" />
                     </li>
                     <li class="item vux-1px-b">
                         <span class="item_name">个性标签</span>
                         <input type="text" class="input_name" v-model="signatureList" disabled />
-                        <img
-                            onclick="return false"
-                            src="../../assets/image/add.png"
-                            alt
-                            class="add"
-                            @click="showTag"
-                        />
+                        <img onclick="return false" src="../../assets/image/add.png" alt class="add" @click="showTag" />
                     </li>
                     <li class="item vux-1px-b">
                         <span class="item_name">职务标签</span>
                         <input type="text" class="input_name" disabled v-model="staffTag" />
-                        <img
-                            onclick="return false"
-                            src="../../assets/image/add.png"
-                            alt
-                            class="add"
-                            @click="showStaffTag"
-                        />
+                        <img onclick="return false" src="../../assets/image/add.png" alt class="add" @click="showStaffTag" />
                     </li>
                     <li class="item vux-1px-b">
                         <span class="item_name">手机</span>
-                        <input
-                            type="text"
-                            class="input_name"
-                            v-model="userInfo.phone"
-                            disabled
-                            @blur="blurAdjust"
-                        />
+                        <input type="text" class="input_name" v-model="userInfo.phone" disabled @blur="blurAdjust" />
                     </li>
                     <li class="item_last vux-1px-b">
                         <span class="item_name signature">个性签名</span>
-                        <input
-                            @blur="blurAdjust"
-                            type="text"
-                            class="signature_area"
-                            v-model="signature"
-                            placeholder="最多输入15个汉字"
-                            maxlength="15"
-                        />
+                        <input @blur="blurAdjust" type="text" class="signature_area" v-model="signature" placeholder="最多输入15个汉字" maxlength="15" />
                         <div class="count">{{length}}/15</div>
                     </li>
                     <li class="item">
@@ -88,12 +53,7 @@
                             <ul class="authority_list">
                                 <li style="font-size: 0.3733rem;" class="authorItem">
                                     <group>
-                                        <x-switch
-                                            title="挂免战牌"
-                                            :value-map="[false, true]"
-                                            @on-change="changeBattle"
-                                            v-model="isBattle"
-                                        ></x-switch>
+                                        <x-switch title="挂免战牌" :value-map="[false, true]" @on-change="changeBattle" v-model="isBattle"></x-switch>
                                     </group>
                                 </li>
                             </ul>
@@ -114,43 +74,21 @@
                 <div class="tag_wrapper">
                     <h2 class="signatureTitle">个性标签</h2>
                     <div class="close_tabBox" @click="closeTag">
-                        <img
-                            onclick="return false"
-                            src="../../assets/image/close.png"
-                            alt
-                            class="close"
-                        />
+                        <img onclick="return false" src="../../assets/image/close.png" alt class="close" />
                     </div>
                     <h3 class="title">最多选五个标签</h3>
                     <ul class="tag_list clearfix" ref="tagList">
-                        <li
-                            class="tag fl"
-                            :class="{active:item.checked}"
-                            v-for="(item,index) in tagList"
-                            :data-index="index"
-                            :key="index"
-                            @click="selectTag($event,item,index)"
-                        >{{item.name}}</li>
+                        <li class="tag fl" :class="{active:item.checked}" v-for="(item,index) in tagList" :data-index="index" :key="index" @click="selectTag($event,item,index)">{{item.name}}</li>
                     </ul>
                     <div class="DIY_tag clearfix">
                         <h3 class="title">自定义标签</h3>
                         <input type="text" class="diy_input fl" maxlength="4" v-model="diyTag" />
-                        <img
-                            onclick="return false"
-                            src="../../assets/image/plus.png"
-                            alt
-                            class="plus fl"
-                            @click="plusTag"
-                        />
+                        <img onclick="return false" src="../../assets/image/plus.png" alt class="plus fl" @click="plusTag" />
                     </div>
                     <div class="selected_wrapper">
                         <h3 class="title">已选择标签</h3>
                         <ul class="selected_list clearfix">
-                            <li
-                                class="item fl"
-                                v-for="(item,index) in commonList"
-                                :key="index"
-                            >{{item}}</li>
+                            <li class="item fl" v-for="(item,index) in commonList" :key="index">{{item}}</li>
                         </ul>
                     </div>
                 </div>
@@ -166,34 +104,16 @@
                 <div class="tag_wrapper">
                     <h2 class="signatureTitle">员工标签</h2>
                     <div class="close_tabBox" @click="closeStaffTag">
-                        <img
-                            onclick="return false"
-                            src="../../assets/image/close.png"
-                            alt
-                            class="close"
-                        />
+                        <img onclick="return false" src="../../assets/image/close.png" alt class="close" />
                     </div>
                     <h3 class="title">最多选1个标签</h3>
                     <ul class="tag_list clearfix" ref="tagList">
-                        <li
-                            class="tag fl"
-                            :class="{active:item.checked}"
-                            v-for="(item,index) in StaffTagList"
-                            :data-index="index"
-                            :key="index"
-                            @click="selectStaffTag($event,item,index)"
-                        >{{item.name}}</li>
+                        <li class="tag fl" :class="{active:item.checked}" v-for="(item,index) in StaffTagList" :data-index="index" :key="index" @click="selectStaffTag($event,item,index)">{{item.name}}</li>
                     </ul>
                     <div class="DIY_tag clearfix">
                         <h3 class="title">自定义标签</h3>
                         <input type="text" class="diy_input fl" maxlength="4" v-model="diyStaffTag" />
-                        <img
-                            onclick="return false"
-                            src="../../assets/image/plus.png"
-                            alt
-                            class="plus fl"
-                            @click="plusStaffTag"
-                        />
+                        <img onclick="return false" src="../../assets/image/plus.png" alt class="plus fl" @click="plusStaffTag" />
                     </div>
                     <div class="selected_wrapper">
                         <h3 class="title">已选择标签</h3>
@@ -207,21 +127,9 @@
             </x-dialog>
         </div>
         <!-- 星座选择 -->
-        <popup-picker
-            :show="showPopupPickerC"
-            :data="constellationList"
-            v-model="constellationArr"
-            @on-hide="onHide_C"
-            @on-change="onChange_C"
-        ></popup-picker>
+        <popup-picker :show="showPopupPickerC" :data="constellationList" v-model="constellationArr" @on-hide="onHide_C" @on-change="onChange_C"></popup-picker>
         <!-- 性别选择 -->
-        <popup-picker
-            :show="showPopupPickerSex"
-            :data="sexList"
-            v-model="sex"
-            @on-hide="onHide"
-            @on-change="onChange_S"
-        ></popup-picker>
+        <popup-picker :show="showPopupPickerSex" :data="sexList" v-model="sex" @on-hide="onHide" @on-change="onChange_S"></popup-picker>
     </div>
 </template>
 
@@ -245,7 +153,7 @@ export default {
     directives: {
         TransferDom,
     },
-    data() {
+    data () {
         return {
             StaffTagShow: false,
             diyStaffTag: "",
@@ -386,7 +294,7 @@ export default {
     computed: {
         ...mapState(["userInfo"]),
     },
-    created() {
+    created () {
         this.height = document.body.clientHeight - 50;
         document.body.addEventListener("focusout", () => {
             //软键盘关闭事件
@@ -395,38 +303,38 @@ export default {
     },
     methods: {
         //增加自定义员工标签
-        plusStaffTag() {
+        plusStaffTag () {
             this.staffTag = this.diyStaffTag;
             this.StaffTagList.forEach((item, i) => {
                 item.checked = false;
             });
         },
         // 显示员工标签弹框
-        showStaffTag() {
+        showStaffTag () {
             this.StaffTagShow = true;
         },
         //关闭员工标签模态框
-        closeStaffTag() {
+        closeStaffTag () {
             this.StaffTagShow = false;
             this.diyStaffTag = "";
         },
         //隐身状态 上线不通知好友
-        stealth(e) {
+        stealth (e) {
             //console.log(e)
             this.isStealth = e;
         },
         //安静状态，不接受好友的上线通知
-        changeQuiet(e) {
+        changeQuiet (e) {
             this.isQuiet = e;
         },
-        changeBattle(e) {
+        changeBattle (e) {
             this.isBattle = e;
         },
-        blurAdjust() {
+        blurAdjust () {
             window.scrollTo(0, 0);
         },
         //进入修改头像页面
-        updateAvatar() {
+        updateAvatar () {
             this.$router.push({
                 name: "updateAvatar",
                 params: {
@@ -435,7 +343,7 @@ export default {
             });
         },
         //增加自定义标签
-        plusTag() {
+        plusTag () {
             if (this.diyTag.length > 0) {
                 if (this.commonList.length > 3) {
                     this.$vux.toast.show({
@@ -450,7 +358,7 @@ export default {
             }
         },
         //选择员工标签
-        selectStaffTag(e, item, index) {
+        selectStaffTag (e, item, index) {
             //console.log(index);
             if (this.diyStaffTag) {
                 this.$vux.toast.text("已选择自定义标签", "middle");
@@ -472,7 +380,7 @@ export default {
             //console.log("this.staffTag-----",this.staffTag)
         },
         //选择标签
-        selectTag(e, item, index) {
+        selectTag (e, item, index) {
             //console.log(index);
             if (e.target.className.indexOf("active") == -1) {
                 if (this.commonList.length > 4) {
@@ -493,18 +401,18 @@ export default {
             }
         },
         //保存自定义标签
-        save() {
+        save () {
             this.tagShow = false;
             this.signatureList = this.commonList.join("、");
             this.commonList = [];
             this.diyTag = "";
             //console.log(this.signatureList);
         },
-        unique(arr) {
+        unique (arr) {
             return Array.from(new Set(arr));
         },
         //关闭个性表情模态框
-        closeTag() {
+        closeTag () {
             this.tagShow = false;
             this.tagList.forEach((localUseTag, index) => {
                 if (localUseTag.checked) {
@@ -514,11 +422,11 @@ export default {
             this.userInfoTags = this.unique(this.commonList);
             this.diyTag = "";
         },
-        change(val, label) {
+        change (val, label) {
             //console.log("change", val);
         },
         // 显示标签弹框
-        showTag() {
+        showTag () {
             this.tagShow = true;
             this.commonList = [];
             //console.log("this.userInfoTags", this.userInfoTags)
@@ -534,29 +442,29 @@ export default {
             });
         },
         //性别选择
-        onHide() {
+        onHide () {
             this.showPopupPickerSex = false;
         },
-        onChange_S(val1) {
+        onChange_S (val1) {
             //console.log(val1);
             this.gender = val1[0];
             //console.log(this.gender);
         },
         //星座选择
-        onHide_C() {
+        onHide_C () {
             this.showPopupPickerC = false;
         },
-        onChange_C(val) {
+        onChange_C (val) {
             this.constellation = val[0];
         },
         //back
-        goBack() {
+        goBack () {
             this.$router.go(-1);
         },
-        clip() {
+        clip () {
             this.$refs.cropper.startCrop();
         },
-        stop() {
+        stop () {
             this.$refs.cropper.getCropData((data) => {
                 // do something
                 this.$refs.avatar.src = data;
@@ -565,7 +473,7 @@ export default {
             });
         },
         //保存修改
-        saveUserInfo() {
+        saveUserInfo () {
             if (!this.name) {
                 this.$vux.toast.show({
                     type: "text",
@@ -583,12 +491,8 @@ export default {
                 signature: this.signature,
                 isBattle: this.isBattle,
                 staffTag: this.staffTag,
-                // role:"divide"
+                role: "divide"
             };
-            //console.log("userInfoParam---------", userInfoParam)
-            // let strUserInfoParam = JSON.stringify(userInfoParam);
-            // let decc = new TextEncoder("utf-8");
-            // let param = decc.encode(strUserInfoParam);
             //保存信息
             api.createIdentity(userInfoParam).then((res) => {
                 if (res.errCode === 0) {
@@ -622,7 +526,7 @@ export default {
         }),
     },
     watch: {
-        signature(newValue) {
+        signature (newValue) {
             this.length = newValue.length;
         },
     },

@@ -1,223 +1,76 @@
 <template>
-    <div
-        id="friend"
-        class="friend"
-    >
+    <div id="friend" class="friend">
         <div class="nav">
-            <img
-                class="slelct"
-                onclick="return false"
-                src="../../assets/image/select.png"
-                alt
-                @click="showToast=true"
-            />
-            <!-- <div class="switchBtn_wrapper" @click="switchMakeFriModal">
-                <div class="imgBox">
-                  <img onclick="return false" class="soulIcon" src="../../assets/image/soulIcon.png" alt="">
-                  <span class="dot left"></span>
-                  <span class="dot right"></span>
-                </div>
-                <p class="soulText">{{modalSwitch?"自己找":"1键找玩伴"}}</p>
-                <p class="intro_soulText" v-show="isFirstLoad">1键找到你的幸运玩伴</p>
-            </div>-->
+            <img class="slelct" onclick="return false" src="../../assets/image/select.png" alt @click="showToast=true" />
             <div class="shopInfo">
-                <img
-                    :src="shopSettingInfo.image"
-                    class="logo"
-                    alt
-                />
+                <img :src="shopSettingInfo.image" class="logo" alt />
                 <span class="name">{{shopSettingInfo.name}}</span>
             </div>
         </div>
         <div class="stack-wrapper">
-            <div
-                class="switchBtn_wrapper"
-                @click="switchMakeFriModal"
-            >
+            <div class="switchBtn_wrapper" @click="switchMakeFriModal">
                 <div class="imgBox">
-                    <img
-                        onclick="return false"
-                        class="soulIcon"
-                        src="../../assets/image/soulIcon.png"
-                        alt
-                    />
+                    <img onclick="return false" class="soulIcon" src="../../assets/image/soulIcon.png" alt />
                     <span class="dot left"></span>
                     <span class="dot right"></span>
                 </div>
                 <p class="soulText">{{modalSwitch?"自己找":"有缘人"}}</p>
-                <p
-                    class="intro_soulText"
-                    v-show="isFirstLoad"
-                >一键找到你的有缘人</p>
-                <p
-                    class="intro_picAndComment"
-                    v-show="isFirstLoad"
-                >照片及评价</p>
+                <p class="intro_soulText" v-show="isFirstLoad">一键找到你的有缘人</p>
+                <p class="intro_picAndComment" v-show="isFirstLoad">照片及评价</p>
             </div>
             <!-- isFirstLoad -->
             <div v-if="isFirstLoad">
                 <p class="intro_mfTips">绿灯在线，红灯离线</p>
-                <img
-                    src="../../assets/image/arrow left.png"
-                    alt
-                    class="arrow_left"
-                />
-                <img
-                    src="../../assets/image/Arrow Right.png"
-                    alt
-                    class="arrow_right"
-                />
+                <img src="../../assets/image/arrow left.png" alt class="arrow_left" />
+                <img src="../../assets/image/Arrow Right.png" alt class="arrow_right" />
                 <p class="arrow_desc">左划换人，右划喜欢</p>
             </div>
-            <stack
-                ref="stack"
-                :pages="someList"
-                :visible="visible"
-                :currentIndex="currentPage"
-                :resultSoulText="soulText"
-                :searchResult="isEndResultSearchBtnBox"
-                :stopSearch="searching"
-                :positionList="positionList"
-                @getMoreFriend="sonGetMoreFriend"
-                @showIntroduce="showIntroduce"
-                @heartBeat="thumbHeartBeat"
-                @showAblum="showAblum"
-                @firstData="listenFirstdata"
-            >暂时没有好友</stack>
-            <div
-                class="loading-container"
-                v-show="!someList.length"
-            >
+            <stack ref="stack" :pages="someList" :visible="visible" :currentIndex="currentPage" :resultSoulText="soulText" :searchResult="isEndResultSearchBtnBox" :stopSearch="searching" :positionList="positionList" @getMoreFriend="sonGetMoreFriend" @showIntroduce="showIntroduce" @heartBeat="thumbHeartBeat" @firstData="listenFirstdata">暂时没有好友</stack>
+            <div class="loading-container" v-show="!someList.length">
                 <loading></loading>
             </div>
         </div>
         <div class="control_wrapper">
-            <div
-                class="soulBtns_wrapper"
-                v-show="isEndResultSearchBtnBox"
-            >
-                <button
-                    class="btn"
-                    @click="cancleSoulSearch"
-                >退出</button>
-                <button
-                    class="btn"
-                    @click="intoSetting"
-                >去完善</button>
+            <div class="soulBtns_wrapper" v-show="isEndResultSearchBtnBox">
+                <button class="btn" @click="cancleSoulSearch">退出</button>
+                <button class="btn" @click="intoSetting">去完善</button>
             </div>
-            <div class="btns_wrapper" v-show="!soulSwitch" >
+            <div class="btns_wrapper" v-show="!soulSwitch">
                 <div class="gifts" @click="isFirstLoad=false">
                     <img onclick="return false" src="../../assets/image/gift.png" @click="isGiftPanel=true" alt />
-                    <img
-                        onclick="return false"
-                        src="../../assets/image/gift.png"
-                        v-show="isFirstLoad"
-                        class="guideGift"
-                        alt
-                    />
-                    <p
-                        class="handleText"
-                        v-show="isFirstLoad"
-                    >送礼成好友</p>
+                    <img onclick="return false" src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt />
+                    <p class="handleText" v-show="isFirstLoad">送礼成好友</p>
                     <!-- <p>见面礼</p> -->
                 </div>
                 <!--  -->
-                <div
-                    class="thumbs"
-                    v-if="!isFriend"
-                    @click="isFirstLoad=false"
-                >
-                    <img
-                        onclick="return false"
-                        ref="thumbHeartBeat"
-                        src="../../assets/image/thumbs-o-up.png"
-                        @click="giveThumb('middle')"
-                        alt
-                    />
-                    <img
-                        onclick="return false"
-                        src="../../assets/image/thumbs-o-up.png"
-                        v-show="isFirstLoad"
-                        class="guideThumbs"
-                        alt
-                    />
-                    <p
-                        class="handleText"
-                        v-show="isFirstLoad"
-                    >互赞成好友</p>
+                <div class="thumbs" v-if="!isFriend" @click="isFirstLoad=false">
+                    <img onclick="return false" ref="thumbHeartBeat" src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt />
+                    <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt />
+                    <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
                 </div>
-                <div
-                    class="hello"
-                    v-else
-                    @click="isFirstLoad=false"
-                >
-                    <img
-                        onclick="return false"
-                        src="../../assets/image/sayhi.png"
-                        @click="chat"
-                        alt
-                    />
-                    <img
-                        onclick="return false"
-                        src="../../assets/image/thumbs-o-up.png"
-                        v-show="isFirstLoad"
-                        class="guideThumbs"
-                        alt
-                    />
-                    <p
-                        class="handleText"
-                        v-show="isFirstLoad"
-                    >互赞成好友</p>
+                <div class="hello" v-else @click="isFirstLoad=false">
+                    <img onclick="return false" src="../../assets/image/sayhi.png" @click="chat" alt />
+                    <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt />
+                    <p class="handleText" v-show="isFirstLoad">互赞成好友</p>
                 </div>
-                <div
-                    class="playGame"
-                    @click="isFirstLoad=false"
-                >
-                    <img
-                        onclick="return false"
-                        src="../../assets/image/game.png"
-                        @click="playGame"
-                        alt
-                    />
-                    <img
-                        onclick="return false"
-                        src="../../assets/image/game.png"
-                        v-show="isFirstLoad"
-                        class="guidePlayGame"
-                        alt
-                    />
-                    <p
-                        class="handleText"
-                        v-show="isFirstLoad"
-                    >约战大话骰</p>
+                <div class="playGame" @click="isFirstLoad=false">
+                    <img onclick="return false" src="../../assets/image/game.png" @click="playGame" alt />
+                    <img onclick="return false" src="../../assets/image/game.png" v-show="isFirstLoad" class="guidePlayGame" alt />
+                    <p class="handleText" v-show="isFirstLoad">约战大话骰</p>
                     <!-- <p>玩一把</p> -->
                 </div>
             </div>
         </div>
         <!-- 筛选好友信息 -->
         <div v-transfer-dom>
-            <x-dialog
-                v-model="showToast"
-                class="dialog-demo"
-            >
+            <x-dialog v-model="showToast" class="dialog-demo">
                 <div class="select_wrapper">
-                    <img
-                        onclick="return false"
-                        src="../../assets/image/close.png"
-                        alt
-                        class="close"
-                        @click="cancel"
-                    />
+                    <img onclick="return false" src="../../assets/image/close.png" alt class="close" @click="cancel" />
                     <p class="select_title">条件筛选</p>
                     <div class="sex_wrapper">
                         <h3>性别:</h3>
                         <ul class="sex_list">
-                            <li
-                                @click="chooseSex(item.id)"
-                                :class="{active:sexType == item.id}"
-                                v-for="(item,index) in sexArr"
-                                :key="index"
-                            >
+                            <li @click="chooseSex(item.id)" :class="{active:sexType == item.id}" v-for="(item,index) in sexArr" :key="index">
                                 <span>{{item.name}}</span>
                             </li>
                         </ul>
@@ -225,13 +78,7 @@
                     <div class="dis_wrapper">
                         <h3>范围:</h3>
                         <ul class="dis_list">
-                            <li
-                                style="margin-left:.09rem"
-                                @click="chooseRange(item.id)"
-                                :class="{active:rangeType == index}"
-                                v-for="(item,index) in rangeArr"
-                                :key="index"
-                            >{{item.name}}</li>
+                            <li style="margin-left:.09rem" @click="chooseRange(item.id)" :class="{active:rangeType == index}" v-for="(item,index) in rangeArr" :key="index">{{item.name}}</li>
                         </ul>
                     </div>
                     <!-- <div class="dis_wrapper">
@@ -248,126 +95,54 @@
                     <div class="dis_wrapper">
                         <h3>籍贯</h3>
                         <ul class="dis_list">
-                            <li
-                                @click="chooseHomeTownType(index)"
-                                :class="{active:homeTownType == index}"
-                                v-for="(item,index) in homeTownList"
-                                :key="index"
-                                v-if="homeTownType!=2"
-                            >{{item.name}}</li>
-                            <li
-                                style="width:300px;background:#fff;"
-                                v-if="homeTownType===2"
-                            >
-                                <el-cascader
-                                    v-if="homeTownType===2"
-                                    size="small"
-                                    :options="options"
-                                    v-model="selectedHomeTownOptions"
-                                    @change="handleChangeHomeTown"
-                                ></el-cascader>
+                            <li @click="chooseHomeTownType(index)" :class="{active:homeTownType == index}" v-for="(item,index) in homeTownList" :key="index" v-if="homeTownType!=2">{{item.name}}</li>
+                            <li style="width:300px;background:#fff;" v-if="homeTownType===2">
+                                <el-cascader v-if="homeTownType===2" size="small" :options="options" v-model="selectedHomeTownOptions" @change="handleChangeHomeTown"></el-cascader>
                             </li>
                         </ul>
                     </div>
                     <div class="dis_wrapper">
                         <h3>行业</h3>
                         <ul class="dis_list">
-                            <li
-                                @click="chooseIndustry(index)"
-                                :class="{active:industryType == index}"
-                                v-for="(item,index) in industryList"
-                                :key="index"
-                            >{{item.name}}</li>
+                            <li @click="chooseIndustry(index)" :class="{active:industryType == index}" v-for="(item,index) in industryList" :key="index">{{item.name}}</li>
                         </ul>
                     </div>
                     <div class="dis_wrapper">
                         <h3>关键字</h3>
                         <ul class="dis_list">
-                            <li><input
-                                    type="text"
-                                    class="keywords"
-                                    placeholder="请输入昵称或个性标签"
-                                    v-model="keyword"
-                                ></li>
+                            <li><input type="text" class="keywords" placeholder="请输入昵称或个性标签" v-model="keyword"></li>
                         </ul>
                     </div>
-                    <p
-                        class="confirm"
-                        @click="getSortedFriend"
-                    >确定</p>
+                    <p class="confirm" @click="getSortedFriend">确定</p>
                 </div>
             </x-dialog>
         </div>
         <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad"   isFirstLoad-->
-        <div
-            class="guide_bg"
-            v-show="isFirstLoad"
-        >
+        <div class="guide_bg" v-show="isFirstLoad">
             <p class="flower">分享好友获小红花，提升排名</p>
-            <p
-                class="know"
-                @click="isFirstLoad=false"
-            >知道了</p>
+            <p class="know" @click="isFirstLoad=false">知道了</p>
             <p class="intro">设置个人资料</p>
         </div>
         <!-- 分享引导 isShow_bg -->
-        <div
-            class="bg"
-            v-if="isShow_bg"
-            @click="share"
-        >
-            <img
-                class="share-arrow"
-                onclick="return false"
-                src="../../assets/image/share.png"
-                alt
-            />
-            <p
-                class="shareText"
-                style="top: 3rem;"
-            >分享好友，引荐1位朋友加入社群</p>
-            <p
-                class="shareText"
-                style="top: 4rem;"
-            >获得一朵<img class="flower" src="../../assets/image/flowerCounts.png" />，红花越多排名越靠前</p>
+        <div class="bg" v-if="isShow_bg" @click="share">
+            <img class="share-arrow" onclick="return false" src="../../assets/image/share.png" alt />
+            <p class="shareText" style="top: 3rem;">分享好友，引荐1位朋友加入社群</p>
+            <p class="shareText" style="top: 4rem;">获得一朵<img class="flower" src="../../assets/image/flowerCounts.png" />，红花越多排名越靠前</p>
         </div>
         <!-- <keep-alive> -->
-            <topUp
-                v-show="isGiftPanel"
-                @closeIntegralPanel="closeIntegralPanel"
-                :isInDoor="isInDoor"
-                :friendId="friendId"
-                :fatherPanelIndex="fatherPanelIndex"
-            ></topUp>
+        <topUp v-show="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :isInDoor="isInDoor" :friendId="friendId" :fatherPanelIndex="fatherPanelIndex"></topUp>
         <!-- </keep-alive> -->
-        <qrCode
-            v-show="qrIsShow"
-            title="您还不是会员,关注享有会员特权"
-        ></qrCode>
+        <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
         <transition name="appear">
-            <envelope
-                v-show="isShowEnvelope"
-                :text="envelopeText"
-            ></envelope>
+            <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
         </transition>
-        <popup-picker
-            v-if="showPopupPickerPos"
-            :show="showPopupPickerPos"
-            :data="positionList"
-            v-model="positionArr"
-            @on-hide="onHide_P"
-            @on-change="onChange_P"
-        ></popup-picker>
+        <popup-picker v-if="showPopupPickerPos" :show="showPopupPickerPos" :data="positionList" v-model="positionArr" @on-hide="onHide_P" @on-change="onChange_P"></popup-picker>
         <router-view></router-view>
     </div>
 </template>
 
 <script>
-import {
-    provinceAndCityData,
-    CodeToText,
-    TextToCode,
-} from "element-china-area-data";
+import { provinceAndCityData, CodeToText, TextToCode, } from "element-china-area-data";
 import stack from "./tantan/tantan.vue";
 import loading from "../../base/loading/loading";
 import envelope from "base/envelope/envelope";
@@ -391,7 +166,7 @@ export default {
     directives: {
         TransferDom,
     },
-    data() {
+    data () {
         return {
             keyword: "",
             showPopupPickerPos: false, // 职位picker
@@ -400,7 +175,6 @@ export default {
             isShow_bg: false,
             searching: false,
             soulText: `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的有缘人`,
-            showAblumFlag: false, //展示生活照
             sexType: 0, //性别类型
             rangeType: 0, //店内外类型
             homeTownType: 0, //同乡，
@@ -547,7 +321,7 @@ export default {
         ]),
         ...mapGetters(["qrIsShow"]),
     },
-    created() {
+    created () {
         this._getUserInfo().then((res) => {
             console.log("res---", res);
             let param = {
@@ -564,17 +338,9 @@ export default {
         if (isFriActCoupon) {
             this.acquireWaitGetCoupons();
         }
-        setTimeout(() => {
-            let shareObj = {
-                title: "找朋友",
-                desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
-                link: `${this.shareUrl}k98/friend?visitType=3&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
-                imgUrl: `${this.shopSettingInfo.image}`,
-            };
-            util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-        }, 1500);
+
     },
-    mounted() {
+    mounted () {
         util.addVisitRecord(this.$route.name);
         console.log("this.loadFriendSexType----", this.loadFriendSexType);
 
@@ -592,7 +358,16 @@ export default {
         this._clearFirstLoadTag(); //标识已经进入过公众号
         this._loadAllGift();
     },
-    activated() {
+    activated () {
+        setTimeout(() => {
+            let shareObj = {
+                title: "找朋友",
+                desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
+                link: `${this.shareUrl}k98/friend?visitType=3&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
+                imgUrl: `${this.shopSettingInfo.image}`,
+            };
+            util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
+        }, 1500);
         if (this.$route.params.data == "sharefriPage") {
             this.isShow_bg = true;
         }
@@ -603,7 +378,7 @@ export default {
                 this.changeFriIcon(openid);
             });
     },
-    deactivated() {
+    deactivated () {
         this.modalSwitch = false;
         this.switchSoulModal(this.modalSwitch);
         this.isEndResultSearchBtnBox = false;
@@ -612,11 +387,11 @@ export default {
         clearTimeout(this.soulTimer);
     },
     methods: {
-        showIntroduce() {
+        showIntroduce () {
             this.isShow_bg = true;
         },
         //分享获得积分
-        shareGetJifen(amount, shareType) {
+        shareGetJifen (amount, shareType) {
             api.shareToGetIntegral(amount, shareType).then((res) => {
                 if (res.errCode == 1030) {
                     alert("分享已上限，每天最多分享5次获得积分");
@@ -624,29 +399,26 @@ export default {
             });
         },
         //职位选择
-        onHide_P() {
+        onHide_P () {
             this.showPopupPickerPos = false;
         },
-        onChange_P(val) {
+        onChange_P (val) {
             console.log("val---", this.positionList[0].indexOf(val[0]));
             this.industryCode = String(this.positionList[0].indexOf(val[0]));
         },
-        handleChangeHomeTown(value) {
+        handleChangeHomeTown (value) {
             // this.homeTown = CodeToText[value[0]] + CodeToText[value[1]];
             this.hometownCode = value[1];
             console.log("this.hometownCode---", this.hometownCode);
         },
         // 性别选择
-        chooseSex(id) {
+        chooseSex (id) {
             this.sexType = id;
         },
-        chooseRange(index) {
+        chooseRange (index) {
             this.rangeType = index;
         },
-        // chooseDegree(id, index) {
-        //     this.currentSortIndex = index;
-        // },
-        chooseHomeTownType(index) {
+        chooseHomeTownType (index) {
             if (index === 1) {
                 this.hometownCode = this.userInfo.hometownCode;
             } else if (index === 0) {
@@ -654,7 +426,7 @@ export default {
             }
             this.homeTownType = index;
         },
-        chooseIndustry(index) {
+        chooseIndustry (index) {
             if (index === 2) {
                 this.showPopupPickerPos = true;
             } else if (index === 1) {
@@ -664,7 +436,7 @@ export default {
             }
             this.industryType = index;
         },
-        getSortedFriend() {
+        getSortedFriend () {
             this.changeFriendCursor(0);
             this.currentPage++;
             this.visible = 3;
@@ -692,7 +464,7 @@ export default {
                 this.showToast = false;
             });
         },
-        acquireWaitGetCoupons() {
+        acquireWaitGetCoupons () {
             let condition = 1; //访问朋友页有礼
             api.acquireWaitGetCoupons(condition)
                 .then((res) => {
@@ -722,11 +494,11 @@ export default {
                 });
         },
         //隐藏分享引导
-        share() {
+        share () {
             this.isShow_bg = false;
         },
         //退出灵魂匹配
-        cancleSoulSearch() {
+        cancleSoulSearch () {
             this.modalSwitch = false;
             this.switchSoulModal(this.modalSwitch);
             this.isEndResultSearchBtnBox = false;
@@ -735,7 +507,7 @@ export default {
             this.soulText = `<span style="display:inline-block;margin-top:.6rem">正在地球的每一个角落</span><br>寻找你的有缘人`;
         },
         //切换交友模式
-        switchMakeFriModal() {
+        switchMakeFriModal () {
             this.modalSwitch = !this.modalSwitch;
             this.switchSoulModal(this.modalSwitch);
             if (this.modalSwitch) {
@@ -744,7 +516,7 @@ export default {
                     console.log("搜索结果----------", res);
                     if (res.errCode === 0) {
                         this.updateSoulParams({
-                            cursor: res.cursor,
+                            cursor: res.info.cursor,
                             flag: false,
                         });
                     }
@@ -758,14 +530,14 @@ export default {
             }
             this.soulTimer = setTimeout(() => {
                 this.soulText =
-                    "对不起<br>找不到和您匹配度>60%的有缘人<br>请完善个人资料,以便精准匹配";
+                    "对不起<br>找不到和您缘分指数>60%的有缘人<br>请完善个人资料,以便精准匹配";
                 this.isEndResultSearchBtnBox = true;
                 this.searching = true;
                 // this.updateSoulParams(0,true)
             }, 15000);
         },
         //拉取候选人
-        getAllCommunityFriend(params) {
+        getAllCommunityFriend (params) {
             api.getFriendList(params).then((res) => {
                 console.log("拉取候选人：·····················", res);
                 this.changeFriendCursor(res.info.cursor);
@@ -773,15 +545,15 @@ export default {
             });
         },
         //监听礼物面板状态
-        closeGiftPanel(flag) {
+        closeGiftPanel (flag) {
             this.isGiftPanel = flag;
         },
         //监听充值面板状态
-        closeIntegralPanel(flag) {
+        closeIntegralPanel (flag) {
             this.isGiftPanel = flag;
         },
         //标识进入过公众号
-        _clearFirstLoadTag() {
+        _clearFirstLoadTag () {
             if (!this.userInfo.firstLoad) {
                 return;
             }
@@ -790,7 +562,7 @@ export default {
             });
         },
         // 获取用户信息
-        _getUserInfo() {
+        _getUserInfo () {
             return new Promise((resolve, reject) => {
                 api.getUserInfo()
                     .then((res) => {
@@ -803,34 +575,20 @@ export default {
             });
         },
         //进入个人信息设置页面
-        intoSetting() {
+        intoSetting () {
             this.$router.push({
                 name: "individual",
             });
         },
         //拉取礼物
-        _loadAllGift() {
+        _loadAllGift () {
             api.loadAllGift().then((res) => {
                 if (res.errCode === 0) {
                     this.getGiftList(res.gifts);
                 }
             });
         },
-        //监听关闭相册
-        closeAlbum(flag) {
-            //console.log(flag);
-            this.showAblumFlag = flag;
-        },
-        // 监听点击相册
-        showAblum(data) {
-            // //console.log('监听点击相册------------------------------：', data);
-            this.showAblumFlag = true;
-            this.changeUserLifeImgList(data.info.lifePhoto.lifePhotos);
-            this.$router.push({
-                path: `/friend/${data.info.openid}`,
-            });
-        },
-        listenFirstdata(data) {
+        listenFirstdata (data) {
             // 下面是传回父级的数据;
             // this.friendOnlineStatus = data.info.onlineL98Server; //好友在线状态
             console.log("滑动页面传回给父级数据：", data);
@@ -852,10 +610,10 @@ export default {
             }
             this.xid = openId;
             this.isInDoor = data.isInDoor;
-            console.log("是否是朋友---",this.isFriend)
+            console.log("是否是朋友---", this.isFriend)
         },
         //监听右滑心跳
-        thumbHeartBeat(data) {
+        thumbHeartBeat (data) {
             //console.log("heartBeat--------------", data);
             this.$refs.thumbHeartBeat.className = "heartBeat";
             setTimeout(() => {
@@ -863,14 +621,14 @@ export default {
             }, 500);
         },
         //获取更多朋友
-        sonGetMoreFriend() {
+        sonGetMoreFriend () {
             //console.log("触发获取更多的朋友");
             this.getMoreFriendList(
                 this.friendListCursor,
                 this.loadFriendSexType
             );
         },
-        getMoreFriendList(cursor, sex) {
+        getMoreFriendList (cursor, sex) {
             let params = {
                 cursor: this.friendListCursor,
                 sex: this.sexType,
@@ -889,16 +647,16 @@ export default {
             });
         },
         //点赞
-        giveThumb(position) {
+        giveThumb (position) {
             //每天限制30次
             //从本地缓存读取当日约战点赞次数，数据格式 {unfocusThumbTimes:0,focusThumbLimitTimes:0,unfocusPlayTimes:0,focusPlayTimes:0,date:new Date().getDate()}
             let thumbTimes = localStorage.getItem("thumbTimes")
                 ? localStorage.getItem("thumbTimes")
                 : {
-                      unfocusThumbTimes: this.unfocusThumbTimes,
-                      focusThumbTimes: this.focusThumbTimes,
-                      date: new Date().getDate(),
-                  };
+                    unfocusThumbTimes: this.unfocusThumbTimes,
+                    focusThumbTimes: this.focusThumbTimes,
+                    date: new Date().getDate(),
+                };
             let todayDate = new Date().getDate();
             if (typeof thumbTimes === "string") {
                 thumbTimes = JSON.parse(thumbTimes);
@@ -986,11 +744,11 @@ export default {
             });
         },
         //关闭礼物
-        close_gift() {
+        close_gift () {
             this.showToast_gift = false;
         },
         //发起聊天
-        chat() {
+        chat () {
             // util.routerTo("chat", this);
             //console.log("jinrula");
             this.setChatFriend(this.friendInfo);
@@ -1013,7 +771,7 @@ export default {
             // });
         },
         //玩游戏
-        playGame() {
+        playGame () {
             if (this.friendInfo.info.isBattle) {
                 //群友挂免战功能，不能邀约战
                 this.$vux.toast.text("已挂免战牌,暂不接受群友挑战", "middle");
@@ -1022,10 +780,10 @@ export default {
             let playTimes = localStorage.getItem("playTimes")
                 ? localStorage.getItem("playTimes")
                 : {
-                      unfocusPlayTimes: this.unfocusPlayTimes,
-                      focusPlayTimes: this.focusPlayTimes,
-                      date: new Date().getDate(),
-                  };
+                    unfocusPlayTimes: this.unfocusPlayTimes,
+                    focusPlayTimes: this.focusPlayTimes,
+                    date: new Date().getDate(),
+                };
             let todayDate = new Date().getDate();
             if (typeof playTimes === "string") {
                 playTimes = JSON.parse(playTimes);
@@ -1115,7 +873,7 @@ export default {
                 }
             });
         },
-        cancel() {
+        cancel () {
             this.homeTownType = 0;
             this.showPopupPickerPos = false;
             this.selectedHomeTownOptions = [];
@@ -1141,7 +899,7 @@ export default {
             getuserInfo: "GET_USERINFO", //获取用户信息
             getFriend: "GET_FRIENDlIST", //获取候选好友
             updateFriendCursor: "UPDATE_INANDOUT_FRIEND_CURSOR", //更新场内场外游标
-            changeUserLifeImgList: "GET_LIFEIMG", //更改用户生活照
+            // changeUserLifeImgList: "GET_LIFEIMG", //更改用户生活照
             getGiftList: "GET_GIFTLIST", //获取礼物
             switchSoulModal: "SWITCHSOULFLAG", //切换灵魂匹配模式
             updateSoulParams: "UPDATESOULPARAMS", //更新灵魂匹配参数
@@ -1150,7 +908,7 @@ export default {
         }),
     },
     watch: {
-        friendList(newValue) {
+        friendList (newValue) {
             this.someList = newValue;
         },
     },
@@ -1194,8 +952,8 @@ export default {
         position: fixed;
         top: 2.8rem;
         right: 0.5rem;
-        .flower{
-            width: .6rem;
+        .flower {
+            width: 0.6rem;
             vertical-align: middle;
         }
     }
@@ -1223,7 +981,7 @@ export default {
             padding: 0 0.1rem;
             position: absolute;
             top: 0.1rem;
-            left: .4rem;
+            left: 0.4rem;
             .logo {
                 width: 0.5rem;
                 height: 0.5rem;
@@ -1237,9 +995,9 @@ export default {
         .slelct {
             width: 0.6667rem;
             height: 0.6667rem;
-             position: absolute;
+            position: absolute;
             top: 0rem;
-            right: .4rem;
+            right: 0.4rem;
         }
     }
     .control_wrapper {

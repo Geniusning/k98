@@ -3,52 +3,40 @@
         <div class="content">
             <header>
                 <div class="comment-header-left">
-                    <img
-                        :src="
+                    <img :src="
                             scopeUserInfo.headimgurl
                                 ? scopeUserInfo.headimgurl
                                 : tempPic
                         "
-                        class="comment-avatarUrl"
-                        alt=""
-                    />
+                         class="comment-avatarUrl"
+                         alt="" />
                     <span class="comment-name">{{
             scopeUserInfo.nickname
             }}</span>
                 </div>
                 <div class="comment-header-right">
-                    <div
-                        v-if="scopeUserInfo.companyLink"
-                        @click="goToCompanyLink(scopeUserInfo.companyLink)"
-                        class="company-link"
-                    >Ta的企业/产品</div>
-                    <img
-                        @click="goHome"
-                        src="../../assets/image/chat_home.png"
-                        class="comment-home"
-                        alt=""
-                    />
+                    <div v-if="scopeUserInfo.companyLink"
+                         @click="goToCompanyLink(scopeUserInfo.companyLink)"
+                         class="company-link">Ta的企业/产品</div>
+                    <img @click="goHome"
+                         src="../../assets/image/chat_home.png"
+                         class="comment-home"
+                         alt="" />
                 </div>
             </header>
             <div>
-                <div
-                    v-if="lifePhotolist.length > 0"
-                    class="comment-slider"
-                >
-                    <swiper
-                        height="256px"
-                        :list="lifePhotolist"
-                        :interval="2000"
-                        :auto="true"
-                        :show-dots="false"
-                        v-model="swiperItemIndex"
-                        :min-moving-distance="10"
-                    ></swiper>
+                <div v-if="lifePhotolist.length > 0"
+                     class="comment-slider">
+                    <swiper height="256px"
+                            :list="lifePhotolist"
+                            :interval="2000"
+                            :auto="true"
+                            :show-dots="false"
+                            v-model="swiperItemIndex"
+                            :min-moving-distance="10"></swiper>
                 </div>
-                <div
-                    v-else
-                    class="comment-slider"
-                >
+                <div v-else
+                     class="comment-slider">
                     <p class="comment-staffData">
                         用户未上传图片，暂无图片信息
                     </p>
@@ -56,93 +44,64 @@
             </div>
             <div class="comment-result">
                 <ul class="comment-header-list">
-                    <li
-                        class="comment-divide"
-                        @click="giveThumb"
-                    >
-                        <img
-                            src="../../assets/image/thumb_up.png"
-                            class="comment-icon"
-                            alt=""
-                        />
+                    <li class="comment-divide"
+                        @click="giveThumb">
+                        <img src="../../assets/image/thumb_up.png"
+                             class="comment-icon"
+                             alt="" />
                         <span class="comment-count">{{staffCommentInfo.thumbCount}}</span>
                     </li>
-                    <li
-                        class="comment-divide"
-                        @click="unGiveThumb"
-                    >
-                        <img
-                            src="../../assets/image/thumb_down.png"
-                            class="comment-icon"
-                            alt=""
-                        />
+                    <li class="comment-divide"
+                        @click="unGiveThumb">
+                        <img src="../../assets/image/thumb_down.png"
+                             class="comment-icon"
+                             alt="" />
                         <span class="comment-count">{{staffCommentInfo.unThumbCount}}</span>
                     </li>
                     <li class="comment-divide">
-                        <img
-                            src="../../assets/image/message_comment.png"
-                            class="comment-icon"
-                            alt=""
-                        />
+                        <img src="../../assets/image/message_comment.png"
+                             class="comment-icon"
+                             alt="" />
                         <span class="comment-count">{{staffCommentInfo.messageCount}}</span>
                     </li>
-                     <li class="comment-divide">
-                        <img
-                            src="../../assets/image/eyes.png"
-                            class="comment-icon"
-                            alt=""
-                        />
-                        <span class="comment-count">{{staffCommentInfo.messageCount}}</span>
+                    <li class="comment-divide"
+                        @click="subscribeUser">
+                        <img src="../../assets/image/eyes.png"
+                             class="comment-icon"
+                             alt="" />
+                        <span class="comment-count">{{staffCommentInfo.subscribeCount}}</span>
                     </li>
                 </ul>
-                <scroll
-                    ref="listView"
-                    class="comment_content"
-                    style="background: #f1f1f1"
-                    :data="staffCommentInfo.messageList"
-                >
+                <scroll ref="listView"
+                        class="comment_content"
+                        style="background: #f1f1f1"
+                        :data="staffCommentInfo.messageList">
                     <div>
-                        <div
-                            v-if="staffCommentInfo.thumbAvatarList"
-                            class="comment-thums-list"
-                        >
-                            <img
-                                src="../../assets/image/thumb_up.png"
-                                alt=""
-                            />
+                        <div v-if="staffCommentInfo.thumbAvatarList"
+                             class="comment-thums-list">
+                            <img src="../../assets/image/thumb_up.png"
+                                 alt="" />
                             <ul class="thumb-avatar-list">
-                                <li
-                                    class="avatar"
+                                <li class="avatar"
                                     v-for="(avatar,
                                     index) in staffCommentInfo.thumbAvatarList"
-                                    :key="index"
-                                >
+                                    :key="index">
                                     <!-- <img src="../../assets/image/avatar1.jpeg" alt=""> -->
-                                    <img
-                                        :src="avatar"
-                                        alt=""
-                                    />
+                                    <img :src="avatar"
+                                         alt="" />
                                 </li>
                             </ul>
                         </div>
-                        <div
-                            class="comment-message-list"
-                            v-show="staffCommentInfo.messageList.length > 0? true: false"
-                        >
-                            <img
-                                src="../../assets/image/message_comment.png"
-                                alt=""
-                            />
+                        <div class="comment-message-list"
+                             v-show="staffCommentInfo.messageList.length > 0? true: false">
+                            <img src="../../assets/image/message_comment.png"
+                                 alt="" />
                             <ul class="message-list">
-                                <li
-                                    class="message-item"
+                                <li class="message-item"
                                     v-for="(staff,index) in staffCommentInfo.messageList"
-                                    :key="index"
-                                >
-                                    <img
-                                        :src="staff.headImgUrl"
-                                        alt=""
-                                    />
+                                    :key="index">
+                                    <img :src="staff.headImgUrl"
+                                         alt="" />
                                     <div class="message">
                                         <div class="message-top">
                                             <span class="name">{{staff.nickname}}</span>
@@ -161,30 +120,22 @@
         </div>
         <div class="comment-send">
             <div>
-                <input
-                    v-model="inputValue"
-                    type="text"
-                    class="input-comment"
-                    placeholder="请输入评价"
-                />
-                <div
-                    class="btn"
-                    @click="send"
-                >发送</div>
+                <input v-model="inputValue"
+                       type="text"
+                       class="input-comment"
+                       placeholder="请输入评价" />
+                <div class="btn"
+                     @click="send">发送</div>
             </div>
             <div class="emotion_area">
-                <div
-                    @click="selectEmtion(item.name)"
-                    :key="index"
-                    v-for="(item, index) in emotionList"
-                    class="vux-center-h"
-                    style="box-sizing: border-box;display: inline-block;padding: 0.2rem 0.18rem;"
-                >
-                    <img
-                        onclick="return false"
-                        :src="item.num"
-                        alt=""
-                    />
+                <div @click="selectEmtion(item.name)"
+                     :key="index"
+                     v-for="(item, index) in emotionList"
+                     class="vux-center-h"
+                     style="box-sizing: border-box;display: inline-block;padding: 0.2rem 0.18rem;">
+                    <img onclick="return false"
+                         :src="item.num"
+                         alt="" />
                 </div>
             </div>
         </div>
@@ -199,7 +150,7 @@ import util from "common/util";
 import Bus from "common/bus";
 import { mapState, mapMutations } from "vuex";
 export default {
-    data() {
+    data () {
         return {
             scopeUserInfo: {},
             tempPic: require("../../assets/image/divide_add_avatar.png"),
@@ -255,8 +206,8 @@ export default {
             isScan: "",
         };
     },
-    created() {
-        //util.addVisitRecord(this.$route.name);
+    created () {
+        util.addVisitRecord(this.$route.name);
         let phone = util.GetQueryString("phone");
         this.isScan = util.GetQueryString("isScan");
         this.queryPhone = phone ? phone : this.$route.params.phone;
@@ -266,11 +217,11 @@ export default {
             window.scrollTo(0, 0); //解决ios键盘留白的bug
         });
     },
-    mounted() {
+    mounted () {
         setTimeout(() => {
             let shareObj = {
-                title: "找朋友",
-                desc: "我看行……大伙帮Ta捧个场吧",
+                title: "帮朋友",
+                desc: "大伙帮忙捧个场，求点赞、关注",
                 link: `${this.shareUrl}k98/comment?phone=${this.queryPhone}&openId=${this.userInfo.openid}`,
                 imgUrl: `${this.scopeUserInfo.headimgurl}`,
             };
@@ -282,10 +233,10 @@ export default {
         }
     },
     watch: {
-        $route(newRoute) {
+        $route (newRoute) {
             console.log("newRoute----", newRoute);
         },
-        queryPhone(newValue) {
+        queryPhone (newValue) {
             console.log("queryPhone-newValue---", newValue);
         },
     },
@@ -293,11 +244,29 @@ export default {
         ...mapState(["l98Setting", "lifeImgList", "userInfo", "shareUrl"]),
     },
     methods: {
-        goToCompanyLink(link) {
+        //关注
+        subscribeUser () {
+            if (!this.userInfo.isSubscribe) {
+                this.changeQrCodeText({
+                    title: "长按关注，以便好友消息及时送达您",
+                    bottomText: "会员特权:领福利、交群友、参活动"
+                });
+                this.showQrcode(true);
+            }
+            api.subscribeUser(this.scopeOpenId).then(res => {
+                if (res.errCode === 1098) {
+                    this.$vux.toast.text("关注成功,Ta的照片更新将通知您", "middle");
+                } else if (res.errCode === 1099) {
+                    this.$vux.toast.text("取消成功", "middle");
+                }
+                this.loadCommentInfo()
+            })
+        },
+        goToCompanyLink (link) {
             window.location.href = link;
         },
         //分享获得积分
-        shareGetJifen(amount, shareType) {
+        shareGetJifen (amount, shareType) {
             api.shareToGetIntegral(amount, shareType).then((res) => {
                 if (res.errCode == 1030) {
                     alert("分享已上限，每天最多分享5次获得积分");
@@ -305,7 +274,7 @@ export default {
             });
         },
         //通过openId、手机号获得用户信息
-        async loadUserInfoByCondition() {
+        async loadUserInfoByCondition () {
             let res = await api.loadUserInfoByPhone(this.queryPhone); //通过因为B端扫码没有openid，只能通过手机号先获得用户的openid
             if (res.errCode == 0) {
                 this.scopeOpenId = res.info.openid;
@@ -333,27 +302,18 @@ export default {
                 this.lifePhotolist = tempArr;
             }
         },
-        goHome() {
+        goHome () {
             this.setChatFriend({}); //清空全局聊天对象
             this.$router.push({
                 name: "home",
             });
         },
-        showEmotion() {
+        showEmotion () {
             this.emotionShow = !this.emotionShow;
         },
         //点赞
-        giveThumb() {
-            if (this.scopeUserInfo.isComment) {
-                this.$vux.toast.text(`榜主已关闭评价/留言功能`);
-                return;
-            }
-            if (!this.l98Setting.staffCommentOpen) {
-                this.$vux.toast.text(`系统暂未开通员工评价功能`);
-                return;
-            }
-            if (!this.isScan) {
-                this.$vux.toast.text(`需扫员工码后才能评价`);
+        giveThumb () {
+            if (this.isLimit()) {
                 return;
             }
             api.giveThumb(this.scopeUserInfo.openid).then((res) => {
@@ -367,22 +327,10 @@ export default {
             });
         },
         //鄙视
-        unGiveThumb() {
+        unGiveThumb () {
             if (this.isLimit()) {
                 return;
             }
-            // if (this.scopeUserInfo.isComment) {
-            //     this.$vux.toast.text(`榜主已关闭评价/留言功能`);
-            //     return;
-            // }
-            // if (!this.l98Setting.staffCommentOpen){
-            // 	 this.$vux.toast.text(`系统暂未开通员工评价功能`);
-            //    return;
-            // }
-            // if(!this.isScan){
-            // 	 this.$vux.toast.text(`需扫员工码后才能评价`);
-            //    return;
-            // }
             api.giveUnThumb(this.scopeUserInfo.openid).then((res) => {
                 if (res.errCode === 0) {
                     this.loadCommentInfo();
@@ -394,7 +342,7 @@ export default {
             });
         },
         //发布留言
-        send() {
+        send () {
             if (this.isLimit()) {
                 return;
             }
@@ -435,7 +383,7 @@ export default {
             });
             //console.log(this.inputValue);
         },
-        isLimit() {
+        isLimit () {
             if (this.scopeUserInfo.isComment) {
                 this.$vux.toast.text(`榜主已关闭评价/留言功能`);
                 return true;
@@ -448,11 +396,12 @@ export default {
                 this.$vux.toast.text(`需扫员工码后才能评价`);
                 return true;
             }
+            return false
         },
-        selectEmtion(item) {
+        selectEmtion (item) {
             this.inputValue += item;
         },
-        loadCommentInfo() {
+        loadCommentInfo () {
             api.loadStaffCommentInfo(this.scopeOpenId).then((res) => {
                 console.log("评价内容---", res);
                 if (res.errCode === 0) {

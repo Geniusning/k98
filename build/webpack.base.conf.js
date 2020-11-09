@@ -71,10 +71,10 @@ let webpackConfig = {
     ]
   },
   externals:{
-    "vue":"Vue",
-    "axios":"axios",
-    "vue-router":"VueRouter",
-    "vuex": "Vuex"
+    // "vue":"Vue",
+    // "axios":"axios",
+    // "vue-router":"VueRouter",
+    // "vuex": "Vuex"
   }
 }
 

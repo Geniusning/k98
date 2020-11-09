@@ -8,7 +8,7 @@ import createLogger from 'vuex/dist/logger'
 
 // const strict = false
 
-// Vue.use(Vuex);
+Vue.use(Vuex);
 const debug = process.env.NODE_ENV !== "production"
 
 export default new Vuex.Store({

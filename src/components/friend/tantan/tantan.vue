@@ -1,214 +1,68 @@
 <template>
-    <ul
-        class="stack"
-        v-show="pages.length"
-    >
-        <li
-            class="stack-item"
-            v-for="(item, index) in pages"
-            :key="index"
-            :style="[transformIndex(index),transform(index)]"
-            @touchmove.prevent="touchmove"
-            @touchstart.prevent="touchstart"
-            @touchend.prevent="touchend"
-            @mousedown.prevent="touchstart"
-            @mouseup.prevent="touchend"
-            @mousemove.prevent="touchmove"
-            @mouseout.prevent="touchend"
-            @webkit-transition-end="onTransitionEnd(index)"
-            @transitionend="onTransitionEnd(index)"
-        >
-            <div
-                style="height:100%"
-                class="stack_content"
-            >
-                <div
-                    class="big_box"
-                    v-if="!soulSwitch"
-                >
+    <ul class="stack" v-show="pages.length">
+        <li class="stack-item" v-for="(item, index) in pages" :key="index" :style="[transformIndex(index),transform(index)]" @touchmove.prevent="touchmove" @touchstart.prevent="touchstart" @touchend.prevent="touchend" @mousedown.prevent="touchstart" @mouseup.prevent="touchend" @mousemove.prevent="touchmove" @mouseout.prevent="touchend" @webkit-transition-end="onTransitionEnd(index)" @transitionend="onTransitionEnd(index)">
+            <div style="height:100%" class="stack_content">
+                <div class="big_box" v-if="!soulSwitch">
                     <div class="img_content">
-                        <div
-                            class="icon_box"
-                            v-if="item.isInDoor"
-                        >
-                            <img
-                                onclick="return false"
-                                src="../../../assets/image/online.png"
-                                alt=""
-                                class="icon"
-                            >
-                            <img
-                                onclick="return false"
-                                v-if="item.info.onlineL98Server || item.info.onlineDiceServer"
-                                src="../../../assets/image/dot_green.png"
-                                alt=""
-                                class="dot bling"
-                            >
-                            <img
-                                onclick="return false"
-                                v-else
-                                src="../../../assets/image/dot_red.png"
-                                alt=""
-                                class="dot bling"
-                            >
+                        <div class="icon_box" v-if="item.isInDoor">
+                            <img onclick="return false" src="../../../assets/image/online.png" alt="" class="icon">
+                            <img onclick="return false" v-if="item.info.onlineL98Server || item.info.onlineDiceServer" src="../../../assets/image/dot_green.png" alt="" class="dot bling">
+                            <img onclick="return false" v-else src="../../../assets/image/dot_red.png" alt="" class="dot bling">
                             <span class="line_word">店内</span>
                         </div>
-                        <div
-                            class="icon_box"
-                            v-else
-                        >
-                            <img
-                                onclick="return false"
-                                src="../../../assets/image/outline.png"
-                                alt=""
-                                class="icon"
-                            >
-                            <img
-                                onclick="return false"
-                                v-if="item.info.onlineL98Server || item.info.onlineDiceServer"
-                                src="../../../assets/image/dot_green.png"
-                                alt=""
-                                class="dot bling"
-                            >
-                            <img
-                                onclick="return false"
-                                v-else
-                                src="../../../assets/image/dot_red.png"
-                                alt=""
-                                class="dot bling"
-                            >
+                        <div class="icon_box" v-else>
+                            <img onclick="return false" src="../../../assets/image/outline.png" alt="" class="icon">
+                            <img onclick="return false" v-if="item.info.onlineL98Server || item.info.onlineDiceServer" src="../../../assets/image/dot_green.png" alt="" class="dot bling">
+                            <img onclick="return false" v-else src="../../../assets/image/dot_red.png" alt="" class="dot bling">
                             <span class="line_word">店外</span>
                         </div>
                         <!-- <p class="makeFriTips">绿灯闪烁表示好友在线哦，赶紧去找朋友吧...</p> -->
                         <span class="time_desc">{{item.visitTime}}</span>
                         <div class="comment-photo">
                             <!-- v-show="item.info.phone != '' &&item.info.role != '' && l98Setting.staffCommentOpen" -->
-                            <div
-                                class="comment-wrapper clearfix"
-                                @touchstart="goToComment(item.info)"
-                            >   
-                                <img
-                                    onclick="return false"
-                                    src="../../../assets/image/thumb1.png"
-                                    alt=""
-                                    class="avatar fl"
-                                    style="margin-top:.08rem"
-                                    v-show="thumbCount"
-                                >
+                            <div class="comment-wrapper clearfix" @touchstart="goToComment(item.info)">
+                                <img onclick="return false" src="../../../assets/image/thumb1.png" alt="" class="avatar fl" style="margin-top:.08rem" v-show="thumbCount">
                                 <span v-show="thumbCount" class="count fl" style="margin-right:.1rem;margin-top:.08rem">{{thumbCount}}</span>
-                                <span
-                                    class="count fl"
-                                    v-if="item.info.sex==1"
-                                >了解他...</span>
-                                <span
-                                    class="count fl"
-                                    v-else
-                                >了解她...</span>
+                                <span class="count fl" v-if="item.info.sex==1">了解他...</span>
+                                <span class="count fl" v-else>了解她...</span>
                             </div>
-                       
+
                         </div>
-                        <img
-                            onclick="return false"
-                            v-show="like && currentLikeIndex==index"
-                            class="like"
-                            src="../../../assets/image/tantan_thumb.png"
-                        >
-                        <img
-                            onclick="return false"
-                            v-show="dislike && currentLikeIndex==index"
-                            class="dislike"
-                            src="../../../assets/image/tantan_close.png"
-                        >
+                        <img onclick="return false" v-show="like && currentLikeIndex==index" class="like" src="../../../assets/image/tantan_thumb.png">
+                        <img onclick="return false" v-show="dislike && currentLikeIndex==index" class="dislike" src="../../../assets/image/tantan_close.png">
                         <div class="avatar_box">
-                            <img
-                                onclick="return false"
-                                class="avatar"
-                                :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-                                alt="暂无头像"
-                            >
-                            <img
-                                onclick="return false"
-                                src="../../../assets/image/friend_icon.png"
-                                alt=""
-                                class="friend_icon"
-                                v-show="item.isAlreadyFriend"
-                            >
+                            <img onclick="return false" class="avatar" :src="item.info.headimgurl?item.info.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'" alt="暂无头像">
+                            <img onclick="return false" src="../../../assets/image/friend_icon.png" alt="" class="friend_icon" v-show="item.isAlreadyFriend">
                             <div class="role_wrapper">
-                                <img
-                                    onclick="return false"
-                                    src="../../../assets/image/hat.png"
-                                    alt=""
-                                    class="staff_icon"
-                                    v-show="item.info.role != '' && item.info.staffTag !=''"
-                                >
+                                <img onclick="return false" src="../../../assets/image/hat.png" alt="" class="staff_icon" v-show="item.info.role != '' && item.info.staffTag !=''">
                                 <span class="position_name">{{item.info.staffTag}}</span>
                             </div>
                             <!-- <img onclick="return false" src="../../../assets/image/like1.png" alt="" class="friend_icon" v-show="alreadySendThumbFlag"> -->
                         </div>
                         <p class="name">
-                             <img
-                                onclick="return false"
-                                src="../../../assets/image/male.png"
-                                alt=""
-                                class="sex sex_male"
-                                v-if="item.info.sex==1"
-                            >
-                            <img
-                                onclick="return false"
-                                src="../../../assets/image/female.png"
-                                alt=""
-                                class="sex sex_female"
-                                v-else
-                            >
+                            <img onclick="return false" src="../../../assets/image/male.png" alt="" class="sex sex_male" v-if="item.info.sex==1">
+                            <img onclick="return false" src="../../../assets/image/female.png" alt="" class="sex sex_female" v-else>
                             <span>{{item.info.nickname}}</span>
                         </p>
                     </div>
                     <!-- 个人信息 -->
-                    <div
-                        class="userInfo_wrapper"
-                        @touchstart="showIntroduce"
-                    >
+                    <div class="userInfo_wrapper" @touchstart="showIntroduce">
                         <div class="userBox clearfix">
                             <span class="constellation">{{item.info.constellation?item.info.constellation.slice(0,3):"水瓶座"}}</span>
                             <span class="subscribe">关注{{item.info.subscribeCount}}</span>
                             <span class="friend">好友 {{item.info.numOfFriends?item.info.numOfFriends:0}}</span>
-                            <span class="gift">助推{{item.info.flowerCounts}} <img
-                                    src="../../../assets/image/flowerCounts.png"
-                                    class="flower"
-                                    alt=""
-                                ></span>
+                            <span class="gift">助推{{item.info.flowerCounts}} <img src="../../../assets/image/flowerCounts.png" class="flower" alt=""></span>
                             <div class="thumb">
                                 战神榜 {{item.info.gameScoreRanking}}
-                                <img
-                                    onclick="return false"
-                                    class="battle"
-                                    v-if="item.info.isBattle || !item.info.isSubscribe"
-                                    src="../../../assets/image/noBattle.png"
-                                    alt=""
-                                >
-                                <img
-                                    onclick="return false"
-                                    class="battle"
-                                    v-else-if="item.info.onlineDiceServer"
-                                    src="../../../assets/image/battle.png"
-                                    alt=""
-                                >
-                                <img
-                                    onclick="return false"
-                                    class="battle"
-                                    v-else
-                                    src="../../../assets/image/comeBattle.png"
-                                    alt=""
-                                >
+                                <img onclick="return false" class="battle" v-if="item.info.isBattle || !item.info.isSubscribe" src="../../../assets/image/noBattle.png" alt="">
+                                <img onclick="return false" class="battle" v-else-if="item.info.onlineDiceServer" src="../../../assets/image/battle.png" alt="">
+                                <img onclick="return false" class="battle" v-else src="../../../assets/image/comeBattle.png" alt="">
                             </div>
                         </div>
                         <div class="tag_wrapper">
                             <span v-if="item.info.hometown">{{item.info.hometown}}</span>
                             <span>{{positionList[0][Number(item.info.industry)]}}</span>
-                            <span
-                                v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')"
-                                :key="index"
-                            >{{item}}</span>
+                            <span v-for="(item,index) in item.info.tags?item.info.tags.split('、'):tempArr.split('、')" :key="index">{{item}}</span>
                         </div>
                         <div class="signature_wrapper">
                             <!-- <p class="word">生活不止眼前的苟且，还有诗和远方的田野</p> -->
@@ -218,39 +72,17 @@
                 </div>
             </div>
         </li>
-        <div
-            class="souling_wrapper"
-            v-if="soulSwitch"
-        >
-            <img
-                ref="souling"
-                class="souling"
-                src="../../../assets/image/earth1.gif"
-                alt=""
-            >
+        <div class="souling_wrapper" v-if="soulSwitch">
+            <img ref="souling" class="souling" src="../../../assets/image/earth1.gif" alt="">
             <!-- <div class="text_content">
                           <p class="text">{{stopSearch === false?"正在地球的某个角落":""}}</p>
                           <p ref="dot" class="text dot">{{stopSearch === false?"寻找你的灵魂玩伴":""}}</p>
           </div>-->
             <div class="result_icon">
-                <img
-                    class="found_result"
-                    v-if="searchResult"
-                    src="../../../assets/image/no_found.png"
-                    alt=""
-                >
-                <img
-                    class="found_result"
-                    v-else
-                    src="../../../assets/image/finding.png"
-                    alt=""
-                >
+                <img class="found_result" v-if="searchResult" src="../../../assets/image/no_found.png" alt="">
+                <img class="found_result" v-else src="../../../assets/image/finding.png" alt="">
             </div>
-            <p
-                ref="dot"
-                class="resultSoulText dot"
-                v-html="resultSoulText"
-            ></p>
+            <p ref="dot" class="resultSoulText dot" v-html="resultSoulText"></p>
         </div>
     </ul>
 </template>
@@ -276,8 +108,10 @@ export default {
             default: false,
         },
         stackinit: {
-            type: Object,
-            default: [],
+            type: Array,
+            default: function () {
+                return []
+            },
         },
         visible: {
             type: Number,
@@ -296,7 +130,7 @@ export default {
             default: [],
         },
     },
-    data() {
+    data () {
         return {
             industry: "",
             limitFlag: true,
@@ -322,7 +156,6 @@ export default {
             lastZindex: "",
             rotate: 0,
             lastRotate: 0,
-            visible: this.visible,
             tracking: false,
             animation: false,
             currentPage: this.currentIndex || 0,
@@ -337,17 +170,17 @@ export default {
         };
     },
     watch: {
-        stopSearch(newValue) {
+        stopSearch (newValue) {
             if (newValue) {
                 // this.$refs.souling.className = "souling_noRotate"
                 this.$refs.dot.className = "resultSoulText";
             }
         },
-        currentIndex(val) {
+        currentIndex (val) {
             this.currentPage = 0; //条件筛选群友后重置群友第一个游标
             this.currentLikeIndex = 0; //条件筛选群友后重置喜欢图标显示index
         },
-        pages(newValue) {
+        pages (newValue) {
             let data = newValue[0];
             console.log("tantan---data", data);
             this.backToParentData = data;
@@ -370,7 +203,7 @@ export default {
             "soulSwitch",
         ]),
         // 划出面积比例
-        offsetRatio() {
+        offsetRatio () {
             let width = this.$el.offsetWidth;
             let height = this.$el.offsetHeight;
             let offsetWidth = width - Math.abs(this.poswidth);
@@ -380,7 +213,7 @@ export default {
             return ratio > 1 ? 1 : ratio;
         },
         // 划出宽度比例
-        offsetWidthRatio() {
+        offsetWidthRatio () {
             let width = this.$el.offsetWidth;
             let offsetWidth = width - Math.abs(this.poswidth);
             let ratio = 1 - offsetWidth / width || 0;
@@ -388,14 +221,14 @@ export default {
         },
     },
     methods: {
-        showIntroduce() {
+        showIntroduce () {
             if (this.showIntroduceFlag) {
                 this.showIntroduceFlag = false;
                 this.$emit("showIntroduce", true);
             }
         },
         // 拉取员工评价内容
-        loadStaffCommentInfo(openId) {
+        loadStaffCommentInfo (openId) {
             api.loadStaffCommentInfo(openId).then((res) => {
                 //console.log("员工评价内容---", res);
                 if (res.errCode === 0) {
@@ -409,16 +242,16 @@ export default {
             });
         },
         //点赞
-        giveThumb(position) {
+        giveThumb (position) {
             //每天限制30次
             //从本地缓存读取当日约战点赞次数，数据格式 {unfocusThumbTimes:0,focusThumbLimitTimes:0,unfocusPlayTimes:0,focusPlayTimes:0,date:new Date().getDate()}
             let thumbTimes = localStorage.getItem("thumbTimes")
                 ? localStorage.getItem("thumbTimes")
                 : {
-                      unfocusThumbTimes: this.unfocusThumbTimes,
-                      focusThumbTimes: this.focusThumbTimes,
-                      date: new Date().getDate(),
-                  };
+                    unfocusThumbTimes: this.unfocusThumbTimes,
+                    focusThumbTimes: this.focusThumbTimes,
+                    date: new Date().getDate(),
+                };
             let todayDate = new Date().getDate();
             if (typeof thumbTimes === "string") {
                 thumbTimes = JSON.parse(thumbTimes);
@@ -519,7 +352,7 @@ export default {
         //     this.backToParentData ? this.backToParentData : this.pages[0]
         //   );
         // },
-        goToComment(info) {
+        goToComment (info) {
             if (
                 this.l98Setting.staffCommentOpen &&
                 info.role != "" &&
@@ -540,7 +373,7 @@ export default {
                 });
             }
         },
-        touchstart(e) {
+        touchstart (e) {
             if (this.tracking) {
                 return;
             }
@@ -575,7 +408,7 @@ export default {
             this.animation = false;
             this.startDistant = e.targetTouches[0].screenX;
         },
-        touchmove(e) {
+        touchmove (e) {
             // 记录滑动位置
             this.endX = e.touches[0].clientX;
             this.distant = this.endX - this.startX;
@@ -605,7 +438,7 @@ export default {
                 this.like = false;
             }
         },
-        touchend(e) {
+        touchend (e) {
             this.tracking = false;
             this.animation = true;
             // 滑动结束，触发判断
@@ -634,7 +467,7 @@ export default {
             this.like = false;
             this.dislike = false;
         },
-        nextTick() {
+        nextTick () {
             // 记录最终滑动距离
             this.lastPosWidth = this.poswidth;
             this.lastPosHeight = this.posheight;
@@ -706,7 +539,7 @@ export default {
                 this.rotate = 0;
             });
         },
-        prevTick() {
+        prevTick () {
             // 记录最终滑动距离
             this.lastPosWidth = this.poswidth;
             this.lastPosHeight = this.posheight;
@@ -750,7 +583,7 @@ export default {
         //   this.swipe = true;
         //   this.nextTick();
         // },
-        onTransitionEnd(index) {
+        onTransitionEnd (index) {
             let lastPage =
                 this.currentPage === 0
                     ? this.pages.length - 1
@@ -766,20 +599,20 @@ export default {
                 this.lastZindex = -1;
             }
         },
-        rotateDirection() {
+        rotateDirection () {
             if (this.poswidth <= 0) {
                 return -1;
             } else {
                 return 1;
             }
         },
-        angleRatio() {
+        angleRatio () {
             let height = this.$el.offsetHeight;
             let offsetY = this.offsetY;
             let ratio = -1 * ((2 * offsetY) / height - 1);
             return ratio || 0;
         },
-        inStack(index, currentPage) {
+        inStack (index, currentPage) {
             let stack = [];
             let visible = this.visible;
             let length = this.pages.length;
@@ -793,7 +626,7 @@ export default {
             return stack.indexOf(index) >= 0;
         },
         // 非首页样式切换
-        transform(index) {
+        transform (index) {
             let currentPage = this.currentPage;
             let length = this.pages.length;
             let lastPage =
@@ -843,7 +676,7 @@ export default {
             return style;
         },
         // 首页样式切换
-        transformIndex(index) {
+        transformIndex (index) {
             if (index === this.currentPage) {
                 let style = {};
                 style["transform"] =
@@ -1120,7 +953,7 @@ export default {
             }
             .sex_female {
                 width: 0.3333rem;
-                height: 0.4333rem;
+                height: 0.3333rem;
             }
         }
         .blur_avatar {
@@ -1191,8 +1024,8 @@ export default {
             .constellation {
                 .userInfo(#c579ff);
             }
-            .subscribe{
-                .userInfo(#76BDFF);
+            .subscribe {
+                .userInfo(#76bdff);
             }
             .thumb {
                 box-sizing: border-box;
