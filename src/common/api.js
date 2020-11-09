@@ -25,9 +25,9 @@ axios.interceptors.request.use(
 )
 let api = {};
 //主动接受有缘人申请，加客服好友
-api.acceptSoulMateInvite = function (fromId) {
+api.acceptSoulMateInvite = function (fromId,agree) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/acceptSoulMateInvite?fromId=${fromId}`).then((res) => {
+    axios.get(Url.commonUrl + `/api/acceptSoulMateInvite?fromId=${fromId}&agree=${agree}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }

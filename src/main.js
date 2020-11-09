@@ -13,6 +13,9 @@ import store from './store/index'
 import router from './router/index'
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
+import IntroJs from 'intro.js'
+import 'intro.js/introjs.css';
+
 
 // import vuePicturePreview from 'vue-picture-preview'
 import { ToastPlugin, LoadingPlugin } from 'vux'
@@ -21,6 +24,7 @@ import { Cascader } from 'element-ui';
 import api from 'common/api'
 import util from "common/util";
 import config from 'common/config'
+Vue.use(IntroJs);
 Vue.use(Cascader)
 Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)

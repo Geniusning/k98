@@ -1,46 +1,20 @@
 <template>
-  <div
-    id="mine"
-    class="mine"
-  >
+  <div id="mine" class="mine">
     <!-- 个人信息 -->
     <div class="personInfo_content">
       <div class="person_info">
-        <img
-          onclick="return false"
-          :src="userInfo.headimgurl"
-          alt
-          class="avatar"
-          @click="edit_individual"
-          onerror="this.src='/src/assets/image/avatar1.jpeg'"
-        >
+        <img onclick="return false" :src="userInfo.headimgurl" alt class="avatar" @click="edit_individual" onerror="this.src='/src/assets/image/avatar1.jpeg'">
         <p class="name">{{userInfo.nickname||'游客'}}</p>
         <!-- <span class="bindTel" @click="showBindTel">绑定手机</span> -->
         <!-- <span class="bindTel" @click="showTelBind" v-if="!userInfo.phone">绑定手机</span>
         <span class="bindTel1" v-else>{{userInfo.phone}}</span> -->
       </div>
-      <div
-        class="edit"
-        @click="edit_individual"
-      >
-        <img
-          onclick="return false"
-          src="../../assets/image/setting.png"
-          alt
-          class="editIcon"
-        >
+      <div class="edit" @click="edit_individual">
+        <img onclick="return false" src="../../assets/image/setting.png" alt class="editIcon">
         <div class="editText">设置</div>
       </div>
-      <div
-        class="commentEntry"
-        @click="goToMyComment"
-      >
-        <img
-          onclick="return false"
-          src="../../assets/image/picture.png"
-          alt
-          class="editIcon"
-        >
+      <div class="commentEntry" @click="goToMyComment">
+        <img onclick="return false" src="../../assets/image/picture.png" alt class="editIcon">
         <div class="editText">评价</div>
       </div>
     </div>
@@ -48,101 +22,50 @@
       <!-- 我的信息 -->
       <div class="userInfo_wrapper">
         <ul class="user_list">
-          <li
-            class="item"
-            @click="intoFriendList"
-          >
+          <li class="item" @click="intoFriendList">
             <p class="score_name">好友数</p>
             <p class="score">{{userInfo.numOfFriends}}个</p>
           </li>
-          <li
-            class="item"
-            @click="intoWealthRanking"
-          >
+          <li class="item" @click="intoWealthRanking">
             <p class="score_name">财富榜</p>
             <p class="score">第{{userInfo.wealthRanking}}名</p>
           </li>
-          <li
-            class="item"
-            @click="intoGameScoreRanking"
-          >
+          <li class="item" @click="intoGameScoreRanking">
             <p class="score_name">战神榜</p>
             <p class="score">第{{userInfo.gameScoreRanking}}名</p>
           </li>
         </ul>
       </div>
       <!-- 签到 -->
-      <span
-        class="signIn"
-        @click="sign_in"
-      >签到</span>
+      <span class="signIn" @click="sign_in">签到</span>
       <!-- 我的卡券 -->
       <div class="discount_wrapper">
         <ul class="discount_list">
-          <li
-            class="item vux-1px-r"
-            @click="checkDiscout"
-          >
-            <img
-              onclick="return false"
-              src="../../assets/image/discount.png"
-              alt
-              class="pic_discount"
-            >
+          <li class="item vux-1px-r" @click="checkDiscout">
+            <img onclick="return false" src="../../assets/image/discount.png" alt class="pic_discount">
             <p class="discount_name">我的卡券</p>
           </li>
-          <li
-            class="item vux-1px-r"
-            @click="giftDetal"
-          >
-            <img
-              onclick="return false"
-              src="../../assets/image/yingxiangli.png"
-              alt
-              class="pic_discount"
-            >
+          <li class="item vux-1px-r" @click="giftDetal">
+            <img onclick="return false" src="../../assets/image/yingxiangli.png" alt class="pic_discount">
             <p class="discount_name">积分明细</p>
           </li>
-          <li
-            class="item"
-            @click="gameDetal"
-          >
-            <img
-              onclick="return false"
-              src="../../assets/image/game_mine.png"
-              alt
-              class="pic_discount"
-            >
+          <li class="item" @click="gameDetal">
+            <img onclick="return false" src="../../assets/image/game_mine.png" alt class="pic_discount">
             <p class="discount_name">游戏明细</p>
           </li>
         </ul>
       </div>
       <!-- 福利 -->
-      <div
-        class="welfare_wrapper"
-        v-if="sendGiftList.length"
-      >
+      <div class="welfare_wrapper" v-if="sendGiftList.length">
         <h2 class="jiFen_title">
           积分换礼品
           <span class="star">#</span>
         </h2>
         <div class="welfare_content">
-          <ul
-            class="welfare_list"
-            v-if="sendGiftList.length"
-          >
-            <li
-              class="item clearfix"
-              v-for="(item,index) in sendGiftList"
-              :key="index"
-            >
+          <ul class="welfare_list" v-if="sendGiftList.length">
+            <li class="item clearfix" v-for="(item,index) in sendGiftList" :key="index">
               <div class="left">
-                <img
-                  onclick="return false"
-                  :src="item.goods.image"
-                  alt
-                  class="shopPic"
-                >
+                <img onclick="return false" :src="item.goods.image" alt class="shopPic">
               </div>
               <div class="center">
                 <p class="title">{{item.goods.name}}</p>
@@ -156,10 +79,7 @@
                 <div class="thunb_box clearfix">
                   <!-- <span class="count fl">已订：{{item.booking.bookingNumber}}</span> -->
                 </div>
-                <div
-                  class="show_detail"
-                  @click="convert(item.goods.ID,index)"
-                >积分兑换</div>
+                <div class="show_detail" @click="convert(item.goods.ID,index)">积分兑换</div>
               </div>
             </li>
           </ul>
@@ -175,53 +95,32 @@
           <li class="marketing-item">
             <div class="marketing-left">我的主页</div>
             <div class="marketing-c">(点右上角，送20分)</div>
-            <div
-              class="marketing-right"
-              @click="goToMyComment"
-            >分享-></div>
+            <div class="marketing-right" @click="goToMyComment">分享-></div>
           </li>
           <li class="marketing-item">
             <div class="marketing-left">门店名片(首页)</div>
             <div class="marketing-c">(点右上角，送20分)</div>
-            <div
-              class="marketing-right"
-              @click="homeShare"
-            >分享-></div>
+            <div class="marketing-right" @click="homeShare">分享-></div>
           </li>
-          <li class="marketing-item">
+          <li class="marketing-item" v-if="noCouponsFlag">
             <div class="marketing-left">邀新有礼</div>
             <div class="marketing-c">(点右上角，送20分)</div>
-            <div
-              class="marketing-right"
-              @click="inviteShare"
-            >分享-></div>
+            <div class="marketing-right" @click="inviteShare">分享-></div>
           </li>
           <li class="marketing-item">
             <div class="marketing-left">找朋友，缘分送好友</div>
             <div class="marketing-c">(点右上角，送20分)</div>
-            <div
-              class="marketing-right"
-              @click="friShare"
-            >分享-></div>
+            <div class="marketing-right" @click="friShare">分享-></div>
           </li>
           <li class="marketing-item">
             <div class="marketing-left">大话赛，智商大比拼</div>
             <div class="marketing-c">(点右上角，送20分)</div>
-            <div
-              class="marketing-right"
-              @click="gameShare"
-            >分享-></div>
+            <div class="marketing-right" @click="gameShare">分享-></div>
           </li>
         </ul>
       </div>
     </div>
-    <topUp
-      :convertType="convertType"
-      v-if="isGiftPanel"
-      @closeIntegralPanel="closeIntegralPanel"
-      :giftInfo="recommendItemIndo"
-      :fatherPanelIndex="fatherPanelIndex"
-    ></topUp>
+    <topUp :convertType="convertType" v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :giftInfo="recommendItemIndo" :fatherPanelIndex="fatherPanelIndex"></topUp>
     <!-- 绑定手机弹框 -->
     <validate v-show="isShow"></validate>
     <router-view></router-view>
@@ -248,7 +147,7 @@ export default {
   directives: {
     TransferDom
   },
-  data() {
+  data () {
     return {
       isGiftPanel: false,
       showTel: true,
@@ -265,7 +164,7 @@ export default {
     ...mapState(["noCouponsFlag", "sendGiftList", "shareUrl", "l98Setting"]),
     ...mapGetters(["userInfo", "test", "isShow"])
   },
-  created() {
+  created () {
     util.addVisitRecord(this.$route.name);
     //判断是否自定义了标签
     if (this.userInfo.tags) {
@@ -275,7 +174,7 @@ export default {
   },
   methods: {
     //查看自己的评价
-    goToMyComment() {
+    goToMyComment () {
       this.$router.push({
         name: "commentUser",
         params: {
@@ -285,12 +184,12 @@ export default {
       });
     },
     //监听充值面板状态
-    closeIntegralPanel(flag) {
+    closeIntegralPanel (flag) {
       //console.log('面板状态-----------', flag);
       this.isGiftPanel = flag;
     },
     //进入好友
-    intoFriendList() {
+    intoFriendList () {
       this.$router.push({
         name: `message`,
         query: {
@@ -299,19 +198,19 @@ export default {
       });
     },
     //进入富豪榜
-    intoWealthRanking() {
+    intoWealthRanking () {
       this.$router.push({
         name: "treasureRank"
       });
     },
     //进入战胜榜
-    intoGameScoreRanking() {
+    intoGameScoreRanking () {
       this.$router.push({
         name: "marsRank"
       });
     },
     // 兑换消耗积分
-    convert(goodId, index) {
+    convert (goodId, index) {
       if (!this.l98Setting.giftItemConvertOpen) {
         this.$vux.toast.text("商家未开通本功能", "middle");
         return;
@@ -321,51 +220,51 @@ export default {
         //console.log('选中的礼品-----------------', this.sendGiftList[index])
         (this.recommendItemIndo = this.sendGiftList[index]);
     },
-    activetyShare() {
+    activetyShare () {
       this.$router.push({
         name: "shareActivity"
       });
     },
-    gameShare() {
+    gameShare () {
       window.location.href = `${this.shareUrl}game`;
     },
-    inviteShare() {
+    inviteShare () {
       this.$router.push({
         name: "shareNew"
       });
     },
-    homeShare() {
+    homeShare () {
       this.$router.push({
         name: "home",
         params: { data: "shareHomePage" }
       });
     },
-    friShare() {
+    friShare () {
       this.$router.push({
         name: "friend",
         params: { data: "sharefriPage" }
       });
     },
     //查看优惠券
-    checkDiscout() {
+    checkDiscout () {
       util.routerTo("card", this);
     },
     //查看游戏明细
-    gameDetal() {
+    gameDetal () {
       util.routerTo("gameDetail", this);
     },
     //查看收礼明细
-    giftDetal() {
+    giftDetal () {
       util.routerTo("giftDetail", this);
     },
     //编辑个人信息
-    edit_individual() {
+    edit_individual () {
       this.$router.push({
         name: "individual"
       });
     },
     //签到
-    sign_in() {
+    sign_in () {
       api.checkIn().then(res => {
         //console.log('签到---------------------------', res);
         if (res.errCode === 0) {
@@ -385,10 +284,10 @@ export default {
         }
       });
     },
-    showTelBind() {
+    showTelBind () {
       this.changeValidate(true);
     },
-    cancel() {
+    cancel () {
       // this.showToast = false;
       this.changeValidate(false);
     },
@@ -410,9 +309,9 @@ export default {
 </script>
 
 <style scoped lang="less">
-@import "../../assets/less/mixin.less";
-@import "../../assets/less/variable.less";
-@import "../../assets/less/mine.less";
+@import '../../assets/less/mixin.less';
+@import '../../assets/less/variable.less';
+@import '../../assets/less/mine.less';
 .weui-cells {
   font-size: 16px;
 }
@@ -441,7 +340,7 @@ export default {
     height: 20%;
     padding: 0.5rem 0;
     position: relative;
-    .bg("../../assets/image/mine_bg.jpg");
+    .bg('../../assets/image/mine_bg.jpg');
     text-align: center;
     .edit {
       position: absolute;
@@ -490,7 +389,7 @@ export default {
         margin-top: 0.2133rem;
         height: 0.4133rem;
         font-size: 0.4267rem;
-        font-family: "PingFang-SC-Bold";
+        font-family: 'PingFang-SC-Bold';
         color: rgba(255, 255, 255, 1);
         line-height: 0.3733rem;
       }
@@ -546,7 +445,7 @@ export default {
             text-align: center;
             margin-bottom: 0.3333rem;
             font-weight: bold;
-            font-family: "PingFang-SC-Bold";
+            font-family: 'PingFang-SC-Bold';
           }
           .score_name {
             box-sizing: border-box;

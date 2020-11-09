@@ -15,5 +15,5 @@ export default {
   websocketUrl: "wss://llwant1.qianz.com/api/ws",
   // shareUrl: "https://llwant1.qianz.com/ PD1oqe25W8OSFDx9O_ynThfbjlMApior_swOpHYQvIDtPabeBgowr1feDC0B69lNE9NVHQ==",
   //jaykJ7c59zN243gZn8mgwqjouFmiINEsA12_ysVQu6VG6JZnnJYqDmWXIu1Zu-wF9BUUfQ==
-  tk: "0nq_YEk0L7uhswaKbAt4uw8NrBKPiWL4ppLB_XP3OkM2bBi1GKWSXmeMKVmbc5tw1aIScA=="
+  tk: "wOWvxo6N0tJkB2lvpSSWGgCgIlohzqmvuH3xn5tFomuYPxq0S_EvQMX0l2HJDP2F7eTvEg=="
 }
