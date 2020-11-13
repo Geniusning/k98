@@ -220,7 +220,8 @@ export default {
                         let shareObj = {
                             title: "1元拼团",
                             desc: "一起来抢劫老板啰...",
-                            link: `${this.shareUrl}k98/oneYuan?groupShopInfoId=${this.groupShopInfoId}&openGroupId=${this.openGroupId}`,
+                            link: `${this.shareUrl}k98/oneYuan?visitType=11
+                            &groupShopInfoId=${this.groupShopInfoId}&openGroupId=${this.openGroupId}&openId=${this.userInfo.openid}`,
                             imgUrl: `${this.groupShopInfo.oneYuanGroupShopInfo.image}`
                         };
                         util.setShareInfo(shareObj, 20, "groupShop", this.shareGetJifen);

@@ -151,7 +151,7 @@ export default {
                     let shareObj = {
                         title: "新人大礼包",
                         desc: `抢了${this.shopSettingInfo.aliasName}一份新人礼包，转送给你，有空去瞅瞅`,
-                        link: `${this.shareUrl}k98/shareNew?visitType=4&phone=${this.userInfo.phone}&role=${this.userInfo.role}`,
+                        link: `${this.shareUrl}k98/shareNew?visitType=4&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
                         imgUrl: `${this.shopSettingInfo.image}`
                     };
                     util.setShareInfo(shareObj, this.couponList[1].couponID, "b", this.receiveACouponByID);

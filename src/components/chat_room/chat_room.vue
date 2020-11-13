@@ -435,8 +435,13 @@ export default {
     //   }
     //   next()
     // },
-    created () {
+    async created () {
         util.addVisitRecord(this.$route.name);
+        this._openId = util.GetQueryString("openid")
+        if (this._openId != "") {
+            let res = await api.getUserInfo(this._openId);
+            this.setChatFriend(res);
+        }
         this.listenScroll = true;
         this.today = new Date().getDate();
         this.today = new Date().getDate();
@@ -458,12 +463,8 @@ export default {
         } else {
             this.myShareUrl = window.iosSignUrl;
         }
-        console.log("this.myShareUrl-----", this.myShareUrl);
         this._initJssdk(this.myShareUrl);
-        console.log(
-            "this.staticChatFriendObj-----------",
-            this.staticChatFriendObj
-        );
+        console.log("this.staticChatFriendObj-----------", this.staticChatFriendObj);
         if (!sessionStorage.getItem("friendInfo")) {
             //解决微信内置浏览器刷新获得好友信息
             sessionStorage.setItem(
@@ -484,6 +485,9 @@ export default {
         this.friendId = this.$route.params.id;
         if (this.$route.params.isSoul) {
             this.isShowSoulPanel = true;
+            setTimeout(() => {
+                this.changeFriPanelFlag(true)
+            }, 8000);
         }
         this._getChatList(); //前端获取聊天记录
         this._loadAllGift(); //获取礼物
@@ -1367,6 +1371,7 @@ export default {
             // this.isscroll = true; //允许动态滚动到最底部记录
         },
         ...mapMutations({
+            changeFriPanelFlag: "CHANGEFRIENDPANELFLAG", //更改匹配成功flag
             setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
             // updateChatList: "UPDATE_CHATLIST",
             showQrcode: "SHOW_QRCODE", //二维码
