@@ -125,7 +125,7 @@ const router = new Router({
       import('../components/welfare/welfare.vue'),
     meta: {
       title: "福利",
-      keepAlive: true,
+      keepAlive: false,
     },
     children: [
       //   {
