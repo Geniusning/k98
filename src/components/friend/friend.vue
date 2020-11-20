@@ -23,18 +23,21 @@
                     <span class="dot right"></span>
                 </div>
                 <p class="soulText">{{modalSwitch?"自己找":"有缘人"}}</p>
-                <p class="intro_soulText" v-show="isFirstLoad">一键找到你的有缘人</p>
-                <p class="intro_picAndComment" v-show="isFirstLoad">照片及评价</p>
+                <!-- <p class="intro_soulText" v-show="isFirstLoad">一键找到你的有缘人</p>
+                <p class="intro_picAndComment" v-show="isFirstLoad">照片及评价</p> -->
             </div>
-            <!-- isFirstLoad -->
-            <div v-if="isFirstLoad">
-                <p :data-step="friendIntro.gift.step"
-                   :data-intro="friendIntro.gift.intro"
-                   :data-position="friendIntro.gift.position"
-                   :data-disable-interaction="true" class="intro_mfTips">绿灯在线，红灯离线</p>
-                <img src="../../assets/image/arrow left.png" alt class="arrow_left" />
-                <img src="../../assets/image/Arrow Right.png" alt class="arrow_right" />
-                <p class="arrow_desc">左划换人，右划喜欢</p>
+            <!-- isFirstLoad  v-if="isFirstLoad"-->
+            <div v-if="hideArrow">
+                <!-- <p class="intro_mfTips">绿灯在线，红灯离线</p> -->
+                <img :data-step="friendIntro.left.step"
+                     :data-intro="friendIntro.left.intro"
+                     :data-position="friendIntro.left.position"
+                     :data-disable-interaction="true" src="../../assets/image/arrow left.png" alt class="arrow_left" />
+                <img :data-step="friendIntro.right.step"
+                     :data-intro="friendIntro.right.intro"
+                     :data-position="friendIntro.right.position"
+                     :data-disable-interaction="true" src="../../assets/image/Arrow Right.png" alt class="arrow_right" />
+                <!-- <p class="arrow_desc">左划换人，右划喜欢</p> -->
             </div>
             <stack ref="stack" :friendIntro="friendIntro" :pages="someList" :visible="visible" :currentIndex="currentPage" :resultSoulText="soulText" :searchResult="isEndResultSearchBtnBox" :stopSearch="searching" :positionList="positionList" @getMoreFriend="sonGetMoreFriend" @showIntroduce="showIntroduce" @heartBeat="thumbHeartBeat" @firstData="listenFirstdata">暂时没有好友</stack>
             <div class="loading-container" v-show="!someList.length">
@@ -50,7 +53,7 @@
                 <div :data-step="friendIntro.gift.step"
                      :data-intro="friendIntro.gift.intro"
                      :data-position="friendIntro.gift.position"
-                     :data-disable-interaction="true" class="gifts" @click="isFirstLoad=false">
+                     :data-disable-interaction="true" class="gifts">
                     <img onclick="return false" src="../../assets/image/gift.png" @click="isGiftPanel=true" alt />
                     <!-- <img onclick="return false" src="../../assets/image/gift.png" v-show="isFirstLoad" class="guideGift" alt /> -->
                     <!-- <p class="handleText" v-show="isFirstLoad">送礼成好友</p> -->
@@ -61,7 +64,7 @@
                      :data-step="friendIntro.thumb.step"
                      :data-intro="friendIntro.thumb.intro"
                      :data-position="friendIntro.thumb.position"
-                     :data-disable-interaction="true" v-if="!isFriend" @click="isFirstLoad=false">
+                     :data-disable-interaction="true" v-if="!isFriend">
                     <img onclick="return false" ref="thumbHeartBeat" src="../../assets/image/thumbs-o-up.png" @click="giveThumb('middle')" alt />
                     <!-- <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt /> -->
                     <!-- <p class="handleText" v-show="isFirstLoad">互赞成好友</p> -->
@@ -69,7 +72,7 @@
                 <div :data-step="friendIntro.thumb.step"
                      :data-intro="friendIntro.thumb.intro"
                      :data-position="friendIntro.thumb.position"
-                     :data-disable-interaction="true" class="hello" v-else @click="isFirstLoad=false">
+                     :data-disable-interaction="true" class="hello" v-else>
                     <img onclick="return false" src="../../assets/image/sayhi.png" @click="chat" alt />
                     <!-- <img onclick="return false" src="../../assets/image/thumbs-o-up.png" v-show="isFirstLoad" class="guideThumbs" alt /> -->
                     <!-- <p class="handleText" v-show="isFirstLoad">互赞成好友</p> -->
@@ -77,7 +80,7 @@
                 <div :data-step="friendIntro.play.step"
                      :data-intro="friendIntro.play.intro"
                      :data-position="friendIntro.play.position"
-                     :data-disable-interaction="true" class="playGame" @click="isFirstLoad=false">
+                     :data-disable-interaction="true" class="playGame">
                     <img onclick="return false" src="../../assets/image/game.png" @click="playGame" alt />
                     <!-- <img onclick="return false" src="../../assets/image/game.png" v-show="isFirstLoad" class="guidePlayGame" alt />
                     <p class="handleText" v-show="isFirstLoad">约战大话骰</p> -->
@@ -144,7 +147,7 @@
         <!-- 引导背景 v-show="userInfo.firstLoadisFirstLoad"   isFirstLoad-->
         <div class="guide_bg" v-show="isFirstLoad">
             <p class="flower">分享好友获小红花，提升排名</p>
-            <p class="know" @click="isFirstLoad=false">知道了</p>
+            <p class="know">知道了</p>
             <p class="intro">设置个人资料</p>
         </div>
         <!-- 分享引导 isShow_bg -->
@@ -223,16 +226,16 @@ export default {
                     intro: '约战大话骰',
                     position: 'left'
                 },
-                // left: {
-                //     step: '6',
-                //     intro: '左划换人',
-                //     position: 'right'
-                // },
-                // right: {
-                //     step: '7',
-                //     intro: '右划喜欢',
-                //     position: 'right'
-                // },
+                left: {
+                    step: '6',
+                    intro: '左划换人',
+                    position: 'right'
+                },
+                right: {
+                    step: '7',
+                    intro: '右划喜欢',
+                    position: 'right'
+                },
             },
             keyword: "",
             showPopupPickerPos: false, // 职位picker
@@ -246,6 +249,7 @@ export default {
             homeTownType: 0, //同乡，
             industryType: 0, //同行查看
             fatherPanelIndex: 1,
+            hideArrow: true,
             showToast_gift: false,
             envelopeText: "",
             isFriend: null,
@@ -383,9 +387,23 @@ export default {
             "soulSwitch",
             "shareUrl",
             "soulCursor",
-            "soulResult"
+            "soulResult",
+            "searchForSvip",
+            "shopSettingInfo"
         ]),
         ...mapGetters(["qrIsShow"])
+    },
+    beforeRouteLeave (to, from, next) {
+        console.log("from---------", from)
+        // 导航离开该组件的对应路由时调用
+        // 可以访问组件实例 `this`
+        //根据自己的逻辑添加代码
+        if (this.shopSettingInfo.shopModeId === 1) {
+            from.meta.keepAlive = false   //可以动态修改是否让路由缓存
+        } else {
+            from.meta.keepAlive = true   //可以动态修改是否让路由缓存
+        }
+        next()
     },
     created () {
         this._getUserInfo().then(res => {
@@ -396,7 +414,8 @@ export default {
                 range: this.rangeType,
                 hometowncode: "",
                 industry: "",
-                keyword: ""
+                keyword: "",
+                isSvip: this.searchForSvip
             };
             this.getAllCommunityFriend(param);
         });
@@ -406,8 +425,7 @@ export default {
         }
     },
     mounted () {
-
-        util.addVisitRecord(this.$route.name);
+        // util.addVisitRecord(this.$route.name);
         console.log("this.loadFriendSexType----", this.loadFriendSexType);
 
         if (this.userInfo.sex === "男") {
@@ -416,16 +434,28 @@ export default {
             this.sexType = 1;
         }
         console.log("this.userInfo---", this.userInfo);
-        if (this.userInfo.firstLoad) {
-            this.isFirstLoad = true;
-        } else {
-            this.isFirstLoad = false;
-        }
+        // if (this.userInfo.firstLoad) {
+        //     this.isFirstLoad = true;
+        // } else {
+        //     this.isFirstLoad = false;
+        // }
         this._clearFirstLoadTag(); //标识已经进入过公众号
         this._loadAllGift();
         this.initIntro()
     },
     activated () {
+        if (this.shopSettingInfo.shopModeId === 1) {
+            let param = {
+                cursor: 0,
+                sex: this.userInfo.sex === "男" ? 2 : 1,
+                range: this.rangeType,
+                hometowncode: "",
+                industry: "",
+                keyword: "",
+                isSvip: this.searchForSvip
+            };
+            this.getAllCommunityFriend(param);
+        }
         setTimeout(() => {
             let shareObj = {
                 title: "找朋友",
@@ -434,8 +464,8 @@ export default {
                     }&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
                 imgUrl: `${this.shopSettingInfo.image}`
             };
-            util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-        }, 1500);
+            util.setShareInfo(shareObj, 20, "activity", util.shareGetJifen);
+        }, 1000);
         if (this.$route.params.data == "sharefriPage") {
             this.isShow_bg = true;
         }
@@ -459,6 +489,7 @@ export default {
             if (!localStorage.getItem('isShowFriendHelp')) {
                 Intro.oncomplete(() => {
                     // this.$refs.stack.showIntro(Intro)
+                    this.hideArrow = false
                     localStorage.setItem('isShowFriendHelp', 1)
                     this.$router.push({
                         name: "mine"
@@ -469,14 +500,14 @@ export default {
         showIntroduce () {
             this.isShow_bg = true;
         },
-        //分享获得积分
-        shareGetJifen (amount, shareType) {
-            api.shareToGetIntegral(amount, shareType).then(res => {
-                if (res.errCode == 1030) {
-                    alert("分享已上限，每天最多分享5次获得积分");
-                }
-            });
-        },
+        // //分享获得积分
+        // shareGetJifen (amount, shareType) {
+        //     api.shareToGetIntegral(amount, shareType).then(res => {
+        //         if (res.errCode == 1030) {
+        //             alert("分享已上限，每天最多分享5次获得积分");
+        //         }
+        //     });
+        // },
         //职位选择
         onHide_P () {
             this.showPopupPickerPos = false;
@@ -710,7 +741,8 @@ export default {
                 range: this.rangeType,
                 hometowncode: this.homeTownCode,
                 industry: this.industryCode,
-                keyword: this.keyword
+                keyword: this.keyword,
+                isSvip: this.searchForSvip
             };
             api.getFriendList(params).then(res => {
                 if (res.info.cursor == 0) {

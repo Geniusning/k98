@@ -128,12 +128,22 @@ const router = new Router({
       keepAlive: false,
     },
     children: [
+
       //   {
       //   path: "award",
       //   name: "award",
       //   component: Award,
       // },
     ]
+  },
+  {
+    path: "/oldPhotos",
+    name: "oldPhotos",
+    meta: {
+      title: "往期照片",
+    },
+    component: () =>
+      import('../components/welfare/oldPhotos.vue'),
   },
   {
     path: '/gameRecord',

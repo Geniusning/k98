@@ -317,6 +317,7 @@ export default {
             scrollHeight: 0,
             // scrollToDomElement: "",
             pullDownRefresh: true,
+            listenScroll: true,
             expressionShow: false,
             fatherPanelIndex: 1,
             isGiftPanel: false,
@@ -440,7 +441,9 @@ export default {
         this._openId = util.GetQueryString("openid")
         if (this._openId != "") {
             let res = await api.getUserInfo(this._openId);
+            console.log("res---------", res)
             this.setChatFriend(res);
+            this._getChatList(); //前端获取聊天记录
         }
         this.listenScroll = true;
         this.today = new Date().getDate();

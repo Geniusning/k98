@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-11-13 14:45:54
+ * @Last Modified time: 2020-11-20 17:23:03
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -24,6 +24,7 @@ import { Cascader } from 'element-ui';
 import api from 'common/api'
 import util from "common/util";
 import config from 'common/config'
+
 Vue.use(IntroJs);
 Vue.use(Cascader)
 Vue.use(ToastPlugin)
@@ -85,6 +86,7 @@ new Vue({
     this.createWebsocket() //创建长链接
     this.getCaptainMessList() //店长群发通知
     this.loadStaffCouponAct() //员工送券活动通知
+    this.loadPublisherIdlist() //拉取供求发布者id
     window.addEventListener("unload", () => {
       this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
       localStorage.removeItem("friendInfo");
@@ -156,6 +158,15 @@ new Vue({
     addWaitingCombatList () {
       api.addWaitingCombatList().then(res => {
         //console.log("成为待被邀请队列成员-----------", res)
+      })
+    },
+    //拉取供求发布者id
+    loadPublisherIdlist () {
+      api.loadPublisherList("supply").then(res => {
+        if (res.errCode === 0) {
+          console.log("拉取供求发布者id---", res)
+          this.savePublisherIdList(res.info.publisherIds)
+        }
       })
     },
     //加载L98控制开关信息
@@ -480,9 +491,7 @@ new Vue({
       updateCashierMsg: "UPDATE_CASHIERMSG", //推送更新收银消息
       saveQrCode: "SAVEQRCODE",
       getRecommentList: "GET_RECOMMENTLIST", //获取店长推荐
-      connect_websocket: "CONNECT_WEBSOCKET",
       appendLastMsg: "UPDATE_CHATLIST",
-      updateValue: "UPDATE_INPUTVALUE",
       addBange: "ADD_BADGE",
       compareLastMsg: "COMPARE_LASTMESS",
       getAdvertisingImg: "GET_ADVERTISINGIMG", //获取首页轮播图
@@ -499,7 +508,8 @@ new Vue({
       loadSameDeskInfo: "GETSAMEDESKINFO", //加载同一个桌贴游戏信息
       addDivideNum: "ADDDIVIDENUM", //累加分身未读消息
       saveDeskCode: "SAVEDESKCODE", //保存桌贴号,桌号id
-      updateSoulParams: "UPDATESOULPARAMS" //更新灵魂匹配参数
+      updateSoulParams: "UPDATESOULPARAMS", //更新灵魂匹配参数
+      savePublisherIdList: "SAVEPUBLISHERID" //拉取供求者id
     }),
     ...mapActions({
       //getFriendEvt: "get_FriendEvt"

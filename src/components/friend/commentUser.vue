@@ -13,14 +13,8 @@
         <div class="content">
             <header>
                 <div class="comment-header-left">
-                    <img :src="
-                            scopeUserInfo.headimgurl
-                                ? scopeUserInfo.headimgurl
-                                : tempPic
-                        " class="comment-avatarUrl" alt="" />
-                    <span class="comment-name">{{
-            scopeUserInfo.nickname
-            }}</span>
+                    <img :src="scopeUserInfo.headimgurl? scopeUserInfo.headimgurl: tempPic" class="comment-avatarUrl" alt="" />
+                    <span class="comment-name">{{scopeUserInfo.nickname}}</span>
                 </div>
                 <div class="comment-header-right">
                     <div v-if="scopeUserInfo.companyLink" @click="goToCompanyLink(scopeUserInfo.companyLink)" class="company-link">企业/产品</div>
@@ -29,6 +23,7 @@
             </header>
             <div>
                 <div v-if="lifePhotolist.length > 0" class="comment-slider">
+                    <span v-if="shopSettingInfo.shopModeId===1&& pageType==='homePage'" class="needed">{{neededDesc}}</span>
                     <swiper height="256px" :list="lifePhotolist" :interval="2000" :auto="true" :show-dots="false" v-model="swiperItemIndex" :min-moving-distance="10"></swiper>
                 </div>
             </div>
@@ -36,27 +31,19 @@
                 <ul class="comment-header-list">
                     <li class="comment-divide" @click="giveThumb">
                         <img src="../../assets/image/thumb_up.png" class="comment-icon" alt="" />
-                        <span class="comment-count">{{
-              staffCommentInfo.thumbCount
-              }}</span>
+                        <span class="comment-count">{{staffCommentInfo.thumbCount}}</span>
                     </li>
                     <li class="comment-divide" @click="unGiveThumb">
                         <img src="../../assets/image/thumb_down.png" class="comment-icon" alt="" />
-                        <span class="comment-count">{{
-              staffCommentInfo.unThumbCount
-              }}</span>
+                        <span class="comment-count">{{staffCommentInfo.unThumbCount}}</span>
                     </li>
                     <li class="comment-divide">
                         <img src="../../assets/image/message_comment.png" class="comment-icon" alt="" />
-                        <span class="comment-count">{{
-              staffCommentInfo.messageCount
-              }}</span>
+                        <span class="comment-count">{{staffCommentInfo.messageCount}}</span>
                     </li>
                     <li class="comment-divide" @click="subscribeUser">
                         <img src="../../assets/image/eyes.png" class="comment-icon" alt="" />
-                        <span class="comment-count">{{
-              staffCommentInfo.subscribeCount
-              }}</span>
+                        <span class="comment-count">{{staffCommentInfo.subscribeCount}}</span>
                     </li>
                 </ul>
                 <scroll ref="listView" class="comment_content" style="background: #f1f1f1" :data="staffCommentInfo.messageList">
@@ -89,6 +76,15 @@
                         </div>
                     </div>
                 </scroll>
+                <div class="needed-wrapper" v-if="shopSettingInfo.shopModeId===1 && pageType==='homePage'">
+                    <ul class="list">
+                        <li class="left-triangle" @click="prev"></li>
+                        <li class="supply" @click="changeNeeded(true) " :class="{active:isNeeded}">供</li>
+                        <li class="publish" @click="goToUpdateAvatar">我要发布</li>
+                        <li class="need" @click="changeNeeded(false)" :class="{active:!isNeeded}">求</li>
+                        <li class="right-triangle" @click="next"></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="comment-send">
@@ -119,6 +115,10 @@ import { mapState, mapMutations } from "vuex";
 export default {
     data () {
         return {
+            pageType: "",
+            neededDesc: "供",
+            publishIndex: 0,
+            isNeeded: true,
             isShow_bg: false,
             scopeUserInfo: {},
             tempPic: require("../../assets/image/divide_add_avatar.png"),
@@ -181,15 +181,22 @@ export default {
                 this.isShow_bg = false;
             }, 5000);
         }, 8000);
-        util.addVisitRecord(this.$route.name);
+        // util.addVisitRecord(this.$route.name);
         let urlOpenId = util.GetQueryString("openId");
-        this.isSelf = this.$route.params.isSelf;
-        this.scopeOpenId = this.$route.params.openId;
-        let cacheOpenId = localStorage.getItem("comment_openId")
-        this.scopeOpenId = urlOpenId ? urlOpenId : this.scopeOpenId ? this.scopeOpenId : cacheOpenId;
-        localStorage.setItem("comment_openId", this.scopeOpenId)
+        let pageType = util.GetQueryString("pageType");
+        this.pageType = this.$route.params.type ? this.$route.params.type : pageType
+        if (this.pageType !== "homePage") {
+            this.isSelf = this.$route.params.isSelf;
+            this.scopeOpenId = this.$route.params.openId;
+            let cacheOpenId = localStorage.getItem("comment_openId")
+            this.scopeOpenId = urlOpenId ? urlOpenId : this.scopeOpenId ? this.scopeOpenId : cacheOpenId;
+        } else {
+            this.scopeOpenId = this.publisherIdList[this.publishIndex]
+        }
+        console.log("this.scopeOpenId----", this.scopeOpenId)
         this.loadUserInfoByOpenId();
         this.loadCommentInfo();
+        localStorage.setItem("comment_openId", this.scopeOpenId)
         document.body.addEventListener("focusout", () => {
             //软键盘关闭事件
             window.scrollTo(0, 0); //解决ios键盘留白的bug
@@ -200,7 +207,7 @@ export default {
             let shareObj = {
                 title: "帮朋友",
                 desc: "大伙帮忙捧个场，求点赞、关注",
-                link: `${this.shareUrl}k98/commentUser?openId=${this.isSelf ? this.userInfo.openid : this.scopeOpenId}`,
+                link: `${this.shareUrl}k98/commentUser?openId=${this.isSelf ? this.userInfo.openid : this.scopeOpenId}&pageType=${this.pageType}`,
                 imgUrl: `${this.scopeUserInfo.headimgurl}`,
             };
             util.setShareInfo(shareObj, 20, "comment", this.shareGetJifen);
@@ -215,9 +222,64 @@ export default {
         },
     },
     computed: {
-        ...mapState(["l98Setting", "lifeImgList", "userInfo", "shareUrl"]),
+        ...mapState(["l98Setting", "lifeImgList", "userInfo", "shareUrl", "shopSettingInfo", "publisherIdList"]),
+    },
+    watch: {
+        publisherIdList: function () {
+            this.publishIndex = 0
+            this.scopeOpenId = this.publisherIdList[this.publishIndex]
+            this.loadUserInfoByOpenId();
+            this.loadCommentInfo();
+        }
     },
     methods: {
+        changeNeeded (flag) {
+            this.isNeeded = flag
+            if (flag) {
+                this.loadPublisherIdlist("supply")
+                this.neededDesc = "供"
+            } else {
+                this.loadPublisherIdlist("need")
+                this.neededDesc = "求"
+            }
+        },
+        //拉取供求发布者id
+        async loadPublisherIdlist (needed) {
+            api.loadPublisherList(needed).then(res => {
+                if (res.errCode === 0) {
+                    console.log("拉取供求发布者id---", res)
+                    this.savePublisherIdList(res.info.publisherIds)
+                }
+            })
+        },
+        prev () {
+            if (this.publishIndex <= 0) {
+                this.$vux.toast.text("已经是第一个了", "middle")
+                return
+            }
+            this.publishIndex--
+            this.scopeOpenId = this.publisherIdList[this.publishIndex]
+            this.loadUserInfoByOpenId();
+            this.loadCommentInfo();
+        },
+        next () {
+            if (this.publishIndex >= this.publisherIdList.length - 1) {
+                this.$vux.toast.text("已经是最后一个了", "middle")
+                return
+            }
+            this.publishIndex++
+            this.scopeOpenId = this.publisherIdList[this.publishIndex]
+            this.loadUserInfoByOpenId();
+            this.loadCommentInfo();
+        },
+        goToUpdateAvatar () {
+            this.$router.push({
+                name: "updateAvatar",
+                params: {
+                    type: "individual"
+                }
+            })
+        },
         //关注
         subscribeUser () {
             if (this.isLimit()) {
@@ -391,6 +453,7 @@ export default {
             judgeMessType: "JUDGE_MESSTYPE", //判断消息类型
             changeQrCodeText: "CHANGEQRCODETEXT",
             showQrcode: "SHOW_QRCODE",
+            savePublisherIdList: "SAVEPUBLISHERID" //拉取供求者id
         }),
     },
     components: {

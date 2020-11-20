@@ -5,11 +5,10 @@
             <div class="avatar-wrapper vux-1px-t vux-1px-b">
                 <div class="pic-box">
                     <img
-                        :src="fromPage=='individual'?userInfo.headimgurl?userInfo.headimgurl:addPic:addPic"
-                        alt
-                        class="pic_avatar"
-                        ref="avatar"
-                    />
+                         :src="fromPage=='individual'?userInfo.headimgurl?userInfo.headimgurl:addPic:addPic"
+                         alt
+                         class="pic_avatar"
+                         ref="avatar" />
                 </div>
                 <div class="file-box">
                     <p class="text">更换头像</p>
@@ -28,55 +27,68 @@
                 </h3>
                 <ul class="uploadLifePhotoList">
                     <li v-for="(item,index) in lifePhotoList" class="photo" :key="index">
-                         <input type="text" class="lifePhoto-desc" placeholder="请输入照片备注" disabled :value="item.caption" />
+                        <input type="text" class="lifePhoto-desc" placeholder="请输入照片备注" disabled :value="item.caption" />
                         <div class="addpic-box">
                             <img :src="item.photoURL" alt class="imgItem" />
                             <img
-                                src="../../assets/image/close-round.png"
-                                alt
-                                class="close"
-                                @click="close(item,index)"
-                            />
+                                 src="../../assets/image/close-round.png"
+                                 alt
+                                 class="close"
+                                 @click="close(item,index)" />
                         </div>
                     </li>
                     <li class="photo" v-show="isShowAddImg">
-                         <input
-                            type="text"
-                            maxlength="18"
-                            class="lifePhoto-desc"
-                            placeholder="请先写主题，再点'+'上传图片"
-                            v-model="lifePhotoDesc"
-                        />
+                        <input
+                               type="text"
+                               maxlength="18"
+                               class="lifePhoto-desc"
+                               placeholder="请先写主题，再点'+'上传图片"
+                               v-model="lifePhotoDesc" />
                         <div class="addpic-box">
                             <img src="../../assets/image/add_pic.png" alt class="imgItem" />
                             <input
-                                type="file"
-                                accept="image/*"
-                                class="imageBtn"
-                                @change="uploadLifePic"
-                            />
+                                   type="file"
+                                   accept="image/*"
+                                   class="imageBtn"
+                                   @change="uploadLifePic" />
                         </div>
-                       
+
                     </li>
                 </ul>
                 <!-- <button class="btn" style="margin-top:10px" @click="goBack">确定</button> -->
             </div>
             <div class="tailor_wrapper" v-if="showTailor">
                 <vueCropper
-                    ref="cropper"
-                    :img="option.img"
-                    :canMove="false"
-                    :autoCrop="option.autoCrop"
-                    :autoCropWidth="option.width"
-                    :autoCropHeight="option.height"
-                    class="cropper"
-                ></vueCropper>
+                            ref="cropper"
+                            :img="option.img"
+                            :canMove="false"
+                            :autoCrop="option.autoCrop"
+                            :autoCropWidth="option.width"
+                            :autoCropHeight="option.height"
+                            class="cropper"></vueCropper>
                 <div>
                     <p v-if="uploadAvatarShow" @click="avatarPicupLoad" class="confirm">确定头像</p>
                     <p v-else @click="LifePicupComfirmBtn" class="confirm">确定生活照</p>
                 </div>
                 <!-- <p @click="clip" class="clip">点击开始滑动截图</p> -->
             </div>
+            <transition name="appear">
+                <!-- showneededPanel -->
+                <div class="warning_bg" v-show="showneededPanel">
+                    <div class="warning_wrapper">
+                        <div class="desc_box">
+                            <img src="../../assets/image/k_3.png" class="k_3" alt="">
+                            <p class="warningText">您是否需要把上述照片发布到首页“供求信息“栏？</p>
+                        </div>
+                        <div class="btnBox">
+                            <button class="yes" @click="supply('supply')">供</button>
+                            <button class="no" @click="supply('need')">求</button>
+                            <button class="no" @click="hide">否</button>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+            <button class="btn" v-if="shopSettingInfo.shopModeId===1" @click="publishNeeded">保存</button>
         </div>
     </transition>
 </template>
@@ -90,9 +102,10 @@ import api from "common/api";
 import util from "common/util";
 import lrz from "lrz";
 export default {
-    data() {
+    data () {
         return {
-            link:"",
+            showneededPanel: false,
+            link: "",
             lifePhotoDesc: "",
             addPic: require("../../assets/image/divide_add_avatar.png"),
             uploadAvatarShow: true,
@@ -109,8 +122,9 @@ export default {
             clearSessionData: false,
         };
     },
-    created() {
+    created () {
         this.link = this.userInfo.companyLink
+        console.log("this.$route.params---", this.$route.params)
         this.fromPage = this.$route.params.type; //判断从哪个页面跳转过来
         console.log("判断从哪个页面跳转过来---", this.fromPage);
         if (this.fromPage === "divide") {
@@ -124,40 +138,53 @@ export default {
             }
         }
     },
-    destroyed() {
+    destroyed () {
         //console.log("updateAvatar-destroyed")
         if (this.fromPage === "divide") {
             sessionStorage.removeItem("identity");
         }
     },
     computed: {
-        ...mapState(["userInfo"]),
+        ...mapState(["userInfo", "shopSettingInfo"]),
     },
     methods: {
-        saveCompanyLink(){
-            if(!this.link){
+        async supply (needed) {
+            let res = await api.publishNeeded(needed)
+            if (res.errCode === 0) {
+                this.$vux.toast.text("发布成功", "middle");
+                this.showneededPanel = false
+            }
+        },
+        publishNeeded () {
+            this.showneededPanel = true
+        },
+        hide () {
+            this.showneededPanel = false
+        },
+        saveCompanyLink () {
+            if (!this.link) {
                 this.$vux.toast.text("请填入链接", "middle");
-                return 
+                return
             }
             let data = {
-                link:this.link
+                link: this.link
             }
-            api.uploadCompanyLink(data).then(res=>{
-                if(res.errCode===0){
-                     api.getUserInfo().then((res) => {
+            api.uploadCompanyLink(data).then(res => {
+                if (res.errCode === 0) {
+                    api.getUserInfo().then((res) => {
                         console.log("getUserInfo----", res);
                         this.getuserInfo(res);
-                        });
+                    });
                     this.$vux.toast.text("保存成功", "middle");
                 }
             })
         },
-        goBack() {
+        goBack () {
             this.$vux.toast.text("保存成功", "middle");
             // this.$router.go(-2)
         },
         //选择上传生活照
-        uploadLifePic(e) {
+        uploadLifePic (e) {
             if (this.lifePhotoDesc === "") {
                 this.lifePhotoDesc = "求点赞"
             }
@@ -181,7 +208,7 @@ export default {
                 _this.option.img = compressedImg.base64;
             });
         },
-        dataURItoBlob(dataURI) {
+        dataURItoBlob (dataURI) {
             var byteString = atob(dataURI.split(",")[1]);
             var mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
             var ab = new ArrayBuffer(byteString.length);
@@ -192,9 +219,9 @@ export default {
             return new Blob([ab], { type: mimeString });
         },
         //确定生活照
-        LifePicupComfirmBtn() {
-            if(this.isUpLoading){
-                 this.$vux.toast.text(
+        LifePicupComfirmBtn () {
+            if (this.isUpLoading) {
+                this.$vux.toast.text(
                     "正在裁剪图片上传,请稍等",
                     "middle"
                 );
@@ -202,11 +229,11 @@ export default {
             }
             this.isUpLoading = true
             this.$refs.cropper.getCropData((data) => {
-                console.log("this.$refs.cropper.getCropBlob----------", data);
+                // console.log("this.$refs.cropper.getCropBlob----------", data);
                 this.resultLife = data.split(",")[1];
                 //上传生活照
                 let photodata = {
-                    caption: this.lifePhotoDesc?this.lifePhotoDesc:"",
+                    caption: this.lifePhotoDesc ? this.lifePhotoDesc : "",
                     filename: this.lifePicName,
                     photodata: this.resultLife,
                 };
@@ -219,7 +246,7 @@ export default {
                             this.getuserInfo(res);
                             this.lifePhotoDesc = "";
                             if (res.lifePhoto.lifePhotos) {
-                                this.lifePhotoList =res.lifePhoto.lifePhotos
+                                this.lifePhotoList = res.lifePhoto.lifePhotos
                                 if (res.lifePhoto.lifePhotos.length == 4) {
                                     this.isShowAddImg = false;
                                 }
@@ -237,7 +264,7 @@ export default {
             });
         },
         //删除生活照
-        close(photoImg, index) {
+        close (photoImg, index) {
             console.log("index---", index);
             console.log("photoImg---", photoImg);
             let data = {
@@ -260,7 +287,7 @@ export default {
             }
         },
         //选择头像图片
-        uploadAvatar(e) {
+        uploadAvatar (e) {
             let file = e.target.files[0];
             //console.log("file----", file)
             if (file.type === "video/mp4") {
@@ -282,7 +309,7 @@ export default {
                 _this.option.img = this.result;
             };
         },
-        avatarPicupLoad() {
+        avatarPicupLoad () {
             this.$refs.cropper.getCropBlob((data) => {
                 //console.log('this.$refs.cropper.getCropBlob----------', data);
                 this.resultAvatar = data;
@@ -369,21 +396,21 @@ export default {
     }
     .dailyLifePhoto-wrapper {
         padding: 0.2667rem 0.2rem;
-        .company-setting{
-            margin-bottom: .5rem;
-            .ip-link{
+        .company-setting {
+            margin-bottom: 0.5rem;
+            .ip-link {
                 margin: 8px 0;
-                height: .8rem;
+                height: 0.8rem;
                 width: 6rem;
-                padding-left: .2rem;
+                padding-left: 0.2rem;
             }
-            .save{
-                padding: .25rem .3rem;
+            .save {
+                padding: 0.25rem 0.3rem;
                 border-radius: 4px;
                 color: #fff;
                 background: @baseColor;
             }
-            .desc{
+            .desc {
                 font-size: 13px;
                 color: #999;
             }
@@ -473,9 +500,71 @@ export default {
             font-size: 0.5333rem;
         }
     }
-    .btn_wrapper {
-        margin-top: 0.8rem;
+    .btn {
+        display: block;
+        margin: 0.8rem auto;
         padding: 0 0.4rem;
+        border: none;
+        background-color: #ffd800;
+        color: #fff;
+        width: 80%;
+        height: 1rem;
+        line-height: 1rem;
+    }
+    .warning_bg {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0; // background-color: rgba(0, 0, 0, 0.3);
+        .warning_wrapper {
+            background-image: url("../../assets/image/envelop.png");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            position: absolute;
+            z-index: 9;
+            top: 40%;
+            left: 50%;
+            margin-left: -4rem;
+            margin-top: -1rem;
+            width: 8rem;
+            height: 4rem;
+            box-sizing: border-box;
+            padding-top: 0.66rem;
+            .desc_box {
+                display: flex;
+                justify-content: space-between;
+                padding: 0 0.5rem;
+                .k_3 {
+                    width: 3rem;
+                    height: 1.5rem;
+                }
+                .warningText {
+                    width: 100%;
+                    text-align: center;
+                    color: #333;
+                    font-size: 0.3333rem;
+                    font-weight: 800;
+                    width: 3rem;
+                    text-align: left;
+                }
+            }
+            .btnBox {
+                margin-top: 0.5rem;
+                text-align: center;
+                display: flex;
+                justify-content: space-around;
+                padding: 0 0.4rem;
+                .yes,
+                .no {
+                    border: none;
+                    border-radius: 0.1067rem;
+                    padding: 0.2067rem 0.3333rem;
+                    background-color: #ffd800;
+                    font-weight: 900;
+                }
+            }
+        }
     }
 }
 .update-enter-active,

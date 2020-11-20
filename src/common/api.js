@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-11-05 15:17:25
+ * @Last Modified time: 2020-11-20 12:04:07
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,8 +24,44 @@ axios.interceptors.request.use(
   }
 )
 let api = {};
+//拉取发布供需者
+api.loadPublisherList = function (needed) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadPublisherList?needed=${needed}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//发布供需
+api.publishNeeded = function (needed) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/publishNeeded?needed=${needed}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//加载活动告示板往期图片
+api.loadOldPhotos = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadOldPhotos`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //主动接受有缘人申请，加客服好友
-api.acceptSoulMateInvite = function (fromId,agree) {
+api.acceptSoulMateInvite = function (fromId, agree) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/acceptSoulMateInvite?fromId=${fromId}&agree=${agree}`).then((res) => {
       if (res.status == 200) {

@@ -28,39 +28,60 @@
                         </a>
                     </div>
                 </div>
-                <!-- 交友游戏  :data-step="homeIntro.friend.step"
-                         :data-intro="homeIntro.friend.intro"
-                         :data-position="homeIntro.friend.position"
-                         :data-disable-interaction="true"  -->
-                <div class="entertainment_wrapper">
-                    <div class="findFri_btn" @click="gotoFriend">
-                        <img id="step1" src="../../assets/image/findFri.png" alt />
-                        <div class="desc_wrapper">
-                            <div class="lineOne">
-                                <ul class="fri_list" v-show="friendIconList1.length>=3">
-                                    <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList1" :key="index">
-                                        <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
-                                    </li>
-                                </ul>
+                <div>
+                    <!-- 交友游戏1 -->
+                    <div v-if="shopSettingInfo.shopModeId===0" class="entertainment_wrapper">
+                        <div class="findFri_btn" @click="gotoFriend">
+                            <img id="step1" src="../../assets/image/findFri.png" alt />
+                            <div class="desc_wrapper">
+                                <div class="lineOne">
+                                    <ul class="fri_list" v-show="friendIconList1.length>=3">
+                                        <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList1" :key="index">
+                                            <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="linetwo">
+                                    <ul class="fri_list">
+                                        <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList2" :key="index">
+                                            <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
+                                        </li>
+                                    </ul>
+                                </div>
+                                <p class="text">{{(outFriendNum+inFriendNum)>0?(outFriendNum+inFriendNum):1}}人在线,有你N个好友&gt;</p>
                             </div>
-                            <div class="linetwo">
-                                <ul class="fri_list">
-                                    <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList2" :key="index">
-                                        <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
-                                    </li>
-                                </ul>
-                            </div>
-                            <p class="text">{{(outFriendNum+inFriendNum)>0?(outFriendNum+inFriendNum):1}}人在线,有你N个好友&gt;</p>
+                        </div>
+                        <div class="playGame_btn" @click="gotoPlay">
+                            <img src="../../assets/image/playGame.png" alt />
+                            <p class="text">挑战邻桌小妹/好友组局&gt;</p>
                         </div>
                     </div>
-                    <!-- :data-step="homeIntro.play.step"
-          :data-intro="homeIntro.play.intro"
-          :data-position="homeIntro.play.position"
-          :data-disable-interaction="true"
-          id="step2"  -->
-                    <div class="playGame_btn" @click="gotoPlay">
-                        <img src="../../assets/image/playGame.png" alt />
-                        <p class="text">挑战邻桌小妹/好友组局&gt;</p>
+                    <!-- 交友游戏2 -->
+                    <div v-else class="entertainment_wrapper2">
+                        <div class="entertainment_top">
+                            <div class="left">
+                                <img onclick="return false" class="k_1" @click="goToFriendForSvip" src="../../assets/image/k_1.png" alt="">
+                            </div>
+                            <div class="right" @click="gotoFriend">
+                                <div class="lineOne">
+                                    <ul class="fri_list" v-show="friendIconList3.length>=3">
+                                        <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList3" :key="index">
+                                            <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
+                                        </li>
+                                        <li class="item dot">...</li>
+                                    </ul>
+                                </div>
+                                <img onclick="return false" class="k_1" src="../../assets/image/k_2.png" alt="">
+                            </div>
+                        </div>
+                        <div class="entertainment_bottom">
+                            <div class="left" @click="gotoComment">
+                                <img onclick="return false" class="k_1" src="../../assets/image/k_3.png" alt="">
+                            </div>
+                            <div class="right">
+                                <img onclick="return false" @click="gotoPlay" class="k_1" src="../../assets/image/k_4.png" alt="">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- 福利 -->
@@ -68,7 +89,7 @@
                     <div class="title_content_wel">
                         <div class="title clearfix">
                             <img onclick="return false" src="../../assets/image/recomment.png" alt class="icon fl" />
-                            <h2 class="shop_title" @click="closeWebPage">店长推荐</h2>
+                            <h2 class="shop_title" @click="closeWebPage">{{shopSettingInfo.shopModeId===0 ? "店长推荐" :"会员产品推荐" }}</h2>
                             <span class="desc">积分兑换更优惠</span>
                         </div>
                         <div class="more fr">
@@ -96,7 +117,7 @@
                                 </div>
                                 <div class="right">
                                     <div class="thunb_box">
-                                        <div class="booking_btn" @click="freeBook(item.goods.ID,index)">积分兑换</div>
+                                        <div class="linear_btn" @click="freeBook(item.goods.ID,index)">积分兑换</div>
                                     </div>
                                 </div>
                             </li>
@@ -113,7 +134,7 @@
                     <div class="title_content_wel">
                         <div class="title clearfix">
                             <img onclick="return false" src="../../assets/image/hutui.png" alt class="icon fl" />
-                            <h2 class="shop_title">友商大派送</h2>
+                            <h2 class="shop_title">{{shopSettingInfo.shopModeId===0 ? "友商大派送" :"友好商家/协会" }}</h2>
                             <span class="desc">享会员优惠,交更多朋友</span>
                         </div>
                     </div>
@@ -139,7 +160,9 @@
                                     <div class="thunb_box clearfix">
                                         <!-- <p class="count fl">{{item.distance}}</p> -->
                                     </div>
-                                    <div style="margin-left:.3rem" class="receive_btn" @click="goToFriShop(item)">领&nbsp;&nbsp;&nbsp;取</div>
+                                    <div style="margin-left:.3rem" class="linear_btn" @click="goToFriShop(item)">
+                                        {{shopSettingInfo.shopModeId === 0 ? "领&nbsp;&nbsp;&nbsp;取" :"进&nbsp;&nbsp;&nbsp;入" }}
+                                    </div>
                                 </div>
                             </li>
                         </ul>
@@ -179,18 +202,6 @@
         <transition name="appear">
             <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
         </transition>
-        <!-- 选择会员卡推荐员工 -->
-        <!-- <div v-transfer-dom>
-      <popup
-        v-model="vipCardShow"
-        position="bottom"
-        should-rerender-on-show
-      >
-        <div>
-          <toggle-text @click.native="vipCardShow = false"></toggle-text>
-        </div>
-      </popup>
-    </div> -->
         <router-view></router-view>
     </div>
 </template>
@@ -207,8 +218,6 @@ import { mapMutations, mapActions, mapState, mapGetters } from "vuex";
 import envelope from "base/envelope/envelope";
 import Bus from "common/bus.js";
 import { clearInterval } from "timers";
-// import Intro from 'common/intro'
-// import mySwiper from '../../libs/swiper/swiper-4.3.3.min.js'
 // import {setInterval,clearInterval} from 'timers';
 export default {
     name: "home",
@@ -217,18 +226,6 @@ export default {
     },
     data () {
         return {
-            // homeIntro: {
-            //   friend: {
-            //     step: '1',
-            //     intro: '大家找朋友',
-            //     position: "bottom"
-            //   },
-            //   play: {
-            //     step: '2',
-            //     intro: '玩大话骰子，交好友',
-            //     position: "bottom"
-            //   },
-            // },
             isShow_bg: false,
             game_giftInfo: {
                 firstPrize: {},
@@ -256,6 +253,7 @@ export default {
             // circleList: [],
             friendIconList1: [],
             friendIconList2: [],
+            friendIconList3: [],
             dicountList: [],
             gameShow: false,
             discountShow: false, //AI优惠券
@@ -289,7 +287,9 @@ export default {
             "userInfo",
             "shareUrl",
             "shopSettingInfo",
-            "noCouponsFlag"
+            "noCouponsFlag",
+            "publisherIdList",
+            "hasSvip"
         ]),
         ...mapGetters(["recommentList"])
     },
@@ -297,8 +297,7 @@ export default {
         console.log("home url---", window.iosSignUrl);
         this.deskCode = util.GetQueryString("deskCode");
         this.storeName = util.GetQueryString("storeName");
-        util.addVisitRecord(this.$route.name);
-        //console.log("this.storeName---", this.storeName);
+        // util.addVisitRecord(this.$route.name);
         this.resId = util.GetQueryString("resId");
         this.gameUrl = window.location.href.split("k98")[0];
         setTimeout(() => {
@@ -320,7 +319,8 @@ export default {
             range: 0,
             hometowncode: "",
             industry: "",
-            keyword: ""
+            keyword: "",
+            isSvip: false,
         };
         this.acquireWaitGetCoupons(); //获取自动优惠券
         this.setAdvertisePhoto(); //设置轮播图
@@ -342,19 +342,30 @@ export default {
         // this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
     },
     methods: {
-        // initIntro () {
-        //   this.$nextTick(() => {
-        //     // 开始
-        //     if (!localStorage.getItem('isShowHomeHelp')) {
-        //       Intro.oncomplete(() => {
-        //         localStorage.setItem('isShowHomeHelp', 1)
-        //         this.$router.push({
-        //           name: "friend"
-        //         })
-        //       }).start()
-        //     }
-        //   })
-        // },
+        goToFriendForSvip () {
+            if (!this.hasSvip) {
+                this.$vux.toast.text('暂无会长、理事成员', 'middle')
+                return
+            }
+            this.setSearchForSvip(true)
+            // setTimeout(() => {
+            this.$router.push({
+                path: "/friend"
+            });
+            // }, 300);
+        },
+        gotoComment () {
+            if (this.publisherIdList.length > 0) {
+                this.$router.push({
+                    name: "commentUser",
+                    params: {
+                        type: "homePage",
+                    },
+                });
+            } else {
+                this.$vux.toast.text('暂无用户发布供求数据', 'middle')
+            }
+        },
         //拉取友商派送的优惠券
         getAllianceCoupon () {
             var allianceData = {
@@ -535,8 +546,9 @@ export default {
             // util.routerTo("friend", this, {
             //   routeParamNum: 0 //路由参数2为进入了场外
             // });
+            this.setSearchForSvip(false)
             this.$router.push({
-                path: "/friend"
+                name: "friend",
             });
         },
         //打电话
@@ -692,7 +704,8 @@ export default {
             getCashierUnreadCount: "GETCASHIERUNREADCOUNT", //收银未读消息数量
             clearTopUpData: "CLEARTOPUPDATA",
             addMessageIntoQueue: "ADDMESSAGEQUEUE",
-            judgeInviteCoupon: "JUDGE_INVITE_COUPON" //判断是否还有邀请有礼
+            judgeInviteCoupon: "JUDGE_INVITE_COUPON", //判断是否还有邀请有礼
+            setSearchForSvip: "SETSEARCHFORSVIP",//设置搜索群友时带svip参数
         }),
         ...mapActions({
             getAlreadyFriend: "get_alreadyFriendList" //获取已经成为好友事件
@@ -740,6 +753,23 @@ export default {
                         headimgurl: require("../../assets/image/blueSky.png")
                     }
                 ];
+                this.friendIconList3 = [
+                    {
+                        headimgurl: require("../../assets/image/avatar1.jpeg")
+                    },
+                    {
+                        headimgurl: require("../../assets/image/April.png")
+                    },
+                    {
+                        headimgurl: require("../../assets/image/avatar2.jpg")
+                    },
+                    {
+                        headimgurl: require("../../assets/image/cat.png")
+                    },
+                    {
+                        headimgurl: require("../../assets/image/blueSky.png")
+                    }
+                ]
                 //console.log("this.friendIconList1------", this.friendIconList1);
                 return;
             }
@@ -748,6 +778,7 @@ export default {
             });
             this.friendIconList1 = tempArr.slice(0, 3);
             this.friendIconList2 = tempArr.slice(4, 6);
+            this.friendIconList3 = tempArr.slice(0, 5);
         }
     },
     components: {
@@ -766,63 +797,11 @@ export default {
 
 <style scoped lang='less'>
 @import "../../assets/less/variable.less";
+@import "../../assets/less/btn.less";
 @import "../../assets/less/home_common.less";
 @import "../../assets/less/mixin.less";
 @import "~vux/src/styles/close";
-@import "../../libs/swiper/swiper-4.3.3.min.css"; // 优惠券开始
-.weui-dialog {
-    background: none;
-}
-.dialog-discount {
-    .discount-box {
-        padding: 0.2333rem 0 0.1rem;
-        background-color: #ffd700;
-        overflow: hidden;
-        .discountScroll {
-            height: 3.8rem;
-            box-sizing: border-box;
-            .discountList {
-                .item {
-                    margin: 0 auto 0.2667rem;
-                    width: 7.0533rem;
-                    height: 1.68rem;
-                    display: flex;
-                    justify-content: space-between; // border: 1px solid #FFAE00;
-                    // border-left: 2px solid #FFAE00;
-                    .bg("../../assets/image/discount_bg1.png");
-                    box-sizing: border-box;
-                    .itemLeft {
-                        box-sizing: border-box;
-                        padding-top: 0.4rem;
-                        .itemName {
-                            font-size: 0.3467rem;
-                            color: #4b4b4b;
-                            margin-bottom: 0.22rem;
-                            padding-left: 0.4533rem;
-                        }
-                        .itemTime {
-                            padding-left: 0.4533rem;
-                            font-size: 0.2933rem;
-                            color: #999;
-                        }
-                    }
-                    .itemRight {
-                        box-sizing: border-box;
-                        padding: 0.2667rem;
-                        padding-top: 0.6rem;
-                        font-size: 0.3733rem;
-                        color: #fff;
-                    }
-                }
-            }
-        }
-    }
-}
-.vux-close {
-    margin-top: 8px;
-    margin-bottom: 8px;
-    color: #fff;
-} // 优惠券结束
+// @import "../../libs/swiper/swiper-4.3.3.min.css"; // 优惠券开始
 // 弹框游戏开始
 .dialog-gameBegin {
     .game-box {
@@ -871,96 +850,7 @@ export default {
         z-index: 8;
         background-color: rgba(0, 0, 0, 0.3);
     }
-    background: rgba(242, 242, 242, 1); // .kefu {
-    //   position: fixed;
-    //   bottom: 80px;
-    //   right: 0.1333rem;
-    //   animation: jump 1500ms linear 500ms infinite normal;
-    //   @keyframes jump {
-    //     10% {
-    //       bottom: 80px;
-    //     }
-    //     50% {
-    //       bottom: 75px;
-    //     }
-    //     100% {
-    //       bottom: 80px;
-    //     }
-    //   }
-    //   .pic_kefu {
-    //     width: 1rem;
-    //     height: 1rem;
-    //   }
-    // }
-}
-.dialog_wrapper {
-    width: 7.8667rem;
-    height: 10.3467rem;
-    background: #ffd700;
-    margin: 0 auto;
-    border-radius: 10px;
-    .banner_content {
-        width: 100%;
-        height: 3.4933rem;
-        margin-bottom: 0.2667rem;
-        .picBanner {
-            width: 100%;
-            height: 100%;
-        }
-    }
-    .info_content {
-        width: 7.0667rem;
-        height: 6.2933rem;
-        margin: 0 auto;
-        background-image: url("../../assets/image/dialog_bg.png");
-        background-repeat: no-repeat;
-        background-size: 100%;
-        padding-top: 0.5867rem;
-        box-sizing: border-box;
-        h2 {
-            font-size: 0.4rem;
-            color: #ff3131;
-            font-weight: bold;
-            text-align: center;
-            font-family: "PingFang SC";
-        }
-        .introduce_box {
-            margin-top: 0.16rem;
-            .title {
-                .dialogTitle;
-            }
-            p {
-                .dialogP;
-            }
-        }
-        .endTime_box {
-            margin-top: 0.3333rem;
-            .title {
-                .dialogTitle;
-            }
-            p {
-                .dialogP;
-            }
-        }
-        .consume_box {
-            margin-top: 0.2933rem;
-            .title {
-                .dialogTitle;
-            }
-            p {
-                .dialogP;
-            }
-        }
-        .btn_box {
-            button {
-                outline: none;
-                background: #fff;
-                border: none;
-                color: #ffd700;
-                padding: 0.1333rem;
-            }
-        }
-    }
+    background: rgba(242, 242, 242, 1);
 }
 .content {
 }
@@ -1033,318 +923,68 @@ export default {
             font-size: 12px;
         }
     }
-} // .telescope_wrapper {
-//   @keyframes bigAndSmall {
-//     0% {
-//       transform: scale(1); //  opacity: 1;
-//     }
-//     50% {
-//       transform: scale(0.7);
-//     }
-//     100% {
-//       transform: rotate(0.8);
-//     }
-//   }
-//   width: 100%;
-//   height: 7rem;
-//   background-color: #fff;
-//   position: relative;
-//   overflow: hidden;
-//   .leftguideFinger {
-//     width: 2rem;
-//     height: 2rem;
-//     position: absolute;
-//     top: 2.5rem;
-//     left: 1.5667rem;
-//     z-index: 9;
-//     animation: bigAndSmall 1s linear infinite;
-//   }
-//   .rightguideFinger {
-//     width: 2rem;
-//     height: 2rem;
-//     position: absolute;
-//     top: 2.5rem;
-//     z-index: 9;
-//     animation: bigAndSmall 1s linear infinite;
-//     right: 0.7rem;
-//   }
-//   .leftguideText {
-//     position: absolute;
-//     top: 4.5rem;
-//     left: 1.4667rem;
-//     z-index: 9;
-//     font-size: 0.4rem;
-//     color: #fff;
-//     padding: 0.1333rem;
-//     font-weight: 800;
-//     border: 1px solid #fff;
-//     border-radius: 0.3333rem;
-//   }
-//   .rightguideText {
-//     position: absolute;
-//     top: 4.5rem;
-//     z-index: 9;
-//     font-size: 0.4rem;
-//     color: #fff;
-//     right: 0.4rem;
-//     padding: 0.1333rem;
-//     font-weight: 800;
-//     border: 1px solid #fff;
-//     border-radius: 0.3333rem;
-//   }
-//   @keyframes rotateAn {
-//     0% {
-//       transform: rotate(0deg);
-//       opacity: 1;
-//     }
-//     99% {
-//       transform: rotate(180deg);
-//       opacity: 1;
-//     }
-//     100% {
-//       transform: rotate(180deg);
-//       opacity: 0;
-//     }
-//   }
-//   .left_radius_box {
-//     width: 3.4rem;
-//     height: 3.4rem;
-//     border-radius: 50%;
-//     position: absolute;
-//     z-index: 1;
-//     top: 1.6rem;
-//     left: 0.57rem;
-//     overflow: hidden;
-//     .more {
-//       position: absolute;
-//       z-index: -1;
-//       bottom: 1.3rem;
-//       left: 0.2rem;
-//       padding-top: 0.3rem;
-//       width: 4rem;
-//       .fri_list {
-//         // position: absolute;
-//         .item {
-//           float: left;
-//           margin-left: -0.1333rem; // position: absolute;
-//           .min_avatar {
-//             width: 0.76rem;
-//             height: 0.76rem;
-//             border-radius: 50%;
-//           }
-//         }
-//         .dotItem {
-//           margin-left: 0.1rem;
-//           padding-top: 0.0667rem;
-//           .rightArrow {
-//             position: absolute;
-//             right: 0.0933rem;
-//             top: 0.3rem;
-//             font-size: 0.5533rem;
-//             display: inline-block;
-//             color: #d1d1d1;
-//           }
-//         }
-//       }
-//     }
-//     .leftCircle {
-//       width: 3.4rem;
-//       height: 3.4rem;
-//       border-radius: 50%;
-//       position: absolute;
-//       overflow: hidden;
-//       .leftCirclePart,
-//       .leftCirclePartIphoneX,
-//       .rightCirclePart {
-//         position: absolute;
-//         width: 50%;
-//         height: 100%;
-//         top: 0;
-//         overflow: hidden;
-//       }
-//       .leftCirclePart {
-//         left: -0.0167rem;
-//         border-radius: 50% 0 0 50%;
-//         overflow: hidden;
-//       }
-//       .leftCirclePart::after {
-//         background: linear-gradient(bottom, #9bccf7, #2785f0);
-//         opacity: 1;
-//         display: block;
-//         content: "";
-//         width: 100%;
-//         height: 100%;
-//         transform-origin: right center;
-//         animation: rotateAn 2s 4s linear forwards;
-//       }
-//       .leftCirclePartIphoneX::after {
-//         background: linear-gradient(bottom, #9bccf7, #2785f0);
-//         opacity: 1;
-//         display: block;
-//         content: "";
-//         width: 100%;
-//         height: 3.4rem;
-//         transform-origin: right center;
-//       }
-//       .rightCirclePart {
-//         right: 2px;
-//         border-radius: 0 50% 50% 0;
-//         overflow: hidden;
-//       }
-//       .rightCirclePart::after {
-//         background: linear-gradient(bottom, #9bccf7, #2785f0);
-//         opacity: 1;
-//         display: block;
-//         content: "";
-//         width: 100%;
-//         height: 100%;
-//         transform-origin: left center;
-//         animation: rotateAn 2s 2s linear forwards;
-//       }
-//       .rightCirclePartIphoneX::after {
-//         background: linear-gradient(bottom, #9bccf7, #2785f0);
-//         opacity: 1;
-//         display: block;
-//         content: "";
-//         width: 100%;
-//         height: 3.4rem;
-//         transform-origin: left center;
-//       }
-//     }
-//     .findFriend_text {
-//       position: absolute;
-//       width: 2.6rem;
-//       top: 1.2rem;
-//       left: 0.4rem;
-//     }
-//     .onlineStatusPeople {
-//       width: 1.7rem;
-//       box-sizing: border-box;
-//       text-align: center; // background-color: #fff;
-//       border-radius: 0.2667rem;
-//       position: absolute;
-//       bottom: 2.3rem;
-//       left: 0.8567rem;
-//       padding: 0.05rem 0.1rem;
-//       font-size: 0.28rem;
-//     }
-//     .online_person {
-//       width: 1.7rem;
-//       box-sizing: border-box;
-//       text-align: center; // background-color: #fff;
-//       border-radius: 0.2667rem;
-//       position: absolute;
-//       bottom: 0.11867rem;
-//       left: 0.8067rem;
-//       padding: 0.05rem 0.1rem;
-//       font-size: 0.28rem;
-//     }
-//   }
-//   .right_radius_box {
-//     width: 3.4rem;
-//     height: 3.4rem;
-//     border-radius: 50%;
-//     position: absolute;
-//     z-index: 1;
-//     top: 1.56rem;
-//     right: 0.54rem;
-//     overflow: hidden;
-//     .rightCircle {
-//       width: 3.4rem;
-//       height: 3.4rem;
-//       border-radius: 50%;
-//       position: absolute;
-//       overflow: hidden;
-//       left: 0.0133rem;
-//       .leftCirclePart,
-//       .leftCirclePartIphoneX,
-//       .rightCirclePart {
-//         position: absolute;
-//         width: 50%;
-//         height: 100%;
-//         top: 0;
-//       }
-//       .leftCirclePart {
-//         left: -0.0067rem;
-//         border-radius: 50% 0 0 50%;
-//         overflow: hidden;
-//       }
-//       .leftCirclePart::after {
-//         background: linear-gradient(bottom, #9bccf7, #2785f0);
-//         opacity: 1;
-//         display: block;
-//         content: "";
-//         width: 100%;
-//         height: 100%;
-//         transform-origin: right center;
-//         animation: rotateAn 2s 4s linear forwards;
-//       }
-//       .leftCirclePartIphoneX::after {
-//         background: linear-gradient(bottom, #9bccf7, #2785f0);
-//         opacity: 1;
-//         display: block;
-//         content: "";
-//         width: 100%;
-//         height: 3.4rem;
-//         transform-origin: right center;
-//       }
-//       .rightCirclePart {
-//         right: 0.0367rem;
-//         border-radius: 0 50% 50% 0;
-//         overflow: hidden;
-//       }
-//       .rightCirclePart::after {
-//         background: linear-gradient(bottom, #9bccf7, #2785f0);
-//         opacity: 1;
-//         display: block;
-//         content: "";
-//         width: 100%;
-//         height: 100%;
-//         transform-origin: left center;
-//         animation: rotateAn 2s 2s linear forwards;
-//       }
-//       .rightCirclePartIphoneX::after {
-//         background: linear-gradient(bottom, #9bccf7, #2785f0);
-//         opacity: 1;
-//         display: block;
-//         content: "";
-//         width: 100%;
-//         height: 3.4rem;
-//         transform-origin: left center;
-//       }
-//     }
-//     .dahuashai_text {
-//       position: absolute;
-//       width: 2.6rem;
-//       top: 1.2rem;
-//       left: 0.4rem;
-//     }
-//     .online_player {
-//       width: 1.7rem;
-//       box-sizing: border-box;
-//       text-align: center; // background-color: #fff;
-//       border-radius: 0.2667rem;
-//       position: absolute;
-//       bottom: 0.0867rem;
-//       left: 0.8167rem;
-//       padding: 0.05rem 0.1rem;
-//       font-size: 0.28rem;
-//     }
-//     .right_radius {
-//       width: 0.04rem;
-//       height: 1.6rem;
-//       position: absolute;
-//       right: 50%;
-//       margin-right: -0.02rem;
-//       transform-origin: bottom;
-//     }
-//   }
-//   .telescope_img {
-//     position: absolute; // top: -0.2333rem;
-//     width: 100%;
-//     height: 100%;
-//   }
-// }
+}
+.entertainment_wrapper2 {
+    .entertainment_top {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 0.2rem;
+        .left {
+            .k_1 {
+                width: 4.6667rem;
+                height: 2.2rem;
+            }
+        }
+        .right {
+            position: relative;
+            .lineOne {
+                position: absolute;
+                bottom: 0.1rem;
+                right: 0.3rem;
+                z-index: 1;
+                .fri_list {
+                    .item {
+                        float: left;
+                        margin-left: -0.233rem; // position: absolute;
+                        .min_avatar {
+                            width: 0.66rem;
+                            height: 0.66rem;
+                            border-radius: 50%;
+                        }
+                    }
+                    .dot {
+                        font-size: 0.5rem;
+                        font-weight: 900;
+                        color: #fff;
+                        margin-left: 0.04rem;
+                        line-height: 1;
+                        letter-spacing: 0.05rem;
+                    }
+                }
+            }
+            .k_1 {
+                width: 4.6667rem;
+                height: 2.2rem;
+            }
+        }
+    }
+    .entertainment_bottom {
+        display: flex;
+        justify-content: space-around;
+        .left {
+            .k_1 {
+                width: 4.6667rem;
+                height: 2.2rem;
+            }
+        }
+        .right {
+            .k_1 {
+                width: 4.6667rem;
+                height: 2.2rem;
+            }
+        }
+    }
+}
 .homeTop_wrapper {
     position: relative;
     height: 4.2667rem;
@@ -1785,39 +1425,6 @@ export default {
                             float: left;
                             margin-right: 0.1333rem;
                         }
-                        .booking_btn {
-                            width: 1.4rem;
-                            padding: 0.1067rem 0.1067rem;
-                            text-align: center;
-                            line-height: 0.5067rem;
-                            background: -webkit-linear-gradient(
-                                left,
-                                #fff800,
-                                #fef200,
-                                #fccc00,
-                                #fbbc00
-                            );
-                            color: #1d1d1d;
-                            border-radius: 0.08rem;
-                            font-size: 0.32rem;
-                        }
-                    }
-                    .receive_btn {
-                        width: 1.4rem;
-                        text-align: center;
-                        padding: 0.1067rem;
-                        font-size: 0.32rem;
-                        line-height: 0.5067rem;
-                        // background: @baseColor;
-                        background: -webkit-linear-gradient(
-                            left,
-                            #fff800,
-                            #fef200,
-                            #fccc00,
-                            #fbbc00
-                        );
-                        color: #1d1d1d;
-                        border-radius: 0.08rem;
                     }
                 }
             }
@@ -1856,5 +1463,13 @@ export default {
         width: 4.5rem;
         height: 0.8rem;
     }
+}
+.weui-dialog {
+    background: none;
+}
+.vux-close {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    color: #fff;
 }
 </style>

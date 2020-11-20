@@ -2,29 +2,29 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-11-05 15:16:40
+ * @Last Modified time: 2020-11-20 16:46:11
  */
-import axios from './axios'
+import axios from 'axios'
 import Url from './config'
 // // 定义一个缓存池用来缓存数据
 // let cache = {}
 // const EXPIRE_TIME = 60000
 // // 利用axios的cancelToken来取消请求
 // const CancelToken = axios.CancelToken
-// axios.interceptors.request.use(
-//     config => {
-//         let identity = sessionStorage.getItem('identity')
-//         if (identity) {
-//             config.headers = {
-//                 'identity': identity,
-//             }
-//         }
-//         return config
-//     },
-//     error => {
-//         return Promise.reject(error)
-//     }
-// )
+axios.interceptors.request.use(
+  config => {
+    let identity = sessionStorage.getItem('identity')
+    if (identity) {
+      config.headers = {
+        'identity': identity,
+      }
+    }
+    return config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
 
 let api = {};
 //临时接口  删除分身
@@ -39,8 +39,44 @@ api.delIdentity = function (targetID) {
     })
   })
 }
+//拉取发布供需者
+api.loadPublisherList = function (needed) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadPublisherList?tk=${Url.tk}&needed=${needed}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//发布供需
+api.publishNeeded = function (needed) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/publishNeeded?tk=${Url.tk}&needed=${needed}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//加载活动告示板往期图片
+api.loadOldPhotos = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadOldPhotos?tk=${Url.tk}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //主动接受有缘人申请，加客服好友
-api.acceptSoulMateInvite = function (fromId,agree) {
+api.acceptSoulMateInvite = function (fromId, agree) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/acceptSoulMateInvite?tk=${Url.tk}&fromId=${fromId}&agree=${agree}`).then((res) => {
       if (res.status == 200) {
@@ -1288,7 +1324,7 @@ api.loadRecommends = function () {
 //拉取活动通知
 api.loadActivityInfo = function () {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/loadActivityInfo?tk=${Url.tk}`, { cache: true })
+    axios.get(`/api/loadActivityInfo?tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -1301,7 +1337,7 @@ api.loadActivityInfo = function () {
 //拉取门店信息
 api.loadStoreSetting = function () {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/loadStoreSetting?tk=${Url.tk}`, { cache: true })
+    axios.get(`/api/loadStoreSetting?tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -1314,7 +1350,7 @@ api.loadStoreSetting = function () {
 //拉取首页轮播图
 api.loadAdvertisingPhoto = function () {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/loadAdvertisingPhoto?tk=${Url.tk}`, { cache: true })
+    axios.get(`/api/loadAdvertisingPhoto?tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

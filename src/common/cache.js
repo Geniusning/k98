@@ -8,7 +8,7 @@ export default class Cache {
     this.options = {}
   }
 
-  use(options) {
+  use (options) {
     let defaults = {
       expire: 60000, // 过期时间 默认一分钟
       storage: false, // 是否开启缓存
@@ -23,7 +23,7 @@ export default class Cache {
     // if (options && !options.instance) return this.options.instance
   }
 
-  init() {
+  init () {
     // 初始化
     let options = this.options
     if (options.storage) {
@@ -37,7 +37,7 @@ export default class Cache {
     this.response(options.responseConfigFn)
   }
 
-  request(cb) {
+  request (cb) {
     // 请求拦截器
     let options = this.options
     options.instance.interceptors.request.use(async config => {
@@ -48,11 +48,11 @@ export default class Cache {
         let source = this.cancelToken.source()
         config.cancelToken = source.token
         let data = CACHES[config.url]
-        console.log("data---",data)
+        console.log("data---", data)
         let expire = getExpireTime()
         // 判断缓存数据是否存在 存在的话 是否过期 没过期就返回
         if (data && expire - data.expire < this.options.expire) {
-          console.log("没有过期返回数据---",data)
+          console.log("没有过期返回数据---", data)
           source.cancel(data)
         }
       }
@@ -60,7 +60,7 @@ export default class Cache {
     })
   }
 
-  response(cb) {
+  response (cb) {
     // 响应拦截器
     this.options.instance.interceptors.response.use(
       async response => {
@@ -88,7 +88,7 @@ export default class Cache {
   }
 
   // 本地缓存过期判断
-  _storageExpire(cacheKey) {
+  _storageExpire (cacheKey) {
     return new Promise(resolve => {
       let key = getStorage(cacheKey)
       let date = getExpireTime()
@@ -97,7 +97,7 @@ export default class Cache {
         let isExpire = date - key < this.options.storage_expire
         // 如果过期 则重新设定过期时间 并清空缓存
         if (!isExpire) {
-          removeStorage()
+          // removeStorage()
         }
       } else {
         setStorage(cacheKey, date)
@@ -111,7 +111,7 @@ export default class Cache {
  * caches: 缓存列表
  * type: set->存 get->取
  */
-function mapStorage(caches, type = 'set') {
+function mapStorage (caches, type = 'set') {
   Object.entries(caches).map(([key, cache]) => {
     if (type === 'set') {
       setStorage(key, cache)
@@ -125,22 +125,22 @@ function mapStorage(caches, type = 'set') {
 }
 
 // 清除本地缓存
-function removeStorage() {
+function removeStorage () {
   localStorage.clear()
 }
 
 // 设置缓存
-function setStorage(key, cache) {
+function setStorage (key, cache) {
   localStorage.setItem(key, JSON.stringify(cache))
 }
 
 // 获取缓存
-function getStorage(key) {
+function getStorage (key) {
   let data = localStorage.getItem(key)
   return JSON.parse(data)
 }
 
 // 设置过期时间
-function getExpireTime() {
+function getExpireTime () {
   return new Date().getTime()
 }

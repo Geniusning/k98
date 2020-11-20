@@ -1,3 +1,10 @@
+
+//设置搜索群友带上svip参数
+export const SETSEARCHFORSVIP = "SETSEARCHFORSVIP"
+//保存供求发布者id
+export const SAVEPUBLISHERID = "SAVEPUBLISHERID"
+//保存往期照片数据
+export const SAVEOLDPHOTOS = "SAVEOLDPHOTOS"
 //更新灵魂匹配参数
 export const UPDATESOULPARAMS = "UPDATESOULPARAMS"
 //存储买单收款码
@@ -63,18 +70,18 @@ export const ADD_GIFTINFO = "ADD_GIFTINFO"
 export const GET_RECOMMENTLIST = "GET_RECOMMENTLIST"
 //获取积分换礼品列表
 export const GET_SENDGIFTLIST = "GET_SENDGIFTLIST"
-    //判断消息类型
+//判断消息类型
 export const JUDGE_MESSTYPE = "JUDGE_MESSTYPE"
-    //获得公众号地址
+//获得公众号地址
 export const GET_URL = "GET_URL"
-    //手机验证码弹框
+//手机验证码弹框
 export const CHANGE_VALIDATE = "CHANGE_VALIDATE"
 
 //关注二维码弹框
 export const SHOW_QRCODE = "SHOW_QRCODE"
-    //获得用户生活照
+//获得用户生活照
 export const GET_LIFEIMG = "GET_LIFEIMG"
-    //更改用户生活照
+//更改用户生活照
 export const CHANGE_LIFEIMG = "CHANGE_LIFEIMG"
 
 //删除生活照
@@ -157,9 +164,9 @@ export const GET_SHOPINFO = "GET_SHOPINFO"
 
 //更改候选人浮标
 export const CHANGE_FRIENDlISTCURSOR = "CHANGE_FRIENDlISTCURSOR"
-    //动态获取聊天对象
-    // export const GET_DYNAMICFRIENDOBJ = "GET_DYNAMICFRIENDOBJ"
-    //获取礼物
+//动态获取聊天对象
+// export const GET_DYNAMICFRIENDOBJ = "GET_DYNAMICFRIENDOBJ"
+//获取礼物
 export const GET_GIFTLIST = "GET_GIFTLIST"
 
 //获取首页轮播图

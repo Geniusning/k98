@@ -1,103 +1,128 @@
 <template>
-    <transition name="fade">
-        <div id="chat" class="chatRoom">
-            <div class="chat_nav">
-                <div class="back_box">
-                    <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
-                </div>
-                <div class="name">
-                    <div class="sex_box">
-                        <img v-if="staticChatFriendObj.sex===2" src="../../assets/image/female.png" alt="">
-                        <img v-else src="../../assets/image/male.png" alt="">
+    <div>
+        <transition name="fade">
+            <div id="chat" class="chatRoom">
+                <div class="chat_nav">
+                    <div class="back_box">
+                        <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
                     </div>
-                    <span>{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:"客服小哥"}}</span>
-                    <!-- <div class="online_status">
+                    <div class="name">
+                        <div class="sex_box">
+                            <img v-if="staticChatFriendObj.sex===2" src="../../assets/image/female.png" alt="">
+                            <img v-else src="../../assets/image/male.png" alt="">
+                        </div>
+                        <span>{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:"客服小哥"}}</span>
+                        <!-- <div class="online_status">
             <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
             <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
             <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
           </div> -->
-                </div>
-                <div class="backHome_box">
-                    <img onclick="return false" src="../../assets/image/chat_home.png" alt class="home" @click="goHome">
-                </div>
-            </div>
-            <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
-                <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
-                <scroll ref="listView" class="chat_content" :scrollHeight="scrollHeight" :data="componentChatList" :listen-scroll="listenScroll" :pullDownRefresh="pullDownRefresh" @getIndex="getIndex" @scroll="myscroll" @pullingDown="pullingDown">
-                    <ul class="chat_list" ref="chatList">
-                        <li class="clearfix chatListItem" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" :key="index" v-for="(item,index) in componentChatList">
-                            <div v-if="item.type==1" class="message_wrapper">
-                                <div class="person_box">
-                                    <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
-                                    <!-- <h2 class="name">{{item.time}}</h2> -->
-                                    <img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:clientImg" alt class="avatar" v-if="item.friend">
-                                    <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:clientImg" alt class="avatar" v-else>
-                                </div>
-                                <div class="message_box">
-                                    <span v-show="item.type===1" class="arrow"></span>
-                                    <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message"></p>
-                                </div>
-                            </div>
-                            <div v-if="item.type==2" class="message_wrapper">
-                                <div class="person_box">
-                                    <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
-                                    <img :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:clientImg" alt class="avatar" v-if="item.friend">
-                                    <img :src="userInfo.headimgurl" alt class="avatar" v-else>
-                                </div>
-                                <div class="message_box" v-viewer>
-                                    <span v-show="item.type===2" class="arrow" style="background:none"></span>
-                                    <img :src="item.message" @load="onImgLoaded" alt class="messRecordPic" ref="picture">
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </scroll>
-            </div>
-            <div class="input_wrapper">
-                <div class="input_area clearfix">
-                    <input type="text" ref="sendWrapper" id="send_message" class="send_message" @focus.prevent="myfocus" v-model="input_value">
-                    <div @click="send" class="action_box clearfix" :class="{active:flag}">
-                        <img src="../../assets/image/plane.png" alt class="icon_plane fl">
-                        <span class="send fl" ref="send">发送</span>
+                    </div>
+                    <div class="backHome_box">
+                        <img onclick="return false" src="../../assets/image/chat_home.png" alt class="home" @click="goHome">
                     </div>
                 </div>
-                <div class="select_area">
-                    <ul class="selectList clearfix">
-                        <li class="item fl">
-                            <img onclick="return false" src="../../assets/image/chat_emotion.png" alt @click="show_emotion">
-                        </li>
-                        <li class="item fl">
-                            <img onclick="return false" src="../../assets/image/message_chat.png" alt @click="show_expression">
-                        </li>
-                        <li class="item fl">
-                            <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
-                            <input type="file" class="file" accept="image/*" @change="uploadImage">
-                        </li>
-                        <li class="item fl" style="padding:0" v-if="isClientFlag" @click="sendStaffCouponToUser">
-                            <img style="width:100%;height:100%" onclick="return false" src="../../assets/image/quan-icon.jpg" alt>
-                        </li>
-                    </ul>
-                </div>
-                <div class="emotion_area" v-if="emotionShow">
-                    <swiper :auto="false" height="130px" :show-dots="false">
-                        <swiper-item class="black">
-                            <grid :show-vertical-dividers="true" :cols="8">
-                                <div @click="selectEmtion(item.name)" :key="index" v-for="(item,index) in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.2rem">
-                                    <img onclick="return false" :src="item.num" alt>
+                <div class="chat_wrapper" ref="chatWrapper" @click="tagScroll">
+                    <div class="preview_pic" v-show="showPreview" ref="preview_pic" @click="closePreview"></div>
+                    <scroll ref="listView" class="chat_content" :scrollHeight="scrollHeight" :data="componentChatList" :listen-scroll="listenScroll"
+                            :pullDownRefresh="pullDownRefresh"
+                            @pullingDown="pullingDown">
+                        <ul class="chat_list" ref="chatList">
+                            <li class="clearfix chatListItem" ref="item" :class="{'friend':item.friend,'mine':!item.friend}" :key="index" v-for="(item,index) in componentChatList">
+                                <div v-if="item.type==1" class="message_wrapper">
+                                    <div class="person_box">
+                                        <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
+                                        <!-- <h2 class="name">{{item.time}}</h2> -->
+                                        <img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:clientImg" alt class="avatar" v-if="item.friend">
+                                        <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:clientImg" alt class="avatar" v-else>
+                                    </div>
+                                    <div class="message_box">
+                                        <span v-show="item.type===1" class="arrow"></span>
+                                        <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message"></p>
+                                    </div>
                                 </div>
-                            </grid>
-                        </swiper-item>
-                    </swiper>
+                                <div v-if="item.type==2" class="message_wrapper">
+                                    <div class="person_box">
+                                        <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
+                                        <img :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:clientImg" alt class="avatar" v-if="item.friend">
+                                        <img :src="userInfo.headimgurl" alt class="avatar" v-else>
+                                    </div>
+                                    <div class="message_box" v-viewer>
+                                        <span v-show="item.type===2" class="arrow" style="background:none"></span>
+                                        <img :src="item.message" @load="onImgLoaded" alt class="messRecordPic" ref="picture">
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </scroll>
                 </div>
-                <!-- 常用语 -->
-                <div class="expression_wrapper" v-if="expressionShow">
-                    <ul class="expressList">
-                        <li class="item vux-1px-b" v-for="(item,index) in expressionList" :key="index" @click="addExpress(item)">{{item}}</li>
-                    </ul>
+                <div class="input_wrapper">
+                    <div class="input_area clearfix">
+                        <input type="text" ref="sendWrapper" id="send_message" class="send_message" @focus.prevent="myfocus" v-model="input_value">
+                        <div @click="send" class="action_box clearfix" :class="{active:flag}">
+                            <img src="../../assets/image/plane.png" alt class="icon_plane fl">
+                            <span class="send fl" ref="send">发送</span>
+                        </div>
+                    </div>
+                    <div class="select_area">
+                        <ul class="selectList clearfix">
+                            <li class="item fl">
+                                <img onclick="return false" src="../../assets/image/chat_emotion.png" alt @click="show_emotion">
+                            </li>
+                            <li class="item fl">
+                                <img onclick="return false" src="../../assets/image/message_chat.png" alt @click="show_expression">
+                            </li>
+                            <li class="item fl">
+                                <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
+                                <input type="file" class="file" accept="image/*" @change="uploadImage">
+                            </li>
+                            <li class="item fl" style="padding:0" v-if="isClientFlag" @click="sendStaffCouponToUser">
+                                <img style="width:100%;height:100%" onclick="return false" src="../../assets/image/quan-icon.jpg" alt>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="emotion_area" v-if="emotionShow">
+                        <swiper :auto="false" height="130px" :show-dots="false">
+                            <swiper-item class="black">
+                                <grid :show-vertical-dividers="true" :cols="8">
+                                    <div @click="selectEmtion(item.name)" :key="index" v-for="(item,index) in emotionList" class="vux-center-h" style="box-sizing:border-box;display:inline-block;padding:0.2rem 0.2rem">
+                                        <img onclick="return false" :src="item.num" alt>
+                                    </div>
+                                </grid>
+                            </swiper-item>
+                        </swiper>
+                    </div>
+                    <!-- 常用语 -->
+                    <div class="expression_wrapper" v-if="expressionShow">
+                        <ul class="expressList">
+                            <li class="item vux-1px-b" v-for="(item,index) in expressionList" :key="index" @click="addExpress(item)">{{item}}</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+        </transition>
+        <div v-transfer-dom>
+            <x-dialog v-model="showDialog" class="dialog-demo">
+                <div class="img-box" v-if="shopSettingInfo.shopModeId===0">
+                    <p>欢迎光临，关注本社群专享会员特权，你可以：</p>
+                    <p>1、领福利，参活动</p>
+                    <p>2、现场/线上交友互动</p>
+                    <p>3、大话比赛/现场斗酒/邀友组局</p>
+                    <p>4、分享引荐2人进群，还可展现自已的企业/产品/供求。</p>
+                </div>
+                <div class="img-box" v-else>
+                    <p>温馨提示会员：</p>
+                    <p>1、请在“我的-设置“中完善个人资料，以便更多人结识您</p>
+                    <p>2、您可通过“个性标签“设置自已的学校、班级、专长等。以便好友查找</p>
+                    <p>3、发布照片后可提交到“供求信息“栏，增加曝光度</p>
+                    <p>4、社群靠大家共建。每分享引荐1好友进群，可获1朵小红花。红花越多排名越前。</p>
+                </div>
+                <div @click="closeTips">
+                    <span class="vux-close"></span>
+                </div>
+            </x-dialog>
         </div>
-    </transition>
+    </div>
 </template>
 
 <script type='text/ecmascript-6'>
@@ -115,7 +140,8 @@ import {
     SwiperItem,
     Grid,
     GridItem,
-    Popup
+    Popup,
+    XDialog
 } from "vux";
 import Scroll from "../../base/scroll/scroll.vue";
 import Url from "../../common/config.js";
@@ -138,6 +164,7 @@ export default {
     },
     data () {
         return {
+            showDialog: false,
             clientImg: require("../../assets/image/home_letter.png"),
             isClientFlag: false,
             sendingTimes: 0,
@@ -201,7 +228,8 @@ export default {
             componentChatList: [],
             isscroll: true,
             ClientEndCursor: 0,
-            isLoadMore: false
+            isLoadMore: false,
+            listenScroll: true
             // isLoading: false
         };
     },
@@ -218,7 +246,9 @@ export default {
     //   next()
     // },
     created () {
-        this.listenScroll = true;
+        if (!localStorage.getItem('helpTips')) {
+            this.showDialog = true
+        }
         this.today = new Date().getDate();
         this.today = new Date().getDate();
         if (this.today < 10) {
@@ -279,11 +309,16 @@ export default {
             "socket",
             "alreadyFriendListcursor",
             "giftList",
-            "staffCouponInfo"
+            "staffCouponInfo",
+            "shopSettingInfo"
         ]),
         ...mapGetters(["qrIsShow"])
     },
     methods: {
+        closeTips () {
+            this.showDialog = false
+            localStorage.setItem("helpTips", 1)
+        },
         //员工送券
         sendStaffCouponToUser () {
             let ToId = this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : sessionStorage.getItem("staffCouponToId")
@@ -714,7 +749,8 @@ export default {
         Grid,
         GridItem,
         Scroll,
-        Popup
+        Popup,
+        XDialog
     }
 };
 </script>
@@ -722,6 +758,8 @@ export default {
 <style scoped lang='less'>
 @import "../../assets/less/variable.less";
 @import "../../assets/less/chat.less";
+@import "~vux/src/styles/close";
+
 .chatRoom {
     position: fixed;
     z-index: 7;

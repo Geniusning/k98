@@ -48,14 +48,7 @@ export default {
         if (_url.indexOf('activityID') > 0) { //判断是系统本身进入当前页面的还是从分享链接进入本页面
             this.activityID = _url.split('activityID=')[1];
         }
-        let shareObj = {
-            title: "活动通知",
-            desc: "本店最新活动，会员特权。点击查看",
-            link: `${this.shareUrl}k98/shareActivity/${this.activityID}?activityID=${this.activityID}
-            &visitType=5&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
-            imgUrl: `${this.shopSettingInfo.image}`
-        };
-        util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
+
     },
     beforeRouteEnter (to, from, next) {
         if (from.name === "message" || from.name === "welfare" || from.name === "giftDetail") {
@@ -74,6 +67,15 @@ export default {
     mounted () {
         util.addVisitRecord(this.$route.name);
         this._loadActivityDetail();
+        setTimeout(() => {
+            let shareObj = {
+                title: "活动通知",
+                desc: "本店最新活动，会员特权。点击查看",
+                link: `${this.shareUrl}k98/shareActivity/${this.activityID}?activityID=${this.activityID}&visitType=5&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
+                imgUrl: `${this.shopSettingInfo.image}`
+            };
+            util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
+        }, 500);
     },
     computed: {
         ...mapState(["socket", "shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl", "userInfo"])
