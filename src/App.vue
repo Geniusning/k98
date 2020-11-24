@@ -1506,14 +1506,21 @@ export default {
                 newValue.name == "friend" ||
                 newValue.name == "message" ||
                 newValue.name == "welfare" ||
-                newValue.name == "mine" ||
-                newValue.name === "oneYuan" ||
-                newValue.name === "shareActivity" ||
-                newValue.name === "shareNew"
+                newValue.name == "mine"
+
             ) {
                 this.tabFlag = true;
                 this.hasDivideIdentity = true;
                 this.showClientServiceIconFlag = true;
+            } else if (
+                newValue.name === "oneYuan" ||
+                newValue.name === "shareActivity" ||
+                newValue.name === "shareNew" ||
+                newValue.name === "commentUser" ||
+                newValue.name === "comment") {
+                this.showClientServiceIconFlag = true;
+                this.tabFlag = false;
+                this.hasDivideIdentity = false;
             } else {
                 this.tabFlag = false;
                 this.hasDivideIdentity = false;
@@ -1644,7 +1651,7 @@ html {
     width: 10rem;
     overflow-y: auto;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+    // -webkit-overflow-scrolling: touch;
     -webkit-flex: 1;
     -moz-flex: 1;
     -ms-flex: 1;

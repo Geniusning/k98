@@ -249,7 +249,7 @@ export default {
             homeTownType: 0, //同乡，
             industryType: 0, //同行查看
             fatherPanelIndex: 1,
-            hideArrow: true,
+            hideArrow: false,
             showToast_gift: false,
             envelopeText: "",
             isFriend: null,
@@ -425,7 +425,7 @@ export default {
         }
     },
     mounted () {
-        // util.addVisitRecord(this.$route.name);
+        util.addVisitRecord(this.$route.name);
         console.log("this.loadFriendSexType----", this.loadFriendSexType);
 
         if (this.userInfo.sex === "男") {
@@ -458,13 +458,13 @@ export default {
         }
         setTimeout(() => {
             let shareObj = {
-                title: "找朋友",
-                desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
+                title: "邀你加入这个社群",
+                desc: "结识同道朋友，分享商机，闲暇邀友玩几把大话骰",
                 link: `${this.shareUrl}k98/friend?visitType=12&phone=${this.userInfo.phone
                     }&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
                 imgUrl: `${this.shopSettingInfo.image}`
             };
-            util.setShareInfo(shareObj, 20, "activity", util.shareGetJifen);
+            util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
         }, 1000);
         if (this.$route.params.data == "sharefriPage") {
             this.isShow_bg = true;
@@ -491,9 +491,8 @@ export default {
                     // this.$refs.stack.showIntro(Intro)
                     this.hideArrow = false
                     localStorage.setItem('isShowFriendHelp', 1)
-                    this.$router.push({
-                        name: "mine"
-                    })
+                }).onexit(function () {
+                    localStorage.setItem('isShowFriendHelp', 1)
                 }).start()
             }
         },
@@ -501,13 +500,13 @@ export default {
             this.isShow_bg = true;
         },
         // //分享获得积分
-        // shareGetJifen (amount, shareType) {
-        //     api.shareToGetIntegral(amount, shareType).then(res => {
-        //         if (res.errCode == 1030) {
-        //             alert("分享已上限，每天最多分享5次获得积分");
-        //         }
-        //     });
-        // },
+        shareGetJifen (amount, shareType) {
+            api.shareToGetIntegral(amount, shareType).then(res => {
+                if (res.errCode == 1030) {
+                    alert("分享已上限，每天最多分享5次获得积分");
+                }
+            });
+        },
         //职位选择
         onHide_P () {
             this.showPopupPickerPos = false;

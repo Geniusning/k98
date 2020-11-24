@@ -24,7 +24,7 @@
             <div>
                 <div v-if="lifePhotolist.length > 0" class="comment-slider">
                     <span v-if="shopSettingInfo.shopModeId===1&& pageType==='homePage'" class="needed">{{neededDesc}}</span>
-                    <swiper height="256px" :list="lifePhotolist" :interval="2000" :auto="true" :show-dots="false" v-model="swiperItemIndex" :min-moving-distance="10"></swiper>
+                    <swiper height="210px" :list="lifePhotolist" :interval="2000" :auto="true" :show-dots="false" v-model="swiperItemIndex" :min-moving-distance="10"></swiper>
                 </div>
             </div>
             <div class="comment-result">
@@ -80,7 +80,10 @@
                     <ul class="list">
                         <li class="left-triangle" @click="prev"></li>
                         <li class="supply" @click="changeNeeded(true) " :class="{active:isNeeded}">供</li>
-                        <li class="publish" @click="goToUpdateAvatar">我要发布</li>
+                        <li class="publish" @click="goToUpdateAvatar">
+                            <p>我要</p>
+                            <p>发布</p>
+                        </li>
                         <li class="need" @click="changeNeeded(false)" :class="{active:!isNeeded}">求</li>
                         <li class="right-triangle" @click="next"></li>
                     </ul>
@@ -181,7 +184,7 @@ export default {
                 this.isShow_bg = false;
             }, 5000);
         }, 8000);
-        // util.addVisitRecord(this.$route.name);
+        util.addVisitRecord(this.$route.name);
         let urlOpenId = util.GetQueryString("openId");
         let pageType = util.GetQueryString("pageType");
         this.pageType = this.$route.params.type ? this.$route.params.type : pageType

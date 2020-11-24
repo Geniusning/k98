@@ -71,7 +71,7 @@
                                 <img onclick="return false" :src="item.goods.image" alt class="shopPic">
                             </div>
                             <div class="center">
-                                <p class="title">{{item.goods.name}}</p>
+                                <p class="title">{{item.coupInfo.content}}</p>
                                 <!-- <p class="limit">{{item.goods.limit}}</p> -->
                                 <p class="price">
                                     <span class="discount_p">原价￥{{item.goods.discountPrice}}</span>
@@ -195,6 +195,8 @@ export default {
             this.$nextTick(() => {
                 if (!localStorage.getItem('isShowMineHelp')) {
                     Intro.oncomplete(() => {
+                        localStorage.setItem('isShowMineHelp', 1)
+                    }).onexit(function () {
                         localStorage.setItem('isShowMineHelp', 1)
                     }).start()
                 }

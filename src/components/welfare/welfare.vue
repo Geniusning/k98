@@ -153,7 +153,8 @@ export default {
             "activityNoticeList",
             "noCouponsFlag",
             "AdvertisingPhoto",
-            "shopSettingInfo"
+            "shopSettingInfo",
+            "userInfo"
         ])
     },
     mounted () {
@@ -162,18 +163,26 @@ export default {
         this.judgeHasGroupShop(); //判断是否有团购信息
         this.loadPublishArenas(); //拉取是否有比赛场
         this.loadOldPhotos()
-        setTimeout(() => {
-            let shareObj = {
-                title: "好友邀你参加活动",
-                desc: "老友己经占好位，就缺你啦…",
-                link: `${this.shareUrl}k98/welfare?visitType=12&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
-                imgUrl: `${this.shopSettingInfo.image}`
-            };
-            util.setShareInfo(shareObj, 20, "activity", util.shareGetJifen);
-        }, 1000);
+
+        let shareObj = {
+            title: "活动进行中…快来吧，就缺你啦！",
+            desc: "群友聚会、大话比赛、福利大派送",
+            link: `${this.shareUrl}k98/welfare?visitType=12&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
+            imgUrl: `${this.shopSettingInfo.image}`
+        };
+        util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
+
         //console.log("this.AdvertisingPhoto",this.AdvertisingPhoto)
     },
     methods: {
+        // //分享获得积分
+        shareGetJifen (amount, shareType) {
+            api.shareToGetIntegral(amount, shareType).then(res => {
+                if (res.errCode == 1030) {
+                    alert("分享已上限，每天最多分享5次获得积分");
+                }
+            });
+        },
         gotoOldPhotos () {
             this.$router.push({
                 name: "oldPhotos"

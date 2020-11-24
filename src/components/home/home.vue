@@ -65,10 +65,10 @@
                             <div class="right" @click="gotoFriend">
                                 <div class="lineOne">
                                     <ul class="fri_list" v-show="friendIconList3.length>=3">
-                                        <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList3" :key="index">
-                                            <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
+                                        <li class="item" style="margin-left:-0.13rem" :class="'avar'+index" v-for="(item,index) in friendIconList3" :key="index">
+                                            <img style="width:.5rem;height:.5rem" onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
                                         </li>
-                                        <li class="item dot">...</li>
+                                        <li class="item dot" style="line-height:.5">...</li>
                                     </ul>
                                 </div>
                                 <img onclick="return false" class="k_1" src="../../assets/image/k_2.png" alt="">
@@ -90,7 +90,7 @@
                         <div class="title clearfix">
                             <img onclick="return false" src="../../assets/image/recomment.png" alt class="icon fl" />
                             <h2 class="shop_title" @click="closeWebPage">{{shopSettingInfo.shopModeId===0 ? "店长推荐" :"会员产品推荐" }}</h2>
-                            <span class="desc">积分兑换更优惠</span>
+                            <span v-if="shopSettingInfo.shopModeId === 0" class="desc">积分兑换更优惠</span>
                         </div>
                         <div class="more fr">
                             <img onclick="return false" src="../../assets/image/fuli.png" alt class="letter" v-show="noCouponsFlag" @click="toWelfare" />
@@ -107,12 +107,12 @@
                                     <img onclick="return false" :src="item.goods.image" alt class="shopPic" />
                                 </div>
                                 <div class="center">
-                                    <p class="title">{{item.goods.name}}</p>
-                                    <p class="desc">{{item.goods.subtopic}}</p>
-                                    <p class="limit">{{item.goods.limit}}</p>
+                                    <p class="title">名称：{{item.coupInfo.content}}</p>
+                                    <!-- <p class="desc">{{item.goods.subtopic}}</p> -->
+                                    <p class="limit">限制：{{item.coupInfo.limit}}</p>
                                     <p class="price">
                                         <span class="discount_p">原价￥{{item.goods.discountPrice}}</span>
-                                        <span class="origin_p">积分换：{{item.goods.integral}}</span>
+                                        <span class="origin_p">{{shopSettingInfo.shopModeId===1?"特惠":"积分换"}}：{{item.goods.integral}}</span>
                                     </p>
                                 </div>
                                 <div class="right">
@@ -134,8 +134,7 @@
                     <div class="title_content_wel">
                         <div class="title clearfix">
                             <img onclick="return false" src="../../assets/image/hutui.png" alt class="icon fl" />
-                            <h2 class="shop_title">{{shopSettingInfo.shopModeId===0 ? "友商大派送" :"友好商家/协会" }}</h2>
-                            <span class="desc">享会员优惠,交更多朋友</span>
+                            <h2 class="shop_title">友好商家/商会/社群</h2>
                         </div>
                     </div>
                     <div class="welfare_content">
@@ -297,13 +296,13 @@ export default {
         console.log("home url---", window.iosSignUrl);
         this.deskCode = util.GetQueryString("deskCode");
         this.storeName = util.GetQueryString("storeName");
-        // util.addVisitRecord(this.$route.name);
+        util.addVisitRecord(this.$route.name);
         this.resId = util.GetQueryString("resId");
         this.gameUrl = window.location.href.split("k98")[0];
         setTimeout(() => {
             let shareObj = {
-                title: "找朋友",
-                desc: "您有N个好友在这儿玩! 方圆五公里的帅哥美女集结地→",
+                title: "邀你加入这个社群",
+                desc: "结识同道朋友，分享商机，闲暇邀友玩几把大话骰",
                 link: `${this.shareUrl}k98/home?visitType=3&phone=${this.userInfo.phone
                     }&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
                 imgUrl: `${this.shopSettingInfo.image}`
