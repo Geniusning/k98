@@ -26,7 +26,7 @@
        <span id="_m">00</span>
        <span id="_s">00</span>
        </div>
-   
+
 </body>
 <script>
   function sleep(duration) {
@@ -49,17 +49,17 @@
   main()
 
   function countTime() {
-    //获取当前时间  
+    //获取当前时间
     var date = new Date();
     var now = date.getTime();
-    //设置截止时间  
+    //设置截止时间
     var str = "2020/10/22 00:00:00";
     var endDate = new Date(str);
     var end = endDate.getTime();
 
-    //时间差  
+    //时间差
     var leftTime = end - now;
-    //定义变量 d,h,m,s保存倒计时的时间  
+    //定义变量 d,h,m,s保存倒计时的时间
     var d, h, m, s;
     if (leftTime >= 0) {
       d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
@@ -68,12 +68,12 @@
       s = Math.floor(leftTime / 1000 % 60);
 
     }
-    //将倒计时赋值到div中  
+    //将倒计时赋值到div中
     document.getElementById("_d").innerHTML = d + "天";
     document.getElementById("_h").innerHTML = h + "时";
     document.getElementById("_m").innerHTML = m + "分";
     document.getElementById("_s").innerHTML = s + "秒";
-    //递归每秒调用countTime方法，显示动态时间效果  
+    //递归每秒调用countTime方法，显示动态时间效果
     setTimeout(countTime, 1000);
 
   }
@@ -82,4 +82,26 @@
         console.log(true)
       }
 
+
+console.log("sync1")  //1
+setTimeout(() => {
+  console.log("setTimeOut1") //5
+}, 0);
+var promise = new Promise((resolve,reject)=>{
+  setTimeout(() => {
+    console.log("setTimeOutPromise") //6
+  }, 0);
+  console.log("promise")  //2
+  resolve()
+})
+promise.then(()=>{
+  console.log("then") //4
+  setTimeout(() => {
+    console.log("then settimeout") //7
+  }, 0);
+})
+setTimeout(() => {
+  console.log("last-timeout") //8
+}, 0);
+console.log("sync2") //3
 </script>
