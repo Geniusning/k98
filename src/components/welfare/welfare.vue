@@ -160,19 +160,23 @@ export default {
     mounted () {
         util.addVisitRecord(this.$route.name);
         this.loadActivityInfo(); //获取活动通知
-        this.judgeHasGroupShop(); //判断是否有团购信息
+       
         this.loadPublishArenas(); //拉取是否有比赛场
         this.loadOldPhotos()
 
-        let shareObj = {
+       
+
+        //console.log("this.AdvertisingPhoto",this.AdvertisingPhoto)
+    },
+    activated(){
+       this.judgeHasGroupShop(); //判断是否有团购信息
+       let shareObj = {
             title: "活动进行中…快来吧，就缺你啦！",
             desc: "群友聚会、大话比赛、福利大派送",
             link: `${this.shareUrl}k98/welfare?visitType=12&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
             imgUrl: `${this.shopSettingInfo.image}`
         };
         util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-
-        //console.log("this.AdvertisingPhoto",this.AdvertisingPhoto)
     },
     methods: {
         // //分享获得积分
@@ -442,10 +446,11 @@ export default {
         position: relative;
         .product-img {
             position: absolute;
-            width: 2rem;
+            width: 1.8rem;
             height: 1.2rem;
             top: 1rem;
             left: 2rem;
+
         }
         .shareEnter {
             width: 100%;

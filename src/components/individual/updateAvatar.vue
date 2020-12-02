@@ -4,11 +4,7 @@
             <my-header title="修改头像" identity></my-header>
             <div class="avatar-wrapper vux-1px-t vux-1px-b">
                 <div class="pic-box">
-                    <img
-                         :src="fromPage=='individual'?userInfo.headimgurl?userInfo.headimgurl:addPic:addPic"
-                         alt
-                         class="pic_avatar"
-                         ref="avatar" />
+                    <img :src="fromPage=='individual'?userInfo.headimgurl?userInfo.headimgurl:addPic:addPic" class="pic_avatar" ref="avatar" />
                 </div>
                 <div class="file-box">
                     <p class="text">更换头像</p>
@@ -124,11 +120,11 @@ export default {
     },
     created () {
         this.link = this.userInfo.companyLink
-        console.log("this.$route.params---", this.$route.params)
+        // console.log("this.$route.params---", this.$route.params)
         this.fromPage = this.$route.params.type; //判断从哪个页面跳转过来
-        console.log("判断从哪个页面跳转过来---", this.fromPage);
+        // console.log("判断从哪个页面跳转过来---", this.fromPage);
         if (this.fromPage === "divide") {
-            console.log("userInfo----", this.userInfo);
+            // console.log("userInfo----", this.userInfo);
         } else {
             if (this.userInfo.lifePhoto.lifePhotos) {
                 this.lifePhotoList = this.userInfo.lifePhoto.lifePhotos;
@@ -368,6 +364,7 @@ export default {
     right: 0;
     bottom: 0;
     background-color: #fff;
+    overflow: auto;
     .avatar-wrapper {
         display: flex;
         justify-content: space-between;

@@ -126,7 +126,7 @@
                     <div class="selected_wrapper">
                         <h3 class="title">已选择标签</h3>
                         <ul class="selected_list clearfix">
-                            <li class="item fl" v-for="(item,index) in commonList" :key="index">{{item}}</li>
+                            <li @click="delTag(index)" class="item fl" v-for="(item,index) in commonList" :key="index">{{item}}</li>
                         </ul>
                     </div>
                 </div>
@@ -411,18 +411,8 @@ export default {
         this.isQuiet = this.userInfo.isQuiet;
         this.isComment = this.userInfo.isComment;
         this.isBattle = this.userInfo.isBattle;
-        this.signature = this.userInfo.signature
-            ? this.userInfo.signature
-            : this.signature;
+        this.signature = this.userInfo.signature ? this.userInfo.signature : this.signature;
         this.userInfoTags = this.userInfo.tags.split("、");
-        this.tagList.forEach((localUseTag, index) => {
-            this.userInfoTags.forEach(serverUseTag => {
-                if (serverUseTag == localUseTag.name) {
-                    localUseTag.checked = true;
-                    this.commonList.push(localUseTag.name);
-                }
-            });
-        });
     },
     methods: {
         handleChangeHomeTown (value) {
@@ -553,13 +543,13 @@ export default {
         },
         //保存自定义标签
         save () {
+            this.signatureList = ""
             this.tagShow = false;
             this.StaffTagShow = false;
             this.signatureList = this.commonList.join("、");
             this.commonList = [];
             this.diyTag = "";
             this.diyStaffTag = "";
-            //console.log(this.signatureList);
         },
         unique (arr) {
             return Array.from(new Set(arr));
@@ -591,11 +581,24 @@ export default {
                 this.userInfoTags.forEach(serverUseTag => {
                     if (serverUseTag == localUseTag.name) {
                         localUseTag.checked = true;
-
-                        this.commonList.push(localUseTag.name);
+                         this.commonList.push(serverUseTag);
                     }
                 });
             });
+            // this.userInfoTags.forEach(serverUseTag => {
+            //     this.commonList.push(serverUseTag);
+            // });
+        },
+        //删除用户个性标签
+        delTag(index){
+          // this.commonList.splice(index,1)
+          //  this.tagList.forEach((localUseTag, index) => {
+          //       this.commonList.forEach(serverUseTag => {
+          //           if (serverUseTag == localUseTag.name) {
+          //               localUseTag.checked = true;
+          //           }
+          //       });
+          //   });
         },
         // 显示员工标签弹框
         showStaffTag () {

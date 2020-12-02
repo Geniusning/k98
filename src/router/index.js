@@ -21,8 +21,18 @@ const router = new Router({
   {
     path: '/home',
     name: 'home',
-    component: () =>
-      import('../components/home/home.vue'),
+    children:[
+      {
+        path:"moreRecommend",
+        name:"moreRecommend",
+        component: () =>
+          import('../components/home/moreShopRecommend.vue'),
+        meta: {
+          title: "更多会员产品"
+        }
+      }
+    ],
+    component: () => import('../components/home/home.vue'),
     meta: {
       keepAlive: true,
       title: "首页"
@@ -125,7 +135,7 @@ const router = new Router({
       import('../components/welfare/welfare.vue'),
     meta: {
       title: "福利",
-      keepAlive: false,
+      keepAlive: true,
     },
     children: [
 

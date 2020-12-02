@@ -97,9 +97,9 @@
                     <img :src="groupShopInfo.oneYuanGroupShopInfo.image" class="pic" alt="">
                 </div>
                 <div class="right-info">
-                    <h3 class="title">团购项目：{{groupShopInfo.oneYuanGroupShopInfo.name}}</h3>
-                    <p class="content">团购描述：{{groupShopInfo.oneYuanGroupShopInfo.subtopic}}</p>
-                    <p class="content">限制条件：{{groupShopInfo.oneYuanGroupShopInfo.limit}}</p>
+                    <h3 class="title">团购：{{groupShopInfo.oneYuanGroupShopInfo.name}}</h3>
+                    <p class="content">描述：{{groupShopInfo.oneYuanGroupShopInfo.subtopic}}</p>
+                    <p class="content">条件：{{groupShopInfo.oneYuanGroupShopInfo.limit}}</p>
                     <p class="content">原价：{{groupShopInfo.oneYuanGroupShopInfo.originPrice}}</p>
                     <p class="content">团购价格：{{groupShopInfo.oneYuanGroupShopInfo.groupShoppingPrice}}</p>
                 </div>
@@ -431,7 +431,7 @@ export default {
             justify-content: space-around;
             .left-info {
                 .pic {
-                    width: 5rem;
+                    width: 4rem;
                     height: 3rem;
                 }
             }
@@ -439,16 +439,17 @@ export default {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-around;
+                width: 5rem;
                 .title {
                     font-weight: 800;
                     color: #333;
-                    font-size: 0.4rem;
+                    font-size: 0.37rem;
                 }
                 .content {
                     color: #9d9b9b;
-                    margin-top: 0.2rem;
+                    margin-top: 0.1rem;
                     font-weight: 600;
-                    font-size: 0.35rem;
+                    font-size: 0.32rem;
                 }
             }
         }

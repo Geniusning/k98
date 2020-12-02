@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-11-24 18:02:32
+ * @Last Modified time: 2020-12-01 17:29:01
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -66,7 +66,7 @@ new Vue({
       }
       setTimeout(() => {
         console.log("window.iosSignUrl----", window.iosSignUrl)
-      }, 2000);
+      }, 1000);
     }
     this.deskCode = util.GetQueryString("deskCode")
     this.deskId = util.GetQueryString("deskID")

@@ -212,8 +212,7 @@ export default {
             let height = this.$el.offsetHeight;
             let offsetWidth = width - Math.abs(this.poswidth);
             let offsetHeight = height - Math.abs(this.posheight);
-            let ratio =
-                1 - (offsetWidth * offsetHeight) / (width * height) || 0;
+            let ratio = 1 - (offsetWidth * offsetHeight) / (width * height) || 0;
             return ratio > 1 ? 1 : ratio;
         },
         // 划出宽度比例
@@ -240,9 +239,7 @@ export default {
                 if (res.errCode === 0) {
                     this.thumbCount = res.staffCommentInfo.thumbCount;
                 } else {
-                    this.$vux.toast.show({
-                        text: res.errMsg,
-                    });
+                    this.$vux.toast.show({text: res.errMsg});
                 }
                 //console.log("this.staffCommentInfo------", this.thumbCount);
             });
@@ -275,10 +272,7 @@ export default {
                     let unfocusThumbNum = Number(thumbTimes.unfocusThumbTimes);
                     unfocusThumbNum--;
                     thumbTimes["unfocusThumbTimes"] = this.unfocusThumbTimes;
-                    localStorage.setItem(
-                        "thumbTimes",
-                        JSON.stringify(thumbTimes)
-                    );
+                    localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes));
                     this.changeQrCodeText({
                         title: "游客仅限10次交友机会，长按关注获取更多特权",
                         bottomText: "会员特权:交朋友、领福利、打比赛",
@@ -305,24 +299,15 @@ export default {
                     let focusThumbNum = Number(thumbTimes.focusThumbTimes);
                     focusThumbNum--;
                     thumbTimes["focusThumbTimes"] = focusThumbNum;
-                    localStorage.setItem(
-                        "thumbTimes",
-                        JSON.stringify(thumbTimes)
-                    );
+                    localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes));
                     if (this.limitFlag) {
                         this.limitFlag = !this.limitFlag;
-                        this.$vux.toast.text(
-                            "每天限30次点赞交友机会。当天已用完，明天再来",
-                            "middle"
-                        );
+                        this.$vux.toast.text("每天限30次点赞交友机会。当天已用完，明天再来","middle");
                     }
                 } else {
                     thumbTimes["date"] = new Date().getDate();
                     thumbTimes["focusThumbTimes"] = this.focusThumbTimes;
-                    localStorage.setItem(
-                        "thumbTimes",
-                        JSON.stringify(thumbTimes)
-                    );
+                    localStorage.setItem("thumbTimes",JSON.stringify(thumbTimes));
                 }
             }
             let xid = this.friendData.info.openid;
@@ -359,11 +344,7 @@ export default {
         //   );
         // },
         goToComment (info) {
-            if (
-                this.l98Setting.staffCommentOpen &&
-                info.role != "" &&
-                info.phone != ""
-            ) {
+            if (this.l98Setting.staffCommentOpen && info.role != "" && info.phone != "") {
                 this.$router.push({
                     name: "comment",
                     params: {
@@ -397,9 +378,7 @@ export default {
                     this.basicdata.end.x = e.targetTouches[0].clientX;
                     this.basicdata.end.y = e.targetTouches[0].clientY;
                     // offsetY在touch事件中没有，只能自己计算
-                    this.offsetY =
-                        e.targetTouches[0].pageY -
-                        this.$el.offsetParent.offsetTop;
+                    this.offsetY = e.targetTouches[0].pageY - this.$el.offsetParent.offsetTop;
                 }
                 // pc操作
             } else {
@@ -452,14 +431,8 @@ export default {
             if (this.offsetRatio >= 0.15) {
                 // 计算划出后最终位置
                 let ratio = Math.abs(this.posheight / this.poswidth);
-                this.poswidth =
-                    this.poswidth >= 0
-                        ? this.poswidth + 200
-                        : this.poswidth - 200;
-                this.posheight =
-                    this.posheight >= 0
-                        ? Math.abs(this.poswidth * ratio)
-                        : -Math.abs(this.poswidth * ratio);
+                this.poswidth =this.poswidth >= 0 ? this.poswidth + 200: this.poswidth - 200;
+                this.posheight =this.posheight >= 0 ? Math.abs(this.poswidth * ratio): -Math.abs(this.poswidth * ratio);
                 this.opacity = 0;
                 this.swipe = true;
                 this.nextTick();
@@ -553,10 +526,7 @@ export default {
             this.lastZindex = 20;
             // 循环currentPage
             //console.log(this.currentPage);
-            this.currentPage =
-                this.currentPage === this.pages.length - 1
-                    ? 0
-                    : this.currentPage - 1;
+            this.currentPage =this.currentPage === this.pages.length - 1? 0: this.currentPage - 1;
             // currentPage切换，整体dom进行变化，把第一层滑动置最低
             this.$nextTick(() => {
                 this.poswidth = 0;
@@ -590,10 +560,7 @@ export default {
         //   this.nextTick();
         // },
         onTransitionEnd (index) {
-            let lastPage =
-                this.currentPage === 0
-                    ? this.pages.length - 1
-                    : this.currentPage - 1;
+            let lastPage = this.currentPage === 0? this.pages.length - 1: this.currentPage - 1;
             // dom发生变化正在执行的动画滑动序列已经变为上一层
             if (this.swipe && index === lastPage) {
                 this.animation = true;
@@ -635,49 +602,30 @@ export default {
         transform (index) {
             let currentPage = this.currentPage;
             let length = this.pages.length;
-            let lastPage =
-                currentPage === 0 ? this.pages.length - 1 : currentPage - 1;
+            let lastPage = currentPage === 0 ? this.pages.length - 1 : currentPage - 1;
             let style = {};
             let visible = this.visible;
             if (index === this.currentPage) {
                 return;
             }
             if (this.inStack(index, currentPage)) {
-                let perIndex =
-                    index - currentPage > 0
-                        ? index - currentPage
-                        : index - currentPage + length;
+                let perIndex =index - currentPage > 0? index - currentPage: index - currentPage + length;
                 style["opacity"] = "1";
-                style["transform"] =
-                    "translate3D(0,0," +
-                    -1 * 60 * (perIndex - this.offsetRatio) +
-                    "px" +
-                    ")";
+                style["transform"] ="translate3D(0,0," +-1 * 60 * (perIndex - this.offsetRatio) +"px" +")";
                 style["zIndex"] = visible - perIndex;
                 if (!this.tracking) {
                     style[this.prefixes.transition + "TimingFunction"] = "ease";
                     style[this.prefixes.transition + "Duration"] = 400 + "ms";
                 }
             } else if (index === lastPage) {
-                style["transform"] =
-                    "translate3D(" +
-                    this.lastPosWidth +
-                    "px" +
-                    "," +
-                    this.lastPosHeight +
-                    "px" +
-                    ",0px) " +
-                    "rotate(" +
-                    this.lastRotate +
-                    "deg)";
+                style["transform"] = "translate3D(" +this.lastPosWidth +"px" +"," +this.lastPosHeight +"px" +",0px) " +"rotate(" +this.lastRotate +"deg)";
                 style["opacity"] = this.lastOpacity;
                 style["zIndex"] = this.lastZindex;
                 style[this.prefixes.transition + "TimingFunction"] = "ease";
                 style[this.prefixes.transition + "Duration"] = 400 + "ms";
             } else {
                 style["zIndex"] = "-1";
-                style["transform"] =
-                    "translate3D(0,0," + -1 * visible * 60 + "px" + ")";
+                style["transform"] = "translate3D(0,0," + -1 * visible * 60 + "px" + ")";
             }
             return style;
         },
@@ -690,8 +638,7 @@ export default {
                 style["zIndex"] = 10;
                 if (this.animation) {
                     style[this.prefixes.transition + "TimingFunction"] = "ease";
-                    style[this.prefixes.transition + "Duration"] =
-                        (this.animation ? 100 : 0) + "ms";
+                    style[this.prefixes.transition + "Duration"] =(this.animation ? 100 : 0) + "ms";
                 }
                 return style;
             }
@@ -1014,7 +961,7 @@ export default {
     }
     .userInfo_wrapper {
         margin-top: 0.4rem;
-        padding: 0 0.4533rem;
+        padding: 0 0.3533rem;
         .userBox {
             position: relative;
             .constellation {

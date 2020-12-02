@@ -80,10 +80,7 @@
                     <ul class="list">
                         <li class="left-triangle" @click="prev"></li>
                         <li class="supply" @click="changeNeeded(true) " :class="{active:isNeeded}">供</li>
-                        <li class="publish" @click="goToUpdateAvatar">
-                            <p>我要</p>
-                            <p>发布</p>
-                        </li>
+                        <li class="publish" @click="goToUpdateAvatar"><p>我要</p><p>发布</p></li>
                         <li class="need" @click="changeNeeded(false)" :class="{active:!isNeeded}">求</li>
                         <li class="right-triangle" @click="next"></li>
                     </ul>

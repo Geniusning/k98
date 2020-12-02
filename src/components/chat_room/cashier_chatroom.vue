@@ -20,6 +20,7 @@
                             <img v-else src="../../assets/image/male.png" alt="">
                         </div>
                         <span>{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:"收银员"}}</span>
+                        <div class="helpTips" v-show="!showDialog" @click="showDialog = true">查看说明</div>
                         <!-- <div class="online_status">
                       <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
                       <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
@@ -1158,58 +1159,7 @@ export default {
         }
     }
     .chat_nav {
-        height: 1.1733rem;
-        box-sizing: border-box;
-        display: flex;
-        justify-content: space-between;
-        padding: 0.32rem 0.4rem 0.32rem 0;
-        background: #ddd;
-        .back_box {
-            padding: 0 0.4rem;
-            box-sizing: border-box;
-            .back_arrow {
-                width: 0.32rem;
-                height: 0.5333rem;
-            }
-        }
-        .name {
-            color: #333;
-            font-size: 0.4267rem;
-            text-align: center; // position: relative;
-            display: flex;
-            justify-content: space-between;
-            .sex_box {
-                // position: absolute;
-                // left: -.7rem;
-                width: 0.4rem;
-                margin-right: 0.2333rem;
-                padding-top: 0.05rem;
-                img {
-                    width: 100%;
-                }
-            }
-            .online_status {
-                // margin-left: .2rem;
-                display: flex;
-                .online_dot {
-                    padding-top: 0.1333rem;
-                    width: 0.4rem;
-                    height: 0.4rem;
-                }
-                .friendStatus {
-                }
-                .roomNum {
-                    padding-top: 0.08rem;
-                    font-size: 14px;
-                }
-            }
-        }
-        .backHome_box {
-            .home {
-                width: 0.64rem;
-                height: 0.5867rem;
-            }
-        }
+       .chat_nav()
     }
     .chat_wrapper {
         flex: 1;

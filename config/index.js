@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "FeemKhP6NrMV6z02Y8DM5tsdjyA7Qog8z2ee0CXP6PALgvr_-tcPCnbAphbeKxrrk3RoXQ==";
+const myToken = "NCZzruIp2WU-pjuN0-BDm4gl7Z40wQB03psLls_Q7EtJsC5mhcVpdiDP4Qkwz7S0OHQ8QA==";
 // ------------------------------
 
 module.exports = {
@@ -15,9 +15,9 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       "/api": {
-        target: "https://singledog.qianz.com", //中新
+        // target: "https://singledog.qianz.com", //中新
         // target: "172.18.4.8", //本地
-        // target: "https://llwant1.qianz.com", //老友一起玩吧
+        target: "https://llwant1.qianz.com", //老友一起玩吧
         // target: "https://llwant3.qianz.com", //k98
         // target: "https://llwant4.qianz.com", //喜炖
         changeOrigin: true,
@@ -28,9 +28,9 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    // host: '172.18.6.191',
+    host: '172.18.6.191',
 
-    host: '192.168.101.9',
+    // host: '192.168.101.9',
 
     // host: 'localhost', // can be overwritten by process.env.HOST
     port: 8088, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
