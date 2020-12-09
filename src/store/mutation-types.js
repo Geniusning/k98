@@ -1,4 +1,7 @@
 
+//保存各个友商信息
+export const SAVEALLIANCEINFO = "SAVEALLIANCEINFO"
+
 //设置搜索群友带上svip参数
 export const SETSEARCHFORSVIP = "SETSEARCHFORSVIP"
 //保存供求发布者id
@@ -66,7 +69,9 @@ export const CHANGESEXTYPE = "CHANGESEXTYPE"
 export const GET_ALLEVENTS_BADGECOUNT = "GET_ALLEVENTS_BADGECOUNT"
 //新增送礼弹框内容
 export const ADD_GIFTINFO = "ADD_GIFTINFO"
-//获取店长推荐列表
+//获取全部店长推荐列表
+export const GET_ALLRECOMMENTLIST = "GET_ALLRECOMMENTLIST"
+//获取在线店长推荐列表
 export const GET_RECOMMENTLIST = "GET_RECOMMENTLIST"
 //获取积分换礼品列表
 export const GET_SENDGIFTLIST = "GET_SENDGIFTLIST"

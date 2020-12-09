@@ -48,6 +48,28 @@
   }
   main()
 
+  function t(i) {
+    return new Promise((resolve,reject)=>{
+       setTimeout(() => {
+        resolve(i)
+      }, 2000);
+    })
+   
+  }
+
+  async function exec(){
+    for (let i = 0; i < 10; i++) {
+      let res = await t(i)
+      console.log("res---",res)
+    }
+  }
+  exec()
+
+
+
+
+
+
   function countTime() {
     //获取当前时间
     var date = new Date();
@@ -83,25 +105,25 @@
       }
 
 
-console.log("sync1")  //1
-setTimeout(() => {
-  console.log("setTimeOut1") //5
-}, 0);
-var promise = new Promise((resolve,reject)=>{
-  setTimeout(() => {
-    console.log("setTimeOutPromise") //6
-  }, 0);
-  console.log("promise")  //2
-  resolve()
-})
-promise.then(()=>{
-  console.log("then") //4
-  setTimeout(() => {
-    console.log("then settimeout") //7
-  }, 0);
-})
-setTimeout(() => {
-  console.log("last-timeout") //8
-}, 0);
-console.log("sync2") //3
+// console.log("sync1")  //1
+// setTimeout(() => {
+//   console.log("setTimeOut1") //5
+// }, 0);
+// var promise = new Promise((resolve,reject)=>{
+//   setTimeout(() => {
+//     console.log("setTimeOutPromise") //6
+//   }, 0);
+//   console.log("promise")  //2
+//   resolve()
+// })
+// promise.then(()=>{
+//   console.log("then") //4
+//   setTimeout(() => {
+//     console.log("then settimeout") //7
+//   }, 0);
+// })
+// setTimeout(() => {
+//   console.log("last-timeout") //8
+// }, 0);
+// console.log("sync2") //3
 </script>

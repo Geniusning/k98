@@ -93,7 +93,7 @@
                             <span v-if="shopSettingInfo.shopModeId === 0" class="desc">积分兑换更优惠</span>
                         </div>
                         <div class="more fr">
-                            <span @click="goToMoreRecommend">更多&gt;&gt;</span> 
+                            <span @click="goToMoreRecommend">更多&gt;&gt;</span>
                             <!-- <img onclick="return false" src="../../assets/image/fuli.png" alt class="letter" v-show="noCouponsFlag" @click="toWelfare" /> -->
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                     </div>-->
                     <div class="welfare_content" v-if="recommentList.length">
                         <ul class="welfare_list" v-if="recommentList.length">
-                            <li class="item clearfix" v-for="(item,index) in recommentList" :key="index" v-if="index<4">
+                            <li class="item clearfix" v-for="(item,index) in recommentList" :key="index">
                                 <div class="left">
                                     <img onclick="return false" :src="item.goods.image" alt class="shopPic" />
                                 </div>
@@ -202,7 +202,10 @@
         <transition name="appear">
             <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
         </transition>
-        <router-view></router-view>
+        <keep-alive>
+            <router-view v-if="$route.meta.keepAlive"></router-view>
+        </keep-alive>
+        <router-view v-if="!$route.meta.keepAlive"></router-view>
     </div>
 </template>
 
@@ -340,11 +343,11 @@ export default {
         // this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
     },
     methods: {
-      goToMoreRecommend(){
-        this.$router.push({
-          name:"moreRecommend"
-        })
-      },
+        goToMoreRecommend () {
+            this.$router.push({
+                name: "moreRecommend"
+            })
+        },
         goToFriendForSvip () {
             if (!this.hasSvip) {
                 this.$vux.toast.text('暂无会长、理事成员', 'middle')
@@ -353,7 +356,7 @@ export default {
             this.setSearchForSvip(true)
             this.$router.push({
                 path: "/friend"
-            });  
+            });
         },
         gotoComment () {
             if (this.publisherIdList.length > 0) {
@@ -422,8 +425,9 @@ export default {
         //拉取友商物品
         loadAlliance () {
             api.loadAlliance().then(res => {
-                // console.log("拉取友商物品-------", res);
+                console.log("拉取友商物品-------", res);
                 if (res.errCode === 0) {
+                  this.saveAllianceInfo(res.info)
                     this.friendLeagleList = res.info.map(shop => {
                         shop.distance = "<" + shop.distance.toFixed(1) + "km";
                         return shop;
@@ -707,6 +711,7 @@ export default {
             addMessageIntoQueue: "ADDMESSAGEQUEUE",
             judgeInviteCoupon: "JUDGE_INVITE_COUPON", //判断是否还有邀请有礼
             setSearchForSvip: "SETSEARCHFORSVIP",//设置搜索群友时带svip参数
+            saveAllianceInfo: "SAVEALLIANCEINFO",//保存友商数据
         }),
         ...mapActions({
             getAlreadyFriend: "get_alreadyFriendList" //获取已经成为好友事件
@@ -1294,11 +1299,11 @@ export default {
             }
         }
         .more {
-          span{
-            .titleDesc;
-            width: 1.5rem;
-            margin-top: .5rem;
-          }
+            span {
+                .titleDesc;
+                width: 1.5rem;
+                margin-top: 0.5rem;
+            }
             .letter {
                 margin-right: 0.25rem;
                 margin-top: 0.3rem;

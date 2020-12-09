@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-11-20 16:46:11
+ * @Last Modified time: 2020-12-07 15:22:33
  */
 import axios from 'axios'
 import Url from './config'
@@ -31,6 +31,18 @@ let api = {};
 api.delIdentity = function (targetID) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//拉取用户在其他友商的信息
+api.loadOtherAllianceMessage = function (port) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadOtherAllianceMessage?tk=${Url.tk}&port=${port}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -1308,7 +1320,20 @@ api.launchSetOffUserCoupon = function (data) {
       })
   })
 }
-//拉取店长推荐
+//拉取全部店长推荐
+api.loadAllRecommends = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(`/api/loadAllRecommends?tk=${Url.tk}`)
+      .then(res => {
+        if (res.status == 200) {
+          resolve(res.data)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
+//拉取在线店长推荐
 api.loadRecommends = function () {
   return new Promise((resolve, reject) => {
     axios.get(`/api/loadRecommends?tk=${Url.tk}`)

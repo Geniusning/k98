@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-01 17:29:01
+ * @Last Modified time: 2020-12-07 18:09:27
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -39,7 +39,7 @@ new Vue({
   store,
   computed: {
     ...mapState(['socket', "staticChatFriendObj", "LastChatMsg", "userInfo", "soulCursor",
-      "soulResult",
+      "soulResult","allianceList"
     ])
   },
   data () {
@@ -75,6 +75,9 @@ new Vue({
       deskCode: this.deskCode,
       deskId: this.deskId
     })
+    setTimeout(() => {
+      this.loadOtherAllianceMessage();
+    }, 3000);
     this.getUserInfo(); //获取用户信息 this.openId
     this.loadAdvertisingPhoto(); //拉取首页轮播图
     this.createQrcode(); //创建二维码
@@ -111,7 +114,6 @@ new Vue({
       let index = windowUrL.indexOf('.com');
       let shareurl = windowUrL.slice(0, index);
       let websocketUrl = shareurl.slice(8);
-      // console.log("入口url------", window.iosSignUrl)
       if (this.deskCode != "") {
         this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
       } else {
@@ -145,6 +147,13 @@ new Vue({
         }, 5000);
         this.limitTimes++
       }
+    },
+    async loadOtherAllianceMessage(){
+      for (let i = this.allianceList.length-1; i >=0; i--) {
+        let res = await api.loadOtherAllianceMessage(this.allianceList[i].port)
+        console.log("loadOtherAllianceMessage res============", res)
+      }
+      
     },
     //关闭公众号
     closeWebPage () {
@@ -445,14 +454,20 @@ new Vue({
         }
       });
     },
-    //获取店长推荐
+    //获取在线店长推荐
     loadRecommends () {
       api.loadRecommends().then(res => {
-        // console.log('店长推荐数据---------------------', res)
-        this.recommendList = res;
-        this.getRecommentList(this.recommendList);
+        console.log('店长推荐数据---------------------', res)
+        this.getRecommentList(res);
       })
     },
+    // //获取全部店长推荐
+    // loadAllRecommends () {
+    //   api.loadAllRecommends().then(res => {
+    //     console.log('全部店长推荐数据---------------------', res)
+    //     this.getAllRecommentList(res);
+    //   })
+    // },
     //拉取约战、点赞、送礼列表
     loadMutualEvents () {
       api.loadMutualEvents().then(res => {
@@ -490,7 +505,7 @@ new Vue({
       updateClientMsg: "UPDATE_CLIENTMSG", //推送更新客服消息
       updateCashierMsg: "UPDATE_CASHIERMSG", //推送更新收银消息
       saveQrCode: "SAVEQRCODE",
-      getRecommentList: "GET_RECOMMENTLIST", //获取店长推荐
+      getRecommentList: "GET_RECOMMENTLIST", //获取在线店长推荐
       appendLastMsg: "UPDATE_CHATLIST",
       addBange: "ADD_BADGE",
       compareLastMsg: "COMPARE_LASTMESS",

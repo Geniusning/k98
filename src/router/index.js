@@ -28,7 +28,8 @@ const router = new Router({
         component: () =>
           import('../components/home/moreShopRecommend.vue'),
         meta: {
-          title: "更多会员产品"
+          title: "更多会员产品",
+          keepAlive: true,
         }
       }
     ],

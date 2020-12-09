@@ -47,7 +47,7 @@
           <p v-show="recommentList.length>0" class="giftListpart_desc0">门店</p>
           <p v-show="recommentList.length>0" class="giftListpart_desc1">项目</p>
           <ul class="list">
-            <li v-if="index<4" class="item" v-for="(item,index) in recommentList" :key="index" @click="sendShopItemGift(item)">
+            <li  class="item" v-for="(item,index) in recommentList" :key="index" @click="sendShopItemGift(item)">
               <img onclick="return false" :src="item.goods.image" alt="" class="giftIcon">
               <p class="price">{{item.goods.integral}}</p>
             </li>

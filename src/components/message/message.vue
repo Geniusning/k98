@@ -800,7 +800,7 @@ export default {
         replaySubscribe (openId, flag) {
             api.delSubscribeInfo(openId).then(res => {
                 if (res.errCode === 0) {
-                    if (flag) {
+                    if (flag === "yes" ) {
                         this.$router.push({
                             name: "commentUser",
                             params: {

@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-11-20 15:50:46
+ * @Last Modified time: 2020-12-07 16:27:17
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -83,7 +83,7 @@ const mutations = {
   [types.SAVEQRCODE] (state, qrcode) {
     state.qrCode = qrcode
   },
-  //获取店长推荐
+  //获取在线店长推荐
   [types.GET_RECOMMENTLIST] (state, recommentList) {
     let now = new Date().getTime()
     for (let i = 0; i < recommentList.length; i++) {
@@ -100,7 +100,24 @@ const mutations = {
         state.recommentList.push(recomment)
       }
     }
-    // state.recommentList = recommentList;
+  },
+  //获取全部店长推荐
+  [types.GET_ALLRECOMMENTLIST] (state, allrecommentList) {
+    let now = new Date().getTime()
+    for (let i = 0; i < allrecommentList.length; i++) {
+      const recomment = allrecommentList[i];
+      let endTime = new Date(recomment.coupInfo.endTime).getTime()
+      if (!recomment.coupInfo) { //如果优惠券被删除了，直接过滤此项目
+        continue
+      }
+      if (recomment.coupInfo.startTimeOption === 1 || recomment.coupInfo.startTimeOption === 3) { //即时生效和次日生效不用判断时间
+        state.allRecommentList.push(recomment)
+        continue
+      }
+      if (endTime > now) { //判断优惠券是否过期
+        state.allRecommentList.push(recomment)
+      }
+    }
   },
   //获取积分换礼品列表
   [types.GET_SENDGIFTLIST] (state, sendGiftList) {
@@ -707,6 +724,20 @@ const mutations = {
   [types.SETSEARCHFORSVIP] (state, svip) {
     state.searchForSvip = svip
     console.log("state.searchForSvip----", state.searchForSvip)
+  },
+  //保存友商数据
+  [types.SAVEALLIANCEINFO] (state, alliacneList) {
+    let tempArr = []
+    for(let i = alliacneList.length-1;i>=0;i--){
+      tempArr.push({
+        storename: alliacneList[i].storename,
+        storelogo: alliacneList[i].storelogo,
+        url : alliacneList[i].url,
+        port: alliacneList[i].port
+      })
+    }
+    state.allianceList = tempArr
+    console.log("state.allianceList----", state.allianceList)
   },
   //测试
   [types.TEST] (state, test) {

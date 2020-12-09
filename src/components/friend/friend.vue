@@ -393,6 +393,19 @@ export default {
         ]),
         ...mapGetters(["qrIsShow"])
     },
+    beforeRouteEnter (to, from, next) {
+      next((vm)=>{
+        console.log("router-----------------------")
+         let shareObj = {
+            title: "找朋友",
+            desc: "您有N个好友在这儿玩，方圆5公里的帅哥美女集结地！",
+            link: `${vm.shareUrl}k98/friend?visitType=12&phone=${vm.userInfo.phone
+                }&role=${vm.userInfo.role}&openId=${vm.userInfo.openid}`,
+            imgUrl: `${vm.shopSettingInfo.image}`
+        };
+        util.setShareInfo(shareObj, 20, "activity", vm.shareGetJifen);
+      })
+    },
     beforeRouteLeave (to, from, next) {
         console.log("from---------", from)
         // 导航离开该组件的对应路由时调用
@@ -456,16 +469,7 @@ export default {
             };
             this.getAllCommunityFriend(param);
         }
-        setTimeout(() => {
-            let shareObj = {
-                title: "邀你加入这个社群",
-                desc: "结识同道朋友，分享商机，闲暇邀友玩几把大话骰",
-                link: `${this.shareUrl}k98/friend?visitType=12&phone=${this.userInfo.phone
-                    }&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
-                imgUrl: `${this.shopSettingInfo.image}`
-            };
-            util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-        }, 1000);
+       
         if (this.$route.params.data == "sharefriPage") {
             this.isShow_bg = true;
         }

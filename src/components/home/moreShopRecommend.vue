@@ -1,8 +1,8 @@
 <template>
     <div class="moreShopRecommend-wrapper">
         <my-header title="更多会员产品" bg="#fff"></my-header>
-        <ul class="welfare_list" v-if="recommentList.length">
-            <li class="item clearfix" v-for="(item,index) in recommentList" :key="index">
+        <ul class="welfare_list" v-if="allRecommend.length">
+            <li class="item clearfix" v-for="(item,index) in allRecommentList" :key="index">
                 <div class="left">
                     <img onclick="return false" :src="item.goods.image" alt class="shopPic" />
                 </div>
@@ -28,7 +28,8 @@
 
 <script>
 import util from "common/util"
-import { mapGetters, mapState } from "vuex"
+import api from "common/api"
+import { mapGetters, mapMutations, mapState } from "vuex"
 import topUp from "base/topUp/topUp";
 import myHeader from "../../base/myheader/myheader";
 export default {
@@ -37,6 +38,7 @@ export default {
             convertType: 0,
             isGiftPanel: false,
             fatherPanelIndex: 0,
+            allRecommend:[],
             recommendItemIndo: {
                 convert: {},
                 coupInfo: {},
@@ -53,11 +55,30 @@ export default {
             },
         }
     },
+    created(){
+      this.loadAllRecommends()
+    },
     computed: {
-        ...mapState(["shopSettingInfo", "l98Setting"]),
-        ...mapGetters(["recommentList"])
+        ...mapState(["shopSettingInfo", "l98Setting","allRecommentList","recommentList"]),
+        // ...mapGetters(["recommentList"])
     },
     methods: {
+        //获取全部店长推荐
+        loadAllRecommends () {
+            api.loadAllRecommends().then(res => {
+              // this.allRecommend = res
+                 this.getAllRecommentList(res);
+                 this.allRecommend = this.allRecommentList
+                 for(let i = this.recommentList.length-1 ;i>=0;i--){
+                   for(let j = this.allRecommend.length-1;j>=0;j--){
+                     if (this.allRecommend[j].goods.id === this.recommentList[i].goods.id){
+                       this.allRecommend.splice(j,1)
+                      }
+                   }
+                 }
+                console.log('全部店长推荐数据---------------------', this.allRecommend)
+            })
+        },
         //监听充值面板状态
         closeIntegralPanel (flag) {
             //console.log("面板状态-----------", flag);
@@ -72,6 +93,9 @@ export default {
             (this.fatherPanelIndex = 2),
                 (this.recommendItemIndo = this.recommentList[index]);
         },
+        ...mapMutations({
+           getAllRecommentList: "GET_ALLRECOMMENTLIST", //获取全部店长推荐
+        })
     },
     components: {
         myHeader,

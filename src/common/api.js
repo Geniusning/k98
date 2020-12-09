@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-11-20 12:04:07
+ * @Last Modified time: 2020-12-07 15:22:53
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,6 +24,18 @@ axios.interceptors.request.use(
   }
 )
 let api = {};
+//拉取用户在其他友商的信息
+api.loadOtherAllianceMessage = function (port) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadOtherAllianceMessage?port=${port}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //拉取发布供需者
 api.loadPublisherList = function (needed) {
   return new Promise((resolve, reject) => {
@@ -1286,7 +1298,20 @@ api.launchSetOffUserCoupon = function (data) {
       })
   })
 }
-//拉取店长推荐
+//拉取全部店长推荐
+api.loadAllRecommends = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(`/api/loadAllRecommends`)
+      .then(res => {
+        if (res.status == 200) {
+          resolve(res.data)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
+//拉取在线店长推荐
 api.loadRecommends = function () {
   return new Promise((resolve, reject) => {
     axios.get(`/api/loadRecommends`)

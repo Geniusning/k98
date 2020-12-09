@@ -911,13 +911,16 @@ export default {
             this.setChatFriend(userInfo);
             if (userInfo.isFromSoul) {
                 api.acceptSoulMateInvite(userInfo.openid, flag).then(res => {
-                    this.$router.push({
-                        name: "chat",
-                        params: {
-                            isSoul: true,
-                            id: this.staticChatFriendObj.openid
-                        }
-                    });
+                    if (flag) {
+                        this.$router.push({
+                            name: "chat",
+                            params: {
+                                isSoul: true,
+                                id: this.staticChatFriendObj.openid
+                            }
+                        });
+                    }
+
                 });
             } else {
                 api.acceptSoulFri(userInfo.openid, flag).then(res => {
