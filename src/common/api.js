@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-07 15:22:53
+ * @Last Modified time: 2020-12-18 15:36:20
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,7 +24,19 @@ axios.interceptors.request.use(
   }
 )
 let api = {};
-//拉取用户在其他友商的信息
+//拉取充值会员卡交易记录
+api.loadTopUpDetailForC = function (cursor, count) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadTopUpDetailForC?cursor=${cursor}&count=${count}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//拉取用户在其他友商的信息 （待删除）
 api.loadOtherAllianceMessage = function (port) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/loadOtherAllianceMessage?port=${port}`).then((res) => {

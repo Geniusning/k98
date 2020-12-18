@@ -65,7 +65,18 @@
   }
   exec()
 
+  const GetQueryString = (str, name) => {
+    console.log(str.slice(-11))
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = str.match(reg);
+    console.log("r=",r)
+    if (r != null) {
+      return decodeURI(r[2]);
+    }
+    return "";
+  };
 
+  console.log("GetQueryString=",GetQueryString("https://llwant2.qianz.com/api/selectUserTopUpVip?phone=11800002000","phone"))
 
 
 

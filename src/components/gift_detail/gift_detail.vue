@@ -1,30 +1,48 @@
 <template>
     <div class="gift_detail">
         <my-header title="财富明细" ref="header"></my-header>
+        <div class="topUpVip_wrapper">
+            <div class="card_area">
+                <div class="card">
+                    <div class="top">
+                        <img class="logo" :src="shopSettingInfo.image" />
+                        <div class="name">{{shopSettingInfo.name}}</div>
+                    </div>
+                    <div class="middle">
+                        <!-- <img src="../../assets/image/vipMonths.png" >  -->
+                        <vue-qr class="qrcode" :correctLevel="3" :autoColor="false"  :text="url"  :logoSrc="userInfo.headimgurl"  :size="100" :margin="0" :logoMargin="3"></vue-qr>
+                    </div>
+                    <div class="bottom">
+                        <div class="cardNumber" v-if="userInfo.phone">NO:{{userInfo.phone}}</div>
+                        <div class="cardNumber bind" @click="showPhone" v-else>绑定手机</div>
+                        <div class="desc" @click="showPhone">会员专属特权：</div>
+                    </div>
+                </div>
+            </div>
+            <div class="btn_area" >
+                <div class="left_btn" :class="{active:selected}" @click="changeShowMoney(true)">我的积分</div>
+                <div class="right_btn" :class="{active:!selected}" @click="changeShowMoney(false)">我的储值</div>
+            </div>
+        </div>
         <div class="gift_wrapper vux-1px-t">
             <div class="title_content vux-1px-b">
                 <div class="title_content_item">
-                    <h3 class="title ">
-                        我的财富：
-                    </h3>
-                    <span class="money">${{userInfo.money}}</span>
+                    <h3 class="title ">我的财富：</h3>
+                    <span class="money">${{selected?userInfo.money:userInfo.storeValue}}</span>
                 </div>
-                <div class="title_content_item">
-                    <h3 class="title ">
-                        富豪榜排名：
-                    </h3>
+                <!-- <div class="title_content_item">
+                    <h3 class="title ">富豪榜排名：</h3>
                     <span class="money ">{{userInfo.wealthRanking}}</span>
-                </div>
-                <div class="title_content_item" @click="showTreasure">
-                    <!-- <img src="../../assets/image/treasure.png" alt class="" style="width:0.6rem;height:0.5rem;margin-top:.1rem"> -->
+                </div> -->
+                <div class="btn_wrapper" @click="showTreasure">
                     <button class="btn_chongzhi">积分充值</button>
                 </div>
             </div>
             <div class="scrollTitle">
-                <span class="total">累计财富</span>
-                <span class="name">积分变动</span>
+                <span class="total">{{selected?"累计积分":"累计储值"}}</span>
+                <span class="name">{{selected?"积分变动":"储值变动"}}</span>
                 <span class="content">变动原因</span>
-                <span class="avatar">头像</span>
+                <span class="avatar">对象</span>
                 <span class="time">时间</span>
             </div>
             <scroll ref="scroll" class="scroll" :data="giftContent" @pullingUp="pullUpMoreData" :pullup="true">
@@ -54,14 +72,17 @@
             <topUp v-if="isIntegralPanel" @closeIntegralPanel="closeIntegralPanel" :fatherPanelIndex="fatherPanelIndex"></topUp>
             <qrCode v-show="qrIsShow" title="您还不是会员,关注享有会员特权"></qrCode>
         </div>
+        <validatephone :isShow="showPhoneDialog" @close="closePhoneDialog"></validatephone>
     </div>
 </template>
 
 <script type='text/ecmascript-6'>
 import api from "common/api";
 import util from 'common/util';
+import VueQr from 'vue-qr'
 import BScroll from "better-scroll";
 import myHeader from "../../base/myheader/myheader";
+import validatephone from "../../base/validatephone/validatephone";
 import Scroll from "../../base/scroll/scroll";
 import topUp from 'base/topUp/topUp';
 import qrCode from 'base/qrCode/qrCode';
@@ -73,6 +94,7 @@ import {
 export default {
     data () {
         return {
+          showPhoneDialog:false,
             moneyIndex: 1,
             moneyInitValue: 5,
             fatherPanelIndex: 0,
@@ -80,27 +102,66 @@ export default {
             giftContent: [],
             giftList: [],
             giftCursor: 0,
-            isPullUpLoad: false
+            isPullUpLoad: false,
+            selected: true,
+            url:"",
             // defaultHeadUrl:require("./assets/image/avatar2.jpg")
         };
     },
     computed: {
-        ...mapState(['userInfo']),
+        ...mapState(['userInfo', 'shopSettingInfo', "shareUrl"]),
         ...mapGetters(["qrIsShow"]),
     },
     created () {
         api.getUserInfo().then(res => {
             this.getUserInfo(res);
         })
+
     },
     mounted () {
-        this._loadWealthDetail();
+        this.loadWealthDetail();
+        this.url = `${this.shareUrl}api/selectUserTopUpVip?phone=${this.userInfo.phone}`
+        // this.url = `https://llwant2.qianz.com/api/selectUserTopUpVip?phone=${this.userInfo.phone}`
     },
     methods: {
+      showPhone(){
+        this.$vux.toast.text("功能暂未完成","middle")
+        return 
+        this.showPhoneDialog=true
+      },
+      closePhoneDialog(flag){
+        console.log("flag=",flag)
+        this.showPhoneDialog = flag
+      },
+        changeShowMoney (flag) {
+            this.selected = flag
+            if (!this.selected){
+              this.loadTopUpDetailForC()
+            }else{
+              this.loadWealthDetail();
+            }
+        },
+        loadTopUpDetailForC(){
+          this.giftContent = []
+          let startCursor = 0,count = 100
+          api.loadTopUpDetailForC(startCursor,count).then(res=>{
+            console.log("交易记录=",res)
+            res.info.forEach(item=>{
+              let temp = {
+                amount:item.dealMoney,
+                content:item.dealType==="up"?"充值":"扣减",
+                headimgurl:item.userHeadImgUrl,
+                time:util.timestampToTimeNoLine(item.date),
+                value:item.userMoney
+              }
+              this.giftContent.unshift(temp)
+            })
+          })
+        },
         //上拉加载更多
         pullUpMoreData () {
             if (this.giftCursor) {
-                this._loadWealthDetail();
+                this.loadWealthDetail();
                 this.$refs.scroll.finishPullUp()
             } else {
                 this.$vux.toast.text('没有啦', 'middle')
@@ -114,13 +175,14 @@ export default {
             this.isIntegralPanel = !this.isIntegralPanel;
         },
         //拉取礼物明细
-        _loadWealthDetail () {
+        loadWealthDetail () {
+          this.giftContent = []
             let count = 20;
             this.$vux.loading.show({
                 text: "loading"
             })
             api.loadWealthDetail(this.giftCursor, count).then(res => {
-                //console.log('礼物明细-----------------------------', res);
+                console.log('礼物明细-----------------------------', res);
                 if (res.errCode == 0) {
                     this.$vux.loading.hide()
                     this.giftContent = this.giftContent.concat(res.wealthDetailRanking.details);
@@ -191,7 +253,9 @@ export default {
         myHeader,
         Scroll,
         topUp,
-        qrCode
+        qrCode,
+        VueQr,
+        validatephone
     }
 };
 </script>
@@ -202,16 +266,105 @@ export default {
     height: 100%;
     display: flex;
     flex-direction: column;
+    .topUpVip_wrapper {
+        height: 4.5rem;
+        width: 100%;
+        .card_area {
+            background: linear-gradient(bottom, #070707, #525357);
+            position: relative;
+            height: 3.5rem;
+            .card {
+                width: 7.8rem;
+                height: 3.8rem;
+                background-image: url("../../assets/image/topUpVipBg.png");
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: 100% 100%;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-3.9rem);
+                top: 0.3rem;
+                color: #f1d266;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 0.1rem;
+                .top {
+                    width: 100%;
+                    height: 0.8rem;
+                    display: flex;
+                    align-items: center;
+                    .logo {
+                        width: 0.6rem;
+                        height: 0.6rem;
+                        border-radius: 50%;
+                    }
+                    .name {
+                        margin-left: 0.1rem;
+                    }
+                }
+                .middle {
+                    display: flex;
+                    justify-content: flex-end;
+                    .qrcode {
+                        width: 2rem;
+                        height: 2rem;
+                        margin-right: 1rem;
+                        margin-bottom: 0.4rem;
+                    }
+                }
+                .bottom {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    .cardNumber {
+                    }
+                    .bind{
+                      background: @baseColor;
+                      padding: .07rem;
+                      color: #fff;
+                      border-radius: .2rem;
+                    }
+                    .desc {
+                    }
+                }
+            }
+        }
+        .btn_area {
+            height: 1rem;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.1rem;
+            .left_btn,
+            .right_btn {
+                width: 0.8rem;
+                height: 0.8rem;
+                text-align: center;
+                // line-height: 1rem;
+                font-size: 0.28rem;
+                border-radius: 4px;
+                background: linear-gradient(bottom, #8d8d8d, #a5a5a5);
+                box-shadow: inset 0 -.1rem #737373;
+                color: #fff;
+                &.active {
+                    background: linear-gradient(bottom, #ddb142, #e6db68);
+                    box-shadow: inset 0 -.1rem #e09c07;
+                }
+            }
+            .right_btn {
+            }
+        }
+    }
     .gift_wrapper {
         // flex: 1;
-        height: 92%;
+        height: 70%;
         display: flex;
         flex-direction: column;
         .title_content {
             margin-top: 0;
             display: flex;
             justify-content: space-around;
-            padding: 0.3rem 0.1rem;
+            align-items: center;
             box-sizing: border-box;
             // height: 1.3rem;
             height: 8.5%;
@@ -219,14 +372,14 @@ export default {
                 margin-right: 0.6667rem;
                 box-sizing: border-box;
                 display: flex;
-                .btn_chongzhi {
-                    border: none;
-                    background-color: #999;
-                    color: #fff;
-                    font-weight: 700;
-                    border-radius: 0.1333rem;
-                    padding: 0 0.1333rem;
-                }
+            }
+            .btn_chongzhi {
+                border: none;
+                background-color: #999;
+                color: #fff;
+                font-weight: 700;
+                border-radius: 0.1333rem;
+                padding: 0.1rem 0.1333rem;
             }
             .title {
                 font-size: 0.3733rem;
@@ -243,13 +396,12 @@ export default {
             }
         }
         .scrollTitle {
-            padding: 0.4rem 0.2rem;
+            padding: 0.2rem;
             display: flex;
             justify-content: space-between;
             text-align: center;
             font-size: 0.35rem;
             // height: 0.5667rem;
-            height: 1.5%;
             .total {
                 width: 20%;
             }

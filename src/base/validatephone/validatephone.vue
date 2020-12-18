@@ -38,12 +38,14 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["isShow"])
+    // ...mapGetters(["isShow"])
   },
+  props:["isShow"],
   methods: {
     //手机验证取消事件
     cancel() {
-      this.changeValidate(false);
+      // this.changeValidate(false);
+      this.$emit("close",false)
     },
     //获取验证码
     sendVerifyCode() {
@@ -72,6 +74,7 @@ export default {
       api.checkVerifyCode(this.phoneNum,this.vcode).then(res=>{
         //console.log('是否验证成功',res);
         if(res.errCode===0){
+          this.$emit("close",false)
           api.getUserInfo().then(res=>{
             this.getuserInfo(res);
           })
@@ -143,17 +146,17 @@ export default {
       margin-top: 0.2667rem;
     }
     .validate_code {
-      position: absolute;
-      width: 2.6667rem;
-      height: 1.1rem;
-      line-height: 1.1rem;
-      right: 0.4267rem;
-      top: 2.89rem;
-      background: #ccc;
-      color: #fff;
-      border-radius: 0.4933rem;
-      font-size: 0.3467rem;
-      letter-spacing: 0.03rem;
+         position: absolute;
+    width: 2.5rem;
+    height: .8rem;
+    line-height: .8rem;
+    right: 0.6rem;
+    top: 3rem;
+    background: #ccc;
+    color: #fff;
+    border-radius: 0.4933rem;
+    font-size: 0.3467rem;
+    letter-spacing: 0.03rem;
     }
     .validate_code_avtive {
       position: absolute;

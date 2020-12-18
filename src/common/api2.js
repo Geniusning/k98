@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-07 15:22:33
+ * @Last Modified time: 2020-12-18 15:36:01
  */
 import axios from 'axios'
 import Url from './config'
@@ -31,6 +31,18 @@ let api = {};
 api.delIdentity = function (targetID) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//拉取充值会员卡交易记录
+api.loadTopUpDetailForC = function (cursor,count) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadTopUpDetailForC?tk=${Url.tk}&cursor=${cursor}&count=${count}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }

@@ -1611,9 +1611,10 @@ export default {
                     padding: 0.0567rem 0;
                     text-align: center; // .border-1px(@baseColor);
                     font-size: 0.3467rem;
-                    color: #999;
+                    color: #333;
                     border-radius: 0.2667rem;
                     margin-right: 0.1rem;
+                    background: #ffd800;
                 }
                 .reject {
                     margin-right: 0.1rem;

@@ -50,7 +50,7 @@
                     </li>
                     <li class="item vux-1px-r" @click="giftDetal">
                         <img onclick="return false" src="../../assets/image/yingxiangli.png" alt class="pic_discount">
-                        <p class="discount_name">积分明细</p>
+                        <p class="discount_name">会员卡</p>
                     </li>
                     <li class="item" @click="gameDetal">
                         <img onclick="return false" src="../../assets/image/game_mine.png" alt class="pic_discount">

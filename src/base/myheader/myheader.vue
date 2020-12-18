@@ -21,7 +21,7 @@ export default {
         },
         height: {
             type: String,
-            default: "1rem"
+            default: "1.2rem"
         }
     },
     data () {
