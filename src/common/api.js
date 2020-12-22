@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-18 15:36:20
+ * @Last Modified time: 2020-12-21 12:04:26
  */
 import axios from 'axios'
 import Url from './config'
@@ -1611,9 +1611,22 @@ api.responseCombat = function (params) {
   })
 }
 //获取手机验证码
-api.getVerifyCode = function (phoneNumbers) {
+api.getVerifyCode = function (phone) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/getVerifyCode?phoneNumbers=${phoneNumbers}`)
+    axios.get(`/api/getVerifyCode?phone=${phone}`)
+      .then(res => {
+        if (res.status == 200) {
+          resolve(res.data)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
+//发送手机验证码
+api.checkVerifyCode = function (data) {
+  return new Promise((resolve, reject) => {
+    axios.post(`/api/checkVerifyCode`, data)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

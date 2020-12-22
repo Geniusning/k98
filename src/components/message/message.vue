@@ -83,31 +83,33 @@
                                     <p class="message" style="color:#333" v-else-if="item.id==3">送你一个别墅</p>
                                     <p class="message" style="color:#333" v-else-if="item.id==4">送你一个跑车</p>
                                     <p class="message" style="color:#333" v-else-if="item.integral">送你{{item.name}}</p>
+                                    <p class="message" style="color:#333" v-else-if="item.evtID">申请加你好友</p>
                                     <p class="message" v-else-if=" item.msgType==='comment'||item.msgType==='subscribe'" v-html="item.message"></p>
                                     <!-- <p class="message" v-else-if="item.msgType==='comment'" v-html="item.message"></p> -->
                                 </div>
                             </div>
-                            <div class="thumb_wrapper">
+                            <!-- vux-1px -->
+                            <div class="thumb_wrapper"> 
                                 <div class="clearfix backThumbBox" v-if="item.combatID">
-                                    <p class=" back_thumb vux-1px fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
-                                    <p class=" back_thumb vux-1px fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
+                                    <p class=" back_thumb  fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
+                                    <p class=" back_thumb  fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
                                 </div>
                                 <div class="clearfix backThumbBox" v-else-if="item.gift">
-                                    <p class=" back_thumb vux-1px fl reject" @click="respondForGift(index,item,false)">拒绝</p>
-                                    <p class=" back_thumb vux-1px fl" @click="respondForGift(index,item,true)">感谢</p>
+                                    <p class=" back_thumb  fl reject" @click="respondForGift(index,item,false)">拒绝</p>
+                                    <p class=" back_thumb  fl" @click="respondForGift(index,item,true)">感谢</p>
                                 </div>
                                 <div class="clearfix backThumbBox" v-else-if="item.msgType==='comment'">
-                                    <p class=" back_thumb vux-1px fl reject" @click="respondForComment(index,item,'no')">删除</p>
-                                    <p class=" back_thumb vux-1px fl" @click="respondForComment(index,item,'yes')">回复</p>
+                                    <p class=" back_thumb  fl reject" @click="respondForComment(index,item,'no')">删除</p>
+                                    <p class=" back_thumb  fl" @click="respondForComment(index,item,'yes')">回复</p>
                                 </div>
                                 <div class="clearfix backThumbBox" v-else-if="item.msgType==='subscribe'">
-                                    <p class=" back_thumb vux-1px fl reject" @click="replaySubscribe(item.from.openid,'no')">删除</p>
-                                    <p class=" back_thumb vux-1px fl" @click="replaySubscribe(item.from.openid,'yes')">看Ta</p>
+                                    <p class=" back_thumb  fl reject" @click="replaySubscribe(item.from.openid,'no')">删除</p>
+                                    <p class=" back_thumb  fl" @click="replaySubscribe(item.from.openid,'yes')">看Ta</p>
                                 </div>
                                 <div class="clearfix " v-else>
-                                    <p class=" back_thumb vux-1px fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
-                                    <p class=" back_thumb vux-1px fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
-                                    <p class=" back_thumb vux-1px fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
+                                    <p class=" back_thumb  fl reject " @click="showFriendInfo(item)">瞅瞅Ta</p>
+                                    <p class=" back_thumb  fl reject " @click="backThumbClick(index,item.evtID,'no',item.from)">拒绝</p>
+                                    <p class=" back_thumb  fl" @click="backThumbClick(index,item.evtID,'yes',item.from)">接受</p>
                                 </div>
                                 <div class="time_wrapper" style="margin-top:.4rem;color:#ccc">
                                     <p class="time_desc" style="text-align:right;box-sizing:border-box;padding-right:.09rem">{{item.handleTime}}</p>

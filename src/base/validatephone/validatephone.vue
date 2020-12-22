@@ -50,10 +50,14 @@ export default {
     //获取验证码
     sendVerifyCode() {
       //console.log(this.phoneNum);
+      if (this.phoneNum.length != 11){
+        this.$vux.toast.text("请填写正确手机号","middle");
+        return 
+      }
       api.getVerifyCode(this.phoneNum).then(res => {
         //console.log(res)
         if (res.errCode === 0) {
-          this.codeText = 60;
+          this.codeText = 120;
           this.isShowCodeText = true;
           let timer = setInterval(() => {
             this.codeText--;
@@ -71,17 +75,19 @@ export default {
       if(!this.vcode){
         return;
       }
-      api.checkVerifyCode(this.phoneNum,this.vcode).then(res=>{
+      let data = {
+        phone:this.phoneNum,
+        code:this.vcode
+      }
+      api.checkVerifyCode(data).then(res=>{
         //console.log('是否验证成功',res);
         if(res.errCode===0){
           this.$emit("close",false)
           api.getUserInfo().then(res=>{
             this.getuserInfo(res);
           })
-          this.changeValidate(false);
-           this.$vux.toast.show({
-            text: "验证成功"
-          });
+          // this.changeValidate(false);
+           this.$vux.toast.text("保存成功","middle");
         }
       })
     },

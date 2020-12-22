@@ -15,7 +15,7 @@
                     <div class="bottom">
                         <div class="cardNumber" v-if="userInfo.phone">NO:{{userInfo.phone}}</div>
                         <div class="cardNumber bind" @click="showPhone" v-else>绑定手机</div>
-                        <div class="desc" @click="showPhone">会员专属特权：</div>
+                        <div class="desc" @click="noFinish">会员专属特权：</div>
                     </div>
                 </div>
             </div>
@@ -124,9 +124,10 @@ export default {
         // this.url = `https://llwant2.qianz.com/api/selectUserTopUpVip?phone=${this.userInfo.phone}`
     },
     methods: {
-      showPhone(){
+      noFinish(){
         this.$vux.toast.text("功能暂未完成","middle")
-        return 
+      },
+      showPhone(){
         this.showPhoneDialog=true
       },
       closePhoneDialog(flag){
@@ -269,10 +270,12 @@ export default {
     .topUpVip_wrapper {
         height: 4.5rem;
         width: 100%;
+        box-sizing: border-box;
         .card_area {
             background: linear-gradient(bottom, #070707, #525357);
             position: relative;
             height: 3.5rem;
+            box-sizing: border-box;
             .card {
                 width: 7.8rem;
                 height: 3.8rem;
@@ -289,6 +292,7 @@ export default {
                 flex-direction: column;
                 justify-content: space-between;
                 padding: 0.1rem;
+                box-sizing: border-box;
                 .top {
                     width: 100%;
                     height: 0.8rem;
