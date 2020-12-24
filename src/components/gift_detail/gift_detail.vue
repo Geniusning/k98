@@ -46,8 +46,8 @@
                 <span class="time">时间</span>
             </div>
             <scroll ref="scroll" class="scroll" :data="giftContent" @pullingUp="pullUpMoreData" :pullup="true">
-                <ul class="gift_list">
-                    <li class="item vux-1px" v-for="(item,index) in giftContent" :key="index">
+                <ul class="gift_list" v-if="selected">
+                    <li class="item vux-1px"  v-for="(item,index) in giftContent" :key="index">
                         <span class="total">${{item.value}}</span>
                         <span class="name" :class="{minus:item.amount<0,plus:item.amount>0}">{{item.amount>0?'+'+item.amount:item.amount}}</span>
                         <!-- <span class="name"  v-else>-3积分</span> -->
@@ -58,8 +58,23 @@
                         </div>
                         <span class="time">{{item.time}}</span>
                     </li>
-                    <p v-if="!giftContent.length" class="noContent">暂无积分变动内容</p>
+                    <p v-show="!giftContent.length" class="noContent">暂无变动内容</p>
                 </ul>
+                <ul class="gift_list" v-else-if="!selected">
+                    <li class="item vux-1px"  v-for="(item,index) in vipRecord" :key="index">
+                        <span class="total">${{item.value}}</span>
+                        <span class="name" :class="{minus:item.amount<0,plus:item.amount>0}">{{item.amount>0?'+'+item.amount:item.amount}}</span>
+                        <!-- <span class="name"  v-else>-3积分</span> -->
+                        <span class="content">{{item.content}}</span>
+                        <div class="avatar">
+                            <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
+                                 class="gift_icon">
+                        </div>
+                        <span class="time">{{item.time}}</span>
+                    </li>
+                    <p v-show="!giftContent.length" class="noContent">暂无变动内容</p>
+                </ul>
+                 
                 <!-- <div class="pullup-wrapper">
           <div v-if="!isPullUpLoad" class="before-trigger">
             <span class="pullup-txt">Pull up and load more</span>
@@ -105,6 +120,7 @@ export default {
             isPullUpLoad: false,
             selected: true,
             url:"",
+            vipRecord:[]
             // defaultHeadUrl:require("./assets/image/avatar2.jpg")
         };
     },
@@ -119,8 +135,9 @@ export default {
 
     },
     mounted () {
+      this.url = `${this.shareUrl}api/selectUserTopUpVip?phone=${this.userInfo.phone}`
         this.loadWealthDetail();
-        this.url = `${this.shareUrl}api/selectUserTopUpVip?phone=${this.userInfo.phone}`
+        this.loadTopUpDetailForC()
         // this.url = `https://llwant2.qianz.com/api/selectUserTopUpVip?phone=${this.userInfo.phone}`
     },
     methods: {
@@ -137,30 +154,32 @@ export default {
         changeShowMoney (flag) {
             this.selected = flag
             if (!this.selected){
-              this.loadTopUpDetailForC()
+              // this.loadTopUpDetailForC()
             }else{
-              this.loadWealthDetail();
+              // this.loadWealthDetail();
             }
         },
         loadTopUpDetailForC(){
-          this.giftContent = []
           let startCursor = 0,count = 100
           api.loadTopUpDetailForC(startCursor,count).then(res=>{
             console.log("交易记录=",res)
             res.info.forEach(item=>{
               let temp = {
                 amount:item.dealMoney,
-                content:item.dealType==="up"?"充值":"扣减",
+                content:item.dealReason?item.dealReason:(item.dealType==="up"?"充值":"扣减"),
                 headimgurl:item.userHeadImgUrl,
                 time:util.timestampToTimeNoLine(item.date),
                 value:item.userMoney
               }
-              this.giftContent.unshift(temp)
+              this.vipRecord.unshift(temp)
             })
           })
         },
         //上拉加载更多
         pullUpMoreData () {
+          if (!this.selected){
+            return
+          }
             if (this.giftCursor) {
                 this.loadWealthDetail();
                 this.$refs.scroll.finishPullUp()
@@ -177,7 +196,6 @@ export default {
         },
         //拉取礼物明细
         loadWealthDetail () {
-          this.giftContent = []
             let count = 20;
             this.$vux.loading.show({
                 text: "loading"
@@ -189,7 +207,7 @@ export default {
                     this.giftContent = this.giftContent.concat(res.wealthDetailRanking.details);
                     //console.log('this.giftContent---------------', this.giftContent)
                     this.giftCursor = res.wealthDetailRanking.cursor;
-                    this.giftContent.forEach(item => {
+                    this.giftContent.forEach((item,index) => {
                         if (item.headimgurl.indexOf("http") === -1) {
                             let imgUrl = item.headimgurl.slice(18)
                             item.headimgurl = require(`../../assets/image/${imgUrl}.png`)

@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-21 12:02:46
+ * @Last Modified time: 2020-12-23 16:46:16
  */
 import axios from 'axios'
 import Url from './config'
@@ -31,6 +31,18 @@ let api = {};
 api.delIdentity = function (targetID) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//扣减充值会员卡
+api.decreaseTopUpVip = function (data) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + `/api/decreaseTopUpVip?tk=${Url.tk}`,data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -1490,9 +1502,9 @@ api.statCalls = function () {
   })
 }
 //店长推荐预定
-api.convertRecommend = function (recommendID) {
+api.convertRecommend = function (recommendID, convertType) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/convertRecommend?recommendID=${recommendID}&tk=${Url.tk}`)
+    axios.get(`/api/convertRecommend?recommendID=${recommendID}&tk=${Url.tk}&convertType=${convertType}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

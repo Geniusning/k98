@@ -16,8 +16,11 @@
                     </p>
                 </div>
                 <div class="right">
+                    <div class="thunb_box" v-if="item.goods.vipMoney">
+                        <div class="linear_btn vip" @click="freeBook(item.goods.ID,index,'vip')">会员价<br>{{item.goods.vipMoney}}</div>
+                    </div>
                     <div class="thunb_box">
-                        <div class="linear_btn" @click="freeBook(item.goods.ID,index)">积分兑换</div>
+                        <div class="linear_btn" @click="freeBook(item.goods.ID,index,'common')">积分兑换</div>
                     </div>
                 </div>
             </li>
@@ -38,7 +41,7 @@ export default {
             convertType: 0,
             isGiftPanel: false,
             fatherPanelIndex: 0,
-            allRecommend:[],
+            allRecommend: [],
             recommendItemIndo: {
                 convert: {},
                 coupInfo: {},
@@ -55,27 +58,27 @@ export default {
             },
         }
     },
-    created(){
-      this.loadAllRecommends()
+    created () {
+        this.loadAllRecommends()
     },
     computed: {
-        ...mapState(["shopSettingInfo", "l98Setting","allRecommentList","recommentList"]),
+        ...mapState(["shopSettingInfo", "l98Setting", "allRecommentList", "recommentList"]),
         // ...mapGetters(["recommentList"])
     },
     methods: {
         //获取全部店长推荐
         loadAllRecommends () {
             api.loadAllRecommends().then(res => {
-              // this.allRecommend = res
-                 this.getAllRecommentList(res);
-                 this.allRecommend = this.allRecommentList
-                 for(let i = this.recommentList.length-1 ;i>=0;i--){
-                   for(let j = this.allRecommend.length-1;j>=0;j--){
-                     if (this.allRecommend[j].goods.id === this.recommentList[i].goods.id){
-                       this.allRecommend.splice(j,1)
-                      }
-                   }
-                 }
+                // this.allRecommend = res
+                this.getAllRecommentList(res);
+                this.allRecommend = this.allRecommentList
+                for (let i = this.recommentList.length - 1; i >= 0; i--) {
+                    for (let j = this.allRecommend.length - 1; j >= 0; j--) {
+                        if (this.allRecommend[j].goods.id === this.recommentList[i].goods.id) {
+                            this.allRecommend.splice(j, 1)
+                        }
+                    }
+                }
                 console.log('全部店长推荐数据---------------------', this.allRecommend)
             })
         },
@@ -84,17 +87,21 @@ export default {
             //console.log("面板状态-----------", flag);
             this.isGiftPanel = flag;
         },
-        freeBook (recommendID, index) {
+        freeBook (recommendID, index,type) {
             if (!this.l98Setting.shopItemConvertOpen) {
                 this.$vux.toast.text("商家未开通本功能", "middle");
                 return;
             }
             this.isGiftPanel = true;
-            (this.fatherPanelIndex = 2),
-                (this.recommendItemIndo = this.recommentList[index]);
+             if (type ==="vip"){
+                this.fatherPanelIndex = 9
+            }else{
+              this.fatherPanelIndex = 2
+            }
+            this.recommendItemIndo = this.recommentList[index];
         },
         ...mapMutations({
-           getAllRecommentList: "GET_ALLRECOMMENTLIST", //获取全部店长推荐
+            getAllRecommentList: "GET_ALLRECOMMENTLIST", //获取全部店长推荐
         })
     },
     components: {
@@ -205,11 +212,10 @@ export default {
                 margin-top: 1.4rem;
                 position: relative;
                 .thunb_box {
-                    .thumb {
-                        width: 0.4rem;
-                        height: 0.4rem;
-                        float: left;
-                        margin-right: 0.1333rem;
+                    .vip {
+                        position: absolute;
+                        top: -1.5rem;
+                        right: 0;
                     }
                 }
             }

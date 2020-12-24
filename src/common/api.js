@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-21 12:04:26
+ * @Last Modified time: 2020-12-23 16:46:22
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,6 +24,18 @@ axios.interceptors.request.use(
   }
 )
 let api = {};
+//扣减充值会员卡
+api.decreaseTopUpVip = function (data) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + `/api/decreaseTopUpVip`, data).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //拉取充值会员卡交易记录
 api.loadTopUpDetailForC = function (cursor, count) {
   return new Promise((resolve, reject) => {
@@ -1467,9 +1479,9 @@ api.statCalls = function () {
   })
 }
 //店长推荐预定
-api.convertRecommend = function (recommendID) {
+api.convertRecommend = function (recommendID, convertType) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/convertRecommend?recommendID=${recommendID}`)
+    axios.get(`/api/convertRecommend?recommendID=${recommendID}&convertType=${convertType}`)
       .then(res => {
         //console.log(res)
         if (res.status == 200) {

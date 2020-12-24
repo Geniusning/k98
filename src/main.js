@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-21 10:57:31
+ * @Last Modified time: 2020-12-23 17:52:13
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -52,22 +52,22 @@ new Vue({
     }
   },
   mounted () {
-    // if (!util.isAndroid()) {
-    //   let wechatInfo = navigator.userAgent.match(/MicroMessenger\/([\d\.]+)/i);
-    //   let versionNumber = wechatInfo[1].split(".").join("")
-    //   if (versionNumber > 7014) {
-    //     window.iosSignUrl = window.location.href.split('#')[0]
-    //     util._getJssdkConfig(window.iosSignUrl)
-    //   } else {
-    //     window.onload = function () {
-    //       window.iosSignUrl = window.location.href.split('#')[0]
-    //       util._getJssdkConfig(window.iosSignUrl)
-    //     }
-    //   }
-    //   setTimeout(() => {
-    //     console.log("window.iosSignUrl----", window.iosSignUrl)
-    //   }, 1000);
-    // }
+    if (!util.isAndroid()) {
+      let wechatInfo = navigator.userAgent.match(/MicroMessenger\/([\d\.]+)/i);
+      let versionNumber = wechatInfo[1].split(".").join("")
+      if (versionNumber > 7014) {
+        window.iosSignUrl = window.location.href.split('#')[0]
+        util._getJssdkConfig(window.iosSignUrl)
+      } else {
+        window.onload = function () {
+          window.iosSignUrl = window.location.href.split('#')[0]
+          util._getJssdkConfig(window.iosSignUrl)
+        }
+      }
+      setTimeout(() => {
+        console.log("window.iosSignUrl----", window.iosSignUrl)
+      }, 1000);
+    }
     this.deskCode = util.GetQueryString("deskCode")
     this.deskId = util.GetQueryString("deskID")
     // this.openId = util.GetQueryString("openId")
@@ -110,18 +110,18 @@ new Vue({
   methods: {
     //创建长连接
     createWebsocket () {
-      // let windowUrL = window.location.href;
-      // let index = windowUrL.indexOf('.com');
-      // let shareurl = windowUrL.slice(0, index);
-      // let websocketUrl = shareurl.slice(8);
-      // if (this.deskCode != "") {
-      //   this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-      // } else {
-      //   this.connectUrl = `wss://${websocketUrl}.com/api/ws`
-      // }
-      // this.websock = new WebSocket(this.connectUrl);
-      // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-      this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+      let windowUrL = window.location.href;
+      let index = windowUrL.indexOf('.com');
+      let shareurl = windowUrL.slice(0, index);
+      let websocketUrl = shareurl.slice(8);
+      if (this.deskCode != "") {
+        this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+      } else {
+        this.connectUrl = `wss://${websocketUrl}.com/api/ws`
+      }
+      this.websock = new WebSocket(this.connectUrl);
+      this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
+      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()
     },

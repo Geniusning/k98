@@ -117,8 +117,11 @@
                                     </p>
                                 </div>
                                 <div class="right">
+                                     <div class="thunb_box" v-if="item.goods.vipMoney">
+                                        <div class="linear_btn vip" @click="freeBook(item.goods.ID,index,'vip')">会员价<br>{{item.goods.vipMoney}}</div>
+                                    </div>
                                     <div class="thunb_box">
-                                        <div class="linear_btn" @click="freeBook(item.goods.ID,index)">积分兑换</div>
+                                        <div class="linear_btn" @click="freeBook(item.goods.ID,index,'common')">积分兑换</div>
                                     </div>
                                 </div>
                             </li>
@@ -634,14 +637,18 @@ export default {
             this.show_advertise = false;
         },
         //免费预定
-        freeBook (recommendID, index) {
+        freeBook (recommendID, index,type) {
             if (!this.l98Setting.shopItemConvertOpen) {
                 this.$vux.toast.text("商家未开通本功能", "middle");
                 return;
             }
             this.isGiftPanel = true;
-            (this.fatherPanelIndex = 2),
-                (this.recommendItemIndo = this.recommentList[index]);
+            if (type ==="vip"){
+              this.fatherPanelIndex = 9
+            }else{
+              this.fatherPanelIndex = 2
+            }
+            this.recommendItemIndo = this.recommentList[index];
         },
         //关闭详情
         closeDialog () {
@@ -1417,11 +1424,10 @@ export default {
                     margin-top: 1.4rem;
                     position: relative;
                     .thunb_box {
-                        .thumb {
-                            width: 0.4rem;
-                            height: 0.4rem;
-                            float: left;
-                            margin-right: 0.1333rem;
+                        .vip{
+                          position: absolute;
+                          top: -1.5rem;
+                          right: 0;
                         }
                     }
                 }
