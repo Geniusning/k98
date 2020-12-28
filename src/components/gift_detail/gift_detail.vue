@@ -10,7 +10,7 @@
                     </div>
                     <div class="middle">
                         <!-- <img src="../../assets/image/vipMonths.png" >  -->
-                        <vue-qr class="qrcode" :correctLevel="3" :autoColor="false"  :text="url"  :logoSrc="userInfo.headimgurl"  :size="100" :margin="0" :logoMargin="3"></vue-qr>
+                        <vue-qr class="qrcode" :correctLevel="3" :autoColor="false" :text="url" :logoSrc="userInfo.headimgurl" :size="100" :margin="0" :logoMargin="3"></vue-qr>
                     </div>
                     <div class="bottom">
                         <div class="cardNumber" v-if="userInfo.phone">NO:{{userInfo.phone}}</div>
@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="btn_area" >
+            <div class="btn_area">
                 <div class="left_btn" :class="{active:selected}" @click="changeShowMoney(true)">我的积分</div>
                 <div class="right_btn" :class="{active:!selected}" @click="changeShowMoney(false)">我的储值</div>
             </div>
@@ -47,7 +47,7 @@
             </div>
             <scroll ref="scroll" class="scroll" :data="giftContent" @pullingUp="pullUpMoreData" :pullup="true">
                 <ul class="gift_list" v-if="selected">
-                    <li class="item vux-1px"  v-for="(item,index) in giftContent" :key="index">
+                    <li class="item vux-1px" v-for="(item,index) in giftContent" :key="index">
                         <span class="total">${{item.value}}</span>
                         <span class="name" :class="{minus:item.amount<0,plus:item.amount>0}">{{item.amount>0?'+'+item.amount:item.amount}}</span>
                         <!-- <span class="name"  v-else>-3积分</span> -->
@@ -61,7 +61,7 @@
                     <p v-show="!giftContent.length" class="noContent">暂无变动内容</p>
                 </ul>
                 <ul class="gift_list" v-else-if="!selected">
-                    <li class="item vux-1px"  v-for="(item,index) in vipRecord" :key="index">
+                    <li class="item vux-1px" v-for="(item,index) in vipRecord" :key="index">
                         <span class="total">${{item.value}}</span>
                         <span class="name" :class="{minus:item.amount<0,plus:item.amount>0}">{{item.amount>0?'+'+item.amount:item.amount}}</span>
                         <!-- <span class="name"  v-else>-3积分</span> -->
@@ -74,7 +74,7 @@
                     </li>
                     <p v-show="!giftContent.length" class="noContent">暂无变动内容</p>
                 </ul>
-                 
+
                 <!-- <div class="pullup-wrapper">
           <div v-if="!isPullUpLoad" class="before-trigger">
             <span class="pullup-txt">Pull up and load more</span>
@@ -109,7 +109,7 @@ import {
 export default {
     data () {
         return {
-          showPhoneDialog:false,
+            showPhoneDialog: false,
             moneyIndex: 1,
             moneyInitValue: 5,
             fatherPanelIndex: 0,
@@ -119,8 +119,8 @@ export default {
             giftCursor: 0,
             isPullUpLoad: false,
             selected: true,
-            url:"",
-            vipRecord:[]
+            url: "",
+            vipRecord: []
             // defaultHeadUrl:require("./assets/image/avatar2.jpg")
         };
     },
@@ -135,51 +135,51 @@ export default {
 
     },
     mounted () {
-      this.url = `${this.shareUrl}api/selectUserTopUpVip?phone=${this.userInfo.phone}`
+        this.url = `${this.shareUrl}api/selectUserTopUpVip?phone=${this.userInfo.phone}`
         this.loadWealthDetail();
         this.loadTopUpDetailForC()
         // this.url = `https://llwant2.qianz.com/api/selectUserTopUpVip?phone=${this.userInfo.phone}`
     },
     methods: {
-      noFinish(){
-        this.$vux.toast.text("功能暂未完成","middle")
-      },
-      showPhone(){
-        this.showPhoneDialog=true
-      },
-      closePhoneDialog(flag){
-        console.log("flag=",flag)
-        this.showPhoneDialog = flag
-      },
+        noFinish () {
+            this.$vux.toast.text("功能暂未完成", "middle")
+        },
+        showPhone () {
+            this.showPhoneDialog = true
+        },
+        closePhoneDialog (flag) {
+            console.log("flag=", flag)
+            this.showPhoneDialog = flag
+        },
         changeShowMoney (flag) {
             this.selected = flag
-            if (!this.selected){
-              // this.loadTopUpDetailForC()
-            }else{
-              // this.loadWealthDetail();
+            if (!this.selected) {
+                // this.loadTopUpDetailForC()
+            } else {
+                // this.loadWealthDetail();
             }
         },
-        loadTopUpDetailForC(){
-          let startCursor = 0,count = 100
-          api.loadTopUpDetailForC(startCursor,count).then(res=>{
-            console.log("交易记录=",res)
-            res.info.forEach(item=>{
-              let temp = {
-                amount:item.dealMoney,
-                content:item.dealReason?item.dealReason:(item.dealType==="up"?"充值":"扣减"),
-                headimgurl:item.userHeadImgUrl,
-                time:util.timestampToTimeNoLine(item.date),
-                value:item.userMoney
-              }
-              this.vipRecord.unshift(temp)
+        loadTopUpDetailForC () {
+            let startCursor = 0, count = 100
+            api.loadTopUpDetailForC(startCursor, count).then(res => {
+                console.log("交易记录=", res)
+                res.info.forEach(item => {
+                    let temp = {
+                        amount: item.dealMoney,
+                        content: item.dealReason ? item.dealReason : (item.dealType === "up" ? "充值" : "扣减"),
+                        headimgurl: item.userHeadImgUrl,
+                        time: util.timestampToTimeNoLine(item.date),
+                        value: item.userMoney
+                    }
+                    this.vipRecord.unshift(temp)
+                })
             })
-          })
         },
         //上拉加载更多
         pullUpMoreData () {
-          if (!this.selected){
-            return
-          }
+            if (!this.selected) {
+                return
+            }
             if (this.giftCursor) {
                 this.loadWealthDetail();
                 this.$refs.scroll.finishPullUp()
@@ -207,7 +207,7 @@ export default {
                     this.giftContent = this.giftContent.concat(res.wealthDetailRanking.details);
                     //console.log('this.giftContent---------------', this.giftContent)
                     this.giftCursor = res.wealthDetailRanking.cursor;
-                    this.giftContent.forEach((item,index) => {
+                    this.giftContent.forEach((item, index) => {
                         if (item.headimgurl.indexOf("http") === -1) {
                             let imgUrl = item.headimgurl.slice(18)
                             item.headimgurl = require(`../../assets/image/${imgUrl}.png`)
@@ -341,11 +341,11 @@ export default {
                     align-items: center;
                     .cardNumber {
                     }
-                    .bind{
-                      background: @baseColor;
-                      padding: .07rem;
-                      color: #fff;
-                      border-radius: .2rem;
+                    .bind {
+                        background: @baseColor;
+                        padding: 0.07rem;
+                        color: #fff;
+                        border-radius: 0.2rem;
                     }
                     .desc {
                     }
@@ -366,11 +366,11 @@ export default {
                 font-size: 0.28rem;
                 border-radius: 4px;
                 background: linear-gradient(bottom, #8d8d8d, #a5a5a5);
-                box-shadow: inset 0 -.1rem #737373;
+                box-shadow: inset 0 -0.1rem #737373;
                 color: #fff;
                 &.active {
                     background: linear-gradient(bottom, #ddb142, #e6db68);
-                    box-shadow: inset 0 -.1rem #e09c07;
+                    box-shadow: inset 0 -0.1rem #e09c07;
                 }
             }
             .right_btn {

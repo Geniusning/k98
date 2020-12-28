@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Chat from 'components/chat_room/chat_room'
-import clientChat from 'components/chat_room/client_chatroom'
+// import clientChat from 'components/chat_room/client_chatroom'
 import cashierChat from 'components/chat_room/cashier_chatroom'
 // import Award from 'components/welfare/award/award'
 import ShareNew from 'components/welfare/ShareNew/ShareNew'
@@ -114,7 +114,9 @@ const router = new Router({
     {
       path: "clientChat",
       name: "clientChat",
-      component: clientChat,
+      component: () =>
+        import('../components/chat_room/client_chatroom'),
+      // component: clientChat,
       meta: {
         title: "客服聊天"
       }

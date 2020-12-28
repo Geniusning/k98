@@ -100,12 +100,12 @@
                 </div>
                 <div class="handle" v-else-if="panelIndex===9">
                     <div class="cancle" @click="closeIntegralPanel(true)">取消</div>
-                    <div v-if="(componentConvertType===0 || componentConvertType===1) && userInfo.storeValue>componentGiftInfo.goods.vipMoney"
+                    <div v-if="(componentConvertType===0 || componentConvertType===1) && userInfo.storeValue>=componentGiftInfo.goods.vipMoney"
                          class="btn"
                          @click="confirmShopItemGift(componentGiftInfo.goods.id,componentGiftInfo.goods)"
                          v-text="userInfo.storeValue<componentGiftInfo.goods.vipMoney?' ':'确认'"></div>
                     <!-- <div v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)" v-text="userInfo.money<giftIntegral?'充值':'确认'"></div> -->
-                    <div v-show="userInfo.storeValue<componentGiftInfo.goods.vipMoney" class="tips_money">储值不足，请前往柜台充值</div>
+                    <div v-show="userInfo.storeValue<componentGiftInfo.goods.vipMoney" class="tips_money">储值不足,请前往柜台充值</div>
                 </div>
             </div>
             <!-- 成功送礼提示框 -->
@@ -946,8 +946,8 @@ export default {
                 left: 50%;
                 font-weight: 700;
                 color: #333;
-                width: 3.5rem;
-                margin-left: -1.6rem;
+                width: 4rem;
+                margin-left: -2rem;
                 position: absolute;
                 bottom: 0.3rem;
                 font-size: 12px;

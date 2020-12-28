@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-23 16:46:22
+ * @Last Modified time: 2020-12-25 15:42:15
  */
 import axios from 'axios'
 import Url from './config'
@@ -1687,19 +1687,7 @@ api.loadTeam = function (teamID, arenaID) {
       })
   })
 }
-//发送手机验证码
-api.checkVerifyCode = function (phoneNumbers, vCode) {
-  return new Promise((resolve, reject) => {
-    axios.get(`/api/checkVerifyCode?phoneNumbers=${phoneNumbers}&vCode=${vCode}`)
-      .then(res => {
-        if (res.status == 200) {
-          resolve(res.data)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-  })
-}
+
 //财富排行
 api.loadWealthRanking = function (rankingType, count, cursor) {
   let pcount = count || "";

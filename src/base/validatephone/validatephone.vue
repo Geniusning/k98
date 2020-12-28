@@ -88,6 +88,8 @@ export default {
           })
           // this.changeValidate(false);
            this.$vux.toast.text("保存成功","middle");
+        }else{
+          this.$vux.toast.text("网络错误","middle");
         }
       })
     },

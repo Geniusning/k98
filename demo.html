@@ -66,20 +66,35 @@
   exec()
 
   const GetQueryString = (str, name) => {
-    console.log(str.slice(-11))
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var reg = new RegExp(name + "=([^&]*)(&|$)");
     var r = str.match(reg);
     console.log("r=",r)
     if (r != null) {
-      return decodeURI(r[2]);
+      return decodeURI(r[1]);
     }
     return "";
   };
 
-  console.log("GetQueryString=",GetQueryString("https://llwant2.qianz.com/api/selectUserTopUpVip?phone=11800002000","phone"))
+  console.log("GetQueryString=",GetQueryString("https://llwant2.qianz.com/api/selectUserTopUpVip?phone=","phone"))
+console.log(new Date().getDate())
 
+  function generateTime(){
+    let result = []
+    for (let i = 0; i < 24; i++) {
+      let tempObj1 = {
+        text:(i>=10?i+"":"0"+i)+":00",
+        value:(i>=10?i+"":"0"+i)+":00"
+      }
+      let tempObj2 = {
+        text:(i>=10?i+"":"0"+i)+":30",
+        value:(i>=10?i+"":"0"+i)+":30"
+      }
+      result.push(tempObj1,tempObj2)
+    }
+    return result
+  }
 
-
+  // console.log(generateTime())
 
   function countTime() {
     //获取当前时间

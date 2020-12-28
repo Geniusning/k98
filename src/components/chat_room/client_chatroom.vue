@@ -2,6 +2,7 @@
     <div>
         <transition name="fade">
             <div id="chat" class="chatRoom">
+                <img @click="book" src="../../assets/image/plane_book.png" class="plane-book" alt="">
                 <div class="chat_nav">
                     <div class="back_box">
                         <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
@@ -12,12 +13,7 @@
                             <img v-else src="../../assets/image/male.png" alt="">
                         </div>
                         <span>{{staticChatFriendObj.nickname?staticChatFriendObj.nickname:"客服小哥"}}</span>
-                         <div class="helpTips" v-show="!showDialog" @click="showDialog = true">查看说明</div>
-                        <!-- <div class="online_status">
-            <img src="../../assets/image/dot_green.png" v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="online_dot">
-            <span v-if="staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server" class="friendStatus">{{staticChatFriendObj.isInDoor?"店内":"店外"}}</span>
-            <span v-if="staticChatFriendObj.deskCode && (staticChatFriendObj.onlineDiceServer || staticChatFriendObj.onlineL98Server)" class="roomNum">{{`${staticChatFriendObj.deskCode}`}}</span>
-          </div> -->
+                        <div class="helpTips" v-show="!showDialog" @click="showDialog = true">查看说明</div>
                     </div>
                     <div class="backHome_box">
                         <img onclick="return false" src="../../assets/image/chat_home.png" alt class="home" @click="goHome">
@@ -40,6 +36,22 @@
                                     <div class="message_box">
                                         <span v-show="item.type===1" class="arrow"></span>
                                         <p class="message" style="word-break: break-all;" v-if="item.type===1" v-html="item.message"></p>
+                                    </div>
+                                </div>
+                                <div v-if="item.type==10" class="book_wrapper">
+                                    <p class="time">2020-02-02 10:19:445</p>
+                                    <div class="content-box ">
+                                        <p class="book_title">贵宾预约/预订：</p>
+                                        <div class="book_content">
+                                            <img class="book_icon" src="../../assets/image/plane_book.png" alt="">
+                                            <div class="content">
+                                                29号8:30，后台02 118
+                                            </div>
+                                        </div>
+                                        <div class="book_handle">
+                                            <div class="change">更改</div>
+                                            <div class="accept">接受</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div v-if="item.type==2" class="message_wrapper">
@@ -75,7 +87,7 @@
                             </li>
                             <li class="item fl">
                                 <img onclick="return false" src="../../assets/image/chat_pic.png" alt>
-                                <input type="file" class="file" accept="image/*" @change="uploadImage">
+                                <input type="file" class="file" accept="image/*" @change="sendImage">
                             </li>
                             <li class="item fl" style="padding:0" v-if="isClientFlag" @click="sendStaffCouponToUser">
                                 <img style="width:100%;height:100%" onclick="return false" src="../../assets/image/quan-icon.jpg" alt>
@@ -102,6 +114,7 @@
                 </div>
             </div>
         </transition>
+        <validatephone :isShow="showPhoneDialog" @close="closePhoneDialog"></validatephone>
         <div v-transfer-dom>
             <x-dialog v-model="showDialog" class="dialog-demo">
                 <div class="img-box" v-if="shopSettingInfo.shopModeId===0">
@@ -129,6 +142,7 @@
 <script type='text/ecmascript-6'>
 // import envelope from 'base/envelope/envelope';
 import loading from "../../base/loading/loading";
+import validatephone from "../../base/validatephone/validatephone";
 // import qrCode from 'base/qrCode/qrCode';
 // import topUp from 'base/topUp/topUp';
 import {
@@ -149,6 +163,11 @@ import Url from "../../common/config.js";
 import api from "common/api.js";
 import util from "common/util.js";
 import Bus from "common/bus.js";
+import Picker from 'better-picker'
+import dateRange from "./date"
+import timeRange from "./time"
+// console.log(dateRange)
+// console.log(timeRange)
 // import EXIF from "common/exif.js";
 import {
     mapState,
@@ -165,6 +184,10 @@ export default {
     },
     data () {
         return {
+            showPhoneDialog: false,
+            data1: dateRange,
+            data2: timeRange,
+            data3: [],
             showDialog: false,
             clientImg: require("../../assets/image/home_letter.png"),
             isClientFlag: false,
@@ -246,10 +269,29 @@ export default {
     //   }
     //   next()
     // },
-    created () {
-        // if (!localStorage.getItem('helpTips')) {
-        //     this.showDialog = true
-        // }
+    async created () {
+        let staff = await this.loadAllStaff()
+        staff.forEach(item => {
+            let tmp = {
+                text: item.name + "(" + item.number + ")",
+                value: item.name + "(" + item.number + ")"
+            }
+            this.data3.push(tmp)
+        })
+        this.picker = new Picker({
+            data: [this.data1, this.data2, this.data3],
+            selectedIndex: [new Date().getDate() - 1, 20, 0],
+            title: '选择预约时间和服务专员（或场地）'
+        });
+        this.picker.on('picker.select', (selectedVal, selectedIndex) => {
+            if (!this.userInfo.phone) {
+                this.showPhoneDialog = true;
+                return
+            }
+            let text = "预约时间" + selectedVal[0] + "号" + selectedVal[1] + "," + selectedVal[2]
+            this.sendOwnMsg(text, 10)
+            console.log(selectedVal, selectedIndex)
+        })
         this.today = new Date().getDate();
         this.today = new Date().getDate();
         if (this.today < 10) {
@@ -316,6 +358,27 @@ export default {
         ...mapGetters(["qrIsShow"])
     },
     methods: {
+        closePhoneDialog (flag) {
+            console.log("flag=", flag)
+            this.showPhoneDialog = flag
+        },
+        loadAllStaff () {
+            return new Promise(async (resolve, reject) => {
+                let res = await api.loadAllStaff()
+                console.log("全部员工-------", res);
+                if (res.errCode == 0) {
+                    this.staffList = res.staff.sort(util.sortByKeyS2L("number"));
+                    resolve(this.staffList)
+                }
+            })
+        },
+        //预约
+        book () {
+            //  this.$vux.toast.text("功能暂未完成","middle")
+            //  return 
+            this.picker.show();
+        },
+
         closeTips () {
             this.showDialog = false
             // localStorage.setItem("helpTips", 1)
@@ -341,11 +404,10 @@ export default {
         setMsgReadCliSer () {
             if (this.isClientFlag) {
                 //客服账号  发送消息
-                api
-                    .setMsgReadCliSer(
-                        this.staticChatFriendObj.openid,
-                        this.staticChatFriendObj.CliSerID
-                    )
+                api.setMsgReadCliSer(
+                    this.staticChatFriendObj.openid,
+                    this.staticChatFriendObj.CliSerID
+                )
                     .then(res => {
                         //console.log("客服消息已读------", res);
                     });
@@ -501,34 +563,70 @@ export default {
                     for (var j = 0; j < this.emotionList.length; j++) {
                         if (this.input_value.indexOf(this.emotionList[j].name) !== -1) {
                             this.input_value = this.input_value.replace(
-                                reg,
-                                `<img src=${this.emotionList[j].num
-                                } style="vertical-align: -6px;">`
+                                reg, `<img src=${this.emotionList[j].num} style="vertical-align: -6px;">`
                             );
                         }
                     }
                 }
             }
-            // for (var i = 0; i < this.emotionList.length; i++) {
-            //   // debugger
-            //   if (this.input_value.indexOf(this.emotionList[i].name) !== -1) {
-            //     this.input_value = this.input_value.replace(reg, `<img src=${this.emotionList[i].num} style="vertical-align: -6px;">`);
-            //   }
-            // }
-            //console.log("this.input_value-------", this.input_value);
+            //把自己发送的内容加到聊天列表里面
+            this.sendOwnMsg(this.input_value, 1)
+            // this.componentChatList.push({
+            //     message: this.input_value,
+            //     friend: 0,
+            //     type: 1,
+            //     time: util.timestampToTime(new Date().getTime()),
+            //     fromIconURI: this.userInfo.headimgurl
+            // });
+            // let messObj = {
+            //     to: this.isClientFlag ?
+            //         this.staticChatFriendObj.openid : this.staticChatFriendObj.CliSerID,
+            //     content: this.input_value,
+            //     type: 1,
+            //     from: this.isClientFlag ?
+            //         this.staticChatFriendObj.CliSerID : this.userInfo.openid,
+            //     fromIconURI: this.userInfo.headimgurl
+            // };
+            // let textMessObj = JSON.stringify(messObj);
+            // let decc1 = new TextEncoder("utf-8");
+            // let result = decc1.encode(textMessObj);
+            // api.sendChatMsgCliSer(result).then(res => {
+            //     this.emotionShow = false;
+            //     this.expressionShow = false;
+            //     let childNodes = this.$refs.chatList.childNodes;
+            //     if (this.clientList.length === 0 && !this.isClientFlag) {
+            //         // this.addCommenter(); 带删除
+            //     }
+            // });
+            // this.input_value = "";
+            // // if (this.clientList.length > 5) {
+            // this.$nextTick(function () {
+            //     let childNodes = this.$refs.chatList.childNodes;
+            //     // let chatListHeight = 0;
+            //     // childNodes.forEach(item => {
+            //     //   chatListHeight += item.clientHeight;
+            //     // });
+            //     // this.scrollHeight = chatListHeight;
+            //     this.$refs.listView.refresh();
+            //     this.$refs.listView.scrollBy(0, -childNodes[0].clientHeight - 20);
+            //     // this.$refs.listView.scrollBy(0, -childNodes-10);
+            // });
+            // // }
+        },
+        sendOwnMsg (msg, msgType) {
             //把自己发送的内容加到聊天列表里面
             this.componentChatList.push({
-                message: this.input_value,
+                message: msg,
                 friend: 0,
-                type: 1,
+                type: msgType,
                 time: util.timestampToTime(new Date().getTime()),
                 fromIconURI: this.userInfo.headimgurl
             });
             let messObj = {
                 to: this.isClientFlag ?
                     this.staticChatFriendObj.openid : this.staticChatFriendObj.CliSerID,
-                content: this.input_value,
-                type: 1,
+                content: msg,
+                type: msgType,
                 from: this.isClientFlag ?
                     this.staticChatFriendObj.CliSerID : this.userInfo.openid,
                 fromIconURI: this.userInfo.headimgurl
@@ -560,7 +658,7 @@ export default {
             // }
         },
         // 发送图片
-        uploadImage (e) {
+        sendImage (e) {
             if (!e.target.files[0]) {
                 return;
             }
@@ -751,7 +849,8 @@ export default {
         GridItem,
         Scroll,
         Popup,
-        XDialog
+        XDialog,
+        validatephone
     }
 };
 </script>
@@ -760,7 +859,6 @@ export default {
 @import "../../assets/less/variable.less";
 @import "../../assets/less/chat.less";
 @import "~vux/src/styles/close";
-
 .chatRoom {
     position: fixed;
     z-index: 7;
@@ -771,8 +869,16 @@ export default {
     height: 100%;
     display: flex;
     flex-direction: column;
+    .plane-book {
+        position: fixed;
+        z-index: 8;
+        right: 0;
+        top: 50%;
+        width: 1rem;
+        height: 1rem;
+    }
     .chat_nav {
-      .chat_nav()
+        .chat_nav();
     }
     .chat_wrapper {
         flex: 1;
@@ -799,6 +905,56 @@ export default {
                 .chatListItem {
                     padding: 0.4rem 0;
                     box-sizing: border-box;
+                    .book_wrapper {
+                        margin: 0 auto;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: space-around;
+                        width: 6rem;
+                        height: 3.3rem;
+                        background: #fff;
+                        border-radius: 6px;
+                        .time {
+                        }
+                        .content-box {
+                            box-sizing: border-box;
+                            width: 100%;
+                            padding: 0 0.1rem;
+                            display: flex;
+                            flex-direction: column;
+                            .book_title {
+                            }
+                            .book_content {
+                                display: flex;
+                                justify-content: space-around;
+                                height: 1.5rem;
+                                .book_icon {
+                                    width: 1.2rem;
+                                    height: 1.2rem;
+                                }
+                                .content {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    justify-content: center;
+                                    text-align: center;
+                                    font-size: 13px;
+                                }
+                            }
+                            .book_handle {
+                                display: flex;
+                                justify-content: space-around;
+                                .change,.accept {
+                                  background: #ffd800;
+                                  padding:.1rem .2rem;
+                                  border-radius: 6px;
+                                }
+                                .accept {
+                                }
+                            }
+                        }
+                    }
                 }
                 .friend {
                     .chatList(left, #fff);
@@ -826,103 +982,7 @@ export default {
                     width: 1.8rem;
                     height: 2rem;
                 }
-                .gift_wrapper {
-                    text-align: left;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    .myGifoInfo {
-                        &.friendPanel {
-                            background: #ffffff;
-                        }
-                        &.minePanel {
-                            background: #ffd800;
-                        }
-                        border-radius: 0.08rem;
-                        color: #333;
-                        box-sizing: border-box;
-                        padding: 0.1667rem 0.1333rem;
-                        .gift {
-                            margin-top: 0.2333rem;
-                            margin-bottom: 0.1333rem;
-                            display: flex;
-                            justify-content: space-around;
-                            .giftImg {
-                                img {
-                                    width: 1.1rem;
-                                    height: 1.1rem;
-                                }
-                            }
-                            .giftDesc {
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: space-between;
-                                .giftName {
-                                }
-                                .giftIntegral {
-                                }
-                            }
-                        }
-                    }
-                    .giftRecord_test {
-                        width: 100%;
-                        display: inline-block;
-                        padding: 0.08rem 0.1067rem;
-                        border-radius: 0.08rem;
-                        color: #fff;
-                        text-align: center;
-                        box-sizing: border-box;
-                        &.giftText {
-                            color: #333;
-                        }
-                        .yes,
-                        .no {
-                            border-radius: 0.1rem;
-                            box-sizing: border-box;
-                            letter-spacing: 0.08rem;
-                            font-weight: 600;
-                            color: #333;
-                            padding: 0.1333rem 0.4rem;
-                            background: -webkit-linear-gradient(
-                                top,
-                                #fedc00,
-                                #e39300
-                            );
-                        }
-                        .no {
-                            margin-right: 0.8333rem;
-                        }
-                        .yesGame,
-                        .noGame {
-                            border-radius: 0.1rem;
-                            text-decoration: underline;
-                            color: red;
-                            font-size: 0.4rem;
-                            font-weight: 700;
-                        }
-                        .noGame {
-                            margin-left: 0.2667rem;
-                            margin-right: 0.2667rem;
-                        }
-                    }
-                    .received {
-                        background: rgba(0, 0, 0, 0.2);
-                    }
-                    .no_received {
-                        background: rgba(0, 0, 0, 0.5);
-                        max-width: 100%;
-                    }
-                    .giftRecord_time {
-                        display: inline-block;
-                        color: rgb(34, 26, 26);
-                    }
-                }
             }
-        }
-        .loading-container {
-            position: absolute;
-            width: 100%;
-            top: 2%;
         }
     }
     .input_wrapper {
@@ -947,7 +1007,7 @@ export default {
                 margin-left: 0.2767rem;
                 float: left;
                 width: 2rem;
-                height: 1.06rem; // line-height: 0.9867rem;
+                height: 1.06rem;
                 background: #999;
                 border-radius: 0.1067rem;
                 padding: 0.2533rem 0.2933rem;
