@@ -20,14 +20,14 @@
                 </div>
             </div>
             <div class="btn_area">
-                <div class="left_btn" :class="{active:selected}" @click="changeShowMoney(true)">我的积分</div>
-                <div class="right_btn" :class="{active:!selected}" @click="changeShowMoney(false)">我的储值</div>
+                <div class="left_btn" :class="{active:selected}" @click="changeShowMoney(true)">我的<br>积分</div>
+                <div class="right_btn" :class="{active:!selected}" @click="changeShowMoney(false)">我的<br>储值</div>
             </div>
         </div>
         <div class="gift_wrapper vux-1px-t">
             <div class="title_content vux-1px-b">
                 <div class="title_content_item">
-                    <h3 class="title ">我的财富：</h3>
+                    <h3 class="title ">{{selected?"我的积分：":"储值余额："}}</h3>
                     <span class="money">${{selected?userInfo.money:userInfo.storeValue}}</span>
                 </div>
                 <!-- <div class="title_content_item">
@@ -35,7 +35,7 @@
                     <span class="money ">{{userInfo.wealthRanking}}</span>
                 </div> -->
                 <div class="btn_wrapper" @click="showTreasure">
-                    <button class="btn_chongzhi">积分充值</button>
+                    <button class="btn_chongzhi" v-show="selected">积分充值</button>
                 </div>
             </div>
             <div class="scrollTitle">
@@ -394,6 +394,9 @@ export default {
                 margin-right: 0.6667rem;
                 box-sizing: border-box;
                 display: flex;
+            }
+            .btn_wrapper{
+              width: 2rem;
             }
             .btn_chongzhi {
                 border: none;

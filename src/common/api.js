@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-25 15:42:15
+ * @Last Modified time: 2020-12-30 17:24:27
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,6 +24,30 @@ axios.interceptors.request.use(
   }
 )
 let api = {};
+//拉取桌号
+api.loadDesks = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadDesks`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//回复预约消息
+api.sendBookMsg = function (data) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + `/api/sendBookMsg`, data).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //扣减充值会员卡
 api.decreaseTopUpVip = function (data) {
   return new Promise((resolve, reject) => {
@@ -999,10 +1023,10 @@ api.getFriendMessList = function (cursor, who) {
       })
   })
 }
-//标记客服消息已读
-api.setMsgReadCliSer = function (aTalker, bTalker) {
+//标记收银消息已读
+api.setCashierMsgRead = function (who) {
   return new Promise((resolve, reject) => {
-    axios.get(shareurl + `/api/setMsgReadCliSer?to=${aTalker}&from=${bTalker}`)
+    axios.get(Url.commonUrl + `/api/setCashierMsgRead?who=${who}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -1012,7 +1036,20 @@ api.setMsgReadCliSer = function (aTalker, bTalker) {
       })
   })
 }
-//标记用户已读
+//标记客服消息已读
+api.setMsgReadCliSer = function (from,to) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/setCliMsgRead?from=${from}&to=${to}`)
+      .then(res => {
+        if (res.status == 200) {
+          resolve(res.data)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
+//标记普通消息用户已读
 api.sendMsgReaded = function (who) {
   return new Promise((resolve, reject) => {
     // &tk=TFrhcvpaFUXm5c36xjlBNTvcwV_Uh12_9YZJ2a4t8k8ayMd1BPGDxQb5XFbRxKfRZfxKzA==

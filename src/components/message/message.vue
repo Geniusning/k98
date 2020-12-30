@@ -926,6 +926,7 @@ export default {
         //以用户身份进入客服发消息
         ChatToClient () {
             this.clientObj["openid"] = this.clientObj.CliSerID
+            this.clientObj["CliSerID"] = this.clientObj.CliSerID
             this.setChatFriend(this.clientObj);
             this.$router.push({
                 name: "clientChat",
@@ -1392,29 +1393,23 @@ export default {
                     flex-direction: column;
                     justify-content: space-between;
                     position: relative;
-                    .discount-pay {
+                    .discount-pay,.noDiscount-pay {
                         position: absolute;
+                        width: 2.3rem;
                         top: 0.4rem;
                         right: -4rem;
                         background: red;
                         color: #fff;
-                        padding: 0.08rem 0.2333rem;
+                        padding: 0.08rem 0.0333rem;
                         border: none;
                         border-radius: 4px;
                         font-size: 14px;
                         border: 1px solid red;
                     }
                     .noDiscount-pay {
-                        position: absolute;
-                        top: 0.4rem;
-                        right: -6rem;
+                        right: -6.5rem;
                         background: #fff;
                         color: red;
-                        border: none;
-                        border: 1px solid red;
-                        border-radius: 4px;
-                        padding: 0.08rem 0.2333rem;
-                        font-size: 14px;
                     }
                     .time {
                         position: absolute;

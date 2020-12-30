@@ -315,7 +315,6 @@ export default {
             envelopeText: "", //信封弹框内容
             showPreview: false,
             scrollHeight: 0,
-            // scrollToDomElement: "",
             pullDownRefresh: true,
             listenScroll: true,
             expressionShow: false,
@@ -329,7 +328,6 @@ export default {
                 "约定好了，准时见面，不见不散",
                 "玩一把游戏？"
             ],
-            // showToast_gift: false,
             show: false,
             showTab: true,
             emotionShow: false,
@@ -338,14 +336,6 @@ export default {
             input_value: "",
             autofocus: false,
             emotionList: [
-                // {
-                //   name: "[微笑]",
-                //   num: "/static/face/1.gif"
-                // },
-                // {
-                //   name: "[色]",
-                //   num: "/static/face/2.gif"
-                // },
                 {
                     name: "[大哭]",
                     num: "/static/face/3.gif"
@@ -354,14 +344,6 @@ export default {
                     name: "[嘻嘻]",
                     num: "/static/face/4.gif"
                 },
-                // {
-                //   name: "[偷笑]",
-                //   num: "/static/face/5.gif"
-                // },
-                // {
-                //   name: "[大笑]",
-                //   num: "/static/face/6.gif"
-                // },
                 {
                     name: "[晕]",
                     num: "/static/face/7.gif"
@@ -370,18 +352,7 @@ export default {
                     name: "[再见]",
                     num: "/static/face/8.gif"
                 },
-                // {
-                //   name: "[抠鼻]",
-                //   num: "/static/face/9.gif"
-                // },
-                // {
-                //   name: "[委屈]",
-                //   num: "/static/face/10.gif"
-                // },
-                // {
-                //   name: "[抱抱]",
-                //   num: "/static/face/11.gif"
-                // },
+            
                 {
                     name: "[爱心]",
                     num: "/static/face/12.gif"
@@ -402,14 +373,7 @@ export default {
                     name: "[玫瑰]",
                     num: "/static/face/16.gif"
                 }
-                // {
-                //   name: "[亲亲]",
-                //   num: "/static/face/17.gif"
-                // },
-                // {
-                //   name: "[难过]",
-                //   num: "/static/face/18.gif"
-                // }
+             
             ],
             chatListIndex: 0,
             componentChatList: [],
@@ -420,7 +384,8 @@ export default {
             voiceLocalId: "",
             voiceServerId: "",
             messageType: 1,
-            warning: false
+            warning: false,
+            today:""
             // isLoading: false
         };
     },
@@ -470,10 +435,7 @@ export default {
         console.log("this.staticChatFriendObj-----------", this.staticChatFriendObj);
         if (!sessionStorage.getItem("friendInfo")) {
             //解决微信内置浏览器刷新获得好友信息
-            sessionStorage.setItem(
-                "friendInfo",
-                JSON.stringify(this.staticChatFriendObj)
-            );
+            sessionStorage.setItem("friendInfo",JSON.stringify(this.staticChatFriendObj));
         } else {
             let friendInfo = JSON.parse(sessionStorage.getItem("friendInfo"));
             this.setChatFriend(friendInfo);

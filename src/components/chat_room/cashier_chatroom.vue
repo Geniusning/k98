@@ -405,8 +405,9 @@ export default {
         if (!(JSON.stringify(this.$route.query) === "{}")) {
             this.setChatFriend(this.$route.query.info);
         }
-        this.loadCashierChatList(); //获取客服聊天记录
+        this.loadCashierChatList(); //获取收银聊天记录
         this.isCashierFlag = this.$route.params.isCashier;
+        this.setCashierMsgRead()
         if (this.isCashierFlag) {
             this.getNewestSelfPay()
             this.expressionList = [
@@ -447,12 +448,25 @@ export default {
         ...mapGetters(["qrIsShow"])
     },
     methods: {
+           //标记收银消息已读
+        setCashierMsgRead () {
+            if (this.isCashierFlag) {
+                //客服账号  发送消息
+                api.setCashierMsgRead(this.staticChatFriendObj.openid).then(res => {
+                    console.log("标记收银消息已读------", res);
+                });
+            } else {
+                api.setCashierMsgRead(this.staticChatFriendObj.openid).then(res => {
+                    console.log("标记收银消息已读------", res);
+                });
+            }
+        },
         closeTips () {
             this.showDialog = false
             localStorage.setItem("helpTips", 1)
         },
         //监听修改时间面板状态
-        closeIntegralPanel (flag) {
+        closeSchedule (flag) {
             this.isShowChangeTimePanel = flag;
         },
         async noMove (flag) {
@@ -1007,7 +1021,8 @@ export default {
     },
     watch: {
         cashierLastChatMsg: function (newValue) {
-            console.log("cashierLastChatMsg----------", newValue);
+            // console.log("cashierLastChatMsg----------", newValue);
+             this.setCashierMsgRead()
             let messageInfo = newValue.extMsg.lastMsg;
             messageInfo["to"] = newValue.extMsg.lastMsg.to;
             if (messageInfo.from === this.staticChatFriendObj.openid) {

@@ -117,8 +117,8 @@
                                     </p>
                                 </div>
                                 <div class="right">
-                                     <div class="thunb_box" v-if="item.goods.vipMoney">
-                                        <div class="linear_btn vip" @click="freeBook(item.goods.ID,index,'vip')">会员价<br>{{item.goods.vipMoney}}</div>
+                                    <div class="thunb_box" v-if="item.goods.vipMoney">
+                                        <div class="linear_btn vip" @click="freeBook(item.goods.ID,index,'vip')">会员价格<br>￥{{item.goods.vipMoney}}</div>
                                     </div>
                                     <div class="thunb_box">
                                         <div class="linear_btn" @click="freeBook(item.goods.ID,index,'common')">积分兑换</div>
@@ -322,6 +322,10 @@ export default {
         this._loadPublishArenas(); //拉取已经发布的比赛场
         this.loadAlliance(); //拉取友商物品
         this.loadInviteCoupon(); //判断是否有邀新活动
+        this.loadClientServiceList();
+        this.loadCashierList();
+        this.getAlreadyFriend(); //获取已经成为好友列表
+        this._getInOutNum(); //获取场内场外用户数
         // this.initIntro()
     },
     activated () {
@@ -339,10 +343,7 @@ export default {
         if (this.$route.params.data == "shareHomePage") {
             this.isShow_bg = true;
         }
-        this.loadClientServiceList();
-        this.loadCashierList();
-        this.getAlreadyFriend(); //获取已经成为好友列表
-        this._getInOutNum(); //获取场内场外用户数
+
         // this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
     },
     methods: {
@@ -430,7 +431,7 @@ export default {
             api.loadAlliance().then(res => {
                 console.log("拉取友商物品-------", res);
                 if (res.errCode === 0) {
-                  this.saveAllianceInfo(res.info)
+                    this.saveAllianceInfo(res.info)
                     this.friendLeagleList = res.info.map(shop => {
                         shop.distance = "<" + shop.distance.toFixed(1) + "km";
                         return shop;
@@ -456,10 +457,12 @@ export default {
                         tempArr.forEach((client, index) => {
                             unReadCount += client.unReadMsgCount;
                         });
-                        this.getClientUnreadCount(unReadCount);
-                        this.addBandge();
+                        // this.getClientUnreadCount(unReadCount);
+                        // this.addBandge();
                     }
                 }
+                this.getClientUnreadCount(unReadCount);
+                this.addBandge();
             });
         },
         //加载收银员列表
@@ -637,16 +640,16 @@ export default {
             this.show_advertise = false;
         },
         //免费预定
-        freeBook (recommendID, index,type) {
+        freeBook (recommendID, index, type) {
             if (!this.l98Setting.shopItemConvertOpen) {
                 this.$vux.toast.text("商家未开通本功能", "middle");
                 return;
             }
             this.isGiftPanel = true;
-            if (type ==="vip"){
-              this.fatherPanelIndex = 9
-            }else{
-              this.fatherPanelIndex = 2
+            if (type === "vip") {
+                this.fatherPanelIndex = 9
+            } else {
+                this.fatherPanelIndex = 2
             }
             this.recommendItemIndo = this.recommentList[index];
         },
@@ -1424,10 +1427,10 @@ export default {
                     margin-top: 1.4rem;
                     position: relative;
                     .thunb_box {
-                        .vip{
-                          position: absolute;
-                          top: -1.5rem;
-                          right: 0;
+                        .vip {
+                            position: absolute;
+                            top: -1.5rem;
+                            right: 0;
                         }
                     }
                 }

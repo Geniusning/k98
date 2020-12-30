@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-07 16:27:17
+ * @Last Modified time: 2020-12-30 16:21:04
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -651,7 +651,7 @@ const mutations = {
   },
   //更新客服聊天
   [types.UPDATE_CLIENTMSG] (state, obj) {
-    // //console.log('state.clientLastChatMsg```````````````````````````````````````', obj)
+    console.log('state.clientLastChatMsg```````````````````````````````````````', obj)
     state.clientLastChatMsg = obj
     state.client_badgeCount = obj.extMsg.count
   },

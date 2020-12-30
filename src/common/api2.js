@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-23 16:46:16
+ * @Last Modified time: 2020-12-30 17:24:14
  */
 import axios from 'axios'
 import Url from './config'
@@ -31,6 +31,30 @@ let api = {};
 api.delIdentity = function (targetID) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//拉取桌号
+api.loadDesks = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadDesks?tk=${Url.tk}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//回复预约消息,同时设置这个预约消息已被处理
+api.sendBookMsg = function (data) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + `/api/sendBookMsg?tk=${Url.tk}`,data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -1007,10 +1031,10 @@ api.getFriendMessList = function (cursor, who) {
       })
   })
 }
-//标记客服消息已读
-api.setMsgReadCliSer = function (aTalker, bTalker) {
+//标记收银消息已读
+api.setCashierMsgRead = function (who) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/setMsgReadCliSer?to=${aTalker}&from=${bTalker}&tk=${Url.tk}`)
+    axios.get(Url.commonUrl + `/api/setCashierMsgRead?who=${who}&tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -1020,7 +1044,20 @@ api.setMsgReadCliSer = function (aTalker, bTalker) {
       })
   })
 }
-//标记用户已读
+//标记客服消息已读
+api.setMsgReadCliSer = function (from,to) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/setCliMsgRead?from=${from}&to=${to}&tk=${Url.tk}`)
+      .then(res => {
+        if (res.status == 200) {
+          resolve(res.data)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
+//标记普通消息用户已读
 api.sendMsgReaded = function (who) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/setMsgRead?who=${who}&tk=${Url.tk}`)

@@ -2,7 +2,7 @@
     <div>
         <transition name="fade">
             <div id="chat" class="chatRoom">
-                <img @click="book" src="../../assets/image/plane_book.png" class="plane-book" alt="">
+                <img v-if="!isClientFlag" @click="book" src="../../assets/image/plane_book.png" class="plane-book" alt="">
                 <div class="chat_nav">
                     <div class="back_box">
                         <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
@@ -39,18 +39,18 @@
                                     </div>
                                 </div>
                                 <div v-if="item.type==10" class="book_wrapper">
-                                    <p class="time">2020-02-02 10:19:445</p>
+                                    <img class="book_icon" src="../../assets/image/plane_book.png" alt="">
+                                    <p class="time">{{item.time}}</p>
                                     <div class="content-box ">
-                                        <p class="book_title">贵宾预约/预订：</p>
+                                        <p class="book_title">{{item.friend === 0?"我的":"贵宾"}}预约/预订：</p>
                                         <div class="book_content">
-                                            <img class="book_icon" src="../../assets/image/plane_book.png" alt="">
                                             <div class="content">
-                                                29号8:30，后台02 118
+                                                {{item.message}}
                                             </div>
                                         </div>
-                                        <div class="book_handle">
-                                            <div class="change">更改</div>
-                                            <div class="accept">接受</div>
+                                        <div class="book_handle" v-if="item.friend != 0 && !item.isHandled">
+                                            <div class="change" @click="changeBookInfo(item)">更改</div>
+                                            <div class="accept" @click="acceptBookInfo(item)">接受</div>
                                         </div>
                                     </div>
                                 </div>
@@ -191,26 +191,15 @@ export default {
             showDialog: false,
             clientImg: require("../../assets/image/home_letter.png"),
             isClientFlag: false,
-            sendingTimes: 0,
-            isShowEnvelope: false, //信封弹框判断
-            envelopeText: "", //信封弹框内容
             showPreview: false,
             scrollHeight: 500,
-            // scrollToDomElement: "",
             pullDownRefresh: true,
             expressionShow: false,
-            fatherPanelIndex: 1,
-            isGiftPanel: false,
-            // friendId: "",
             expressionList: [],
-            // showToast_gift: false,
-            show: false,
-            showTab: true,
+            today: "",
             emotionShow: false,
-            actionShow: false,
             flag: false,
             input_value: "",
-            autofocus: false,
             emotionList: [{
                 name: "[大哭]",
                 num: "/static/face/3.gif"
@@ -248,7 +237,6 @@ export default {
                 num: "/static/face/16.gif"
             }
             ],
-            chatListIndex: 0,
             componentChatList: [],
             isscroll: true,
             ClientEndCursor: 0,
@@ -269,29 +257,8 @@ export default {
     //   }
     //   next()
     // },
-    async created () {
-        let staff = await this.loadAllStaff()
-        staff.forEach(item => {
-            let tmp = {
-                text: item.name + "(" + item.number + ")",
-                value: item.name + "(" + item.number + ")"
-            }
-            this.data3.push(tmp)
-        })
-        this.picker = new Picker({
-            data: [this.data1, this.data2, this.data3],
-            selectedIndex: [new Date().getDate() - 1, 20, 0],
-            title: '选择预约时间和服务专员（或场地）'
-        });
-        this.picker.on('picker.select', (selectedVal, selectedIndex) => {
-            if (!this.userInfo.phone) {
-                this.showPhoneDialog = true;
-                return
-            }
-            let text = "预约时间" + selectedVal[0] + "号" + selectedVal[1] + "," + selectedVal[2]
-            this.sendOwnMsg(text, 10)
-            console.log(selectedVal, selectedIndex)
-        })
+    created () {
+        this.initBookPicker()
         this.today = new Date().getDate();
         this.today = new Date().getDate();
         if (this.today < 10) {
@@ -303,22 +270,21 @@ export default {
             //软键盘关闭事件
             window.scrollTo(0, 0); //解决ios键盘留白的bug
         });
-        this.isClientFlag = this.$route.params.isClient;
+
     },
-    // mounted() {
-    //   //console.log("mounted")
-    //   this.loadChatMsgCliSer(); //获取客服聊天记录
-    // },
+    mounted () {
+        //console.log("mounted")
+        console.log("this.staticChatFriendObj=", this.staticChatFriendObj)
+    },
     activated () {
+        this.isClientFlag = this.$route.params.isClient;
+        this.loadChatMsgCliSer(); //获取客服聊天记录
+        console.log("activated")
         if (!(JSON.stringify(this.$route.query) === "{}")) {
             this.setChatFriend(this.$route.query.info);
         }
-        //console.log("this.staticChatFriendObj", this.staticChatFriendObj);
+
         this.setMsgReadCliSer(); //标识已读
-        this.loadChatMsgCliSer(); //获取客服聊天记录
-        // this.friendId = this.$route.params.id;
-        this.isClientFlag = this.$route.params.isClient;
-        //console.log("this.$route-------------", this.$route);
         if (this.isClientFlag) {
             this.expressionList = [
                 "收到您的消息，请稍候！",
@@ -353,11 +319,97 @@ export default {
             "alreadyFriendListcursor",
             "giftList",
             "staffCouponInfo",
-            "shopSettingInfo"
+            "shopSettingInfo",
+            "l98Setting"
         ]),
         ...mapGetters(["qrIsShow"])
     },
     methods: {
+        async initBookPicker () {
+            if (this.l98Setting.bookStaffOpen) {
+                let staff = await this.loadAllStaff()
+                if (staff.length === 0) {
+                    return
+                }
+                staff.forEach(item => {
+                    let tmp = {
+                        text: item.name + "(" + item.number + ")",
+                        value: item.name + "(" + item.number + ")"
+                    }
+                    this.data3.push(tmp)
+                })
+            } else {
+                let desks = await this.loadDesks()
+                if (desks.length === 0) {
+                    return
+                }
+                desks.forEach(item => {
+                    let tmp = {
+                        text: "台/房号:" + item.code,
+                        value: "台/房号:" + item.code
+                    }
+                    this.data3.push(tmp)
+                })
+            }
+
+            this.picker = new Picker({
+                data: [this.data1, this.data2, this.data3],
+                selectedIndex: [new Date().getDate() - 1, 20, 0],
+                title: `预约时间和${this.l98Setting.bookStaffOpen ? "服务专员" : "台/房号"}`
+            });
+            this.picker.on('picker.select', (selectedVal, selectedIndex) => {
+                if (!this.userInfo.phone) {
+                    this.showPhoneDialog = true;
+                    return
+                }
+                let text = "预约时间" + selectedVal[0] + "号" + selectedVal[1] + "," + selectedVal[2]
+                this.sendOwnMsg(text, 10, false)
+                console.log(selectedVal, selectedIndex)
+            })
+        },
+        loadDesks () {
+            return new Promise(async (resolve, reject) => {
+                let res = await api.loadDesks()
+                console.log("桌子=", res)
+                if (res.errCode === 0) {
+                    resolve(res.info)
+                }
+            })
+        },
+        acceptBookInfo (bookInfo) {
+            let text = ""
+            if (this.isClientFlag) {
+                text = `预约成功。确认人:${this.userInfo.nickname}`
+            } else {
+                text = `确认成功。确认人:${this.userInfo.nickname}`
+            }
+            this.handleBookInfo(text, true, bookInfo)
+        },
+        changeBookInfo (bookInfo) {
+            this.picker.show();
+            let text = ""
+            if (this.isClientFlag) {
+                text = "很抱歉，您预约的时段忙，帮您调整如下"
+            } else {
+                text = "时段不适合，请另更改如下"
+            }
+            this.handleBookInfo(text, false, bookInfo)
+        },
+        handleBookInfo (text, flag, bookInfo) {
+            this.sendOwnMsg(text, 1, false)
+            let data = {
+                isAgree: flag,
+                chatMsgID: bookInfo.chatMsgID
+            }
+            api.sendBookMsg(data).then(res => {
+                console.log("回复预约消息结果=", res)
+            })
+            this.componentChatList.forEach(item => {
+                if (item.chatMsgID === bookInfo.chatMsgID) {
+                    item.isHandled = true
+                }
+            })
+        },
         closePhoneDialog (flag) {
             console.log("flag=", flag)
             this.showPhoneDialog = flag
@@ -374,14 +426,11 @@ export default {
         },
         //预约
         book () {
-            //  this.$vux.toast.text("功能暂未完成","middle")
-            //  return 
             this.picker.show();
         },
 
         closeTips () {
             this.showDialog = false
-            // localStorage.setItem("helpTips", 1)
         },
         //员工送券
         sendStaffCouponToUser () {
@@ -405,19 +454,16 @@ export default {
             if (this.isClientFlag) {
                 //客服账号  发送消息
                 api.setMsgReadCliSer(
+                    this.staticChatFriendObj.CliSerID,
                     this.staticChatFriendObj.openid,
-                    this.staticChatFriendObj.CliSerID
-                )
-                    .then(res => {
+                ).then(res => {
                         //console.log("客服消息已读------", res);
                     });
             } else {
-                api
-                    .setMsgReadCliSer(
-                        this.staticChatFriendObj.CliSerID,
-                        this.userInfo.openid
-                    )
-                    .then(res => {
+                api.setMsgReadCliSer(
+                    this.userInfo.openid,
+                    this.staticChatFriendObj.CliSerID,
+                ).then(res => {
                         //console.log("客服消息已读------", res);
                     });
             }
@@ -500,8 +546,9 @@ export default {
                                     type: item.type,
                                     time: util.timestampToTime(item.stime),
                                     from: item.from,
+                                    to: item.to,
                                     chatMsgID: item.id,
-                                    fromIconURI: item.fromIconURI
+                                    isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : false
                                 });
                             }
                         } else {
@@ -513,12 +560,13 @@ export default {
                                     type: item.type,
                                     time: util.timestampToTime(item.stime),
                                     from: item.from,
+                                    to: item.to,
                                     chatMsgID: item.id,
-                                    fromIconURI: item.fromIconURI
+                                    isHandled: item.chatExtMsg ? item.chatExtMsg.isHandled : false
                                 });
                             }
                         }
-                        //console.log("客服聊天记录-------------", this.componentChatList);
+                        console.log("客服聊天记录-------------", this.componentChatList);
                         resolve();
                     });
                 })
@@ -570,13 +618,13 @@ export default {
                 }
             }
             //把自己发送的内容加到聊天列表里面
-            this.sendOwnMsg(this.input_value, 1)
+            this.sendOwnMsg(this.input_value, 1, false)
             // this.componentChatList.push({
             //     message: this.input_value,
             //     friend: 0,
             //     type: 1,
             //     time: util.timestampToTime(new Date().getTime()),
-            //     fromIconURI: this.userInfo.headimgurl
+            //    
             // });
             // let messObj = {
             //     to: this.isClientFlag ?
@@ -585,7 +633,7 @@ export default {
             //     type: 1,
             //     from: this.isClientFlag ?
             //         this.staticChatFriendObj.CliSerID : this.userInfo.openid,
-            //     fromIconURI: this.userInfo.headimgurl
+            //     
             // };
             // let textMessObj = JSON.stringify(messObj);
             // let decc1 = new TextEncoder("utf-8");
@@ -613,14 +661,19 @@ export default {
             // });
             // // }
         },
-        sendOwnMsg (msg, msgType) {
+        sendOwnMsg (msg, msgType, isHandle) {
             //把自己发送的内容加到聊天列表里面
             this.componentChatList.push({
                 message: msg,
                 friend: 0,
                 type: msgType,
+                to: this.isClientFlag ?
+                    this.staticChatFriendObj.openid : this.staticChatFriendObj.CliSerID,
                 time: util.timestampToTime(new Date().getTime()),
-                fromIconURI: this.userInfo.headimgurl
+                chatExtMsg: {
+                    isHandled: isHandle,
+                    isAgree: isHandle
+                }
             });
             let messObj = {
                 to: this.isClientFlag ?
@@ -629,7 +682,10 @@ export default {
                 type: msgType,
                 from: this.isClientFlag ?
                     this.staticChatFriendObj.CliSerID : this.userInfo.openid,
-                fromIconURI: this.userInfo.headimgurl
+                chatExtMsg: {
+                    isHandled: isHandle,
+                    isAgree: isHandle
+                }
             };
             let textMessObj = JSON.stringify(messObj);
             let decc1 = new TextEncoder("utf-8");
@@ -748,7 +804,8 @@ export default {
         },
         //下拉刷新
         pullingDown () {
-            //console.log("下拉刷新");
+            console.log("下拉刷新");
+            console.log(this.ClientEndCursor)
             if (this.ClientEndCursor == 0) {
                 return;
             }
@@ -810,6 +867,8 @@ export default {
     watch: {
         clientLastChatMsg: function (newValue) {
             //console.log(newValue);
+            console.log("动态收到消息")
+            this.setMsgReadCliSer(); //标识已读
             let messageInfo = newValue.extMsg.lastMsg;
             messageInfo["nickname"] = newValue.fromInfo.nickname;
             messageInfo["to"] = newValue.extMsg.lastMsg.to;
@@ -827,7 +886,6 @@ export default {
                 //console.log("LastChatMsg_childNodes-------------", childNodes);
                 this.$refs.listView.scrollBy(0, -(childNodes[0].clientHeight - 10));
             }, 100);
-            this.setMsgReadCliSer(); //消息已读
             // this.$refs.listView.refresh();
         },
         input_value: function (newValue, oldValue) {
@@ -915,6 +973,14 @@ export default {
                         height: 3.3rem;
                         background: #fff;
                         border-radius: 6px;
+                        position: relative;
+                        .book_icon {
+                            position: absolute;
+                            top: 0.1rem;
+                            left: 0.2rem;
+                            width: 0.6rem;
+                            height: 0.6rem;
+                        }
                         .time {
                         }
                         .content-box {
@@ -923,16 +989,15 @@ export default {
                             padding: 0 0.1rem;
                             display: flex;
                             flex-direction: column;
+                            justify-content: space-around;
+                            height: 2rem;
                             .book_title {
                             }
                             .book_content {
                                 display: flex;
                                 justify-content: space-around;
-                                height: 1.5rem;
-                                .book_icon {
-                                    width: 1.2rem;
-                                    height: 1.2rem;
-                                }
+                                height: 1rem;
+
                                 .content {
                                     display: flex;
                                     flex-direction: column;
@@ -945,10 +1010,11 @@ export default {
                             .book_handle {
                                 display: flex;
                                 justify-content: space-around;
-                                .change,.accept {
-                                  background: #ffd800;
-                                  padding:.1rem .2rem;
-                                  border-radius: 6px;
+                                .change,
+                                .accept {
+                                    background: #ffd800;
+                                    padding: 0.1rem 0.2rem;
+                                    border-radius: 6px;
                                 }
                                 .accept {
                                 }
