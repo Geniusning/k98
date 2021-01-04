@@ -328,11 +328,14 @@ export default {
                 .middle {
                     display: flex;
                     justify-content: flex-end;
+                    position: relative;
                     .qrcode {
-                        width: 2rem;
-                        height: 2rem;
-                        margin-right: 1rem;
-                        margin-bottom: 0.4rem;
+                        width: 3rem;
+                        height: 2.7rem;
+                       
+                        position: absolute;
+                        top: -1.7rem;
+                        right: 0.5rem;
                     }
                 }
                 .bottom {
@@ -395,8 +398,8 @@ export default {
                 box-sizing: border-box;
                 display: flex;
             }
-            .btn_wrapper{
-              width: 2rem;
+            .btn_wrapper {
+                width: 2rem;
             }
             .btn_chongzhi {
                 border: none;

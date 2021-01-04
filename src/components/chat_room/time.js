@@ -11,6 +11,9 @@
     }
     result.push(tempObj1, tempObj2)
   }
+  for(let i = 0 ;i <2;i++){
+    result = result.concat(result)
+  }
   return result
 }
 var time = generateTime()

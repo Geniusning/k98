@@ -2,7 +2,10 @@
     <div>
         <transition name="fade">
             <div id="chat" class="chatRoom">
-                <img v-if="!isClientFlag" @click="book" src="../../assets/image/plane_book.png" class="plane-book" alt="">
+              <div v-if="!isClientFlag" @click="book" class="book-box">
+                <img  src="../../assets/image/plane_book.png" class="plane-book" alt="">
+                <span class="book-text">预约</span>
+              </div>
                 <div class="chat_nav">
                     <div class="back_box">
                         <img onclick="return false" src="../../assets/image/back_chat.png" alt class="back_arrow" @click="goBack">
@@ -136,6 +139,7 @@
                 </div>
             </x-dialog>
         </div>
+        <img style="width:.3rem;height:.3rem" src="https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIdKsz6IqgWrPCkWJ0uAe5mK7LZ1qn3T2z0Ug3LnkSmpwlQ2IKz8n9PeZos1ORJ8xcUrSyJRBkNKw/132" alt="">
     </div>
 </template>
 
@@ -332,9 +336,11 @@ export default {
                     return
                 }
                 staff.forEach(item => {
+                  // let img = `<img style="width:.3rem;height:.3rem" src="https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIdKsz6IqgWrPCkWJ0uAe5mK7LZ1qn3T2z0Ug3LnkSmpwlQ2IKz8n9PeZos1ORJ8xcUrSyJRBkNKw/132" alt="">`
                     let tmp = {
                         text: item.name + "(" + item.number + ")",
-                        value: item.name + "(" + item.number + ")"
+                        value: item.name + "(" + item.number + ")",
+                        url:item.headImgUrl
                     }
                     this.data3.push(tmp)
                 })
@@ -354,15 +360,15 @@ export default {
 
             this.picker = new Picker({
                 data: [this.data1, this.data2, this.data3],
-                selectedIndex: [new Date().getDate() - 1, 20, 0],
-                title: `预约时间和${this.l98Setting.bookStaffOpen ? "服务专员" : "台/房号"}`
+                selectedIndex: [0, 20, 0],
+                title: `选择预约时间和${this.l98Setting.bookStaffOpen ? "服务专员" : "台/房号"}`
             });
             this.picker.on('picker.select', (selectedVal, selectedIndex) => {
                 if (!this.userInfo.phone) {
                     this.showPhoneDialog = true;
                     return
                 }
-                let text = "预约时间" + selectedVal[0] + "号" + selectedVal[1] + "," + selectedVal[2]
+                let text = "预约时间" + selectedVal[0] + selectedVal[1] + "," + selectedVal[2]
                 this.sendOwnMsg(text, 10, false)
                 console.log(selectedVal, selectedIndex)
             })
@@ -927,13 +933,20 @@ export default {
     height: 100%;
     display: flex;
     flex-direction: column;
-    .plane-book {
-        position: fixed;
-        z-index: 8;
-        right: 0;
-        top: 50%;
-        width: 1rem;
-        height: 1rem;
+    .book-box{
+      position: fixed;
+      z-index: 8;
+      right: 0;
+      top: 50%;
+      width: 1.2rem;
+      text-align: center;
+      .plane-book {
+          width: 1rem;
+          height: 1rem;
+      }
+      .book-text{
+        color: #0475B9
+      }
     }
     .chat_nav {
         .chat_nav();
