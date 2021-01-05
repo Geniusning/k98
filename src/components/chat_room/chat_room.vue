@@ -1,7 +1,7 @@
 <template>
     <transition name="slide">
         <div id="chat" class="chatRoom">
-            <div v-if="staticChatFriendObj.role" @click="book" class="book-box">
+            <div v-if="staticChatFriendObj.role && l98Setting.showBookSwitch" @click="book" class="book-box">
                 <img src="../../assets/image/plane_book.png" class="plane-book" alt="">
                 <span class="book-text">预约</span>
             </div>
@@ -95,21 +95,21 @@
                                 </div>
                             </div>
                             <div v-if="item.type==10" class="book_wrapper">
-                                    <img class="book_icon" src="../../assets/image/plane_book.png" alt="">
-                                    <p class="time">{{item.time}}</p>
-                                    <div class="content-box ">
-                                        <p class="book_title">{{item.friend === 0?"我的":"贵宾"}}预约/预订：</p>
-                                        <div class="book_content">
-                                            <div class="content">
-                                                {{item.message}}
-                                            </div>
-                                        </div>
-                                        <div class="book_handle" v-if="item.friend != 0 && !item.isHandled">
-                                            <div class="change" @click="changeBookInfo(item)">更改</div>
-                                            <div class="accept" @click="acceptBookInfo(item)">接受</div>
+                                <img class="book_icon" src="../../assets/image/plane_book.png" alt="">
+                                <p class="time">{{item.time}}</p>
+                                <div class="content-box ">
+                                    <p class="book_title">{{item.friend === 0?"我的":"贵宾"}}预约/预订：</p>
+                                    <div class="book_content">
+                                        <div class="content">
+                                            {{item.message}}
                                         </div>
                                     </div>
+                                    <div class="book_handle" v-if="item.friend != 0 && !item.isHandled">
+                                        <div class="change" @click="changeBookInfo(item)">更改</div>
+                                        <div class="accept" @click="acceptBookInfo(item)">接受</div>
+                                    </div>
                                 </div>
+                            </div>
                             <div v-else-if="item.type==2" class="message_wrapper">
                                 <div class="person_box">
                                     <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
@@ -439,7 +439,9 @@ export default {
         // this._initJssdk(this.myShareUrl)
     },
     activated () {
-        this.initBookPicker()
+        if (this.l98Setting.showBookSwitch) {
+            this.initBookPicker()
+        }
         let _url = window.location.href;
         if (util.isAndroid()) {
             this.myShareUrl = _url.split("#")[0];
@@ -554,6 +556,7 @@ export default {
     },
     methods: {
         async initBookPicker () {
+            this.data3 = []
             if (this.l98Setting.bookStaffOpen) {
                 let staff = await this.loadAllStaff()
                 if (staff.length === 0) {
@@ -591,7 +594,7 @@ export default {
                     return
                 }
                 let text = "预约时间" + selectedVal[0] + selectedVal[1] + "," + selectedVal[2]
-                this.messageType = 10 
+                this.messageType = 10
                 this.sendMsg(text, this.messageType)
                 console.log(selectedVal, selectedIndex)
             })
@@ -1205,7 +1208,7 @@ export default {
             }
             // var voiceLength = this._handleVoiceLength(this.vocieDuration);
             //把自己发送的内容加到聊天列表里面
-            this.sendMsg(this.input_value,this.messageType)
+            this.sendMsg(this.input_value, this.messageType)
             // this.componentChatList.push({
             //     message: this.messageType == 1 ? this.input_value : this.voiceServerId,
             //     friend: 0,

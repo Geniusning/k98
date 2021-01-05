@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-30 17:24:14
+ * @Last Modified time: 2021-01-05 16:51:01
  */
 import axios from 'axios'
 import Url from './config'
@@ -1020,7 +1020,6 @@ api.postFriendPic = function (openId, fileName, param) {
 //根据拉取个人的聊天记录列表
 api.getFriendMessList = function (cursor, who) {
   return new Promise((resolve, reject) => {
-    //
     axios.get(Url.commonUrl + `/api/loadChatMsg?cursor=${cursor}&who=${who}&tk=${Url.tk}`)
       .then(res => {
         if (res.status == 200) {

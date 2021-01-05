@@ -2,7 +2,7 @@
     <div>
         <transition name="fade">
             <div id="chat" class="chatRoom">
-              <div v-if="!isClientFlag" @click="book" class="book-box">
+              <div v-if="!isClientFlag && l98Setting.showBookSwitch" @click="book" class="book-box">
                 <img  src="../../assets/image/plane_book.png" class="plane-book" alt="">
                 <span class="book-text">预约</span>
               </div>
@@ -262,7 +262,9 @@ export default {
     //   next()
     // },
     created () {
+      if (this.l98Setting.showBookSwitch){
         this.initBookPicker()
+      }
         this.today = new Date().getDate();
         this.today = new Date().getDate();
         if (this.today < 10) {
