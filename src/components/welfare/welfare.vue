@@ -157,26 +157,24 @@ export default {
             "userInfo"
         ])
     },
-    mounted () {
+    created(){
         util.addVisitRecord(this.$route.name);
         this.loadActivityInfo(); //获取活动通知
        
         this.loadPublishArenas(); //拉取是否有比赛场
         this.loadOldPhotos()
-
-       
-
-        //console.log("this.AdvertisingPhoto",this.AdvertisingPhoto)
     },
     activated(){
        this.judgeHasGroupShop(); //判断是否有团购信息
-       let shareObj = {
-            title: "活动进行中…快来吧，就缺你啦！",
-            desc: "群友聚会、大话比赛、福利大派送",
-            link: `${this.shareUrl}k98/welfare?visitType=12&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
-            imgUrl: `${this.shopSettingInfo.image}`
-        };
-        util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
+       setTimeout(() => {
+          let shareObj = {
+               title: "活动进行中…快来吧，就缺你啦！",
+               desc: "群友聚会、大话比赛、福利大派送",
+               link: `${this.shareUrl}k98/welfare?visitType=12&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
+               imgUrl: `${this.shopSettingInfo.image}`
+           };
+           util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
+       }, 2000);
     },
     methods: {
         // //分享获得积分

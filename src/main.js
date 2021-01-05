@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-30 16:55:50
+ * @Last Modified time: 2021-01-05 14:37:21
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -39,7 +39,7 @@ new Vue({
   store,
   computed: {
     ...mapState(['socket', "staticChatFriendObj", "LastChatMsg", "userInfo", "soulCursor",
-      "soulResult","allianceList"
+      "soulResult", "allianceList"
     ])
   },
   data () {
@@ -51,7 +51,7 @@ new Vue({
       openId: ''
     }
   },
-  mounted () {
+  created () {
     if (!util.isAndroid()) {
       let wechatInfo = navigator.userAgent.match(/MicroMessenger\/([\d\.]+)/i);
       let versionNumber = wechatInfo[1].split(".").join("")
@@ -61,23 +61,19 @@ new Vue({
       } else {
         window.onload = function () {
           window.iosSignUrl = window.location.href.split('#')[0]
-          util._getJssdkConfig(window.iosSignUrl)
+          setTimeout(() => {
+            console.log("window.iosSignUrl----", window.iosSignUrl)
+            util._getJssdkConfig(window.iosSignUrl)
+          }, 1500);
         }
       }
-      setTimeout(() => {
-        console.log("window.iosSignUrl----", window.iosSignUrl)
-      }, 1000);
     }
     this.deskCode = util.GetQueryString("deskCode")
     this.deskId = util.GetQueryString("deskID")
-    // this.openId = util.GetQueryString("openId")
     this.saveDeskCode({
       deskCode: this.deskCode,
       deskId: this.deskId
     })
-    setTimeout(() => {
-      this.loadOtherAllianceMessage();
-    }, 3000);
     this.getUserInfo(); //获取用户信息 this.openId
     this.loadAdvertisingPhoto(); //拉取首页轮播图
     this.createQrcode(); //创建二维码
@@ -90,6 +86,13 @@ new Vue({
     this.getCaptainMessList() //店长群发通知
     this.loadStaffCouponAct() //员工送券活动通知
     this.loadPublisherIdlist() //拉取供求发布者id
+  },
+  mounted () {
+   
+    setTimeout(() => {
+      this.loadOtherAllianceMessage();
+    }, 3000);
+
     window.addEventListener("unload", () => {
       this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
       localStorage.removeItem("friendInfo");
@@ -148,12 +151,12 @@ new Vue({
         this.limitTimes++
       }
     },
-    async loadOtherAllianceMessage(){
-      for (let i = this.allianceList.length-1; i >=0; i--) {
+    async loadOtherAllianceMessage () {
+      for (let i = this.allianceList.length - 1; i >= 0; i--) {
         let res = await api.loadOtherAllianceMessage(this.allianceList[i].port)
         console.log("loadOtherAllianceMessage res============", res)
       }
-      
+
     },
     //关闭公众号
     closeWebPage () {

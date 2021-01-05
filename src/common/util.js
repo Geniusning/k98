@@ -2,7 +2,7 @@
  * @Author: nicky
  * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
- * @Last Modified time: 2020-11-20 16:44:35
+ * @Last Modified time: 2021-01-05 12:00:05
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -453,6 +453,21 @@ util.returnDiscountContent = function (coupon) {
     return coupon.content
   } else if (parseInt(coupon.type) === 7) {
     return coupon.content
+  }
+}
+util.hasClass = (element, className)=> {
+  var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
+  return element.className.match(reg);
+}
+util.addClass = (element, className)=> {
+  if (!this.hasClass(element, className)) {
+    element.className += " " + className;
+  }
+},
+util.removeClass = (element, className)=> {
+  if (this.hasClass(element, className)) {
+    var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
+    element.className = element.className.replace(reg, " ");
   }
 }
 export default util

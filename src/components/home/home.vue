@@ -273,11 +273,10 @@ export default {
             outFriendNum: 0,
             isGiftPanel: false,
             // isFirstLoad: false,
-            deskCode: "",
             defaultAvatarImg: require("../../assets/image/avatar1.jpeg"),
             friendLeagleList: [],
             resId: "", //友商物品id,通过此id获得对应优惠券
-            storeName: "" //友商门店名称
+            storeName: "", //友商门店名称
         };
     },
     computed: {
@@ -293,21 +292,13 @@ export default {
             "shopSettingInfo",
             "noCouponsFlag",
             "publisherIdList",
-            "hasSvip"
+            "hasSvip",
+            "deskCode"
         ]),
         ...mapGetters(["recommentList"])
     },
-    mounted () {
-        // console.log("home url---", window.iosSignUrl);
-        this.deskCode = util.GetQueryString("deskCode");
-        this.storeName = util.GetQueryString("storeName");
-        util.addVisitRecord(this.$route.name);
-        this.resId = util.GetQueryString("resId");
-        this.gameUrl = window.location.href.split("k98")[0];
-        if (this.resId) {
-            this.getAllianceCoupon();
-        }
-        let params = {
+    created(){
+       let params = {
             cursor: 0,
             sex: 2,
             range: 0,
@@ -326,7 +317,17 @@ export default {
         this.loadCashierList();
         this.getAlreadyFriend(); //获取已经成为好友列表
         this._getInOutNum(); //获取场内场外用户数
-        // this.initIntro()
+    },
+    mounted () {
+        // console.log("home url---", window.iosSignUrl);
+        // this.deskCode = util.GetQueryString("deskCode");
+        this.storeName = util.GetQueryString("storeName");
+        util.addVisitRecord(this.$route.name);
+        this.resId = util.GetQueryString("resId");
+        this.gameUrl = window.location.href.split("k98")[0];
+        if (this.resId) {
+            this.getAllianceCoupon();
+        }
     },
     activated () {
         setTimeout(() => {
@@ -338,7 +339,7 @@ export default {
                 imgUrl: `${this.shopSettingInfo.image}`
             };
             util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-        }, 500);
+        }, 2000);
         window.scrollTo(0, 0);
         if (this.$route.params.data == "shareHomePage") {
             this.isShow_bg = true;
@@ -579,8 +580,7 @@ export default {
             });
         },
         intoFriendGame () {
-            window.location.href = `${this.gameUrl}game/?gamePath=game3&deskCode=${this.deskCode
-                }`;
+            window.location.href = `${this.gameUrl}game/?gamePath=game3&deskCode=${this.deskCode}`;
             this.gameShow = false;
         },
         //进入游戏

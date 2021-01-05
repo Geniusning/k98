@@ -80,7 +80,10 @@
                     <ul class="list">
                         <li class="left-triangle" @click="prev"></li>
                         <li class="supply" @click="changeNeeded(true) " :class="{active:isNeeded}">供</li>
-                        <li class="publish" @click="goToUpdateAvatar"><p>我要</p><p>发布</p></li>
+                        <li class="publish" @click="goToUpdateAvatar">
+                            <p>我要</p>
+                            <p>发布</p>
+                        </li>
                         <li class="need" @click="changeNeeded(false)" :class="{active:!isNeeded}">求</li>
                         <li class="right-triangle" @click="next"></li>
                     </ul>
@@ -181,14 +184,17 @@ export default {
                 this.isShow_bg = false;
             }, 5000);
         }, 8000);
+
         util.addVisitRecord(this.$route.name);
         let urlOpenId = util.GetQueryString("openId");
+        console.log("urlOpenId=", urlOpenId)
         let pageType = util.GetQueryString("pageType");
         this.pageType = this.$route.params.type ? this.$route.params.type : pageType
         if (this.pageType !== "homePage") {
             this.isSelf = this.$route.params.isSelf;
             this.scopeOpenId = this.$route.params.openId;
             let cacheOpenId = localStorage.getItem("comment_openId")
+            console.log("cacheOpenId=", cacheOpenId)
             this.scopeOpenId = urlOpenId ? urlOpenId : this.scopeOpenId ? this.scopeOpenId : cacheOpenId;
         } else {
             this.scopeOpenId = this.publisherIdList[this.publishIndex]
@@ -197,12 +203,6 @@ export default {
         this.loadUserInfoByOpenId();
         this.loadCommentInfo();
         localStorage.setItem("comment_openId", this.scopeOpenId)
-        document.body.addEventListener("focusout", () => {
-            //软键盘关闭事件
-            window.scrollTo(0, 0); //解决ios键盘留白的bug
-        });
-    },
-    mounted () {
         setTimeout(() => {
             let shareObj = {
                 title: "帮朋友",
@@ -211,7 +211,11 @@ export default {
                 imgUrl: `${this.scopeUserInfo.headimgurl}`,
             };
             util.setShareInfo(shareObj, 20, "comment", this.shareGetJifen);
-        }, 1000);
+        }, 2000);
+        document.body.addEventListener("focusout", () => {
+            //软键盘关闭事件
+            window.scrollTo(0, 0); //解决ios键盘留白的bug
+        });
     },
     watch: {
         $route (newRoute) {
@@ -225,22 +229,26 @@ export default {
         ...mapState(["l98Setting", "lifeImgList", "userInfo", "shareUrl", "shopSettingInfo", "publisherIdList"]),
     },
     watch: {
-        publisherIdList: function () {
-            this.publishIndex = 0
-            this.scopeOpenId = this.publisherIdList[this.publishIndex]
-            this.loadUserInfoByOpenId();
-            this.loadCommentInfo();
-        }
+        // publisherIdList: function () {
+        //     this.publishIndex = 0
+        //     this.scopeOpenId = this.publisherIdList[this.publishIndex]
+        //     this.loadUserInfoByOpenId();
+        //     this.loadCommentInfo();
+        // }
     },
     methods: {
         changeNeeded (flag) {
             this.isNeeded = flag
             if (flag) {
                 this.loadPublisherIdlist("supply")
-                this.neededDesc = "供"
+                if (this.publisherIdList.length > 0) {
+                    this.neededDesc = "供"
+                }
             } else {
                 this.loadPublisherIdlist("need")
-                this.neededDesc = "求"
+                if (this.publisherIdList.length > 0) {
+                    this.neededDesc = "求"
+                }
             }
         },
         //拉取供求发布者id
@@ -248,7 +256,11 @@ export default {
             api.loadPublisherList(needed).then(res => {
                 if (res.errCode === 0) {
                     console.log("拉取供求发布者id---", res)
-                    this.savePublisherIdList(res.info.publisherIds)
+                    if (res.info.publisherIds) {
+                        this.savePublisherIdList(res.info.publisherIds)
+                    } else {
+                        this.$vux.toast.text("暂无发布者", "middle")
+                    }
                 }
             })
         },

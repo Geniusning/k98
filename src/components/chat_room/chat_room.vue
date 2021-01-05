@@ -1,6 +1,10 @@
 <template>
-    <transition name="fade">
+    <transition name="slide">
         <div id="chat" class="chatRoom">
+            <div v-if="staticChatFriendObj.role" @click="book" class="book-box">
+                <img src="../../assets/image/plane_book.png" class="plane-book" alt="">
+                <span class="book-text">预约</span>
+            </div>
             <div class="voice-bg" v-show="isVoicing"></div>
             <img class="warning" v-show="warning" src="../../assets/image/warning .png" alt />
             <div class="chat_nav">
@@ -90,7 +94,23 @@
                                     <img v-if="item.outOfDate" src="../../assets/image/outdate.png" class="outDate" alt />
                                 </div>
                             </div>
-                            <div v-if="item.type==2" class="message_wrapper">
+                            <div v-if="item.type==10" class="book_wrapper">
+                                    <img class="book_icon" src="../../assets/image/plane_book.png" alt="">
+                                    <p class="time">{{item.time}}</p>
+                                    <div class="content-box ">
+                                        <p class="book_title">{{item.friend === 0?"我的":"贵宾"}}预约/预订：</p>
+                                        <div class="book_content">
+                                            <div class="content">
+                                                {{item.message}}
+                                            </div>
+                                        </div>
+                                        <div class="book_handle" v-if="item.friend != 0 && !item.isHandled">
+                                            <div class="change" @click="changeBookInfo(item)">更改</div>
+                                            <div class="accept" @click="acceptBookInfo(item)">接受</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div v-else-if="item.type==2" class="message_wrapper">
                                 <div class="person_box">
                                     <h2 class="name">{{item.time.slice(8,10)==today?item.time.slice(11):item.time.slice(5,10)}}</h2>
                                     <img :src="staticChatFriendObj.headimgurl" alt class="avatar" v-if="item.friend" />
@@ -289,6 +309,9 @@ import Url from "../../common/config.js";
 import api from "common/api.js";
 import util from "common/util.js";
 import Bus from "common/bus.js";
+import Picker from 'better-picker'
+import dateRange from "./date"
+import timeRange from "./time"
 // import EXIF from "common/exif.js";
 import { mapState, mapMutations, mapGetters } from "vuex";
 import lrz from "lrz";
@@ -302,6 +325,9 @@ export default {
     },
     data () {
         return {
+            data1: dateRange,
+            data2: timeRange,
+            data3: [],
             thumbCount: 0, //员工评价点赞次数
             times: 0,
             vocieDuration: 0, //语音时长
@@ -352,7 +378,7 @@ export default {
                     name: "[再见]",
                     num: "/static/face/8.gif"
                 },
-            
+
                 {
                     name: "[爱心]",
                     num: "/static/face/12.gif"
@@ -373,7 +399,7 @@ export default {
                     name: "[玫瑰]",
                     num: "/static/face/16.gif"
                 }
-             
+
             ],
             chatListIndex: 0,
             componentChatList: [],
@@ -385,22 +411,10 @@ export default {
             voiceServerId: "",
             messageType: 1,
             warning: false,
-            today:""
+            today: ""
             // isLoading: false
         };
     },
-    // beforeRouteLeave(to, from, next) {
-    //   // 导航离开该组件的对应路由时调用
-    //   // 可以访问组件实例 `this`
-    //   if (!this.userInfo.isSubscribe) {
-    //     this.changeQrCodeText({
-    //       title: "长按关注，方便收到店家留言",
-    //       bottomText: "会员特权:领福利、交群友、参活动"
-    //     });
-    //     this.showQrcode(true);
-    //   }
-    //   next()
-    // },
     async created () {
         util.addVisitRecord(this.$route.name);
         this._openId = util.GetQueryString("openid")
@@ -425,6 +439,7 @@ export default {
         // this._initJssdk(this.myShareUrl)
     },
     activated () {
+        this.initBookPicker()
         let _url = window.location.href;
         if (util.isAndroid()) {
             this.myShareUrl = _url.split("#")[0];
@@ -435,7 +450,7 @@ export default {
         console.log("this.staticChatFriendObj-----------", this.staticChatFriendObj);
         if (!sessionStorage.getItem("friendInfo")) {
             //解决微信内置浏览器刷新获得好友信息
-            sessionStorage.setItem("friendInfo",JSON.stringify(this.staticChatFriendObj));
+            sessionStorage.setItem("friendInfo", JSON.stringify(this.staticChatFriendObj));
         } else {
             let friendInfo = JSON.parse(sessionStorage.getItem("friendInfo"));
             this.setChatFriend(friendInfo);
@@ -538,20 +553,109 @@ export default {
         ...mapGetters(["qrIsShow", "LastChatMsg"])
     },
     methods: {
-        hasClass (element, className) {
-            var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
-            return element.className.match(reg);
-        },
-        addClass (element, className) {
-            if (!this.hasClass(element, className)) {
-                element.className += " " + className;
+        async initBookPicker () {
+            if (this.l98Setting.bookStaffOpen) {
+                let staff = await this.loadAllStaff()
+                if (staff.length === 0) {
+                    return
+                }
+                staff.forEach(item => {
+                    let tmp = {
+                        text: item.name + "(" + item.number + ")",
+                        value: item.name + "(" + item.number + ")",
+                        url: item.headImgUrl
+                    }
+                    this.data3.push(tmp)
+                })
+            } else {
+                let desks = await this.loadDesks()
+                if (desks.length === 0) {
+                    return
+                }
+                desks.forEach(item => {
+                    let tmp = {
+                        text: "台/房号:" + item.code,
+                        value: "台/房号:" + item.code
+                    }
+                    this.data3.push(tmp)
+                })
             }
+            this.picker = new Picker({
+                data: [this.data1, this.data2, this.data3],
+                selectedIndex: [0, 20, 0],
+                title: `选择预约时间和${this.l98Setting.bookStaffOpen ? "服务专员" : "台/房号"}`
+            });
+            this.picker.on('picker.select', (selectedVal, selectedIndex) => {
+                if (!this.userInfo.phone) {
+                    this.showPhoneDialog = true;
+                    return
+                }
+                let text = "预约时间" + selectedVal[0] + selectedVal[1] + "," + selectedVal[2]
+                this.messageType = 10 
+                this.sendMsg(text, this.messageType)
+                console.log(selectedVal, selectedIndex)
+            })
         },
-        removeClass (element, className) {
-            if (this.hasClass(element, className)) {
-                var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
-                element.className = element.className.replace(reg, " ");
+        loadDesks () {
+            return new Promise(async (resolve, reject) => {
+                let res = await api.loadDesks()
+                console.log("桌子=", res)
+                if (res.errCode === 0) {
+                    resolve(res.info)
+                }
+            })
+        },
+        acceptBookInfo (bookInfo) {
+            let text = ""
+            if (this.isClientFlag) {
+                text = `预约成功。确认人:${this.userInfo.nickname}`
+            } else {
+                text = `确认成功。确认人:${this.userInfo.nickname}`
             }
+            this.handleBookInfo(text, true, bookInfo)
+        },
+        changeBookInfo (bookInfo) {
+            this.picker.show();
+            let text = ""
+            if (this.isClientFlag) {
+                text = "很抱歉，您预约的时段忙，帮您调整如下"
+            } else {
+                text = "时段不适合，请另更改如下"
+            }
+            this.handleBookInfo(text, false, bookInfo)
+        },
+        handleBookInfo (text, flag, bookInfo) {
+            this.sendMsg(text, 1)
+            let data = {
+                isAgree: flag,
+                chatMsgID: bookInfo.chatMsgID
+            }
+            api.sendBookMsg(data).then(res => {
+                console.log("回复预约消息结果=", res)
+            })
+            this.componentChatList.forEach(item => {
+                if (item.chatMsgID === bookInfo.chatMsgID) {
+                    item.isHandled = true
+                }
+            })
+        },
+        closePhoneDialog (flag) {
+            console.log("flag=", flag)
+            this.showPhoneDialog = flag
+        },
+        loadAllStaff () {
+            return new Promise(async (resolve, reject) => {
+                let res = await api.loadAllStaff()
+                console.log("全部员工-------", res);
+                if (res.errCode == 0) {
+                    this.staffList = res.staff.sort(util.sortByKeyS2L("number"));
+                    resolve(this.staffList)
+                }
+            })
+        },
+        //预约
+        book () {
+            this.picker.show();
         },
         //去评价
         goToComment (info) {
@@ -636,9 +740,9 @@ export default {
                 if (messageType === "9") {
                     element = nodeList[i].children[0].children[1].children[1].children[0];
                     // //console.log("element", element)
-                    this.addClass(element.children[1], "stopanimate");
-                    this.addClass(element.children[2], "stopanimate");
-                    this.addClass(element.children[3], "stopanimate");
+                    util.addClass(element.children[1], "stopanimate");
+                    util.addClass(element.children[2], "stopanimate");
+                    util.addClass(element.children[3], "stopanimate");
                 }
             }
             this.isVoicing = true;
@@ -685,9 +789,7 @@ export default {
             var _this = this;
             wx.stopRecord({
                 success: function (res) {
-                    //console.log("res.localId----", res.localId);
                     _this.voiceLocalId = res.localId;
-                    //console.log("wx.stopRecord-voiceLocalId", _this.voiceLocalId);
                     wx.uploadVoice({
                         localId: _this.voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
                         isShowProgressTips: 0, // 默认为1，显示进度提示
@@ -717,9 +819,6 @@ export default {
                 var messageType = nodeList[i].dataset.messagetype;
                 var vocieUnread = nodeList[i].dataset.vocieunread;
                 var friend = nodeList[i].dataset.friend;
-                // //console.log("messageType--",messageType)
-                // //console.log("vocieUnread--",vocieUnread)
-                // //console.log("friend--",friend)
                 if (messageType == "9") {
                     element = nodeList[i].children[0].children[1].children[1].children[0];
                     this.addClass(element.children[1], "stopanimate");
@@ -740,40 +839,26 @@ export default {
                 isShowProgressTips: 0, // 默认为1，显示进度提示
                 success: function (res) {
                     _this.voiceLocalId = res.localId; // 返回音频的本地ID
-                    //console.log("wx.downloadVoice--res", res);
-                    // setInterval(() => {
-                    //   _this.times ++
-                    //   wx.playVoice({
-                    //     localId: _this.voiceLocalId, // 需要播放的音频的本地ID，由stopRecord接口获得
-                    //     success: function(res) {
-                    //       //console.log("playVoice success----", res)
-                    //     },
-                    //     fail: function(res) {
-                    //       //console.log("playVoice failed----", res)
-                    //     }
-                    //   });
-                    //   //console.log("this.times -------",_this.times)
-                    // }, 4000);
                     wx.playVoice({
                         localId: _this.voiceLocalId, // 需要播放的音频的本地ID，由stopRecord接口获得
                         success: function (res) {
                             //console.log("playVoice success----", res);
                         },
                         fail: function (res) {
-                            //console.log("playVoice failed----", res);
+
                         }
                     });
                     // //console.log("e---", e);
-                    _this.removeClass(target.children[1], "stopanimate");
-                    _this.removeClass(target.children[2], "stopanimate");
-                    _this.removeClass(target.children[3], "stopanimate");
+                    util.removeClass(target.children[1], "stopanimate");
+                    util.removeClass(target.children[2], "stopanimate");
+                    util.removeClass(target.children[3], "stopanimate");
                     wx.onVoicePlayEnd({
                         success: function (res) {
                             var localId = res.localId; // 返回音频的本地ID
                             //console.log("播放完毕localId---", localId);
-                            _this.addClass(target.children[1], "stopanimate");
-                            _this.addClass(target.children[2], "stopanimate");
-                            _this.addClass(target.children[3], "stopanimate");
+                            util.addClass(target.children[1], "stopanimate");
+                            util.addClass(target.children[2], "stopanimate");
+                            util.addClass(target.children[3], "stopanimate");
                         }
                     });
                 },
@@ -1072,32 +1157,27 @@ export default {
                     console.log("聊天记录-------", this.componentChatList);
                     resolve();
                 });
-            })
-                .then(() => {
-                    // //console.log(data)
-                    this.$nextTick(function () {
-                        //console.log("dom更新后执行");
-                        let childNodes = this.$refs.chatList.childNodes;
-                        let chatListHeight = 0;
-                        childNodes.forEach(item => {
-                            chatListHeight += item.clientHeight;
-                        });
-                        this.scrollHeight = chatListHeight;
-                        //console.log("this.scrollHeight----------", this.scrollHeight);
-                        this.$refs.listView.finishPullDown();
-                        this.$refs.listView.refresh();
-                        this.$refs.listView.scrollTo(0, -this.scrollHeight);
+            }).then(() => {
+                // //console.log(data)
+                this.$nextTick(function () {
+                    //console.log("dom更新后执行");
+                    let childNodes = this.$refs.chatList.childNodes;
+                    let chatListHeight = 0;
+                    childNodes.forEach(item => {
+                        chatListHeight += item.clientHeight;
                     });
+                    this.scrollHeight = chatListHeight;
+                    //console.log("this.scrollHeight----------", this.scrollHeight);
+                    this.$refs.listView.finishPullDown();
+                    this.$refs.listView.refresh();
+                    this.$refs.listView.scrollTo(0, -this.scrollHeight);
                 });
+            });
         },
         //发送消息事件
         send () {
-            //console.log("发送消息");
+            this.messageType = 1
             this.isShowSoulPanel = false; //发消息隐藏灵魂匹配面板
-            // if (util.isAndroid() && this.dontFocus) {  //输入后再次弹起键盘
-            //   this.dontFocus = true;
-            //   document.getElementById("send_message").focus();
-            // }
             this.sendingTimes++;
             if (this.sendingTimes > 20) {
                 this.$vux.toast.text("朋友一直未回复，稍后再发送吧", "middle");
@@ -1123,12 +1203,56 @@ export default {
                     }
                 }
             }
-            var voiceLength = this._handleVoiceLength(this.vocieDuration);
+            // var voiceLength = this._handleVoiceLength(this.vocieDuration);
             //把自己发送的内容加到聊天列表里面
+            this.sendMsg(this.input_value,this.messageType)
+            // this.componentChatList.push({
+            //     message: this.messageType == 1 ? this.input_value : this.voiceServerId,
+            //     friend: 0,
+            //     type: this.messageType,
+            //     time: util.timestampToTime(new Date().getTime()),
+            //     vocieUnread: true,
+            //     vocieDuration: this.vocieDuration,
+            //     voiceLenth: voiceLength
+            // });
+            // let messObj = {
+            //     to: this.staticChatFriendObj.openid,
+            //     content: this.messageType == 1 ? this.input_value : this.voiceServerId,
+            //     type: this.messageType,
+            //     vocieDuration: this.vocieDuration
+            // };
+            // let textMessObj = JSON.stringify(messObj);
+            // let decc1 = new TextEncoder("utf-8");
+            // let result = decc1.encode(textMessObj);
+            // api.postFriendMess(result).then(res => {
+            //     this.emotionShow = false;
+            //     this.expressionShow = false;
+            //     this.vocieDuration = 0;
+            // });
+            // this.input_value = "";
+            // this.$nextTick(function () {
+            //     let childNodes = this.$refs.chatList.childNodes;
+            //     //   let chatListHeight = 0;
+            //     //   childNodes.forEach(item => {
+            //     //     chatListHeight += item.clientHeight;
+            //     //   });
+            //     //   this.scrollHeight = chatListHeight;
+            //     this.$refs.listView.refresh();
+            //     this.$refs.listView.scrollBy(0, -childNodes[0].clientHeight - 20);
+            // });
+        },
+        sendMsg (msg, msgType) {
+            let msgFlag = true
+            if (msgType === 1 || msgType === 10) { //文字消息
+                msgFlag = true
+            } else { //语音消息
+                msgFlag = false
+            }
+            var voiceLength = this._handleVoiceLength(this.vocieDuration);
             this.componentChatList.push({
-                message: this.messageType == 1 ? this.input_value : this.voiceServerId,
+                message: msgFlag ? msg : this.voiceServerId,
                 friend: 0,
-                type: this.messageType,
+                type: msgType,
                 time: util.timestampToTime(new Date().getTime()),
                 vocieUnread: true,
                 vocieDuration: this.vocieDuration,
@@ -1136,8 +1260,8 @@ export default {
             });
             let messObj = {
                 to: this.staticChatFriendObj.openid,
-                content: this.messageType == 1 ? this.input_value : this.voiceServerId,
-                type: this.messageType,
+                content: msgFlag ? msg : this.voiceServerId,
+                type: msgType,
                 vocieDuration: this.vocieDuration
             };
             let textMessObj = JSON.stringify(messObj);
@@ -1476,6 +1600,7 @@ export default {
     height: 100%;
     display: flex;
     flex-direction: column;
+    .book-interaction();
     .voice-bg {
         position: fixed;
         z-index: 8;
@@ -1644,6 +1769,7 @@ export default {
                 .chatListItem {
                     padding: 0.4rem 0;
                     box-sizing: border-box;
+                    .book-wrapper();
                     .message_wrapper {
                     }
                 }
@@ -2069,14 +2195,14 @@ export default {
 .vux-popup-dialog {
     z-index: 99999;
 }
-.fade-enter-active,
-.fade-leave-active {
+.slide-enter-active,
+.slide-leave-active {
     transition: all 0.3s;
 }
-.fade-enter {
+.slide-enter {
     transform: translate3d(100%, 0, 0);
 }
-.fade-leave-to {
+.slide-leave-to {
     transform: translate3d(-100%, 0, 0);
 }
 </style>

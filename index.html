@@ -35,21 +35,7 @@
       outline: none;
     }
   </style>
-</head>
-
-<body>
-  <div id="app-box"></div>
-  <!-- built files will be auto injected -->
-
-  <!-- <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script> -->
-  <!-- <script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script> -->
-</body>
-<!-- <script src="/static/vconsole.js"></script>
-<script>
-  // 初始化
-  var vConsole = new VConsole();
-</script> -->
-<script>
+  <script>
   // 处理有些人设置微信字体大小后导致网页尺寸跟着变化的问题
   (function () {
     if (typeof WeixinJSBridge == "object" && typeof WeixinJSBridge.invoke == "function") {
@@ -77,8 +63,34 @@
     }
   })();
 
+  window.onerror = function (message, url, line, column, error) {
+    console.log("error=",error);
+    console.log("url=", url,);
+    console.log("line=", line);
+    console.log("column=",column);
+    console.log("error=",error);
+    console.log("message=",message);
+  }
+  window.addEventListener('error', function(event) { 
+    console.log("页面发生错误啦")
+    window.location.reload()
+  })
 </script>
-<script src="/static/flexible.js"></script>
-<script src="/static/flexible_css.js"></script>
-<script src="/static/jsweixin-1.6.0.js"></script>
+</head>
+
+<body>
+  <div id="app-box"></div>
+  <script src="/static/jsweixin-1.6.0.js"></script>
+  <!-- <script src="http://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script> -->
+  <script src="/static/flexible.js"></script>
+  <script src="/static/flexible_css.js"></script>
+  <!-- built files will be auto injected -->
+
+</body>
+<!-- <script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script> -->
+<!-- <script src="/static/vconsole.js"></script>
+<script>
+  // 初始化
+  var vConsole = new VConsole();
+</script> -->
 </html>

@@ -48,7 +48,8 @@ export default {
         if (_url.indexOf('activityID') > 0) { //判断是系统本身进入当前页面的还是从分享链接进入本页面
             this.activityID = _url.split('activityID=')[1];
         }
-
+        util.addVisitRecord(this.$route.name);
+        this._loadActivityDetail();
     },
     beforeRouteEnter (to, from, next) {
         if (from.name === "message" || from.name === "welfare" || from.name === "giftDetail") {
@@ -65,8 +66,6 @@ export default {
         next()
     },
     mounted () {
-        util.addVisitRecord(this.$route.name);
-        this._loadActivityDetail();
         setTimeout(() => {
             let shareObj = {
                 title: "活动通知",
@@ -75,7 +74,7 @@ export default {
                 imgUrl: `${this.shopSettingInfo.image}`
             };
             util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-        }, 500);
+        }, 1500);
     },
     computed: {
         ...mapState(["socket", "shareUrl", "activityNoticeList", "shopSettingInfo", "baseUrl", "userInfo"])

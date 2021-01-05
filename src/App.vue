@@ -294,8 +294,8 @@
                     </div>
                 </transition>
             </div>
-            <!-- <div class="movie_box" > -->
-            <div ref="move_div" :style="{top:top+'px'}" @touchstart="down($event)" @touchmove="move($event)" @touchend="end" v-show="showClientServiceIconFlag" class="kefu" @click="inToLetter">
+            <!-- <div class="movie_box"  > -->
+            <div ref="move_div" class="kefu" :style="{top:top}" @touchstart="down($event)" @touchmove="move($event)" @touchend="end" v-show="showClientServiceIconFlag"  @click="inToLetter">
                 <img onclick="return false" src="./assets/image/home_letter.png" alt="" class="pic_kefu">
                 <p class="kefu-text">客服/收银</p>
                 <!-- </div> -->
@@ -393,7 +393,7 @@ export default {
                 left: 0,
                 top: 0
             },
-            top: 480,
+            top: '80%',
             left: 0,
             width:
                 window.innerWidth ||
@@ -458,6 +458,9 @@ export default {
         }
     },
     mounted () {
+        console.log("屏幕高度=",parseInt((document.body.clientHeight)*0.8))
+        // this.top = parseInt((document.body.clientHeight)*0.8)
+        console.log(this.$refs.move_div)
         let _GameUrl = window.location.href;
         let indexGame = _GameUrl.indexOf(".com");
         let shareurlGame = _GameUrl.slice(0, indexGame);
@@ -544,8 +547,8 @@ export default {
                 const xPum = this.position.left + touch.clientX - this.position.x;
                 const yPum = this.position.top + touch.clientY - this.position.y;
                 console.log("yPum----", yPum);
-                this.left = xPum;
-                this.top = yPum;
+                this.left = xPum+"px";
+                this.top = yPum+"px";
                 this.banOut();
                 // 阻止页面的滑动默认事件
                 document.addEventListener(
@@ -1874,13 +1877,14 @@ html {
         text-align: center;
         @keyframes jump {
             10% {
-                top: 480px;
+                top: 80%;
             }
             50% {
-                top: 475px;
+                top: 79%;
             }
+           
             100% {
-                top: 480px;
+                top: 80%;
             }
         }
         .pic_kefu {

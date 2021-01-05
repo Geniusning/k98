@@ -224,7 +224,7 @@ export default {
                             imgUrl: `${this.groupShopInfo.oneYuanGroupShopInfo.image}`
                         };
                         util.setShareInfo(shareObj, 20, "groupShop", this.shareGetJifen);
-                    }, 500);
+                    }, 1500);
                     this.groupShopInfo = res.info
                     let joinGroupOpenIds = this.groupShopInfo.joinGroupShopInfo ? this.groupShopInfo.joinGroupShopInfo.openId.openId : []
                     if (joinGroupOpenIds.indexOf(this.userInfo.openid) > -1) {
