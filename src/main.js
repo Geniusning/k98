@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-05 16:51:37
+ * @Last Modified time: 2021-01-11 18:08:00
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -53,21 +53,22 @@ new Vue({
   },
   created () {
     if (!util.isAndroid()) {
-      let wechatInfo = navigator.userAgent.match(/MicroMessenger\/([\d\.]+)/i);
-      let versionNumber = wechatInfo[1].split(".").join("")
-      if (versionNumber > 7014) {
+      // let wechatInfo = navigator.userAgent.match(/MicroMessenger\/([\d\.]+)/i);
+      // let versionNumber = wechatInfo[1].split(".").join("")
+      // if (versionNumber > 7014) {
         window.iosSignUrl = window.location.href.split('#')[0]
         util._getJssdkConfig(window.iosSignUrl)
-      } else {
-        window.onload = function () {
-          window.iosSignUrl = window.location.href.split('#')[0]
-          setTimeout(() => {
-            console.log("window.iosSignUrl----", window.iosSignUrl)
-            util._getJssdkConfig(window.iosSignUrl)
-          }, 1500);
-        }
-      }
-    }
+      } 
+      // else {
+      //   window.onload = function () {
+      //     window.iosSignUrl = window.location.href.split('#')[0]
+      //     setTimeout(() => {
+      //       console.log("window.iosSignUrl----", window.iosSignUrl)
+      //       util._getJssdkConfig(window.iosSignUrl)
+      //     }, 1500);
+      //   }
+      // }
+    // }
     this.deskCode = util.GetQueryString("deskCode")
     this.deskId = util.GetQueryString("deskID")
     this.saveDeskCode({

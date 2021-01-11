@@ -740,7 +740,7 @@ export default {
             // //console.log("nodelist---", nodeList);
             for (let i = 0; i < nodeList.length; i++) {
                 let messageType = nodeList[i].dataset.messagetype;
-                if (messageType === "9") {
+                if (messageType == "9") {
                     element = nodeList[i].children[0].children[1].children[1].children[0];
                     // //console.log("element", element)
                     util.addClass(element.children[1], "stopanimate");
@@ -764,6 +764,7 @@ export default {
                             success: function (res) {
                                 _this.voiceServerId = res.serverId; // 返回音频的服务器端ID
                                 _this.send();
+                               
                             }
                         });
                     }
@@ -800,6 +801,7 @@ export default {
                             _this.voiceServerId = res.serverId; // 返回音频的服务器端ID
                             //console.log("wx.uploadVoice-voiceServerId", _this.voiceServerId);
                             _this.send();
+                            
                         }
                     });
                 },
@@ -816,17 +818,16 @@ export default {
             // //console.log("e---", e);
             var nodeList = this.$refs.chatList.childNodes;
             var element;
-            var target =
-                nodeList[index].children[0].children[1].children[1].children[0];
+            var target = nodeList[index].children[0].children[1].children[1].children[0];
             for (var i = 0; i < nodeList.length; i++) {
                 var messageType = nodeList[i].dataset.messagetype;
                 var vocieUnread = nodeList[i].dataset.vocieunread;
                 var friend = nodeList[i].dataset.friend;
                 if (messageType == "9") {
                     element = nodeList[i].children[0].children[1].children[1].children[0];
-                    this.addClass(element.children[1], "stopanimate");
-                    this.addClass(element.children[2], "stopanimate");
-                    this.addClass(element.children[3], "stopanimate");
+                    util.addClass(element.children[1], "stopanimate");
+                    util.addClass(element.children[2], "stopanimate");
+                    util.addClass(element.children[3], "stopanimate");
                 }
             }
             api.setVoiceRead(voiceMsgID).then(res => {
@@ -1179,7 +1180,6 @@ export default {
         },
         //发送消息事件
         send () {
-            this.messageType = 1
             this.isShowSoulPanel = false; //发消息隐藏灵魂匹配面板
             this.sendingTimes++;
             if (this.sendingTimes > 20) {

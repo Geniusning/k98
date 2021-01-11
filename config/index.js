@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "Qzreij4wy5Oc0ed7dBGlamsRO0BBzgVbKRLFy5Hnl9acKG57fHOjiVKPUNeJRiaLKHpWAA==";
+const myToken = "UkZqkjbi48eF4E3cmAz8uKux9raXPsIPKnJHltrUfWOVIbQSsLZpPsm3CxtVjivq2k6Elw==";
 // ------------------------------
 
 module.exports = {
@@ -28,7 +28,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '172.18.6.191',
+    host: '172.18.6.207',
 
     // host: '192.168.101.9',
 

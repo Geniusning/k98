@@ -2,7 +2,7 @@
  * @Author: nicky
  * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-05 12:00:05
+ * @Last Modified time: 2021-01-11 18:07:34
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -460,12 +460,12 @@ util.hasClass = (element, className)=> {
   return element.className.match(reg);
 }
 util.addClass = (element, className)=> {
-  if (!this.hasClass(element, className)) {
+  if (!util.hasClass(element, className)) {
     element.className += " " + className;
   }
 },
 util.removeClass = (element, className)=> {
-  if (this.hasClass(element, className)) {
+  if (util.hasClass(element, className)) {
     var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
     element.className = element.className.replace(reg, " ");
   }

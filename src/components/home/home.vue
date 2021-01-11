@@ -118,7 +118,7 @@
                                 </div>
                                 <div class="right">
                                     <div class="thunb_box" v-if="item.goods.vipMoney">
-                                        <div class="linear_btn vip" @click="freeBook(item.goods.ID,index,'vip')">会员价格<br>￥{{item.goods.vipMoney}}</div>
+                                        <div class="linear_btn vip" @click="freeBook(item.goods.ID,index,'vip')">会员价<br>￥{{item.goods.vipMoney}}</div>
                                     </div>
                                     <div class="thunb_box">
                                         <div class="linear_btn" @click="freeBook(item.goods.ID,index,'common')">积分兑换</div>
@@ -350,7 +350,10 @@ export default {
     methods: {
         goToMoreRecommend () {
             this.$router.push({
-                name: "moreRecommend"
+                name: "moreRecommend",
+                params:{
+                  fromPage:"home"
+                }
             })
         },
         goToFriendForSvip () {
@@ -1407,7 +1410,7 @@ export default {
                     .limit {
                         margin-top: 0.16rem;
                         color: #8f8f8f;
-                        font-size: 0.2667rem;
+                        font-size: 0.16rem;
                     }
                     .price {
                         margin-top: 0.1rem;
@@ -1431,6 +1434,8 @@ export default {
                             position: absolute;
                             top: -1.5rem;
                             right: 0;
+                            font-size: 10px;
+                           
                         }
                     }
                 }

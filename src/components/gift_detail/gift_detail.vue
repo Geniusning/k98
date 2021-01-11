@@ -15,7 +15,7 @@
                     <div class="bottom">
                         <div class="cardNumber" v-if="userInfo.phone">NO:{{userInfo.phone}}</div>
                         <div class="cardNumber bind" @click="showPhone" v-else>绑定手机</div>
-                        <div class="desc" @click="noFinish">会员专属特权：</div>
+                        <div class="desc" @click="goToMoreRecommend">会员专属特权：</div>
                     </div>
                 </div>
             </div>
@@ -41,6 +41,7 @@
             <div class="scrollTitle">
                 <span class="total">{{selected?"累计积分":"累计储值"}}</span>
                 <span class="name">{{selected?"积分变动":"储值变动"}}</span>
+                <span class="name" v-if="!selected">赠送金额</span>
                 <span class="content">变动原因</span>
                 <span class="avatar">对象</span>
                 <span class="time">时间</span>
@@ -50,7 +51,6 @@
                     <li class="item vux-1px" v-for="(item,index) in giftContent" :key="index">
                         <span class="total">${{item.value}}</span>
                         <span class="name" :class="{minus:item.amount<0,plus:item.amount>0}">{{item.amount>0?'+'+item.amount:item.amount}}</span>
-                        <!-- <span class="name"  v-else>-3积分</span> -->
                         <span class="content">{{item.content}}</span>
                         <div class="avatar">
                             <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
@@ -65,6 +65,7 @@
                         <span class="total">${{item.value}}</span>
                         <span class="name" :class="{minus:item.amount<0,plus:item.amount>0}">{{item.amount>0?'+'+item.amount:item.amount}}</span>
                         <!-- <span class="name"  v-else>-3积分</span> -->
+                         <span class="name">{{item.givenMoney}}</span>
                         <span class="content">{{item.content}}</span>
                         <div class="avatar">
                             <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
@@ -141,9 +142,17 @@ export default {
         // this.url = `https://llwant2.qianz.com/api/selectUserTopUpVip?phone=${this.userInfo.phone}`
     },
     methods: {
-        noFinish () {
-            this.$vux.toast.text("功能暂未完成", "middle")
-        },
+      goToMoreRecommend(){
+         this.$router.push({
+                name: "moreRecommend",
+                params:{
+                  fromPage:"giftDetail"
+                }
+            })
+      },
+        // noFinish () {
+        //     this.$vux.toast.text("功能暂未完成", "middle")
+        // },
         showPhone () {
             this.showPhoneDialog = true
         },
@@ -166,6 +175,7 @@ export default {
                 res.info.forEach(item => {
                     let temp = {
                         amount: item.dealMoney,
+                        givenMoney:item.givenMoney?item.givenMoney:0,
                         content: item.dealReason ? item.dealReason : (item.dealType === "up" ? "充值" : "扣减"),
                         headimgurl: item.userHeadImgUrl,
                         time: util.timestampToTimeNoLine(item.date),
@@ -173,6 +183,7 @@ export default {
                     }
                     this.vipRecord.unshift(temp)
                 })
+                console.log("this.vipRecord=",this.vipRecord)
             })
         },
         //上拉加载更多

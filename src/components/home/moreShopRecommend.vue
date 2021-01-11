@@ -1,8 +1,8 @@
 <template>
     <div class="moreShopRecommend-wrapper">
         <my-header title="更多会员产品" bg="#fff"></my-header>
-        <ul class="welfare_list" v-if="allRecommend.length">
-            <li class="item clearfix" v-for="(item,index) in allRecommentList" :key="index">
+        <ul class="welfare_list" v-if="leftRecommend.length">
+            <li class="item clearfix" v-for="(item,index) in leftRecommend" :key="index">
                 <div class="left">
                     <img onclick="return false" :src="item.goods.image" alt class="shopPic" />
                 </div>
@@ -17,7 +17,7 @@
                 </div>
                 <div class="right">
                     <div class="thunb_box" v-if="item.goods.vipMoney">
-                        <div class="linear_btn vip" @click="freeBook(item.goods.ID,index,'vip')">会员价<br>{{item.goods.vipMoney}}</div>
+                        <div class="linear_btn vip" @click="freeBook(item.goods.ID,index,'vip')">会员价<br>￥{{item.goods.vipMoney}}</div>
                     </div>
                     <div class="thunb_box">
                         <div class="linear_btn" @click="freeBook(item.goods.ID,index,'common')">积分兑换</div>
@@ -41,7 +41,7 @@ export default {
             convertType: 0,
             isGiftPanel: false,
             fatherPanelIndex: 0,
-            allRecommend: [],
+            leftRecommend: [],
             recommendItemIndo: {
                 convert: {},
                 coupInfo: {},
@@ -60,6 +60,8 @@ export default {
     },
     created () {
         this.loadAllRecommends()
+        this.fromPageType = this.$route.params.fromPage
+        console.log("allRecommentList=",this.allRecommentList)
     },
     computed: {
         ...mapState(["shopSettingInfo", "l98Setting", "allRecommentList", "recommentList"]),
@@ -69,17 +71,26 @@ export default {
         //获取全部店长推荐
         loadAllRecommends () {
             api.loadAllRecommends().then(res => {
-                // this.allRecommend = res
+                // this.leftRecommend = res
                 this.getAllRecommentList(res);
-                this.allRecommend = this.allRecommentList
-                for (let i = this.recommentList.length - 1; i >= 0; i--) {
-                    for (let j = this.allRecommend.length - 1; j >= 0; j--) {
-                        if (this.allRecommend[j].goods.id === this.recommentList[i].goods.id) {
-                            this.allRecommend.splice(j, 1)
-                        }
-                    }
+                console.log("leftRecommend=",this.leftRecommend)
+                if(this.fromPageType === "home"){
+                  this.leftRecommend = JSON.parse(JSON.stringify(this.allRecommentList))
+                  for (let i = this.recommentList.length - 1; i >= 0; i--) {
+                      for (let j = this.leftRecommend.length - 1; j >= 0; j--) {
+                          if (this.leftRecommend[j].goods.id === this.recommentList[i].goods.id) {
+                              this.leftRecommend.splice(j, 1)
+                          }
+                      }
+                  }
+                }else{
+                   for (let j = this.allRecommentList.length - 1; j >= 0; j--) {
+                          if (this.allRecommentList[j].goods.vipMoney !== 0) {
+                              this.leftRecommend.push(this.allRecommentList[j])
+                          }
+                      }
                 }
-                console.log('全部店长推荐数据---------------------', this.allRecommend)
+                console.log('全部店长推荐数据---------------------', this.leftRecommend)
             })
         },
         //监听充值面板状态
@@ -98,7 +109,7 @@ export default {
             }else{
               this.fatherPanelIndex = 2
             }
-            this.recommendItemIndo = this.recommentList[index];
+            this.recommendItemIndo = this.leftRecommend[index];
         },
         ...mapMutations({
             getAllRecommentList: "GET_ALLRECOMMENTLIST", //获取全部店长推荐

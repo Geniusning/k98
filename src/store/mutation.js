@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-30 16:21:04
+ * @Last Modified time: 2021-01-07 10:28:32
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -103,6 +103,7 @@ const mutations = {
   },
   //获取全部店长推荐
   [types.GET_ALLRECOMMENTLIST] (state, allrecommentList) {
+    state.allRecommentList = []
     let now = new Date().getTime()
     for (let i = 0; i < allrecommentList.length; i++) {
       const recomment = allrecommentList[i];

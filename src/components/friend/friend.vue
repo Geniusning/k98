@@ -442,7 +442,7 @@ export default {
         console.log("this.loadFriendSexType----", this.loadFriendSexType);
 
         if (this.userInfo.sex === "男") {
-            this.sexType = 0;
+            this.sexType = 2;
         } else {
             this.sexType = 1;
         }
