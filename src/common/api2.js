@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:04
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-05 16:51:01
+ * @Last Modified time: 2021-01-14 16:58:47
  */
 import axios from 'axios'
 import Url from './config'
@@ -31,6 +31,42 @@ let api = {};
 api.delIdentity = function (targetID) {
   return new Promise((resolve, reject) => {
     axios.get(Url.commonUrl + `/api/delIdentity?tk=${Url.tk}&targetID=${targetID}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//加载常去门店平台
+api.loadFrequentPlatform = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadFrequentPlatform?tk=${Url.tk}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//收集常去门店平台
+api.collectFrequentPlatform = function (storeId) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/collectFrequentPlatform?tk=${Url.tk}&storeId=${storeId}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//拉取平台公众号门店
+api.loadPlatforms = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadPlatforms?tk=${Url.tk}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -88,17 +124,17 @@ api.loadTopUpDetailForC = function (cursor,count) {
   })
 }
 //拉取用户在其他友商的信息
-api.loadOtherAllianceMessage = function (port) {
-  return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadOtherAllianceMessage?tk=${Url.tk}&port=${port}`).then((res) => {
-      if (res.status == 200) {
-        resolve(res.data)
-      }
-    }).catch(err => {
-      reject(err)
-    })
-  })
-}
+// api.loadOtherAllianceMessage = function (port) {
+//   return new Promise((resolve, reject) => {
+//     axios.get(Url.commonUrl + `/api/loadOtherAllianceMessage?tk=${Url.tk}&port=${port}`).then((res) => {
+//       if (res.status == 200) {
+//         resolve(res.data)
+//       }
+//     }).catch(err => {
+//       reject(err)
+//     })
+//   })
+// }
 //拉取发布供需者
 api.loadPublisherList = function (needed) {
   return new Promise((resolve, reject) => {

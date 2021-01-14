@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2020-12-30 17:24:27
+ * @Last Modified time: 2021-01-14 16:58:17
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,6 +24,42 @@ axios.interceptors.request.use(
   }
 )
 let api = {};
+//加载常去门店平台
+api.loadFrequentPlatform = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadFrequentPlatform`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//收集常去门店平台
+api.collectFrequentPlatform = function (storeId) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/collectFrequentPlatform?storeId=${storeId}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//拉取平台公众号门店
+api.loadPlatforms = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadPlatforms`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //拉取桌号
 api.loadDesks = function () {
   return new Promise((resolve, reject) => {
@@ -72,18 +108,18 @@ api.loadTopUpDetailForC = function (cursor, count) {
     })
   })
 }
-//拉取用户在其他友商的信息 （待删除）
-api.loadOtherAllianceMessage = function (port) {
-  return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadOtherAllianceMessage?port=${port}`).then((res) => {
-      if (res.status == 200) {
-        resolve(res.data)
-      }
-    }).catch(err => {
-      reject(err)
-    })
-  })
-}
+// //拉取用户在其他友商的信息 （待删除）
+// api.loadOtherAllianceMessage = function (port) {
+//   return new Promise((resolve, reject) => {
+//     axios.get(Url.commonUrl + `/api/loadOtherAllianceMessage?port=${port}`).then((res) => {
+//       if (res.status == 200) {
+//         resolve(res.data)
+//       }
+//     }).catch(err => {
+//       reject(err)
+//     })
+//   })
+// }
 //拉取发布供需者
 api.loadPublisherList = function (needed) {
   return new Promise((resolve, reject) => {

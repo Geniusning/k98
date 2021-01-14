@@ -49,7 +49,7 @@
                     <p>3)详细规则及奖品，以门店现场解释为准。</p>
                 </div>
                 <div class="handle-wrapper">
-                    <button class="linear_btn btnRecord" @click="goToGameRecord">查看往期赛事</button>
+                    <button class="linear_btn btnRecord" style="width: 2rem" @click="goToGameRecord">查看往期赛事</button>
                     <button class="linear_btn btnPlayGame" @click="goTobroadcastingRoom(arenaInfo.arenaID)" v-if="isShowGameEntry">比赛直播间</button>
                 </div>
                 <div class="line-box">

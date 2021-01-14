@@ -319,10 +319,10 @@
                 </ul>
             </div>
             <!-- 分身信封入口 divide_badgeCount ||isShowDivideEnv -->
-            <div class="divide_wrapper" @click="showDivideList" v-if="(hasDivideIdentity && hasUserRole)">
+            <!-- <div class="divide_wrapper" @click="showDivideList" v-if="(hasDivideIdentity && hasUserRole)">
                 <img src="./assets/image/divide_envelope.png" class="divide-env" alt="">
                 <span v-show="divide_badgeCount" class="divide-dot">{{divide_badgeCount}}</span>
-            </div>
+            </div> -->
         </div>
 
         <friendPanel v-if="friendPanelFlag"></friendPanel>

@@ -43,7 +43,7 @@
                 <span class="name">{{selected?"积分变动":"储值变动"}}</span>
                 <span class="name" v-if="!selected">赠送金额</span>
                 <span class="content">变动原因</span>
-                <span class="avatar">对象</span>
+                <span class="avatar">{{selected?"对象":"经手"}}</span>
                 <span class="time">时间</span>
             </div>
             <scroll ref="scroll" class="scroll" :data="giftContent" @pullingUp="pullUpMoreData" :pullup="true">
@@ -65,11 +65,10 @@
                         <span class="total">${{item.value}}</span>
                         <span class="name" :class="{minus:item.amount<0,plus:item.amount>0}">{{item.amount>0?'+'+item.amount:item.amount}}</span>
                         <!-- <span class="name"  v-else>-3积分</span> -->
-                         <span class="name">{{item.givenMoney}}</span>
+                        <span class="name">{{item.givenMoney}}</span>
                         <span class="content">{{item.content}}</span>
                         <div class="avatar">
-                            <img :src="item.headimgurl?item.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534938165134&di=f3ae0420c8c174149ac1c123230a28ed&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_png%2FJCRXU6oUw5s17jKllv9icrTmXvozYWQDeWFhKgEXbYeR9JOEKkrWLjibU7a7FAbsBHibVKca5wWzEiaXHWSgaSlgbA%2F640%3Fwx_fmt%3Dpng'"
-                                 class="gift_icon">
+                            <span class="content">{{item.staffName}}</span>
                         </div>
                         <span class="time">{{item.time}}</span>
                     </li>
@@ -142,14 +141,14 @@ export default {
         // this.url = `https://llwant2.qianz.com/api/selectUserTopUpVip?phone=${this.userInfo.phone}`
     },
     methods: {
-      goToMoreRecommend(){
-         this.$router.push({
+        goToMoreRecommend () {
+            this.$router.push({
                 name: "moreRecommend",
-                params:{
-                  fromPage:"giftDetail"
+                params: {
+                    fromPage: "giftDetail"
                 }
             })
-      },
+        },
         // noFinish () {
         //     this.$vux.toast.text("功能暂未完成", "middle")
         // },
@@ -163,7 +162,7 @@ export default {
         changeShowMoney (flag) {
             this.selected = flag
             if (!this.selected) {
-                // this.loadTopUpDetailForC()
+                this.loadTopUpDetailForC()
             } else {
                 // this.loadWealthDetail();
             }
@@ -175,15 +174,17 @@ export default {
                 res.info.forEach(item => {
                     let temp = {
                         amount: item.dealMoney,
-                        givenMoney:item.givenMoney?item.givenMoney:0,
+                        givenMoney: item.givenMoney ? item.givenMoney : 0,
                         content: item.dealReason ? item.dealReason : (item.dealType === "up" ? "充值" : "扣减"),
                         headimgurl: item.userHeadImgUrl,
+                        staffName: item.staffName,
+                        userName:item.userName,
                         time: util.timestampToTimeNoLine(item.date),
                         value: item.userMoney
                     }
                     this.vipRecord.unshift(temp)
                 })
-                console.log("this.vipRecord=",this.vipRecord)
+                console.log("this.vipRecord=", this.vipRecord)
             })
         },
         //上拉加载更多
@@ -343,7 +344,7 @@ export default {
                     .qrcode {
                         width: 3rem;
                         height: 2.7rem;
-                       
+
                         position: absolute;
                         top: -1.7rem;
                         right: 0.5rem;
@@ -493,6 +494,8 @@ export default {
                     .content {
                         width: 20%;
                         padding-top: 0.1333rem;
+                        word-wrap: break-word;
+                        word-break: break-all;
                     }
                     .time {
                         width: 20%;

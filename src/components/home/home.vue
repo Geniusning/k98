@@ -1,7 +1,7 @@
 <template>
     <div id="home" class="home">
         <!-- <div class="guideBg" v-if="isFirstLoad" @click="isFirstLoad=false"></div> -->
-        <div class="homeTop_wrapper">
+        <div class="home-top_wrapper">
             <div class="barLogo_wrapper">
                 <div class="logo_wrapper">
                     <img onclick="return false" class="logo" :src="shopSettingInfo.image" alt />
@@ -14,7 +14,7 @@
             <div class="shadowLeft"></div>
             <div class="shadowRight"></div>
         </div>
-        <div class="wrapper" ref="wrapper">
+        <div v-if="shopSettingInfo.shopModeId!==3" class="community-wrapper">
             <div class="content">
                 <div class="adr_wrapper">
                     <div class="adr clearfix" @click="getMapPosition">
@@ -28,65 +28,63 @@
                         </a>
                     </div>
                 </div>
-                <div>
-                    <!-- 交友游戏1 -->
-                    <div v-if="shopSettingInfo.shopModeId===0" class="entertainment_wrapper">
-                        <div class="findFri_btn" @click="gotoFriend">
-                            <img id="step1" src="../../assets/image/findFri.png" alt />
-                            <div class="desc_wrapper">
-                                <div class="lineOne">
-                                    <ul class="fri_list" v-show="friendIconList1.length>=3">
-                                        <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList1" :key="index">
-                                            <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="linetwo">
-                                    <ul class="fri_list">
-                                        <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList2" :key="index">
-                                            <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
-                                        </li>
-                                    </ul>
-                                </div>
-                                <p class="text">{{(outFriendNum+inFriendNum)>0?(outFriendNum+inFriendNum):1}}人在线,有你N个好友&gt;</p>
+                <!-- mode 1 -->
+                <div v-if="shopSettingInfo.shopModeId===0" class="entertainment_wrapper">
+                    <div class="findFri_btn" @click="gotoFriend">
+                        <img id="step1" src="../../assets/image/findFri.png" alt />
+                        <div class="desc_wrapper">
+                            <div class="lineOne">
+                                <ul class="fri_list" v-show="friendIconList1.length>=3">
+                                    <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList1" :key="index">
+                                        <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
+                                    </li>
+                                </ul>
                             </div>
-                        </div>
-                        <div class="playGame_btn" @click="gotoPlay">
-                            <img src="../../assets/image/playGame.png" alt />
-                            <p class="text">挑战邻桌小妹/好友组局&gt;</p>
+                            <div class="linetwo">
+                                <ul class="fri_list">
+                                    <li class="item" :class="'avar'+index" v-for="(item,index) in friendIconList2" :key="index">
+                                        <img onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
+                                    </li>
+                                </ul>
+                            </div>
+                            <p class="text">{{(outFriendNum+inFriendNum)>0?(outFriendNum+inFriendNum):1}}人在线,有你N个好友&gt;</p>
                         </div>
                     </div>
-                    <!-- 交友游戏2 -->
-                    <div v-else class="entertainment_wrapper2">
-                        <div class="entertainment_top">
-                            <div class="left">
-                                <img onclick="return false" class="k_1" @click="goToFriendForSvip" src="../../assets/image/k_1.png" alt="">
-                            </div>
-                            <div class="right" @click="gotoFriend">
-                                <div class="lineOne">
-                                    <ul class="fri_list" v-show="friendIconList3.length>=3">
-                                        <li class="item" style="margin-left:-0.13rem" :class="'avar'+index" v-for="(item,index) in friendIconList3" :key="index">
-                                            <img style="width:.5rem;height:.5rem" onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
-                                        </li>
-                                        <li class="item dot" style="line-height:.5">...</li>
-                                    </ul>
-                                </div>
-                                <img onclick="return false" class="k_1" src="../../assets/image/k_2.png" alt="">
-                            </div>
+                    <div class="playGame_btn" @click="gotoPlay">
+                        <img src="../../assets/image/playGame.png" alt />
+                        <p class="text">挑战邻桌小妹/好友组局&gt;</p>
+                    </div>
+                </div>
+                <!-- mode 2 -->
+                <div v-else class="entertainment_wrapper2">
+                    <div class="entertainment_top">
+                        <div class="left">
+                            <img onclick="return false" class="k_1" @click="goToFriendForSvip" src="../../assets/image/k_1.png" alt="">
                         </div>
-                        <div class="entertainment_bottom">
-                            <div class="left" @click="gotoComment">
-                                <img onclick="return false" class="k_1" src="../../assets/image/k_3.png" alt="">
+                        <div class="right" @click="gotoFriend">
+                            <div class="lineOne">
+                                <ul class="fri_list" v-show="friendIconList3.length>=3">
+                                    <li class="item" style="margin-left:-0.13rem" :class="'avar'+index" v-for="(item,index) in friendIconList3" :key="index">
+                                        <img style="width:.5rem;height:.5rem" onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
+                                    </li>
+                                    <li class="item dot" style="line-height:.5">...</li>
+                                </ul>
                             </div>
-                            <div class="right">
-                                <img onclick="return false" @click="gotoPlay" class="k_1" src="../../assets/image/k_4.png" alt="">
-                            </div>
+                            <img onclick="return false" class="k_1" src="../../assets/image/k_2.png" alt="">
+                        </div>
+                    </div>
+                    <div class="entertainment_bottom">
+                        <div class="left" @click="gotoComment">
+                            <img onclick="return false" class="k_1" src="../../assets/image/k_3.png" alt="">
+                        </div>
+                        <div class="right">
+                            <img onclick="return false" @click="gotoPlay" class="k_1" src="../../assets/image/k_4.png" alt="">
                         </div>
                     </div>
                 </div>
                 <!-- 福利 -->
                 <div class="welfare_wrapper" v-show="recommentList.length">
-                    <div class="title_content_wel">
+                    <div class="title_content_wel vux-1px-b">
                         <div class="title clearfix">
                             <img onclick="return false" src="../../assets/image/recomment.png" alt class="icon fl" />
                             <h2 class="shop_title" @click="closeWebPage">{{shopSettingInfo.shopModeId===0 ? "店长推荐" :"会员产品推荐" }}</h2>
@@ -135,14 +133,15 @@
                 </div>
                 <!-- 友商互推 -->
                 <div class="welfare_wrapper" v-if="friendLeagleList.length">
-                    <div class="title_content_wel">
+                    <div class="title_content_wel vux-1px-b">
                         <div class="title clearfix">
                             <img onclick="return false" src="../../assets/image/hutui.png" alt class="icon fl" />
                             <h2 class="shop_title">友好商家/商会/社群</h2>
                         </div>
                     </div>
                     <div class="welfare_content">
-                        <ul class="welfare_list" v-if="friendLeagleList.length">
+                        <friAllianceInfo :friendLeagles="friendLeagleList"></friAllianceInfo>
+                        <!-- <ul class="welfare_list" v-if="friendLeagleList.length">
                             <li class="item clearfix" v-for="(item,index) in friendLeagleList" :key="index">
                                 <div class="shop-logo-name" @click="goToFriShop(item)">
                                     <p class="shop-name">
@@ -161,14 +160,14 @@
                                 </div>
                                 <div class="right">
                                     <div class="thunb_box clearfix">
-                                        <!-- <p class="count fl">{{item.distance}}</p> -->
+                                         <p class="count fl">{{item.distance}}</p> 
                                     </div>
                                     <div style="margin-left:.3rem" class="linear_btn" @click="goToFriShop(item)">
                                         {{item.storeModeId === 0 ? "领&nbsp;&nbsp;&nbsp;取" :"进&nbsp;&nbsp;&nbsp;入" }}
                                     </div>
                                 </div>
                             </li>
-                        </ul>
+                        </ul> -->
                     </div>
                 </div>
                 <!-- vip卡券 -->
@@ -178,9 +177,10 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="kefu" @click="inToLetter">
-                                                      <img onclick="return false" src="../../assets/image/home_letter.png" alt class="pic_kefu" />
-        </div>-->
+        <div v-else class="community-wrapper">
+            <platform :platformInfo="platformList" :friendLeagleList="friendLeagleList"></platform>
+        </div>
+
         <!-- 游戏框框 -->
         <div v-transfer-dom>
             <x-dialog v-model="gameShow" class="dialog-gameBegin">
@@ -200,7 +200,6 @@
                 </div>
             </x-dialog>
         </div>
-        <!-- <img onclick="return false" style="visibility:hidden" :src="shopSettingInfo.image" alt=""> -->
         <topUp :convertType="convertType" v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :giftInfo="recommendItemIndo" :fatherPanelIndex="fatherPanelIndex"></topUp>
         <transition name="appear">
             <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
@@ -224,7 +223,8 @@ import { mapMutations, mapActions, mapState, mapGetters } from "vuex";
 import envelope from "base/envelope/envelope";
 import Bus from "common/bus.js";
 import { clearInterval } from "timers";
-// import {setInterval,clearInterval} from 'timers';
+import Platform from './homeCompoment/platform';
+import FriAllianceInfo from './homeCompoment/friAllianceInfo'
 export default {
     name: "home",
     directives: {
@@ -232,6 +232,7 @@ export default {
     },
     data () {
         return {
+            platformList: [],
             isShow_bg: false,
             game_giftInfo: {
                 firstPrize: {},
@@ -272,7 +273,6 @@ export default {
             inFriendNum: 0,
             outFriendNum: 0,
             isGiftPanel: false,
-            // isFirstLoad: false,
             defaultAvatarImg: require("../../assets/image/avatar1.jpeg"),
             friendLeagleList: [],
             resId: "", //友商物品id,通过此id获得对应优惠券
@@ -297,8 +297,8 @@ export default {
         ]),
         ...mapGetters(["recommentList"])
     },
-    created(){
-       let params = {
+    created () {
+        let params = {
             cursor: 0,
             sex: 2,
             range: 0,
@@ -307,6 +307,7 @@ export default {
             keyword: "",
             isSvip: false,
         };
+        this.loadPlatforms()
         this.acquireWaitGetCoupons(); //获取自动优惠券
         this.setAdvertisePhoto(); //设置轮播图
         this.getAllCommunityFriend(params); //获取群友
@@ -348,11 +349,19 @@ export default {
         // this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
     },
     methods: {
+        loadPlatforms () {
+            api.loadPlatforms().then(res => {
+                console.log("平台=", res)
+                if (res.errCode === 0) {
+                    this.platformList = res.info
+                }
+            })
+        },
         goToMoreRecommend () {
             this.$router.push({
                 name: "moreRecommend",
-                params:{
-                  fromPage:"home"
+                params: {
+                    fromPage: "home"
                 }
             })
         },
@@ -807,7 +816,9 @@ export default {
         Scroll,
         envelope,
         topUp,
-        Popup
+        Popup,
+        Platform,
+        FriAllianceInfo
         // Carousel3d,
         // Slide
     }
@@ -820,6 +831,7 @@ export default {
 @import "../../assets/less/home_common.less";
 @import "../../assets/less/mixin.less";
 @import "~vux/src/styles/close";
+@import "~vux/src/styles/1px.less";
 // @import "../../libs/swiper/swiper-4.3.3.min.css"; // 优惠券开始
 // 弹框游戏开始
 .dialog-gameBegin {
@@ -870,8 +882,9 @@ export default {
         background-color: rgba(0, 0, 0, 0.3);
     }
     background: rgba(242, 242, 242, 1);
-}
-.content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 .entertainment_wrapper {
     display: flex;
@@ -1004,7 +1017,7 @@ export default {
         }
     }
 }
-.homeTop_wrapper {
+.home-top_wrapper {
     position: relative;
     height: 4.2667rem;
     padding-top: 0.2rem;
@@ -1017,9 +1030,7 @@ export default {
         #fccc00,
         #fbbc00
     );
-    margin-bottom: 0.4rem; // padding: 0.1667rem;
-    // .bg('../../assets/image/welfare_bg.png');
-    // background: #ffe200;
+    margin-bottom: 0.4rem;
     .barLogo_wrapper {
         width: 100%;
         position: absolute;
@@ -1076,9 +1087,13 @@ export default {
         transform: skewY(30deg);
     }
 }
-.pic {
-    width: 100%;
-    height: 100%;
+.community-wrapper {
+    flex: 1;
+    .content {
+        height: 100%;
+        overflow: auto;
+        background: #f1f1f1;
+    }
 }
 // 地址
 .adr_wrapper {
@@ -1338,110 +1353,7 @@ export default {
             height: 3.1467rem;
         }
     }
-    .welfare_content {
-        margin-top: 0.1rem;
-        .welfare_list {
-            padding: 0 0.2667rem;
-            .item {
-                // height: 2.4667rem;
-                padding: 0.1333rem 0.1rem;
-                .shop-logo-name {
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 0.1333rem;
-                    position: relative;
-                    border-radius: 6px;
-                    .shop-logo {
-                        margin-right: 0.1333rem;
-                        width: 0.5rem;
-                        height: 0.5rem;
-                        border-radius: 50%;
-                    }
-                    .shop-name {
-                        font-weight: 800;
-                        background-color: rgba(0, 0, 0, 0.1);
-                        color: #fff;
-                        font-size: 0.36rem;
-                        display: inline-block;
-                        padding: 0 0.1rem;
-                        display: flex;
-                        align-items: center;
-                        border-radius: 6px;
-                    }
-                    .distance {
-                        color: #8f8f8f;
-                        font-size: 0.3467rem;
-                        position: absolute;
-                        top: 0.1rem;
-                        right: 0.0333rem;
-                    }
-                }
-                .left {
-                    float: left;
-                    width: 2.4rem;
-                    height: 2.2rem;
-                    .shopPic {
-                        width: 100%;
-                        height: 100%;
-                        object-fit: contain;
-                    }
-                }
-                .center {
-                    float: left;
-                    height: 2.2rem;
-                    margin-left: 0.1667rem;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    .title {
-                        font-size: 0.3733rem;
-                        color: #333;
-                        font-weight: bold;
-                        width: 4.5rem;
-                        overflow: hidden;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                    }
-                    .desc {
-                        margin-top: 0.1rem;
-                        color: #8f8f8f;
-                        font-size: 0.32rem;
-                    }
-                    .limit {
-                        margin-top: 0.16rem;
-                        color: #8f8f8f;
-                        font-size: 0.16rem;
-                    }
-                    .price {
-                        margin-top: 0.1rem;
-                        display: flex;
-                        .discount_p {
-                            color: #333;
-                            font-size: 0.3467rem;
-                            margin-right: 0.3rem;
-                        }
-                        .origin_p {
-                            color: red;
-                            font-size: 0.3467rem;
-                        }
-                    }
-                }
-                .right {
-                    margin-top: 1.4rem;
-                    position: relative;
-                    .thunb_box {
-                        .vip {
-                            position: absolute;
-                            top: -1.5rem;
-                            right: 0;
-                            font-size: 10px;
-                           
-                        }
-                    }
-                }
-            }
-        }
-    }
+    .welfareContent();
 }
 .bg {
     position: fixed;
