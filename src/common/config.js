@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:46:30
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-15 09:39:06
+ * @Last Modified time: 2021-01-15 18:00:57
  */
 export default {
   commonUrl: '',
@@ -10,5 +10,5 @@ export default {
   // websocketUrl: "wss://singledog.qianz.com/api/ws",
   /* 老友一起玩吧 */
   websocketUrl: "wss://llwant1.qianz.com/api/ws",
-  tk: "EhEQTPq_PXEFZdJI-rX-uRfGSBmbRd4PRVUwHv6Za5AepiQGNEAukVI0Rz-XXoDkmmnctg=="
+  tk: "Q8wMZDVfIZt8ulxbEOURw2an3oNT86P5Wg0EzUhgz1rjroCXOrrlL2BXxMAyY1-hlXqmkQ=="
 }

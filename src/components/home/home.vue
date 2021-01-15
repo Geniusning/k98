@@ -307,9 +307,9 @@ export default {
             keyword: "",
             isSvip: false,
         };
+        this.setAdvertisePhoto(); //设置轮播图
         this.loadPlatforms()
         this.acquireWaitGetCoupons(); //获取自动优惠券
-        this.setAdvertisePhoto(); //设置轮播图
         this.getAllCommunityFriend(params); //获取群友
         this._loadPublishArenas(); //拉取已经发布的比赛场
         this.loadAlliance(); //拉取友商物品
@@ -891,9 +891,9 @@ export default {
         background-color: rgba(0, 0, 0, 0.3);
     }
     background: rgba(242, 242, 242, 1);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    // display: flex;
+    // flex-direction: column;
+    // height: 100%;
 }
 .entertainment_wrapper {
     display: flex;
