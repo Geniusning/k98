@@ -14,7 +14,7 @@
             <div class="shadowLeft"></div>
             <div class="shadowRight"></div>
         </div>
-        <div v-if="shopSettingInfo.shopModeId!==3" class="community-wrapper">
+        <div v-if="shopSettingInfo.shopModeId !==3" class="community-wrapper">
             <div class="content">
                 <div class="adr_wrapper">
                     <div class="adr clearfix" @click="getMapPosition">
@@ -320,8 +320,6 @@ export default {
         this._getInOutNum(); //获取场内场外用户数
     },
     mounted () {
-        // console.log("home url---", window.iosSignUrl);
-        // this.deskCode = util.GetQueryString("deskCode");
         this.storeName = util.GetQueryString("storeName");
         util.addVisitRecord(this.$route.name);
         this.resId = util.GetQueryString("resId");
@@ -329,6 +327,7 @@ export default {
         if (this.resId) {
             this.getAllianceCoupon();
         }
+
     },
     activated () {
         setTimeout(() => {
@@ -340,12 +339,22 @@ export default {
                 imgUrl: `${this.shopSettingInfo.image}`
             };
             util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-        }, 2000);
+            wx.getLocation({
+                type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    console.log("地理位置=", res)
+                    var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                    var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    var speed = res.speed; // 速度，以米/每秒计
+                    var accuracy = res.accuracy; // 位置精度
+                }
+            });
+        }, 1000);
         window.scrollTo(0, 0);
         if (this.$route.params.data == "shareHomePage") {
             this.isShow_bg = true;
         }
-
+        // this.loadPlatforms()
         // this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
     },
     methods: {
