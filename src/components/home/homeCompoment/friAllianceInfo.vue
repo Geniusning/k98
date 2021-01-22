@@ -4,31 +4,31 @@
             <li class="item clearfix" v-for="(item,index) in friendLeagles" :key="index">
                 <div class="shop-logo-name" @click="goToFriShop(item)">
                     <div class="shop-info">
-                      <div class="shop-name">
                         <img :src="item.storelogo" alt class="shop-logo" />
-                        <span>{{item.storename}}</span>
-                      </div>
-                      <p class="addr"><img class="addr-icon" src="../../../assets/image/address.png" alt="">{{item.addr}}</p>
+                        <div class="shop-name-address">
+                            <span class="name">{{item.storename}}</span>
+                            <p class="addr"><img class="addr-icon" src="../../../assets/image/address.png" alt="">{{item.addr}}</p>
+                        </div>
                     </div>
                     <p class="distance">
-                      <span>{{item.distance}}</span>
-                      <span>{{item.industryType}}</span>
+                        <span>{{item.industryType}}</span>
+                        <span>{{item.distance}}</span>
                     </p>
                 </div>
                 <div class="res-info" style="display:flex">
-                  <div class="left">
-                      <img onclick="return false" :src="item.res.image" alt class="shopPic" />
-                  </div>
-                  <div class="center">
-                      <p class="title" style="font-weight:900">{{item.res.name}}</p>
-                      <p class="desc">{{item.res.content}}</p>
-                      <p class="limit">{{item.res.limit}}</p>
-                  </div>
-                  <div class="entry">
-                      <div style="margin-left:.3rem" class="linear_btn" @click="goToFriShop(item)">
-                          {{item.storeModeId === 0 ? "领&nbsp;&nbsp;&nbsp;取" :"进&nbsp;&nbsp;&nbsp;入" }}
-                      </div>
-                  </div>
+                    <div class="left">
+                        <img onclick="return false" :src="item.res.image" alt class="shopPic" />
+                    </div>
+                    <div class="center">
+                        <p class="title" style="font-weight:900">{{item.res.name}}</p>
+                        <p class="desc">{{item.res.content}}</p>
+                        <p class="limit">{{item.res.limit}}</p>
+                    </div>
+                    <div class="entry">
+                        <div style="margin-left:.3rem" class="linear_btn" @click="goToFriShop(item)">
+                            {{item.storeModeId === 0 ? "领&nbsp;&nbsp;&nbsp;取" :"进&nbsp;&nbsp;&nbsp;入" }}
+                        </div>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -36,11 +36,11 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
     props: ["friendLeagles"],
-    computed:{
-      ...mapState(["shopSettingInfo"])
+    computed: {
+        ...mapState(["shopSettingInfo"])
     },
     methods: {
         //跳转友商门店

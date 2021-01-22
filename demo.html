@@ -19,6 +19,7 @@
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
 
 <body onload="countTime()">
+  <a href="#哈哈">hash</a>
   <div id="circle"></div>
      <div>
        <span id="_d">00</span>
@@ -26,9 +27,49 @@
        <span id="_m">00</span>
        <span id="_s">00</span>
        </div>
-
 </body>
 <script>
+  console.log(window.location.href)
+  window.addEventListener("hashchange",function(e){
+    console.log("hash change= ",e)
+    console.log("hash = ",location.hash)
+  })
+
+  class Point {
+    constructor(x,y){
+      this.x = x
+      this.y = y
+    }
+
+    toMyString(){
+      return `(${this.x},${this.y})`
+    }
+  }
+
+  let point = new Point(10,100)
+  console.log(point.toMyString())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   function sleep(duration) {
     return new Promise((resolve, reject) => {
       setTimeout(resolve, duration)
@@ -60,7 +101,7 @@
   async function exec(){
     for (let i = 0; i < 10; i++) {
       let res = await t(i)
-      console.log("res---",res)
+      // console.log("res---",res)
     }
   }
   exec()
@@ -75,13 +116,13 @@
     return "";
   };
 
-  console.log("GetQueryString=",GetQueryString("https://llwant2.qianz.com/api/selectUserTopUpVip?phone=","phone"))
+  // console.log("GetQueryString=",GetQueryString("https://llwant2.qianz.com/api/selectUserTopUpVip?phone=","phone"))
 var date =new Date()
 var year=date.getFullYear();
 var month=13+1;
 var lastDay=new Date(year,month,0)
-console.log(lastDay)
-console.log(new Date().getDate())
+// console.log(lastDay)
+// console.log(new Date().getDate())
 
   function generateTime(){
     let result = []
@@ -135,7 +176,30 @@ console.log(new Date().getDate())
         console.log(true)
       }
 
-
+      function evetLoop(){
+        console.log("1")
+        setTimeout(() => {
+          console.log('6')
+        }, 0);
+        var promise = new Promise((resolve,reject)=>{
+          setTimeout(() => {
+            console.log("2")
+          }, 0);
+          console.log("3")
+          resolve()
+        })
+        promise.then(()=>{
+          console.log("4")
+          setTimeout(() => {
+            console.log('5')
+          }, 0);
+        })
+        setTimeout(() => {
+          console.log('7')
+        }, 0);
+        console.log("8")
+      }
+      // evetLoop() // 13846275
 // console.log("sync1")  //1
 // setTimeout(() => {
 //   console.log("setTimeOut1") //5

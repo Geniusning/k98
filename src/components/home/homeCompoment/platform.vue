@@ -117,7 +117,11 @@ export default {
         }
     },
     props: ["platformInfo", "friendLeagleList"],
+    created(){
+      console.log("son created")
+    },
     mounted () {
+        console.log("son mounted")
         this.loadFrequentPlatform()
     },
     watch: {
@@ -273,7 +277,7 @@ export default {
         position: relative;
         .select-icon {
             position: absolute;
-            left: 2.2rem;
+            left: .5rem;
             top: 0.2rem;
             width: 0.6rem;
             height: 0.6rem;
@@ -307,8 +311,8 @@ export default {
                     .left {
                         display: flex;
                         .shop-logo {
-                            width: 0.8rem;
-                            height: 0.8rem;
+                            width: 1rem;
+                            height: 1rem;
                             border-radius: 50%;
                         }
                         .shop-name-adrr {
@@ -319,7 +323,7 @@ export default {
                                 font-weight: 800;
                             }
                             .shop-addr {
-                                font-size: 12px;
+                                font-size: 10px;
                                 color: rgb(116, 114, 114);
                                 display: flex;
                                 align-items: center;

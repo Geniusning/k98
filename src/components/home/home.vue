@@ -14,7 +14,7 @@
             <div class="shadowLeft"></div>
             <div class="shadowRight"></div>
         </div>
-        <div v-if="shopSettingInfo.shopModeId !==3" class="community-wrapper">
+        <div v-if="shopSettingInfo.shopModeId == 0 || shopSettingInfo.shopModeId == 1" class="community-wrapper">
             <div class="content">
                 <div class="adr_wrapper">
                     <div class="adr clearfix" @click="getMapPosition">
@@ -177,7 +177,7 @@
                 </div>
             </div>
         </div>
-        <div v-else class="community-wrapper">
+        <div v-else-if="shopSettingInfo.shopModeId == 3" class="community-wrapper">
             <platform :platformInfo="platformList" :friendLeagleList="friendLeagleList"></platform>
         </div>
 
@@ -307,6 +307,7 @@ export default {
             keyword: "",
             isSvip: false,
         };
+        console.log("father create")
         this.setAdvertisePhoto(); //设置轮播图
         this.loadPlatforms()
         this.acquireWaitGetCoupons(); //获取自动优惠券
@@ -320,6 +321,7 @@ export default {
         this._getInOutNum(); //获取场内场外用户数
     },
     mounted () {
+        console.log("father mounted")
         this.storeName = util.GetQueryString("storeName");
         util.addVisitRecord(this.$route.name);
         this.resId = util.GetQueryString("resId");
@@ -327,7 +329,9 @@ export default {
         if (this.resId) {
             this.getAllianceCoupon();
         }
-
+    },
+    destroyed(){
+      console.log("father destroyed")
     },
     activated () {
         setTimeout(() => {
@@ -359,6 +363,9 @@ export default {
     },
     methods: {
         loadPlatforms () {
+          setTimeout(() => {
+            console.log("settimeout loadPlatforms")
+          }, 0);
             api.loadPlatforms().then(res => {
                 console.log("平台=", res)
                 if (res.errCode === 0) {
