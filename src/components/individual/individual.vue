@@ -631,6 +631,11 @@ export default {
         goBack () {
             this.$router.go(-1);
         },
+        saveWechatBaseInfo(phone){
+          api.saveWechatBaseInfo(phone).then(res=>{
+            console.log("saveWechatBaseInfo=",res)
+          })
+        },
         //保存修改
         saveUserInfo () {
             let userInfoParam = {
@@ -664,9 +669,7 @@ export default {
             api.savePersonalInfo(param).then(res => {
                 console.log("res---", res);
                 if (res.errCode === 0) {
-                    api
-                        .getUserInfo()
-                        .then(userInfo => {
+                    api.getUserInfo().then(userInfo => {
                             this.$vux.toast.text("保存成功", "top");
                             //核对员工电话
                             if (this.oldPhone != this.phone && this.phone != "") {
@@ -674,8 +677,7 @@ export default {
                                     this.phone,
                                     this.userInfo.headimgurl,
                                     this.userInfo.phone
-                                )
-                                    .then(res => {
+                                ).then(res => {
                                         console.log("核对员工电话结果---------", res);
                                         if (res.errCode === 0) {
                                             this.showComfirmPwd = true;
@@ -684,7 +686,9 @@ export default {
                                     .catch(err => {
                                         console.log(err);
                                     });
-
+                                if(this.userInfo.phone){
+                                  this.saveWechatBaseInfo(this.phone)
+                                }
                                 this.getuserInfo(userInfo);
                             } else {
                                 this.getuserInfo(userInfo);

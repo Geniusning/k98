@@ -1,7 +1,6 @@
 
-//保存各个友商信息
+//保存用户在各个友商信息
 export const SAVEALLIANCEINFO = "SAVEALLIANCEINFO"
-
 //设置搜索群友带上svip参数
 export const SETSEARCHFORSVIP = "SETSEARCHFORSVIP"
 //保存供求发布者id

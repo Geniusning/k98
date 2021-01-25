@@ -1,5 +1,5 @@
 const state = {
-  allianceList:[],
+  otherWechatMsg:[], //用户在其他友商的信息
   searchForSvip: false,
   hasSvip: false,
   publisherIdList: [],

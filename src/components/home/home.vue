@@ -307,7 +307,6 @@ export default {
             keyword: "",
             isSvip: false,
         };
-        console.log("father create")
         this.setAdvertisePhoto(); //设置轮播图
         this.loadPlatforms()
         this.acquireWaitGetCoupons(); //获取自动优惠券
@@ -321,9 +320,8 @@ export default {
         this._getInOutNum(); //获取场内场外用户数
     },
     mounted () {
-        console.log("father mounted")
         this.storeName = util.GetQueryString("storeName");
-        util.addVisitRecord(this.$route.name);
+        // util.addVisitRecord(this.$route.name);
         this.resId = util.GetQueryString("resId");
         this.gameUrl = window.location.href.split("k98")[0];
         if (this.resId) {

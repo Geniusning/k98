@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-19 17:29:37
+ * @Last Modified time: 2021-01-25 16:59:46
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -39,7 +39,7 @@ new Vue({
   store,
   computed: {
     ...mapState(['socket', "staticChatFriendObj", "LastChatMsg", "userInfo", "soulCursor",
-      "soulResult", "allianceList"
+      "soulResult", "otherWechatMsg"
     ])
   },
   data () {
@@ -75,7 +75,7 @@ new Vue({
       deskCode: this.deskCode,
       deskId: this.deskId
     })
-    this.getUserInfo(); //获取用户信息 this.openId
+   
     this.loadAdvertisingPhoto(); //拉取首页轮播图
     this.createQrcode(); //创建二维码
     this.loadStoreSetting(); //获取门店信息
@@ -87,8 +87,10 @@ new Vue({
     this.getCaptainMessList() //店长群发通知
     this.loadStaffCouponAct() //员工送券活动通知
     this.loadPublisherIdlist() //拉取供求发布者id
+   
   },
   mounted () {
+    this.getUserInfo(); //获取用户信息 this.openId
     window.addEventListener("unload", () => {
       this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
       localStorage.removeItem("friendInfo");
@@ -109,18 +111,18 @@ new Vue({
   methods: {
     //创建长连接
     createWebsocket () {
-      let windowUrL = window.location.href;
-      let index = windowUrL.indexOf('.com');
-      let shareurl = windowUrL.slice(0, index);
-      let websocketUrl = shareurl.slice(8);
-      if (this.deskCode != "") {
-        this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-      } else {
-        this.connectUrl = `wss://${websocketUrl}.com/api/ws`
-      }
-      this.websock = new WebSocket(this.connectUrl);
-      this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+      // let windowUrL = window.location.href;
+      // let index = windowUrL.indexOf('.com');
+      // let shareurl = windowUrL.slice(0, index);
+      // let websocketUrl = shareurl.slice(8);
+      // if (this.deskCode != "") {
+      //   this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+      // } else {
+      //   this.connectUrl = `wss://${websocketUrl}.com/api/ws`
+      // }
+      // this.websock = new WebSocket(this.connectUrl);
+      // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
+      this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()
     },
@@ -147,13 +149,14 @@ new Vue({
         this.limitTimes++
       }
     },
-    // async loadOtherAllianceMessage () {
-    //   for (let i = this.allianceList.length - 1; i >= 0; i--) {
-    //     let res = await api.loadOtherAllianceMessage(this.allianceList[i].port)
-    //     console.log("loadOtherAllianceMessage res============", res)
-    //   }
-
-    // },
+    loadUserOtherShopInfo () {
+      api.loadUserOtherShopInfo(this.userInfo.phone).then(res => {
+        if(res.errCode===0){
+          this.saveUserOtherWechatMsg(res.info)
+        }
+        console.log("其他公众号消息=", this.otherWechatMsg)
+      })
+    },
     //关闭公众号
     closeWebPage () {
       WeixinJSBridge.invoke("closeWindow", {}, function (res) {
@@ -430,6 +433,7 @@ new Vue({
       api.getUserInfo(openId).then(res => {
         console.log('个人信息-------------------------：', res);
         this.getuserInfo(res);
+        this.loadUserOtherShopInfo()
       }).catch(err => {
         console.log(err);
       });
@@ -523,7 +527,8 @@ new Vue({
       addDivideNum: "ADDDIVIDENUM", //累加分身未读消息
       saveDeskCode: "SAVEDESKCODE", //保存桌贴号,桌号id
       updateSoulParams: "UPDATESOULPARAMS", //更新灵魂匹配参数
-      savePublisherIdList: "SAVEPUBLISHERID" //拉取供求者id
+      savePublisherIdList: "SAVEPUBLISHERID", //拉取供求者id
+      saveUserOtherWechatMsg: "SAVEALLIANCEINFO" //拉取用户在其他公众号的消息
     }),
     ...mapActions({
       //getFriendEvt: "get_FriendEvt"

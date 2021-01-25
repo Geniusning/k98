@@ -295,7 +295,7 @@
                 </transition>
             </div>
             <!-- <div class="movie_box"  > -->
-            <div ref="move_div" class="kefu" :style="{top:top}" @touchstart="down($event)" @touchmove="move($event)" @touchend="end" v-show="showClientServiceIconFlag"  @click="inToLetter">
+            <div ref="move_div" class="kefu" :style="{top:top}" @touchstart="down($event)" @touchmove="move($event)" @touchend="end" v-show="showClientServiceIconFlag" @click="inToLetter">
                 <img onclick="return false" src="./assets/image/home_letter.png" alt="" class="pic_kefu">
                 <p class="kefu-text">客服/收银</p>
                 <!-- </div> -->
@@ -305,24 +305,36 @@
                 <div class="bg"></div>
                 <div class="divide-title">
                     <img class="divide-icon" src="./assets/image/divide_avatar.png" alt="">
-                    <span class="divide-titleText">分身消息</span>
+                    <span class="divide-titleText">消息</span>
                     <img @click="isShowDivideList=false" class="divide-close" src="./assets/image/divide_close.png" alt="">
                 </div>
+                <h3>友商消息</h3>
+                <ul class="divide-list">
+                    <li class="divide-item" v-for="(alliance,index) in otherWechatMsg" :key="index">
+                        <img class="divide-avatar" :src="alliance.shopLogo" alt="">
+                        <i class="avatar-dot" v-show="alliance.messageCount"></i>
+                        <p style="width:40%;text-align: center" class="divide-name">{{alliance.shopName}}</p>
+                        <img @click="switchToShop(alliance)" class="divide-arrow" src="./assets/image/divide_right.png" alt="">
+                    </li>
+                </ul>
+                <h3>分身消息</h3>
                 <ul class="divide-list">
                     <li class="divide-item" v-for="(divide,index) in divideList" :key="index">
                         <img class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
                         <i class="avatar-dot" v-show="divide.unreadMsgCount"></i>
-                        <p style="width:40%;text-align: center" @click="delDivide(divide.openid)" class="divide-name">{{divide.nickName}}</p>
-                        <p style="width:20%" class="divide-time">{{divide.latesMsgTime?divide.latesMsgTime.slice(8,10)==today?divide.latesMsgTime.slice(10,16):divide.latesMsgTime.slice(5,10):""}}</p>
+                        <!-- v @click="delDivide(divide.openid)"  -->
+                        <p style="width:40%;text-align: center" class="divide-name">{{divide.nickName}}</p>
+                        <p style="width:20%" class="divide-time">{{divide.latesMsgTime.slice(5)}}</p>
                         <img @click="switchToDivide(divide)" class="divide-arrow" src="./assets/image/divide_right.png" alt="">
                     </li>
                 </ul>
             </div>
-            <!-- 分身信封入口 divide_badgeCount ||isShowDivideEnv -->
-            <!-- <div class="divide_wrapper" @click="showDivideList" v-if="(hasDivideIdentity && hasUserRole)">
+            <!-- 分身信封入口 v-if="(hasDivideIdentity && hasUserRole)"  divide_badgeCount-->
+            <div class="divide_wrapper" @click="showDivideList">
                 <img src="./assets/image/divide_envelope.png" class="divide-env" alt="">
-                <span v-show="divide_badgeCount" class="divide-dot">{{divide_badgeCount}}</span>
-            </div> -->
+                <span v-show="otherWechatMsg.length>0" class="divide-left-dot">{{otherWechatMsg.length}}</span>
+                <span v-show="divide_badgeCount" class="divide-right-dot">{{divide_badgeCount}}</span>
+            </div>
         </div>
 
         <friendPanel v-if="friendPanelFlag"></friendPanel>
@@ -423,7 +435,8 @@ export default {
             "staticChatFriendObj",
             "shopSettingInfo",
             "divide_badgeCount",
-            "deskCode"
+            "deskCode",
+            "otherWechatMsg"
         ]),
         ...mapGetters(["qrIsShow"])
     },
@@ -456,9 +469,10 @@ export default {
             default:
                 break;
         }
+
     },
     mounted () {
-        console.log("屏幕高度=",parseInt((document.body.clientHeight)*0.8))
+        console.log("屏幕高度=", parseInt((document.body.clientHeight) * 0.8))
         // this.top = parseInt((document.body.clientHeight)*0.8)
         console.log(this.$refs.move_div)
         let _GameUrl = window.location.href;
@@ -521,6 +535,7 @@ export default {
         }, 3000);
     },
     methods: {
+
         down (event) {
             // 拖动开始的操作
             this.$refs.move_div.classList.remove("kefu");
@@ -547,8 +562,8 @@ export default {
                 const xPum = this.position.left + touch.clientX - this.position.x;
                 const yPum = this.position.top + touch.clientY - this.position.y;
                 console.log("yPum----", yPum);
-                this.left = xPum+"px";
-                this.top = yPum+"px";
+                this.left = xPum + "px";
+                this.top = yPum + "px";
                 this.banOut();
                 // 阻止页面的滑动默认事件
                 document.addEventListener(
@@ -630,6 +645,10 @@ export default {
                     });
                 }
             });
+        },
+        //切换店铺
+        switchToShop (shop) {
+            window.location.href = shop.shopUrl + "/k98/message"
         },
         //切换分身
         switchToDivide (item) {
@@ -1882,7 +1901,7 @@ html {
             50% {
                 top: 79%;
             }
-           
+
             100% {
                 top: 80%;
             }
@@ -1920,6 +1939,12 @@ html {
         width: 6.6rem;
         height: 11.6rem;
         margin-top: -5.8rem;
+        h3 {
+            text-align: center;
+            font-size: 14px;
+            color: #fff;
+            margin: 10px 0;
+        }
         .bg {
             position: fixed;
             background-color: rgba(0, 0, 0, 0.2);
@@ -1959,6 +1984,9 @@ html {
         }
         .divide-list {
             padding: 0 0.2333rem;
+            max-height: 5.5rem;
+            overflow: auto;
+
             .divide-item {
                 margin: 0 auto;
                 margin-bottom: 0.1rem;
@@ -2031,7 +2059,19 @@ html {
             width: 1.4rem;
             height: 1rem;
         }
-        .divide-dot {
+        .divide-left-dot {
+            position: absolute;
+            top: 0rem;
+            left: 0rem;
+            width: 0.5rem;
+            height: 0.5rem;
+            text-align: center;
+            line-height: 0.5rem;
+            border-radius: 50%;
+            background-color: @baseColor;
+            color: #fff;
+        }
+        .divide-right-dot {
             position: absolute;
             top: 0rem;
             right: 0rem;
@@ -2041,6 +2081,7 @@ html {
             line-height: 0.5rem;
             border-radius: 50%;
             background-color: red;
+
             color: #fff;
         }
     }

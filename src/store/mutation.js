@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-07 10:28:32
+ * @Last Modified time: 2021-01-25 16:54:29
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -726,19 +726,10 @@ const mutations = {
     state.searchForSvip = svip
     console.log("state.searchForSvip----", state.searchForSvip)
   },
-  //保存友商数据
+  //保存用户在其他友商信息
   [types.SAVEALLIANCEINFO] (state, alliacneList) {
-    let tempArr = []
-    for(let i = alliacneList.length-1;i>=0;i--){
-      tempArr.push({
-        storename: alliacneList[i].storename,
-        storelogo: alliacneList[i].storelogo,
-        url : alliacneList[i].url,
-        port: alliacneList[i].port
-      })
-    }
-    state.allianceList = tempArr
-    console.log("state.allianceList----", state.allianceList)
+    state.otherWechatMsg = alliacneList
+    console.log("state.otherWechatMsg----", state.otherWechatMsg)
   },
   //测试
   [types.TEST] (state, test) {
