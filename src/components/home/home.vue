@@ -361,11 +361,7 @@ export default {
     },
     methods: {
         loadPlatforms () {
-          setTimeout(() => {
-            console.log("settimeout loadPlatforms")
-          }, 0);
             api.loadPlatforms().then(res => {
-                console.log("平台=", res)
                 if (res.errCode === 0) {
                     this.platformList = res.info
                 }
@@ -456,9 +452,9 @@ export default {
         //拉取友商物品
         loadAlliance () {
             api.loadAlliance().then(res => {
-                console.log("拉取友商物品-------", res);
+                // console.log("拉取友商物品-------", res);
                 if (res.errCode === 0) {
-                    this.saveAllianceInfo(res.info)
+                    // this.saveAllianceInfo(res.info)
                     this.friendLeagleList = res.info.map(shop => {
                         shop.distance = "<" + shop.distance.toFixed(1) + "km";
                         return shop;
@@ -599,7 +595,7 @@ export default {
         },
         loadInviteCoupon () {
             api.loadInviteCoupon(false).then(res => {
-                console.log("获取邀新优惠券---------", res);
+                // console.log("获取邀新优惠券---------", res);
                 if (res.errCode === 0) {
                     this.judgeInviteCoupon(res.coupons.isputAway);
                 }

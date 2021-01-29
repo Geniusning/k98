@@ -308,31 +308,31 @@
                     <span class="divide-titleText">消息</span>
                     <img @click="isShowDivideList=false" class="divide-close" src="./assets/image/divide_close.png" alt="">
                 </div>
-                <h3>友商消息</h3>
-                <ul class="divide-list">
-                    <li class="divide-item" v-for="(alliance,index) in otherWechatMsg" :key="index">
-                        <img class="divide-avatar" :src="alliance.shopLogo" alt="">
-                        <i class="avatar-dot" v-show="alliance.messageCount"></i>
-                        <p style="width:40%;text-align: center" class="divide-name">{{alliance.shopName}}</p>
-                        <img @click="switchToShop(alliance)" class="divide-arrow" src="./assets/image/divide_right.png" alt="">
-                    </li>
-                </ul>
-                <h3>分身消息</h3>
+                <h3 v-show="divide_badgeCount">分身消息</h3>
                 <ul class="divide-list">
                     <li class="divide-item" v-for="(divide,index) in divideList" :key="index">
                         <img class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
-                        <i class="avatar-dot" v-show="divide.unreadMsgCount"></i>
+                        <i class="avatar-dot" v-show="divide.unreadMsgCount">{{divide.unreadMsgCount}}</i>
                         <!-- v @click="delDivide(divide.openid)"  -->
                         <p style="width:40%;text-align: center" class="divide-name">{{divide.nickName}}</p>
                         <p style="width:20%" class="divide-time">{{divide.latesMsgTime.slice(5)}}</p>
                         <img @click="switchToDivide(divide)" class="divide-arrow" src="./assets/image/divide_right.png" alt="">
                     </li>
                 </ul>
+                 <h3 v-show="otherWechatMsg.length>0">友商消息</h3>
+                <ul class="divide-list">
+                    <li class="divide-item" v-for="(alliance,index) in otherWechatMsg" :key="index">
+                        <img class="divide-avatar" :src="alliance.shopLogo" alt="">
+                        <i class="avatar-dot" v-show="alliance.messageCount">{{alliance.messageCount}}</i>
+                        <p style="width:40%;text-align: center" class="divide-name">{{alliance.shopName}}</p>
+                        <img @click="switchToShop(alliance)" class="divide-arrow" src="./assets/image/divide_right.png" alt="">
+                    </li>
+                </ul>
             </div>
             <!-- 分身信封入口 v-if="(hasDivideIdentity && hasUserRole)"  divide_badgeCount-->
-            <div class="divide_wrapper" @click="showDivideList">
+            <div class="divide_wrapper" @click="showDivideList" v-if="(hasDivideIdentity || hasUserRole || otherWechatMsg.length>0)">
                 <img src="./assets/image/divide_envelope.png" class="divide-env" alt="">
-                <span v-show="otherWechatMsg.length>0" class="divide-left-dot">{{otherWechatMsg.length}}</span>
+                <span v-show="otherWechatMsg.length" class="divide-left-dot">{{otherWechatMsg.length}}</span>
                 <span v-show="divide_badgeCount" class="divide-right-dot">{{divide_badgeCount}}</span>
             </div>
         </div>
@@ -396,7 +396,7 @@ export default {
             appDeskCode: "",
             isDeskRoom: null,
             samedeskInfo: {},
-            hasDivideIdentity: false,
+            hasDivideIdentity: true,
             hasUserRole: false,
             flags: false,
             position: {
@@ -441,6 +441,8 @@ export default {
         ...mapGetters(["qrIsShow"])
     },
     created () {
+        this.loadLastRoomInfo(); //加载回房信息
+        
         if (
             this.$route.name === "home" ||
             this.$route.name === "friend" ||
@@ -472,15 +474,13 @@ export default {
 
     },
     mounted () {
-        console.log("屏幕高度=", parseInt((document.body.clientHeight) * 0.8))
         // this.top = parseInt((document.body.clientHeight)*0.8)
         console.log(this.$refs.move_div)
         let _GameUrl = window.location.href;
         let indexGame = _GameUrl.indexOf(".com");
         let shareurlGame = _GameUrl.slice(0, indexGame);
         this.responseForGameUrl = `${shareurlGame}.com/`;
-        this.loadLastRoomInfo(); //加载回房信息
-        this.loadIdentityList(); //拉取分身
+    
         this.identity = sessionStorage.getItem("identity");
         this.identity = this.identity ? this.identity : "";
         this.timeTick = setTimeout(() => {
@@ -604,7 +604,7 @@ export default {
         },
         showDivideList () {
             this.isShowDivideList = true;
-            this.loadIdentityList();
+            // this.loadIdentityList();
         },
         getAllCommunityFriend () {
             var mySex = this.userInfo.sex == "男" ? 1 : 0;
@@ -1324,8 +1324,8 @@ export default {
     watch: {
         userInfo: function (newValue) {
             // console.log("userInfo-watch-", newValue)
-            this.hasUserRole =
-                newValue.role != "" || newValue.openid.indexOf("@master") > -1;
+            this.hasUserRole = newValue.role != "" || newValue.openid.indexOf("@master") > -1;
+            this.loadIdentityList(); //拉取分身
         },
         dynamicFriendEvt: function (newValue) {
             this.isShowEnvelop = false;
@@ -2000,12 +2000,17 @@ html {
                 position: relative;
                 .avatar-dot {
                     position: absolute;
+                    display: inline-block;
                     top: 0.1rem;
                     left: 0.7rem;
                     width: 0.3rem;
                     height: 0.3rem;
+                    line-height: 0.3rem;
+                    color: #fff;
                     border-radius: 50%;
                     background-color: red;
+                    text-align: center;
+                    font-family: Arial, Helvetica, sans-serif;
                 }
                 .divide-avatar {
                     width: 0.7rem;

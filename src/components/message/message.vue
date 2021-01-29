@@ -402,7 +402,7 @@ export default {
         }
         Bus.$on('incre', (num) => {
             this.divide_badgeCount += num
-            this.loadIdentityList()
+            // this.loadIdentityList()
             //console.log("bus----------message", num)
         })
     },
@@ -413,7 +413,7 @@ export default {
         this.getCaptainMessList(); //加载群发通知
         this.loadClientServiceList() //加载客服列表  
         this.loadCashierList() //加载收银员列表  
-        this.loadIdentityList() //加载分身 
+        // this.loadIdentityList() //加载分身 
         // this.loadSelfPay() //买单流水
         this.getPlaceOrderQRcodebyID() //拉取下单码
         // this.isShowTab = this.getQueryString("routeParamNum")
@@ -601,24 +601,24 @@ export default {
             })
         },
         //拉取分身
-        loadIdentityList () {
-            var count = 0
-            api.loadIdentityList().then(res => {
-                if (res.errCode === 0) {
-                    this.divideList = res.info.filter(item => {
-                        if (item.openid != this.userInfo.openid) {
-                            count += item.unreadMsgCount
-                            this.addDivideUnreadCount(count)
-                        }
-                        item.latesMsgTime = item.latesMsgTime ? util.timestampToTime(item.latesMsgTime) : 0
-                        return item.openid != this.userInfo.openid
-                    })
-                    //console.log("拉取分身-------", this.divideList)
-                } else {
-                    this.$vux.toast.text(res.errorMsg);
-                }
-            })
-        },
+        // loadIdentityList () {
+        //     var count = 0
+        //     api.loadIdentityList().then(res => {
+        //         if (res.errCode === 0) {
+        //             this.divideList = res.info.filter(item => {
+        //                 if (item.openid != this.userInfo.openid) {
+        //                     count += item.unreadMsgCount
+        //                     this.addDivideUnreadCount(count)
+        //                 }
+        //                 item.latesMsgTime = item.latesMsgTime ? util.timestampToTime(item.latesMsgTime) : 0
+        //                 return item.openid != this.userInfo.openid
+        //             })
+        //             //console.log("拉取分身-------", this.divideList)
+        //         } else {
+        //             this.$vux.toast.text(res.errorMsg);
+        //         }
+        //     })
+        // },
         closeQrCode () {
             this.isShowQrCode = false
             // localStorage.setItem("isShowQrCode", false)

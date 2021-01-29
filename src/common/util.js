@@ -2,7 +2,7 @@
  * @Author: nicky
  * @Date: 2018-04-12 15:44:17
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-11 18:07:34
+ * @Last Modified time: 2021-01-27 17:55:25
  */
 import api from 'common/api'
 import Config from 'common/config.js'
@@ -320,7 +320,7 @@ util.setShareInfo = function (shareObj, amount, shareType, fn) {
         });
       })
   } else {
-    console.log("apple 进来了")
+    // console.log("apple 进来了")
     wx.onMenuShareAppMessage({ //分享好友
       title: shareObj.title,
       desc: shareObj.desc,

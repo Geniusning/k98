@@ -2,7 +2,7 @@
  * @Author: liuning 
  * @Date: 2020-05-04 14:46:23 
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-25 16:54:29
+ * @Last Modified time: 2021-01-28 10:37:23
  */
 import * as types from './mutation-types'
 import util from "common/util";
@@ -556,7 +556,7 @@ const mutations = {
   //获取系统消息列表
   [types.GET_CAPTAINMESSAGELIST] (state, { data }) {
     state.group_badgeCount = 0
-    console.log("系统通知列表---", data)
+    // console.log("系统通知列表---", data)
     data.forEach(item => {
       item.time = util.timestampToTime(item.time).slice(5, 10)
       if (item.unread) {
@@ -728,7 +728,13 @@ const mutations = {
   },
   //保存用户在其他友商信息
   [types.SAVEALLIANCEINFO] (state, alliacneList) {
-    state.otherWechatMsg = alliacneList
+    state.otherWechatMsg = []
+    alliacneList.forEach(item=>{
+      if (item.messageCount>0){
+        state.otherWechatMsg.push(item)
+      }
+    })
+   
     console.log("state.otherWechatMsg----", state.otherWechatMsg)
   },
   //测试

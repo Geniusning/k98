@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-25 16:59:46
+ * @Last Modified time: 2021-01-29 17:17:36
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -75,7 +75,7 @@ new Vue({
       deskCode: this.deskCode,
       deskId: this.deskId
     })
-   
+    this.getUserInfo(); //获取用户信息 this.openId
     this.loadAdvertisingPhoto(); //拉取首页轮播图
     this.createQrcode(); //创建二维码
     this.loadStoreSetting(); //获取门店信息
@@ -87,10 +87,12 @@ new Vue({
     this.getCaptainMessList() //店长群发通知
     this.loadStaffCouponAct() //员工送券活动通知
     this.loadPublisherIdlist() //拉取供求发布者id
-   
+    setInterval(() => { //每隔10秒拉取用户在其他公众号的消息
+      this.loadUserOtherShopInfo()
+    }, 20000);
   },
   mounted () {
-    this.getUserInfo(); //获取用户信息 this.openId
+   
     window.addEventListener("unload", () => {
       this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
       localStorage.removeItem("friendInfo");
@@ -99,7 +101,7 @@ new Vue({
     })
     window.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
-        this.getUserInfo()
+        // this.getUserInfo()
       } else if (document.visibilityState === 'hidden') {
         console.log('后台')
       }
@@ -111,18 +113,18 @@ new Vue({
   methods: {
     //创建长连接
     createWebsocket () {
-      // let windowUrL = window.location.href;
-      // let index = windowUrL.indexOf('.com');
-      // let shareurl = windowUrL.slice(0, index);
-      // let websocketUrl = shareurl.slice(8);
-      // if (this.deskCode != "") {
-      //   this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-      // } else {
-      //   this.connectUrl = `wss://${websocketUrl}.com/api/ws`
-      // }
-      // this.websock = new WebSocket(this.connectUrl);
-      // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-      this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+      let windowUrL = window.location.href;
+      let index = windowUrL.indexOf('.com');
+      let shareurl = windowUrL.slice(0, index);
+      let websocketUrl = shareurl.slice(8);
+      if (this.deskCode != "") {
+        this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+      } else {
+        this.connectUrl = `wss://${websocketUrl}.com/api/ws`
+      }
+      this.websock = new WebSocket(this.connectUrl);
+      this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
+      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()
     },
@@ -175,7 +177,7 @@ new Vue({
     loadPublisherIdlist () {
       api.loadPublisherList("supply").then(res => {
         if (res.errCode === 0) {
-          console.log("拉取供求发布者id---", res)
+          // console.log("拉取供求发布者id---", res)
           this.savePublisherIdList(res.info.publisherIds)
         }
       })
@@ -441,7 +443,7 @@ new Vue({
     //获取门店信息
     loadStoreSetting () {
       api.loadStoreSetting().then(res => {
-        console.log('门店信息---------------------------------：', res)
+        // console.log('门店信息---------------------------------：', res)
         this.getShopSetting(res)
       })
     },
@@ -460,7 +462,7 @@ new Vue({
     //获取在线店长推荐
     loadRecommends () {
       api.loadRecommends().then(res => {
-        console.log('店长推荐数据---------------------', res)
+        // console.log('店长推荐数据---------------------', res)
         this.getRecommentList(res);
       })
     },

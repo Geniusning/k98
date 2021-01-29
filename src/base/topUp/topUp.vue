@@ -395,11 +395,11 @@ export default {
                 this.$router.push({
                     name: "mine"
                 })
-                // this.panelIndex = 1;
+                this.panelIndex = 1;
                 this.$emit("closeIntegralPanel", false);
             } else {
                 this.$emit("closeIntegralPanel", false);
-                // this.panelIndex = 1;
+                this.panelIndex = 1;
             }
         },
         // 前往充值

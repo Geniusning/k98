@@ -432,6 +432,9 @@ export default {
                     this.$vux.toast.text("验证成功", "top");
                     api.getUserInfo().then(res => {
                         this.getuserInfo(res);
+                        if (this.phone) {
+                            this.saveWechatBaseInfo(this.phone)
+                        }
                         console.log("res---", res);
                     });
                 } else if (res.errCode === 1031) {
@@ -581,7 +584,7 @@ export default {
                 this.userInfoTags.forEach(serverUseTag => {
                     if (serverUseTag == localUseTag.name) {
                         localUseTag.checked = true;
-                         this.commonList.push(serverUseTag);
+                        this.commonList.push(serverUseTag);
                     }
                 });
             });
@@ -590,15 +593,15 @@ export default {
             // });
         },
         //删除用户个性标签
-        delTag(index){
-          // this.commonList.splice(index,1)
-          //  this.tagList.forEach((localUseTag, index) => {
-          //       this.commonList.forEach(serverUseTag => {
-          //           if (serverUseTag == localUseTag.name) {
-          //               localUseTag.checked = true;
-          //           }
-          //       });
-          //   });
+        delTag (index) {
+            // this.commonList.splice(index,1)
+            //  this.tagList.forEach((localUseTag, index) => {
+            //       this.commonList.forEach(serverUseTag => {
+            //           if (serverUseTag == localUseTag.name) {
+            //               localUseTag.checked = true;
+            //           }
+            //       });
+            //   });
         },
         // 显示员工标签弹框
         showStaffTag () {
@@ -631,10 +634,10 @@ export default {
         goBack () {
             this.$router.go(-1);
         },
-        saveWechatBaseInfo(phone){
-          api.saveWechatBaseInfo(phone).then(res=>{
-            console.log("saveWechatBaseInfo=",res)
-          })
+        saveWechatBaseInfo (phone) {
+            api.saveWechatBaseInfo(phone).then(res => {
+                console.log("saveWechatBaseInfo=", res)
+            })
         },
         //保存修改
         saveUserInfo () {
@@ -670,30 +673,28 @@ export default {
                 console.log("res---", res);
                 if (res.errCode === 0) {
                     api.getUserInfo().then(userInfo => {
-                            this.$vux.toast.text("保存成功", "top");
-                            //核对员工电话
-                            if (this.oldPhone != this.phone && this.phone != "") {
-                                api.verifyPhoneNumber(
-                                    this.phone,
-                                    this.userInfo.headimgurl,
-                                    this.userInfo.phone
-                                ).then(res => {
-                                        console.log("核对员工电话结果---------", res);
-                                        if (res.errCode === 0) {
-                                            this.showComfirmPwd = true;
-                                        }
-                                    })
-                                    .catch(err => {
-                                        console.log(err);
-                                    });
-                                if(this.userInfo.phone){
-                                  this.saveWechatBaseInfo(this.phone)
+                        this.$vux.toast.text("保存成功", "top");
+                        //核对员工电话
+                        if (this.oldPhone != this.phone && this.phone != "") {
+                            api.verifyPhoneNumber(
+                                this.phone,
+                                this.userInfo.headimgurl,
+                                this.userInfo.phone
+                            ).then(res => {
+                                console.log("核对员工电话结果---------", res);
+                                if (res.errCode === 0) {
+                                    this.showComfirmPwd = true;
                                 }
-                                this.getuserInfo(userInfo);
-                            } else {
-                                this.getuserInfo(userInfo);
-                            }
-                        })
+                            })
+                                .catch(err => {
+                                    console.log(err);
+                                });
+                            this.getuserInfo(userInfo);
+                        } else {
+                            this.getuserInfo(userInfo);
+                        }
+
+                    })
                         .catch(err => {
                             console.log(err);
                         });

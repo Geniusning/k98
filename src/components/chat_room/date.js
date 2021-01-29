@@ -2,8 +2,6 @@ function generateDate () {
   let result = []
   let  NowMonthlen = getNowMonthDays()
   let { nextMonthDays, nextMonth} = getNextMonthDays()
-  console.log("nextMonthDays=",nextMonthDays)
-  console.log("nextMonth=",nextMonth)
   let month = new Date().getMonth()+1
   let start = new Date().getDate()
   for (let i = start; i <= NowMonthlen; i++) {

@@ -37,6 +37,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import api from "common/api"
 export default {
     props: ["friendLeagles"],
     computed: {

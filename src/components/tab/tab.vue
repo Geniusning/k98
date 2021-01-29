@@ -60,7 +60,7 @@ export default {
     methods: {
         onIndexChange (param) {
             this.index = param;
-            console.log(this.index)
+            // console.log(this.index)
             if (this.index === 1) {
                 // this.setSearchForSvip(false)
             }

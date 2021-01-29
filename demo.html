@@ -19,35 +19,69 @@
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
 
 <body onload="countTime()">
-  <a href="#哈哈">hash</a>
-  <div id="circle"></div>
+  <marquee style="font-size: 50px;color:red;" behavior="" scrolldelay="20" direction="left">welcome</marquee>
+
+
+
+
+
+
+  <!-- <a href="#哈哈">hash</a>
+  <div id="circle">1
+  </div>
+  <div id="circle">2</div>
      <div>
        <span id="_d">00</span>
        <span id="_h">00</span>
        <span id="_m">00</span>
        <span id="_s">00</span>
-       </div>
+       </div> -->
+
 </body>
 <script>
-  console.log(window.location.href)
-  window.addEventListener("hashchange",function(e){
-    console.log("hash change= ",e)
-    console.log("hash = ",location.hash)
-  })
-
-  class Point {
-    constructor(x,y){
-      this.x = x
-      this.y = y
+  let d = document.getElementById("circle")
+  console.log("d=",d)
+  function reverseNum(num){
+    let numStr = num+""
+    let resultNum = ""
+    for(let i=numStr.length-1;i>=0;i--){
+        resultNum += numStr[i]
     }
+    console.log(resultNum)
+    return parseInt(resultNum)
+}
+let array = [,1,,2,,3];
+array = array.map((i) => ++i)
+console.log(array)
+function success(pos) {
+  console.log("pos=",pos)
+  var crd = pos.coords;
 
-    toMyString(){
-      return `(${this.x},${this.y})`
-    }
-  }
+  console.log('Your current position is:');
+  console.log(`Latitude : ${crd.latitude}`);
+  console.log(`Longitude: ${crd.longitude}`);
+  console.log(`More or less ${crd.accuracy} meters.`);
+}
+navigator.geolocation.getCurrentPosition(success)
+  // console.log(window.location.href)
+  // window.addEventListener("hashchange",function(e){
+  //   console.log("hash change= ",e)
+  //   console.log("hash = ",location.hash)
+  // })
 
-  let point = new Point(10,100)
-  console.log(point.toMyString())
+  // class Point {
+  //   constructor(x,y){
+  //     this.x = x
+  //     this.y = y
+  //   }
+
+  //   toMyString(){
+  //     return `(${this.x},${this.y})`
+  //   }
+  // }
+
+  // let point = new Point(10,100)
+  // console.log(point.toMyString())
 
 
 

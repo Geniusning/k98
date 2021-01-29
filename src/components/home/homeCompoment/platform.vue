@@ -117,17 +117,13 @@ export default {
         }
     },
     props: ["platformInfo", "friendLeagleList"],
-    created(){
-      console.log("son created")
-    },
     mounted () {
-        console.log("son mounted")
         this.loadFrequentPlatform()
     },
     watch: {
         "platformInfo": function (oldValue) {
             this.handleProp(oldValue)
-            console.log("this.platformList=", this.platformInfo)
+            // console.log("this.platformList=", this.platformInfo)
         }
     },
     methods: {
@@ -222,14 +218,14 @@ export default {
         collectFrequentPlatform (storeId) {
             return new Promise((resolve, reject) => {
                 api.collectFrequentPlatform(storeId).then(res => {
-                    console.log("收集结果=", res)
+                    // console.log("收集结果=", res)
                     resolve(res.errCode)
                 })
             })
         },
         loadFrequentPlatform () {
             api.loadFrequentPlatform().then(res => {
-                console.log("加载常去的平台=", res)
+                // console.log("加载常去的平台=", res)
                 if (res.errCode === 0) {
                     this.frequentPlatformList = res.info
                     this.frequentPlatformList.forEach((item, index) => {
