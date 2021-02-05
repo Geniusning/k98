@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:49:48
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-29 17:17:36
+ * @Last Modified time: 2021-02-05 18:23:18
  */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
@@ -87,9 +87,6 @@ new Vue({
     this.getCaptainMessList() //店长群发通知
     this.loadStaffCouponAct() //员工送券活动通知
     this.loadPublisherIdlist() //拉取供求发布者id
-    setInterval(() => { //每隔10秒拉取用户在其他公众号的消息
-      this.loadUserOtherShopInfo()
-    }, 20000);
   },
   mounted () {
    

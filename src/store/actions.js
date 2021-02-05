@@ -50,7 +50,7 @@ const actions = {
     //获取店长群发通知
     get_captainMessageList({ commit }) {
         api.loadUserNotice().then(res => {
-            // console.log('店长群发消息-----------------', res)
+            console.log('系统消息-----------------', res)
             commit("GET_CAPTAINMESSAGELIST", { data: res.info })
             commit('ADD_BADGE')
         })

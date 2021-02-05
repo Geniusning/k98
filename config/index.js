@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "GLwSoCZgj_sTwAqK-PiNtqHNVKBOWpGJ9gHzAbFGaPpWnGZuGSMR0zpYhP5NY9Fwt6cn9w==";
+const myToken = "x7JZKqwGyUDRSW6XPllbX7sxGlvTxvSErEn_roAMqa-REB2HqoxPNxI5UF2UNt7Is1sbtQ==";
 // ------------------------------
 
 module.exports = {
@@ -13,19 +13,19 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {
-      "/api": {
-        // target: "https://singledog.qianz.com", //中新
-        // target: "172.18.4.8", //本地
-        // target: "https://llwant1.qianz.com", //老友一起玩吧
-        target: "https://llwant3.qianz.com", //k98
-        // target: "https://llwant4.qianz.com", //喜炖
-        changeOrigin: true,
-        pathRewrite: function (path, req) {
-          return path + "&tk=" + myToken
-        }
-      },
-    },
+    // proxyTable: {
+    //   "/api": {
+    //     // target: "https://singledog.qianz.com", //中新
+    //     // target: "172.18.4.8", //本地
+    //     target: "https://llwant1.qianz.com", //老友一起玩吧
+    //     // target: "https://llwant3.qianz.com", //k98
+    //     // target: "https://llwant4.qianz.com", //喜炖
+    //     changeOrigin: true,
+    //     pathRewrite: function (path, req) {
+    //       return path + "&tk=" + myToken
+    //     }
+    //   },
+    // },
 
     // Various Dev Server settings
     host: '172.18.6.207',
@@ -33,7 +33,7 @@ module.exports = {
     // host: '192.168.101.9',
 
     // host: 'localhost', // can be overwritten by process.env.HOST
-    port: 8088, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 8089, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,

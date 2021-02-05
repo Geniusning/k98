@@ -305,10 +305,9 @@
                 <div class="bg"></div>
                 <div class="divide-title">
                     <img class="divide-icon" src="./assets/image/divide_avatar.png" alt="">
-                    <span class="divide-titleText">消息</span>
+                    <span class="divide-titleText">分身消息</span>
                     <img @click="isShowDivideList=false" class="divide-close" src="./assets/image/divide_close.png" alt="">
                 </div>
-                <h3 v-show="divide_badgeCount">分身消息</h3>
                 <ul class="divide-list">
                     <li class="divide-item" v-for="(divide,index) in divideList" :key="index">
                         <img class="divide-avatar" :src="divide.headimgurl?divide.headimgurl:divideAvartar" alt="">
@@ -319,7 +318,7 @@
                         <img @click="switchToDivide(divide)" class="divide-arrow" src="./assets/image/divide_right.png" alt="">
                     </li>
                 </ul>
-                 <h3 v-show="otherWechatMsg.length>0">友商消息</h3>
+                <h3 v-show="otherWechatMsg.length>0">友商消息</h3>
                 <ul class="divide-list">
                     <li class="divide-item" v-for="(alliance,index) in otherWechatMsg" :key="index">
                         <img class="divide-avatar" :src="alliance.shopLogo" alt="">
@@ -336,7 +335,25 @@
                 <span v-show="divide_badgeCount" class="divide-right-dot">{{divide_badgeCount}}</span>
             </div>
         </div>
-
+        <!-- 游戏框框 -->
+        <div v-transfer-dom>
+            <x-dialog v-model="gameShow" class="dialog-gameBegin">
+                <div class="game-box">
+                    <img onclick="return false" class="gameFriend" src="./assets/image/zuJu.png" alt @click="intoFriendGame" />
+                    <img onclick="return false" class="gotoPlay" src="./assets/image/gotoPlay.png" alt @click="intoReadyGame" />
+                    <img onclick="return false" src="./assets/image/gameBegin.jpg" alt class="gameBegin" />
+                    <div class="game_giftInfo">
+                        <p class="giftInfo" style="font-weight:700">比赛奖品</p>
+                        <p class="giftInfo">第一名：{{game_giftInfo.firstPrize.content}}</p>
+                        <p class="giftInfo">第二名：{{game_giftInfo.secondPrize.content}}</p>
+                        <p class="giftInfo">第三名：{{game_giftInfo.thirdPrize.content}}</p>
+                    </div>
+                </div>
+                <div @click="closeGame">
+                    <img onclick="return false" src="./assets/image/gameClose.png" alt class="close" />
+                </div>
+            </x-dialog>
+        </div>
         <friendPanel v-if="friendPanelFlag"></friendPanel>
         <qrCode v-show="qrIsShow"></qrCode>
         <transition name="appear">
@@ -354,6 +371,7 @@ import Tab from "./components/tab/tab.vue";
 import qrCode from "base/qrCode/qrCode";
 import envelope from "base/envelope/envelope";
 import topUp from "base/topUp/topUp";
+import { TransferDom, XDialog } from "vux";
 import friendPanel from "base/becomeFriendPanel/becomeFriendPanel";
 import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 import util from "common/util";
@@ -362,6 +380,9 @@ import Bus from "common/bus.js";
 import { userInfo } from "os";
 export default {
     name: "app",
+    directives: {
+        TransferDom
+    },
     data () {
         return {
             vipText: "贵宾到店，赶紧前去打招呼吧",
@@ -398,6 +419,12 @@ export default {
             samedeskInfo: {},
             hasDivideIdentity: true,
             hasUserRole: false,
+            game_giftInfo: {
+                firstPrize: {},
+                secondPrize: {},
+                thirdPrize: {}
+            },
+            gameShow: false,
             flags: false,
             position: {
                 x: 0,
@@ -442,7 +469,7 @@ export default {
     },
     created () {
         this.loadLastRoomInfo(); //加载回房信息
-        
+
         if (
             this.$route.name === "home" ||
             this.$route.name === "friend" ||
@@ -474,13 +501,15 @@ export default {
 
     },
     mounted () {
+        this.gameUrl = window.location.href.split("k98")[0];
+        this._loadPublishArenas()
         // this.top = parseInt((document.body.clientHeight)*0.8)
         console.log(this.$refs.move_div)
         let _GameUrl = window.location.href;
         let indexGame = _GameUrl.indexOf(".com");
         let shareurlGame = _GameUrl.slice(0, indexGame);
         this.responseForGameUrl = `${shareurlGame}.com/`;
-    
+
         this.identity = sessionStorage.getItem("identity");
         this.identity = this.identity ? this.identity : "";
         this.timeTick = setTimeout(() => {
@@ -535,7 +564,40 @@ export default {
         }, 3000);
     },
     methods: {
-
+        intoFriendGame () {
+            window.location.href = `${this.gameUrl}game/?gamePath=game3&deskCode=${this.deskCode}`;
+            this.gameShow = false;
+        },
+        //进入游戏
+        intoReadyGame () {
+            this.gameShow = false;
+            //console.log("url------", `${this.gameUrl}game/?gamePath=game2`);
+            window.location.href = `${this.gameUrl}game/?gamePath=game2`;
+        },
+        // 关闭游戏
+        closeGame () {
+            this.gameShow = false;
+        },
+        //拉取已经发布的比赛场
+        _loadPublishArenas () {
+            api.loadPublishArenas().then(res => {
+                console.log("拉取发布的比赛---------", res);
+                var reverseArr = res.arenaInfos.reverse();
+                if (reverseArr.length > 0) {
+                    this.game_giftInfo.firstPrize.content = util.returnDiscountContent(
+                        res.arenaInfos[0].firstPrize
+                    );
+                    this.game_giftInfo.secondPrize.content = util.returnDiscountContent(
+                        res.arenaInfos[0].secondPrize
+                    );
+                    this.game_giftInfo.thirdPrize.content = util.returnDiscountContent(
+                        res.arenaInfos[0].thirdPrize
+                    );
+                    this.gamePopPotison = res.arenaInfos[0].popUpPosition
+                }
+                // //console.log('拉取已经发布的比赛场:', res)
+            });
+        },
         down (event) {
             // 拖动开始的操作
             this.$refs.move_div.classList.remove("kefu");
@@ -1525,6 +1587,19 @@ export default {
             }
         },
         $route: function (newValue, oldValue) {
+            //游戏弹框显示
+            if (newValue.name == "home" && this.gamePopPotison === 0 && !this.onceTrigger) {
+                this.gameShow = true
+                this.onceTrigger = true
+            }
+            if (newValue.name == "welfare" && this.gamePopPotison === 1 && !this.onceTrigger) {
+                this.gameShow = true
+                this.onceTrigger = true
+            }
+            if (newValue.name == "friend" && this.gamePopPotison === 2 && !this.onceTrigger) {
+                this.gameShow = true
+                this.onceTrigger = true
+            }
             //隐藏导航.控制信封和客服图标显示
             if (
                 newValue.name == "home" ||
@@ -1574,6 +1649,7 @@ export default {
         }
     },
     components: {
+        XDialog,
         Tab,
         qrCode,
         envelope,
@@ -1599,6 +1675,44 @@ body,
 html {
     height: 100%;
 }
+// 弹框游戏开始
+.dialog-gameBegin {
+    .game-box {
+        position: relative;
+        .game_giftInfo {
+            text-align: left;
+            position: absolute;
+            top: 1.3rem;
+            right: 2.2rem;
+            .giftInfo {
+                color: #fff;
+                font-size: 14px;
+                margin-bottom: 0.2333rem;
+            }
+        }
+        .gameFriend,
+        .gotoPlay {
+            width: 2.4rem;
+            position: absolute;
+            bottom: 0.58rem;
+        }
+        .gameFriend {
+            left: 2.4rem;
+        }
+        .gotoPlay {
+            right: 1.5rem;
+        }
+        .gameBegin {
+            width: 8.1867rem;
+            height: 7.2rem;
+        }
+    }
+    .close {
+        margin-top: 0.72rem;
+        width: 1.0667rem;
+        height: 1.0667rem;
+    }
+} // 弹框游戏结束
 #app {
     overflow-x: hidden;
     height: 100%;

@@ -37,6 +37,11 @@
             <img class="product-img" :src="groupShopInfo.image" alt="">
             <img onclick="return false" @click="goToGroupShop(groupShopInfo.activityID)" src="../../assets/image/groupShop.png" class="shareEnter" alt>
         </div>
+        <!-- 拼团有奖活动 -->
+        <div class="share-wrapper" v-if="groupBookAwardInfo?groupBookAwardInfo.isPutAway:false">
+            <img class="product-img" :src="groupBookAwardInfo.image" alt="">
+            <img onclick="return false" @click="goToGroupBook(groupBookAwardInfo.activityID)" src="../../assets/image/groupShop.png" class="shareEnter" alt>
+        </div>
         <!-- 大话骰动态 -->
         <div class="game-wrapper">
             <div v-if="isShowGameEntry" class="broadcasting-room linear_btn" @click="playGame">立即参与</div>
@@ -143,6 +148,7 @@ export default {
             arenaInfo: {},
             arenaID: "",
             groupShopInfo: null,
+            groupBookAwardInfo: null,
             openGroupId: "",
         };
     },
@@ -157,24 +163,25 @@ export default {
             "userInfo"
         ])
     },
-    created(){
+    created () {
         util.addVisitRecord(this.$route.name);
         this.loadActivityInfo(); //获取活动通知
-       
+
         this.loadPublishArenas(); //拉取是否有比赛场
         this.loadOldPhotos()
     },
-    activated(){
-       this.judgeHasGroupShop(); //判断是否有团购信息
-       setTimeout(() => {
-          let shareObj = {
-               title: "活动进行中…快来吧，就缺你啦！",
-               desc: "群友聚会、大话比赛、福利大派送",
-               link: `${this.shareUrl}k98/welfare?visitType=12&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
-               imgUrl: `${this.shopSettingInfo.image}`
-           };
-           util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
-       }, 2000);
+    activated () {
+        this.judgeHasGroupShop(); //判断是否有团购信息
+        this.judgeHasGroupBookAward(); //判断是否有拼团有奖活动
+        setTimeout(() => {
+            let shareObj = {
+                title: "活动进行中…快来吧，就缺你啦！",
+                desc: "群友聚会、大话比赛、福利大派送",
+                link: `${this.shareUrl}k98/welfare?visitType=12&phone=${this.userInfo.phone}&role=${this.userInfo.role}&openId=${this.userInfo.openid}`,
+                imgUrl: `${this.shopSettingInfo.image}`
+            };
+            util.setShareInfo(shareObj, 20, "activity", this.shareGetJifen);
+        }, 2000);
     },
     methods: {
         // //分享获得积分
@@ -285,13 +292,44 @@ export default {
                 }
             })
         },
-        //进入团购
+        //判断是否有拼团有奖 活动
+        judgeHasGroupBookAward () {
+            api.judgeHasGroupBookAward().then(res => {
+                if (res.errCode === 0) {
+                    console.log("拼团", res)
+                    if (res.info.myJoinGroupShopList.length > 0) {
+                        let tempArr = res.info.myJoinGroupShopList
+                        for (let index = 0; index < tempArr.length; index++) {
+                            const element = tempArr[index];
+                            if (element.status){
+                              this.bookOpenGroupId = element.id
+                              break
+                            }
+
+                        }
+                    }
+                    
+                        this.groupBookAwardInfo = res.info
+                }
+            })
+        },
+        //进入一元团购
         goToGroupShop (id) {
             this.$router.push({
                 path: `/oneYuan`,
                 query: {
                     groupShopInfoId: id,
                     openGroupId: this.openGroupId
+                }
+            })
+        },
+        //进入拼团有奖
+        goToGroupBook (id) {
+            this.$router.push({
+                path: `/pinTuan`,
+                query: {
+                    groupBookAwardId: id,
+                    openGroupId: this.bookOpenGroupId
                 }
             })
         },
@@ -448,7 +486,6 @@ export default {
             height: 1.2rem;
             top: 1rem;
             left: 2rem;
-
         }
         .shareEnter {
             width: 100%;

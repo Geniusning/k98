@@ -207,6 +207,7 @@
                                 <img v-else-if="item.type===6" src='../../assets/image/6.png' style="border-radius:0" alt="">
                                 <img v-else-if="item.type===7" src='../../assets/image/7.png' style="border-radius:0" alt="">
                                 <img v-else-if="item.type===8" src='../../assets/image/8.png' style="border-radius:0" alt="">
+                                <img v-else-if="item.type===9" src='../../assets/image/10.png' style="border-radius:0" alt="">
                                 <i v-show="item.unread" class="dot" style="top:-.2rem;right:-.1rem"></i>
                             </div>
                             <div class="name_and_message">
@@ -214,7 +215,8 @@
                                 <p class="captainMessage" v-else>您关注的{{item.nickname}}有相片更新<span class="time">{{item.time}}</span></p>
                                 <p class="handle-wrapper">
                                     <span class="del" @click="delNotice(item.id)">删除</span>
-                                    <span class="lookUp" @click="setUnreadNotice(item.id,item.type,item.openId)">查看</span>
+                                    <span v-if="item.type===9" class="lookUp" @click="setUnreadNotice(item.id,item.type,item.winEventId)">查看</span>
+                                    <span v-else class="lookUp" @click="setUnreadNotice(item.id,item.type,item.openId)">查看</span>
                                 </p>
                             </div>
                         </div>
@@ -589,6 +591,14 @@ export default {
                                 name: "commentUser",
                                 params: {
                                     openId: openId,
+                                },
+                            });
+                            break;
+                        case 9:
+                            this.$router.push({
+                                name: "awardUser",
+                                params: {
+                                    winEventId: openId,
                                 },
                             });
                             break;

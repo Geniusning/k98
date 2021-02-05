@@ -182,7 +182,7 @@
         </div>
 
         <!-- 游戏框框 -->
-        <div v-transfer-dom>
+        <!-- <div v-transfer-dom>
             <x-dialog v-model="gameShow" class="dialog-gameBegin">
                 <div class="game-box">
                     <img onclick="return false" class="gameFriend" src="../../assets/image/zuJu.png" alt @click="intoFriendGame" />
@@ -199,7 +199,7 @@
                     <img onclick="return false" src="../../assets/image/gameClose.png" alt class="close" />
                 </div>
             </x-dialog>
-        </div>
+        </div> -->
         <topUp :convertType="convertType" v-if="isGiftPanel" @closeIntegralPanel="closeIntegralPanel" :giftInfo="recommendItemIndo" :fatherPanelIndex="fatherPanelIndex"></topUp>
         <transition name="appear">
             <envelope v-show="isShowEnvelope" :text="envelopeText"></envelope>
@@ -217,28 +217,24 @@ import util from "common/util";
 import api from "common/api";
 import topUp from "base/topUp/topUp";
 import { TransferDom, Swiper, Toast, XDialog, Popup } from "vux";
-import axios from "axios";
-import Config from "common/config";
 import { mapMutations, mapActions, mapState, mapGetters } from "vuex";
 import envelope from "base/envelope/envelope";
-import Bus from "common/bus.js";
-import { clearInterval } from "timers";
 import Platform from './homeCompoment/platform';
 import FriAllianceInfo from './homeCompoment/friAllianceInfo'
 export default {
     name: "home",
-    directives: {
-        TransferDom
-    },
+    // directives: {
+    //     TransferDom
+    // },
     data () {
         return {
             platformList: [],
             isShow_bg: false,
-            game_giftInfo: {
-                firstPrize: {},
-                secondPrize: {},
-                thirdPrize: {}
-            },
+            // game_giftInfo: {
+            //     firstPrize: {},
+            //     secondPrize: {},
+            //     thirdPrize: {}
+            // },
             recommendItemIndo: {
                 convert: {},
                 coupInfo: {},
@@ -311,7 +307,7 @@ export default {
         this.loadPlatforms()
         this.acquireWaitGetCoupons(); //获取自动优惠券
         this.getAllCommunityFriend(params); //获取群友
-        this._loadPublishArenas(); //拉取已经发布的比赛场
+        // this._loadPublishArenas(); //拉取已经发布的比赛场
         this.loadAlliance(); //拉取友商物品
         this.loadInviteCoupon(); //判断是否有邀新活动
         this.loadClientServiceList();
@@ -323,7 +319,7 @@ export default {
         this.storeName = util.GetQueryString("storeName");
         // util.addVisitRecord(this.$route.name);
         this.resId = util.GetQueryString("resId");
-        this.gameUrl = window.location.href.split("k98")[0];
+        // this.gameUrl = window.location.href.split("k98")[0];
         if (this.resId) {
             this.getAllianceCoupon();
         }
@@ -457,6 +453,17 @@ export default {
                     // this.saveAllianceInfo(res.info)
                     this.friendLeagleList = res.info.map(shop => {
                         shop.distance = "<" + shop.distance.toFixed(1) + "km";
+                        if(shop.industryType==="商会"||
+                        shop.industryType==="校友会"||
+                        shop.industryType==="协会"||
+                        shop.industryType==="社群"||
+                        shop.industryType==="本地站"||
+                        shop.industryType==="全国站"||
+                        shop.industryType==="总店"){
+                          shop["enterBtnText"] = false
+                        }else{
+                           shop["enterBtnText"] = true
+                        }
                         return shop;
                     });
                 }
@@ -618,7 +625,7 @@ export default {
         //拉取已经发布的比赛场
         _loadPublishArenas () {
             api.loadPublishArenas().then(res => {
-                //console.log("拉取发布的比赛---------", res);
+                console.log("拉取发布的比赛---------", res);
                 var reverseArr = res.arenaInfos.reverse();
                 if (reverseArr.length > 0) {
                     this.game_giftInfo.firstPrize.content = util.returnDiscountContent(

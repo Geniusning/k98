@@ -26,7 +26,7 @@
                     </div>
                     <div class="entry">
                         <div style="margin-left:.3rem" class="linear_btn" @click="goToFriShop(item)">
-                            {{item.storeModeId === 0 ? "领&nbsp;&nbsp;&nbsp;取" :"进&nbsp;&nbsp;&nbsp;入" }}
+                            {{item.enterBtnText ? "领&nbsp;&nbsp;&nbsp;取" :"进&nbsp;&nbsp;&nbsp;入" }}
                         </div>
                     </div>
                 </div>

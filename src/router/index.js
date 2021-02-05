@@ -214,6 +214,33 @@ const router = new Router({
     }
   },
   {
+    path: '/pinTuan',
+    name: 'pinTuan',
+    component: () =>
+      import('../components/welfare/oneYuanGroupShopping/groupBookAward.vue'),
+    meta: {
+      title: "拼团有奖"
+    }
+  },
+  {
+    path: '/opened',
+    name: 'opened',
+    component: () =>
+      import('../components/welfare/oneYuanGroupShopping/allGroupBookAwardList.vue'),
+    meta: {
+      title: "已开的团"
+    }
+  },
+  {
+    path: '/awardUser',
+    name: 'awardUser',
+    component: () =>
+      import('../components/welfare/oneYuanGroupShopping/awardUserShow.vue'),
+    meta: {
+      title: "已开的团"
+    }
+  },
+  {
     path: '/mine',
     name: 'mine',
     component: () =>

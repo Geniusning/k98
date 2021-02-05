@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2021-01-25 15:11:47
+ * @Last Modified time: 2021-02-05 16:52:25
  */
 import axios from 'axios'
 import Url from './config'
@@ -24,10 +24,82 @@ axios.interceptors.request.use(
   }
 )
 let api = {};
+//拉取所有已开团的活动信息 （拼团有奖活动）
+api.loadAllOpenGroupList = function (groupBookAwardId) {
+  return new Promise((resolve, reject) => {
+    axios.get(Url.commonUrl + `/api/loadAllOpenGroupList?groupBookAwardId=${groupBookAwardId}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//加载某期中奖事件详情
+api.loadWinnerEventInfo = function (winEventId) {
+  return new Promise((resolve, reject) => {
+    axios.get(`/api/loadWinnerEventInfo?winEventId=${winEventId}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//拉取用户参与的拼团有奖活动信息
+api.loadGroupBookAwardForUser = function (groupBookAwardInfoId, openGroupId) {
+  return new Promise((resolve, reject) => {
+    axios.get(`/api/loadGroupBookAwardForUser?groupBookAwardInfoId=${groupBookAwardInfoId}&openGroupId=${openGroupId}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//拼团有奖项目的开团
+api.openGroupShopping = function (activityId, personNums) {
+  return new Promise((resolve, reject) => {
+    axios.get(`/api/openGroupShopping?activityId=${activityId}&personNums=${personNums}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//拼团有奖的参团
+api.joinGroupShopping = function (openGroupId, groupBookAwardInfoId) {
+  return new Promise((resolve, reject) => {
+    axios.get(`/api/joinGroupShopping?openGroupId=${openGroupId}&groupBookAwardInfoId=${groupBookAwardInfoId}`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+//判断是否发布上线了拼团有奖活动
+api.judgeHasGroupBookAward = function () {
+  return new Promise((resolve, reject) => {
+    axios.get(`/api/judgeHasGroupBookAward`).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //拉取其他友商消息事件
 api.loadUserOtherShopInfo = function (phone) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadUserOtherShopInfo?phone=${phone}`).then((res) => {
+    axios.get(`/api/loadUserOtherShopInfo?phone=${phone}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -39,7 +111,7 @@ api.loadUserOtherShopInfo = function (phone) {
 //保存用户和公众号基本信息到总服
 api.saveWechatBaseInfo = function (phone) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/saveWechatBaseInfo?phone=${phone}`).then((res) => {
+    axios.get(`/api/saveWechatBaseInfo?phone=${phone}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -51,7 +123,7 @@ api.saveWechatBaseInfo = function (phone) {
 //加载常去门店平台
 api.loadFrequentPlatform = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadFrequentPlatform`).then((res) => {
+    axios.get(`/api/loadFrequentPlatform`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -63,7 +135,7 @@ api.loadFrequentPlatform = function () {
 //收集常去门店平台
 api.collectFrequentPlatform = function (storeId) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/collectFrequentPlatform?storeId=${storeId}`).then((res) => {
+    axios.get(`/api/collectFrequentPlatform?storeId=${storeId}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -75,7 +147,7 @@ api.collectFrequentPlatform = function (storeId) {
 //拉取平台公众号门店
 api.loadPlatforms = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadPlatforms`).then((res) => {
+    axios.get(`/api/loadPlatforms`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -87,7 +159,7 @@ api.loadPlatforms = function () {
 //拉取桌号
 api.loadDesks = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadDesks`).then((res) => {
+    axios.get(`/api/loadDesks`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -99,7 +171,7 @@ api.loadDesks = function () {
 //回复预约消息
 api.sendBookMsg = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/sendBookMsg`, data).then((res) => {
+    axios.post(`/api/sendBookMsg`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -111,7 +183,7 @@ api.sendBookMsg = function (data) {
 //扣减充值会员卡
 api.decreaseTopUpVip = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/decreaseTopUpVip`, data).then((res) => {
+    axios.post(`/api/decreaseTopUpVip`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -123,7 +195,7 @@ api.decreaseTopUpVip = function (data) {
 //拉取充值会员卡交易记录
 api.loadTopUpDetailForC = function (cursor, count) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadTopUpDetailForC?cursor=${cursor}&count=${count}`).then((res) => {
+    axios.get(`/api/loadTopUpDetailForC?cursor=${cursor}&count=${count}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -135,7 +207,7 @@ api.loadTopUpDetailForC = function (cursor, count) {
 // //拉取用户在其他友商的信息 （待删除）
 // api.loadOtherAllianceMessage = function (port) {
 //   return new Promise((resolve, reject) => {
-//     axios.get(Url.commonUrl + `/api/loadOtherAllianceMessage?port=${port}`).then((res) => {
+//     axios.get(`/api/loadOtherAllianceMessage?port=${port}`).then((res) => {
 //       if (res.status == 200) {
 //         resolve(res.data)
 //       }
@@ -147,7 +219,7 @@ api.loadTopUpDetailForC = function (cursor, count) {
 //拉取发布供需者
 api.loadPublisherList = function (needed) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadPublisherList?needed=${needed}`).then((res) => {
+    axios.get(`/api/loadPublisherList?needed=${needed}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -159,7 +231,7 @@ api.loadPublisherList = function (needed) {
 //发布供需
 api.publishNeeded = function (needed) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/publishNeeded?needed=${needed}`).then((res) => {
+    axios.get(`/api/publishNeeded?needed=${needed}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -171,7 +243,7 @@ api.publishNeeded = function (needed) {
 //加载活动告示板往期图片
 api.loadOldPhotos = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadOldPhotos`).then((res) => {
+    axios.get(`/api/loadOldPhotos`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -183,7 +255,7 @@ api.loadOldPhotos = function () {
 //主动接受有缘人申请，加客服好友
 api.acceptSoulMateInvite = function (fromId, agree) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/acceptSoulMateInvite?fromId=${fromId}&agree=${agree}`).then((res) => {
+    axios.get(`/api/acceptSoulMateInvite?fromId=${fromId}&agree=${agree}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -195,7 +267,7 @@ api.acceptSoulMateInvite = function (fromId, agree) {
 //如果绑定有客服，用户主动拉取灵魂邀请和客服匹配
 api.loadSoulMateInvite = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadSoulMateInvite`).then((res) => {
+    axios.get(`/api/loadSoulMateInvite`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -207,7 +279,7 @@ api.loadSoulMateInvite = function () {
 //删除关注者提醒信息
 api.delSubscribeInfo = function (toOpenId) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/delSubscribeInfo?openId=${toOpenId}`).then((res) => {
+    axios.get(`/api/delSubscribeInfo?openId=${toOpenId}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -219,7 +291,7 @@ api.delSubscribeInfo = function (toOpenId) {
 //关注某用户
 api.subscribeUser = function (toOpenId) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/subscribeUser?toOpenId=${toOpenId}`).then((res) => {
+    axios.get(`/api/subscribeUser?toOpenId=${toOpenId}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -231,7 +303,7 @@ api.subscribeUser = function (toOpenId) {
 //参团
 api.joinGroupShopping = function (openGroupId, groupShopInfoId) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/joinGroupShopping?openGroupId=${openGroupId}&groupShopInfoId=${groupShopInfoId}`).then((res) => {
+    axios.get(`/api/joinGroupShopping?openGroupId=${openGroupId}&groupShopInfoId=${groupShopInfoId}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -243,7 +315,7 @@ api.joinGroupShopping = function (openGroupId, groupShopInfoId) {
 //开团
 api.openGroupShopping = function (activityId) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/openGroupShopping?activityId=${activityId}`).then((res) => {
+    axios.get(`/api/openGroupShopping?activityId=${activityId}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -255,7 +327,7 @@ api.openGroupShopping = function (activityId) {
 //拉取用户开团信息
 api.loadGroupShopForUser = function (groupShopInfoId, openGroupId = "") {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadGroupShopForUser?groupShopInfoId=${groupShopInfoId}&openGroupId=${openGroupId}`).then((res) => {
+    axios.get(`/api/loadGroupShopForUser?groupShopInfoId=${groupShopInfoId}&openGroupId=${openGroupId}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -267,7 +339,7 @@ api.loadGroupShopForUser = function (groupShopInfoId, openGroupId = "") {
 //判断是否有团购活动
 api.judgeHasGroupShop = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/judgeHasGroupShop`).then((res) => {
+    axios.get(`/api/judgeHasGroupShop`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -279,7 +351,7 @@ api.judgeHasGroupShop = function () {
 //上传公司链接
 api.uploadCompanyLink = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/uploadCompanyLink`, data).then((res) => {
+    axios.post(`/api/uploadCompanyLink`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -291,7 +363,7 @@ api.uploadCompanyLink = function (data) {
 //处理在新朋友事件中有关留言的表数据
 api.delCommentInfo = function (flag, data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/delCommentInfo?flag=${flag}`, data).then((res) => {
+    axios.post(`/api/delCommentInfo?flag=${flag}`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -303,7 +375,7 @@ api.delCommentInfo = function (flag, data) {
 //收集访问页面轨迹次数
 api.addVisitRecord = function (pageType) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/addVisitRecord?pageType=${pageType}`).then((res) => {
+    axios.get(`/api/addVisitRecord?pageType=${pageType}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -315,7 +387,7 @@ api.addVisitRecord = function (pageType) {
 //获得最新的自助买单信息
 api.getNewestSelfPay = function (clientID) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/getNewestSelfPay?clientID=${clientID}`).then((res) => {
+    axios.get(`/api/getNewestSelfPay?clientID=${clientID}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -327,7 +399,7 @@ api.getNewestSelfPay = function (clientID) {
 //回复贵宾通知
 api.replyVipService = function (openid) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/replyVipService?targetID=${openid}`).then((res) => {
+    axios.get(`/api/replyVipService?targetID=${openid}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -339,7 +411,7 @@ api.replyVipService = function (openid) {
 //用deskID获得下单码图片链接
 api.getPlaceOrderQRcodebyID = function (deskID) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/getPlaceOrderQRcodebyID?deskID=${deskID}`).then((res) => {
+    axios.get(`/api/getPlaceOrderQRcodebyID?deskID=${deskID}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -351,7 +423,7 @@ api.getPlaceOrderQRcodebyID = function (deskID) {
 //用于验证B端的登陆密码
 api.verifyPassword = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/verifyPassword`, data).then((res) => {
+    axios.post(`/api/verifyPassword`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -363,7 +435,7 @@ api.verifyPassword = function (data) {
 //加载台/桌的绑定员工
 api.loadDeskHolder = function (deskID) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadDeskHolder?deskID=${deskID}`).then((res) => {
+    axios.get(`/api/loadDeskHolder?deskID=${deskID}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -375,7 +447,7 @@ api.loadDeskHolder = function (deskID) {
 //和某人成为好友
 api.beFriend = function (target) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/beFriend?target=${target}`).then((res) => {
+    axios.get(`/api/beFriend?target=${target}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -387,7 +459,7 @@ api.beFriend = function (target) {
 //删除生活照
 api.delLifePhoto = function (param) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/delLifePhoto`, param)
+    axios.post(`/api/delLifePhoto`, param)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -400,7 +472,7 @@ api.delLifePhoto = function (param) {
 //通过手机号获得员工信息
 api.loadUserInfoByPhone = function (phone) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadUserInfoByPhone?phone=${phone}`).then((res) => {
+    axios.get(`/api/loadUserInfoByPhone?phone=${phone}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -412,7 +484,7 @@ api.loadUserInfoByPhone = function (phone) {
 //加载自助买单流水信息
 api.loadSelfPay = function (cursor, count) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadSelfPay?cursor=${cursor}&count=${count}`).then((res) => {
+    axios.get(`/api/loadSelfPay?cursor=${cursor}&count=${count}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -424,7 +496,7 @@ api.loadSelfPay = function (cursor, count) {
 //收银员确认收款
 api.confirmSelfPay = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/confirmSelfPay`, data).then((res) => {
+    axios.post(`/api/confirmSelfPay`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -436,7 +508,7 @@ api.confirmSelfPay = function (data) {
 //用户已付款
 api.paymentSelfPay = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/paymentSelfPay`, data).then((res) => {
+    axios.post(`/api/paymentSelfPay`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -448,7 +520,7 @@ api.paymentSelfPay = function (data) {
 //收银员确认对账单，并写入对话消息，账单ID、消费金额、实付金额 必填
 api.matchSelfPay = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/matchSelfPay`, data).then((res) => {
+    axios.post(`/api/matchSelfPay`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -460,7 +532,7 @@ api.matchSelfPay = function (data) {
 //加载指定ID的自助买单信息，即刚刚用户发起自助买单的信息
 api.loadSelfPayByID = function (id) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadSelfPayByID?id=${id}`).then((res) => {
+    axios.get(`/api/loadSelfPayByID?id=${id}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -472,7 +544,7 @@ api.loadSelfPayByID = function (id) {
 //用户发起自助买单
 api.launchSelfPay = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/launchSelfPay`, data).then((res) => {
+    axios.post(`/api/launchSelfPay`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -484,7 +556,7 @@ api.launchSelfPay = function (data) {
 //加载自助买单二维码
 api.loadQRCode = function () {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/loadQRCode`).then((res) => {
+    axios.post(`/api/loadQRCode`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -496,7 +568,7 @@ api.loadQRCode = function () {
 //收银员发送图片消息
 api.sendImageCashier = function (to, from, fileName, data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/sendImageCashier?to=${to}&from=${from}&fileName=${fileName}`, data).then((res) => {
+    axios.post(`/api/sendImageCashier?to=${to}&from=${from}&fileName=${fileName}`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -508,7 +580,7 @@ api.sendImageCashier = function (to, from, fileName, data) {
 //收银员发送语言消息
 api.sendTextCashier = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/sendTextCashier`, data).then((res) => {
+    axios.post(`/api/sendTextCashier`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -520,7 +592,7 @@ api.sendTextCashier = function (data) {
 //核销优惠券
 api.setOffUserCoupon = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/setOffUserCoupon`, data).then((res) => {
+    axios.post(`/api/setOffUserCoupon`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -532,7 +604,7 @@ api.setOffUserCoupon = function (data) {
 //拉取收银员消息
 api.loadCashierChatMsg = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/loadCashierChatMsg`, data).then((res) => {
+    axios.post(`/api/loadCashierChatMsg`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -544,7 +616,7 @@ api.loadCashierChatMsg = function (data) {
 //加载收银员列表 (该接口会判断当前用户是否是收银员，若是会加载向收银员申请核销的用户列表，若否则会加载收银员消息表)
 api.loadCashierList = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadCashierList`).then((res) => {
+    axios.get(`/api/loadCashierList`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -556,7 +628,7 @@ api.loadCashierList = function () {
 //拉取员工评价
 api.loadStaffCommentInfo = function (openId) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadStaffCommentInfo?openId=${openId}`).then((res) => {
+    axios.get(`/api/loadStaffCommentInfo?openId=${openId}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -568,7 +640,7 @@ api.loadStaffCommentInfo = function (openId) {
 //员工、用户发布评价
 api.sendCommentMessage = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/sendCommentMessage`, data).then((res) => {
+    axios.post(`/api/sendCommentMessage`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -580,7 +652,7 @@ api.sendCommentMessage = function (data) {
 //员工、用户评价鄙视
 api.giveUnThumb = function (openId) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/giveUnThumb?openId=${openId}`).then((res) => {
+    axios.get(`/api/giveUnThumb?openId=${openId}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -592,7 +664,7 @@ api.giveUnThumb = function (openId) {
 //员工、用户评价点赞
 api.giveThumb = function (openId) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/giveThumb?openId=${openId}`).then((res) => {
+    axios.get(`/api/giveThumb?openId=${openId}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -604,7 +676,7 @@ api.giveThumb = function (openId) {
 //赠送员工送券活动
 api.sendStaffCouponToUser = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/sendStaffCouponToUser`, data).then((res) => {
+    axios.post(`/api/sendStaffCouponToUser`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -616,7 +688,7 @@ api.sendStaffCouponToUser = function (data) {
 //加载员工送券活动
 api.loadStaffCouponAct = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadStaffCouponAct`).then((res) => {
+    axios.get(`/api/loadStaffCouponAct`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -628,7 +700,7 @@ api.loadStaffCouponAct = function () {
 //删除系统通知消息
 api.delNotice = function (noticeID) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/delNotice?noticeID=${noticeID}`).then((res) => {
+    axios.get(`/api/delNotice?noticeID=${noticeID}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -640,7 +712,7 @@ api.delNotice = function (noticeID) {
 //设置系统通知消息已读
 api.setUnreadNotice = function (noticeID) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/setUnreadNotice?noticeID=${noticeID}`).then((res) => {
+    axios.get(`/api/setUnreadNotice?noticeID=${noticeID}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -652,7 +724,7 @@ api.setUnreadNotice = function (noticeID) {
 //加载系统通知消息
 api.loadUserNotice = function () {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/loadUserNotice`).then((res) => {
+    axios.get(`/api/loadUserNotice`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -664,7 +736,7 @@ api.loadUserNotice = function () {
 //分身登陆
 api.loginIdentity = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/loginIdentity`, data).then((res) => {
+    axios.post(`/api/loginIdentity`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -676,7 +748,7 @@ api.loginIdentity = function (data) {
 //拉取分身
 api.loadIdentityList = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/loadIdentityList`, data).then((res) => {
+    axios.post(`/api/loadIdentityList`, data).then((res) => {
       // //console.log(res)
       if (res.status == 200) {
         resolve(res.data)
@@ -689,7 +761,7 @@ api.loadIdentityList = function (data) {
 //创建分身
 api.createIdentity = function (data) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/createIdentity`, data).then((res) => {
+    axios.post(`/api/createIdentity`, data).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -701,7 +773,7 @@ api.createIdentity = function (data) {
 //统计友商宣传我和我友商引流
 api.statAlliCount = function (param) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/statAlliCount`, param).then((res) => {
+    axios.post(`/api/statAlliCount`, param).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -713,7 +785,7 @@ api.statAlliCount = function (param) {
 //拉取友商物品
 api.getAllianceCoupon = function (param) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/allianceCoupon`, param).then((res) => {
+    axios.post(`/api/allianceCoupon`, param).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -725,7 +797,7 @@ api.getAllianceCoupon = function (param) {
 //拉取友商物品
 api.loadAlliance = function (param) {
   return new Promise((resolve, reject) => {
-    axios.post(Url.commonUrl + `/api/loadAlliance`, param).then((res) => {
+    axios.post(`/api/loadAlliance`, param).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -1086,7 +1158,7 @@ api.getFriendMessList = function (cursor, who) {
 //标记收银消息已读
 api.setCashierMsgRead = function (who) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/setCashierMsgRead?who=${who}`)
+    axios.get(`/api/setCashierMsgRead?who=${who}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)
@@ -1099,7 +1171,7 @@ api.setCashierMsgRead = function (who) {
 //标记客服消息已读
 api.setMsgReadCliSer = function (from,to) {
   return new Promise((resolve, reject) => {
-    axios.get(Url.commonUrl + `/api/setCliMsgRead?from=${from}&to=${to}`)
+    axios.get(`/api/setCliMsgRead?from=${from}&to=${to}`)
       .then(res => {
         if (res.status == 200) {
           resolve(res.data)

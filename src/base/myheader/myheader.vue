@@ -1,5 +1,5 @@
 <template>
-    <div class="nav_wrapper" :style="{background:bg,height:height}">
+    <div class="nav_wrapper vux-1px-b" :style="{background:bg,height:height}">
         <div class="back_content fl" @click="goBack">
             <img onclick="return false" src="../../assets/image/back_chat.png" alt="" class="backArrow">
         </div>

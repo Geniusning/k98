@@ -186,6 +186,18 @@
                     <div @click="closeIntegralPanel" class="btn">知道</div>
                 </div>
             </div>
+            <!-- 确认拼团吗 -->
+            <!-- <div class="successfullyBox" v-else-if="panelIndex===9">
+                <div class="envelope">
+                    <div class="close" @click="closeSchedule">X</div>
+                    <div class="integralIcon_wrapper">
+                        <div class="integralIcon_text">拼团啦</div>
+                    </div>
+                    <p style="padding:0 .3rem" class="successful_text">拼团{{groupBookAward.name}},消耗积分：{{groupBookAward.groupShoppingPrice}}</p>
+                    <div @click="closeIntegralPanel" class="payBtn">取消</div>
+                    <div @click="joinGroupBookAward" class="btn">确认</div>
+                </div>
+            </div> -->
             <div class="successfullyBox" v-else-if="panelIndex===10">
                 <div class="envelope">
                     <div class="close" @click="closeIntegralPanel">X</div>
