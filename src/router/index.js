@@ -6,8 +6,8 @@ import Chat from 'components/chat_room/chat_room'
 import cashierChat from 'components/chat_room/cashier_chatroom'
 // import Award from 'components/welfare/award/award'
 import ShareNew from 'components/welfare/ShareNew/ShareNew'
-import Nprogress from "nprogress"
-import "nprogress/nprogress.css"
+// import Nprogress from "nprogress"
+// import "nprogress/nprogress.css"
 
 
 Vue.use(Router)
@@ -326,11 +326,11 @@ const router = new Router({
   ]
 })
 router.beforeEach((to, from, next) => { //动态设置页面标题
-  Nprogress.start()
+  // Nprogress.start()
   window.document.title = to.meta.title
   next()
 })
-router.afterEach(() => {
-  Nprogress.done()
-})
+// router.afterEach(() => {
+//   Nprogress.done()
+// })
 export default router

@@ -319,7 +319,7 @@ export default {
         this.storeName = util.GetQueryString("storeName");
         // util.addVisitRecord(this.$route.name);
         this.resId = util.GetQueryString("resId");
-        // this.gameUrl = window.location.href.split("k98")[0];
+        this.gameUrl = window.location.href.split("k98")[0];
         if (this.resId) {
             this.getAllianceCoupon();
         }
