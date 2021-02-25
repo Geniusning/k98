@@ -59,9 +59,13 @@
                                         <img onclick="return false" :src="staticChatFriendObj.headimgurl?staticChatFriendObj.headimgurl:cashierImg" alt="" class="avatar" v-if="item.friend">
                                         <img onclick="return false" :src="userInfo.headimgurl?userInfo.headimgurl:cashierImg" alt="" class="avatar" v-else>
                                     </div>
-                                    <div class="message_box">
+                                    <div class="message_box" v-if="staffCode">
                                         <span class="arrow"></span>
-                                        <p class="message" style="word-break: break-all;"><span style="color:red;font-size:18px;">我的台/房号:{{item.selfpayinfo.deskcode}},</span>申请无券买单</p>
+                                        <p class="message" style="word-break: break-all;"><span style="color:red;font-size:16px;">请帮我买单，我的服务专员工号:{{staffCode}}</span></p>
+                                    </div>
+                                    <div class="message_box" v-else>
+                                        <span class="arrow"></span>
+                                        <p class="message" style="word-break: break-all;"><span style="color:red;font-size:16px;">请帮我买单,我的台/房号:{{item.selfpayinfo.deskcode}}</span></p>
                                     </div>
                                 </div>
                                 <div v-else-if="item.type===2" class="message_wrapper">
@@ -288,10 +292,9 @@ import {
     XDialog
 } from "vux";
 import Scroll from "../../base/scroll/scroll.vue";
-import Url from "../../common/config.js";
+import config from "../../common/config.js";
 import api from "common/api.js";
 import util from "common/util.js";
-import Bus from "common/bus.js";
 // import EXIF from "common/exif.js";
 import {
     mapState,
@@ -381,14 +384,15 @@ export default {
             isOpenAutoPay: false, // 是否开通自助买单
             fatherPanelIndex: 6,//
             lastestSelfPayInfo: {},
-            listenScroll: true
+            listenScroll: true,
+            staffCode:null, //员工编码
         };
     },
     created () {
         if (!localStorage.getItem('helpTips')) {
             this.showDialog = true
         }
-
+        this.staffCode = this.$route.params.staffCode
         this.today = new Date().getDate();
         this.today = new Date().getDate();
         if (this.today < 10) {
@@ -485,7 +489,6 @@ export default {
             todayMon = new Date().getMonth() + 1
             todayDate = new Date().getDate()
             srcTimeStampStr = todayYear + "-" + todayMon + "-" + todayDate + " " + this.fontTime
-            console.log("前移账单时间---", srcTimeStampStr)
             this.lastestSelfPayInfo['time'] = new Date(srcTimeStampStr).getTime() / 1000
             let res = await api.confirmSelfPay(this.lastestSelfPayInfo)
             this.input_value = "您的买单款已到帐，欢迎下次光临";

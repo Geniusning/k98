@@ -328,8 +328,8 @@
                     </li>
                 </ul>
             </div>
-            <!-- 分身信封入口 v-if="(hasDivideIdentity && hasUserRole)"  divide_badgeCount-->
-            <div class="divide_wrapper" @click="showDivideList" v-if="(hasDivideIdentity || hasUserRole || otherWechatMsg.length>0)">
+            <!-- 分身信封入口   divide_badgeCount-->
+            <div class="divide_wrapper" @click="showDivideList" v-if="isShowDivideEnv">
                 <img src="./assets/image/divide_envelope.png" class="divide-env" alt="">
                 <span v-show="otherWechatMsg.length" class="divide-left-dot">{{otherWechatMsg.length}}</span>
                 <span v-show="divide_badgeCount" class="divide-right-dot">{{divide_badgeCount}}</span>
@@ -375,9 +375,9 @@ import { TransferDom, XDialog } from "vux";
 import friendPanel from "base/becomeFriendPanel/becomeFriendPanel";
 import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 import util from "common/util";
+import config from "common/config";
 import api from "common/api";
 import Bus from "common/bus.js";
-import { userInfo } from "os";
 export default {
     name: "app",
     directives: {
@@ -385,11 +385,11 @@ export default {
     },
     data () {
         return {
+            cashierObj: {},//收银对象
             vipText: "贵宾到店，赶紧前去打招呼吧",
             tempPic: require("./assets/image/divide_add_avatar.png"),
             divideList: [],
             isShowEnvelopHandle: true,
-            // isShowDivideEnv: true, //控制分身信封显示
             isShowDivideList: false, //控制分身列表显示
             isHandleMessageFromQueue: true,
             isShowGiftGuide: false,
@@ -418,7 +418,6 @@ export default {
             isDeskRoom: null,
             samedeskInfo: {},
             hasDivideIdentity: true,
-            hasUserRole: false,
             game_giftInfo: {
                 firstPrize: {},
                 secondPrize: {},
@@ -465,11 +464,14 @@ export default {
             "deskCode",
             "otherWechatMsg"
         ]),
-        ...mapGetters(["qrIsShow"])
+        ...mapGetters(["qrIsShow"]),
+        isShowDivideEnv () {
+            return this.hasDivideIdentity && (this.otherWechatMsg.length > 0 && this.divide_badgeCount.length > 0)
+        }
     },
     created () {
         this.loadLastRoomInfo(); //加载回房信息
-
+        this.staffCode = util.GetQueryString("StaffCode") //判断是否扫员工码进入系统
         if (
             this.$route.name === "home" ||
             this.$route.name === "friend" ||
@@ -514,8 +516,7 @@ export default {
         this.identity = this.identity ? this.identity : "";
         this.timeTick = setTimeout(() => {
             let gameUrl = this.identity
-                ? `${this.responseForGameUrl}game/?gamePath=game1&identity=${this.identity
-                }`
+                ? `${this.responseForGameUrl}game/?gamePath=game1&identity=${this.identity}`
                 : `${this.responseForGameUrl}game/?gamePath=game1`;
             this.clearTopUpData();
             this.allMutatualInfo_temp = {};
@@ -808,7 +809,34 @@ export default {
             // //console.log('面板状态-----------', flag);
             this.isGiftPanel = flag;
         },
-        inToLetter () {
+        async inToLetter () {
+            if (this.staffCode) {
+                var data = {
+                    deskid: "xx",
+                    deskcode: 1,
+                    payuserid: this.userInfo.openid,
+                    payuserheadimgurl: this.userInfo.headimgurl,
+                };
+                let res2 = await api.launchSelfPay(data);
+                if (res2.errCode === 0) {
+                    this.cashierObj["openid"] = config.cashierId
+                    this.setChatFriend(this.cashierObj);
+                    this.$router.push({
+                        name: "cashierChat",
+                        params: {
+                            from: this.userInfo.openid,
+                            to: this.cashierObj.openid,
+                            deskCode: 0,
+                            isCashier: false,
+                            staffCode:this.staffCode
+                        }
+                    });
+
+                } else {
+                    this.$vux.toast.text(`${res2.errorMsg}`);
+                }
+                return
+            }
             util.routerTo("message", this, {
                 routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
             });
@@ -1384,9 +1412,7 @@ export default {
         })
     },
     watch: {
-        userInfo: function (newValue) {
-            // console.log("userInfo-watch-", newValue)
-            this.hasUserRole = newValue.role != "" || newValue.openid.indexOf("@master") > -1;
+        userInfo: function () {
             this.loadIdentityList(); //拉取分身
         },
         dynamicFriendEvt: function (newValue) {
@@ -1570,7 +1596,7 @@ export default {
             //console.log("topUpGameInfo-------------", newValue);
             this.judgeEveryBool(true, true, false, false);
         },
-        sameDeskInfo: function (newValue, oldValue) {
+        sameDeskInfo: function (newValue) {
             this.samedeskInfo = newValue;
             this.showBackToGame = true;
             this.isDeskRoom = true;

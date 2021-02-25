@@ -94,15 +94,23 @@
                 </div>
                 <div class="handle" v-if="panelIndex===2">
                     <div class="cancle" @click="closeIntegralPanel(true)" v-text="userInfo.money<giftIntegral?'赚积分':'取消'"></div>
-                    <div v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id,componentGiftInfo.goods)" v-text="userInfo.money<giftIntegral?'充值':'确认'"></div>
-                    <div v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id,componentGiftInfo.goods)" v-text="userInfo.money<giftIntegral?'充值':'确认'"></div>
+                    <div v-if="componentConvertType===0 || componentConvertType===1"
+                         class="btn"
+                         @click="confirmShopItemGift(componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)"
+                         v-text="userInfo.money<giftIntegral?'充值':'确认'">
+                    </div>
+                    <div v-else class="btn"
+                         @click="confirmShopItemGift(componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)"
+                         v-text="userInfo.money<giftIntegral?'充值':'确认'">
+
+                    </div>
                     <div v-show="userInfo.money<giftIntegral" class="tips_money">积分不足,请充值>></div>
                 </div>
                 <div class="handle" v-else-if="panelIndex===9">
                     <div class="cancle" @click="closeIntegralPanel(true)">取消</div>
                     <div v-if="(componentConvertType===0 || componentConvertType===1) && userInfo.storeValue>=componentGiftInfo.goods.vipMoney"
                          class="btn"
-                         @click="confirmShopItemGift(componentGiftInfo.goods.id,componentGiftInfo.goods)"
+                         @click="confirmShopItemGift(componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)"
                          v-text="userInfo.storeValue<componentGiftInfo.goods.vipMoney?' ':'确认'"></div>
                     <!-- <div v-else class="btn" @click="confirmShopItemGift(componentGiftInfo.goods.id)" v-text="userInfo.money<giftIntegral?'充值':'确认'"></div> -->
                     <div v-show="userInfo.storeValue<componentGiftInfo.goods.vipMoney" class="tips_money">储值不足,请前往柜台充值</div>
@@ -187,7 +195,7 @@
                 </div>
             </div>
             <!-- 确认拼团吗 -->
-            <!-- <div class="successfullyBox" v-else-if="panelIndex===9">
+            <!-- <div class="successfullyBox" v-else-if="panelIndex==11">
                 <div class="envelope">
                     <div class="close" @click="closeSchedule">X</div>
                     <div class="integralIcon_wrapper">
@@ -217,6 +225,7 @@
 
 <script type='text/ecmascript-6'>
 import api from "common/api";
+import config from "common/config";
 import util from "common/util";
 import Bus from "common/bus.js";
 import {
@@ -456,8 +465,8 @@ export default {
                 "赠送礼物成功,扣除" + this.componentGiftInfo.goods.integral + "积分";
         },
         //确认赠送
-        confirmShopItemGift (goodID, goods) {
-            //console.log("goodId----", goodID);
+        confirmShopItemGift (goodID, goods, couponInfo) {
+
             if (this.userInfo.money < this.giftIntegral) {
                 //当前积分少于项目消耗积分
                 this.panelIndex = 0;
@@ -503,10 +512,28 @@ export default {
                     api.decreaseTopUpVip(data).then(res => {
                         if (res.errCode === 0) {
                             this.successfulText = "兑换成功";
-                            this.refreshUserInfo();
+                            this.refreshUserInfo().then(() => {
+                                console.log("兑换会员项目=", res)
+                                let messObj = {
+                                    to: config.cashierId,
+                                    content: `成功购买店长推荐项目（${couponInfo.content}）,已从会员卡${this.userInfo.phone}
+                        扣费${goods.vipMoney}元，余额${Number(this.userInfo.storeValue)}`,
+                                    type: 1,
+                                    from: this.userInfo.openid
+                                };
+                                //console.log("this.isCashierFlag----", this.isCashierFlag);
+                                //console.log("messObj----", messObj);
+                                let textMessObj = JSON.stringify(messObj);
+                                let decc1 = new TextEncoder("utf-8");
+                                let result = decc1.encode(textMessObj);
+                                api.sendTextCashier(result).then(res => {
+                                    console.log("res=", res)
+                                });
+                            });
                         }
-                        console.log("兑换会员项目=", res)
+
                     })
+
                     api.convertRecommend(goodID, "vip").then(res => {
                         //console.log("店长推荐兑换结果--------------", res);
                         if (res.errCode && res.errCode == 1021) {
@@ -611,11 +638,14 @@ export default {
             }
         },
         refreshUserInfo () {
-            api.getUserInfo().then(res => {
-                //console.log("个人信息-------", res);
-                this.getUserInfo(res);
-                this.panelIndex = 3;
-            });
+            return new Promise((resolve, reject) => {
+                api.getUserInfo().then(res => {
+                    //console.log("个人信息-------", res);
+                    this.getUserInfo(res);
+                    this.panelIndex = 3;
+                    resolve()
+                });
+            })
         },
         //前往兑换
         changeGoods () {

@@ -39,8 +39,10 @@
         </div>
         <!-- 拼团有奖活动 -->
         <div class="share-wrapper" v-if="groupBookAwardInfo?groupBookAwardInfo.isPutAway:false">
-            <img class="product-img" :src="groupBookAwardInfo.image" alt="">
-            <img onclick="return false" @click="goToGroupBook(groupBookAwardInfo.activityID)" src="../../assets/image/groupShop.png" class="shareEnter" alt>
+            <img class="product-img" style="top:1.2rem" :src="groupBookAwardInfo.image" alt="">
+            <img onclick="return false" @click="goToGroupBook(groupBookAwardInfo.activityID)" src="../../assets/image/groupBook.png" class="shareEnter" alt>
+            <img class="award-product-img" style="top:1.2rem" :src="groupBookAwardInfo.awardImage" alt="">
+            <img class="award-word" src="../../assets/image/award.png" alt="">
         </div>
         <!-- 大话骰动态 -->
         <div class="game-wrapper">
@@ -301,15 +303,15 @@ export default {
                         let tempArr = res.info.myJoinGroupShopList
                         for (let index = 0; index < tempArr.length; index++) {
                             const element = tempArr[index];
-                            if (element.status){
-                              this.bookOpenGroupId = element.id
-                              break
+                            if (element.status) {
+                                this.bookOpenGroupId = element.id
+                                break
                             }
 
                         }
                     }
-                    
-                        this.groupBookAwardInfo = res.info
+
+                    this.groupBookAwardInfo = res.info
                 }
             })
         },
@@ -480,12 +482,25 @@ export default {
         background-color: #fff;
         margin-top: 0.3rem;
         position: relative;
-        .product-img {
+        .product-img,
+        .award-product-img {
             position: absolute;
             width: 1.8rem;
             height: 1.2rem;
             top: 1rem;
-            left: 2rem;
+        }
+        .product-img {
+            left: 2.2rem;
+        }
+        .award-product-img {
+            right: 2rem;
+        }
+        .award-word {
+            position: absolute;
+            width: 0.6rem;
+            height: 0.6rem;
+            top: 1rem;
+            right: 3.5rem;
         }
         .shareEnter {
             width: 100%;

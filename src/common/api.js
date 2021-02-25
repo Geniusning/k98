@@ -2,7 +2,7 @@
  * @Author: liuning
  * @Date: 2020-05-04 14:45:54
  * @Last Modified by: liuning
- * @Last Modified time: 2021-02-05 16:52:25
+ * @Last Modified time: 2021-02-23 18:12:41
  */
 import axios from 'axios'
 import Url from './config'
@@ -61,9 +61,9 @@ api.loadGroupBookAwardForUser = function (groupBookAwardInfoId, openGroupId) {
   })
 }
 //拼团有奖项目的开团
-api.openGroupShopping = function (activityId, personNums) {
+api.openGroupBookAward = function (activityId, personNums) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/openGroupShopping?activityId=${activityId}&personNums=${personNums}`).then((res) => {
+    axios.get(`/api/openGroupBookAward?activityId=${activityId}&personNums=${personNums}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }
@@ -73,9 +73,9 @@ api.openGroupShopping = function (activityId, personNums) {
   })
 }
 //拼团有奖的参团
-api.joinGroupShopping = function (openGroupId, groupBookAwardInfoId) {
+api.joinGroupBookAward = function (openGroupId, groupBookAwardInfoId) {
   return new Promise((resolve, reject) => {
-    axios.get(`/api/joinGroupShopping?openGroupId=${openGroupId}&groupBookAwardInfoId=${groupBookAwardInfoId}`).then((res) => {
+    axios.get(`/api/joinGroupBookAward?openGroupId=${openGroupId}&groupBookAwardInfoId=${groupBookAwardInfoId}`).then((res) => {
       if (res.status == 200) {
         resolve(res.data)
       }

@@ -62,7 +62,7 @@
             <div class="welfare_wrapper" v-if="sendGiftList.length">
                 <h2 class="jiFen_title">
                     积分换礼品
-                    <span class="star">#</span>
+                    <!-- <span class="star">#</span> -->
                 </h2>
                 <div class="welfare_content">
                     <ul class="welfare_list" v-if="sendGiftList.length">
@@ -92,7 +92,7 @@
                 <!--  <div class="marketing_wrapper" v-show="userInfo.role"> -->
                 <h2 class="marketing_title">
                     分享赚积分
-                    <span class="star">#</span>
+                    <!-- <span class="star">#</span> -->
                 </h2>
                 <ul class="marketing-list">
                     <li class="marketing-item">
@@ -674,9 +674,9 @@ export default {
                 margin-top: 0.2667rem;
                 color: #666;
                 font-size: 0.3733rem;
-                .star {
-                    color: @baseColor;
-                }
+                // .star {
+                //     color: @baseColor;
+                // }
             }
         }
     }

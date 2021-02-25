@@ -89,7 +89,7 @@
                                 </div>
                             </div>
                             <!-- vux-1px -->
-                            <div class="thumb_wrapper"> 
+                            <div class="thumb_wrapper">
                                 <div class="clearfix backThumbBox" v-if="item.combatID">
                                     <p class=" back_thumb  fl reject " @click="rejectGame(index,item.combatID,item.from.openid)">免战</p>
                                     <p class=" back_thumb  fl" @click="playGame(item.url,item.combatID,item.from.openid)">应战</p>
@@ -136,8 +136,10 @@
                             </div>
                             <div class="name_and_message">
                                 <p class="name" style="font-weight:800;font-size:15px">客服小哥</p>
+                                <div class="book-btn" @click.stop="ChatToClient">预约/咨询</div>
+
                                 <p class="captainMessage">欢迎光临! 有任何问题或建议，请留言</p>
-                                <p class="time"> {{clientObj.lastMsg?clientObj.lastMsg.stime.slice(8,10)==today?clientObj.lastMsg.stime.slice(10,16):clientObj.lastMsg.stime.slice(5,10):""}}</p>
+                                <!-- <p class="time"> {{clientObj.lastMsg?clientObj.lastMsg.stime.slice(8,10)==today?clientObj.lastMsg.stime.slice(10,16):clientObj.lastMsg.stime.slice(5,10):""}}</p> -->
                             </div>
                         </div>
                     </li>
@@ -149,6 +151,7 @@
                             </div>
                             <div class="name_and_message">
                                 <p class="name" style="font-weight:800;font-size:15px">收银员</p>
+                                <!-- <button class="discount-pay" @click.stop="goToCard">会员卡买单</button> -->
                                 <button class="discount-pay" @click.stop="goToCard">有券买单</button>
                                 <button class="noDiscount-pay" @click.stop="payNoCashier">无券买单</button>
                             </div>
@@ -424,10 +427,7 @@ export default {
     methods: {
         //拉取下单码
         getPlaceOrderQRcodebyID () {
-            console.log('this.deskId---', this.deskId)
-            console.log('deskCode---', this.deskCode)
             api.getPlaceOrderQRcodebyID(this.deskId).then(res => {
-                console.log("拉取下单码----", res)
                 if (res.errCode === 0) {
                     this.OrderQrCode = res.info
                 }
@@ -460,25 +460,18 @@ export default {
                 //   "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU3MTc1MzA1OA==#wechat_redirect";
             });
         },
-        // 临时方法 删除分身
-        delDivide (targetId) {
-            api.delIdentity(targetId).then(res => {
-                //console.log("删除结果-----", res)
-            })
-        },
         async payNoCashier () {
             let data = {
                 deskid: this.deskId || "",
-                deskcode: Number(this.deskCode) || 1,
+                deskcode: Number(this.deskCode) || 0,
                 payuserid: this.userInfo.openid,
                 payuserheadimgurl: this.userInfo.headimgurl,
             };
             if (!data.deskid) {
-                this.$vux.toast.text('未检测到桌号，请重扫二维码', 'middle')
+                this.$vux.toast.text('自助买单，请先扫桌贴二维码或员工二维码', 'middle')
                 return
             }
             let res2 = await api.launchSelfPay(data);
-            console.log("res2------", res2)
             if (res2.errCode === 0) {
                 this.cashierObj["openid"] = this.cashierObj.CashierID
                 this.setChatFriend(this.cashierObj);
@@ -504,32 +497,11 @@ export default {
         showCashierList () {
             this.showCashierFlow = true;
         },
-        //买单流水
-        // async loadSelfPay() {
-        //   let res = await api.loadSelfPay(this.cashierCursor, 50)
-        //   console.log("买单流水-------", res)
-        //   if (res.errCode === 0) {
-        //     this.cashierFlowList = res.info.selfpayes
-        //     this.cashierFlowList.forEach(item => {
-        //       item.time = util.timestampToTimeNoYear(item.time)
-        //     })
-        //     this.cashierCursor = res.info.cursor
-        //   }
-        // },
-        // async pullingUp () {
-        //     if (this.cashierCursor != 0) {
-        //         let res = await api.loadSelfPay(this.cashierCursor, 50)
-        //         console.log("更多买单流水----", res)
-        //         if (res.errCode === 0) {
-        //             res.info.selfpayes.forEach(item => {
-        //                 item.time = util.timestampToTimeNoYear(item.time)
-        //                 this.cashierFlowList.push(item)
-        //             })
-        //             this.cashierCursor = res.info.cursor
-        //         }
-        //     }
-        // },
         goToCard () {
+            if (!this.deskId) {
+                this.$vux.toast.text('自助买单，请先扫桌贴二维码或员工二维码', 'middle')
+                return
+            }
             this.$router.push({
                 name: "card",
                 params: {
@@ -812,7 +784,7 @@ export default {
         replaySubscribe (openId, flag) {
             api.delSubscribeInfo(openId).then(res => {
                 if (res.errCode === 0) {
-                    if (flag === "yes" ) {
+                    if (flag === "yes") {
                         this.$router.push({
                             name: "commentUser",
                             params: {
@@ -1403,7 +1375,9 @@ export default {
                     flex-direction: column;
                     justify-content: space-between;
                     position: relative;
-                    .discount-pay,.noDiscount-pay {
+                    .discount-pay,
+                    .noDiscount-pay,
+                    .book-btn {
                         position: absolute;
                         width: 2.3rem;
                         top: 0.4rem;
@@ -1415,6 +1389,13 @@ export default {
                         border-radius: 4px;
                         font-size: 14px;
                         border: 1px solid red;
+                    }
+                    .book-btn {
+                        background: #3679aa;
+                        top: 0.1rem;
+                        right: 1.8rem;
+                        border: 1px solid #3679aa;
+                        text-align: center;
                     }
                     .noDiscount-pay {
                         right: -6.5rem;

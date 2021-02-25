@@ -148,47 +148,42 @@
             <div v-if="isCountingDownTime">
                 <button v-if="groupBookAward.isJoining === true && groupBookAward.joinGroupBookAwardInfo.status " class="oneYuan-btn" @click="isShow_bg=true">分享好友,邀请TA拼团</button>
                 <div class="btn-wrapper" v-else-if="groupBookAward.joinGroupBookAwardInfo?groupBookAward.joinGroupBookAwardInfo.status===false:false">
-                    <button @click="openGroupBookAward(groupBookAward.joinGroupBookAwardInfo?groupBookAward.joinGroupBookAwardInfo.status:false)"
-                            class="oneYuan-btn">
-                        我要开团(消耗积分{{groupBookAward.groupBookAwardInfo.groupShoppingPrice}})
-                    </button>
+                    <button @click="isShowDialog=true" class="oneYuan-btn">我要开团</button>
                     <button class="oneYuan-btn" @click="goToAllGroupBook">查看已开的团</button>
                 </div>
-                <button @click="openGroupBookAward(groupBookAward.joinGroupBookAwardInfo?groupBookAward.joinGroupBookAwardInfo.status:false)"
-                        v-else-if="groupBookAward.isJoining === false"
-                        class="oneYuan-btn">
-                    {{groupBookAward.joinGroupBookAwardInfo?
-                    '一键参团(消耗积分'+groupBookAward.groupBookAwardInfo.groupShoppingPrice+')':
-                    '一键开团(消耗积分'+groupBookAward.groupBookAwardInfo.groupShoppingPrice+')'}}
+                <!-- openGroupBookAward(groupBookAward.joinGroupBookAwardInfo?groupBookAward.joinGroupBookAwardInfo.status:false) -->
+                <button @click="isShowDialog=true" v-else-if="groupBookAward.isJoining === false" class="oneYuan-btn">
+                    {{groupBookAward.joinGroupBookAwardInfo?'一键参团':'一键开团'}}
                 </button>
             </div>
             <div v-else class="btn-wrapper">
-                <button @click="openGroupBookAward(false)" class="oneYuan-btn">
-                    一键开团(消耗积分{{groupBookAward.groupBookAwardInfo.groupShoppingPrice}})
+                <!-- openGroupBookAward(false) -->
+                <button @click="isShowDialog=true" class="oneYuan-btn">
+                    一键开团
                 </button>
                 <button class="oneYuan-btn" @click="goToAllGroupBook">查看已开的团</button>
             </div>
         </div>
-        <!-- <handleEnvelope>
+        <handleEnvelope v-show="isShowDialog">
             <template slot="header">
                 <h1>拼团啦</h1>
             </template>
             <div class="groupBookAwardInfo-wrapper">
-              <div class="left">
-                <img :src="groupBookAward.groupBookAwardInfo.image" class="pic" alt="">
-              </div>
-              <div class="right">
-                <p class="desc">{{groupBookAward.groupBookAwardInfo.name}}</p>
-                <p class="desc">消耗积分:{{groupBookAward.groupBookAwardInfo.groupShoppingPrice}}</p>
-              </div>
+                <div class="left">
+                    <img :src="groupBookAward.groupBookAwardInfo.image" class="pic" alt="">
+                </div>
+                <div class="right">
+                    <p class="desc">{{groupBookAward.groupBookAwardInfo.name}}</p>
+                    <p class="desc">消耗积分:{{groupBookAward.groupBookAwardInfo.groupShoppingPrice}}</p>
+                </div>
             </div>
             <template slot="footer">
-               <div class="footer-wrapper">
-                 <button class="btn-left">取消</button>
-                 <button class="btn-right">确定</button>
-               </div>
+                <div class="footer-wrapper">
+                    <button class="btn-left" @click="close">取消</button>
+                    <button class="btn-right" @click="openGroupBookAward(groupBookAward.joinGroupBookAwardInfo?groupBookAward.joinGroupBookAwardInfo.status:false)">确定</button>
+                </div>
             </template>
-        </handleEnvelope> -->
+        </handleEnvelope>
         <topUp v-if="showGroupShopRes" @closeIntegralPanel="closeIntegralPanel" :fatherPanelIndex="fatherPanelIndex"></topUp>
     </div>
 </template>
@@ -203,6 +198,7 @@ import api from "common/api";
 export default {
     data () {
         return {
+            isShowDialog: false,//控制拼团确认框
             fatherPanelIndex: 7,
             showGroupShopRes: false,
             isShow_bg: false,
@@ -226,6 +222,9 @@ export default {
         ...mapState(["userInfo", "shareUrl"])
     },
     methods: {
+        close () {
+            this.isShowDialog = false
+        },
         // //分享获得积分
         shareGetJifen (amount, shareType) {
             api.shareToGetIntegral(amount, shareType).then(res => {
@@ -257,41 +256,51 @@ export default {
         },
         //开团
         openGroupBookAward (flag) {
-            if (!this.userInfo.isSubscribe) {
-                this.changeQrCodeText({
-                    title: "长按关注，以便兑换优惠券",
-                    bottomText: "会员特权:领福利、交群友、参活动"
-                });
-                this.showQrcode(true);
-                return
+            try {
+
+                if (!this.userInfo.isSubscribe) {
+                    this.changeQrCodeText({
+                        title: "长按关注，以便兑换优惠券",
+                        bottomText: "会员特权:领福利、交群友、参活动"
+                    });
+                    this.showQrcode(true);
+                    return
+                }
+               
+                if (this.groupBookAward.joinGroupBookAwardInfo && flag) { //已开团，则参团
+               
+                    api.joinGroupBookAward(this.groupBookAward.joinGroupBookAwardInfo.id, this.groupBookAwardId).then(res => {
+                        console.log("参团结果---", res)
+                        if (res.errCode === 0) {
+                            this.loadGroupBookAwardForUser()
+                        } else if (res.errCode === 1029) {
+                            this.fatherPanelIndex = 7;
+                            this.showGroupShopRes = true
+                        } else if (res.errCode === 1096) {
+                            this.fatherPanelIndex = 8
+                            this.showGroupShopRes = true
+                            this.loadGroupBookAwardForUser()
+                        }
+                    })
+                } else {//未开团, 则开团
+               
+                    api.openGroupBookAward(this.groupBookAwardId, this.groupBookAward.groupBookAwardInfo.personNums).then(res => {
+                        console.log("开团结果=", res)
+                        if (res.errCode === 0) {
+                            this.openGroupId = res.info.id
+                            console.log("this.openGroupId----", this.openGroupId)
+                            this.loadGroupBookAwardForUser()
+                        } else if (res.errCode === 1029) {
+                            this.fatherPanelIndex = 7;
+                            this.showGroupShopRes = true
+                        }
+                    })
+                }
+                this.isShowDialog = false
+            } catch (error) {
+                console.log("error is = ", error)
             }
-            if (this.groupBookAward.joinGroupBookAwardInfo && flag) { //已开团，则参团
-                api.joinGroupBookAward(this.groupBookAward.joinGroupBookAwardInfo.id, this.groupBookAwardId).then(res => {
-                    console.log("参团结果---", res)
-                    if (res.errCode === 0) {
-                        this.loadGroupBookAwardForUser()
-                    } else if (res.errCode === 1029) {
-                        this.fatherPanelIndex = 7;
-                        this.showGroupShopRes = true
-                    } else if (res.errCode === 1096) {
-                        this.fatherPanelIndex = 8
-                        this.showGroupShopRes = true
-                        this.loadGroupBookAwardForUser()
-                    }
-                })
-            } else {//未开团, 则开团
-                api.openGroupBookAward(this.groupBookAwardId, this.groupBookAward.groupBookAwardInfo.personNums).then(res => {
-                    console.log("开团结果=", res)
-                    if (res.errCode === 0) {
-                        this.openGroupId = res.info.id
-                        console.log("this.openGroupId----", this.openGroupId)
-                        this.loadGroupBookAwardForUser()
-                    } else if (res.errCode === 1029) {
-                        this.fatherPanelIndex = 7;
-                        this.showGroupShopRes = true
-                    }
-                })
-            }
+
         },
         //拉去用户开团信息
         loadGroupBookAwardForUser () {

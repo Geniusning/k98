@@ -10,7 +10,7 @@
                 <li class="group-info" v-for="(item,index) in awardUserList" :key="index">
                     <img class="avatar" :src="item.headImgUrl" alt="">
                     <span class="nickname">{{item.nickName}}</span>
-                    <span class="arrow" v-show="item.winnerTag">中奖者</span>
+                    <img class="arrow" src="../../../assets/image/award.png" v-show="item.winnerTag" />
                 </li>
             </ul>
         </main>
@@ -105,10 +105,9 @@ export default {
                     width: 5rem;
                 }
                 .arrow {
-                  margin-left: 1.5rem;
-                  color: red;
-                  display: inline-block;
-                  width: 2rem;
+                    margin-left: 1.5rem;
+                    width: 0.6rem;
+                    height: 0.6rem;
                 }
             }
         }

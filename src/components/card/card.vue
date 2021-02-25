@@ -344,7 +344,7 @@ export default {
                 return
             }
             if (!this.deskCode) {
-                this.$vux.toast.text('未检测到桌号，请重扫二维码', 'middle')
+                this.$vux.toast.text('请先扫桌贴二维码或员工二维码', 'middle')
                 return
             }
             this.$router.push({
