@@ -75,6 +75,9 @@ util.compareDate = (beginDate, endDate) => {
 //时间戳转化成地址  格式xxxx-xx-xx xx-xx-xx
 util.timestampToTime = function (timestamp) {
   // //console.log("timestamp----------------",timestamp)
+  if (timestamp == 0){
+    return null
+  }
   if (typeof timestamp == "string") {
     return timestamp
   }

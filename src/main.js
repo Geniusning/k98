@@ -58,7 +58,7 @@ new Vue({
       // if (versionNumber > 7014) {
         window.iosSignUrl = window.location.href.split('#')[0]
         util._getJssdkConfig(window.iosSignUrl)
-      } 
+      }
       // else {
       //   window.onload = function () {
       //     window.iosSignUrl = window.location.href.split('#')[0]
@@ -89,7 +89,7 @@ new Vue({
     this.loadPublisherIdlist() //拉取供求发布者id
   },
   mounted () {
-   
+
     window.addEventListener("unload", () => {
       this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
       localStorage.removeItem("friendInfo");
@@ -122,7 +122,7 @@ new Vue({
       }
       this.websock = new WebSocket(this.connectUrl);
       this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-       //线上环境 ---end 
+       //线上环境 ---end
       // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()

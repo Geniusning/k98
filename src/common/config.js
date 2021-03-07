@@ -14,5 +14,5 @@ export default {
   staffQrCodeVisitType:16, //扫员工码进入系统
   websocketUrl: "wss://llwant1.qianz.com/api/ws",
   // tk: "srhKJHU3xdefNM--Q1KL-UC1kq5Aj2y_XUPB9eiMX5PAcZ8ILaA_cEr5Lja3j_hcUpZmiQ=="
-  tk: "6uYitXoOylmBlx9y23UpQ4KahRz5j6H35hrbVLNtxQ7rUQm0fgU_Ylw0zZ-2oJ2Ri_i18g=="
+  tk: "9V4eeferyy3pRds0xyp_wc1FdFyOeWiB4uggvfHScCdFu1HBfO620nKhiUxM-uBswTryYw=="
 }

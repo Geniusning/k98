@@ -228,7 +228,8 @@ const router = new Router({
     component: () =>
       import('../components/welfare/oneYuanGroupShopping/allGroupBookAwardList.vue'),
     meta: {
-      title: "已开的团"
+      title: "已开的团",
+      keepAlive: true,
     }
   },
   {
@@ -237,7 +238,8 @@ const router = new Router({
     component: () =>
       import('../components/welfare/oneYuanGroupShopping/awardUserShow.vue'),
     meta: {
-      title: "已开的团"
+      title: "已开的团",
+
     }
   },
   {

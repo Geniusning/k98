@@ -1,6 +1,6 @@
 /*
- * @Author: liuning 
- * @Date: 2020-05-04 14:46:23 
+ * @Author: liuning
+ * @Date: 2020-05-04 14:46:23
  * @Last Modified by: liuning
  * @Last Modified time: 2021-02-05 16:02:47
  */
@@ -256,7 +256,7 @@ const mutations = {
     // //console.log(data)
     let tempData = [];
     data.forEach((item, index) => {
-      if (item.info.lastMsg) { //如果有最新消息的 
+      if (item.info.lastMsg) { //如果有最新消息的
         item.info.lastMsg.stime = util.timestampToTime(item.info.lastMsg.stime)
       }
       //如果有未读消息，把有未读消息的那一项放到顶部
@@ -292,7 +292,7 @@ const mutations = {
         item.info.lastMsg.stime = tempTime
         item.info.unReadMsgCount = lastMsgFrom.count;
       }
-      totalCount += item.info.unReadMsgCount //累计未读消息   
+      totalCount += item.info.unReadMsgCount //累计未读消息
     })
     state.msg_badgeCount = totalCount;
     state.badgeCount = state.msg_badgeCount + state.event_badgeCount
@@ -595,6 +595,10 @@ const mutations = {
           item['name'] = `拼团中奖通知>`
           item['img'] = `../../assets/image/10.png`
           break;
+        case 10:
+          item['name'] = `您参加的拼团中奖啦！奖品券已存入卡券包`
+          item['img'] = `../../assets/image/11.png`
+          break;
         default:
           break;
       }
@@ -738,7 +742,7 @@ const mutations = {
         state.otherWechatMsg.push(item)
       }
     })
-   
+
     console.log("state.otherWechatMsg----", state.otherWechatMsg)
   },
   //测试
