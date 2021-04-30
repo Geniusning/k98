@@ -10,100 +10,47 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   }
 
-  #circle {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+  .list {
+    width: 100%;
+    /* height: 900px; */
+    border: 1px solid #ccc;
+    margin: 0 auto;
+  }
+
+  .item {
+    width: 50%;
+    height: 700px;
+    float: left;
+    /* border: 1px solid #ccc; */
+  }
+
+  .item:nth-child(1) {
+    background: red;
+  }
+
+  .item:nth-child(2) {
+    background: green;
+  }
+
+  .item:nth-child(3) {
+    background: yellow;
+  }
+
+  .item:nth-child(4) {
+    background: pink;
   }
 </style>
-<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+<!-- <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script> -->
 
-<body onload="countTime()">
-  <marquee style="font-size: 50px;color:red;" behavior="" scrolldelay="20" direction="left">welcome</marquee>
-
-
-
-
-
-
-  <!-- <a href="#哈哈">hash</a>
-  <div id="circle">1
+<body>
+  <div class="list">
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
   </div>
-  <div id="circle">2</div>
-     <div>
-       <span id="_d">00</span>
-       <span id="_h">00</span>
-       <span id="_m">00</span>
-       <span id="_s">00</span>
-       </div> -->
-
 </body>
 <script>
-  let d = document.getElementById("circle")
-  console.log("d=",d)
-  function reverseNum(num){
-    let numStr = num+""
-    let resultNum = ""
-    for(let i=numStr.length-1;i>=0;i--){
-        resultNum += numStr[i]
-    }
-    console.log(resultNum)
-    return parseInt(resultNum)
-}
-let array = [,1,,2,,3];
-array = array.map((i) => ++i)
-console.log(array)
-function success(pos) {
-  console.log("pos=",pos)
-  var crd = pos.coords;
-
-  console.log('Your current position is:');
-  console.log(`Latitude : ${crd.latitude}`);
-  console.log(`Longitude: ${crd.longitude}`);
-  console.log(`More or less ${crd.accuracy} meters.`);
-}
-navigator.geolocation.getCurrentPosition(success)
-  // console.log(window.location.href)
-  // window.addEventListener("hashchange",function(e){
-  //   console.log("hash change= ",e)
-  //   console.log("hash = ",location.hash)
-  // })
-
-  // class Point {
-  //   constructor(x,y){
-  //     this.x = x
-  //     this.y = y
-  //   }
-
-  //   toMyString(){
-  //     return `(${this.x},${this.y})`
-  //   }
-  // }
-
-  // let point = new Point(10,100)
-  // console.log(point.toMyString())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   function sleep(duration) {
     return new Promise((resolve, reject) => {
       setTimeout(resolve, duration)
@@ -121,138 +68,49 @@ navigator.geolocation.getCurrentPosition(success)
       await changeColor(2000, "red")
     }
   }
-  main()
+  // main()
 
-  function t(i) {
-    return new Promise((resolve,reject)=>{
-       setTimeout(() => {
-        resolve(i)
-      }, 2000);
-    })
-   
-  }
-
-  async function exec(){
-    for (let i = 0; i < 10; i++) {
-      let res = await t(i)
-      // console.log("res---",res)
-    }
-  }
-  exec()
 
   const GetQueryString = (str, name) => {
     var reg = new RegExp(name + "=([^&]*)(&|$)");
     var r = str.match(reg);
-    console.log("r=",r)
+    console.log("r=", r)
     if (r != null) {
       return decodeURI(r[1]);
     }
     return "";
   };
 
-  // console.log("GetQueryString=",GetQueryString("https://llwant2.qianz.com/api/selectUserTopUpVip?phone=","phone"))
-var date =new Date()
-var year=date.getFullYear();
-var month=13+1;
-var lastDay=new Date(year,month,0)
-// console.log(lastDay)
-// console.log(new Date().getDate())
 
-  function generateTime(){
-    let result = []
-    for (let i = 0; i < 24; i++) {
-      let tempObj1 = {
-        text:(i>=10?i+"":"0"+i)+":00",
-        value:(i>=10?i+"":"0"+i)+":00"
-      }
-      let tempObj2 = {
-        text:(i>=10?i+"":"0"+i)+":30",
-        value:(i>=10?i+"":"0"+i)+":30"
-      }
-      result.push(tempObj1,tempObj2)
+  //闭包案例1
+  function makePower(power){
+    return function(number){
+      return Math.pow(number,power)
     }
-    return result
   }
 
-  // console.log(generateTime())
+  let makePower2 = makePower(2)
+  let makePower3 = makePower(3)
 
-  function countTime() {
-    //获取当前时间
-    var date = new Date();
-    var now = date.getTime();
-    //设置截止时间
-    var str = "2020/10/22 00:00:00";
-    var endDate = new Date(str);
-    var end = endDate.getTime();
+  console.log(makePower2(2))
+  console.log(makePower3(2))
 
-    //时间差
-    var leftTime = end - now;
-    //定义变量 d,h,m,s保存倒计时的时间
-    var d, h, m, s;
-    if (leftTime >= 0) {
-      d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
-      h = Math.floor(leftTime / 1000 / 60 / 60 % 24);
-      m = Math.floor(leftTime / 1000 / 60 % 60);
-      s = Math.floor(leftTime / 1000 % 60);
-
+  //闭包案例2
+  function makeSalary(base){
+    if (typeof base !== 'number'){
+      throw new TypeError("请传入数字")
     }
-    //将倒计时赋值到div中
-    document.getElementById("_d").innerHTML = d + "天";
-    document.getElementById("_h").innerHTML = h + "时";
-    document.getElementById("_m").innerHTML = m + "分";
-    document.getElementById("_s").innerHTML = s + "秒";
-    //递归每秒调用countTime方法，显示动态时间效果
-    setTimeout(countTime, 1000);
-
+    return function(performance){
+      if(typeof performance !== 'number'){
+        throw new TypeError("请传入数字")
+      }
+      return base + performance
+    }
   }
-      let obj = null
-      if(obj){
-        console.log(true)
-      }
 
-      function evetLoop(){
-        console.log("1")
-        setTimeout(() => {
-          console.log('6')
-        }, 0);
-        var promise = new Promise((resolve,reject)=>{
-          setTimeout(() => {
-            console.log("2")
-          }, 0);
-          console.log("3")
-          resolve()
-        })
-        promise.then(()=>{
-          console.log("4")
-          setTimeout(() => {
-            console.log('5')
-          }, 0);
-        })
-        setTimeout(() => {
-          console.log('7')
-        }, 0);
-        console.log("8")
-      }
-      // evetLoop() // 13846275
-// console.log("sync1")  //1
-// setTimeout(() => {
-//   console.log("setTimeOut1") //5
-// }, 0);
-// var promise = new Promise((resolve,reject)=>{
-//   setTimeout(() => {
-//     console.log("setTimeOutPromise") //6
-//   }, 0);
-//   console.log("promise")  //2
-//   resolve()
-// })
-// promise.then(()=>{
-//   console.log("then") //4
-//   setTimeout(() => {
-//     console.log("then settimeout") //7
-//   }, 0);
-// })
-// setTimeout(() => {
-//   console.log("last-timeout") //8
-// }, 0);
-// console.log("sync2") //3
+  let salaryLever1 = makeSalary(12000)
+  let salaryLever2 = makeSalary(15000)
+
+  console.log(salaryLever1('2000'))
+  console.log(salaryLever2(2000))
 </script>

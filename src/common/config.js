@@ -5,14 +5,11 @@
  * @Last Modified time: 2021-02-25 16:02:34
  */
 export default {
-  // commonUrl: 'https://llwant1.qianz.com',// 本地测试
-  commonUrl: '',
-  /* zhognxin */
-  // websocketUrl: "wss://singledog.qianz.com/api/ws",
-  /* 老友一起玩吧 -2Asr_JQc6TcBWlvN5FjWWwLGJcwCGpzuqjwmBfrV0CRQHxf0-ax2HP75s4c0qpoZO6XvQ== */
-  cashierId:"cashier_001",
-  staffQrCodeVisitType:16, //扫员工码进入系统
+  commonUrl: 'https://llwant1.qianz.com', // 老哟测试
+  // commonUrl: 'https://singledog.qianz.com', // 中新
+  // commonUrl: "", //线上
+  cashierId: "cashier_001",
+  staffQrCodeVisitType: 16, //扫员工码进入系统
+  tk: "NWAdpArp42Dw2EN7OVr7b_q5pKmriwj5ReVTTOWAb3exNCgXIAM4ckYrI20ZHWJsDP6q7w==",
   websocketUrl: "wss://llwant1.qianz.com/api/ws",
-  // tk: "srhKJHU3xdefNM--Q1KL-UC1kq5Aj2y_XUPB9eiMX5PAcZ8ILaA_cEr5Lja3j_hcUpZmiQ=="
-  tk: "9V4eeferyy3pRds0xyp_wc1FdFyOeWiB4uggvfHScCdFu1HBfO620nKhiUxM-uBswTryYw=="
 }

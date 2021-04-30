@@ -15,15 +15,25 @@ import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 import IntroJs from 'intro.js'
 import 'intro.js/introjs.css';
+import config from "common/config"
+
 
 
 // import vuePicturePreview from 'vue-picture-preview'
-import { ToastPlugin, LoadingPlugin } from 'vux'
-import { mapMutations, mapState, mapActions } from 'vuex'
-import { Cascader } from 'element-ui';
+import {
+  ToastPlugin,
+  LoadingPlugin
+} from 'vux'
+import {
+  mapMutations,
+  mapState,
+  mapActions
+} from 'vuex'
+import {
+  Cascader
+} from 'element-ui';
 import api from 'common/api'
 import util from "common/util";
-import config from 'common/config'
 
 Vue.use(IntroJs);
 Vue.use(Cascader)
@@ -42,7 +52,7 @@ new Vue({
       "soulResult", "otherWechatMsg"
     ])
   },
-  data () {
+  data() {
     return {
       pingNumer: 0,
       timer: "",
@@ -51,23 +61,23 @@ new Vue({
       openId: ''
     }
   },
-  created () {
+  created() {
     if (!util.isAndroid()) {
       // let wechatInfo = navigator.userAgent.match(/MicroMessenger\/([\d\.]+)/i);
       // let versionNumber = wechatInfo[1].split(".").join("")
       // if (versionNumber > 7014) {
-        window.iosSignUrl = window.location.href.split('#')[0]
-        util._getJssdkConfig(window.iosSignUrl)
-      }
-      // else {
-      //   window.onload = function () {
-      //     window.iosSignUrl = window.location.href.split('#')[0]
-      //     setTimeout(() => {
-      //       console.log("window.iosSignUrl----", window.iosSignUrl)
-      //       util._getJssdkConfig(window.iosSignUrl)
-      //     }, 1500);
-      //   }
-      // }
+      window.iosSignUrl = window.location.href.split('#')[0]
+      util._getJssdkConfig(window.iosSignUrl)
+    }
+    // else {
+    //   window.onload = function () {
+    //     window.iosSignUrl = window.location.href.split('#')[0]
+    //     setTimeout(() => {
+    //       console.log("window.iosSignUrl----", window.iosSignUrl)
+    //       util._getJssdkConfig(window.iosSignUrl)
+    //     }, 1500);
+    //   }
+    // }
     // }
     this.deskCode = util.GetQueryString("deskCode")
     this.deskId = util.GetQueryString("deskID")
@@ -88,7 +98,7 @@ new Vue({
     this.loadStaffCouponAct() //员工送券活动通知
     this.loadPublisherIdlist() //拉取供求发布者id
   },
-  mounted () {
+  mounted() {
 
     window.addEventListener("unload", () => {
       this.setChatFriend({}); //清除vuex里面保存的聊天好友对象
@@ -109,34 +119,38 @@ new Vue({
   },
   methods: {
     //创建长连接
-    createWebsocket () {
+    createWebsocket() {
       // 线上环境 ---begin
       let windowUrL = window.location.href;
       let index = windowUrL.indexOf('.com');
       let shareurl = windowUrL.slice(0, index);
       let websocketUrl = shareurl.slice(8);
+      let wxxHost = `${window.location.host}${window.location.pathname}`
+      console.log("wxxHost", wxxHost)
       if (this.deskCode != "") {
-        this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+        //  this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+        this.connectUrl = `wss://${window.location.host}/api/ws?deskCode=${this.deskCode}`
       } else {
-        this.connectUrl = `wss://${websocketUrl}.com/api/ws`
+        this.connectUrl = `wss://${window.location.host}/api/ws`
+        // this.connectUrl = `wss://llwant1.qianz.com/api/ws`
       }
       this.websock = new WebSocket(this.connectUrl);
       this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
-       //线上环境 ---end
+      //线上环境 ---end
       // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()
     },
 
     //初始化长连接
-    initWebsocket () {
+    initWebsocket() {
       this.websock.onopen = this.websocketonopen;
       this.websock.onerror = this.websocketonerror;
       this.websock.onmessage = this.websocketonmessage;
       this.websock.onclose = this.websocketclose
     },
     //重连长链接
-    reconnectWebsocket () {
+    reconnectWebsocket() {
       if (this.lockReconnect) {
         return
       }
@@ -150,16 +164,16 @@ new Vue({
         this.limitTimes++
       }
     },
-    loadUserOtherShopInfo () {
+    loadUserOtherShopInfo() {
       api.loadUserOtherShopInfo(this.userInfo.phone).then(res => {
-        if(res.errCode===0){
+        if (res.errCode === 0) {
           this.saveUserOtherWechatMsg(res.info)
         }
         console.log("其他公众号消息=", this.otherWechatMsg)
       })
     },
     //关闭公众号
-    closeWebPage () {
+    closeWebPage() {
       WeixinJSBridge.invoke("closeWindow", {}, function (res) {
         // alert(res.err_msg);
         // window.location.href =
@@ -167,13 +181,13 @@ new Vue({
       });
     },
     //成为待被邀请队列成员
-    addWaitingCombatList () {
+    addWaitingCombatList() {
       api.addWaitingCombatList().then(res => {
         //console.log("成为待被邀请队列成员-----------", res)
       })
     },
     //拉取供求发布者id
-    loadPublisherIdlist () {
+    loadPublisherIdlist() {
       api.loadPublisherList("supply").then(res => {
         if (res.errCode === 0) {
           // console.log("拉取供求发布者id---", res)
@@ -182,24 +196,24 @@ new Vue({
       })
     },
     //加载L98控制开关信息
-    loadL98otherSetting () {
+    loadL98otherSetting() {
       api.loadL98otherSetting().then(res => {
         // console.log("控制开关--------", res)
         this.LoadL98Setting(res)
       })
     },
-    loadAdvertisingPhoto () {
+    loadAdvertisingPhoto() {
       api.loadAdvertisingPhoto().then(res => {
         //console.log('轮播图-------------------------：', res.adPhotoURL)
         this.getAdvertisingImg(res.adPhotoURL);
 
       })
     },
-    getWeChatUrl () {
+    getWeChatUrl() {
       let url = window.location.href.split('/#')[0];
       this.getUrl(url);
     },
-    websocketonopen (e) {
+    websocketonopen(e) {
       //console.log("WebSocket连接成功");
       this.timer = setInterval(() => {
         let msg = {
@@ -215,13 +229,13 @@ new Vue({
         }
       }, 50000);
     },
-    websocketonerror (e) {
+    websocketonerror(e) {
       //错误
       //console.log("WebSocket连接发生错误");
       this.reconnectWebsocket() //重连
     },
     //数据接收
-    websocketonmessage (e) {
+    websocketonmessage(e) {
       let cacheOpenId = sessionStorage.getItem('identity') ? sessionStorage.getItem('identity') : this.userInfo.openid
       var decc = new TextDecoder("utf-8");
       let result = JSON.parse(decc.decode(e.data));
@@ -418,19 +432,19 @@ new Vue({
         this.addFriendEvtObj(result)
       }
     },
-    websocketclose (e) {
+    websocketclose(e) {
       console.log("websocket关闭-----------", e)
       this.reconnectWebsocket() //重连
     },
     //拉取积分换礼品列表
-    loadGoods () {
+    loadGoods() {
       api.loadGoods().then(res => {
         // console.log('积分换礼品列表------', res);
         this.getSendGiftList(res.slice(0));
       })
     },
     // 获取用户信息
-    getUserInfo (openId = "") {
+    getUserInfo(openId = "") {
       api.getUserInfo(openId).then(res => {
         console.log('个人信息-------------------------：', res);
         this.getuserInfo(res);
@@ -440,14 +454,14 @@ new Vue({
       });
     },
     //获取门店信息
-    loadStoreSetting () {
+    loadStoreSetting() {
       api.loadStoreSetting().then(res => {
         // console.log('门店信息---------------------------------：', res)
         this.getShopSetting(res)
       })
     },
     //创建二维码
-    createQrcode () {
+    createQrcode() {
       api.loadAllQrcode().then(res => { //没有创建过二维码才创建
         this.saveQrCode(res.urls[0])
         if (!res.urls.length || !res.urls) {
@@ -459,7 +473,7 @@ new Vue({
       });
     },
     //获取在线店长推荐
-    loadRecommends () {
+    loadRecommends() {
       api.loadRecommends().then(res => {
         // console.log('店长推荐数据---------------------', res)
         this.getRecommentList(res);
@@ -473,7 +487,7 @@ new Vue({
     //   })
     // },
     //拉取约战、点赞、送礼列表
-    loadMutualEvents () {
+    loadMutualEvents() {
       api.loadMutualEvents().then(res => {
         if (res.errCode === 0) {
           let mutualEventsObj = res.mutualEvents;
@@ -495,7 +509,7 @@ new Vue({
       })
     },
     //拉取员工送券活动
-    loadStaffCouponAct () {
+    loadStaffCouponAct() {
       api.loadStaffCouponAct().then(res => {
         //console.log("员工送券活动-------", res)
         if (res.errCode === 0) {
@@ -544,4 +558,4 @@ new Vue({
     }
   },
   render: h => h(App)
-}).$mount('#app-box')
+}).$mount('#app')

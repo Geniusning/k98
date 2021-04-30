@@ -348,7 +348,7 @@ export default {
     //进入优惠券详情
     selectDiscout (id, canIuse) {
       if (!canIuse) {
-        this.$vux.toast.text('未到时间时间', 'middle')
+        this.$vux.toast.text('未到使用时间', 'middle')
         return
       }
       if (!this.deskCode) {

@@ -75,7 +75,7 @@ util.compareDate = (beginDate, endDate) => {
 //时间戳转化成地址  格式xxxx-xx-xx xx-xx-xx
 util.timestampToTime = function (timestamp) {
   // //console.log("timestamp----------------",timestamp)
-  if (timestamp == 0){
+  if (timestamp == 0) {
     return null
   }
   if (typeof timestamp == "string") {
@@ -196,16 +196,16 @@ util.addVisitRecord = function (pageName) {
 }
 //分享获得积分
 util.shareGetJifen = function (amount, shareType) {
-  api.shareToGetIntegral(amount, shareType).then(res => {
-    if (res.errCode == 1030) {
-      alert("分享已上限，每天最多分享5次获得积分");
-    }
-  });
-},
+    api.shareToGetIntegral(amount, shareType).then(res => {
+      if (res.errCode == 1030) {
+        alert("分享已上限，每天最多分享5次获得积分");
+      }
+    });
+  },
   //判断当前时间是否在某一时间段
   util.isDuringTime = function (beginTime, endTime, isNextDay) {
-    var dealBeginTime  //处理后的开始时间
-    var dealEndTime    //处理后的结束时间
+    var dealBeginTime //处理后的开始时间
+    var dealEndTime //处理后的结束时间
     var todayYear
     var todayMon
     var todayDate
@@ -215,7 +215,7 @@ util.shareGetJifen = function (amount, shareType) {
     todayDate = new Date().getDate()
     if (isNextDay === 1) {
       let today0Time = new Date().setHours(0, 0, 0) //设置当天凌晨零时零分
-      tomorrowTimeStamp = today0Time + 86400000   //设置第二天零点零分
+      tomorrowTimeStamp = today0Time + 86400000 //设置第二天零点零分
       tomorrowYear = new Date(tomorrowTimeStamp).getFullYear()
       tomorrowMonth = new Date(tomorrowTimeStamp).getMonth() + 1
       tomorrowDate = new Date(tomorrowTimeStamp).getDate()
@@ -246,7 +246,8 @@ util.shareGetJifen = function (amount, shareType) {
   },
   // jssdk签名
   util._getJssdkConfig = function (url) {
-    api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
+    let windowUrL = `https://${window.location.host}${window.location.pathname}`
+    api.getJssdkInfo(`${windowUrL}/api/loadJSSDKParams?url=` + encodeURIComponent(url))
       .then(res => {
         console.log("获取微信jssdk---------", res)
         wx.config({
@@ -273,7 +274,8 @@ util.setShareInfo = function (shareObj, amount, shareType, fn) {
   if (util.isAndroid()) {
     console.log("是安卓")
     let url = window.location.href.split("#")[0]
-    api.getJssdkInfo("/api/loadJSSDKParams?url=" + encodeURIComponent(url))
+    let windowUrL = `https://${window.location.host}${window.location.pathname}`
+    api.getJssdkInfo(`${windowUrL}/api/loadJSSDKParams?url=` + encodeURIComponent(url))
       .then(res => {
         console.log("获取微信jssdk---------", res)
         wx.config({
@@ -380,7 +382,9 @@ util.setShareInfo = function (shareObj, amount, shareType, fn) {
 //获取cookie
 util.getCookie = function (cname) {
   var name = cname + "=";
+  console.log("document.cookie", document.cookie)
   var ca = document.cookie.split(";");
+  console.log('ca', ca)
   for (var i = 0; i < ca.length; i++) {
     var c = ca[i];
     while (c.charAt(0) == " ") c = c.substring(1);
@@ -458,19 +462,19 @@ util.returnDiscountContent = function (coupon) {
     return coupon.content
   }
 }
-util.hasClass = (element, className)=> {
+util.hasClass = (element, className) => {
   var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
   return element.className.match(reg);
 }
-util.addClass = (element, className)=> {
-  if (!util.hasClass(element, className)) {
-    element.className += " " + className;
+util.addClass = (element, className) => {
+    if (!util.hasClass(element, className)) {
+      element.className += " " + className;
+    }
+  },
+  util.removeClass = (element, className) => {
+    if (util.hasClass(element, className)) {
+      var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
+      element.className = element.className.replace(reg, " ");
+    }
   }
-},
-util.removeClass = (element, className)=> {
-  if (util.hasClass(element, className)) {
-    var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
-    element.className = element.className.replace(reg, " ");
-  }
-}
 export default util

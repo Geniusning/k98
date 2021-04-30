@@ -62,24 +62,11 @@
       });
     }
   })();
-
-  window.onerror = function (message, url, line, column, error) {
-    console.log("error=",error);
-    console.log("url=", url,);
-    console.log("line=", line);
-    console.log("column=",column);
-    console.log("error=",error);
-    console.log("message=",message);
-  }
-  window.addEventListener('error', function(event) { 
-    console.log("页面发生错误啦")
-    window.location.reload()
-  })
 </script>
 </head>
 
 <body>
-  <div id="app-box"></div>
+  <div id="app"></div>
   <script src="/static/jsweixin-1.6.0.js"></script>
   <!-- <script src="http://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script> -->
   <script src="/static/flexible.js"></script>

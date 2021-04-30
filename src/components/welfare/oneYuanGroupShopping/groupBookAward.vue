@@ -15,7 +15,7 @@
       <div class="oneYuan-header">
         <div class="oneYuan-header-left">
           <div class="oneYuan-price">团购价：{{groupBookAward.groupBookAwardInfo.groupShoppingPrice}}积分</div>
-          <p class="oneYuan-member">3<span class="text">人拼</span></p>
+          <p class="oneYuan-member">{{groupBookAward.groupBookAwardInfo.personNums}}<span class="text">人拼</span></p>
         </div>
         <div class="oneYuan-header-right">
           <p class="time-desc">距结束还剩</p>
@@ -131,7 +131,7 @@
         <p class="line"></p>
         <div class="oneYuan-rule">
           <h3 class="title">团购须知：</h3>
-          <p class="content">1、本团N人成团，成团后团购券自动存入各人卡券包</p>
+          <p class="content">1、本团<span style="color:red">{{groupBookAward.groupBookAwardInfo.personNums}}人</span>成团，成团后团购券自动存入各人卡券包</p>
           <p class="content">2、本团期限2天，不成团不扣积分</p>
           <p class="content">3、成团后，凭券按团购价到店换商品或奖品</p>
           <p style="color: red;" class="content">4、奖品只有一份，随机抽取一位幸运儿，存入其卡券包</p>

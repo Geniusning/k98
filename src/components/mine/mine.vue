@@ -143,7 +143,7 @@ import {
 import topUp from "base/topUp/topUp";
 import { mapState, mapGetters, mapMutations } from "vuex";
 import util from "common/util";
-import url from "common/config";
+import config from "common/config";
 import api from "common/api";
 import Intro from 'common/intro'
 import Validate from "../../base/validatephone/validatephone";

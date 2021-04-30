@@ -1,8 +1,8 @@
 <template>
   <div id="home" class="home">
     <!-- <div class="guideBg" v-if="isFirstLoad" @click="isFirstLoad=false"></div> -->
-    <div class="home-top_wrapper">
-      <div class="barLogo_wrapper">
+    <div class="home-top_wrapper" v-show="shopSettingInfo.shopModeId !== FOUR_VIDEO">
+      <div class="barLogo_wrapper" @click="link">
         <div class="logo_wrapper">
           <img onclick="return false" class="logo" :src="shopSettingInfo.image" alt />
           <p class="bar_name">
@@ -14,7 +14,14 @@
       <div class="shadowLeft"></div>
       <div class="shadowRight"></div>
     </div>
-    <div v-if="shopSettingInfo.shopModeId == 0 || shopSettingInfo.shopModeId == 1" class="community-wrapper">
+    <div v-if="shopSettingInfo.shopModeId === FIVE_PLATFORM" class="community-wrapper">
+      <platform :platformInfo="platformList" :friendLeagleList="friendLeagleList"></platform>
+    </div>
+    <!-- 视频 -->
+    <div class="video-wrapper" v-else-if="shopSettingInfo.shopModeId === FOUR_VIDEO">
+      <Video v-if="videoList.length>0" :videoList="videoList"></Video>
+    </div>
+    <div v-else class="community-wrapper">
       <div class="content">
         <div class="adr_wrapper">
           <div class="adr clearfix" @click="getMapPosition">
@@ -24,12 +31,11 @@
           <div class="tel">
             <a href="javascript:void(0);">
               <img onclick="return false" src="../../assets/image/call.png" alt @click="callPhone" />
-              <!-- <img onclick="return false" src="../../assets/image/avatar2.jpg" alt @click="callPhone"> -->
             </a>
           </div>
         </div>
-        <!-- mode 1 -->
-        <div v-if="shopSettingInfo.shopModeId===0" class="entertainment_wrapper">
+        <!-- mode 1 一套普通 -->
+        <div v-if="shopSettingInfo.shopModeId===ZERO_COMMON" class="entertainment_wrapper">
           <div class="findFri_btn" @click="gotoFriend">
             <img id="step1" src="../../assets/image/findFri.png" alt />
             <div class="desc_wrapper">
@@ -55,8 +61,8 @@
             <p class="text">挑战邻桌小妹/好友组局&gt;</p>
           </div>
         </div>
-        <!-- mode 2 -->
-        <div v-else class="entertainment_wrapper2">
+        <!-- mode 2 二套商会-->
+        <div v-else-if="shopSettingInfo.shopModeId === ONE_BUSINESS" class="entertainment_wrapper2">
           <div class="entertainment_top">
             <div class="left">
               <img onclick="return false" class="k_1" @click="goToFriendForSvip" src="../../assets/image/k_1.png" alt="">
@@ -82,13 +88,32 @@
             </div>
           </div>
         </div>
+        <!-- mode 3 三套社群-->
+        <div v-else-if="shopSettingInfo.shopModeId === TWO_COMMUNITY" class="entertainment_wrapper2">
+          <div class="entertainment_top">
+            <div class="left" @click="gotoComment">
+              <img onclick="return false" class="k_1" src="../../assets/image/k_3.png" alt="">
+            </div>
+            <div class="right" @click="gotoFriend">
+              <div class="lineOne">
+                <ul class="fri_list" v-show="friendIconList3.length>=3">
+                  <li class="item" style="margin-left:-0.13rem" :class="'avar'+index" v-for="(item,index) in friendIconList3" :key="index">
+                    <img style="width:.5rem;height:.5rem" onclick="return false" :src="item.headimgurl?item.headimgurl:defaultAvatarImg" class="min_avatar" />
+                  </li>
+                  <li class="item dot" style="line-height:.5">...</li>
+                </ul>
+              </div>
+              <img onclick="return false" class="k_1" src="../../assets/image/k_2.png" alt="">
+            </div>
+          </div>
+        </div>
         <!-- 福利 -->
         <div class="welfare_wrapper" v-show="recommentList.length">
           <div class="title_content_wel vux-1px-b">
             <div class="title clearfix">
               <img onclick="return false" src="../../assets/image/recomment.png" alt class="icon fl" />
-              <h2 class="shop_title" @click="closeWebPage">{{shopSettingInfo.shopModeId===0 ? "店长推荐" :"会员产品推荐" }}</h2>
-              <span v-if="shopSettingInfo.shopModeId === 0" class="desc">积分兑换更优惠</span>
+              <h2 class="shop_title" @click="closeWebPage">{{shopSettingInfo.shopModeId=== ZERO_COMMON ? "店长推荐" :"会员产品推荐" }}</h2>
+              <span v-if="shopSettingInfo.shopModeId === ZERO_COMMON" class="desc">积分兑换更优惠</span>
             </div>
             <div class="more fr">
               <span @click="goToMoreRecommend">更多&gt;&gt;</span>
@@ -133,7 +158,7 @@
         </div>
         <!-- 友商互推 -->
         <div class="welfare_wrapper" v-if="friendLeagleList.length">
-          <div class="title_content_wel vux-1px-b">
+          <div class="title_content_wel">
             <div class="title clearfix">
               <img onclick="return false" src="../../assets/image/hutui.png" alt class="icon fl" />
               <h2 class="shop_title">友好商家/商会/社群</h2>
@@ -177,10 +202,6 @@
         </div>
       </div>
     </div>
-    <div v-else-if="shopSettingInfo.shopModeId == 3" class="community-wrapper">
-      <platform :platformInfo="platformList" :friendLeagleList="friendLeagleList"></platform>
-    </div>
-
     <!-- 游戏框框 -->
     <!-- <div v-transfer-dom>
             <x-dialog v-model="gameShow" class="dialog-gameBegin">
@@ -209,6 +230,7 @@
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive"></router-view>
   </div>
+
 </template>
 
 <script type='text/ecmascript-6'>
@@ -221,6 +243,13 @@ import { mapMutations, mapActions, mapState, mapGetters } from "vuex";
 import envelope from "base/envelope/envelope";
 import Platform from './homeCompoment/platform';
 import FriAllianceInfo from './homeCompoment/friAllianceInfo'
+import Video from './homeCompoment/video'
+const ZERO_COMMON = 0
+const ONE_BUSINESS = 1
+const TWO_COMMUNITY = 2
+const THREE_SHOPPING = 3
+const FOUR_VIDEO = 4
+const FIVE_PLATFORM = 5
 export default {
   name: "home",
   // directives: {
@@ -228,6 +257,12 @@ export default {
   // },
   data () {
     return {
+      ZERO_COMMON: ZERO_COMMON,
+      ONE_BUSINESS: ONE_BUSINESS,
+      TWO_COMMUNITY: TWO_COMMUNITY,
+      THREE_SHOPPING: THREE_SHOPPING,
+      FOUR_VIDEO: FOUR_VIDEO,
+      FIVE_PLATFORM: FIVE_PLATFORM,
       platformList: [],
       isShow_bg: false,
       // game_giftInfo: {
@@ -235,6 +270,7 @@ export default {
       //     secondPrize: {},
       //     thirdPrize: {}
       // },
+      videoList: [],
       recommendItemIndo: {
         convert: {},
         coupInfo: {},
@@ -303,6 +339,7 @@ export default {
       keyword: "",
       isSvip: false,
     };
+    this.getAllObjectList()
     this.setAdvertisePhoto(); //设置轮播图
     this.loadPlatforms()
     this.acquireWaitGetCoupons(); //获取自动优惠券
@@ -353,6 +390,17 @@ export default {
     // this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
   },
   methods: {
+    link () {
+      let tk = util.getCookie("tk")
+      window.location.href = `https://k90.93wifi.net/kone?visitFrom=test&tk=${tk}`
+    },
+    async getAllObjectList () {
+      let res = await api.getAllObjectList()
+      if (res.errCode === 0) {
+        this.videoList = res.info
+      }
+      console.log("门店视频", res)
+    },
     loadPlatforms () {
       api.loadPlatforms().then(res => {
         if (res.errCode === 0) {
@@ -774,7 +822,7 @@ export default {
     //   }
     // },
     friendList: function (newValue) {
-      // console.log("friendList-----------", newValue);
+      console.log("friendList-----------", newValue);
       if (newValue.length < 6) {
         this.friendIconList1 = [
           {
@@ -812,7 +860,8 @@ export default {
             headimgurl: require("../../assets/image/blueSky.png")
           }
         ]
-        //console.log("this.friendIconList1------", this.friendIconList1);
+        console.log("this.friendIconList1------", this.friendIconList1);
+        console.log("this.friendIconList2------", this.friendIconList2);
         return;
       }
       let tempArr = this.friendList.map((item, index) => {
@@ -832,7 +881,8 @@ export default {
     topUp,
     Popup,
     Platform,
-    FriAllianceInfo
+    FriAllianceInfo,
+    Video
     // Carousel3d,
     // Slide
   }

@@ -4,10 +4,10 @@
       <div class="coinBox" v-if="panelIndex===-1" key="coinBox">
         <div class="coinBox_top vux-1px-b">
           <div class="integral_box">
-            <img onclick="return false" src="../../assets/image/integralIcon.png" alt="icon" class="integral">
+            <img onclick="return false" src="../../assets/image/9.png" alt="会员卡" class="integral">
             <p class="integral_text">
               储值充值：
-              <span v-if="showOweText">尚欠储值:{{Math.abs(userInfo.storeValue-componentGiftInfo.goods.vipMoney)}}</span>
+              <span v-if="showOweText">会员卡至少还需充值:{{Math.abs(userInfo.storeValue-componentGiftInfo.goods.vipMoney)}}</span>
             </p>
           </div>
           <div class="close" @click="closeIntegralPanel">X</div>
@@ -94,7 +94,7 @@
           <img onclick="return false" v-else src="../../assets/image/giftBox.png" class="giftBoxIfon">
           <p class="header_text">
             {{panelIndex===2?"消耗积分:":"消耗储值:"}}{{panelIndex===2?componentGiftInfo.goods.integral:componentGiftInfo.goods.vipMoney}} &nbsp;&nbsp;&nbsp;
-            {{panelIndex===2?"我的积分:":"我的储值:"}}
+            {{panelIndex===2?"我的积分:":"会员卡余额:"}}
             {{panelIndex===2?userInfo.money:userInfo.storeValue}}
           </p>
           <div class="close" @click="closeIntegralPanel">X</div>
@@ -109,7 +109,7 @@
             <p class="limit">{{componentGiftInfo.coupInfo?componentGiftInfo.coupInfo.limit?componentGiftInfo.coupInfo.limit:'联系客服':""}}</p>
             <p class="price" v-if="componentConvertType===0 ||componentConvertType===1||componentConvertType===2 ||componentConvertType===3">
               原价:{{componentGiftInfo.goods.discountPrice}}&nbsp;&nbsp;&nbsp;
-              <span style="color:red">{{panelIndex===2?"积分换:":"会员价"}}{{panelIndex===2?componentGiftInfo.goods.integral:componentGiftInfo.goods.vipMoney}}</span>
+              <span style="color:red">{{panelIndex===2?"积分换:":"会员价:"}}{{panelIndex===2?componentGiftInfo.goods.integral:componentGiftInfo.goods.vipMoney}}</span>
             </p>
             <p class="price" v-else>对方将收到{{componentGiftInfo.goods.integral}}积分</p>
           </div>
@@ -123,9 +123,9 @@
         </div>
         <div class="handle" v-else-if="panelIndex===9">
           <div class="cancle" @click="closeIntegralPanel">取消</div>
-          <div v-if="(componentConvertType===0 || componentConvertType===1) && userInfo.storeValue>=componentGiftInfo.goods.vipMoney" class="btn" @click="confirmShopItemGift('storeValue',componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)" v-text="userInfo.storeValue<componentGiftInfo.goods.vipMoney?' ':'确认'">
+          <div class="btn" @click="confirmShopItemGift('storeValue',componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)" v-text="userInfo.storeValue<componentGiftInfo.goods.vipMoney?'充值':'确认'">
           </div>
-          <div v-show="userInfo.storeValue<componentGiftInfo.goods.vipMoney" class="tips_money">储值不足,请前往柜台充值</div>
+          <div v-show="userInfo.storeValue<componentGiftInfo.goods.vipMoney" class="tips_money">储值不足,请前往充值</div>
         </div>
       </div>
       <!-- 成功送礼提示框 -->
@@ -134,10 +134,10 @@
           <div class="close" @click="closeIntegralPanel">X</div>
           <div class="integralIcon_wrapper">
             <img onclick="return false" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
-            <!-- <div class="integralIcon_text">消耗积分:{{componentGiftInfo.goods.integral}} &nbsp;&nbsp;&nbsp;我的积分:{{userInfo.money}}</div> -->
+            <div class="integralIcon_text">{{successfulText}}</div>
           </div>
-          <p class="successful_text">{{successfulText}}</p>
-          <p class="successful_desc">{{successful_desc}}</p>
+          <p class="successful_text">{{successful_desc}}</p>
+          <!-- <p class="successful_desc"></p> -->
           <div @click="gotoTopUp" class="payBtn">充值</div>
           <div @click="comfirm" class="btn">知道</div>
         </div>
@@ -160,10 +160,10 @@
           <div class="close" @click="closeIntegralPanel">X</div>
           <div class="integralIcon_wrapper">
             <img onclick="return false" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
-            <div class="integralIcon_text"></div>
+            <div class="integralIcon_text">未开通充值功能</div>
           </div>
 
-          <p style="padding:0 .3rem" class="successful_text">未开通充值功能,您可通过分享朋友圈或好友群赚积分，重复分享无效</p>
+          <p style="padding:0 .3rem" class="successful_text">您可通过分享朋友圈或好友群赚积分，重复分享无效</p>
           <div @click="gotoPage('mine')" class="payBtn">赚积分</div>
           <div @click="closeIntegralPanel" class="btn">确认</div>
         </div>
@@ -186,11 +186,11 @@
           <div class="close" @click="closeIntegralPanel">X</div>
           <div class="integralIcon_wrapper">
             <img onclick="return false" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
-            <div class="integralIcon_text">积分不足</div>
+            <div class="integralIcon_text">积分不足，您的积分余额：{{userInfo.money}}</div>
           </div>
-          <p style="padding:0 .3rem" class="successful_text">积分不足,您可通过分享朋友圈好友群赚积分，也可以充值换积分</p>
+          <p style="padding:0 .3rem" class="successful_text">您可通过分享朋友圈好友群赚积分，也可以充值换积分</p>
           <div @click="gotoPage('mine')" class="payBtn">赚积分</div>
-          <div @click="closeIntegralPanel" class="btn">确认</div>
+          <div @click="panelIndex = 0" class="btn">充值</div>
         </div>
       </div>
       <!-- 拼团成功提醒 -->
@@ -470,6 +470,7 @@ export default {
     },
     //确认赠送
     confirmShopItemGift (type, goodID, goods, couponInfo) {
+      console.log('this.giftIntegral=', this.giftIntegral)
       if (type === 'money') {
         if (this.userInfo.money < this.giftIntegral) {
           //当前积分少于项目消耗积分
@@ -478,7 +479,7 @@ export default {
           return;
         }
       } else {
-        if (this.userInfo.storeValue > this.giftIntegral) {
+        if (this.userInfo.storeValue < this.giftIntegral) {
           //当前储值少于项目消耗储值
           this.panelIndex = -1;
           this.showOweText = true;

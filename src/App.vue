@@ -399,7 +399,7 @@ export default {
       isThrottle: true,
       isShowEnvelop: false,
       isShowGiftPanel: false,
-      tabFlag: false,
+      tabFlag: true,
       selected: 0,
       envelopeText: "",
       isShowEnvelope: false,
@@ -466,7 +466,7 @@ export default {
     ]),
     ...mapGetters(["qrIsShow"]),
     isShowDivideEnv () {
-      return this.hasDivideIdentity && (this.otherWechatMsg.length > 0 || this.divide_badgeCount.length > 0)
+      return this.hasDivideIdentity && (this.otherWechatMsg.length > 0 || this.divide_badgeCount.length > 0 || this.divideList.length > 0)
     }
   },
   created () {

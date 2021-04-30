@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ------------------------------
-const myToken = "x7JZKqwGyUDRSW6XPllbX7sxGlvTxvSErEn_roAMqa-REB2HqoxPNxI5UF2UNt7Is1sbtQ==";
+const myToken = "w87O9wcQttJQ07YCF24mleviK_BiS4EQA4lekSgXnKU_N8KYMjg0bS52iI8Ru5lFAApS2Q==";
 // ------------------------------
 
 module.exports = {
@@ -30,7 +30,7 @@ module.exports = {
     // Various Dev Server settings
     // host: '172.18.6.207',
 
-    host: '192.168.101.9',
+    host: '192.168.101.6',
 
     // host: 'localhost', // can be overwritten by process.env.HOST
     port: 8089, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
@@ -74,7 +74,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps

@@ -10,10 +10,16 @@
         <li class="group-info" v-for="(item,index) in allGroupBookList" :key="index">
           <img class="avatar" :src="item.joinGroupBookAwardInfo.headImgUrls.headImgUrls[0]" alt="">
           <span class="nickname">{{item.opener}}</span>
-          <span v-if="item.joinGroupBookAwardInfo.status && (item.groupBookAwardInfo.personNums != item.joinGroupBookAwardInfo.headImgUrls.headImgUrls.length) " class="PersonsNums">
+          <span v-if="item.joinGroupBookAwardInfo.status &&
+           (item.groupBookAwardInfo.personNums != item.joinGroupBookAwardInfo.headImgUrls.headImgUrls.length) &&
+           item.joinGroupBookAwardInfo.interval" class="PersonsNums">
             还差{{item.groupBookAwardInfo.personNums-item.joinGroupBookAwardInfo.headImgUrls.headImgUrls.length}}人
           </span>
-          <span v-else-if="!item.joinGroupBookAwardInfo.status && (item.groupBookAwardInfo.personNums == item.joinGroupBookAwardInfo.headImgUrls.headImgUrls.length)" class="PersonsNums">已成团</span>
+          <span v-else-if="!item.joinGroupBookAwardInfo.status && 
+          (item.groupBookAwardInfo.personNums == item.joinGroupBookAwardInfo.headImgUrls.headImgUrls.length)" 
+          class="PersonsNums">
+          已成团
+          </span>
           <span v-else class="PersonsNums">已过期</span>
           <CountDown style="color:red" :time="item.joinGroupBookAwardInfo.interval">
             <template #default="timeData" format="DD 天 HH:mm:ss">
