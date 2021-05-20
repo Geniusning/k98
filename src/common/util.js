@@ -382,9 +382,7 @@ util.setShareInfo = function (shareObj, amount, shareType, fn) {
 //获取cookie
 util.getCookie = function (cname) {
   var name = cname + "=";
-  console.log("document.cookie", document.cookie)
   var ca = document.cookie.split(";");
-  console.log('ca', ca)
   for (var i = 0; i < ca.length; i++) {
     var c = ca[i];
     while (c.charAt(0) == " ") c = c.substring(1);

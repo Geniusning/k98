@@ -19,7 +19,8 @@
     </div>
     <!-- 视频 -->
     <div class="video-wrapper" v-else-if="shopSettingInfo.shopModeId === FOUR_VIDEO">
-      <Video v-if="videoList.length>0" :videoList="videoList"></Video>
+      <VideoList @changeVideoPage="changeVideoPage" :videoList="videoList" v-if="videoList.length>0 && showVideoList"></VideoList>
+      <Video :currentVideoId="currentVideoId" v-if="videoList.length>0 && !showVideoList" :videoList="videoList"></Video>
     </div>
     <div v-else class="community-wrapper">
       <div class="content">
@@ -120,11 +121,7 @@
               <!-- <img onclick="return false" src="../../assets/image/fuli.png" alt class="letter" v-show="noCouponsFlag" @click="toWelfare" /> -->
             </div>
           </div>
-          <!--<div class="advertise_wrapper" v-if="show_advertise">
-                                  <img onclick="return false" src="../../assets/image/advertise.png" alt class="advertise" onclick="return false">
-                                  <img onclick="return false" src="../../assets/image/close_ad.png" alt class="close" @click="close_adtise">
-                    </div>-->
-          <div class="welfare_content" v-if="recommentList.length">
+          <div class="welfare_content" v-if="recommentList.length && false">
             <ul class="welfare_list" v-if="recommentList.length">
               <li class="item clearfix" v-for="(item,index) in recommentList" :key="index">
                 <div class="left">
@@ -150,6 +147,7 @@
               </li>
             </ul>
           </div>
+          <vipProductList v-else></vipProductList>
         </div>
         <!-- 分享引导 -->
         <div class="bg" v-show="isShow_bg" @click="share">
@@ -166,33 +164,6 @@
           </div>
           <div class="welfare_content">
             <friAllianceInfo :friendLeagles="friendLeagleList"></friAllianceInfo>
-            <!-- <ul class="welfare_list" v-if="friendLeagleList.length">
-                            <li class="item clearfix" v-for="(item,index) in friendLeagleList" :key="index">
-                                <div class="shop-logo-name" @click="goToFriShop(item)">
-                                    <p class="shop-name">
-                                        <img :src="item.storelogo" alt class="shop-logo" />
-                                        <span>{{item.storename}}</span>
-                                    </p>
-                                    <p class="distance">{{item.distance}}</p>
-                                </div>
-                                <div class="left">
-                                    <img onclick="return false" :src="item.res.image" alt class="shopPic" />
-                                </div>
-                                <div class="center">
-                                    <p class="title" style="font-weight:900">{{item.res.name}}</p>
-                                    <p class="desc">{{item.res.content}}</p>
-                                    <p class="limit">{{item.res.limit}}</p>
-                                </div>
-                                <div class="right">
-                                    <div class="thunb_box clearfix">
-                                         <p class="count fl">{{item.distance}}</p>
-                                    </div>
-                                    <div style="margin-left:.3rem" class="linear_btn" @click="goToFriShop(item)">
-                                        {{item.storeModeId === 0 ? "领&nbsp;&nbsp;&nbsp;取" :"进&nbsp;&nbsp;&nbsp;入" }}
-                                    </div>
-                                </div>
-                            </li>
-                        </ul> -->
           </div>
         </div>
         <!-- vip卡券 -->
@@ -244,6 +215,8 @@ import envelope from "base/envelope/envelope";
 import Platform from './homeCompoment/platform';
 import FriAllianceInfo from './homeCompoment/friAllianceInfo'
 import Video from './homeCompoment/video'
+import VideoList from './homeCompoment/videosList'
+import vipProductList from './homeCompoment/vipProductList'
 const ZERO_COMMON = 0
 const ONE_BUSINESS = 1
 const TWO_COMMUNITY = 2
@@ -265,6 +238,8 @@ export default {
       FIVE_PLATFORM: FIVE_PLATFORM,
       platformList: [],
       isShow_bg: false,
+      showVideoList: true,
+      currentVideoId: 0,
       // game_giftInfo: {
       //     firstPrize: {},
       //     secondPrize: {},
@@ -339,7 +314,7 @@ export default {
       keyword: "",
       isSvip: false,
     };
-    this.getAllObjectList()
+    this.getAllObjectList() //拉取视频
     this.setAdvertisePhoto(); //设置轮播图
     this.loadPlatforms()
     this.acquireWaitGetCoupons(); //获取自动优惠券
@@ -389,17 +364,30 @@ export default {
     // this.loadPlatforms()
     // this._loadInviteWaitGetCoupon(); //判断是否已经分享过邀请有礼优惠券
   },
+  deactivated () {
+    this.showVideoList = true
+  },
   methods: {
     link () {
-      let tk = util.getCookie("tk")
-      window.location.href = `https://k90.93wifi.net/kone?visitFrom=test&tk=${tk}`
+      // let tk = util.getCookie("tk")
+      window.location.href = `https://k90.93wifi.net/kone`
+    },
+    changeVideoPage (vidoeId) {
+      this.showVideoList = !this.showVideoList
+      this.currentVideoId = vidoeId
+      console.log(vidoeId)
     },
     async getAllObjectList () {
       let res = await api.getAllObjectList()
       if (res.errCode === 0) {
-        this.videoList = res.info
+        let videoList = res.info
+        this.videoList = videoList.filter(item => {
+          if (item.videoURL) {
+            return item
+          }
+        })
       }
-      console.log("门店视频", res)
+      console.log("门店视频", this.videoList)
     },
     loadPlatforms () {
       api.loadPlatforms().then(res => {
@@ -882,7 +870,9 @@ export default {
     Popup,
     Platform,
     FriAllianceInfo,
-    Video
+    Video,
+    VideoList,
+    vipProductList
     // Carousel3d,
     // Slide
   }

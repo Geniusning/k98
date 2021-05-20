@@ -3,7 +3,7 @@
   <div class="container_box" id="video_box">
     <div class="van_swipe">
       <!--vant van-swipe 滑动组件 -->
-      <van-swipe ref="swiper" :show-indicators="false" @change="onChange" vertical :loop="true">
+      <van-swipe ref="swiper" :show-indicators="false" :initial-swipe="current" @change="onChange" vertical :loop="true">
         <van-swipe-item v-for="(item, index) in videos" :key="index" class="product_swiper">
           <div class="video_container">
             <!--video属性
@@ -15,6 +15,10 @@
                     poster：封面
                     src：播放地址
                     -->
+            <div class="shopInfo">
+              <img :src="item.shopLogo" alt="" class="shopLogo">
+              <span class="shopName">{{item.shopName}}</span>
+            </div>
             <video class="video_box" webkit-playsinline="true" x5-video-player-type="h5-page" x5-video-player-fullscreen="true" playsinline preload="auto" :poster="item.cover" :src="item.videoUrl" :playOrPause="playOrPause" @click="pauseVideo" @ended="onPlayerEnded()">
             </video>
             <!-- 封面 -->
@@ -25,7 +29,7 @@
           <!-- 右侧头像、点赞、评论、分享功能 -->
           <div class="tools_right">
             <div class="tools_r_li" @click="goToShop(item.shopUrl)">
-              <img src="../../../assets/image/shop.png" class="tag_image">
+              <img src="../../../assets/image/zhe.png" class="tag_image">
             </div>
             <!-- <div class="tools_r_li">
               <i class="iconfont icon-shoucang icon_right" :class="item.fabulous?'fabulous_active':''"></i>
@@ -79,24 +83,23 @@ export default {
       isiOS: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), // ios终端
       tabIndex: 0,
       videos: [],
-      shopUrls: [
-        "https://llwant1.qianz.com/",
-        "https://llwant3.qianz.com/",
-        "https://singledog.qianz.com/"
-      ]
+      shopUrls: []
       // 评论相关
       // videoProcess: 0,//视频播放进度
     }
   },
-  props: ["videoList"],
+  props: ["videoList", "currentVideoId"],
   created () {
-    console.log("videoList", this.videoList)
+    this.current = this.currentVideoId
     this.videoList.forEach((item, index) => {
       this.videos.push({
-        videoUrl: item.signedURL,
-        shopUrl: this.shopUrls[index]
+        videoUrl: item.videoURL,
+        shopUrl: item.storeURL,
+        shopName: item.storeName,
+        shopLogo: item.StoreLoge
       })
     })
+    console.log("videos", this.videos)
   },
   computed: {
   },
@@ -167,7 +170,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="less">
 .clear {
   clear: both;
 }
@@ -188,6 +191,28 @@ export default {
   max-width: 550px;
   margin: 0 auto;
   position: relative;
+  .video_container {
+    position: relative;
+    height: 100%;
+    .shopInfo {
+      position: absolute;
+      top: 0.2rem;
+      left: 0.2rem;
+      display: flex;
+      align-items: center;
+      z-index: 9999;
+      .shopLogo {
+        width: 0.8rem;
+        height: 0.8rem;
+        border-radius: 50%;
+      }
+      .shopName {
+        padding: 0 0.1rem;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
 }
 
 .van-swipe {
@@ -243,11 +268,9 @@ video {
 /*头像， 点赞，转发 */
 .tag_image {
   width: 0.8rem;
-  height: 0.8rem;
-  /* border: 1px solid #fff; */
+  height: 1rem;
   box-sizing: border-box;
-  border-radius: 50%;
-  margin-bottom: 4rem;
+  margin-bottom: 3.5rem;
   position: relative;
   box-shadow: 0px 0px 10px #9d9d9d;
 }

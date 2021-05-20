@@ -121,23 +121,23 @@ new Vue({
     //创建长连接
     createWebsocket() {
       // 线上环境 ---begin
-      let windowUrL = window.location.href;
-      let index = windowUrL.indexOf('.com');
-      let shareurl = windowUrL.slice(0, index);
-      let websocketUrl = shareurl.slice(8);
-      let wxxHost = `${window.location.host}${window.location.pathname}`
-      console.log("wxxHost", wxxHost)
-      if (this.deskCode != "") {
-        //  this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
-        this.connectUrl = `wss://${window.location.host}/api/ws?deskCode=${this.deskCode}`
-      } else {
-        this.connectUrl = `wss://${window.location.host}/api/ws`
-        // this.connectUrl = `wss://llwant1.qianz.com/api/ws`
-      }
-      this.websock = new WebSocket(this.connectUrl);
-      this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
+      // let windowUrL = window.location.href;
+      // let index = windowUrL.indexOf('.com');
+      // let shareurl = windowUrL.slice(0, index);
+      // let websocketUrl = shareurl.slice(8);
+      // let wxxHost = `${window.location.host}${window.location.pathname}`
+      // console.log("wxxHost", wxxHost)
+      // if (this.deskCode != "") {
+      //   //  this.connectUrl = `wss://${websocketUrl}.com/api/ws?deskCode=${this.deskCode}`
+      //   this.connectUrl = `wss://${window.location.host}/api/ws?deskCode=${this.deskCode}`
+      // } else {
+      //   this.connectUrl = `wss://${window.location.host}/api/ws`
+      //   // this.connectUrl = `wss://llwant1.qianz.com/api/ws`
+      // }
+      // this.websock = new WebSocket(this.connectUrl);
+      // this.updateShareUrl(shareurl + '.com/'); //设置全局分享时的域名
       //线上环境 ---end
-      // this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
+      this.websock = new WebSocket(`${config.websocketUrl}?tk=${config.tk}&deskCode=1`); //开发环境 wss://llwant1.qianz.com/api/ws
       this.websock.binaryType = "arraybuffer";
       this.initWebsocket()
     },
