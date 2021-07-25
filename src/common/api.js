@@ -42,6 +42,18 @@ api.delIdentity = function (targetID) {
     })
   })
 }
+//设置用户的
+api.setUserAddr = function (data) {
+  return new Promise((resolve, reject) => {
+    axios.post(Url.commonUrl + `/api/setUserAddr?tk=${Url.tk}`, data).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //拉取所有门店视频
 api.getAllObjectList = function () {
   return new Promise((resolve, reject) => {

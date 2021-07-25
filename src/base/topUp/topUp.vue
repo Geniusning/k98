@@ -51,10 +51,12 @@
           <p class="desc">请选择赠送对方的礼物</p>
           <div class="close" @click="closeIntegralPanel">X</div>
           <!-- <img onclick="return false" src="../../assets/image/close-round.png" alt="" class="close" @click="closeIntegralPanel"> -->
-          <img src="../../assets/image/quan-icon.jpg" class="staff-discount" @click="sendCouponToUser" v-if="userInfo.role" alt="">
+          <img src="../../assets/image/quan-icon.jpg" class="staff-discount" @click="sendCouponToUser"
+            v-if="userInfo.role" alt="">
         </div>
         <div class="giftListpart vux-1px-b">
-          <img onclick="return false" v-show="componentGiftList.length>0" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
+          <img onclick="return false" v-show="componentGiftList.length>0" src="../../assets/image/integralIcon.png"
+            alt="" class="integralIcon">
           <p v-show="componentGiftList.length>0" class="giftListpart_desc0">虚拟</p>
           <p v-show="componentGiftList.length>0" class="giftListpart_desc1">礼物</p>
           <ul class="list ">
@@ -65,18 +67,20 @@
           </ul>
         </div>
         <div class="shopItemListpart vux-1px-b" v-if="recommentList.length>0">
-          <img onclick="return false" v-show="recommentList.length>0" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
+          <img onclick="return false" v-show="recommentList.length>0" src="../../assets/image/integralIcon.png"
+            alt="" class="integralIcon">
           <p v-show="recommentList.length>0" class="giftListpart_desc0">门店</p>
           <p v-show="recommentList.length>0" class="giftListpart_desc1">项目</p>
           <ul class="list">
-            <li class="item" v-for="(item,index) in recommentList" :key="index" @click="sendShopItemGift(item)">
+            <li class="item" v-for="(item,index) in recommentList.slice(0,4)" :key="index" @click="sendShopItemGift(item)">
               <img onclick="return false" :src="item.goods.image" alt="" class="giftIcon">
               <p class="price">{{item.goods.integral}}</p>
             </li>
           </ul>
         </div>
         <div class="entityGiftListpart">
-          <img onclick="return false" v-show="sendGiftList.length>0" src="../../assets/image/integralIcon.png" alt="" class="integralIcon">
+          <img onclick="return false" v-show="sendGiftList.length>0" src="../../assets/image/integralIcon.png"
+            alt="" class="integralIcon">
           <p v-show="sendGiftList.length>0" class="giftListpart_desc0">礼品</p>
           <p v-show="sendGiftList.length>0" class="giftListpart_desc1">商城</p>
           <ul class="list">
@@ -90,10 +94,12 @@
       <!-- 确认送礼物面板 -->
       <div class="sendGiftPanelBox" v-else-if="panelIndex===2 || panelIndex===9" key="sendGiftPanelBox">
         <div class="header">
-          <img onclick="return false" v-if="componentConvertType == 0 || componentConvertType == 1" src="../../assets/image/integralIcon.png" class="giftBoxIfon">
+          <img onclick="return false" v-if="componentConvertType == 0 || componentConvertType == 1"
+            src="../../assets/image/integralIcon.png" class="giftBoxIfon">
           <img onclick="return false" v-else src="../../assets/image/giftBox.png" class="giftBoxIfon">
           <p class="header_text">
-            {{panelIndex===2?"消耗积分:":"消耗储值:"}}{{panelIndex===2?componentGiftInfo.goods.integral:componentGiftInfo.goods.vipMoney}} &nbsp;&nbsp;&nbsp;
+            {{panelIndex===2?"消耗积分:":"消耗储值:"}}{{panelIndex===2?componentGiftInfo.goods.integral:componentGiftInfo.goods.vipMoney}}
+            &nbsp;&nbsp;&nbsp;
             {{panelIndex===2?"我的积分:":"会员卡余额:"}}
             {{panelIndex===2?userInfo.money:userInfo.storeValue}}
           </p>
@@ -116,14 +122,17 @@
         </div>
         <div class="handle" v-if="panelIndex===2">
           <div class="cancle" @click="closeIntegralPanel" v-text="userInfo.money<giftIntegral?'赚积分':'取消'"></div>
-          <div v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift('money',componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)" v-text="userInfo.money<giftIntegral?'充值':'确认'">
+          <div v-if="componentConvertType===0 || componentConvertType===1" class="btn" @click="confirmShopItemGift('money',componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)"
+            v-text="userInfo.money<giftIntegral?'充值':'确认'">
           </div>
-          <div v-else class="btn" @click="confirmShopItemGift('money',componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)" v-text="userInfo.money<giftIntegral?'充值':'确认'"></div>
+          <div v-else class="btn" @click="confirmShopItemGift('money',componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)"
+            v-text="userInfo.money<giftIntegral?'充值':'确认'"></div>
           <div v-show="userInfo.money<giftIntegral" class="tips_money">积分不足,请充值>></div>
         </div>
         <div class="handle" v-else-if="panelIndex===9">
           <div class="cancle" @click="closeIntegralPanel">取消</div>
-          <div class="btn" @click="confirmShopItemGift('storeValue',componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)" v-text="userInfo.storeValue<componentGiftInfo.goods.vipMoney?'充值':'确认'">
+          <div class="btn" @click="confirmShopItemGift('storeValue',componentGiftInfo.goods.id,componentGiftInfo.goods,componentGiftInfo.coupInfo)"
+            v-text="userInfo.storeValue<componentGiftInfo.goods.vipMoney?'充值':'确认'">
           </div>
           <div v-show="userInfo.storeValue<componentGiftInfo.goods.vipMoney" class="tips_money">储值不足,请前往充值</div>
         </div>
@@ -236,109 +245,112 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import api from "common/api";
-import config from "common/config";
-import util from "common/util";
-import Bus from "common/bus.js";
-import {
-  mapState,
-  mapGetters,
-  mapMutations
-} from "vuex";
+import api from 'common/api'
+import config from 'common/config'
+import util from 'common/util'
+import Bus from 'common/bus.js'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 export default {
-  data () {
+  data() {
     return {
       clickIndex: null,
       showOweText: false,
       panelIndex: null,
-      componentGiftInfo: "",
-      moneyPoint: "",
+      componentGiftInfo: '',
+      moneyPoint: '',
       componentConvertType: null,
       componentGiftList: [],
-      successfulText: "送礼失败",
-      successful_desc: "",
-      moneyList: [{
-        id: 1,
-        name: "2",
-        money: 2,
-        points: 200,
-        imgUrl: require("../../assets/image/200coin.png"),
-        iconClass: "coin200"
-      },
-      {
-        id: 2,
-        name: "10",
-        money: 10,
-        points: 1000,
-        imgUrl: require("../../assets/image/1000coin.png"),
-        iconClass: "coin1000"
-      },
-      {
-        id: 3,
-        name: "50",
-        money: 50,
-        points: 5000,
-        imgUrl: require("../../assets/image/5000coin.png"),
-        iconClass: "coin5000"
-      },
-      {
-        id: 4,
-        name: "100",
-        money: 100,
-        points: 10000,
-        imgUrl: require("../../assets/image/10000coin.png"),
-        iconClass: "coin10000"
-      }
+      successfulText: '送礼失败',
+      successful_desc: '',
+      moneyList: [
+        {
+          id: 1,
+          name: '2',
+          money: 2,
+          points: 200,
+          imgUrl: require('../../assets/image/200coin.png'),
+          iconClass: 'coin200'
+        },
+        {
+          id: 2,
+          name: '10',
+          money: 10,
+          points: 1000,
+          imgUrl: require('../../assets/image/1000coin.png'),
+          iconClass: 'coin1000'
+        },
+        {
+          id: 3,
+          name: '50',
+          money: 50,
+          points: 5000,
+          imgUrl: require('../../assets/image/5000coin.png'),
+          iconClass: 'coin5000'
+        },
+        {
+          id: 4,
+          name: '100',
+          money: 100,
+          points: 10000,
+          imgUrl: require('../../assets/image/10000coin.png'),
+          iconClass: 'coin10000'
+        }
       ]
-    };
+    }
   },
   computed: {
-    ...mapState(["giftList", "userInfo", "l98Setting", "staffCouponInfo", "staticChatFriendObj"]),
-    ...mapGetters(["recommentList", "sendGiftList"])
+    ...mapState([
+      'giftList',
+      'userInfo',
+      'l98Setting',
+      'staffCouponInfo',
+      'staticChatFriendObj'
+    ]),
+    ...mapGetters(['recommentList', 'sendGiftList'])
   },
-  created () {
-    this.panelIndex = this.fatherPanelIndex;
-    this.componentGiftInfo = this.giftInfo;
-    console.log("this.componentGiftInfo---", this.componentGiftInfo)
+  created() {
+    this.panelIndex = this.fatherPanelIndex
+    this.componentGiftInfo = this.giftInfo
+    console.log('this.componentGiftInfo---', this.componentGiftInfo)
     if (this.componentGiftInfo && this.panelIndex === 2) {
-      this.giftIntegral = this.componentGiftInfo.goods.integral; //店长推荐和礼品商城
+      this.giftIntegral = this.componentGiftInfo.goods.integral //店长推荐和礼品商城
     } else if (this.componentGiftInfo && this.panelIndex === 9) {
-      this.giftIntegral = this.componentGiftInfo.goods.vipMoney; //储值换礼品
+      this.giftIntegral = this.componentGiftInfo.goods.vipMoney //储值换礼品
     }
-    this.componentConvertType = this.convertType;
+    this.componentConvertType = this.convertType
     api.loadAllGift().then(res => {
       if (res.errCode === 0) {
-        let TempGiftList = res.gifts;
+        let TempGiftList = res.gifts
         this.componentGiftList = TempGiftList.map((item, index) => {
           switch (index) {
             case 0:
-              item.imgUrl = require("../../assets/image/beer.png");
-              item.name = "一杯啤酒";
-              return item;
-              break;
+              item.imgUrl = require('../../assets/image/beer.png')
+              item.name = '一杯啤酒'
+              return item
+              break
             case 1:
-              item.imgUrl = require("../../assets/image/flower.png");
-              item.name = "一朵鲜花";
-              return item;
-              break;
+              item.imgUrl = require('../../assets/image/flower.png')
+              item.name = '一朵鲜花'
+              return item
+              break
             case 2:
-              item.imgUrl = require("../../assets/image/car.jpg");
-              item.name = "一辆跑车";
-              return item;
-              break;
+              item.imgUrl = require('../../assets/image/car.jpg')
+              item.name = '一辆跑车'
+              return item
+              break
             case 3:
-              item.imgUrl = require("../../assets/image/boat.jpg");
-              item.name = "一艘游艇";
-              return item;
-              break;
+              item.imgUrl = require('../../assets/image/boat.jpg')
+              item.name = '一艘游艇'
+              return item
+              break
             default:
-              break;
+              break
           }
-        });
+        })
       }
-    });
+    })
   },
-  mounted () { },
+  mounted() {},
   props: {
     convertType: {
       //是自己兑换还是送礼模式 0自己兑换
@@ -347,7 +359,7 @@ export default {
     },
     friendId: {
       type: String,
-      default: ""
+      default: ''
     },
     fatherPanelIndex: {
       type: Number,
@@ -362,25 +374,25 @@ export default {
       default: false
     }
   },
-  activated () { },
+  activated() {},
   methods: {
-    goToBandPhone () {
+    goToBandPhone() {
       this.$router.push({
-        name: "giftDetail"
+        name: 'giftDetail'
       })
-      this.$emit("closeIntegralPanel", false);
+      this.$emit('closeIntegralPanel', false)
     },
-    gotoPage (pageType) {
+    gotoPage(pageType) {
       this.$router.push({
         name: pageType
       })
-      this.$emit("closeIntegralPanel", false);
+      this.$emit('closeIntegralPanel', false)
     },
     //员工送券
-    sendCouponToUser () {
-      //console.log("this.staticChatFriendObj----",this.staticChatFriendObj)
-      let ToId = this.staticChatFriendObj.openid ? this.staticChatFriendObj.openid : sessionStorage.getItem("staffCouponToId")
-      //console.log("ToId-----",ToId)
+    sendCouponToUser() {
+      let ToId = this.staticChatFriendObj.openid
+        ? this.staticChatFriendObj.openid
+        : sessionStorage.getItem('staffCouponToId')
       let data = {
         to: ToId,
         from: this.userInfo.openid,
@@ -389,9 +401,9 @@ export default {
       api.sendStaffCouponToUser(data).then(res => {
         //console.log("送券结果-------", res)
         if (res.errCode === 0) {
-          this.$vux.toast.text("赠送成功", "middle");
+          this.$vux.toast.text('赠送成功', 'middle')
         } else {
-          this.$vux.toast.text("暂未有员工送券活动", "middle");
+          this.$vux.toast.text('暂未有员工送券活动', 'middle')
         }
       })
     },
@@ -400,41 +412,41 @@ export default {
     //   //console.log(e.target.checked);
     //   //console.log("触发现场送");
     // },
-    comfirm () {
+    comfirm() {
       setTimeout(() => {
         if (!this.userInfo.isSubscribe) {
           this.changeQrCodeText({
-            title: "长按关注，即可兑换门店礼物/门店项目",
-            bottomText: "会员特权:领福利、交群友、参活动"
-          });
-          this.showQrcode(true);
+            title: '长按关注，即可兑换门店礼物/门店项目',
+            bottomText: '会员特权:领福利、交群友、参活动'
+          })
+          this.showQrcode(true)
         }
-      }, 500);
-      this.$emit("closeIntegralPanel", false);
-      this.panelIndex = 1;
+      }, 500)
+      this.$emit('closeIntegralPanel', false)
+      this.panelIndex = 1
     },
-    closeSchedule () {
-      this.$emit("closeIntegralPanel", false);
+    closeSchedule() {
+      this.$emit('closeIntegralPanel', false)
     },
-    noMove () {
-      this.$emit("noMove", false);
+    noMove() {
+      this.$emit('noMove', false)
     },
     //前移对账单时间
-    changeCasierTime () {
-      this.$emit("changeCashierTime", true)
+    changeCasierTime() {
+      this.$emit('changeCashierTime', true)
     },
-    closeIntegralPanel () {
-      this.panelIndex = 1;
-      this.$emit("closeIntegralPanel", false);
+    closeIntegralPanel() {
+      this.panelIndex = 1
+      this.$emit('closeIntegralPanel', false)
     },
     // 前往充值
-    gotoTopUp () {
-      this.panelIndex = 0;
+    gotoTopUp() {
+      this.panelIndex = 0
     },
     //发送虚拟礼物
-    sendVirtualGift (id, index, giftInfo) {
-      this.VirtualGiftInfo = giftInfo;
-      this.componentConvertType = 4;
+    sendVirtualGift(id, index, giftInfo) {
+      this.VirtualGiftInfo = giftInfo
+      this.componentConvertType = 4
       let tempVirtualGift = {
         goods: {
           name: this.componentGiftList[index].name,
@@ -442,74 +454,74 @@ export default {
           integral: this.componentGiftList[index].money,
           id: this.componentGiftList[index].id
         }
-      };
-      this.giftIntegral = this.componentGiftList[index].money;
-      this.panelIndex = 2;
-      this.componentGiftInfo = tempVirtualGift;
+      }
+      this.giftIntegral = this.componentGiftList[index].money
+      this.panelIndex = 2
+      this.componentGiftInfo = tempVirtualGift
     },
     // converType 0:店长推荐，1:积分换礼品兑换 ,2:赠送店长推荐项目,3:赠送积分换礼品项目,4:虚拟礼物
     //赠送店铺项目
-    sendShopItemGift (goodsInfo) {
-      this.entityGoodInfo = goodsInfo;
-      this.componentConvertType = 2;
-      this.componentGiftInfo = goodsInfo;
-      this.giftIntegral = goodsInfo.goods.integral;
-      this.panelIndex = 2;
+    sendShopItemGift(goodsInfo) {
+      this.entityGoodInfo = goodsInfo
+      this.componentConvertType = 2
+      this.componentGiftInfo = goodsInfo
+      this.giftIntegral = goodsInfo.goods.integral
+      this.panelIndex = 2
       this.successfulText =
-        "赠送礼物成功,扣除" + this.componentGiftInfo.goods.integral + "积分";
+        '赠送礼物成功,扣除' + this.componentGiftInfo.goods.integral + '积分'
     },
     //赠送积分换礼品项目
-    sendJiFenGift (goodsInfo) {
-      this.entityGoodInfo = goodsInfo;
-      this.componentConvertType = 3;
-      this.componentGiftInfo = goodsInfo;
-      this.giftIntegral = goodsInfo.goods.integral;
-      this.panelIndex = 2;
+    sendJiFenGift(goodsInfo) {
+      this.entityGoodInfo = goodsInfo
+      this.componentConvertType = 3
+      this.componentGiftInfo = goodsInfo
+      this.giftIntegral = goodsInfo.goods.integral
+      this.panelIndex = 2
       this.successfulText =
-        "赠送礼物成功,扣除" + this.componentGiftInfo.goods.integral + "积分";
+        '赠送礼物成功,扣除' + this.componentGiftInfo.goods.integral + '积分'
     },
     //确认赠送
-    confirmShopItemGift (type, goodID, goods, couponInfo) {
+    confirmShopItemGift(type, goodID, goods, couponInfo) {
       console.log('this.giftIntegral=', this.giftIntegral)
       if (type === 'money') {
         if (this.userInfo.money < this.giftIntegral) {
           //当前积分少于项目消耗积分
-          this.panelIndex = 0;
-          this.showOweText = true;
-          return;
+          this.panelIndex = 0
+          this.showOweText = true
+          return
         }
       } else {
         if (this.userInfo.storeValue < this.giftIntegral) {
           //当前储值少于项目消耗储值
-          this.panelIndex = -1;
-          this.showOweText = true;
-          return;
+          this.panelIndex = -1
+          this.showOweText = true
+          return
         }
       }
-      this.showOweText = false;
+      this.showOweText = false
       if (this.componentConvertType == 0) {
         //店长推荐兑换
         if (this.panelIndex === 2) {
-          api.convertRecommend(goodID, "common").then(res => {
+          api.convertRecommend(goodID, 'common').then(res => {
             //console.log("店长推荐兑换结果--------------", res);
             if (res.errCode && res.errCode == 1021) {
-              this.successfulText = "您已兑换";
+              this.successfulText = '您已兑换'
             } else if (res.errCode == 1029) {
-              this.successfulText = "积分不足，请点右下角前往充值";
-              this.successful_desc = ``;
-              return;
+              this.successfulText = '积分不足，请点右下角前往充值'
+              this.successful_desc = ``
+              return
             } else {
-              this.successfulText = "兑换成功";
-              this.refreshUserInfo();
+              this.successfulText = '兑换成功'
+              this.refreshUserInfo()
             }
             this.successful_desc = `一张${util.returnDiscountType(
               this.componentGiftInfo.coupInfo.type
-            )}已存入'我的卡券'`;
+            )}已存入'我的卡券'`
           })
         } else if (this.panelIndex === 9) {
-          if (this.userInfo.phone === "") {
-            this.successfulText = "手机未绑定不能进行商品兑换";
-            this.successful_desc = "请前往绑定手机"
+          if (this.userInfo.phone === '') {
+            this.successfulText = '手机未绑定不能进行商品兑换'
+            this.successful_desc = '请前往绑定手机'
             this.panelIndex = 10
             return
           }
@@ -518,48 +530,53 @@ export default {
             phone: this.userInfo.phone,
             consumeMoney: goods.discountPrice,
             decreaseMoney: goods.vipMoney,
-            decreaseDesc: "兑换会员项目"
+            decreaseDesc: '兑换会员项目'
           }
-          console.log("data=", data)
+          console.log('data=', data)
           // return
           api.decreaseTopUpVip(data).then(res => {
             if (res.errCode === 0) {
-              this.successfulText = "兑换成功";
+              this.successfulText = '兑换成功'
               this.refreshUserInfo().then(() => {
-                console.log("兑换会员项目=", res)
+                console.log('兑换会员项目=', res)
                 let messObj = {
                   to: config.cashierId,
-                  content: `成功购买店长推荐项目（${couponInfo.content}）,已从会员卡${this.userInfo.phone}
-                        扣费${goods.vipMoney}元，余额${Number(this.userInfo.storeValue)}`,
+                  content: `成功购买店长推荐项目（${
+                    couponInfo.content
+                  }）,已从会员卡${this.userInfo.phone}
+                        扣费${goods.vipMoney}元，余额${Number(
+                    this.userInfo.storeValue
+                  )}`,
                   type: 1,
                   from: this.userInfo.openid
-                };
+                }
                 //console.log("this.isCashierFlag----", this.isCashierFlag);
                 //console.log("messObj----", messObj);
-                let textMessObj = JSON.stringify(messObj);
-                let decc1 = new TextEncoder("utf-8");
-                let result = decc1.encode(textMessObj);
+                let textMessObj = JSON.stringify(messObj)
+                let decc1 = new TextEncoder('utf-8')
+                let result = decc1.encode(textMessObj)
                 api.sendTextCashier(result).then(res => {
-                  console.log("res=", res)
-                });
-              });
+                  console.log('res=', res)
+                })
+              })
             }
-
           })
 
-          api.convertRecommend(goodID, "vip").then(res => {
+          api.convertRecommend(goodID, 'vip').then(res => {
             //console.log("店长推荐兑换结果--------------", res);
             if (res.errCode && res.errCode == 1021) {
               // this.successfulText = "您已兑换";
             } else if (res.errCode == 1029) {
               // this.successfulText = "积分不足，请充值";
               // this.successful_desc = ``;
-              return;
+              return
             } else {
               // this.successfulText = "兑换成功";
               // this.refreshUserInfo();
             }
-            this.successful_desc = `一张${util.returnDiscountType(this.componentGiftInfo.coupInfo.type)}已存入'我的卡券'`;
+            this.successful_desc = `一张${util.returnDiscountType(
+              this.componentGiftInfo.coupInfo.type
+            )}已存入'我的卡券'`
           })
         }
       } else if (this.componentConvertType == 1) {
@@ -567,124 +584,125 @@ export default {
         api.convertGoods(goodID).then(res => {
           //console.log("积分换礼品兑换结果---------", res);
           if (res.errCode && res.errCode == 1021) {
-            this.successfulText = "您已兑换";
+            this.successfulText = '您已兑换'
           } else if (res.errCode == 1029) {
-            this.successfulText = "积分不足";
-            this.successful_desc = ``;
-            return;
+            this.successfulText = '积分不足'
+            this.successful_desc = ``
+            return
           } else if (res.errCode == 1023) {
-            this.showQrcode(true);
+            this.showQrcode(true)
           } else {
-            this.refreshUserInfo();
-            this.successfulText = "兑换成功";
+            this.refreshUserInfo()
+            this.successfulText = '兑换成功'
           }
           this.successful_desc = `一张${util.returnDiscountType(
             this.componentGiftInfo.coupInfo.type
-          )}已存入'我的卡券'`;
-        });
+          )}已存入'我的卡券'`
+        })
       } else if (this.componentConvertType == 2) {
         //赠送店长推荐项目
         api.sentRecommend(goodID, this.friendId).then(res => {
           //console.log("店长推荐赠送结果---------", res);
           if (res.errCode == 1029) {
-            this.successfulText = "积分不足";
-            this.successful_desc = ``;
-            return;
+            this.successfulText = '积分不足'
+            this.successful_desc = ``
+            return
           } else if (res.errCode == 1023) {
-            this.showQrcode(true);
-            return;
+            this.showQrcode(true)
+            return
           } else {
-            this.refreshUserInfo();
+            this.refreshUserInfo()
           }
-          Bus.$emit("giftInfoRecomend", this.entityGoodInfo);
+          Bus.$emit('giftInfoRecomend', this.entityGoodInfo)
           this.successful_desc = `一张${util.returnDiscountType(
             this.componentGiftInfo.coupInfo.type
-          )}已存入对方'我的卡券'`;
-        });
+          )}已存入对方'我的卡券'`
+        })
       } else if (this.componentConvertType == 3) {
         //赠送积分换礼品项目
         api.sentGoods(goodID, this.friendId).then(res => {
           if (res.errCode == 1029) {
-            this.successfulText = "积分不足";
-            this.successful_desc = ``;
-            return;
+            this.successfulText = '积分不足'
+            this.successful_desc = ``
+            return
           } else if (res.errCode == 1023) {
-            this.showQrcode(true);
-            return;
+            this.showQrcode(true)
+            return
           } else if (res.errCode == 0) {
-            this.refreshUserInfo();
+            this.refreshUserInfo()
           }
-          Bus.$emit("giftInfoJiFen", this.entityGoodInfo);
+          Bus.$emit('giftInfoJiFen', this.entityGoodInfo)
           this.successful_desc = `一张${util.returnDiscountType(
             this.componentGiftInfo.coupInfo.type
-          )}已存入对方'我的卡券'`;
+          )}已存入对方'我的卡券'`
           // //console.log('积分赠送结果---------', res)
-        });
+        })
       } else if (this.componentConvertType == 4) {
         //赠送虚拟礼物
         let params = {
           giftID: parseInt(goodID),
           to: this.friendId
-        };
+        }
         api.sendGift(params).then(res => {
           //console.log("赠送礼物返回结果", res);
           if (res.errCode === 0) {
-            this.refreshUserInfo();
+            this.refreshUserInfo()
             this.successfulText =
-              "赠送礼物成功,扣除您" +
+              '赠送礼物成功,扣除您' +
               this.componentGiftInfo.goods.integral +
-              "积分";
-            Bus.$emit("VirtualGiftInfo", this.VirtualGiftInfo);
+              '积分'
+            Bus.$emit('VirtualGiftInfo', this.VirtualGiftInfo)
           } else if (res.errCode == 1023) {
             this.successfulText =
-              "赠送礼物成功,扣除您" +
+              '赠送礼物成功,扣除您' +
               this.componentGiftInfo.goods.integral +
-              "积分";
+              '积分'
             setTimeout(() => {
-              this.showQrcode(true);
-              return;
-            }, 700);
+              this.showQrcode(true)
+              return
+            }, 700)
           } else if (res.errCode == 1029) {
-            this.successfulText = "积分不足，请点右下角前往充值";
+            this.successfulText = '积分不足，请点右下角前往充值'
           }
-        });
+        })
       }
     },
-    refreshUserInfo () {
+    refreshUserInfo() {
       return new Promise((resolve, reject) => {
         api.getUserInfo().then(res => {
           //console.log("个人信息-------", res);
-          this.getUserInfo(res);
-          this.panelIndex = 3;
+          this.getUserInfo(res)
+          this.panelIndex = 3
           resolve()
-        });
+        })
       })
     },
     //前往兑换
-    changeGoods () {
-      this.panelIndex = 1;
+    changeGoods() {
+      this.panelIndex = 1
     },
     //   充值
-    payForCoin (id, index, point) {
-      this.moneyPoint = point;
+    payForCoin(id, index, point) {
+      this.moneyPoint = point
       if (!this.l98Setting.integralConvertOpen) {
         // this.$vux.toast.text("商家未开通本功能", "middle");
-        this.panelIndex = 5;
-        return;
+        this.panelIndex = 5
+        return
       }
-      this.clickIndex = index;
+      this.clickIndex = index
       setTimeout(() => {
-        this.clickIndex = null;
-      }, 200);
+        this.clickIndex = null
+      }, 200)
       api.createOrder(id).then(res => {
         if (res.errCode === 0) {
-          let resultInfo = res.data;
+          let resultInfo = res.data
           //console.log("resultInfo----------", resultInfo);
-          let _this = this;
+          let _this = this
           WeixinJSBridge.invoke(
-            "getBrandWCPayRequest", {
+            'getBrandWCPayRequest',
+            {
               appId: resultInfo.appId, //公众号名称，由商户传入
-              timeStamp: "" + resultInfo.timeStamp, //时间戳，自1970年以来的秒数
+              timeStamp: '' + resultInfo.timeStamp, //时间戳，自1970年以来的秒数
               nonceStr: resultInfo.nonceStr, //随机串
               package: resultInfo.package,
               signType: resultInfo.signType, //微信签名方式：
@@ -692,32 +710,33 @@ export default {
             },
             res => {
               //console.log("WeixinJSBridge.invoke-res", res);
-              if (res.err_msg == "get_brand_wcpay_request:ok") {
+              if (res.err_msg == 'get_brand_wcpay_request:ok') {
                 // 使用以上方式判断前端返回,微信团队郑重提示：
-                alert("微信支付成功");
-                api.getUserInfo()
+                alert('微信支付成功')
+                api
+                  .getUserInfo()
                   .then(res => {
-                    this.getUserInfo(res);
-                    this.panelIndex = 4;
+                    this.getUserInfo(res)
+                    this.panelIndex = 4
                   })
                   .catch(err => {
                     //console.log(err);
-                  });
+                  })
                 //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
               }
             }
-          );
+          )
         }
-      });
+      })
     },
     ...mapMutations({
-      changeQrCodeText: "CHANGEQRCODETEXT",
-      showQrcode: "SHOW_QRCODE", //暂时二维码
-      getUserInfo: "GET_USERINFO" //获取用户信息
+      changeQrCodeText: 'CHANGEQRCODETEXT',
+      showQrcode: 'SHOW_QRCODE', //暂时二维码
+      getUserInfo: 'GET_USERINFO' //获取用户信息
     })
   },
   components: {}
-};
+}
 </script>
 
 <style scoped lang='less'>

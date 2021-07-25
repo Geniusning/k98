@@ -18,23 +18,22 @@ let webpackConfig = {
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
-    publicPath: process.env.NODE_ENV === 'production'
-      ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+    publicPath: process.env.NODE_ENV === 'production' ?
+      config.build.assetsPublicPath :
+      config.dev.assetsPublicPath
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
-      'components': resolve('src/components'),
+      'views': resolve('src/views'),
       'common': resolve('src/common'),
       'base': resolve('src/base')
     }
   },
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig
@@ -42,7 +41,7 @@ let webpackConfig = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'),resolve('/node_modules/_vue-picture-preview@1.2.0@vue-picture-preview/index.js')]
+        include: [resolve('src'), resolve('test'), resolve('/node_modules/_vue-picture-preview@1.2.0@vue-picture-preview/index.js')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -70,7 +69,7 @@ let webpackConfig = {
       }
     ]
   },
-  externals:{
+  externals: {
     // "vue":"Vue",
     // "axios":"axios",
     // "vue-router":"VueRouter",

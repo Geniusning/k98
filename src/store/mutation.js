@@ -89,6 +89,9 @@ const mutations = {
   [types.SAVEQRCODE](state, qrcode) {
     state.qrCode = qrcode
   },
+  [types.SetOneRecommend](state, info) {
+    state.oneShopRecommend = info
+  },
   //获取在线店长推荐
   [types.GET_RECOMMENTLIST](state, recommentList) {
     let now = new Date().getTime()
@@ -149,7 +152,7 @@ const mutations = {
   [types.JUDGE_MESSTYPE](state, type) {
     state.messType = type;
   },
-  //修改地址
+  //基础地址
   [types.GET_URL](state, url) {
     state.baseUrl = url;
   },

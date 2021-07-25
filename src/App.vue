@@ -9,9 +9,11 @@
       <!-- 左侧信封弹 -->
       <transition name="envelop">
         <div class="envelop-wrapper" v-if="isShowEnvelop">
-          <img onclick="return false" src="./assets/image/close_ad.png" alt="" class="close" @click.stop="close">
+          <img onclick="return false" src="./assets/image/close_ad.png" alt="" class="close"
+            @click.stop="close">
           <div class="top">
-            <img onclick="return false" :src="dynamicFriendEvt.fromInfo.headimgurl?dynamicFriendEvt.fromInfo.headimgurl:shopSettingInfo.image" alt="" class="avatar">
+            <img onclick="return false" :src="dynamicFriendEvt.fromInfo.headimgurl?dynamicFriendEvt.fromInfo.headimgurl:shopSettingInfo.image"
+              alt="" class="avatar">
             <div class="name">{{dynamicFriendEvt.fromInfo.nickname?dynamicFriendEvt.fromInfo.nickname:'店长'}}</div>
           </div>
           <div class="bottom">
@@ -38,7 +40,8 @@
           <div class="topUpCommonInfo-wrapper" v-if="isShowGiftPanel && allMutatualInfo_temp.isAlreadyFriends">
             <div class="topUpCommonInfo-top" v-if="!isShowGiftGuide">
               <div class="img">
-                <img onclick="return false" class="giftAvatar" :src="allMutatualInfo_temp.headimgurl?allMutatualInfo_temp.headimgurl:shopSettingInfo.image" alt="">
+                <img onclick="return false" class="giftAvatar" :src="allMutatualInfo_temp.headimgurl?allMutatualInfo_temp.headimgurl:shopSettingInfo.image"
+                  alt="">
               </div>
               <div class="name">
                 <p class="name" v-if="allMutatualInfo_temp.type == 3 && giftFlag">{{allMutatualInfo_temp.nickname?allMutatualInfo_temp.nickname:'店长'}}送您一份礼物</p>
@@ -51,11 +54,16 @@
             <div class="topUpCommonInfo-middle">
               <div class="partition_zone" v-if="allMutatualInfo_temp.type == 3 && giftFlag">
                 <div class="topUpCommonInfo_left">
-                  <img onclick="return false" class="giftImg" v-if="allMutatualInfo_temp.name==='beer'" src="./assets/image/beer.png" alt="">
-                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='flower'" src="./assets/image/flower.png" alt="">
-                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='house'" src="./assets/image/car.jpg" alt="">
-                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='car'" src="./assets/image/boat.jpg" alt="">
-                  <img onclick="return false" class="giftImg" v-else :src="allMutatualInfo_temp.image" alt="">
+                  <img onclick="return false" class="giftImg" v-if="allMutatualInfo_temp.name==='beer'"
+                    src="./assets/image/beer.png" alt="">
+                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='flower'"
+                    src="./assets/image/flower.png" alt="">
+                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='house'"
+                    src="./assets/image/car.jpg" alt="">
+                  <img onclick="return false" class="giftImg" v-else-if="allMutatualInfo_temp.name==='car'"
+                    src="./assets/image/boat.jpg" alt="">
+                  <img onclick="return false" class="giftImg" v-else :src="allMutatualInfo_temp.image"
+                    alt="">
                 </div>
                 <div class="topUpCommonInfo_right">
                   <div>
@@ -72,7 +80,8 @@
               </div>
               <div class="partition_zone" v-else-if="allMutatualInfo_temp.type == 4 && gameFlag">
                 <div class="topUpCommonInfo_left">
-                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt="">
+                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg"
+                    src="./assets/image/game_gift.png" alt="">
                 </div>
                 <div class="topUpCommonInfo_right">
                   <p class="desc title_desc">{{allMutatualInfo_temp.combatID?'约你玩几局大话骰':'约你玩一局大话骰'}}</p>
@@ -97,7 +106,8 @@
           <div class="topUpCommonInfo-wrapper" v-else-if="soulFriInfo.msgCode==21">
             <div class="topUpCommonInfo-top">
               <div class="img">
-                <img onclick="return false" class="giftAvatar" :src="soulFriInfo.content.fromInfo.headimgurl?soulFriInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'" alt="">
+                <img onclick="return false" class="giftAvatar" :src="soulFriInfo.content.fromInfo.headimgurl?soulFriInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                  alt="">
               </div>
               <div class="name">
                 <p class="name">{{soulFriInfo.content.fromInfo.nickname?soulFriInfo.content.fromInfo.nickname:'朋友'}}</p>
@@ -122,7 +132,8 @@
           <div class="topUpCommonInfo-wrapper" v-else-if="topUpCommonInfo.msgCode==27">
             <div class="topUpCommonInfo-top">
               <div class="img">
-                <img onclick="return false" class="giftAvatar" :src="topUpCommonInfo.content.fromInfo.headimgurl?topUpCommonInfo.content.fromInfo.headimgurl:tempPic" alt="">
+                <img onclick="return false" class="giftAvatar" :src="topUpCommonInfo.content.fromInfo.headimgurl?topUpCommonInfo.content.fromInfo.headimgurl:tempPic"
+                  alt="">
               </div>
               <div class="name">
                 <p class="name">{{topUpCommonInfo.content.fromInfo.nickname?topUpCommonInfo.content.fromInfo.nickname:'店员'}}店员</p>
@@ -131,7 +142,8 @@
             <div class="topUpCommonInfo-middle">
               <div class="partition_zone">
                 <div class="topUpCommonInfo_left">
-                  <img onclick="return false" style="width:1.7rem;margin-left:1.2rem;border-radius:40%" class="giftImg" src="./assets/image/6.png" alt="">
+                  <img onclick="return false" style="width:1.7rem;margin-left:1.2rem;border-radius:40%"
+                    class="giftImg" src="./assets/image/6.png" alt="">
                 </div>
                 <div class="topUpCommonInfo_right">
                   <p class="desc title_desc">一份礼品已经存入您的卡券包</p>
@@ -149,7 +161,8 @@
           <div class="topUpCommonInfo-wrapper" v-else-if="topUpCommonInfo.msgCode==29">
             <div class="topUpCommonInfo-top">
               <div class="img">
-                <img onclick="return false" class="giftAvatar" :src="topUpCommonInfo.content.fromInfo.headimgurl?topUpCommonInfo.content.fromInfo.headimgurl:tempPic" alt="">
+                <img onclick="return false" class="giftAvatar" :src="topUpCommonInfo.content.fromInfo.headimgurl?topUpCommonInfo.content.fromInfo.headimgurl:tempPic"
+                  alt="">
               </div>
               <div class="name">
                 <p class="name">{{topUpCommonInfo.content.fromInfo.nickname?topUpCommonInfo.content.fromInfo.nickname:'朋友'}}
@@ -161,7 +174,8 @@
                 <div class="topUpCommonInfo_left">
                 </div>
                 <div class="topUpCommonInfo_right">
-                  <p class="desc title_desc" style="height:1.8rem;line-height:1.8rem;text-align:center;font-size:16px;" v-html="vipText"></p>
+                  <p class="desc title_desc" style="height:1.8rem;line-height:1.8rem;text-align:center;font-size:16px;"
+                    v-html="vipText"></p>
                 </div>
               </div>
             </div>
@@ -176,7 +190,8 @@
           <div class="topUpCommonInfo-wrapper" v-else-if="topUpGameInfo.msgCode==19">
             <div class="topUpCommonInfo-top">
               <div class="img">
-                <img onclick="return false" class="giftAvatar" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'" alt="">
+                <img onclick="return false" class="giftAvatar" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540966911743&di=b3b81acff7cdc59f21ec7cbde8b13298&imgtype=0&src=http%3A%2F%2Fpic20.photophoto.cn%2F20110928%2F0017030291764688_b.jpg'"
+                  alt="">
               </div>
               <div class="name">
                 <p class="name">{{topUpGameInfo.content.fromInfo.nickname?topUpGameInfo.content.fromInfo.nickname:'朋友'}}约你再战</p>
@@ -185,7 +200,8 @@
             <div class="topUpCommonInfo-middle">
               <div class="partition_zone">
                 <div class="topUpCommonInfo_left">
-                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" :src="topUpGameInfo.content.extMsg.resImg" alt="">
+                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg"
+                    :src="topUpGameInfo.content.extMsg.resImg" alt="">
                 </div>
                 <div class="topUpCommonInfo_right">
                   <p class="desc title_desc">欢迎光临，一份礼品已经存入您的卡券包！</p>
@@ -211,7 +227,8 @@
             <div class="topUpCommonInfo-middle">
               <div class="partition_zone">
                 <div class="topUpCommonInfo_left">
-                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg" :src="topUpGameInfo.content.fromInfo.headimgurl" alt="">
+                  <img onclick="return false" style="width:2.2rem;margin-left:1.2rem" class="giftImg"
+                    :src="topUpGameInfo.content.fromInfo.headimgurl" alt="">
                 </div>
                 <div class="topUpCommonInfo_right">
                   <p class="desc title_desc">欢迎光临，一份礼品已经存入您的卡券包</p>
@@ -229,9 +246,14 @@
           <div class="topUpCommonInfo-wrapper" v-else-if="isShowGiftPanel && !isAlreadyFriend && topUpGameInfo.msgCode !=19 && topUpGameInfo.msgCode != 30">
             <div class="topUpCommonInfo-top">
               <div class="img">
-                <img class="giftAvatar" v-if="topUpCommonInfo.msgCode == 3 || topUpCommonInfo.msgCode==12" :src="topUpCommonInfo.content.fromInfo.headimgurl?topUpCommonInfo.content.fromInfo.headimgurl:defaultHeadUrl" alt="">
-                <img class="giftAvatar" v-else-if="topUpThumbInfo.msgCode ==2" :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:defaultHeadUrl" alt="">
-                <img class="giftAvatar" v-else-if="topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7 || topUpCommonInfo.msgCode==19" :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:(userInfo.sex=='男'?defaultfemaletHeadUrl:defaultmaleHeadUrl)" alt="">
+                <img class="giftAvatar" v-if="topUpCommonInfo.msgCode == 3 || topUpCommonInfo.msgCode==12"
+                  :src="topUpCommonInfo.content.fromInfo.headimgurl?topUpCommonInfo.content.fromInfo.headimgurl:defaultHeadUrl"
+                  alt="">
+                <img class="giftAvatar" v-else-if="topUpThumbInfo.msgCode ==2" :src="topUpThumbInfo.content.fromInfo.headimgurl?topUpThumbInfo.content.fromInfo.headimgurl:defaultHeadUrl"
+                  alt="">
+                <img class="giftAvatar" v-else-if="topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7 || topUpCommonInfo.msgCode==19"
+                  :src="topUpGameInfo.content.fromInfo.headimgurl?topUpGameInfo.content.fromInfo.headimgurl:(userInfo.sex=='男'?defaultfemaletHeadUrl:defaultmaleHeadUrl)"
+                  alt="">
               </div>
               <div class="name">
                 <p class="name" v-if="(topUpCommonInfo.msgCode == 3 || topUpCommonInfo.msgCode==12) && giftFlag">{{topUpCommonInfo.content.fromInfo.nickname?topUpCommonInfo.content.fromInfo.nickname:'店长'}}送您一份礼物</p>
@@ -242,11 +264,16 @@
             <div class="topUpCommonInfo-middle">
               <div class="partition_zone" v-if="(topUpCommonInfo.msgCode == 3 || topUpCommonInfo.msgCode==12) && giftFlag">
                 <div class="topUpCommonInfo_left">
-                  <img class="giftImg" v-if="topUpCommonInfo.content.extMsg.goodInfo.extInfo.type==='beer'" src="./assets/image/beer.png" alt="">
-                  <img class="giftImg" v-else-if="topUpCommonInfo.content.extMsg.goodInfo.extInfo.type==='flower'" src="./assets/image/flower.png" alt="">
-                  <img class="giftImg" v-else-if="topUpCommonInfo.content.extMsg.goodInfo.extInfo.type==='house'" src="./assets/image/car.jpg" alt="">
-                  <img class="giftImg" v-else-if="topUpCommonInfo.content.extMsg.goodInfo.extInfo.type==='car'" src="./assets/image/boat.jpg" alt="">
-                  <img class="giftImg" v-else :src="topUpCommonInfo.content.extMsg.goodInfo.extInfo.image" alt="">
+                  <img class="giftImg" v-if="topUpCommonInfo.content.extMsg.goodInfo.extInfo.type==='beer'"
+                    src="./assets/image/beer.png" alt="">
+                  <img class="giftImg" v-else-if="topUpCommonInfo.content.extMsg.goodInfo.extInfo.type==='flower'"
+                    src="./assets/image/flower.png" alt="">
+                  <img class="giftImg" v-else-if="topUpCommonInfo.content.extMsg.goodInfo.extInfo.type==='house'"
+                    src="./assets/image/car.jpg" alt="">
+                  <img class="giftImg" v-else-if="topUpCommonInfo.content.extMsg.goodInfo.extInfo.type==='car'"
+                    src="./assets/image/boat.jpg" alt="">
+                  <img class="giftImg" v-else :src="topUpCommonInfo.content.extMsg.goodInfo.extInfo.image"
+                    alt="">
                 </div>
                 <div class="topUpCommonInfo_right">
                   <div>
@@ -259,7 +286,8 @@
               </div>
               <div class="partition_zone" v-else-if="topUpThumbInfo.msgCode == 2 && thumbFlag">
                 <div class="topUpCommonInfo_left">
-                  <img style="width:2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/thumb_gift.png" alt="">
+                  <img style="width:2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/thumb_gift.png"
+                    alt="">
                 </div>
                 <div class="topUpCommonInfo_right">
                   <p class="desc title_desc thumb_text">请求加你为好友...</p>
@@ -267,7 +295,8 @@
               </div>
               <div class="partition_zone" v-else-if="(topUpGameInfo.msgCode ==24 ||topUpGameInfo.msgCode == 7|| topUpCommonInfo.msgCode==19) && gameFlag">
                 <div class="topUpCommonInfo_left">
-                  <img style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png" alt="">
+                  <img style="width:2.2rem;margin-left:1.2rem" class="giftImg" src="./assets/image/game_gift.png"
+                    alt="">
                 </div>
                 <div class="topUpCommonInfo_right">
                   <p class="desc title_desc">{{topUpGameInfo.content.extMsg.gameInfo.combatID?'约你玩几局大话骰':'约你玩一局大话骰'}}</p>
@@ -295,7 +324,8 @@
         </transition>
       </div>
       <!-- <div class="movie_box"  > -->
-      <div ref="move_div" class="kefu" :style="{top:top}" @touchstart="down($event)" @touchmove="move($event)" @touchend="end" v-show="showClientServiceIconFlag" @click="inToLetter">
+      <div ref="move_div" class="kefu" :style="{top:top}" @touchstart="down($event)" @touchmove="move($event)"
+        @touchend="end" v-show="showClientServiceIconFlag" @click="inToLetter">
         <img onclick="return false" src="./assets/image/home_letter.png" alt="" class="pic_kefu">
         <p class="kefu-text">客服/收银</p>
         <!-- </div> -->
@@ -306,7 +336,8 @@
         <div class="divide-title">
           <img class="divide-icon" src="./assets/image/divide_avatar.png" alt="">
           <span class="divide-titleText">分身消息</span>
-          <img @click="isShowDivideList=false" class="divide-close" src="./assets/image/divide_close.png" alt="">
+          <img @click="isShowDivideList=false" class="divide-close" src="./assets/image/divide_close.png"
+            alt="">
         </div>
         <ul class="divide-list">
           <li class="divide-item" v-for="(divide,index) in divideList" :key="index">
@@ -315,7 +346,8 @@
             <!-- v @click="delDivide(divide.openid)"  -->
             <p style="width:40%;text-align: center" class="divide-name">{{divide.nickName}}</p>
             <p style="width:20%" class="divide-time">{{divide.latesMsgTime.slice(5)}}</p>
-            <img @click="switchToDivide(divide)" class="divide-arrow" src="./assets/image/divide_right.png" alt="">
+            <img @click="switchToDivide(divide)" class="divide-arrow" src="./assets/image/divide_right.png"
+              alt="">
           </li>
         </ul>
         <h3 v-show="otherWechatMsg.length>0">友商消息</h3>
@@ -324,7 +356,8 @@
             <img class="divide-avatar" :src="alliance.shopLogo" alt="">
             <i class="avatar-dot" v-show="alliance.messageCount">{{alliance.messageCount}}</i>
             <p style="width:40%;text-align: center" class="divide-name">{{alliance.shopName}}</p>
-            <img @click="switchToShop(alliance)" class="divide-arrow" src="./assets/image/divide_right.png" alt="">
+            <img @click="switchToShop(alliance)" class="divide-arrow" src="./assets/image/divide_right.png"
+              alt="">
           </li>
         </ul>
       </div>
@@ -367,27 +400,27 @@
 </template>
 
 <script>
-import Tab from "./components/tab/tab.vue";
-import qrCode from "base/qrCode/qrCode";
-import envelope from "base/envelope/envelope";
-import topUp from "base/topUp/topUp";
-import { TransferDom, XDialog } from "vux";
-import friendPanel from "base/becomeFriendPanel/becomeFriendPanel";
-import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
-import util from "common/util";
-import config from "common/config";
-import api from "common/api";
-import Bus from "common/bus.js";
+import Tab from './views/tab/tab.vue'
+import qrCode from 'base/qrCode/qrCode'
+import envelope from 'base/envelope/envelope'
+import topUp from 'base/topUp/topUp'
+import { TransferDom, XDialog } from 'vux'
+import friendPanel from 'base/becomeFriendPanel/becomeFriendPanel'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import util from 'common/util'
+import config from 'common/config'
+import api from 'common/api'
+import Bus from 'common/bus.js'
 export default {
-  name: "app",
+  name: 'app',
   directives: {
     TransferDom
   },
-  data () {
+  data() {
     return {
-      cashierObj: {},//收银对象
-      vipText: "贵宾到店，赶紧前去打招呼吧",
-      tempPic: require("./assets/image/divide_add_avatar.png"),
+      cashierObj: {}, //收银对象
+      vipText: '贵宾到店，赶紧前去打招呼吧',
+      tempPic: require('./assets/image/divide_add_avatar.png'),
       divideList: [],
       isShowEnvelopHandle: true,
       isShowDivideList: false, //控制分身列表显示
@@ -401,7 +434,7 @@ export default {
       isShowGiftPanel: false,
       tabFlag: true,
       selected: 0,
-      envelopeText: "",
+      envelopeText: '',
       isShowEnvelope: false,
       giftFlag: true,
       thumbFlag: true,
@@ -410,11 +443,11 @@ export default {
       allMutatualInfo_temp: {},
       isAlreadyFriend: false,
       showClientServiceIconFlag: true,
-      defaultfemaletHeadUrl: require("./assets/image/avatar2.jpg"),
-      defaultmaleHeadUrl: require("./assets/image/dinosourt.png"),
-      responseForGameUrl: "",
+      defaultfemaletHeadUrl: require('./assets/image/avatar2.jpg'),
+      defaultmaleHeadUrl: require('./assets/image/dinosourt.png'),
+      responseForGameUrl: '',
       timeTick: null,
-      appDeskCode: "",
+      appDeskCode: '',
       isDeskRoom: null,
       samedeskInfo: {},
       hasDivideIdentity: true,
@@ -441,331 +474,330 @@ export default {
         window.innerHeight ||
         document.documentElement.clientHeight ||
         document.body.clientHeight
-    };
+    }
   },
   computed: {
     ...mapState([
-      "sameDeskInfo",
-      "messageQueue",
-      "topUpMessage",
-      "userInfo",
-      "friendPanelFlag",
-      "inputValue",
-      "dynamicFriendEvt",
-      "messType",
-      "topUpCommonInfo",
-      "topUpThumbInfo",
-      "topUpGameInfo",
-      "allMutatualInfo",
-      "soulFriInfo",
-      "staticChatFriendObj",
-      "shopSettingInfo",
-      "divide_badgeCount",
-      "deskCode",
-      "otherWechatMsg"
+      'sameDeskInfo',
+      'messageQueue',
+      'topUpMessage',
+      'userInfo',
+      'friendPanelFlag',
+      'inputValue',
+      'dynamicFriendEvt',
+      'messType',
+      'topUpCommonInfo',
+      'topUpThumbInfo',
+      'topUpGameInfo',
+      'allMutatualInfo',
+      'soulFriInfo',
+      'staticChatFriendObj',
+      'shopSettingInfo',
+      'divide_badgeCount',
+      'deskCode',
+      'otherWechatMsg',
+      'baseUrl'
     ]),
-    ...mapGetters(["qrIsShow"]),
-    isShowDivideEnv () {
-      return this.hasDivideIdentity && (this.otherWechatMsg.length > 0 || this.divide_badgeCount.length > 0 || this.divideList.length > 0)
+    ...mapGetters(['qrIsShow']),
+    isShowDivideEnv() {
+      return (
+        this.hasDivideIdentity &&
+        (this.otherWechatMsg.length > 0 ||
+          this.divide_badgeCount.length > 0 ||
+          this.divideList.length > 0)
+      )
     }
   },
-  created () {
-    this.loadLastRoomInfo(); //加载回房信息
-    this.staffCode = util.GetQueryString("StaffCode") //判断是否扫员工码进入系统
+  created() {
+    this.loadLastRoomInfo() //加载回房信息
+    this.staffCode = util.GetQueryString('StaffCode') //判断是否扫员工码进入系统
     if (
-      this.$route.name === "home" ||
-      this.$route.name === "friend" ||
-      this.$route.name === "message" ||
-      this.$route.name === "welfare" ||
-      this.$route.name === "mine"
+      this.$route.name === 'home' ||
+      this.$route.name === 'friend' ||
+      this.$route.name === 'message' ||
+      this.$route.name === 'welfare' ||
+      this.$route.name === 'mine'
     ) {
-      this.tabFlag = true;
+      this.tabFlag = true
     }
     switch (this.$route.name) {
-      case "home":
-        this.selected = 0;
-        break;
-      case "friend":
-        this.selected = 1;
-        break;
-      case "message":
-        this.selected = 2;
-        break;
-      case "welfare":
-        this.selected = 3;
-        break;
-      case "mine":
-        this.selected = 4;
-        break;
+      case 'home':
+        this.selected = 0
+        break
+      case 'friend':
+        this.selected = 1
+        break
+      case 'message':
+        this.selected = 2
+        break
+      case 'welfare':
+        this.selected = 3
+        break
+      case 'mine':
+        this.selected = 4
+        break
       default:
-        break;
+        break
     }
   },
-  mounted () {
-    this.gameUrl = window.location.href.split("k98")[0];
+  mounted() {
     this._loadPublishArenas()
-    // this.top = parseInt((document.body.clientHeight)*0.8)
-    console.log(this.$refs.move_div)
-    let _GameUrl = window.location.href;
-    let indexGame = _GameUrl.indexOf(".com");
-    let shareurlGame = _GameUrl.slice(0, indexGame);
-    this.responseForGameUrl = `${shareurlGame}.com/`;
-
-    this.identity = sessionStorage.getItem("identity");
-    this.identity = this.identity ? this.identity : "";
+    this.identity = sessionStorage.getItem('identity')
+    this.identity = this.identity ? this.identity : ''
     this.timeTick = setTimeout(() => {
       let gameUrl = this.identity
-        ? `${this.responseForGameUrl}game/?gamePath=game1&identity=${this.identity}`
-        : `${this.responseForGameUrl}game/?gamePath=game1`;
-      this.clearTopUpData();
-      this.allMutatualInfo_temp = {};
-      this.isAlreadyFriend = false;
+        ? `${this.baseUrl}game/?gamePath=game1&identity=${this.identity}`
+        : `${this.baseUrl}game/?gamePath=game1`
+      this.clearTopUpData()
+      this.allMutatualInfo_temp = {}
+      this.isAlreadyFriend = false
       var topUpGameInfo = {
         content: {
           fromInfo: {
-            openid: "lakdjgjkfh",
+            openid: 'lakdjgjkfh',
             headimgurl:
-              this.userInfo.sex == "男"
+              this.userInfo.sex == '男'
                 ? this.defaultfemaletHeadUrl
                 : this.defaultmaleHeadUrl,
-            nickName: this.userInfo.sex == "男" ? "邻桌小妹" : "邻桌小哥"
+            nickName: this.userInfo.sex == '男' ? '邻桌小妹' : '邻桌小哥'
           },
           extMsg: {
-            combatID: "",
-            headImgURL: "",
-            inviterID: "",
-            nickName: "",
+            combatID: '',
+            headImgURL: '',
+            inviterID: '',
+            nickName: '',
             url: gameUrl
           }
         },
         msgCode: 7
-      };
+      }
 
-      this.addMessageIntoQueue(topUpGameInfo);
-    }, 30000);
+      this.addMessageIntoQueue(topUpGameInfo)
+    }, 30000)
     this.soulTick = setTimeout(() => {
       if (!this.userInfo.hasSoulFirstLoad) {
-        this.loadSoulMateInvite();
+        this.loadSoulMateInvite()
       }
-    }, 18000);
+    }, 18000)
     setInterval(() => {
       //轮训读取队列看是否有未处理消息
       if (!this.isHandleMessageFromQueue) {
-        return;
+        return
       }
-      this.selectMessageFromQueue();
+      this.selectMessageFromQueue()
       if (this.topUpMessage && this.isHandleMessageFromQueue) {
-        this.isHandleMessageFromQueue = false;
-        console.log("this.topUpMessage---", this.topUpMessage);
-        this.addFriendEvtObj(this.topUpMessage);
-        this.delMessageQueue();
-        this.clearTopUpMessage();
+        this.isHandleMessageFromQueue = false
+        console.log('this.topUpMessage---', this.topUpMessage)
+        this.addFriendEvtObj(this.topUpMessage)
+        this.delMessageQueue()
+        this.clearTopUpMessage()
       }
-    }, 3000);
+    }, 3000)
   },
   methods: {
-    intoFriendGame () {
-      window.location.href = `${this.gameUrl}game/?gamePath=game3&deskCode=${this.deskCode}`;
-      this.gameShow = false;
+    intoFriendGame() {
+      window.location.href = `${this.baseUrl}/game/?gamePath=game3&deskCode=${
+        this.deskCode
+      }`
+      this.gameShow = false
     },
     //进入游戏
-    intoReadyGame () {
-      this.gameShow = false;
-      //console.log("url------", `${this.gameUrl}game/?gamePath=game2`);
-      window.location.href = `${this.gameUrl}game/?gamePath=game2`;
+    intoReadyGame() {
+      this.gameShow = false
+      window.location.href = `${this.baseUrl}/game/?gamePath=game2`
     },
     // 关闭游戏
-    closeGame () {
-      this.gameShow = false;
+    closeGame() {
+      this.gameShow = false
     },
     //拉取已经发布的比赛场
-    _loadPublishArenas () {
+    _loadPublishArenas() {
       api.loadPublishArenas().then(res => {
-        console.log("拉取发布的比赛---------", res);
-        var reverseArr = res.arenaInfos.reverse();
+        console.log('拉取发布的比赛---------', res)
+        var reverseArr = res.arenaInfos.reverse()
         if (reverseArr.length > 0) {
           this.game_giftInfo.firstPrize.content = util.returnDiscountContent(
             res.arenaInfos[0].firstPrize
-          );
+          )
           this.game_giftInfo.secondPrize.content = util.returnDiscountContent(
             res.arenaInfos[0].secondPrize
-          );
+          )
           this.game_giftInfo.thirdPrize.content = util.returnDiscountContent(
             res.arenaInfos[0].thirdPrize
-          );
+          )
           this.gamePopPotison = res.arenaInfos[0].popUpPosition
         }
         // //console.log('拉取已经发布的比赛场:', res)
-      });
+      })
     },
-    down (event) {
+    down(event) {
       // 拖动开始的操作
-      this.$refs.move_div.classList.remove("kefu");
-      this.$refs.move_div.classList.add("move_kefu");
-      console.log(event);
-      this.flags = true;
-      const refs = this.$refs.move_div.getBoundingClientRect();
-      let touch = event;
+      this.$refs.move_div.classList.remove('kefu')
+      this.$refs.move_div.classList.add('move_kefu')
+      console.log(event)
+      this.flags = true
+      const refs = this.$refs.move_div.getBoundingClientRect()
+      let touch = event
       if (event.touches) {
-        touch = event.touches[0];
+        touch = event.touches[0]
       }
-      this.position.x = touch.clientX;
-      this.position.y = touch.clientY;
-      this.position.left = refs.left;
-      this.position.top = refs.top;
+      this.position.x = touch.clientX
+      this.position.y = touch.clientY
+      this.position.left = refs.left
+      this.position.top = refs.top
     },
-    move (event) {
+    move(event) {
       // 拖动中的操作
       if (this.flags) {
-        let touch = event;
+        let touch = event
         if (event.touches) {
-          touch = event.touches[0];
+          touch = event.touches[0]
         }
-        const xPum = this.position.left + touch.clientX - this.position.x;
-        const yPum = this.position.top + touch.clientY - this.position.y;
-        console.log("yPum----", yPum);
-        this.left = xPum + "px";
-        this.top = yPum + "px";
-        this.banOut();
+        const xPum = this.position.left + touch.clientX - this.position.x
+        const yPum = this.position.top + touch.clientY - this.position.y
+        console.log('yPum----', yPum)
+        this.left = xPum + 'px'
+        this.top = yPum + 'px'
+        this.banOut()
         // 阻止页面的滑动默认事件
         document.addEventListener(
-          "touchmove",
-          function () {
-            event.preventDefault();
+          'touchmove',
+          function() {
+            event.preventDefault()
           },
           {
             passive: false
           }
-        );
+        )
       }
     },
-    end () {
+    end() {
       // 拖动结束的操作 move-kefu
-      this.flags = false;
-      this.banOut();
+      this.flags = false
+      this.banOut()
     },
-    banOut () {
+    banOut() {
       // 避免拖动出界的限制
-      const refs = this.$refs.move_div.getBoundingClientRect();
+      const refs = this.$refs.move_div.getBoundingClientRect()
       if (this.left < 0) {
-        this.left = 0;
+        this.left = 0
       } else if (this.left > this.width - refs.width) {
-        this.left = this.width - refs.width;
+        this.left = this.width - refs.width
       }
       if (this.top < 0) {
-        this.top = 0;
+        this.top = 0
       } else if (this.top > this.height - refs.height) {
-        this.top = this.height - refs.height;
+        this.top = this.height - refs.height
       }
     },
     // 临时方法 删除分身
-    delDivide (targetId) {
+    delDivide(targetId) {
       api.delIdentity(targetId).then(res => {
-        console.log("删除结果-----", res);
-      });
+        console.log('删除结果-----', res)
+      })
     },
-    showDivideList () {
-      this.isShowDivideList = true;
+    showDivideList() {
+      this.isShowDivideList = true
       // this.loadIdentityList();
     },
-    getAllCommunityFriend () {
-      var mySex = this.userInfo.sex == "男" ? 1 : 0;
+    getAllCommunityFriend() {
+      var mySex = this.userInfo.sex == '男' ? 1 : 0
       let params = {
         cursor: 0,
         sex: mySex,
         range: 0,
         sortType: 0
-      };
+      }
       api.getFriendList(params).then(res => {
         //console.log("拉取候选人：·····················", res);
-        this.getFriend(res);
-      });
+        this.getFriend(res)
+      })
     },
     //拉取分身
-    loadIdentityList () {
-      var count = 0;
+    loadIdentityList() {
+      var count = 0
       api.loadIdentityList().then(res => {
-        console.log("分身res---", res)
+        console.log('分身res---', res)
         if (res.errCode === 0) {
           // this.$nextTick(()=>{
-          this.divideList = res.info;
+          this.divideList = res.info
           this.divideList = this.divideList.filter((item, index) => {
             if (item.openid != this.userInfo.openid) {
-              count += item.unreadMsgCount;
-              this.addDivideUnreadCount(count);
+              count += item.unreadMsgCount
+              this.addDivideUnreadCount(count)
             }
             item.latesMsgTime = item.latesMsgTime
               ? util.timestampToTime(item.latesMsgTime)
-              : 0;
-            return item.openid != this.userInfo.openid;
-          });
+              : 0
+            return item.openid != this.userInfo.openid
+          })
           // })
-          console.log("拉取分身-------", this.divideList);
+          console.log('拉取分身-------', this.divideList)
         } else {
           this.$vux.toast.show({
             text: res.errorMsg
-          });
+          })
         }
-      });
+      })
     },
     //切换店铺
-    switchToShop (shop) {
-      window.location.href = shop.shopUrl + "/k98/message"
+    switchToShop(shop) {
+      window.location.href = shop.shopUrl + '/#message'
     },
     //切换分身
-    switchToDivide (item) {
-      this.identity = sessionStorage.getItem("identity");
-      this.hasDivideIdentity = true;
+    switchToDivide(item) {
+      this.identity = sessionStorage.getItem('identity')
+      this.hasDivideIdentity = true
       //console.log("identity--------", this.identity)
       if (!this.identity) {
         let data = {
           offlineOpenid: this.userInfo.openid
-        };
+        }
         api.loginIdentity(data).then(res => {
           //console.log("分身下线", res)
-        });
+        })
       } else {
         let data = {
           offlineOpenid: this.identity
-        };
+        }
         api.loginIdentity(data).then(res => {
           //console.log("分身下线", res)
-        });
+        })
       }
-      this.loadIdentityList();
-      sessionStorage.setItem("identity", item.openid);
+      this.loadIdentityList()
+      sessionStorage.setItem('identity', item.openid)
       api.getUserInfo().then(res => {
-        this.getUserInfo(res);
-        this._loadFriends(); //拉取好友
-        this._loadMutualEvents(); //拉取送礼，约战，
-        this.loadIdentityList();
-        this.getAllCommunityFriend(); //拉取候选人好友
+        this.getUserInfo(res)
+        this._loadFriends() //拉取好友
+        this._loadMutualEvents() //拉取送礼，约战，
+        this.loadIdentityList()
+        this.getAllCommunityFriend() //拉取候选人好友
         this.$vux.toast.show({
-          text: "切换分身成功"
-        });
-        this.isShowDivideList = false;
+          text: '切换分身成功'
+        })
+        this.isShowDivideList = false
         setTimeout(() => {
           this.$router.push({
-            path: "/message",
+            path: '/message',
             query: {
               routeParamNum: 0
             }
-          });
-        }, 200);
-        this.identity = sessionStorage.getItem("identity");
+          })
+        }, 200)
+        this.identity = sessionStorage.getItem('identity')
         //console.log("app-identity--", this.identity)
-        let isMasterId = this.identity.indexOf("@master");
-        this.identity = isMasterId > 0 ? this.identity : ""; //是分身id才给赋值，不是则置为空
-      });
+        let isMasterId = this.identity.indexOf('@master')
+        this.identity = isMasterId > 0 ? this.identity : '' //是分身id才给赋值，不是则置为空
+      })
     },
-    confirm (userInfo) {
-      console.log("userInfo------", userInfo);
+    confirm(userInfo) {
+      console.log('userInfo------', userInfo)
       if (!this.userInfo.isSubscribe) {
         this.changeQrCodeText({
-          title: "长按关注，以便查找、使用您的礼品券/优惠券",
-          bottomText: "会员特权:领福利、交群友、参活动"
-        });
-        this.showQrcode(true);
+          title: '长按关注，以便查找、使用您的礼品券/优惠券',
+          bottomText: '会员特权:领福利、交群友、参活动'
+        })
+        this.showQrcode(true)
       }
       let leftEnvelopInfo = {
         fromInfo: {
@@ -777,51 +809,51 @@ export default {
             msg: `送你一张优惠券，已存入卡券包`
           }
         }
-      };
-      this.isShowEnvelopHandle = false;
-      this.changeEnvelopContent(leftEnvelopInfo);
-      this.isShowGiftPanel = false;
-      this.isShowGiftGuide = false;
+      }
+      this.isShowEnvelopHandle = false
+      this.changeEnvelopContent(leftEnvelopInfo)
+      this.isShowGiftPanel = false
+      this.isShowGiftGuide = false
     },
-    gotoDetail () {
+    gotoDetail() {
       if (!this.userInfo.isSubscribe) {
         this.changeQrCodeText({
-          title: "长按关注，可以便捷使用或查询您的卡券",
-          bottomText: "会员特权:领福利、交群友、参活动"
-        });
-        this.showQrcode(true);
+          title: '长按关注，可以便捷使用或查询您的卡券',
+          bottomText: '会员特权:领福利、交群友、参活动'
+        })
+        this.showQrcode(true)
       }
       if (this.isvirtualGift) {
         this.$router.push({
           name: `giftDetail`
-        });
+        })
       } else {
         this.$router.push({
           name: `card`
-        });
+        })
       }
-      this.isShowGiftPanel = false;
-      this.isShowGiftGuide = false;
+      this.isShowGiftPanel = false
+      this.isShowGiftGuide = false
     },
     //监听充值面板状态
-    closeIntegralPanel (flag) {
+    closeIntegralPanel(flag) {
       // //console.log('面板状态-----------', flag);
-      this.isGiftPanel = flag;
+      this.isGiftPanel = flag
     },
-    async inToLetter () {
+    async inToLetter() {
       if (this.staffCode) {
         var data = {
-          deskid: "xx",
+          deskid: 'xx',
           deskcode: 1,
           payuserid: this.userInfo.openid,
-          payuserheadimgurl: this.userInfo.headimgurl,
-        };
-        let res2 = await api.launchSelfPay(data);
+          payuserheadimgurl: this.userInfo.headimgurl
+        }
+        let res2 = await api.launchSelfPay(data)
         if (res2.errCode === 0) {
-          this.cashierObj["openid"] = config.cashierId
-          this.setChatFriend(this.cashierObj);
+          this.cashierObj['openid'] = config.cashierId
+          this.setChatFriend(this.cashierObj)
           this.$router.push({
-            name: "cashierChat",
+            name: 'cashierChat',
             params: {
               from: this.userInfo.openid,
               to: this.cashierObj.openid,
@@ -829,50 +861,50 @@ export default {
               isCashier: false,
               staffCode: this.staffCode
             }
-          });
-
+          })
         } else {
-          this.$vux.toast.text(`${res2.errorMsg}`);
+          this.$vux.toast.text(`${res2.errorMsg}`)
         }
         return
       }
-      util.routerTo("message", this, {
+      util.routerTo('message', this, {
         routeParamNum: 2 //路由参数2表示从店长信箱进入店长留言
-      });
+      })
     },
     //拒绝回房
-    rejectBacToGame () {
+    rejectBacToGame() {
       if (this.isDeskRoom) {
-        this.showBackToGame = false;
-        return;
+        this.showBackToGame = false
+        return
       }
       api.enforceLeaveRoom().then(res => {
         //console.log("拒绝回房-----------", res);
-      });
-      this.showBackToGame = false;
+      })
+      this.showBackToGame = false
     },
-    goBackGame () {
+    goBackGame() {
       if (this.samedeskInfo.msgType == 25) {
-        window.location.href = this.samedeskInfo.url;
-        return;
+        window.location.href = this.samedeskInfo.url
+        return
       }
-      window.location.href = `${this.responseForGameUrl}game/?gamePath=${this.gamePath
-        }&roomID=${this.roomID}`;
+      window.location.href = `${this.baseUrl}/game/?gamePath=${
+        this.gamePath
+      }&roomID=${this.roomID}`
     },
     //加载游戏回房信息
-    loadLastRoomInfo () {
+    loadLastRoomInfo() {
       api.loadLastRoomInfo(this.deskCode).then(res => {
         //console.log("回房信息--------", res);
         if (res.roomID) {
-          this.roomID = res.roomID;
-          this.gamePath = res.gamePath;
+          this.roomID = res.roomID
+          this.gamePath = res.gamePath
           if (this.roomID) {
             // localStorage.setItem("backRoomId", this.roomID)
-            this.showBackToGame = true;
-            this.isDeskRoom = res.isDeskRoom;
+            this.showBackToGame = true
+            this.isDeskRoom = res.isDeskRoom
           }
         }
-      });
+      })
     },
     //加好友
     // onlineSendGift(e) {
@@ -880,184 +912,184 @@ export default {
     //   this.isMakeFriendBool = e.target.checked;
     // },
     //贵宾打招呼
-    sayHi (flag, openid) {
-      this.isHandleMessageFromQueue = true;
-      console.log("targetId------------", openid);
+    sayHi(flag, openid) {
+      this.isHandleMessageFromQueue = true
+      console.log('targetId------------', openid)
       if (flag) {
         api.replyVipService(openid).then(res => {
-          console.log("replyVipService---", res);
+          console.log('replyVipService---', res)
           if (res.errCode === 0) {
-            this.setChatFriend(this.topUpCommonInfo.content.fromInfo);
+            this.setChatFriend(this.topUpCommonInfo.content.fromInfo)
             this.$router.push({
               // path: `/message/${this.topUpCommonInfo.content.fromInfo.openid}`
-              name: "chat",
+              name: 'chat',
               params: {
                 isClient: false,
                 id: this.topUpCommonInfo.content.fromInfo.openid,
                 isVip: true
               }
-            });
-            this.isShowGiftPanel = false;
-            this.clearTopUpData();
-            this.vipText = "贵宾到店，赶紧前去打招呼吧";
+            })
+            this.isShowGiftPanel = false
+            this.clearTopUpData()
+            this.vipText = '贵宾到店，赶紧前去打招呼吧'
           } else {
-            this.vipText = `该同事已由其他同事<img src=${res.info.headURI
-              } style='width:.8rem;height:.8rem;border-radius:50%' />接待，请勿再打扰`;
+            this.vipText = `该同事已由其他同事<img src=${
+              res.info.headURI
+            } style='width:.8rem;height:.8rem;border-radius:50%' />接待，请勿再打扰`
           }
-        });
+        })
       } else {
-        this.vipText = "贵宾到店，赶紧前去打招呼吧";
-        this.isShowGiftPanel = false;
-        this.clearTopUpData();
+        this.vipText = '贵宾到店，赶紧前去打招呼吧'
+        this.isShowGiftPanel = false
+        this.clearTopUpData()
       }
     },
-    showDetail () {
+    showDetail() {
       switch (this.messType) {
-        case "shareGetIntegral":
+        case 'shareGetIntegral':
           this.$router.push({
             name: `giftDetail`
-          });
-          break;
-        case "message":
-          this.setChatFriend(this.dynamicFriendEvt.fromInfo);
+          })
+          break
+        case 'message':
+          this.setChatFriend(this.dynamicFriendEvt.fromInfo)
           this.$router.push({
             // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
-            name: "chat",
+            name: 'chat',
             params: {
               isClient: false,
               id: this.dynamicFriendEvt.fromInfo.openid
             }
-          });
-          break;
-        case "thumb":
+          })
+          break
+        case 'thumb':
           this.$router.push({
             name: `message`,
             params: {
               routeParamNum: 1
             }
-          });
-          break;
-        case "playGame":
+          })
+          break
+        case 'playGame':
           this.$router.push({
             name: `message`,
             params: {
               routeParamNum: 2
             }
-          });
-          break;
-        case "gift":
+          })
+          break
+        case 'gift':
           this.$router.push({
             name: `message`,
             params: {
               routeParamNum: 2
             }
-          });
-          break;
-        case "discount":
+          })
+          break
+        case 'discount':
           this.$router.push({
             name: `card`
-          });
-          break;
-        case "activity":
+          })
+          break
+        case 'activity':
           this.$router.push({
             name: `message`,
             params: {
               routeParamNum: 3
             }
-          });
-          break;
-        case "onlineNotice":
+          })
+          break
+        case 'onlineNotice':
           // //console.log(this.dynamicFriendEvt.fromInfo.nickname);
-          this.setChatFriend(this.dynamicFriendEvt.fromInfo);
+          this.setChatFriend(this.dynamicFriendEvt.fromInfo)
           if (this.dynamicFriendEvt.fromInfo.isAlreadyFriends) {
             this.$router.push({
               // path: `/message/${this.dynamicFriendEvt.fromInfo.openid}`
-              name: "chat",
+              name: 'chat',
               params: {
                 isClient: false,
                 id: this.dynamicFriendEvt.fromInfo.openid
               }
-            });
+            })
           } else {
             api.makeFriend(this.dynamicFriendEvt.fromInfo.openid).then(res => {
               // //console.log(res);
               if (res.errcode === 0) {
-                this.isShowEnvelope = true;
-                this.envelopeText = "飞奔个赞过去,等待对方回赞成为好友";
+                this.isShowEnvelope = true
+                this.envelopeText = '飞奔个赞过去,等待对方回赞成为好友'
                 setTimeout(() => {
-                  this.isShowEnvelope = false;
-                }, 2000);
+                  this.isShowEnvelope = false
+                }, 2000)
               } else if (res.errcode === 1023) {
-                this.showQrcode(true);
+                this.showQrcode(true)
               } else {
-                this.isShowEnvelope = true;
-                this.envelopeText = "您已点赞了哦,等待对方回赞成为好友";
+                this.isShowEnvelope = true
+                this.envelopeText = '您已点赞了哦,等待对方回赞成为好友'
                 setTimeout(() => {
-                  this.isShowEnvelope = false;
-                }, 2000);
+                  this.isShowEnvelope = false
+                }, 2000)
               }
-            });
+            })
           }
-          break;
+          break
         default:
           this.$router.push({
             name: `message`,
             params: {
               routeParamNum: 0
             }
-          });
-          break;
+          })
+          break
       }
-      this.isShowEnvelop = false;
+      this.isShowEnvelop = false
     },
     //拉取好友
-    _loadFriends () {
-      let cursor = 0;
-      this.getAlreadyFriendList(cursor);
+    _loadFriends() {
+      let cursor = 0
+      this.getAlreadyFriendList(cursor)
     },
     //灵魂匹配接受
-    acceptSoulFri (userInfo, flag) {
-      this.isShowGiftPanel = false;
-      this.isHandleMessageFromQueue = true;
-      this.setChatFriend(userInfo);
+    acceptSoulFri(userInfo, flag) {
+      this.isShowGiftPanel = false
+      this.isHandleMessageFromQueue = true
+      this.setChatFriend(userInfo)
       if (userInfo.isFromSoul) {
         api.acceptSoulMateInvite(userInfo.openid, flag).then(res => {
           if (flag) {
             this.$router.push({
-              name: "chat",
+              name: 'chat',
               params: {
                 isSoul: true,
                 id: this.staticChatFriendObj.openid
               }
-            });
+            })
           }
-
-        });
+        })
       } else {
         api.acceptSoulFri(userInfo.openid, flag).then(res => {
           if (flag) {
             this.$router.push({
-              name: "chat",
+              name: 'chat',
               params: {
                 isSoul: true,
                 id: this.staticChatFriendObj.openid
               }
-            });
+            })
           }
-        });
+        })
       }
-      this.clearTopUpData();
-      this.clearTopUpMessage();
+      this.clearTopUpData()
+      this.clearTopUpMessage()
     },
     //如果绑定有客服，用户主动拉取灵魂邀请和客服匹配
-    loadSoulMateInvite () {
+    loadSoulMateInvite() {
       api.loadSoulMateInvite().then(res => {
-        console.log("客服绑定者信息---", res);
-        var userInfo = res.info.userInfo;
+        console.log('客服绑定者信息---', res)
+        var userInfo = res.info.userInfo
         if (userInfo.openid === this.userInfo.openid) {
-          return;
+          return
         }
-        this.isHandleMessageFromQueue = true;
+        this.isHandleMessageFromQueue = true
         var soulMateInfo = {
           content: {
             fromInfo: {
@@ -1068,37 +1100,37 @@ export default {
             }
           },
           msgCode: 21
-        };
-        this.addMessageIntoQueue(soulMateInfo);
-      });
+        }
+        this.addMessageIntoQueue(soulMateInfo)
+      })
     },
     //回赞事件成为好友
-    backThumbClick (type, flag, fromInfo) {
+    backThumbClick(type, flag, fromInfo) {
       api.giveBackThumb(type, flag).then(res => {
         if (res.errCode === 0) {
-          this.setChatFriend(fromInfo);
-          this._loadMutualEvents();
-          this._loadFriends();
-          this.isShowGiftPanel = false;
-          this.clearTopUpMessage();
-          this.isHandleMessageFromQueue = true;
-          if (flag == "yes") {
-            this.changeFriPanelFlag(true);
-            Bus.$emit("changeFriendConnetion", fromInfo.openid);
+          this.setChatFriend(fromInfo)
+          this._loadMutualEvents()
+          this._loadFriends()
+          this.isShowGiftPanel = false
+          this.clearTopUpMessage()
+          this.isHandleMessageFromQueue = true
+          if (flag == 'yes') {
+            this.changeFriPanelFlag(true)
+            Bus.$emit('changeFriendConnetion', fromInfo.openid)
           }
         } else {
           this.$vux.toast.show({
-            type: "text",
+            type: 'text',
             text: `失败${res.errMsg}`,
-            width: "12em"
-          });
+            width: '12em'
+          })
         }
-      });
+      })
     },
     //未成为好友的送礼回复
-    no_Become_Friend_respondForGift (giftInfo, flag) {
+    no_Become_Friend_respondForGift(giftInfo, flag) {
       //console.log("未成为好友的送礼回复----------------", giftInfo);
-      this.setReadMsg(giftInfo.fromInfo.openid);
+      this.setReadMsg(giftInfo.fromInfo.openid)
       let giftParam = {
         agree: flag, //是否接受
         recordID: giftInfo.extMsg.goodInfo.extInfo.recordID, //送礼记录ID
@@ -1106,42 +1138,42 @@ export default {
         respondType: giftInfo.extMsg.goodInfo.msgType, //记录的礼物类型  0是虚拟礼物、1是店长推荐和商城礼品
         isMakeFriend: this.isMakeFriendBool,
         isSysSendGift: false
-      };
+      }
       api.respondForGift(giftParam).then(res => {
         //console.log("好友送礼回复结果---",res)
         if (res.errCode == 0) {
           //重新拉取约战，送礼，点赞列表
           api.getUserInfo().then(res => {
-            this.getUserInfo(res);
-          });
-          this._loadMutualEvents();
-          this.isMakeFriendBool = true;
-          this.isHandleMessageFromQueue = true;
-          this.clearTopUpMessage();
+            this.getUserInfo(res)
+          })
+          this._loadMutualEvents()
+          this.isMakeFriendBool = true
+          this.isHandleMessageFromQueue = true
+          this.clearTopUpMessage()
           //  this.addFriendEvtObj({}) //清空推送内容
         }
-      });
+      })
       if (flag) {
         if (
-          giftInfo.name === "beer" ||
-          giftInfo.name === "flower" ||
-          giftInfo.name === "house" ||
-          giftInfo.name === "boat"
+          giftInfo.name === 'beer' ||
+          giftInfo.name === 'flower' ||
+          giftInfo.name === 'house' ||
+          giftInfo.name === 'boat'
         ) {
-          this.isvirtualGift = true;
+          this.isvirtualGift = true
         } else {
-          this.isvirtualGift = false;
+          this.isvirtualGift = false
         }
-        this.isShowGiftGuide = true;
+        this.isShowGiftGuide = true
       } else {
-        this.isShowGiftPanel = false;
+        this.isShowGiftPanel = false
       }
-      this._loadMutualEvents();
+      this._loadMutualEvents()
     },
     //已成为好友的送礼回复
-    respondForGift (giftInfo, flag) {
+    respondForGift(giftInfo, flag) {
       //console.log("成为好友的送礼回复----------------", giftInfo);
-      this.setReadMsg(giftInfo.openid);
+      this.setReadMsg(giftInfo.openid)
       let giftParam = {
         agree: flag, //是否接受
         recordID: giftInfo.recordID, //送礼记录ID
@@ -1151,83 +1183,83 @@ export default {
         // chatMsgID: giftInfo.isAlreadyFriends?giftInfo.id:""
         chatMsgID: Number(giftInfo.id),
         isSysSendGift: false
-      };
+      }
       api.respondForGift(giftParam).then(res => {
         if (res.errCode == 0) {
           //重新拉取约战，送礼，点赞列表
           // this._loadMutualEvents();
           api.getUserInfo().then(res => {
-            this.getUserInfo(res);
-          });
-          this.isMakeFriendBool = true;
-          this.isHandleMessageFromQueue = true;
-          this.clearTopUpMessage();
+            this.getUserInfo(res)
+          })
+          this.isMakeFriendBool = true
+          this.isHandleMessageFromQueue = true
+          this.clearTopUpMessage()
         }
-      });
+      })
       if (flag) {
         if (
-          giftInfo.name === "beer" ||
-          giftInfo.name === "flower" ||
-          giftInfo.name === "house" ||
-          giftInfo.name === "boat"
+          giftInfo.name === 'beer' ||
+          giftInfo.name === 'flower' ||
+          giftInfo.name === 'house' ||
+          giftInfo.name === 'boat'
         ) {
-          this.isvirtualGift = true;
+          this.isvirtualGift = true
         } else {
-          this.isvirtualGift = false;
+          this.isvirtualGift = false
         }
-        this.isShowGiftGuide = true;
+        this.isShowGiftGuide = true
       } else {
-        this.isShowGiftPanel = false;
+        this.isShowGiftPanel = false
       }
-      this._loadMutualEvents();
+      this._loadMutualEvents()
     },
     //未成为好友拒绝游戏
-    no_Become_Friend_rejectForGame (gameInfo) {
+    no_Become_Friend_rejectForGame(gameInfo) {
       let params = {
         agree: false, //是否接受
         combatID: gameInfo.extMsg.gameInfo.combatID,
         fromID: gameInfo.fromInfo.openid
-      };
-      this.isHandleMessageFromQueue = true;
-      this.clearTopUpMessage();
+      }
+      this.isHandleMessageFromQueue = true
+      this.clearTopUpMessage()
       if (this.topUpGameInfo.msgCode == 24) {
         let p = {
           agree: false,
           openID: gameInfo.fromInfo.openid
-        };
+        }
         api.queueCombatReply(p, this.identity).then(res => {
           //console.log("队列邀请拒绝结果---", res);
-        });
+        })
       }
-      this.setReadMsg(gameInfo.fromInfo.openid);
+      this.setReadMsg(gameInfo.fromInfo.openid)
       api.responseCombat(params).then(res => {
         if (res.errCode == 0) {
           //console.log("删除结果-----------", res);
         }
-      });
-      this.isShowGiftPanel = false;
-      this._loadMutualEvents();
+      })
+      this.isShowGiftPanel = false
+      this._loadMutualEvents()
       // this.addFriendEvtObj({}) //清空推送内容
     },
     //未成为好友接受游戏
-    no_Become_Friend_respondForGame (gameInfo) {
-      this.isHandleMessageFromQueue = true;
-      this.clearTopUpMessage();
+    no_Become_Friend_respondForGame(gameInfo) {
+      this.isHandleMessageFromQueue = true
+      this.clearTopUpMessage()
       let params = {
         agree: true, //是否接受
         combatID: gameInfo.extMsg.gameInfo.combatID,
         fromID: gameInfo.fromInfo.openid
-      };
-      this.setReadMsg(gameInfo.fromInfo.openid);
+      }
+      this.setReadMsg(gameInfo.fromInfo.openid)
       if (this.topUpGameInfo.msgCode == 24) {
         //队列邀请得
         let p = {
           agree: true,
           openID: gameInfo.fromInfo.openid
-        };
+        }
         api.queueCombatReply(p, this.identity).then(res => {
           //console.log("队列邀请接受结果---", res);
-        });
+        })
       }
       if (params.combatID) {
         //约战
@@ -1235,37 +1267,37 @@ export default {
           //console.log(res);
           if (res.errCode == 0) {
             //console.log("删除结果-----------", res);
-            window.location.href = gameInfo.extMsg.gameInfo.url;
+            window.location.href = gameInfo.extMsg.gameInfo.url
           }
-        });
+        })
       } else {
         //应战
         // alert(gameInfo.extMsg.gameInfo.url)
-        window.location.href = gameInfo.extMsg.gameInfo.url;
+        window.location.href = gameInfo.extMsg.gameInfo.url
       }
     },
     //成为好友后接受游戏
-    respondForGame (game) {
-      this.isHandleMessageFromQueue = true;
-      this.clearTopUpMessage();
+    respondForGame(game) {
+      this.isHandleMessageFromQueue = true
+      this.clearTopUpMessage()
       //console.log("respondForGame_gameInfo-----------", game);
-      var params = {};
-      var gameUrl = "";
+      var params = {}
+      var gameUrl = ''
       if (this.topUpGameInfo.msgCode == 24) {
         let p = {
           agree: true,
           openID: game.openid
-        };
+        }
         api.queueCombatReply(p, this.identity).then(res => {
           //
           //console.log("队列邀请接受结果---", res);
-        });
+        })
       }
 
       if (this.topUpGameInfo.msgCode == 19) {
-        gameUrl = game.extMsg.gameInfo.url;
-        window.location.href = gameUrl;
-        return false;
+        gameUrl = game.extMsg.gameInfo.url
+        window.location.href = gameUrl
+        return false
       } else {
         params = {
           agree: true, //是否接受
@@ -1273,34 +1305,31 @@ export default {
           fromID: game.openid,
           chatMsgID: game.id,
           IsAgainPlay: false
-        };
-        gameUrl = game.url;
+        }
+        gameUrl = game.url
       }
-      this.setReadMsg(game.openid);
+      this.setReadMsg(game.openid)
       //约战
       api.responseCombat(params).then(res => {
-        //console.log(res);
         if (res.errCode == 0) {
-          //console.log("删除结果-----------", res);
-          // this.addFriendEvtObj({}) //清空推送内容
-          window.location.href = gameUrl;
+          window.location.href = gameUrl
         }
-      });
+      })
     },
     //拒绝游戏
-    rejectForGame (gameInfo) {
+    rejectForGame(gameInfo) {
       //console.log("rejectForGame_gameInfo0-----------", gameInfo);
-      this.isHandleMessageFromQueue = true;
-      this.clearTopUpMessage();
-      var params = {};
+      this.isHandleMessageFromQueue = true
+      this.clearTopUpMessage()
+      var params = {}
       if (this.topUpGameInfo.msgCode == 24) {
         let p = {
           agree: true,
           openID: gameInfo.fromInfo.openid
-        };
+        }
         api.queueCombatReply(p, this.identity).then(res => {
           //console.log("队列邀请拒接结果---", res);
-        });
+        })
       }
       if (this.topUpGameInfo.msgCode == 19) {
         //再战弹框
@@ -1308,7 +1337,7 @@ export default {
           agree: false, //是否接受
           fromID: gameInfo.fromInfo.openid,
           IsAgainPlay: true
-        };
+        }
       } else {
         params = {
           agree: false, //是否接受
@@ -1316,361 +1345,373 @@ export default {
           fromID: gameInfo.openid,
           chatMsgID: gameInfo.id,
           IsAgainPlay: false
-        };
+        }
       }
-      this.setReadMsg(gameInfo.openid);
+      this.setReadMsg(gameInfo.openid)
       api.responseCombat(params).then(res => {
         //console.log(res);
         if (res.errCode == 0) {
-          this.isShowGiftPanel = false;
+          this.isShowGiftPanel = false
           // this.addFriendEvtObj({}) //清空推送内容
           //console.log("删除结果-----------", res);
         }
-      });
-      this._loadMutualEvents();
+      })
+      this._loadMutualEvents()
     },
     //设置已读消息
-    setReadMsg (openId) {
+    setReadMsg(openId) {
       api.sendMsgReaded(openId).then(res => {
         if (res.errCode == 0) {
-          console.log("消息已读");
+          console.log('消息已读')
         }
-      });
+      })
     },
     //拉取约战、点赞、送礼列表
-    _loadMutualEvents () {
+    _loadMutualEvents() {
       api.loadMutualEvents().then(res => {
-        console.log("拉取约战、点赞、送礼列表---", res);
+        console.log('拉取约战、点赞、送礼列表---', res)
         if (res.errCode === 0) {
-          let mutualEventsObj = res.mutualEvents;
-          let mutualEventsList = [];
+          let mutualEventsObj = res.mutualEvents
+          let mutualEventsList = []
           mutualEventsList = mutualEventsList.concat(
             mutualEventsObj.combatsEvents === null
               ? []
               : mutualEventsObj.combatsEvents
-          );
+          )
           mutualEventsList = mutualEventsList.concat(
             mutualEventsObj.giftEvents === null
               ? []
               : mutualEventsObj.giftEvents
-          );
+          )
           mutualEventsList = mutualEventsList.concat(
             mutualEventsObj.friendEvents === null
               ? []
               : mutualEventsObj.friendEvents
-          );
+          )
           mutualEventsList = mutualEventsList.concat(
             mutualEventsObj.commentEvents === null
               ? []
               : mutualEventsObj.commentEvents
-          );
+          )
           mutualEventsList = mutualEventsList.concat(
             mutualEventsObj.subscribeEvents === null
               ? []
               : mutualEventsObj.subscribeEvents
-          );
-          console.log("mutualEventsList.length---", mutualEventsList.length);
-          let count = mutualEventsList.length;
-          this.CalcManualEventsCount(count);
-          this.addBange();
+          )
+          console.log('mutualEventsList.length---', mutualEventsList.length)
+          let count = mutualEventsList.length
+          this.CalcManualEventsCount(count)
+          this.addBange()
         }
-      });
+      })
     },
-    close () {
-      this.isShowEnvelop = false;
+    close() {
+      this.isShowEnvelop = false
     },
     //判断弹框布尔值
-    judgeEveryBool (isShowGiftPanel, gameFlag, giftFlag, thumbFlag) {
-      this.isShowGiftPanel = isShowGiftPanel;
-      this.gameFlag = gameFlag;
-      this.giftFlag = giftFlag;
-      this.thumbFlag = thumbFlag;
+    judgeEveryBool(isShowGiftPanel, gameFlag, giftFlag, thumbFlag) {
+      this.isShowGiftPanel = isShowGiftPanel
+      this.gameFlag = gameFlag
+      this.giftFlag = giftFlag
+      this.thumbFlag = thumbFlag
     },
     ...mapMutations({
       // updateChatList: "UPDATE_CHATLIST",//更新聊天列表
-      changeFriPanelFlag: "CHANGEFRIENDPANELFLAG", //更改匹配成功flag
-      setChatFriend: "SET_CHAT_FRIEND", //全局设置聊天对象的信息
-      addGiftInfo: "ADD_GIFTINFO",
-      CalcManualEventsCount: "GET_ALLEVENTS_BADGECOUNT", //统计约战送礼点赞数
-      addBange: "ADD_BADGE",
-      changeQrCodeText: "CHANGEQRCODETEXT",
-      showQrcode: "SHOW_QRCODE",
-      getUserInfo: "GET_USERINFO", //获取用户信息
-      addFriendEvtObj: "UPDATE_DYNAMICMESSAGE", //更新好友事件提示框
-      delMessageQueue: "DELMESSAGEQUEUE",
-      addMessageIntoQueue: "ADDMESSAGEQUEUE",
-      clearTopUpMessage: "CLEARTOPUPMESSAGE", //清除队列消息
-      selectMessageFromQueue: "SELECTMESSAGEFROMQUEUE", //选择队列消息第一个
-      clearTopUpData: "CLEARTOPUPDATA",
-      addDivideUnreadCount: "ADDDIVIDEUNREADMSG", //累计分身未读消息
-      getFriend: "GET_FRIENDlIST", //获取候选人,
-      changeEnvelopContent: "CHANGEENVELOPECONTENT" //更改左侧弹框内容
+      changeFriPanelFlag: 'CHANGEFRIENDPANELFLAG', //更改匹配成功flag
+      setChatFriend: 'SET_CHAT_FRIEND', //全局设置聊天对象的信息
+      addGiftInfo: 'ADD_GIFTINFO',
+      CalcManualEventsCount: 'GET_ALLEVENTS_BADGECOUNT', //统计约战送礼点赞数
+      addBange: 'ADD_BADGE',
+      changeQrCodeText: 'CHANGEQRCODETEXT',
+      showQrcode: 'SHOW_QRCODE',
+      getUserInfo: 'GET_USERINFO', //获取用户信息
+      addFriendEvtObj: 'UPDATE_DYNAMICMESSAGE', //更新好友事件提示框
+      delMessageQueue: 'DELMESSAGEQUEUE',
+      addMessageIntoQueue: 'ADDMESSAGEQUEUE',
+      clearTopUpMessage: 'CLEARTOPUPMESSAGE', //清除队列消息
+      selectMessageFromQueue: 'SELECTMESSAGEFROMQUEUE', //选择队列消息第一个
+      clearTopUpData: 'CLEARTOPUPDATA',
+      addDivideUnreadCount: 'ADDDIVIDEUNREADMSG', //累计分身未读消息
+      getFriend: 'GET_FRIENDlIST', //获取候选人,
+      changeEnvelopContent: 'CHANGEENVELOPECONTENT' //更改左侧弹框内容
     }),
     ...mapActions({
-      getAlreadyFriendList: "get_alreadyFriendList" //加载已经成为好友列表
+      getAlreadyFriendList: 'get_alreadyFriendList' //加载已经成为好友列表
     })
   },
   watch: {
-    userInfo: function () {
-      this.loadIdentityList(); //拉取分身
+    userInfo: function() {
+      this.loadIdentityList() //拉取分身
     },
-    dynamicFriendEvt: function (newValue) {
-      this.isShowEnvelop = false;
-      this.isThrottle = false;
+    dynamicFriendEvt: function(newValue) {
+      this.isShowEnvelop = false
+      this.isThrottle = false
       if (newValue.notifyType === 8) {
-        let onlineUser = newValue.fromInfo;
-        let hasUser;
+        let onlineUser = newValue.fromInfo
+        let hasUser
         //判断待通知用户列表里面是否有当前上线的用户
         this.notifyUserIdList.forEach(user => {
           if (user.openid === onlineUser.openid) {
-            hasUser = true;
+            hasUser = true
           }
-        });
+        })
         //如果待通知用户列表里面没有当前上线用户，则把当前上线用户push进待通知用户列表,并记录当前上线时间
         if (!hasUser) {
-          this.isThrottle = true;
-          onlineUser["loginTime"] = new Date().getTime();
-          this.notifyUserIdList.push(onlineUser);
+          this.isThrottle = true
+          onlineUser['loginTime'] = new Date().getTime()
+          this.notifyUserIdList.push(onlineUser)
         }
         //如果待通知用户列表里面有当前上线用户，则判断距上次上线时间是否超过300秒，超过300秒，信封弹框
         if (hasUser) {
           let notifyUser = this.notifyUserIdList.filter(user => {
-            return user.openid === onlineUser.openid;
-          });
+            return user.openid === onlineUser.openid
+          })
           let isMore300s =
-            new Date().getTime() - notifyUser[0].loginTime > 300000;
+            new Date().getTime() - notifyUser[0].loginTime > 300000
           if (isMore300s) {
-            this.isThrottle = true;
+            this.isThrottle = true
             this.notifyUserIdList.forEach(user => {
               //重新设置登录时间
               if (user.openid == onlineUser.openid) {
-                user["loginTime"] = new Date().getTime();
+                user['loginTime'] = new Date().getTime()
               }
-            });
+            })
           } else {
-            this.isThrottle = false;
+            this.isThrottle = false
           }
         }
       } else {
-        this.isThrottle = true;
+        this.isThrottle = true
       }
-      console.log("this.isThrottle----", this.isThrottle);
-      console.log("this.isShowEnvelop----", this.isShowEnvelop);
+      console.log('this.isThrottle----', this.isThrottle)
+      console.log('this.isShowEnvelop----', this.isShowEnvelop)
       if (this.isThrottle) {
-        this.isShowEnvelop = true;
+        this.isShowEnvelop = true
         setTimeout(() => {
-          this.isShowEnvelop = false;
-        }, 3000);
+          this.isShowEnvelop = false
+        }, 3000)
       }
     },
-    allMutatualInfo: function (newValue) {
-      clearTimeout(this.timeTick);
+    allMutatualInfo: function(newValue) {
+      clearTimeout(this.timeTick)
       if (!Object.keys(newValue).length) {
-        return;
+        return
       }
-      let contentStruct = newValue.content.extMsg.allInfo.lastMsg;
-      let fromImfo = newValue.content.fromInfo;
-      this.isShowGiftPanel = true;
-      this.isAlreadyFriend = true;
+      let contentStruct = newValue.content.extMsg.allInfo.lastMsg
+      let fromImfo = newValue.content.fromInfo
+      this.isShowGiftPanel = true
+      this.isAlreadyFriend = true
       this.allMutatualInfo_temp = {
         openid: fromImfo.openid,
         type: contentStruct.type,
         nickname: fromImfo.nickname,
         headimgurl: fromImfo.headimgurl,
-        id: contentStruct.id ? contentStruct.id : "",
+        id: contentStruct.id ? contentStruct.id : '',
         isAgree: contentStruct.chatExtMsg.isAgree,
         name: contentStruct.chatExtMsg.extMsg.name
           ? contentStruct.chatExtMsg.extMsg.name
-          : "",
+          : '',
         isAlreadyFriends: fromImfo.isAlreadyFriends,
         limit: contentStruct.chatExtMsg.extMsg.limit
           ? contentStruct.chatExtMsg.extMsg.limit
-          : "",
+          : '',
         image: contentStruct.chatExtMsg.extMsg.image
           ? contentStruct.chatExtMsg.extMsg.image
-          : "",
+          : '',
         msgType: contentStruct.chatExtMsg.msgType,
         isHandled: contentStruct.chatExtMsg.isHandled,
         couponID: contentStruct.chatExtMsg.extMsg.couponID
           ? contentStruct.chatExtMsg.extMsg.couponID
-          : "",
+          : '',
         integral: contentStruct.chatExtMsg.extMsg.integral
           ? contentStruct.chatExtMsg.extMsg.integral
-          : "",
+          : '',
         recordID: contentStruct.chatExtMsg.extMsg.recordID
           ? contentStruct.chatExtMsg.extMsg.recordID
-          : "",
+          : '',
         subtopic: contentStruct.chatExtMsg.extMsg.subtopic
           ? contentStruct.chatExtMsg.extMsg.subtopic
-          : "",
+          : '',
         money: contentStruct.chatExtMsg.extMsg.money
           ? contentStruct.chatExtMsg.extMsg.money
-          : "",
+          : '',
         combatID: contentStruct.chatExtMsg.extMsg.combatID
           ? contentStruct.chatExtMsg.extMsg.combatID
-          : "",
+          : '',
         headImgURL: contentStruct.chatExtMsg.extMsg.headImgURL
           ? contentStruct.chatExtMsg.extMsg.headImgURL
-          : "",
+          : '',
         inviterID: contentStruct.chatExtMsg.extMsg.inviterID
           ? contentStruct.chatExtMsg.extMsg.inviterID
-          : "",
+          : '',
         // nickName:contentStruct.chatExtMsg.extMsg.nickName?contentStruct.chatExtMsg.extMsg.nickName:"",
         url: contentStruct.chatExtMsg.extMsg.url
           ? contentStruct.chatExtMsg.extMsg.url
-          : ""
-      };
+          : ''
+      }
       // //console.log("allMutatualInfo---------------------", this.allMutatualInfo_temp);
       if (this.allMutatualInfo_temp.type == 3) {
-        this.giftFlag = true;
-        this.gameFlag = false;
+        this.giftFlag = true
+        this.gameFlag = false
       } else if (this.allMutatualInfo_temp.type == 4) {
-        this.giftFlag = false;
-        this.gameFlag = true;
+        this.giftFlag = false
+        this.gameFlag = true
       }
     },
-    topUpCommonInfo: function (newValue) {
-      clearTimeout(this.timeTick);
+    topUpCommonInfo: function(newValue) {
+      clearTimeout(this.timeTick)
       if (!newValue.msgCode) {
-        return;
+        return
       }
-      console.log("topUpCommonInfo----------", newValue);
-      this.judgeEveryBool(true, false, true, false);
+      console.log('topUpCommonInfo----------', newValue)
+      this.judgeEveryBool(true, false, true, false)
       if (newValue.msgCode === 29) {
-        return;
+        return
       }
       switch (newValue.content.extMsg.goodInfo.extInfo.name) {
-        case "beer":
+        case 'beer':
           this.addGiftInfo({
-            nameValue: "啤酒",
-            typeValue: "beer"
-          });
-          break;
-        case "flower":
+            nameValue: '啤酒',
+            typeValue: 'beer'
+          })
+          break
+        case 'flower':
           this.addGiftInfo({
-            nameValue: "鲜花",
-            typeValue: "flower"
-          });
-          break;
-        case "house":
+            nameValue: '鲜花',
+            typeValue: 'flower'
+          })
+          break
+        case 'house':
           this.addGiftInfo({
-            nameValue: "别墅",
-            typeValue: "house"
-          });
-          break;
-        case "car":
+            nameValue: '别墅',
+            typeValue: 'house'
+          })
+          break
+        case 'car':
           this.addGiftInfo({
-            nameValue: "邮轮",
-            typeValue: "boat"
-          });
-          break;
+            nameValue: '邮轮',
+            typeValue: 'boat'
+          })
+          break
         default:
-          break;
+          break
       }
       // //console.log('送的礼物----------', newValue);
     },
-    topUpThumbInfo: function (newValue) {
-      clearTimeout(this.timeTick);
+    topUpThumbInfo: function(newValue) {
+      clearTimeout(this.timeTick)
       if (!newValue.msgCode) {
-        return;
+        return
       }
       //console.log("topUpThumbInfo-------------", newValue);
-      this.judgeEveryBool(true, false, false, true);
+      this.judgeEveryBool(true, false, false, true)
     },
-    soulFriInfo: function (newValue) {
-      console.log("soulFriInfo----", newValue);
-      clearTimeout(this.timeTick);
-      clearTimeout(this.soulTick);
+    soulFriInfo: function(newValue) {
+      console.log('soulFriInfo----', newValue)
+      clearTimeout(this.timeTick)
+      clearTimeout(this.soulTick)
       if (!newValue.msgCode) {
-        return;
+        return
       }
-      this.judgeEveryBool(true, true, false, false);
+      this.judgeEveryBool(true, true, false, false)
     },
-    topUpGameInfo: function (newValue) {
+    topUpGameInfo: function(newValue) {
       // console.log("topUpGameInfo---",newValue)
-      clearTimeout(this.timeTick);
+      clearTimeout(this.timeTick)
       if (!newValue.msgCode) {
-        return;
+        return
       }
       //console.log("topUpGameInfo-------------", newValue);
-      this.judgeEveryBool(true, true, false, false);
+      this.judgeEveryBool(true, true, false, false)
     },
-    sameDeskInfo: function (newValue) {
-      this.samedeskInfo = newValue;
-      this.showBackToGame = true;
-      this.isDeskRoom = true;
+    sameDeskInfo: function(newValue) {
+      this.samedeskInfo = newValue
+      this.showBackToGame = true
+      this.isDeskRoom = true
       //console.log("this.samedeskInfo-----", this.samedeskInfo)
     },
     //监听客服图标变动
-    showClientServiceIconFlag: function (newValue) {
-      console.log("newValue----", newValue);
+    showClientServiceIconFlag: function(newValue) {
+      console.log('newValue----', newValue)
       if (newValue) {
         this.$nextTick(() => {
-          this.$refs.move_div.classList.remove("kefu");
-          this.$refs.move_div.classList.add("move_kefu");
-        });
+          this.$refs.move_div.classList.remove('kefu')
+          this.$refs.move_div.classList.add('move_kefu')
+        })
       }
     },
-    $route: function (newValue, oldValue) {
+    $route: function(newValue, oldValue) {
       //游戏弹框显示
-      if (newValue.name == "home" && this.gamePopPotison === 0 && !this.onceTrigger) {
+      if (
+        newValue.name == 'home' &&
+        this.gamePopPotison === 0 &&
+        !this.onceTrigger
+      ) {
         this.gameShow = true
         this.onceTrigger = true
       }
-      if (newValue.name == "welfare" && this.gamePopPotison === 1 && !this.onceTrigger) {
+      if (
+        newValue.name == 'welfare' &&
+        this.gamePopPotison === 1 &&
+        !this.onceTrigger
+      ) {
         this.gameShow = true
         this.onceTrigger = true
       }
-      if (newValue.name == "friend" && this.gamePopPotison === 2 && !this.onceTrigger) {
+      if (
+        newValue.name == 'friend' &&
+        this.gamePopPotison === 2 &&
+        !this.onceTrigger
+      ) {
         this.gameShow = true
         this.onceTrigger = true
       }
       //隐藏导航.控制信封和客服图标显示
       if (
-        newValue.name == "home" ||
-        newValue.name == "friend" ||
-        newValue.name == "message" ||
-        newValue.name == "welfare" ||
-        newValue.name == "mine"
-
+        newValue.name == 'home' ||
+        newValue.name == 'friend' ||
+        newValue.name == 'message' ||
+        newValue.name == 'welfare' ||
+        newValue.name == 'mine'
       ) {
-        this.tabFlag = true;
-        this.hasDivideIdentity = true;
-        this.showClientServiceIconFlag = true;
+        this.tabFlag = true
+        this.hasDivideIdentity = true
+        this.showClientServiceIconFlag = true
       } else if (
-        newValue.name === "oneYuan" ||
-        newValue.name === "pinTuan" ||
-        newValue.name === "shareActivity" ||
-        newValue.name === "shareNew" ||
-        newValue.name === "commentUser" ||
-        newValue.name === "comment") {
-        this.showClientServiceIconFlag = true;
-        this.tabFlag = false;
-        this.hasDivideIdentity = false;
+        newValue.name === 'oneYuan' ||
+        newValue.name === 'pinTuan' ||
+        newValue.name === 'shareActivity' ||
+        newValue.name === 'shareNew' ||
+        newValue.name === 'commentUser' ||
+        newValue.name === 'comment'
+      ) {
+        this.showClientServiceIconFlag = true
+        this.tabFlag = false
+        this.hasDivideIdentity = false
       } else {
-        this.tabFlag = false;
-        this.hasDivideIdentity = false;
-        this.showClientServiceIconFlag = false;
+        this.tabFlag = false
+        this.hasDivideIdentity = false
+        this.showClientServiceIconFlag = false
       }
       //判断通过非点击tabbar栏切换选中状态
       switch (newValue.name) {
-        case "home":
-          this.selected = 0;
-          break;
-        case "friend":
-          this.selected = 1;
-          break;
-        case "message":
-          this.selected = 2;
-          break;
-        case "welfare":
-          this.selected = 3;
-          break;
-        case "mine":
-          this.selected = 4;
-          break;
+        case 'home':
+          this.selected = 0
+          break
+        case 'friend':
+          this.selected = 1
+          break
+        case 'message':
+          this.selected = 2
+          break
+        case 'welfare':
+          this.selected = 3
+          break
+        case 'mine':
+          this.selected = 4
+          break
         default:
-          break;
+          break
       }
     }
   },
@@ -1682,7 +1723,7 @@ export default {
     friendPanel,
     topUp
   }
-};
+}
 </script>
 
 <style lang="less">

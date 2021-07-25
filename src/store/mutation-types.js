@@ -1,4 +1,5 @@
-
+//设置单个店长推荐项目
+export const SetOneRecommend = "SetOneRecommend"
 //保存用户在各个友商信息
 export const SAVEALLIANCEINFO = "SAVEALLIANCEINFO"
 //设置搜索群友带上svip参数

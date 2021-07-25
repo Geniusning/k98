@@ -1,190 +1,214 @@
 // 主页标题
 .homeTitle() {
-    font-size   : 0.4267rem;
-    font-weight : 900;
-    color       : #333;
-    text-align  : center;
-    height      : 0.4rem;
-    line-height : 0.4rem;
-    padding-top : 0.0267rem;
-    box-sizing  : border-box;
-    margin-right: 0.2267rem;
-    float       : left;
-    font-family : "PingFang-SC-Regular";
-    box-sizing  : border-box;
+  font-size: 0.4267rem;
+  font-weight: 900;
+  color: #333;
+  text-align: center;
+  height: 0.4rem;
+  line-height: 0.4rem;
+  padding-top: 0.0267rem;
+  box-sizing: border-box;
+  margin-right: 0.2267rem;
+  float: left;
+  font-family: "PingFang-SC-Regular";
+  box-sizing: border-box;
 }
 
 //主页标题大容器
 .titleWrapper() {
-    margin-top      : 0.2667rem;
-    background-color: #fff;
+  // margin-top      : 0.2667rem;
+  background-color: #fff;
 }
 
 //主页标题小容器
 .title() {
-    padding-left: 0.4rem; // display: flex;
+  padding-left: 0.4rem; // display: flex;
 }
 
 //标题描述
 .titleDesc() {
-    float      : left;
-    width      : 4.16rem;
-    height     : 0.36rem;
-    line-height: .36rem;
-    font-family: "PingFang-SC-Regular";
-    color      : #9f9f9f;
-    font-size  : 0.35rem; // padding-top: 0.1rem;
+  float: left;
+  width: 4.16rem;
+  height: 0.36rem;
+  line-height: .36rem;
+  font-family: "PingFang-SC-Regular";
+  color: #9f9f9f;
+  font-size: 0.35rem; // padding-top: 0.1rem;
 }
 
 .online {
-    font-size: 0.2933rem;
-    color    : #fff;
-    position : absolute;
-    top      : 1.74rem;
-    right    : 0.7867rem;
+  font-size: 0.2933rem;
+  color: #fff;
+  position: absolute;
+  top: 1.74rem;
+  right: 0.7867rem;
 }
 
 .dialogTitle() {
-    font-size   : 0.3733rem;
-    color       : #414141;
-    font-weight : bold;
-    font-family : 'PingFang-SC-Bold';
-    text-align  : left;
-    padding-left: 0.2133rem;
+  font-size: 0.3733rem;
+  color: #414141;
+  font-weight: bold;
+  font-family: 'PingFang-SC-Bold';
+  text-align: left;
+  padding-left: 0.2133rem;
 }
 
 .dialogP {
-    font-size   : 0.3467rem;
-    color       : #666;
-    font-family : 'PingFang-SC-Bold';
-    text-align  : left;
-    padding-left: 0.2133rem;
-    margin-top  : 0.1667rem;
+  font-size: 0.3467rem;
+  color: #666;
+  font-family: 'PingFang-SC-Bold';
+  text-align: left;
+  padding-left: 0.2133rem;
+  margin-top: 0.1667rem;
 }
-.welfareContent(){
+
+.welfareContent() {
   .welfare_content {
-         margin-top: 0.1rem;
-         .welfare_list {
-             padding: 0 0.2667rem;
-             .item {
-                 // height: 2.4667rem;
-                 padding: 0.1333rem 0.1rem;
-                 .shop-logo-name {
-                     display: flex;
-                     align-items: center;
-                     margin-bottom: 0.1333rem;
-                     position: relative;
-                     border-radius: 6px;
-                     .shop-info{
-                       display: flex;
-                       .shop-logo {
-                           margin-right: 0.1333rem;
-                           width: 1rem;
-                           height: 1rem;
-                           border-radius: 50%;
-                       }
-                       .shop-name-address{
-                         display: flex;
-                         flex-direction: column;
-                         .name{
-                           font-size: 16px;
-                           color: #333;
-                           font-weight: 800;
-                         }
-                         .addr{
-                           display: flex;
-                           align-items: center;
-                           color: #747272;
-                           font-size: 10px;
-                          .addr-icon{
-                            width: .4rem;
-                            height: .4rem;
-                          }
-                         }
-                       }
-                     }
-                     .distance {
-                         color: #8f8f8f;
-                         font-size: 0.3467rem;
-                         position: absolute;
-                         top: 0.1rem;
-                         right: 0.0333rem;
-                         display: flex;
-                         flex-direction: column;
-                         align-items: center;
-                         span:nth-child(2){
-                           font-size: 12px;
-                         }
-                     }
-                 }
-                 .left {
-                     float: left;
-                     width: 2.4rem;
-                     height: 2.2rem;
-                     .shopPic {
-                         width: 100%;
-                         height: 100%;
-                         object-fit: contain;
-                     }
-                 }
-                 .center {
-                     float: left;
-                     height: 2.2rem;
-                     margin-left: 0.1667rem;
-                     display: flex;
-                     flex-direction: column;
-                     justify-content: space-between;
-                     .title {
-                         font-size: 0.3733rem;
-                         color: #333;
-                         font-weight: bold;
-                         width: 4.5rem;
-                         overflow: hidden;
-                         white-space: nowrap;
-                         text-overflow: ellipsis;
-                     }
-                     .desc {
-                         margin-top: 0.1rem;
-                         color: #8f8f8f;
-                         font-size: 0.32rem;
-                     }
-                     .limit {
-                         margin-top: 0.16rem;
-                         color: #8f8f8f;
-                         font-size: 0.3rem;
-                     }
-                     .price {
-                         margin-top: 0.1rem;
-                         display: flex;
-                         .discount_p {
-                             color: #333;
-                             font-size: 0.3467rem;
-                             margin-right: 0.3rem;
-                         }
-                         .origin_p {
-                             color: red;
-                             font-size: 0.3467rem;
-                         }
-                     }
-                 }
-                 .right {
-                     margin-top: 1.4rem;
-                     position: relative;
-                     .thunb_box {
-                         .vip {
-                             position: absolute;
-                             top: -1.5rem;
-                             right: 0;
-                             font-size: 10px;
-                         }
-                     }
-                 }
-                 .entry{
-                   display: flex;
-                   flex-direction: column;
-                   justify-content: flex-end;
-                 }
-             }
-         }
+    margin-top: 0.1rem;
+
+    .welfare_list {
+      padding: 0 0.2667rem;
+
+      .item {
+        // height: 2.4667rem;
+        padding: 0.1333rem 0.1rem;
+
+        .shop-logo-name {
+          display: flex;
+          align-items: center;
+          margin-bottom: 0.1333rem;
+          position: relative;
+          border-radius: 6px;
+
+          .shop-info {
+            display: flex;
+
+            .shop-logo {
+              margin-right: 0.1333rem;
+              width: 1rem;
+              height: 1rem;
+              border-radius: 50%;
+            }
+
+            .shop-name-address {
+              display: flex;
+              flex-direction: column;
+
+              .name {
+                font-size: 16px;
+                color: #333;
+                font-weight: 800;
+              }
+
+              .addr {
+                display: flex;
+                align-items: center;
+                color: #747272;
+                font-size: 10px;
+
+                .addr-icon {
+                  width: .4rem;
+                  height: .4rem;
+                }
+              }
+            }
+          }
+
+          .distance {
+            color: #8f8f8f;
+            font-size: 0.3467rem;
+            position: absolute;
+            top: 0.1rem;
+            right: 0.0333rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            span:nth-child(2) {
+              font-size: 12px;
+            }
+          }
+        }
+
+        .left {
+          float: left;
+          width: 2.4rem;
+          height: 2.2rem;
+
+          .shopPic {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+          }
+        }
+
+        .center {
+          float: left;
+          height: 2.2rem;
+          margin-left: 0.1667rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+
+          .title {
+            font-size: 0.3733rem;
+            color: #333;
+            font-weight: bold;
+            width: 4.5rem;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+
+          .desc {
+            margin-top: 0.1rem;
+            color: #8f8f8f;
+            font-size: 0.32rem;
+          }
+
+          .limit {
+            margin-top: 0.16rem;
+            color: #8f8f8f;
+            font-size: 0.3rem;
+          }
+
+          .price {
+            margin-top: 0.1rem;
+            display: flex;
+
+            .discount_p {
+              color: #333;
+              font-size: 0.3467rem;
+              margin-right: 0.3rem;
+            }
+
+            .origin_p {
+              color: red;
+              font-size: 0.3467rem;
+            }
+          }
+        }
+
+        .right {
+          margin-top: 1.4rem;
+          position: relative;
+
+          .thunb_box {
+            .vip {
+              position: absolute;
+              top: -1.5rem;
+              right: 0;
+              font-size: 10px;
+            }
+          }
+        }
+
+        .entry {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+        }
+      }
     }
+  }
 }

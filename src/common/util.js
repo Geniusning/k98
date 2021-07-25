@@ -246,8 +246,8 @@ util.shareGetJifen = function (amount, shareType) {
   },
   // jssdk签名
   util._getJssdkConfig = function (url) {
-    let windowUrL = `https://${window.location.host}${window.location.pathname}`
-    api.getJssdkInfo(`${windowUrL}/api/loadJSSDKParams?url=` + encodeURIComponent(url))
+    // let windowUrL = `https://${window.location.host}${window.location.pathname}`
+    api.getJssdkInfo(`/api/loadJSSDKParams?url=` + encodeURIComponent(url))
       .then(res => {
         console.log("获取微信jssdk---------", res)
         wx.config({
@@ -274,8 +274,8 @@ util.setShareInfo = function (shareObj, amount, shareType, fn) {
   if (util.isAndroid()) {
     console.log("是安卓")
     let url = window.location.href.split("#")[0]
-    let windowUrL = `https://${window.location.host}${window.location.pathname}`
-    api.getJssdkInfo(`${windowUrL}/api/loadJSSDKParams?url=` + encodeURIComponent(url))
+    // let windowUrL = `https://${window.location.host}${window.location.pathname}`
+    api.getJssdkInfo(`/api/loadJSSDKParams?url=` + encodeURIComponent(url))
       .then(res => {
         console.log("获取微信jssdk---------", res)
         wx.config({
@@ -359,24 +359,24 @@ util.setShareInfo = function (shareObj, amount, shareType, fn) {
     })
 
     //---------------------------------  新分享
-    wx.updateAppMessageShareData({
-      title: shareObj.title, // 分享标题
-      desc: shareObj.desc, // 分享描述
-      link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-      imgUrl: shareObj.imgUrl, // 分享图标
-      success: function () {
-        // 设置成功
-      }
-    })
+    // wx.updateAppMessageShareData({
+    //   title: shareObj.title, // 分享标题
+    //   desc: shareObj.desc, // 分享描述
+    //   link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+    //   imgUrl: shareObj.imgUrl, // 分享图标
+    //   success: function () {
+    //     // 设置成功
+    //   }
+    // })
 
-    wx.updateTimelineShareData({
-      title: shareObj.title, // 分享标题
-      link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-      imgUrl: shareObj.imgUrl, // 分享图标
-      success: function () {
-        // 设置成功
-      }
-    })
+    // wx.updateTimelineShareData({
+    //   title: shareObj.title, // 分享标题
+    //   link: shareObj.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+    //   imgUrl: shareObj.imgUrl, // 分享图标
+    //   success: function () {
+    //     // 设置成功
+    //   }
+    // })
   }
 }
 //获取cookie
@@ -475,4 +475,31 @@ util.addClass = (element, className) => {
       element.className = element.className.replace(reg, " ");
     }
   }
+util.getShortDistance = (lon1, lat1, lon2, lat2) => {
+  var DEF_PI = 3.14159265359; // PI
+  var DEF_2PI = 6.28318530712; // 2*PI
+  var DEF_PI180 = 0.01745329252; // PI/180.0
+  var DEF_R = 6370693.5; // radius of earth
+  var ew1, ns1, ew2, ns2;
+  var dx, dy, dew;
+  var distance;
+  // 角度转换为弧度
+  ew1 = lon1 * DEF_PI180;
+  ns1 = lat1 * DEF_PI180;
+  ew2 = lon2 * DEF_PI180;
+  ns2 = lat2 * DEF_PI180;
+  // 经度差
+  dew = ew1 - ew2;
+  // 若跨东经和西经180 度，进行调整
+  if (dew > DEF_PI)
+    dew = DEF_2PI - dew;
+  else if (dew < -DEF_PI)
+    dew = DEF_2PI + dew;
+  dx = DEF_R * Math.cos(ns1) * dew; // 东西方向长度(在纬度圈上的投影长度)
+  dy = DEF_R * (ns1 - ns2); // 南北方向长度(在经度圈上的投影长度)
+  // 勾股定理求斜边长
+  distance = Math.sqrt(dx * dx + dy * dy).toFixed(0);
+  console.log(distance)
+  return distance;
+}
 export default util

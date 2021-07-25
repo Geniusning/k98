@@ -7,7 +7,7 @@
 import axios from 'axios'
 import util from "../common/util"
 let tk = util.GetQueryString("tk")
-let windowUrL = `https://${window.location.host}${window.location.pathname}`;
+let windowUrL = `https://${window.location.host}/`;
 axios.interceptors.request.use(
   config => {
     let identity = sessionStorage.getItem('identity')
@@ -29,6 +29,18 @@ axios.interceptors.request.use(
   }
 )
 let api = {};
+//设置用户的收货地址
+api.setUserAddr = function (data) {
+  return new Promise((resolve, reject) => {
+    axios.post(windowUrL + `api/setUserAddr`, data).then((res) => {
+      if (res.status == 200) {
+        resolve(res.data)
+      }
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
 //拉取所有门店视频
 api.getAllObjectList = function () {
   return new Promise((resolve, reject) => {

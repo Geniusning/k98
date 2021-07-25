@@ -10,6 +10,6 @@ export default {
   // commonUrl: "", //线上
   cashierId: "cashier_001",
   staffQrCodeVisitType: 16, //扫员工码进入系统
-  tk: "Onrbci6fubgTOvpkIpL2qw-LFwouKKFV6EY0Ekm2IGtll6Fdz7IRlzK3qethL8NPGdyBrw==",
+  tk: "n2yxtJyqNRsPtqkXZcSQc-IgjToXhYBOW78glT4btqPb4cC8xOuViIFbHP7u1abtotg8xQ==",
   websocketUrl: "wss://llwant1.qianz.com/api/ws",
 }
